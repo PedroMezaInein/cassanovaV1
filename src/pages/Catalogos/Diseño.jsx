@@ -8,6 +8,8 @@ import Layout from '../../components/layout/layout'
 import { Card, Nav, Tab } from 'react-bootstrap'
 import { DiseñoForm, ObraForm } from '../../components/forms'
 import { Line } from 'react-chartjs-2';
+import SVG from "react-inlinesvg";
+import { toAbsoluteUrl } from "../../functions/routers"
 
 class Contabilidad extends Component {
 
@@ -489,7 +491,7 @@ class Contabilidad extends Component {
                     <Card className="card-custom">
                         <Card.Header className="align-items-center border-0">
                             <div className="card-title">
-                                <h3 className="card-label">Diseño</h3>
+                                <h3 className="card-label">Tabulador</h3>
                             </div>
                             <div className="card-toolbar">
                                 <Nav className="nav-tabs nav-bold nav-tabs-line nav-tabs-line-3x border-0">
@@ -505,41 +507,84 @@ class Contabilidad extends Component {
                                 </Nav>
                             </div>
                         </Card.Header>
-                        <Card.Body>
-                            <DiseñoForm
-                                form={form}
-                                onChange={this.onChange}
-                                onSubmit={this.onSubmit}
-                                addRow={this.addRow}
-                                deleteRow={this.deleteRow}
-                                onChangeVariaciones={this.onChangeVariaciones}
-                            />
-                            {
-                                grafica !== '' ?
-                                    <div className="row mx-0 justify-content-center p-3">
-                                        <div className="col-md-8">
-                                            <Line data={grafica} />
-                                        </div>
-                                    </div>
-                                    : <></>
-                            }
-                        </Card.Body>
-                        <Card.Header className="align-items-center border-0">
-                            <div className="card-title">
-                                <h3 className="card-label">Obra</h3>
-                            </div>
-                        </Card.Header>
-                        <Card.Body>
-                            <ObraForm
-                                form={form}
-                                onChange={this.onChange}
-                                onSubmit={this.onSubmitObra}
-                                addRow={this.addParametricRow}
-                            />
+                        <Card.Body className="pt-2">
+                            <Tab.Container defaultActiveKey="diseño">
+                                <Nav className="nav nav-tabs nav-tabs-space-lg nav-tabs-line nav-bold nav-tabs-line-3x border-0">
+                                    <Nav.Item className="nav-item">
+                                        <Nav.Link className="nav-link" eventKey="diseño">
+                                            <span className="nav-icon mr-2">
+                                                <span className="svg-icon mr-3">
+                                                    <SVG src={toAbsoluteUrl('/images/svg/Pen-tool-vector.svg')} />
+                                                </span>
+                                            </span>
+                                            <span className="nav-text">Diseño</span>
+                                        </Nav.Link>
+                                    </Nav.Item>
+                                    <Nav.Item className="nav-item mr-3">
+                                        <Nav.Link eventKey="obra">
+                                            <span className="nav-icon mr-2">
+                                                <span className="svg-icon mr-3">
+                                                    <SVG src={toAbsoluteUrl('/images/svg/Road-Cone.svg')} />
+                                                </span>
+                                            </span>
+                                            <span className="nav-text">Obra</span>
+                                        </Nav.Link>
+                                    </Nav.Item>
+                                    <Nav.Item className="nav-item mr-3">
+                                        <Nav.Link eventKey="adjuntos">
+                                            <span className="nav-icon mr-2">
+                                                <span className="svg-icon mr-3">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
+                                                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                            <rect x="0" y="0" width="24" height="24"></rect>
+                                                            <path d="M13.2070325,4 C13.0721672,4.47683179 13,4.97998812 13,5.5 C13,8.53756612 15.4624339,11 18.5,11 C19.0200119,11 19.5231682,10.9278328 20,10.7929675 L20,17 C20,18.6568542 18.6568542,20 17,20 L7,20 C5.34314575,20 4,18.6568542 4,17 L4,7 C4,5.34314575 5.34314575,4 7,4 L13.2070325,4 Z" fill="#000000"></path>
+                                                            <circle fill="#000000" opacity="0.3" cx="18.5" cy="5.5" r="2.5"></circle>
+                                                        </g>
+                                                    </svg>
+                                                </span>
+                                            </span>
+                                            <span className="nav-text">Adjuntos</span>
+                                        </Nav.Link>
+                                    </Nav.Item>
+                                </Nav>
+                                <Tab.Content className="py-5">
+                                    <Tab.Pane eventKey="diseño">
+                                        <DiseñoForm
+                                            form={form}
+                                            onChange={this.onChange}
+                                            onSubmit={this.onSubmit}
+                                            addRow={this.addRow}
+                                            deleteRow={this.deleteRow}
+                                            onChangeVariaciones={this.onChangeVariaciones}
+                                        />
+                                        {
+                                            grafica !== '' ?
+                                                <div className="row mx-0 justify-content-center p-3">
+                                                    <div className="col-md-8">
+                                                        <Line data={grafica} />
+                                                    </div>
+                                                </div>
+                                                : <></>
+                                        }
+                                    </Tab.Pane>
+                                    <Tab.Pane eventKey="obra">
+                                        <ObraForm
+                                            form={form}
+                                            onChange={this.onChange}
+                                            onSubmit={this.onSubmitObra}
+                                            addRow={this.addParametricRow}
+                                        />
+                                    </Tab.Pane>
+                                    <Tab.Pane eventKey="adjuntos">
+                                        Adjuntos
+                                    </Tab.Pane>
+                                </Tab.Content>
+                            </Tab.Container>
+                            
                         </Card.Body>
                     </Card>
                 </Tab.Container>
-            </Layout>
+            </Layout >
         )
     }
 }

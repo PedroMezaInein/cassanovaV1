@@ -53,7 +53,7 @@ class DiseñoForm extends Component {
                                 </div>
                             </div>
                             <div className="row mb-4">
-                                <div className="col-md-12">
+                                <div className="col-md-12 px-0">
                                     <div className="tab-content">
                                         <div className="table-responsive d-flex justify-content-center">
                                             <table className="table table-responsive-lg table-vertical-center text-center" id="esquemas">
@@ -102,6 +102,7 @@ class DiseñoForm extends Component {
                                                                     value = { form.incremento_esquema_2 }
                                                                     prefix = '%'
                                                                     identificador = 'incremento_esquema_2'
+                                                                    customclass="border-top-0 border-left-0 border-right-0 rounded-0 w-100px text-center pl-0 border-dark" 
                                                                 />
                                                             </div>
                                                         </td>
@@ -113,6 +114,7 @@ class DiseñoForm extends Component {
                                                                     onChange = { onChange }
                                                                     value = { form.incremento_esquema_3 }
                                                                     prefix = '%'
+                                                                    customclass="border-top-0 border-left-0 border-right-0 rounded-0 w-100px text-center pl-0 border-dark" 
                                                                 />
                                                             </div>
                                                         </td>
@@ -142,7 +144,7 @@ class DiseñoForm extends Component {
                                 />
                             </div>
                             <div className="d-flex justify-content-center">
-                                <table className="table table-separate table-responsive-sm text-center w-md-50" id="table_diseño">
+                                <table className="table table-separate table-responsive-sm text-center w-50">
                                     <thead>
                                         <tr>
                                             <th className="pb-0 border-bottom-0">Inferior</th>
@@ -163,8 +165,9 @@ class DiseñoForm extends Component {
                                                                     formeditado = { 1 }
                                                                     value = { form['variaciones'][key]['inferior'] }
                                                                     onChange = { (e) => onChangeVariaciones(key, e, 'inferior')}
-                                                                    customstyle={{ width: "auto", borderRadius: 0, borderTop: 'none', borderRight: 'none', borderLeft: 'none' }}
+                                                                    // customstyle={{ width: "auto", borderRadius: 0, borderTop: 'none', borderRight: 'none', borderLeft: 'none' }}
                                                                     identificador = "inferior"
+                                                                    customclass="border-top-0 border-left-0 border-right-0 rounded-0 w-100px text-center pl-0" 
                                                                 />
                                                             </div>
                                                         </td>
@@ -176,8 +179,9 @@ class DiseñoForm extends Component {
                                                                     name = "superior"
                                                                     value = { form['variaciones'][key]['superior'] }
                                                                     onChange = { (e) => onChangeVariaciones(key, e, 'superior') }
-                                                                    customstyle={{ width: "auto", borderRadius: 0, borderTop: 'none', borderRight: 'none', borderLeft: 'none' }}
+                                                                    // customstyle={{ width: "auto", borderRadius: 0, borderTop: 'none', borderRight: 'none', borderLeft: 'none' }}
                                                                     identificador = "superior"
+                                                                    customclass="border-top-0 border-left-0 border-right-0 rounded-0 w-100px text-center pl-0" 
                                                                 />
                                                             </div>
                                                         </td>
@@ -191,8 +195,9 @@ class DiseñoForm extends Component {
                                                                     onChange = { (e) => onChangeVariaciones(key, e, 'cambio') }
                                                                     thousandseparator={true}
                                                                     prefix = '$'
-                                                                    customstyle = { { width: "auto", borderRadius: 0, borderTop: 'none', borderRight: 'none', borderLeft: 'none' } }
+                                                                    // customstyle = { { width: "auto", borderRadius: 0, borderTop: 'none', borderRight: 'none', borderLeft: 'none' } }
                                                                     identificador = "cambio"
+                                                                    customclass="border-top-0 border-left-0 border-right-0 rounded-0 w-100px text-center pl-0" 
                                                                 />
                                                             </div>
                                                         </td>

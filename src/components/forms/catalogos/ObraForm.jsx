@@ -39,16 +39,18 @@ export default class ObraForm extends Component {
                 {...props}>
                 <div className="d-flex justify-content-end">
                     <Button
-                        icon = '' onClick = { addRow }
+                        icon = '' 
+                        onClick = { addRow }
                         className = "btn btn-icon btn-xs p-3 btn-light-success success2"
                         only_icon = "flaticon2-plus icon-13px"
-                        tooltip = { { text: 'AGREGAR' } }/>
+                        tooltip = { { text: 'AGREGAR' } }
+                    />
                 </div>
-                <div className="py-3">
-                    <table className="table table-responsive table-vertical-center text-center">
+                <div className="py-3 d-flex justify-content-center">
+                    <table className="table table-responsive-md table-vertical-center text-center" style={{width: '90%'}}>
                         <thead className="bg-gray-200">
                             <tr>
-                                <td rowSpan="2" style={{ minWidth: '200px' }} >
+                                <td style={{ minWidth: '150px' }} >
                                     TIPO PROYECTO
                                 </td>
                                 <td  colSpan="2">
@@ -64,32 +66,37 @@ export default class ObraForm extends Component {
                             <tr>
                                 <td>
                                     <b>
-                                        LIMITE INFERIOR
+                                        LIMITE
+                                    </b>
+                                </td>
+                                <td>
+                                    <b>
+                                        INFERIOR
                                     </b>
                                 </td>
                                 <td >
                                     <b>
-                                        LIMITE SUPERIOR
+                                        SUPERIOR
                                     </b>
                                 </td>
                                 <td>
                                     <b>
-                                        LIMITE INFERIOR
+                                        INFERIOR
                                     </b>
                                 </td>
                                 <td>
                                     <b>
-                                        LIMITE SUPERIOR
+                                        SUPERIOR
                                     </b>
                                 </td>
                                 <td>
                                     <b>
-                                        LIMITE INFERIOR
+                                        INFERIOR
                                     </b>
                                 </td>
                                 <td>
                                     <b>
-                                        LIMITE SUPERIOR
+                                        SUPERIOR
                                     </b>
                                 </td>
                             </tr>
@@ -99,7 +106,7 @@ export default class ObraForm extends Component {
                                 form.tipos.map((tipo, key)=>{
                                     return(
                                         <tr key = { key }>
-                                            <td className="px-1 py-3 border-0">
+                                            <td className="px-1 py-3 border-0 d-flex justify-content-center">
                                                 {
                                                     tipo.id ?
                                                         tipo.name 
@@ -108,8 +115,9 @@ export default class ObraForm extends Component {
                                                         requireValidation = { 1 }
                                                         value = { tipo.name }
                                                         onChange = { (e) => { this.onChangeName(e, tipo, key) }}
-                                                        customstyle={{ width: "auto", borderRadius: 0, borderTop: 'none', borderRight: 'none', borderLeft: 'none' }}
-                                                        />
+                                                        // customstyle={{ width: "auto", borderRadius: 0, borderTop: 'none', borderRight: 'none', borderLeft: 'none' }}
+                                                        customclass="border-top-0 border-left-0 border-right-0 rounded-0 w-auto text-center pl-0" 
+                                                    />
                                                 }
                                             </td>
                                             <td className="px-1 py-3 border-0">
@@ -121,8 +129,9 @@ export default class ObraForm extends Component {
                                                         onChange = { (e) => { this.onChange(e, tipo) }}
                                                         thousandseparator={true}
                                                         prefix={'$'}
-                                                        customstyle={{ width: "auto", borderRadius: 0, borderTop: 'none', borderRight: 'none', borderLeft: 'none' }}
-                                                        />
+                                                        // customstyle={{ width: "auto", borderRadius: 0, borderTop: 'none', borderRight: 'none', borderLeft: 'none' }}
+                                                        customclass="border-top-0 border-left-0 border-right-0 rounded-0 w-100px text-center pl-0" 
+                                                    />
                                                 </div>
                                             </td>
                                             <td className="px-1 py-3 border-0">
@@ -134,8 +143,9 @@ export default class ObraForm extends Component {
                                                         onChange = { (e) => { this.onChange(e, tipo) }}
                                                         thousandseparator={true}
                                                         prefix={'$'}
-                                                        customstyle={{ width: "auto", borderRadius: 0, borderTop: 'none', borderRight: 'none', borderLeft: 'none' }}
-                                                        />
+                                                        // customstyle={{ width: "auto", borderRadius: 0, borderTop: 'none', borderRight: 'none', borderLeft: 'none' }}
+                                                        customclass="border-top-0 border-left-0 border-right-0 rounded-0 w-100px text-center pl-0" 
+                                                    />
                                                 </div>
                                             </td>
                                             <td className="px-1 py-3 border-0">
@@ -147,8 +157,9 @@ export default class ObraForm extends Component {
                                                         onChange = { (e) => { this.onChange(e, tipo) }}
                                                         thousandseparator={true}
                                                         prefix={'$'}
-                                                        customstyle={{ width: "auto", borderRadius: 0, borderTop: 'none', borderRight: 'none', borderLeft: 'none' }}
-                                                        />
+                                                        // customstyle={{ width: "auto", borderRadius: 0, borderTop: 'none', borderRight: 'none', borderLeft: 'none' }}
+                                                        customclass="border-top-0 border-left-0 border-right-0 rounded-0 w-100px text-center pl-0" 
+                                                    />
                                                 </div>
                                             </td>
                                             <td className="px-1 py-3 border-0">
@@ -160,8 +171,9 @@ export default class ObraForm extends Component {
                                                         onChange = { (e) => { this.onChange(e, tipo) }}
                                                         thousandseparator={true}
                                                         prefix={'$'}
-                                                        customstyle={{ width: "auto", borderRadius: 0, borderTop: 'none', borderRight: 'none', borderLeft: 'none' }}
-                                                        />
+                                                        // customstyle={{ width: "auto", borderRadius: 0, borderTop: 'none', borderRight: 'none', borderLeft: 'none' }}
+                                                        customclass="border-top-0 border-left-0 border-right-0 rounded-0 w-100px text-center pl-0" 
+                                                    />
                                                 </div>
                                             </td>
                                             <td className="px-1 py-3 border-0">
@@ -173,8 +185,9 @@ export default class ObraForm extends Component {
                                                         onChange = { (e) => { this.onChange(e, tipo) }}
                                                         thousandseparator={true}
                                                         prefix={'$'}
-                                                        customstyle={{ width: "auto", borderRadius: 0, borderTop: 'none', borderRight: 'none', borderLeft: 'none' }}
-                                                        />
+                                                        // customstyle={{ width: "auto", borderRadius: 0, borderTop: 'none', borderRight: 'none', borderLeft: 'none' }}
+                                                        customclass="border-top-0 border-left-0 border-right-0 rounded-0 w-100px text-center pl-0" 
+                                                    />
                                                 </div>
                                             </td>
                                             <td className="px-1 py-3 border-0">
@@ -186,8 +199,9 @@ export default class ObraForm extends Component {
                                                         onChange = { (e) => { this.onChange(e, tipo) }}
                                                         thousandseparator={true}
                                                         prefix={'$'}
-                                                        customstyle={{ width: "auto", borderRadius: 0, borderTop: 'none', borderRight: 'none', borderLeft: 'none' }}
-                                                        />
+                                                        // customstyle={{ width: "auto", borderRadius: 0, borderTop: 'none', borderRight: 'none', borderLeft: 'none' }}
+                                                        customclass="border-top-0 border-left-0 border-right-0 rounded-0 w-100px text-center pl-0" 
+                                                    />
                                                 </div>
                                             </td>
                                         </tr>

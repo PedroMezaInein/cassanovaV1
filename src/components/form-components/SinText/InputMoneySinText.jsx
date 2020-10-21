@@ -58,7 +58,7 @@ class InputMoneySinText extends Component {
         onChange({ target: { value: values.value, name: name } })
     }
     render() {
-        const { placeholder, value, prefix, thousandseparator, customstyle, identificador } = this.props
+        const { placeholder, value, prefix, thousandseparator, customstyle, identificador, customclass } = this.props
         const { inputMoneyValido } = this.state
         return (
             <NumberFormat
@@ -67,7 +67,7 @@ class InputMoneySinText extends Component {
                 displayType={'input'}
                 thousandSeparator={thousandseparator ? thousandseparator : false}
                 prefix={prefix}
-                className={inputMoneyValido ? " form-control form-control-sm is-valid sin_icono text-uppercase" : " form-control form-control-sm is-invalid sin_icono text-uppercase"}
+                className={inputMoneyValido ? `form-control form-control-sm is-valid sin_icono text-uppercase ${customclass}` : `form-control form-control-sm is-invalid sin_icono text-uppercase ${customclass}`}
                 renderText={value => <div> {value} </div>}
                 onValueChange={(values) => this.onChange(values)}
                 placeholder={placeholder}
