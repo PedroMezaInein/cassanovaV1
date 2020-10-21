@@ -35,7 +35,7 @@ class AgendaLlamada extends Component {
         const { changeHora, form, onChange, removeCorreo } = this.props
         return (
             <div className="row">
-                <Col md="6">
+                <Col md="6" className="text-center">
                     <CalendarDay />
                     {/* <TimePicker.RangePicker
                         format="h:mm"
@@ -52,16 +52,15 @@ class AgendaLlamada extends Component {
                     /> */}
                     <TimeRangePicker
                         onChange={changeHora}
-                        // autoFocus={true}
-                        format="h:mm a"
                         disableClock={true}
-                        hourPlaceholder="hh"
-                        minutePlaceholder="mm"
-                        className=""
+                        format="h:mm"
+                        // hourPlaceholder="hh"
+                        // minutePlaceholder="mm"
                         value={[form.horaInicio, form.horaFin]}
+                        
                     />
                 </Col>
-                <Col md="6">
+                <Col md="6" className="text-center">
                     <div className="form-group row form-group-marginless mt-4">
                         <div className="col-md-12">
                             <InputGray
