@@ -21,7 +21,7 @@ class LeadNuevo extends Component {
         return false;
     }
     render() {
-        const { leads, onClickPrev, onClickNext, sendEmail } = this.props
+        const { leads, onClickPrev, onClickNext, sendEmail, openModal } = this.props
         return (
             <>
                 <div className="tab-content">
@@ -86,11 +86,12 @@ class LeadNuevo extends Component {
                                                         </span>
                                                     </OverlayTrigger>
                                                     <OverlayTrigger overlay={<Tooltip>AGENDAR LLAMADA</Tooltip>}>
-                                                        <a href="#" className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-info">
+                                                        <span onClick = { (e) => { openModal(lead) } }
+                                                            className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-info">
                                                             <span className="svg-icon svg-icon-md">
                                                                 <SVG src={toAbsoluteUrl('/images/svg/Active-call.svg')} />
                                                             </span>
-                                                        </a>
+                                                        </span>
                                                     </OverlayTrigger>
                                                     <OverlayTrigger overlay={<Tooltip>SEGUIMIENTO (SCRIPT)</Tooltip>}>
                                                         <a href="#" className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-info">
