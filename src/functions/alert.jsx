@@ -165,3 +165,11 @@ export function validateAlert(success, e, name) {
     }
 }
 
+export function messageAlert(text) {
+    MySwal.fire({
+        title: text,
+        text:'VUELVE A INTENTARLO',
+        icon: "warning",
+        confirmButtonColor:'#B5B5C3'
+    })
+}

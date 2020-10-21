@@ -14,8 +14,6 @@ import LeadNegociacion from '../../../components/tables/Lead/LeadNegociacion'
 import LeadContrato from '../../../components/tables/Lead/LeadContrato'
 import LeadNoContratado from '../../../components/tables/Lead/LeadNoContratado'
 import LeadDetenido from '../../../components/tables/Lead/LeadDetenido'
-import { TimePicker } from 'antd';
-import 'antd/dist/antd.css';
 import { Modal } from '../../../components/singles'
 import { CalendarDay } from '../../../components/form-components'
 import AgendaLlamada from '../../../components/forms/leads/AgendaLlamada'
@@ -87,7 +85,9 @@ class Crm extends Component {
         form:{
             fecha: new Date(),
             horaInicio: '',
-            horaFin: ''
+            horaFin: '',
+            correos: [],
+            correo: '',
         },
         modal: false
     }
@@ -537,6 +537,7 @@ class Crm extends Component {
     onChange = e => {
         const { name, value } = e.target
         const { form } = this.state
+        console.log(name, value)
         form[name] = value
         this.setState({
             ...this.state,
@@ -603,8 +604,22 @@ class Crm extends Component {
     }
     changeHora = value => {
         const { form } = this.state
-        form.horaInicio = value[0]
-        form.horaFin = value[1]
+            form.horaInicio = value[0]
+            form.horaFin = value[1]
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
+    removeCorreo = value => {
+        const { form } = this.state
+        let aux = []
+        form.correos.map( (correo, key) => {
+            if(correo !== value){
+                aux.push(correo)
+            }
+        })
+        form.correos = aux
         this.setState({
             ...this.state,
             form
@@ -778,26 +793,14 @@ class Crm extends Component {
                         </Card>
                     </Tab.Container>
                 </Col>
-                <Modal title = 'Agenda una nueva llamada.' show = { modal } handleClose = { this.handleCloseModal }>
+                <Modal size="lg" title = 'Agenda una nueva llamada.' show = { modal } handleClose = { this.handleCloseModal }>
                     <AgendaLlamada
-                        onChange={this.changeHora}
+                        form={form}
+                        changeHora={this.changeHora}
+                        removeCorreo = {this.removeCorreo}
+                        onChange={this.onChange}
                     />
                     <Form>
-                        <div className = 'text-center'>
-                            <CalendarDay />
-                            <TimePicker.RangePicker 
-                                format = "h:mm"
-                                minuteStep = { 5 }
-                                allowClear = { true } /* bordered = {false} */
-                                placeholder = {['Inicio','Fin']}
-                                showNow = { false }
-                                inputReadOnly
-                                hideDisabledOptions 
-                                className = "time-picker"
-                                onChange = { this.changeHora } 
-                                value = { [ form.horaInicio, form.horaFin ] }
-                            />
-                        </div>
                     </Form>
                 </Modal>
             </Layout>
