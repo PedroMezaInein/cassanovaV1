@@ -8,7 +8,7 @@ import Layout from '../../../components/layout/layout'
 import { ProyectosForm as ProyectoFormulario } from '../../../components/forms'
 import { URL_DEV, CP_URL } from '../../../constants';
 import { Button } from '../../../components/form-components'
-import { ProyectoCard } from '../../../components/cards'
+import { ProyectoCard, ProyectosCard } from '../../../components/cards'
 import { waitAlert, forbiddenAccessAlert, errorAlert, doneAlert, questionAlert } from '../../../functions/alert';
 import { setOptions } from '../../../functions/setters';
 class ProyectosForm extends Component {
@@ -462,6 +462,12 @@ class ProyectosForm extends Component {
                         this.cpAxios(proyecto.cp)
                         form.calle = proyecto.calle
                         form.nombre = proyecto.nombre
+                        if(proyecto.fase2 === 1)
+                            form.nombre = proyecto.nombre + ' - FASE 3'
+                        else
+                            if(proyecto.fase1 === 1)
+                                form.nombre = proyecto.nombre + ' - FASE 2'
+                        
                         form.contacto = proyecto.contacto
                         form.numeroContacto = proyecto.numero_contacto
                         form.fechaInicio = new Date(proyecto.fecha_inicio)
@@ -688,12 +694,15 @@ class ProyectosForm extends Component {
     }
     onSubmit = e => {
         e.preventDefault()
-        const { title } = this.state
+        const { title,action } = this.state
         waitAlert()
         if (title === 'Editar proyecto')
             this.editProyectoAxios()
         else
-            this.addProyectoAxios()
+            if(action === 'contratar-fases')
+                this.addProyectoRelacionadoAxios()
+            else
+                this.addProyectoAxios()
     }
 
     changeEstatus = estatus =>  {
@@ -810,6 +819,74 @@ class ProyectosForm extends Component {
             return false
         })
         await axios.post(URL_DEV + 'proyectos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue creado con éxito.')
+                const { history } = this.props
+                history.push({
+                    pathname: '/proyectos/proyectos'
+                });
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    async addProyectoRelacionadoAxios() {
+        const { access_token } = this.props.authUser
+        const { form, proyecto } = this.state
+        const data = new FormData();
+        let aux = Object.keys(form)
+        aux.map((element) => {
+            switch (element) {
+                case 'fechaInicio':
+                case 'fechaFin':
+                    data.append(element, (new Date(form[element])).toDateString())
+                    break
+                case 'adjuntos':
+                case 'adjuntos_grupo':
+                    break;
+                case 'correos':
+                case 'clientes':
+                    data.append(element, JSON.stringify(form[element]))
+                    break;
+                default:
+                    data.append(element, form[element])
+                    break
+            }
+            return false
+        })
+        aux = Object.keys(form.adjuntos)
+        aux.map((element) => {
+            if (form.adjuntos[element].value !== '') {
+                for (var i = 0; i < form.adjuntos[element].files.length; i++) {
+                    data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
+                    data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
+                }
+            }
+            return false
+        })
+        form.adjuntos_grupo.map((grupo) => {
+            grupo.adjuntos.map((adjunto) => {
+                adjunto.files.map((file) => {
+                    data.append(`files_name_${adjunto.id}[]`, file.name)
+                    data.append(`files_${adjunto.id}[]`, file.file)
+                    return false
+                })
+                if (adjunto.files.length)
+                    data.append('adjuntos[]', adjunto.id)
+                return false
+            })
+            return false
+        })
+        await axios.post(URL_DEV + 'proyectos/'+proyecto.id+'/relacionado', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue creado con éxito.')
                 const { history } = this.props
@@ -1043,7 +1120,7 @@ class ProyectosForm extends Component {
                                 {
                                     prospecto !== '' || proyecto !== '' ? 
                                         <div className="d-flex justify-content-end">
-                                            <Accordion.Toggle as={Button} icon={faEye} pulse="pulse-ring" eventKey = { prospecto !== '' ? 'prospecto' : proyecto !== '' ? proyecto.relacionado ?  'proyecto' : '' : '' } className="btn btn-icon btn-light-info pulse pulse-info" />
+                                            <Accordion.Toggle as={Button} icon={faEye} pulse="pulse-ring" eventKey = { prospecto !== '' ? 'prospecto' : proyecto !== '' ? proyecto ?  'proyecto' : '' : '' } className="btn btn-icon btn-light-info pulse pulse-info" />
                                         </div>
                                     : ''
                                 }
@@ -1051,13 +1128,20 @@ class ProyectosForm extends Component {
                                 <Accordion.Collapse eventKey='prospecto' className="px-md-5 px-2" >
                                     <div>
                                         <ProyectoCard data={prospecto} />
-                                        {/* Prospecto */}
                                     </div>
                                 </Accordion.Collapse>
                                 <Accordion.Collapse eventKey='proyecto' className="px-md-5 px-2" >
-                                    <div>
-                                        {/* <ProyectoCard data={prospecto} /> */}
-                                        Proyecto
+                                    <div className="m-4">
+                                        <Card className="card-custom card-stretch gutter-b border">
+                                            <Card.Header className="align-items-center border-0">
+                                                <div className="card-title align-items-start flex-column">
+                                                    <span className="font-weight-bolder text-dark">Proyecto a relacionar</span>
+                                                </div>
+                                            </Card.Header>
+                                            <Card.Body className="py-2">
+                                                <ProyectosCard proyecto = { proyecto } />
+                                            </Card.Body>
+                                        </Card>
                                     </div>
                                 </Accordion.Collapse>
                             </Accordion>
