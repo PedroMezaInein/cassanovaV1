@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { OverlayTrigger, Tooltip, Dropdown, DropdownButton } from 'react-bootstrap'
-import { setDateTable } from '../../../functions/setters'
+import { setDateTableLG } from '../../../functions/setters'
 
 class LeadContrato extends Component {
     isActiveButton(direction) {
@@ -49,15 +49,15 @@ class LeadContrato extends Component {
                                                         <span className="symbol-label font-size-h5">{lead.nombre.charAt(0)}</span>
                                                     </div>
                                                     <div>
-                                                        <span href={lead.telefono} className="text-dark-75 font-weight-bolder text-hover-success mb-1 font-size-lg">{lead.nombre}</span>
+                                                        <a href={`mailto:+${lead.email}`} className="text-dark-75 font-weight-bolder text-hover-success mb-1 font-size-lg">{lead.nombre}</a>
                                                         <span className="text-muted font-weight-bold d-block">{lead.prospecto.tipo_proyecto.tipo}</span>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td className="font-size-lg text-left font-weight-bolder">
-                                                <span>Ingreso: </span><span className="text-muted font-weight-bold">{setDateTable(lead.created_at)}</span><br />
-                                                <span>Último contacto: </span><span className="text-muted font-weight-bold">
-                                                    {setDateTable(lead.prospecto.contactos[0].created_at)}
+                                                <span>Ingreso: </span><span className="text-muted font-weight-bold font-size-sm">{setDateTableLG(lead.created_at)}</span><br />
+                                                <span>Último contacto: </span><span className="text-muted font-weight-bold font-size-sm">
+                                                    {setDateTableLG(lead.prospecto.contactos[0].created_at)}
                                                 </span>
                                             </td>
                                             <td>
@@ -76,7 +76,7 @@ class LeadContrato extends Component {
                                                             return (
                                                                 <OverlayTrigger key={index} overlay={<Tooltip>{vendedor.name}</Tooltip>}>
                                                                     <div className="symbol symbol-35 symbol-circle">
-                                                                        <img alt="Pic" src={vendedor.avatar ? vendedor.avatar : "/100_1.jpg"} />
+                                                                        <img alt="Pic" src={vendedor.avatar ? vendedor.avatar : "/default.jpg"} />
                                                                     </div>
                                                                 </OverlayTrigger>
                                                             )

@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { OverlayTrigger, Tooltip} from 'react-bootstrap'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
+import { setDateTableLG } from '../../../functions/setters'
+
 class LeadNuevo extends Component {
     isActiveButton(direction) {
         const { leads } = this.props
@@ -29,13 +31,14 @@ class LeadNuevo extends Component {
                         <table className="table table-borderless table-vertical-center">
                             <thead>
                                 <tr className="text-uppercase bg-info-o-30 text-info">
-                                    <th className="pl-7">
+                                    <th style={{ minWidth: "100px" }} className="pl-7">
                                         <span>Nombre del cliente</span>
                                     </th>
-                                    <th>Empresa</th>
-                                    <th>Servicios</th>
-                                    <th className="text-center">Estatus</th>
-                                    <th></th>
+                                    <th style={{ minWidth: "140px" }}>Fecha</th>
+                                    <th style={{ minWidth: "100px" }}>Empresa</th>
+                                    <th style={{ minWidth: "100px" }}>Servicios</th>
+                                    <th style={{ minWidth: "100px" }}className="text-center">Estatus</th>
+                                    <th style={{ minWidth: "70px" }}></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -53,24 +56,29 @@ class LeadNuevo extends Component {
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td className="pl-0 py-8">
+                                                <td className="font-size-lg text-left font-weight-bolder">
+                                                    <span>Ingreso: </span><span className="text-muted font-weight-bold font-size-sm">{setDateTableLG(lead.created_at)}</span><br />
+                                                </td>
+                                                <td>
                                                     <span className="text-dark-75 font-weight-bolder d-block font-size-lg">{lead.empresa.name}</span>
                                                 </td>
-                                                <td className="pl-0 py-8">
+                                                <td>
+                                                    <ul className="list-unstyled">
                                                     {
                                                         lead.servicios.length > 0 ?
                                                             lead.servicios.map((servicio, key) => {
                                                                 return (
-                                                                    <div className="d-flex align-items-center" key={key}><span className="text-dark-75 font-weight-bolder d-block font-size-lg">{servicio.servicio}</span><br/></div>
+                                                                    <li key={key}className="text-dark-75 font-weight-bolder">{servicio.servicio}</li>
                                                                 )
                                                             })
-                                                            : <span className="text-dark-75 font-weight-bolder d-block font-size-lg">Sin servicios</span>
+                                                            : <span className="text-dark-75 font-weight-bolder">Sin servicios</span>
                                                     }
+                                                    </ul>
                                                 </td>
                                                 <td className="text-center">
                                                     <span className="label label-md label-light-info label-inline font-weight-bold">EN ESPERA</span>
                                                 </td>
-                                                <td className="pr-0 text-right">
+                                                <td className="pr-0 text-center">
                                                     {/* <OverlayTrigger overlay={<Tooltip>Enviar correo</Tooltip>}>
                                                         <a href='/leads/crm/info/info' className="btn btn-default btn-icon btn-sm mr-2">
                                                             <i className="flaticon2-plus icon-nm"></i>
