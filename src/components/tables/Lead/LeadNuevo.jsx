@@ -4,7 +4,7 @@ import { OverlayTrigger, Tooltip} from 'react-bootstrap'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
 import { setDateTableLG } from '../../../functions/setters'
-
+import { questionAlert} from '../../../functions/alert'
 class LeadNuevo extends Component {
     isActiveButton(direction) {
         const { leads } = this.props
@@ -101,7 +101,7 @@ class LeadNuevo extends Component {
                                                     {
                                                         this.canSendFirstEmail(lead) ?
                                                             <OverlayTrigger overlay={<Tooltip>ENVIAR CORREO</Tooltip>}>
-                                                                <span onClick = { (e) => { sendEmail(lead) } }
+                                                                <span onClick = { (e) => { questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => sendEmail(lead) )} }
                                                                     className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-info">
                                                                     <span className="svg-icon svg-icon-md ">{/* svg-icon-primary */}
                                                                         <SVG src={toAbsoluteUrl('/images/svg/Outgoing-mail.svg')} />
