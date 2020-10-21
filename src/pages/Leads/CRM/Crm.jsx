@@ -18,6 +18,8 @@ import { TimePicker } from 'antd';
 import 'antd/dist/antd.css';
 import { Modal } from '../../../components/singles'
 import { CalendarDay } from '../../../components/form-components'
+import AgendaLlamada from '../../../components/forms/leads/AgendaLlamada'
+
 class Crm extends Component {
     state = {
         ultimos_contactados: {
@@ -776,12 +778,24 @@ class Crm extends Component {
                     </Tab.Container>
                 </Col>
                 <Modal title = 'Agenda una nueva llamada.' show = { modal } handleClose = { this.handleCloseModal }>
+                    <AgendaLlamada
+                        onChange={this.changeHora}
+                    />
                     <Form>
                         <div className = 'text-center'>
                             <CalendarDay />
-                            <TimePicker.RangePicker format = "h:mm" minuteStep = { 5 } allowClear = { true } /* bordered = {false} */
-                            placeholder = {['Inicio','Fin']} showNow = { false } inputReadOnly hideDisabledOptions 
-                            className = "time-picker" onChange = { this.changeHora } value = { [ form.horaInicio, form.horaFin ] }/>
+                            <TimePicker.RangePicker 
+                                format = "h:mm"
+                                minuteStep = { 5 }
+                                allowClear = { true } /* bordered = {false} */
+                                placeholder = {['Inicio','Fin']}
+                                showNow = { false }
+                                inputReadOnly
+                                hideDisabledOptions 
+                                className = "time-picker"
+                                onChange = { this.changeHora } 
+                                value = { [ form.horaInicio, form.horaFin ] }
+                            />
                         </div>
                     </Form>
                 </Modal>
