@@ -112,7 +112,7 @@ class RegisterUserForm extends Component {
                         <>
                             <div className="separator separator-dashed mt-1 mb-2"></div>
                             <div className="form-group row form-group-marginless">
-                                <div className="col-md-4">
+                                <div className="col-md-3">
                                     <SelectSearchTrue
                                         options={options.empleados}
                                         placeholder="SELECCIONA EL EMPLEADO"
@@ -123,7 +123,7 @@ class RegisterUserForm extends Component {
                                         formeditado={formeditado}
                                     />
                                 </div>
-                                <div className="col-md-4">
+                                <div className="col-md-3">
                                     <SelectSearchTrue
                                         options={departamentos_disponibles}
                                         placeholder="SELECCIONA EL(LOS) DEPARTAMENTO(S)"
@@ -134,14 +134,14 @@ class RegisterUserForm extends Component {
                                         formeditado={formeditado}
                                     />
                                 </div>
-                                <div className="col-md-4">
+                                <div className="col-md-6">
                                     {
                                         form.departamentos.length > 0 ?
                                             <div className="col-md-12 row mx-0 align-items-center image-upload">
                                                 {
                                                     form.departamentos.map((departamento, key) => {
                                                         return (
-                                                            <div key={key} className="tagify form-control p-1 col-md-6 px-2 d-flex justify-content-center align-items-center" tabIndex="-1" style={{ borderWidth: "0px" }}>
+                                                            <div key={key} className="tagify form-control p-1 col-md-4 px-2 d-flex justify-content-center align-items-center" tabIndex="-1" style={{ borderWidth: "0px" }}>
                                                                 <div className="tagify__tag tagify__tag--primary tagify--noAnim">
                                                                     <div
                                                                         title="Borrar archivo"
