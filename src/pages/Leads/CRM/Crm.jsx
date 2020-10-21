@@ -7,7 +7,7 @@ import swal from 'sweetalert'
 import { Col, Row, Card, Form, Tab, Nav } from 'react-bootstrap'
 import { setOptions } from '../../../functions/setters'
 import { UltimosContactosCard, SinContacto, UltimosIngresosCard } from '../../../components/cards'
-import { forbiddenAccessAlert, errorAlert, waitAlert } from '../../../functions/alert'
+import { forbiddenAccessAlert, errorAlert, waitAlert, doneAlert } from '../../../functions/alert'
 import LeadNuevo from '../../../components/tables/Lead/LeadNuevo'
 import LeadContacto from '../../../components/tables/Lead/LeadContacto'
 import LeadNegociacion from '../../../components/tables/Lead/LeadNegociacion'
@@ -548,6 +548,7 @@ class Crm extends Component {
         const { access_token } = this.props.authUser
         await axios.put(URL_DEV + 'crm/email/solicitud-llamada/' + lead.id, {}, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                doneAlert('Correo enviado con éxito');
             },
             (error) => {
                 console.log(error, 'error')
