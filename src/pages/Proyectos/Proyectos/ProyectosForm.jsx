@@ -8,7 +8,7 @@ import Layout from '../../../components/layout/layout'
 import { ProyectosForm as ProyectoFormulario } from '../../../components/forms'
 import { URL_DEV, CP_URL } from '../../../constants';
 import { Button } from '../../../components/form-components'
-import { ProyectoCard } from '../../../components/cards'
+import { ProyectoCard, ProyectosCard } from '../../../components/cards'
 import { waitAlert, forbiddenAccessAlert, errorAlert, doneAlert, questionAlert } from '../../../functions/alert';
 import { setOptions } from '../../../functions/setters';
 class ProyectosForm extends Component {
@@ -16,6 +16,7 @@ class ProyectosForm extends Component {
         action: '',
         title: 'Nuevo proyecto',
         prospecto: '',
+        proyecto: '',
         formeditado: 1,
         options: {
             empresas: [],
@@ -33,6 +34,10 @@ class ProyectosForm extends Component {
             fase1: false,
             fase2: false,
             fase3: false,
+            fase1_relacionado: false,
+            fase2_relacionado: false,
+            fase3_relacionado: false,
+            proyecto: '',
             semana: '',
             nombre: '',
             cliente: '',
@@ -448,6 +453,76 @@ class ProyectosForm extends Component {
                 } else
                     history.push('/proyectos/proyectos')
                 break;
+            case 'relacionar':
+                if (state) {
+                    if (state.proyecto) {
+                        const { proyecto } = state
+                        const { form } = this.state
+                        form.cp = proyecto.cp;
+                        this.cpAxios(proyecto.cp)
+                        form.calle = proyecto.calle
+                        form.nombre = proyecto.nombre
+                        if(proyecto.fase2 === 1)
+                            form.nombre = proyecto.nombre + ' - FASE 3'
+                        else
+                            if(proyecto.fase1 === 1)
+                                form.nombre = proyecto.nombre + ' - FASE 2'
+                        
+                        form.contacto = proyecto.contacto
+                        form.numeroContacto = proyecto.numero_contacto
+                        form.fechaInicio = new Date(proyecto.fecha_inicio)
+                        form.fechaFin = new Date(proyecto.fecha_fin)
+                        form.porcentaje = proyecto.porcentaje
+                        form.descripcion = proyecto.descripcion
+                        let aux = []
+                        if (proyecto.clientes) {
+                            proyecto.clientes.forEach(cliente => {
+                                aux.push(
+                                    {
+                                        value: cliente.id.toString(),
+                                        name: cliente.empresa
+                                    }
+                                )
+                            });
+                            form.clientes = aux
+                        }
+                        if (proyecto.imagen) {
+                            form.adjuntos.image.files = [{ name: proyecto.imagen.name, file: '', url: proyecto.imagen.url, key: 0 }]
+                        }
+                        if (proyecto.estatus) {
+                            form.estatus = proyecto.estatus.id.toString();
+                        }
+                        form.fase1 = proyecto.fase1 === 0 ? false : true
+                        form.fase2 = proyecto.fase2 === 0 ? false : true
+                        form.fase3 = proyecto.fase3 === 0 ? false : true
+                        form.fase1_relacionado = proyecto.fase1 === 0 ? false : true
+                        form.fase2_relacionado = proyecto.fase2 === 0 ? false : true
+                        form.fase3_relacionado = proyecto.fase3 === 0 ? false : true
+                        if (proyecto.empresa)
+                            form.empresa = proyecto.empresa.id.toString()
+                        form.colonia = proyecto.colonia
+                        aux = []
+                        if (proyecto.contactos) {
+                            proyecto.contactos.map((contacto) => {
+                                aux.push(contacto.correo)
+                                return false
+                            })
+                            form.correos = aux
+                        }
+                        this.setState({
+                            ...this.state,
+                            proyecto: proyecto,
+                            form,
+                            formeditado: 1,
+                            title: 'Contratar fases',
+                            action: 'contratar-fases'
+                        })
+                    }
+                    else
+                        history.push('/proyectos/proyectos')
+                } else
+                    history.push('/proyectos/proyectos')
+                break;
             default:
                 break;
         }
@@ -619,12 +694,15 @@ class ProyectosForm extends Component {
     }
     onSubmit = e => {
         e.preventDefault()
-        const { title } = this.state
+        const { title,action } = this.state
         waitAlert()
         if (title === 'Editar proyecto')
             this.editProyectoAxios()
         else
-            this.addProyectoAxios()
+            if(action === 'contratar-fases')
+                this.addProyectoRelacionadoAxios()
+            else
+                this.addProyectoAxios()
     }
 
     changeEstatus = estatus =>  {
@@ -761,6 +839,74 @@ class ProyectosForm extends Component {
             console.log(error, 'error')
         })
     }
+    async addProyectoRelacionadoAxios() {
+        const { access_token } = this.props.authUser
+        const { form, proyecto } = this.state
+        const data = new FormData();
+        let aux = Object.keys(form)
+        aux.map((element) => {
+            switch (element) {
+                case 'fechaInicio':
+                case 'fechaFin':
+                    data.append(element, (new Date(form[element])).toDateString())
+                    break
+                case 'adjuntos':
+                case 'adjuntos_grupo':
+                    break;
+                case 'correos':
+                case 'clientes':
+                    data.append(element, JSON.stringify(form[element]))
+                    break;
+                default:
+                    data.append(element, form[element])
+                    break
+            }
+            return false
+        })
+        aux = Object.keys(form.adjuntos)
+        aux.map((element) => {
+            if (form.adjuntos[element].value !== '') {
+                for (var i = 0; i < form.adjuntos[element].files.length; i++) {
+                    data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
+                    data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
+                }
+            }
+            return false
+        })
+        form.adjuntos_grupo.map((grupo) => {
+            grupo.adjuntos.map((adjunto) => {
+                adjunto.files.map((file) => {
+                    data.append(`files_name_${adjunto.id}[]`, file.name)
+                    data.append(`files_${adjunto.id}[]`, file.file)
+                    return false
+                })
+                if (adjunto.files.length)
+                    data.append('adjuntos[]', adjunto.id)
+                return false
+            })
+            return false
+        })
+        await axios.post(URL_DEV + 'proyectos/'+proyecto.id+'/relacionado', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue creado con éxito.')
+                const { history } = this.props
+                history.push({
+                    pathname: '/proyectos/proyectos'
+                });
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     async editProyectoAxios() {
         const { access_token } = this.props.authUser
         const { form, prospecto, proyecto } = this.state
@@ -827,12 +973,17 @@ class ProyectosForm extends Component {
             (response) => {
                 const { prospecto } = response.data
                 const { form } = this.state
-                if (prospecto.cliente.cp) {
-                    form.cp = prospecto.cliente.cp
-                    this.cpAxios(prospecto.cliente.cp)
+                if(prospecto){
+                    if(prospecto.cliente){
+                        if (prospecto.cliente.cp) {
+                            form.cp = prospecto.cliente.cp
+                            this.cpAxios(prospecto.cliente.cp)
+                        }
+                        form.calle = prospecto.cliente.calle
+                        form.cliente = prospecto.cliente.id.toString()
+                    }
                 }
-                form.calle = prospecto.cliente.calle
-                form.cliente = prospecto.cliente.id.toString()
+                
                 form.empresa = prospecto.lead.empresa.id.toString()
                 form.contacto = prospecto.lead.nombre
                 form.numeroContacto = prospecto.lead.telefono
@@ -916,7 +1067,7 @@ class ProyectosForm extends Component {
         })
     }
     render() {
-        const { title, form, options, formeditado, prospecto, action } = this.state
+        const { title, form, options, formeditado, prospecto, action, proyecto } = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
                 <Card className="card-custom">
@@ -964,21 +1115,36 @@ class ProyectosForm extends Component {
                             removeCorreo={this.removeCorreo}
                             handleChange={this.handleChange}
                             onChangeRange={this.onChangeRange}
-                            className="px-3">
-                            {
-                                prospecto !== '' ?
-                                    <Accordion>
+                            className="px-3" >
+                            <Accordion>
+                                {
+                                    prospecto !== '' || proyecto !== '' ? 
                                         <div className="d-flex justify-content-end">
-                                            <Accordion.Toggle as={Button} icon={faEye} pulse="pulse-ring" eventKey={0} className="btn btn-icon btn-light-info pulse pulse-info" />
+                                            <Accordion.Toggle as={Button} icon={faEye} pulse="pulse-ring" eventKey = { prospecto !== '' ? 'prospecto' : proyecto !== '' ? proyecto ?  'proyecto' : '' : '' } className="btn btn-icon btn-light-info pulse pulse-info" />
                                         </div>
-                                        <Accordion.Collapse eventKey={0} className="px-md-5 px-2" >
-                                            <div>
-                                                <ProyectoCard data={prospecto} />
-                                            </div>
-                                        </Accordion.Collapse>
-                                    </Accordion>
                                     : ''
-                            }
+                                }
+                                
+                                <Accordion.Collapse eventKey='prospecto' className="px-md-5 px-2" >
+                                    <div>
+                                        <ProyectoCard data={prospecto} />
+                                    </div>
+                                </Accordion.Collapse>
+                                <Accordion.Collapse eventKey='proyecto' className="px-md-5 px-2" >
+                                    <div className="m-4">
+                                        <Card className="card-custom card-stretch gutter-b border">
+                                            <Card.Header className="align-items-center border-0">
+                                                <div className="card-title align-items-start flex-column">
+                                                    <span className="font-weight-bolder text-dark">Proyecto a relacionar</span>
+                                                </div>
+                                            </Card.Header>
+                                            <Card.Body className="py-2">
+                                                <ProyectosCard proyecto = { proyecto } />
+                                            </Card.Body>
+                                        </Card>
+                                    </div>
+                                </Accordion.Collapse>
+                            </Accordion>
                         </ProyectoFormulario>
                     </Card.Body>
                 </Card>
