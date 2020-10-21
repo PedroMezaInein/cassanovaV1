@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { OverlayTrigger, Tooltip, Dropdown, DropdownButton } from 'react-bootstrap'
-import { setDateTable } from '../../../functions/setters'
+import { OverlayTrigger, Tooltip, Dropdown } from 'react-bootstrap'
+import { setDateTableLG } from '../../../functions/setters'
 
 class LeadNoContratado extends Component {
     isActiveButton(direction) {
@@ -51,17 +51,17 @@ class LeadNoContratado extends Component {
                                                         </span>
                                                     </div>
                                                     <div>
-                                                        <span href="#" className="text-dark-75 font-weight-bolder text-hover-danger mb-1 font-size-lg">
+                                                        <a href={`mailto:+${lead.email}`} className="text-dark-75 font-weight-bolder text-hover-danger mb-1 font-size-lg">
                                                             {lead.nombre}
-                                                        </span>
+                                                        </a>
                                                         <span className="text-muted font-weight-bold d-block">{lead.prospecto.tipo_proyecto.tipo}
                                                         </span>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td className="font-size-lg text-left font-weight-bolder">
-                                                <span>Ingreso: </span><span className="text-muted font-weight-bold">{setDateTable(lead.created_at)}</span><br />
-                                                <span>Último contacto: </span><span className="text-muted font-weight-bold">{setDateTable(lead.prospecto.contactos[0].created_at)}</span>
+                                                <span>Ingreso: </span><span className="text-muted font-weight-bold font-size-sm">{setDateTableLG(lead.created_at)}</span><br />
+                                                <span>Último contacto: </span><span className="text-muted font-weight-bold font-size-sm">{setDateTableLG(lead.prospecto.contactos[0].created_at)}</span>
                                             </td>
                                             <td>
                                                 {

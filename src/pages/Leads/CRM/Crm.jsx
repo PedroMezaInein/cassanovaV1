@@ -14,6 +14,11 @@ import LeadNegociacion from '../../../components/tables/Lead/LeadNegociacion'
 import LeadContrato from '../../../components/tables/Lead/LeadContrato'
 import LeadNoContratado from '../../../components/tables/Lead/LeadNoContratado'
 import LeadDetenido from '../../../components/tables/Lead/LeadDetenido'
+import { TimePicker } from 'antd';
+import 'antd/dist/antd.css';
+import { Modal } from '../../../components/singles'
+import { CalendarDay } from '../../../components/form-components'
+import AgendaLlamada from '../../../components/forms/leads/AgendaLlamada'
 
 class Crm extends Component {
     state = {
@@ -77,7 +82,14 @@ class Crm extends Component {
             total: 0,
             total_paginas: 0,
             value: "detenidos"
-        }
+        },
+        lead: '',
+        form:{
+            fecha: new Date(),
+            horaInicio: '',
+            horaFin: ''
+        },
+        modal: false
     }
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
@@ -289,29 +301,7 @@ class Crm extends Component {
             })
             this.getLeadsDetenidos()
         }
-    }
-    nextPageLeadCancelados = (e) => {
-        e.preventDefault()
-        const { leads_cancelados } = this.state
-        if (leads_cancelados.numPage < leads_cancelados.total_paginas - 1) {
-            leads_cancelados.numPage++
-            this.setState({
-                leads_cancelados
-            })
-        }
-        this.getLeadsCancelados()
-    }
-    prevPageLeadCancelados = (e) => {
-        e.preventDefault()
-        const { leads_cancelados } = this.state
-        if (leads_cancelados.numPage > 0) {
-            leads_cancelados.numPage--
-            this.setState({
-                leads_cancelados
-            })
-            this.getLeadsCancelados()
-        }
-    }
+    }    
     async getUltimosContactos() {
         const { access_token } = this.props.authUser
         const { ultimos_contactados } = this.state
@@ -514,36 +504,7 @@ class Crm extends Component {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
-    }
-    async getLeadsCancelados() {
-        const { access_token } = this.props.authUser
-        const { leads_cancelados } = this.state
-        await axios.get(URL_DEV + 'crm/table/lead-cancelados/' + leads_cancelados.numPage, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { leads, total } = response.data
-                const { leads_cancelados } = this.state
-                leads_cancelados.data = leads
-                leads_cancelados.total = total
-                let total_paginas = Math.ceil(total / 10)
-                leads_cancelados.total_paginas = total_paginas
-                this.setState({
-                    ...this.state,
-                    leads_cancelados
-                })
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
+    }    
     async getLeadsDetenidos() {
         const { access_token } = this.props.authUser
         const { leads_detenidos } = this.state
@@ -625,10 +586,33 @@ class Crm extends Component {
             activeTable: key
         })
     }
+    openModal = lead => {
+        this.setState({
+            ...this.state,
+            modal: true,
+            lead:lead
+        })
+    }
+    handleCloseModal = () => {
+        this.setState({
+            ...this.state,
+            modal: false,
+            lead: ''
+        })
+    }
+    changeHora = value => {
+        const { form } = this.state
+        form.horaInicio = value[0]
+        form.horaFin = value[1]
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
 
     render() {
         const { ultimos_contactados, prospectos_sin_contactar, ultimos_ingresados, lead_web, activeTable, leads_en_contacto,
-            leads_contratados, leads_cancelados, leads_detenidos } = this.state
+            leads_contratados, leads_cancelados, leads_detenidos, modal, form } = this.state
         return (
             <Layout active='leads' {...this.props} >
                 <Row>
@@ -752,6 +736,7 @@ class Crm extends Component {
                                             onClickNext={this.nextPageLeadWeb}
                                             onClickPrev={this.prevPageLeadWeb}
                                             sendEmail={this.sendEmailNewWebLead}
+                                            openModal = { this.openModal }
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="contacto">
@@ -792,6 +777,28 @@ class Crm extends Component {
                         </Card>
                     </Tab.Container>
                 </Col>
+                <Modal title = 'Agenda una nueva llamada.' show = { modal } handleClose = { this.handleCloseModal }>
+                    <AgendaLlamada
+                        onChange={this.changeHora}
+                    />
+                    <Form>
+                        <div className = 'text-center'>
+                            <CalendarDay />
+                            <TimePicker.RangePicker 
+                                format = "h:mm"
+                                minuteStep = { 5 }
+                                allowClear = { true } /* bordered = {false} */
+                                placeholder = {['Inicio','Fin']}
+                                showNow = { false }
+                                inputReadOnly
+                                hideDisabledOptions 
+                                className = "time-picker"
+                                onChange = { this.changeHora } 
+                                value = { [ form.horaInicio, form.horaFin ] }
+                            />
+                        </div>
+                    </Form>
+                </Modal>
             </Layout>
         );
     }

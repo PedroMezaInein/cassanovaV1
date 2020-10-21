@@ -6,7 +6,7 @@ import { InputGray, SelectSearchGray, InputPhoneGray, Button } from '../../../..
 import axios from 'axios'
 import { doneAlert, errorAlert, forbiddenAccessAlert, validateAlert, waitAlert } from '../../../../functions/alert';
 import swal from 'sweetalert';
-import { setOptions, setSelectOptions } from '../../../../functions/setters';
+import { setOptions } from '../../../../functions/setters';
 import { TEL, URL_DEV, EMAIL } from '../../../../constants';
 class LeadTelefono extends Component {
     state = {
@@ -87,7 +87,7 @@ class LeadTelefono extends Component {
     }
 
     updateMessages2 = (name, value) => {
-        const { form, options, empresa: emp, tipoProyecto: tip } = this.state
+        const { form, options, empresa: emp} = this.state
         const { name: usuario } = this.props.authUser.user
         switch (name) {
             case 'empresa_dirigida':

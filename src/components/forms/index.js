@@ -64,6 +64,8 @@ import imssForm from './recursoshumanos/ImssForm'
 import prestamosForm from './recursoshumanos/PrestamosForm'
 import abonoPrestamosForm from './recursoshumanos/AbonoPrestamosForm'
 import adjuntosEmpresaForm from './catalogos/AdjuntosEmpresaForm'
+import agendaLlamada from './leads/AgendaLlamada'
+
 
 export const RegisterUserForm = registerUserForm
 export const EmpresaForm = empresaForm
@@ -131,3 +133,5 @@ export const ImssForm = imssForm
 export const PrestamosForm = prestamosForm
 export const AbonoPrestamosForm = abonoPrestamosForm
 export const AdjuntosEmpresaForm = adjuntosEmpresaForm
+export const AgendaLlamada = agendaLlamada
+

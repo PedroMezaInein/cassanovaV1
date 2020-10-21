@@ -6,7 +6,7 @@ import Layout from '../../../components/layout/layout'
 import NewTable from '../../../components/tables/NewTable';
 import { DETAILS_CUENTAS, URL_DEV } from '../../../constants';
 import { renderToString } from 'react-dom/server';
-import { setTextTable, setMoneyTable, setDateTable } from '../../../functions/setters'
+import { setMoneyTable, setDateTable } from '../../../functions/setters'
 import { Tab, Tabs } from 'react-bootstrap';
 import { errorAlert, waitAlert, forbiddenAccessAlert } from '../../../functions/alert'
 import { Small } from '../../../components/texts'

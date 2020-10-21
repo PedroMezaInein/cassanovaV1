@@ -21,21 +21,21 @@ export default function NewAsideMenu({props}) {
     }
   }
 
-  function openAside(){  
-    if(document.body.classList.contains('aside-minimize') || document.body.classList.contains('aside-minimize-hover') )
-    {
-      document.body.classList.remove('aside-minimize'); 
-      document.body.classList.remove('aside-minimize-hover');       
-      document.body.classList.add('open-f');
-      document.body.classList.add("overflow-hidden");
-    }
-    else
-    {
-      document.body.classList.add('aside-minimize');
-      document.body.classList.remove('open-f');
-      document.body.classList.remove("overflow-hidden");   
-    } 
-  }
+  // function openAside(){  
+  //   if(document.body.classList.contains('aside-minimize') || document.body.classList.contains('aside-minimize-hover') )
+  //   {
+  //     document.body.classList.remove('aside-minimize'); 
+  //     document.body.classList.remove('aside-minimize-hover');       
+  //     document.body.classList.add('open-f');
+  //     document.body.classList.add("overflow-hidden");
+  //   }
+  //   else
+  //   {
+  //     document.body.classList.add('aside-minimize');
+  //     document.body.classList.remove('open-f');
+  //     document.body.classList.remove("overflow-hidden");   
+  //   } 
+  // }
     return ( 
       <> 
       

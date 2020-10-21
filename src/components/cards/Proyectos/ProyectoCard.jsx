@@ -144,7 +144,7 @@ export default class ProyectoCard extends Component {
                         </Tab.Pane>
                         <Tab.Pane eventKey="second">
                             <div className="border-nav mt-4">
-                                <p className="font-size-h5 text-muted font-size-lg mt-0">Cliente:&nbsp;<strong className="font-size-h6"> {data.cliente.empresa} </strong></p>
+                                <p className="font-size-h5 text-muted font-size-lg mt-0">Cliente:&nbsp;<strong className="font-size-h6"> {data.cliente ? data.cliente.empresa : ''} </strong></p>
                                 <div className="separator separator-solid mb-3"></div>
                                 <div className="mb-4">
                                     <div className="row row-paddingless mb-4">
@@ -173,7 +173,7 @@ export default class ProyectoCard extends Component {
                                                     </div>
                                                 </div>
                                                 <div>
-                                                    <div className="font-size-h6 text-dark-75 font-weight-bolder">{data.vendedor.name}</div>
+                                                    <div className="font-size-h6 text-dark-75 font-weight-bolder">{data.vendedor ? data.vendedor.name : ''}</div>
                                                     <div className="font-size-sm text-muted font-weight-bold mt-1">Vendedor</div>
                                                 </div>
                                             </div>
