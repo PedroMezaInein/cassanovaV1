@@ -2,47 +2,47 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV } from '../../constants'
-import { setSelectOptions} from '../../functions/setters'
+import { setSelectOptions } from '../../functions/setters'
 import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert } from '../../functions/alert'
 import Layout from '../../components/layout/layout'
 import { Card, Nav, Tab } from 'react-bootstrap'
 import { DiseñoForm, ObraForm } from '../../components/forms'
-import {Line} from 'react-chartjs-2';
+import { Line } from 'react-chartjs-2';
 
 class Contabilidad extends Component {
 
     state = {
         title: 'Diseño',
-        empresas:{
-            precio_inicial_diseño:'',
-            incremento_esquema_2:'',
-            incremento_esquema_3:'',
-            variaciones:[{
-                inferior:'',
-                superior:'',
-                cambio:''
+        empresas: {
+            precio_inicial_diseño: '',
+            incremento_esquema_2: '',
+            incremento_esquema_3: '',
+            variaciones: [{
+                inferior: '',
+                superior: '',
+                cambio: ''
             }]
         },
-        options:{
+        options: {
             empresas: []
         },
         form: {
             m2: '',
-            precio_inicial_diseño:'',
-            incremento_esquema_2:'',
-            incremento_esquema_3:'',
+            precio_inicial_diseño: '',
+            incremento_esquema_2: '',
+            incremento_esquema_3: '',
             precio_esquema_1: '-',
             precio_esquema_2: '-',
             precio_esquema_3: '-',
             empresa: 'inein',
-            variaciones:[{
-                inferior:'',
-                superior:'',
-                cambio:''
+            variaciones: [{
+                inferior: '',
+                superior: '',
+                cambio: ''
             }],
-            tipos:[]
+            tipos: []
         },
-        data:{
+        data: {
             empresas: []
         },
         formeditado: 0,
@@ -62,36 +62,36 @@ class Contabilidad extends Component {
         this.getDiseñoAxios()
     }
 
-    async getDiseñoAxios(){
+    async getDiseñoAxios() {
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'empresa/tabulador', { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.get(URL_DEV + 'empresa/tabulador', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { empresas } = response.data
                 const { options, data, form } = this.state
                 let { empresa, grafica } = this.state
                 data.empresas = empresas
                 options.empresas = setSelectOptions(empresas, 'name')
-                if(empresas){
-                    if(empresas.length){
+                if (empresas) {
+                    if (empresas.length) {
                         empresa = empresas[0]
-                        
-                        
+
+
                         form.precio_inicial_diseño = empresa.precio_inicial_diseño
                         form.incremento_esquema_2 = empresa.incremento_esquema_2
                         form.incremento_esquema_3 = empresa.incremento_esquema_3
-                        
-                        empresa.variaciones.map((variacion, index)=>{
-                            this.onChangeVariaciones(index, {target:{value:variacion.superior}},'superior')
-                            this.onChangeVariaciones(index, {target:{value:variacion.inferior}},'inferior')
-                            this.onChangeVariaciones(index, {target:{value:variacion.cambio}},'cambio')
+
+                        empresa.variaciones.map((variacion, index) => {
+                            this.onChangeVariaciones(index, { target: { value: variacion.superior } }, 'superior')
+                            this.onChangeVariaciones(index, { target: { value: variacion.inferior } }, 'inferior')
+                            this.onChangeVariaciones(index, { target: { value: variacion.cambio } }, 'cambio')
                         })
-                        
+
                         let aux = []
-                        empresa.tipos.map((tipo)=>{
+                        empresa.tipos.map((tipo) => {
                             aux.push({
                                 name: tipo.tipo,
                                 id: tipo.id,
-                                parametricos:{
+                                parametricos: {
                                     construccion_civil_inf: tipo.pivot.construccion_civil_inf,
                                     construccion_civil_sup: tipo.pivot.construccion_civil_sup,
                                     construccion_interiores_inf: tipo.pivot.construccion_interiores_inf,
@@ -116,9 +116,9 @@ class Contabilidad extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -133,16 +133,16 @@ class Contabilidad extends Component {
         waitAlert()
         const { access_token } = this.props.authUser
         const { empresa, form } = this.state
-        await axios.post(`${URL_DEV}empresa/${empresa.id}/tabulador/diseño`, form, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.post(`${URL_DEV}empresa/${empresa.id}/tabulador/diseño`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert('Datos actualizados con éxito')
                 this.getDiseñoAxios()
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -157,9 +157,9 @@ class Contabilidad extends Component {
         waitAlert()
         const { access_token } = this.props.authUser
         const { empresa, form } = this.state
-        await axios.post(`${URL_DEV}empresa/${empresa.id}/tabulador/obra`, form, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.post(`${URL_DEV}empresa/${empresa.id}/tabulador/obra`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { empresa: {respuesta}} = response.data
+                const { empresa: { respuesta } } = response.data
                 this.setState({
                     ...this.state,
                     empresa: ''
@@ -170,9 +170,9 @@ class Contabilidad extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -186,14 +186,14 @@ class Contabilidad extends Component {
         let { name, value } = e.target
         const { form } = this.state
         let { grafica } = this.state
-        if(name === 'incremento_esquema_2' || name === 'incremento_esquema_3')
+        if (name === 'incremento_esquema_2' || name === 'incremento_esquema_3')
             value = value.replace('%', '')
         form[name] = value
         form.precio_esquema_1 = this.getPrecioEsquemas(form, form.m2)
-        form.precio_esquema_2 = form.precio_esquema_1 === '-' ? '-' : form.precio_esquema_1 * ( 1 + (form.incremento_esquema_2/100))
-        form.precio_esquema_3 = form.precio_esquema_1 === '-' ? '-' : form.precio_esquema_1 * ( 1 + (form.incremento_esquema_3/100))
-        if(name === 'precio_inicial_diseño' || name === 'incremento_esquema_2' || name === 'incremento_esquema_3')
-            if(form.precio_inicial_diseño !== '' && form.incremento_esquema_2 !== '' && form.incremento_esquema_3 !== '')
+        form.precio_esquema_2 = form.precio_esquema_1 === '-' ? '-' : form.precio_esquema_1 * (1 + (form.incremento_esquema_2 / 100))
+        form.precio_esquema_3 = form.precio_esquema_1 === '-' ? '-' : form.precio_esquema_1 * (1 + (form.incremento_esquema_3 / 100))
+        if (name === 'precio_inicial_diseño' || name === 'incremento_esquema_2' || name === 'incremento_esquema_3')
+            if (form.precio_inicial_diseño !== '' && form.incremento_esquema_2 !== '' && form.incremento_esquema_3 !== '')
                 grafica = this.setGrafica(form)
         this.setState({
             ...this.state,
@@ -205,30 +205,30 @@ class Contabilidad extends Component {
     onChangeVariaciones = (key, e, name) => {
         let { value } = e.target
         let { form, grafica } = this.state
-        if(key === form.variaciones.length){
+        if (key === form.variaciones.length) {
             this.addRow()
         }
-        if(name === 'cambio')
+        if (name === 'cambio')
             value = parseFloat(value)
-        if(name === 'inferior'||name ==='superior')  
+        if (name === 'inferior' || name === 'superior')
             value = parseInt(value)
         form.variaciones[key][name] = value
         form.precio_esquema_1 = this.getPrecioEsquemas(form, form.m2)
-        form.precio_esquema_2 = form.precio_esquema_1 === '-' ? '-' : form.precio_esquema_1 * ( 1 + (form.incremento_esquema_2/100))
-        form.precio_esquema_3 = form.precio_esquema_1 === '-' ? '-' : form.precio_esquema_1 * ( 1 + (form.incremento_esquema_3/100))
-        
+        form.precio_esquema_2 = form.precio_esquema_1 === '-' ? '-' : form.precio_esquema_1 * (1 + (form.incremento_esquema_2 / 100))
+        form.precio_esquema_3 = form.precio_esquema_1 === '-' ? '-' : form.precio_esquema_1 * (1 + (form.incremento_esquema_3 / 100))
+
         let aux = true
-        form.variaciones.map( (variacion) => {
-            if(variacion.superior === '' || variacion.inferior === '' || variacion.cambio === '' || variacion.cambio === 0 || 
-                variacion.cambio === '0.' || variacion.cambio === '.' || variacion.superior < variacion.inferior){
+        form.variaciones.map((variacion) => {
+            if (variacion.superior === '' || variacion.inferior === '' || variacion.cambio === '' || variacion.cambio === 0 ||
+                variacion.cambio === '0.' || variacion.cambio === '.' || variacion.superior < variacion.inferior) {
                 aux = false
             }
         })
 
-        if(aux){
+        if (aux) {
             grafica = this.setGrafica(form)
         }
-        
+
         this.setState({
             ...this.state,
             form,
@@ -240,19 +240,19 @@ class Contabilidad extends Component {
         const { form } = this.state
         let aux = true
         let arreglo = []
-        form.variaciones.map( (variacion, index) => {
-            if(variacion.inferior === '' || variacion.superior === '' || variacion.cambio === '' || 
-                variacion.inferior === null || variacion.superior === null || variacion.cambio === null){
+        form.variaciones.map((variacion, index) => {
+            if (variacion.inferior === '' || variacion.superior === '' || variacion.cambio === '' ||
+                variacion.inferior === null || variacion.superior === null || variacion.cambio === null) {
                 aux = false
-            }else
-                if(parseInt(variacion.inferior) >= parseInt(variacion.superior)){
+            } else
+                if (parseInt(variacion.inferior) >= parseInt(variacion.superior)) {
                     variacion.inferior = null
                     variacion.superior = null
                     aux = false
                 }
             arreglo.push(variacion)
         })
-        if(aux){
+        if (aux) {
             form.variaciones = arreglo
             form.variaciones.push(
                 {
@@ -261,7 +261,7 @@ class Contabilidad extends Component {
                     cambio: ''
                 }
             )
-        }else{
+        } else {
             form.variaciones = arreglo
         }
         this.setState({
@@ -274,11 +274,11 @@ class Contabilidad extends Component {
         const { form } = this.state
         let aux = true
         let arreglo = form.tipos
-        form.tipos.map((tipo)=>{
-            if(tipo.name === '')
+        form.tipos.map((tipo) => {
+            if (tipo.name === '')
                 aux = false
         })
-        if(aux){
+        if (aux) {
             arreglo.push({
                 id: '',
                 name: '',
@@ -299,15 +299,15 @@ class Contabilidad extends Component {
         }
     }
 
-    deleteRow= () => {
+    deleteRow = () => {
         const { form } = this.state
         let { grafica } = this.state
-        
+
         form.variaciones.pop()
-        
-        if(form.variaciones.length === 0){
+
+        if (form.variaciones.length === 0) {
             grafica = ''
-            form.variaciones = [{superior: '', inferior: '', cambio: ''}]
+            form.variaciones = [{ superior: '', inferior: '', cambio: '' }]
         }
         else
             grafica = this.setGrafica(form)
@@ -327,19 +327,19 @@ class Contabilidad extends Component {
         form.incremento_esquema_2 = empresa.incremento_esquema_2
         form.incremento_esquema_3 = empresa.incremento_esquema_3
 
-        empresa.variaciones.map((variacion)=>{
+        empresa.variaciones.map((variacion) => {
             aux.push({
-                inferior:variacion.inferior,
-                superior:variacion.superior,
-                cambio:variacion.cambio    
+                inferior: variacion.inferior,
+                superior: variacion.superior,
+                cambio: variacion.cambio
             })
         })
-        
-        if(empresa.variaciones.length === 0){
+
+        if (empresa.variaciones.length === 0) {
             aux.push({
-                inferior:0,
-                superior:0,
-                cambio:0
+                inferior: 0,
+                superior: 0,
+                cambio: 0
             })
         }
 
@@ -348,11 +348,11 @@ class Contabilidad extends Component {
         grafica = this.setGrafica(form)
 
         aux = []
-        empresa.tipos.map((tipo)=>{
+        empresa.tipos.map((tipo) => {
             aux.push({
                 name: tipo.tipo,
                 id: tipo.id,
-                parametricos:{
+                parametricos: {
                     construccion_civil_inf: tipo.pivot.construccion_civil_inf,
                     construccion_civil_sup: tipo.pivot.construccion_civil_sup,
                     construccion_interiores_inf: tipo.pivot.construccion_interiores_inf,
@@ -363,11 +363,11 @@ class Contabilidad extends Component {
             })
         })
 
-        if(empresa.tipos.length === 0){
+        if (empresa.tipos.length === 0) {
             aux.push({
                 name: '',
                 id: '',
-                parametricos:{
+                parametricos: {
                     construccion_civil_inf: 0,
                     construccion_civil_sup: 0,
                     construccion_interiores_inf: 0,
@@ -379,7 +379,7 @@ class Contabilidad extends Component {
         }
 
         form.tipos = aux
-        
+
         this.setState({
             empresa: empresa,
             form,
@@ -389,15 +389,14 @@ class Contabilidad extends Component {
 
     setGrafica = empresa => {
         const { form } = this.state
-        if(empresa.variaciones.length)
-        {
+        if (empresa.variaciones.length) {
             let labels = []
             let data = []
             let aux = empresa.variaciones
             let limiteInf = aux[0].inferior
             let limiteSup = aux[aux.length - 1].superior
-            for(let i = 0; i <= 39; i ++){
-                let limite = (limiteInf + (i * (limiteSup - limiteInf)/40))
+            for (let i = 0; i <= 39; i++) {
+                let limite = (limiteInf + (i * (limiteSup - limiteInf) / 40))
                 limite = parseInt(parseFloat(limite).toFixed(2))
                 labels.push(limite)
                 data.push(this.getPrecioEsquemas(form, limite))
@@ -407,29 +406,29 @@ class Contabilidad extends Component {
             return {
                 labels: labels,
                 datasets: [
-                  {
-                    label: '',
-                    fill: false,
-                    lineTension: 0.1,
-                    backgroundColor: '#d8005a',
-                    borderColor: '#d8005a',
-                    borderCapStyle: 'butt',
-                    borderDash: [],
-                    borderDashOffset: 0.0,
-                    borderJoinStyle: 'miter',
-                    pointBorderColor: '#444',
-                    pointBackgroundColor: '#444',
-                    pointBorderWidth: 10,
-                    pointHoverRadius: 10,
-                    pointHoverBackgroundColor: '#444',
-                    pointHoverBorderColor: '#444',
-                    pointHoverBorderWidth: 2,
-                    pointRadius: 1,
-                    pointHitRadius: 5,
-                    data: data
-                  }
+                    {
+                        label: '',
+                        fill: false,
+                        lineTension: 0.1,
+                        backgroundColor: '#d8005a',
+                        borderColor: '#d8005a',
+                        borderCapStyle: 'butt',
+                        borderDash: [],
+                        borderDashOffset: 0.0,
+                        borderJoinStyle: 'miter',
+                        pointBorderColor: '#444',
+                        pointBackgroundColor: '#444',
+                        pointBorderWidth: 10,
+                        pointHoverRadius: 10,
+                        pointHoverBackgroundColor: '#444',
+                        pointHoverBorderColor: '#444',
+                        pointHoverBorderWidth: 2,
+                        pointRadius: 1,
+                        pointHitRadius: 5,
+                        data: data
+                    }
                 ]
-              };
+            };
         }
         return ''
     }
@@ -437,56 +436,56 @@ class Contabilidad extends Component {
     getPrecioEsquemas = (form, m2) => {
         let aux = true
         let auxilar = []
-        if(m2 !== '' && form.precio_inicial_diseño !== ''){
-            form.variaciones.map( (variacion) => {
-                if(!(variacion.inferior !== null && variacion.inferior !== '' &&
+        if (m2 !== '' && form.precio_inicial_diseño !== '') {
+            form.variaciones.map((variacion) => {
+                if (!(variacion.inferior !== null && variacion.inferior !== '' &&
                     variacion.superior !== null && variacion.superior !== '' &&
                     variacion.cambio !== ''))
                     aux = false
             })
-            if(aux){
+            if (aux) {
                 auxilar = form.variaciones
-                auxilar = auxilar.sort(function(a, b) {
+                auxilar = auxilar.sort(function (a, b) {
                     return parseInt(a.inferior) - parseInt(b.inferior);
                 });
-                if(auxilar.length){
+                if (auxilar.length) {
                     let limiteInf = parseInt(auxilar[0].inferior)
                     let limiteSup = parseInt(auxilar[auxilar.length - 1].superior)
                     let m2Aux = parseInt(m2)
-                    if( limiteInf <= m2Aux && limiteSup >= m2Aux){
+                    if (limiteInf <= m2Aux && limiteSup >= m2Aux) {
                         let acumulado = 0;
                         let total;
-                        auxilar.map( (variacion, index) => {
-                            if(index === 0){
-                                acumulado =  parseFloat(form.precio_inicial_diseño) - (( parseInt(m2) - parseInt(variacion.inferior)) * parseFloat(variacion.cambio))
-                                if(m2Aux >= parseInt(variacion.superior))
-                                    acumulado = parseFloat(form.precio_inicial_diseño) - (( parseInt(variacion.superior) - parseInt(variacion.inferior)) * parseFloat(variacion.cambio))
-                                if(m2Aux >= parseInt(variacion.inferior) && m2Aux <= parseInt(variacion.superior))
+                        auxilar.map((variacion, index) => {
+                            if (index === 0) {
+                                acumulado = parseFloat(form.precio_inicial_diseño) - ((parseInt(m2) - parseInt(variacion.inferior)) * parseFloat(variacion.cambio))
+                                if (m2Aux >= parseInt(variacion.superior))
+                                    acumulado = parseFloat(form.precio_inicial_diseño) - ((parseInt(variacion.superior) - parseInt(variacion.inferior)) * parseFloat(variacion.cambio))
+                                if (m2Aux >= parseInt(variacion.inferior) && m2Aux <= parseInt(variacion.superior))
                                     total = parseFloat(acumulado) * parseFloat(m2)
-                            }else{
-                                if(m2Aux >= parseInt(variacion.superior))
-                                    acumulado = parseFloat(acumulado) - (( parseInt(variacion.superior) - parseInt(variacion.inferior)+ 1) * parseFloat(variacion.cambio))
-                                else{
-                                    acumulado =  parseFloat(acumulado) - (( parseInt(m2) - parseInt(variacion.inferior) + 1) * parseFloat(variacion.cambio))
+                            } else {
+                                if (m2Aux >= parseInt(variacion.superior))
+                                    acumulado = parseFloat(acumulado) - ((parseInt(variacion.superior) - parseInt(variacion.inferior) + 1) * parseFloat(variacion.cambio))
+                                else {
+                                    acumulado = parseFloat(acumulado) - ((parseInt(m2) - parseInt(variacion.inferior) + 1) * parseFloat(variacion.cambio))
                                 }
-                                if(m2Aux >= parseInt(variacion.inferior) && m2Aux <= parseInt(variacion.superior))
+                                if (m2Aux >= parseInt(variacion.inferior) && m2Aux <= parseInt(variacion.superior))
                                     total = parseFloat(acumulado) * parseFloat(m2)
                             }
                         })
                         return total
-                    }else return '-'
-                }else return '-'
+                    } else return '-'
+                } else return '-'
             }
-        }else
+        } else
             aux = false
         return '-'
     }
 
     render() {
-        const { form, options, empresa, data, grafica } = this.state
+        const { form, empresa, data, grafica } = this.state
         return (
             <Layout active={'catalogos'}  {...this.props}>
-                <Tab.Container activeKey = { empresa !== ''  ? empresa.id : '' } >
+                <Tab.Container activeKey={empresa !== '' ? empresa.id : ''} >
                     <Card className="card-custom">
                         <Card.Header className="align-items-center border-0">
                             <div className="card-title">
@@ -495,25 +494,25 @@ class Contabilidad extends Component {
                             <div className="card-toolbar">
                                 <Nav className="nav-tabs nav-bold nav-tabs-line nav-tabs-line-3x border-0">
                                     {
-                                        data.empresas.map( (empresa, index) => {
+                                        data.empresas.map((empresa, index) => {
                                             return (
-                                                <Nav.Item key = { index } className="nav-item" onClick = { (e) => { e.preventDefault(); this.changeActiveKey(empresa) } } >
+                                                <Nav.Item key={index} className="nav-item" onClick={(e) => { e.preventDefault(); this.changeActiveKey(empresa) }} >
                                                     <Nav.Link eventKey={empresa.id}>{empresa.name}</Nav.Link>
                                                 </Nav.Item>
                                             )
                                         })
-                                    }        
+                                    }
                                 </Nav>
                             </div>
                         </Card.Header>
                         <Card.Body>
-                            <DiseñoForm 
-                                form = { form } 
-                                onChange = { this.onChange } 
-                                onSubmit = { this.onSubmit }
+                            <DiseñoForm
+                                form={form}
+                                onChange={this.onChange}
+                                onSubmit={this.onSubmit}
                                 addRow={this.addRow}
                                 deleteRow={this.deleteRow}
-                                onChangeVariaciones = { this.onChangeVariaciones }
+                                onChangeVariaciones={this.onChangeVariaciones}
                             />
                             {
                                 grafica !== '' ?
@@ -521,8 +520,8 @@ class Contabilidad extends Component {
                                         <div className="col-md-8">
                                             <Line data={grafica} />
                                         </div>
-                                    </div>   
-                                : <></>
+                                    </div>
+                                    : <></>
                             }
                         </Card.Body>
                         <Card.Header className="align-items-center border-0">
@@ -532,11 +531,11 @@ class Contabilidad extends Component {
                         </Card.Header>
                         <Card.Body>
                             <ObraForm
-                                form = { form }
-                                onChange = { this.onChange }
-                                onSubmit = { this.onSubmitObra }
-                                addRow = { this.addParametricRow }
-                                />
+                                form={form}
+                                onChange={this.onChange}
+                                onSubmit={this.onSubmitObra}
+                                addRow={this.addParametricRow}
+                            />
                         </Card.Body>
                     </Card>
                 </Tab.Container>
