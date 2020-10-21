@@ -143,6 +143,7 @@ class ProyectosForm extends Component {
                                                                     type="checkbox"
                                                                     checked = { form.fase1 }
                                                                     onChange={e => this.handleToggler(e)}
+                                                                    disabled = { form.fase1_relacionado === false ? false : form.fase1_relacionado }
                                                                     />
                                                                 <span></span>
                                                             </label>
@@ -163,6 +164,7 @@ class ProyectosForm extends Component {
                                                                     type="checkbox"
                                                                     checked = { form.fase2 }
                                                                     onChange={e => this.handleToggler(e)}
+                                                                    disabled = { form.fase2_relacionado === false ? false : form.fase2_relacionado }
                                                                     />
                                                                 <span></span>
                                                             </label>
@@ -183,6 +185,7 @@ class ProyectosForm extends Component {
                                                                     type="checkbox"
                                                                     checked = { form.fase3 }
                                                                     onChange={e => this.handleToggler(e)}
+                                                                    disabled = { form.fase3_relacionado === false ? false : form.fase3_relacionado }
                                                                     />
                                                                 <span></span>
                                                             </label>

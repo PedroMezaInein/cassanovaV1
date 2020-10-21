@@ -486,6 +486,15 @@ class Proyectos extends Component {
             state: { proyecto: proyecto }
         });
     }
+
+    changePageRelacionar = proyecto => {
+        const { history } = this.props
+        history.push({
+            pathname: '/proyectos/proyectos/relacionar',
+            state: { proyecto: proyecto }
+        });
+    }
+
     openModalAvances = proyecto => {
         this.setState({
             ...this.state,
@@ -905,7 +914,7 @@ class Proyectos extends Component {
         )
     }
 
-    setActions = () => {
+    setActions = (proyecto) => {
         let aux = []
         aux.push(
             {
@@ -944,6 +953,14 @@ class Proyectos extends Component {
                 tooltip: { id: 'avances', text: 'Avances' }
             }
         )
+        if(proyecto.fase1 !== 1 && proyecto.fase2 !== 1 || proyecto.fase3 !== 1)
+            if(proyecto.fase1 === 1 || proyecto.fase2 === 1 || proyecto.fase3 === 1)
+                aux.push({
+                    text: 'Contratar&nbsp;fases',
+                    btnclass: 'info',
+                    iconclass: 'flaticon-tool',
+                    action: 'proyecto',
+                })
         return aux
     }
     setDireccionTable = proyecto => {
@@ -1254,7 +1271,8 @@ class Proyectos extends Component {
                                         'delete': { function: this.openModalDelete },
                                         'adjuntos': { function: this.openModalAdjuntos },
                                         'avances': { function: this.openModalAvances },
-                                        'see': { function: this.openModalSee }
+                                        'see': { function: this.openModalSee },
+                                        'proyecto': { function: this.changePageRelacionar }
                                     }}
                                     accessToken={this.props.authUser.access_token}
                                     setter={this.setProyectos}

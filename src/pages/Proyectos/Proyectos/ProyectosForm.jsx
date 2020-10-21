@@ -16,6 +16,7 @@ class ProyectosForm extends Component {
         action: '',
         title: 'Nuevo proyecto',
         prospecto: '',
+        proyecto: '',
         formeditado: 1,
         options: {
             empresas: [],
@@ -33,6 +34,10 @@ class ProyectosForm extends Component {
             fase1: false,
             fase2: false,
             fase3: false,
+            fase1_relacionado: false,
+            fase2_relacionado: false,
+            fase3_relacionado: false,
+            proyecto: '',
             semana: '',
             nombre: '',
             cliente: '',
@@ -448,6 +453,70 @@ class ProyectosForm extends Component {
                 } else
                     history.push('/proyectos/proyectos')
                 break;
+            case 'relacionar':
+                if (state) {
+                    if (state.proyecto) {
+                        const { proyecto } = state
+                        const { form } = this.state
+                        form.cp = proyecto.cp;
+                        this.cpAxios(proyecto.cp)
+                        form.calle = proyecto.calle
+                        form.nombre = proyecto.nombre
+                        form.contacto = proyecto.contacto
+                        form.numeroContacto = proyecto.numero_contacto
+                        form.fechaInicio = new Date(proyecto.fecha_inicio)
+                        form.fechaFin = new Date(proyecto.fecha_fin)
+                        form.porcentaje = proyecto.porcentaje
+                        form.descripcion = proyecto.descripcion
+                        let aux = []
+                        if (proyecto.clientes) {
+                            proyecto.clientes.forEach(cliente => {
+                                aux.push(
+                                    {
+                                        value: cliente.id.toString(),
+                                        name: cliente.empresa
+                                    }
+                                )
+                            });
+                            form.clientes = aux
+                        }
+                        if (proyecto.imagen) {
+                            form.adjuntos.image.files = [{ name: proyecto.imagen.name, file: '', url: proyecto.imagen.url, key: 0 }]
+                        }
+                        if (proyecto.estatus) {
+                            form.estatus = proyecto.estatus.id.toString();
+                        }
+                        form.fase1 = proyecto.fase1 === 0 ? false : true
+                        form.fase2 = proyecto.fase2 === 0 ? false : true
+                        form.fase3 = proyecto.fase3 === 0 ? false : true
+                        form.fase1_relacionado = proyecto.fase1 === 0 ? false : true
+                        form.fase2_relacionado = proyecto.fase2 === 0 ? false : true
+                        form.fase3_relacionado = proyecto.fase3 === 0 ? false : true
+                        if (proyecto.empresa)
+                            form.empresa = proyecto.empresa.id.toString()
+                        form.colonia = proyecto.colonia
+                        aux = []
+                        if (proyecto.contactos) {
+                            proyecto.contactos.map((contacto) => {
+                                aux.push(contacto.correo)
+                                return false
+                            })
+                            form.correos = aux
+                        }
+                        this.setState({
+                            ...this.state,
+                            proyecto: proyecto,
+                            form,
+                            formeditado: 1,
+                            title: 'Contratar fases',
+                            action: 'contratar-fases'
+                        })
+                    }
+                    else
+                        history.push('/proyectos/proyectos')
+                } else
+                    history.push('/proyectos/proyectos')
+                break;
             default:
                 break;
         }
@@ -827,12 +896,17 @@ class ProyectosForm extends Component {
             (response) => {
                 const { prospecto } = response.data
                 const { form } = this.state
-                if (prospecto.cliente.cp) {
-                    form.cp = prospecto.cliente.cp
-                    this.cpAxios(prospecto.cliente.cp)
+                if(prospecto){
+                    if(prospecto.cliente){
+                        if (prospecto.cliente.cp) {
+                            form.cp = prospecto.cliente.cp
+                            this.cpAxios(prospecto.cliente.cp)
+                        }
+                        form.calle = prospecto.cliente.calle
+                        form.cliente = prospecto.cliente.id.toString()
+                    }
                 }
-                form.calle = prospecto.cliente.calle
-                form.cliente = prospecto.cliente.id.toString()
+                
                 form.empresa = prospecto.lead.empresa.id.toString()
                 form.contacto = prospecto.lead.nombre
                 form.numeroContacto = prospecto.lead.telefono
@@ -916,7 +990,7 @@ class ProyectosForm extends Component {
         })
     }
     render() {
-        const { title, form, options, formeditado, prospecto, action } = this.state
+        const { title, form, options, formeditado, prospecto, action, proyecto } = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
                 <Card className="card-custom">
@@ -964,21 +1038,29 @@ class ProyectosForm extends Component {
                             removeCorreo={this.removeCorreo}
                             handleChange={this.handleChange}
                             onChangeRange={this.onChangeRange}
-                            className="px-3">
-                            {
-                                prospecto !== '' ?
-                                    <Accordion>
+                            className="px-3" >
+                            <Accordion>
+                                {
+                                    prospecto !== '' || proyecto !== '' ? 
                                         <div className="d-flex justify-content-end">
-                                            <Accordion.Toggle as={Button} icon={faEye} pulse="pulse-ring" eventKey={0} className="btn btn-icon btn-light-info pulse pulse-info" />
+                                            <Accordion.Toggle as={Button} icon={faEye} pulse="pulse-ring" eventKey = { prospecto !== '' ? 'prospecto' : proyecto !== '' ? proyecto.relacionado ?  'proyecto' : '' : '' } className="btn btn-icon btn-light-info pulse pulse-info" />
                                         </div>
-                                        <Accordion.Collapse eventKey={0} className="px-md-5 px-2" >
-                                            <div>
-                                                <ProyectoCard data={prospecto} />
-                                            </div>
-                                        </Accordion.Collapse>
-                                    </Accordion>
                                     : ''
-                            }
+                                }
+                                
+                                <Accordion.Collapse eventKey='prospecto' className="px-md-5 px-2" >
+                                    <div>
+                                        <ProyectoCard data={prospecto} />
+                                        {/* Prospecto */}
+                                    </div>
+                                </Accordion.Collapse>
+                                <Accordion.Collapse eventKey='proyecto' className="px-md-5 px-2" >
+                                    <div>
+                                        {/* <ProyectoCard data={prospecto} /> */}
+                                        Proyecto
+                                    </div>
+                                </Accordion.Collapse>
+                            </Accordion>
                         </ProyectoFormulario>
                     </Card.Body>
                 </Card>
