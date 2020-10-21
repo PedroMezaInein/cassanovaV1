@@ -169,7 +169,7 @@ class RegisterUserForm extends Component {
                         <>
                             <div className="separator separator-dashed mt-1 mb-2"></div>
                             <div className="form-group row form-group-marginless">
-                                <div className="col-md-4">
+                                <div className="col-md-3">
                                     <SelectSearchTrue
                                         options={proyectos_disponibles}
                                         placeholder="SELECCIONA EL(LOS) PROYECTO(S)"
@@ -179,7 +179,7 @@ class RegisterUserForm extends Component {
                                         iconclass={"fas fa-layer-group"}
                                     />
                                 </div>
-                                <div className="col-md-8">
+                                <div className="col-md-9">
                                     {
                                         form.proyectos.length > 0 ?
                                             <div className="col-md-12 row mx-0 align-items-center image-upload">
