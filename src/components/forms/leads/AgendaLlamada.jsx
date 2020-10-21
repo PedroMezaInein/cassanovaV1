@@ -104,7 +104,7 @@ class AgendaLlamada extends Component {
                             <div className="text-dark-75 font-weight-bolder text-hover-primary mb-1 font-size-lg">Carina Jiménez</div>
                             <span className="text-muted font-weight-bold d-block">Vendedor</span>
                         </div>
-                        <div className="text-center">
+                        <div className="ml-5 text-center">
                             <div className="text-dark-75 font-weight-bolder text-hover-primary mb-1 font-size-lg">Ricardo García</div>
                             <span className="text-muted font-weight-bold d-block">Cliente</span>
                         </div>
