@@ -8,6 +8,7 @@ import { Col, Row, Card, Form, Tab, Nav } from 'react-bootstrap'
 import { setOptions } from '../../../functions/setters'
 import { UltimosContactosCard, SinContacto, UltimosIngresosCard } from '../../../components/cards'
 import { forbiddenAccessAlert, errorAlert, waitAlert, doneAlert } from '../../../functions/alert'
+import LeadRhProveedor from '../../../components/tables/Lead/LeadRhProveedor'
 import LeadNuevo from '../../../components/tables/Lead/LeadNuevo'
 import LeadContacto from '../../../components/tables/Lead/LeadContacto'
 import LeadNegociacion from '../../../components/tables/Lead/LeadNegociacion'
@@ -310,7 +311,29 @@ class Crm extends Component {
             })
             this.getLeadsDetenidos()
         }
-    }    
+    }
+    nextPageRhProveedor = (e) => {
+        e.preventDefault()
+        const { lead_rh_proveedores } = this.state
+        if (lead_rh_proveedores.numPage < lead_rh_proveedores.total_paginas - 1) {
+            lead_rh_proveedores.numPage++
+            this.setState({
+                lead_rh_proveedores
+            })
+        }
+        this.getLeadsRhProveedores()
+    }
+    prevPageRhProveedor = (e) => {
+        e.preventDefault()
+        const { lead_rh_proveedores } = this.state
+        if (lead_rh_proveedores.numPage > 0) {
+            lead_rh_proveedores.numPage--
+            this.setState({
+                lead_rh_proveedores
+            })
+            this.getLeadsRhProveedores()
+        }
+    } 
     async getUltimosContactos() {
         const { access_token } = this.props.authUser
         const { ultimos_contactados } = this.state
@@ -769,22 +792,39 @@ class Crm extends Component {
                                                 <option value={"linkedin"} className="bg-white">Linkedin</option>
                                             </Form.Control>
                                         </div>
-                                        {/* <div className="col-md-2">
-                                            <Form.Control
-                                                className="form-control text-uppercase form-control-solid"
-                                                defaultValue={0}
-                                                // value = {form.estatus} 
-                                                // onChange={onChange} 
-                                                // name='estatus' 
-                                                // formeditado={formeditado} 
-                                                as="select">
-                                                <option disabled value={0}>Selecciona el estatus</option>
-                                                <option value={"pendiente"} className="bg-white">Pendiente</option>
-                                                <option value={"contacto"} className="bg-white">En contacto</option>
-                                                <option value={"negociacion"} className="bg-white">En negociación</option>
-                                                <option value={"contratado"} className="bg-white">Contratado</option>
-                                            </Form.Control>
-                                        </div> */}
+                                        {
+                                            activeTable==='cancelados'?
+                                                <div className="col-md-2">
+                                                    <Form.Control
+                                                        className="form-control text-uppercase form-control-solid"
+                                                        defaultValue={0}
+                                                        // value = {form.estatus} 
+                                                        // onChange={onChange} 
+                                                        // name='estatus' 
+                                                        // formeditado={formeditado} 
+                                                        as="select">
+                                                        <option disabled value={0}>Selecciona el estatus</option>
+                                                        <option value={"cancelado"} className="bg-white">CANCELADO</option>
+                                                        <option value={"rechazado"} className="bg-white">RECHAZADO</option>
+                                                    </Form.Control>
+                                                </div>
+                                            :activeTable==='rh-proveedores'?
+                                                <div className="col-md-2">
+                                                    <Form.Control
+                                                        className="form-control text-uppercase form-control-solid"
+                                                        defaultValue={0}
+                                                        // value = {form.estatus} 
+                                                        // onChange={onChange} 
+                                                        // name='estatus' 
+                                                        // formeditado={formeditado} 
+                                                        as="select">
+                                                        <option disabled value={0}>Selecciona el servicio</option>
+                                                        <option value={"bolsa_trabajo"} className="bg-white">BOLSA DE TRABAJO</option>
+                                                        <option value={"proveedor"} className="bg-white">QUIERO SER PROVEEDOR</option>
+                                                    </Form.Control>
+                                                </div>
+                                            :''
+                                        }
                                         <div className="col-md-1">
                                             <span className="btn btn-light-primary px-6 font-weight-bold">Buscar</span>
                                         </div>
@@ -792,12 +832,11 @@ class Crm extends Component {
                                 </div>
                                 <Tab.Content>
                                     <Tab.Pane eventKey="rh-proveedores">
-                                        <LeadNuevo
+                                        <LeadRhProveedor
                                             leads={lead_rh_proveedores}
-                                            onClickNext={this.nextPageLeadWeb}
-                                            onClickPrev={this.prevPageLeadWeb}
+                                            onClickNext={this.nextPageRhProveedor}
+                                            onClickPrev={this.prevPageRhProveedor}
                                             sendEmail={this.sendEmailNewWebLead}
-                                            openModal = { this.openModal }
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="web">

@@ -8,6 +8,7 @@ import leadNegociacion from './Lead/LeadNegociacion'
 import leadContrato from './Lead/LeadContrato'
 import leadNoContratado from './Lead/LeadNoContratado'
 import leadDetenido from './Lead/LeadDetenido'
+import leadRhProveedor from './Lead/LeadRhProveedor'
 
 export const EmpresasTable = empresasTable
 export const LeadsTable = leadsTable
@@ -19,3 +20,4 @@ export const LeadNegociacion = leadNegociacion
 export const LeadContrato = leadContrato
 export const LeadNoContratado = leadNoContratado
 export const LeadDetenido = leadDetenido
+export const LeadRhProveedor = leadRhProveedor
