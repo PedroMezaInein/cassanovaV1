@@ -15,8 +15,7 @@ import LeadContrato from '../../../components/tables/Lead/LeadContrato'
 import LeadNoContratado from '../../../components/tables/Lead/LeadNoContratado'
 import LeadDetenido from '../../../components/tables/Lead/LeadDetenido'
 import { Modal } from '../../../components/singles'
-import { CalendarDay } from '../../../components/form-components'
-import AgendaLlamada from '../../../components/forms/leads/AgendaLlamada'
+import {AgendaLlamada} from '../../../components/forms'
 
 class Crm extends Component {
     state = {
@@ -45,6 +44,13 @@ class Crm extends Component {
             total: 0,
             total_paginas: 0,
             value: "ultimos_ingresados"
+        },
+        lead_rh_proveedores: {
+            data: [],
+            numPage: 0,
+            total: 0,
+            total_paginas: 0,
+            value: "rh_proveedores"
         },
         lead_web: {
             data: [],
@@ -88,6 +94,9 @@ class Crm extends Component {
             minuto: '',
             correos: [],
             correo: '',
+            titulo: '',
+            ubicacion: '',
+            link: ''
         },
         modal: false
     }
@@ -389,6 +398,36 @@ class Crm extends Component {
             console.log(error, 'error')
         })
     }
+    async getLeadsRhProveedores(){
+        const { access_token } = this.props.authUser
+        const { lead_rh_proveedores } = this.state
+        await axios.get(URL_DEV + 'crm/table/lead-rh-proveedor/' + lead_rh_proveedores.numPage, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { leads, total } = response.data
+                const { lead_rh_proveedores } = this.state
+                lead_rh_proveedores.data = leads
+                lead_rh_proveedores.total = total
+                let total_paginas = Math.ceil(total / 10)
+                lead_rh_proveedores.total_paginas = total_paginas
+                this.setState({
+                    ...this.state,
+                    lead_rh_proveedores
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     async getLeadsWeb() {
         const { access_token } = this.props.authUser
         const { lead_web } = this.state
@@ -536,6 +575,7 @@ class Crm extends Component {
     }
     onChange = e => {
         const { name, value } = e.target
+        console.log(name, value)
         const { form } = this.state
         console.log(name, value)
         form[name] = value
@@ -544,6 +584,7 @@ class Crm extends Component {
             form
         })
     }
+
     sendEmailNewWebLead = async lead => {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -564,8 +605,35 @@ class Crm extends Component {
             console.log(error, 'error')
         })
     }
+
+    agendarLlamada = async() => {
+        console.log('this.agendarLlamada')
+        const { lead, form } = this.state
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.post(URL_DEV + 'crm/add/evento/' + lead.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert('Correo enviado con éxito');
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     changeActiveTable = key => {
         switch (key) {
+            case 'rh-proveedores':
+                this.getLeadsRhProveedores();
+                break;
             case 'web':
                 this.getLeadsWeb();
                 break;
@@ -605,7 +673,7 @@ class Crm extends Component {
 
     render() {
         const { ultimos_contactados, prospectos_sin_contactar, ultimos_ingresados, lead_web, activeTable, leads_en_contacto,
-            leads_contratados, leads_cancelados, leads_detenidos, modal, form } = this.state
+            leads_contratados, leads_cancelados, leads_detenidos, modal, form, lead, lead_rh_proveedores } = this.state
         return (
             <Layout active='leads' {...this.props} >
                 <Row>
@@ -642,6 +710,9 @@ class Crm extends Component {
                                 </h3>
                                 <div className="card-toolbar">
                                     <Nav className="nav-tabs nav-bold nav-tabs-line nav-tabs-line-3x border-0">
+                                        <Nav.Item className="nav-item">
+                                            <Nav.Link eventKey="rh-proveedores">RH/PROVEEDORES</Nav.Link>
+                                        </Nav.Item>
                                         <Nav.Item className="nav-item">
                                             <Nav.Link eventKey="web">PAGINA WEB</Nav.Link>
                                         </Nav.Item>
@@ -717,12 +788,18 @@ class Crm extends Component {
                                         <div className="col-md-1">
                                             <span className="btn btn-light-primary px-6 font-weight-bold">Buscar</span>
                                         </div>
-                                        {/* <div className="col-md-1">
-                                            <a href="#" className="btn btn-light-primary px-6 font-weight-bold">Buscar</a>
-                                        </div> */}
                                     </div>
                                 </div>
                                 <Tab.Content>
+                                    <Tab.Pane eventKey="rh-proveedores">
+                                        <LeadNuevo
+                                            leads={lead_rh_proveedores}
+                                            onClickNext={this.nextPageLeadWeb}
+                                            onClickPrev={this.prevPageLeadWeb}
+                                            sendEmail={this.sendEmailNewWebLead}
+                                            openModal = { this.openModal }
+                                        />
+                                    </Tab.Pane>
                                     <Tab.Pane eventKey="web">
                                         <LeadNuevo
                                             leads={lead_web}
@@ -774,9 +851,10 @@ class Crm extends Component {
                     <AgendaLlamada
                         form={form}
                         onChange={this.onChange}
+                        onSubmit = { this.agendarLlamada }
+                        user = { this.props.authUser.user }
+                        lead = { lead }
                     />
-                    <Form>
-                    </Form>
                 </Modal>
             </Layout>
         );
