@@ -57,7 +57,7 @@ class LeadNuevo extends Component {
                                     <th style={{ minWidth: "100px" }}>Empresa</th>
                                     <th style={{ minWidth: "100px" }}>Servicios</th>
                                     <th style={{ minWidth: "100px" }}className="text-center">Estatus</th>
-                                    <th style={{ minWidth: "70px" }}></th>
+                                    <th style={{ minWidth: "92px" }}></th>
                                 </tr>
                             </thead>
                             <tbody>
