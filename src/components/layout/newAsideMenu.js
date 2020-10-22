@@ -40,7 +40,7 @@ export default function NewAsideMenu({props}) {
       <> 
       
         <div id="aside" onMouseEnter={asideOnMouseEnter} onMouseLeave={asideOnMouseLeave} className="aside aside-left aside-fixed d-flex flex-column flex-row-auto" >
-
+            {asideOnMouseLeave()}
             <div className="brand flex-column-auto" >
               <a href="/mi-proyecto" className="brand-logo">
                 <img alt="Logo" src="/dashboard.png" />

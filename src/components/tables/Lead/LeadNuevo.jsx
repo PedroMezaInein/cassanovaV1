@@ -1,9 +1,10 @@
+import { countBy } from 'lodash';
 import React, { Component } from 'react'
 import { OverlayTrigger, Tooltip} from 'react-bootstrap'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
 import { setDateTableLG } from '../../../functions/setters'
-
+import { questionAlert} from '../../../functions/alert'
 class LeadNuevo extends Component {
     isActiveButton(direction) {
         const { leads } = this.props
@@ -22,6 +23,24 @@ class LeadNuevo extends Component {
         }
         return false;
     }
+    canSendFirstEmail = lead => {
+        if(lead.prospecto){
+            if(lead.prospecto.contactos){
+                if(lead.prospecto.contactos.length){
+                    let aux = true
+                    lead.prospecto.contactos.map((contacto)=>{
+                        if(contacto.comentario === 'SE ENVIÓ CORREO PARA SOLICITAR UNA PRIMERA LLAMADA.'){
+                            aux = false
+                        }
+                    })
+                    return aux
+                }
+                return true
+            }
+            return true
+        }
+        return true
+    }
     render() {
         const { leads, onClickPrev, onClickNext, sendEmail, openModal } = this.props
         return (
@@ -38,7 +57,7 @@ class LeadNuevo extends Component {
                                     <th style={{ minWidth: "100px" }}>Empresa</th>
                                     <th style={{ minWidth: "100px" }}>Servicios</th>
                                     <th style={{ minWidth: "100px" }}className="text-center">Estatus</th>
-                                    <th style={{ minWidth: "70px" }}></th>
+                                    <th style={{ minWidth: "92px" }}></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -79,20 +98,18 @@ class LeadNuevo extends Component {
                                                     <span className="label label-md label-light-info label-inline font-weight-bold">EN ESPERA</span>
                                                 </td>
                                                 <td className="pr-0 text-center">
-                                                    {/* <OverlayTrigger overlay={<Tooltip>Enviar correo</Tooltip>}>
-                                                        <a href='/leads/crm/info/info' className="btn btn-default btn-icon btn-sm mr-2">
-                                                            <i className="flaticon2-plus icon-nm"></i>
-                                                        </a>
-                                                        </OverlayTrigger> 
-                                                    */}
-                                                    <OverlayTrigger overlay={<Tooltip>ENVIAR CORREO</Tooltip>}>
-                                                        <span onClick = { (e) => { sendEmail(lead) } }
-                                                            className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-info">
-                                                            <span className="svg-icon svg-icon-md ">{/* svg-icon-primary */}
-                                                                <SVG src={toAbsoluteUrl('/images/svg/Outgoing-mail.svg')} />
-                                                            </span>
-                                                        </span>
-                                                    </OverlayTrigger>
+                                                    {
+                                                        this.canSendFirstEmail(lead) ?
+                                                            <OverlayTrigger overlay={<Tooltip>ENVIAR CORREO</Tooltip>}>
+                                                                <span onClick = { (e) => { questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => sendEmail(lead) )} }
+                                                                    className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-info">
+                                                                    <span className="svg-icon svg-icon-md ">{/* svg-icon-primary */}
+                                                                        <SVG src={toAbsoluteUrl('/images/svg/Outgoing-mail.svg')} />
+                                                                    </span>
+                                                                </span>
+                                                            </OverlayTrigger>
+                                                        : ''
+                                                    }
                                                     <OverlayTrigger overlay={<Tooltip>AGENDAR LLAMADA</Tooltip>}>
                                                         <span onClick = { (e) => { openModal(lead) } }
                                                             className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-info">
