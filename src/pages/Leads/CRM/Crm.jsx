@@ -15,8 +15,7 @@ import LeadContrato from '../../../components/tables/Lead/LeadContrato'
 import LeadNoContratado from '../../../components/tables/Lead/LeadNoContratado'
 import LeadDetenido from '../../../components/tables/Lead/LeadDetenido'
 import { Modal } from '../../../components/singles'
-import { CalendarDay } from '../../../components/form-components'
-import AgendaLlamada from '../../../components/forms/leads/AgendaLlamada'
+import {AgendaLlamada} from '../../../components/forms'
 
 class Crm extends Component {
     state = {
@@ -88,6 +87,9 @@ class Crm extends Component {
             horaFin: '',
             correos: [],
             correo: '',
+            titulo: '',
+            ubicacion: '',
+            link: ''
         },
         modal: false
     }
@@ -536,6 +538,7 @@ class Crm extends Component {
     }
     onChange = e => {
         const { name, value } = e.target
+        console.log(name, value)
         const { form } = this.state
         console.log(name, value)
         form[name] = value
@@ -544,6 +547,7 @@ class Crm extends Component {
             form
         })
     }
+
     sendEmailNewWebLead = async lead => {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -564,6 +568,30 @@ class Crm extends Component {
             console.log(error, 'error')
         })
     }
+
+    agendarLlamada = async() => {
+        console.log('this.agendarLlamada')
+        const { lead, form } = this.state
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.post(URL_DEV + 'crm/add/evento/' + lead.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert('Correo enviado con éxito');
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     changeActiveTable = key => {
         switch (key) {
             case 'web':
@@ -628,7 +656,7 @@ class Crm extends Component {
 
     render() {
         const { ultimos_contactados, prospectos_sin_contactar, ultimos_ingresados, lead_web, activeTable, leads_en_contacto,
-            leads_contratados, leads_cancelados, leads_detenidos, modal, form } = this.state
+            leads_contratados, leads_cancelados, leads_detenidos, modal, form, lead } = this.state
         return (
             <Layout active='leads' {...this.props} >
                 <Row>
@@ -799,9 +827,10 @@ class Crm extends Component {
                         changeHora={this.changeHora}
                         removeCorreo = {this.removeCorreo}
                         onChange={this.onChange}
+                        onSubmit = { this.agendarLlamada }
+                        user = { this.props.authUser.user }
+                        lead = { lead }
                     />
-                    <Form>
-                    </Form>
                 </Modal>
             </Layout>
         );
