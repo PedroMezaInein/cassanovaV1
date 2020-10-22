@@ -90,8 +90,8 @@ class Crm extends Component {
         lead: '',
         form:{
             fecha: new Date(),
-            horaInicio: '',
-            horaFin: '',
+            hora: '',
+            minuto: '',
             correos: [],
             correo: '',
             titulo: '',
@@ -670,42 +670,6 @@ class Crm extends Component {
             lead: ''
         })
     }
-    removeCorreo = value => {
-        const { form } = this.state
-        let aux = []
-        form.correos.map( (correo, key) => {
-            if(correo !== value){
-                aux.push(correo)
-            }
-        })
-        form.correos = aux
-        this.setState({
-            ...this.state,
-            form
-        })
-    }
-    changeHora = value => {
-        const { form } = this.state 
-        if(value !== null){
-            form.horaInicio = value[0]
-            form.horaFin = value[1]
-            // console.log(form.horaInicio.substring(0,2), form.horaFin.substring(0,2))
-            // if(form.horaFin.substring(0,2)>form.horaInicio.substring(0,2)){
-            //     console.log('horaFin > horaInicio -> Soy mayor')
-            // }else if (form.horaFin.substring(0,2)<form.horaInicio.substring(0,2)){
-            //     console.log('horaFin < horaInicio -> Soy menor')
-            // }else{
-            //     console.log("soy igual")
-            // }
-        }else{
-            form.horaInicio=''
-            form.horaFin=''
-        }
-        this.setState({
-            ...this.state,
-            form
-        })
-    }
 
     render() {
         const { ultimos_contactados, prospectos_sin_contactar, ultimos_ingresados, lead_web, activeTable, leads_en_contacto,
@@ -883,11 +847,9 @@ class Crm extends Component {
                         </Card>
                     </Tab.Container>
                 </Col>
-                <Modal size="lg" title = 'Agenda una nueva llamada.' show = { modal } handleClose = { this.handleCloseModal }>
+                <Modal title = 'Agenda una nueva llamada.' show = { modal } handleClose = { this.handleCloseModal }>
                     <AgendaLlamada
                         form={form}
-                        changeHora={this.changeHora}
-                        removeCorreo = {this.removeCorreo}
                         onChange={this.onChange}
                         onSubmit = { this.agendarLlamada }
                         user = { this.props.authUser.user }
