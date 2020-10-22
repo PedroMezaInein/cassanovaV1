@@ -89,11 +89,11 @@ class LeadNoContratado extends Component {
                                             </td>
                                             <td className="text-center">
                                                 {
-                                                    lead.prospecto ?
-                                                        lead.prospecto.estatus_prospecto ?
-                                                            <span className="label label-md label-light-danger label-inline font-weight-bold">{lead.prospecto.estatus_prospecto.estatus.toUpperCase()}</span>
+                                                    lead.estatus ?
+                                                        // lead.prospecto.estatus_prospecto ?
+                                                            <span className="label label-md label-light-danger label-inline font-weight-bold">{lead.estatus.estatus.toUpperCase()}</span>
                                                             : ''
-                                                        : ''
+                                                        /* : '' */
                                                 }
                                             </td>
                                             <td className="pr-0 text-center">

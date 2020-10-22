@@ -89,12 +89,12 @@ class LeadDetenido extends Component {
                                             </td>
                                             <td className="text-center">
                                                 {
-                                                    lead.prospecto ?
-                                                        lead.prospecto.estatus_prospecto ?
+                                                    lead.estatus ?
+                                                        /* lead.prospecto.estatus_prospecto ? */
                                                             <Dropdown>
-                                                                <Dropdown.Toggle style={{ backgroundColor: lead.prospecto.estatus_prospecto.color_fondo, color: lead.prospecto.estatus_prospecto.color_texto, border: 'transparent', padding: '2.8px 5.6px', width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '0.863rem', fontWeight: 500 }}
+                                                                <Dropdown.Toggle style={{ backgroundColor: lead.estatus.color_fondo, color: lead.estatus.color_texto, border: 'transparent', padding: '2.8px 5.6px', width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '0.863rem', fontWeight: 500 }}
                                                                 >
-                                                                    {lead.prospecto.estatus_prospecto.estatus.toUpperCase()}
+                                                                    {lead.estatus.estatus.toUpperCase()}
                                                                 </Dropdown.Toggle>
                                                                 <Dropdown.Menu className="p-0">
                                                                     <Dropdown.Header>
@@ -124,7 +124,7 @@ class LeadDetenido extends Component {
                                                                 </Dropdown.Menu>
                                                             </Dropdown>
                                                             : ''
-                                                        : ''
+                                                        /* : '' */
                                                 }
                                             </td>
                                             <td className="pr-0 text-center">
