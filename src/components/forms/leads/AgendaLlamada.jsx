@@ -5,9 +5,12 @@ import { Col } from 'react-bootstrap'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import TimeRangePicker from '@wojtekmaj/react-timerange-picker';
 import { messageAlert } from '../../../functions/alert'
-// import { TimePicker } from 'antd';
-// import 'antd/dist/antd.css';
 class AgendaLlamada extends Component {
+    state = {
+        time: ['10:00', '11:00'],
+    }
+    
+    onChange = time => this.setState({time })
     addCorreo = () => {
         const { onChange, form } = this.props
         let aux = false
@@ -37,28 +40,20 @@ class AgendaLlamada extends Component {
             <div className="row">
                 <Col md="6" className="text-center">
                     <CalendarDay />
-                    {/* <TimePicker.RangePicker
-                        format="h:mm"
-                        minuteStep={5}
-                        allowClear={true} 
-                        
-                        placeholder={['Inicio', 'Fin']}
-                        showNow={false}
-                        inputReadOnly
-                        hideDisabledOptions
-                        className="time-picker"
-                        onChange={changeHora}
-                        value={[form.horaInicio, form.horaFin]}
-                    /> */}
                     <TimeRangePicker
                         onChange={changeHora}
                         disableClock={true}
-                        format="h:mm"
+                        format="h:mm a"
                         // hourPlaceholder="hh"
                         // minutePlaceholder="mm"
                         value={[form.horaInicio, form.horaFin]}
                         
                     />
+                    {/* <TimeRangePicker
+                        onChange={this.onChange}
+                        format="h:mm a"
+                        value={this.state.time}
+                    /> */}
                 </Col>
                 <Col md="6" className="text-center">
                     <div className="form-group row form-group-marginless mt-4">
