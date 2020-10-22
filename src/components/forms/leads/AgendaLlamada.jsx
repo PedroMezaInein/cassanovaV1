@@ -5,6 +5,8 @@ import { Col } from 'react-bootstrap'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import TimeRangePicker from '@wojtekmaj/react-timerange-picker';
 import { messageAlert } from '../../../functions/alert'
+import TimeRange from 'react-time-range';
+import moment from 'moment';
 class AgendaLlamada extends Component {
     state = {
         time: ['10:00', '11:00'],
@@ -36,6 +38,11 @@ class AgendaLlamada extends Component {
     }
     render() {
         const { changeHora, form, onChange, removeCorreo } = this.props
+        let startTime = moment();
+        startTime.set({hour:8,minute:0,second:0,millisecond:0})
+        let endTime = moment();
+        endTime.set({hour:19,minute:0,second:0,millisecond:0})
+        console.log(startTime.toISOString())
         return (
             <div className="row">
                 <Col md="6" className="text-center">
@@ -48,6 +55,13 @@ class AgendaLlamada extends Component {
                         // minutePlaceholder="mm"
                         value={[form.horaInicio, form.horaFin]}
                         
+                    />  
+                    <TimeRange
+                        startLabel={""}
+                        endLabel={""}
+                        startMoment={startTime}
+                        endMoment={endTime}
+                        minuteIncrement={15}
                     />
                     {/* <TimeRangePicker
                         onChange={this.onChange}

@@ -621,14 +621,14 @@ class Crm extends Component {
         if(value !== null){
             form.horaInicio = value[0]
             form.horaFin = value[1]
-            console.log(form.horaInicio.substring(0,2), form.horaFin.substring(0,2))
-            if(form.horaFin.substring(0,2)>form.horaInicio.substring(0,2)){
-                console.log('horaFin > horaInicio -> Soy mayor')
-            }else if (form.horaFin.substring(0,2)<form.horaInicio.substring(0,2)){
-                console.log('horaFin < horaInicio -> Soy menor')
-            }else{
-                console.log("soy igual")
-            }
+            // console.log(form.horaInicio.substring(0,2), form.horaFin.substring(0,2))
+            // if(form.horaFin.substring(0,2)>form.horaInicio.substring(0,2)){
+            //     console.log('horaFin > horaInicio -> Soy mayor')
+            // }else if (form.horaFin.substring(0,2)<form.horaInicio.substring(0,2)){
+            //     console.log('horaFin < horaInicio -> Soy menor')
+            // }else{
+            //     console.log("soy igual")
+            // }
         }else{
             form.horaInicio=''
             form.horaFin=''
