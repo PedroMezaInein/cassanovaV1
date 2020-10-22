@@ -22,6 +22,24 @@ class LeadRhProveedor extends Component {
         }
         return false;
     }
+    canSendFirstEmail = lead => {
+        if(lead.prospecto){
+            if(lead.prospecto.contactos){
+                if(lead.prospecto.contactos.length){
+                    let aux = true
+                    lead.prospecto.contactos.map((contacto)=>{
+                        if(contacto.comentario === 'SE ENVIÓ CORREO PARA SOLICITAR UNA PRIMERA LLAMADA.'){
+                            aux = false
+                        }
+                    })
+                    return aux
+                }
+                return true
+            }
+            return true
+        }
+        return true
+    }
     render() {
         const { leads, onClickPrev, onClickNext, sendEmail } = this.props
         // console.log(leads)
@@ -77,7 +95,7 @@ class LeadRhProveedor extends Component {
                                                     </ul>
                                                 </td>
                                                 <td className="text-center">
-                                                    <span className="label label-md label-light-pink label-inline font-weight-bold">EN ESPERA</span>
+                                                    <span className="label label-md bg-light-pink text-pink label-inline font-weight-bold">EN ESPERA</span>
                                                 </td>
                                                 <td className="pr-0 text-center">
                                                     {
@@ -85,7 +103,7 @@ class LeadRhProveedor extends Component {
                                                             <OverlayTrigger overlay={<Tooltip>ENVIAR CORREO</Tooltip>}>
                                                                 <span onClick = { (e) => { questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => sendEmail(lead) )} }
                                                                     className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-pink">
-                                                                    <span className="svg-icon svg-icon-md ">{/* svg-icon-primary */}
+                                                                    <span className="svg-icon svg-icon-md">
                                                                         <SVG src={toAbsoluteUrl('/images/svg/Outgoing-mail.svg')} />
                                                                     </span>
                                                                 </span>
