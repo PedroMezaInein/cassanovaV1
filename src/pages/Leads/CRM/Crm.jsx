@@ -630,15 +630,6 @@ class Crm extends Component {
             lead: ''
         })
     }
-    changeHora = value => {
-        const { form } = this.state
-            form.horaInicio = value[0]
-            form.horaFin = value[1]
-        this.setState({
-            ...this.state,
-            form
-        })
-    }
     removeCorreo = value => {
         const { form } = this.state
         let aux = []
@@ -648,6 +639,28 @@ class Crm extends Component {
             }
         })
         form.correos = aux
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
+    changeHora = value => {
+        const { form } = this.state 
+        if(value !== null){
+            form.horaInicio = value[0]
+            form.horaFin = value[1]
+            // console.log(form.horaInicio.substring(0,2), form.horaFin.substring(0,2))
+            // if(form.horaFin.substring(0,2)>form.horaInicio.substring(0,2)){
+            //     console.log('horaFin > horaInicio -> Soy mayor')
+            // }else if (form.horaFin.substring(0,2)<form.horaInicio.substring(0,2)){
+            //     console.log('horaFin < horaInicio -> Soy menor')
+            // }else{
+            //     console.log("soy igual")
+            // }
+        }else{
+            form.horaInicio=''
+            form.horaFin=''
+        }
         this.setState({
             ...this.state,
             form
