@@ -91,31 +91,7 @@ class LeadNoContratado extends Component {
                                                 {
                                                     lead.prospecto ?
                                                         lead.prospecto.estatus_prospecto ?
-                                                            <Dropdown>
-                                                                <Dropdown.Toggle style={{ backgroundColor: lead.prospecto.estatus_prospecto.color_fondo, color: lead.prospecto.estatus_prospecto.color_texto, border: 'transparent', padding: '2.8px 5.6px', width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '0.863rem', fontWeight: 500 }}
-                                                                >
-                                                                    {lead.prospecto.estatus_prospecto.estatus.toUpperCase()}
-                                                                </Dropdown.Toggle>
-                                                                <Dropdown.Menu className="p-0">
-                                                                    <Dropdown.Header>
-                                                                        <span className="font-size-sm">Elige una opción</span>
-                                                                    </Dropdown.Header>
-                                                                    <Dropdown.Item href="#"  className="p-0">
-                                                                        <span className="navi-link w-100">
-                                                                            <span className="navi-text">
-                                                                                <span className="label label-xl label-inline label-light-info rounded-0 w-100">En proceso</span>
-                                                                            </span>
-                                                                        </span>
-                                                                    </Dropdown.Item>
-                                                                    <Dropdown.Item href="#"  className="p-0">
-                                                                        <span className="navi-link w-100">
-                                                                            <span className="navi-text">
-                                                                                <span className="label label-xl label-inline bg-light-gray text-gray rounded-0 w-100">DETENIDO</span>
-                                                                            </span>
-                                                                        </span>
-                                                                    </Dropdown.Item>
-                                                                </Dropdown.Menu>
-                                                            </Dropdown>
+                                                            <span className="label label-md label-light-danger label-inline font-weight-bold">{lead.prospecto.estatus_prospecto.estatus.toUpperCase()}</span>
                                                             : ''
                                                         : ''
                                                 }

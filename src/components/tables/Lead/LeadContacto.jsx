@@ -109,14 +109,21 @@ class LeadContacto extends Component {
                                                                     <Dropdown.Item href="#"  className="p-0">
                                                                         <span className="navi-link w-100">
                                                                             <span className="navi-text">
-                                                                                <span className="label label-xl label-inline label-light-success rounded-0 w-100">CONTRATADO</span>
+                                                                                <span className="label label-xl label-inline bg-light-gray text-gray rounded-0 w-100">DETENIDO</span>
                                                                             </span>
                                                                         </span>
                                                                     </Dropdown.Item>
                                                                     <Dropdown.Item href="#"  className="p-0">
                                                                         <span className="navi-link w-100">
                                                                             <span className="navi-text">
-                                                                                <span className="label label-xl label-inline label-light-danger rounded-0 w-100">DETENIDO</span>
+                                                                                <span className="label label-xl label-inline label-light-danger rounded-0 w-100">CANCELADO</span>
+                                                                            </span>
+                                                                        </span>
+                                                                    </Dropdown.Item>
+                                                                    <Dropdown.Item href="#"  className="p-0">
+                                                                        <span className="navi-link w-100">
+                                                                            <span className="navi-text">
+                                                                                <span className="label label-xl label-inline label-light-danger rounded-0 w-100">RECHAZADO</span>
                                                                             </span>
                                                                         </span>
                                                                     </Dropdown.Item>

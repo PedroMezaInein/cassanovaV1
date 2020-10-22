@@ -45,13 +45,13 @@ class LeadDetenido extends Component {
                                         <tr key={index}>
                                             <td className="pl-0 py-8">
                                                 <div className="d-flex align-items-center">
-                                                    <div className="symbol symbol-45 symbol-light-danger mr-3">
-                                                        <span className="symbol-label font-size-h5">
+                                                    <div className="symbol symbol-45 mr-3">
+                                                        <span className="symbol-label font-size-h5 bg-light-gray text-gray">
                                                             {lead.nombre.charAt(0)}
                                                         </span>
                                                     </div>
                                                     <div>
-                                                        <a href={`mailto:+${lead.email}`} className="text-dark-75 font-weight-bolder text-hover-danger mb-1 font-size-lg">
+                                                        <a href={`mailto:+${lead.email}`} className="text-dark-75 font-weight-bolder text-hover-gray mb-1 font-size-lg">
                                                             {lead.nombre}
                                                         </a>
                                                         <span className="text-muted font-weight-bold d-block">{lead.prospecto.tipo_proyecto.tipo}
@@ -111,6 +111,13 @@ class LeadDetenido extends Component {
                                                                         <span className="navi-link w-100">
                                                                             <span className="navi-text">
                                                                                 <span className="label label-xl label-inline bg-light-danger rounded-0 w-100">CANCELADO</span>
+                                                                            </span>
+                                                                        </span>
+                                                                    </Dropdown.Item>
+                                                                    <Dropdown.Item href="#"  className="p-0">
+                                                                        <span className="navi-link w-100">
+                                                                            <span className="navi-text">
+                                                                                <span className="label label-xl label-inline bg-light-danger rounded-0 w-100">RECHAZADO</span>
                                                                             </span>
                                                                         </span>
                                                                     </Dropdown.Item>
