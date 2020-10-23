@@ -935,11 +935,13 @@ class Crm extends Component {
                                             onClickNext={this.nextPageLeadEnContacto}
                                             onClickPrev={this.prevPageLeadEnContacto}
                                             changeEstatus={this.changeEstatus}
+                                            openModalWithInput={this.openModalWithInput}
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="negociacion">
                                         <LeadNegociacion
                                             changeEstatus={this.changeEstatus}
+                                            openModalWithInput={this.openModalWithInput}
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="contratados">
@@ -955,6 +957,7 @@ class Crm extends Component {
                                             onClickNext={this.nextPageLeadDetenidos}
                                             onClickPrev={this.prevPageLeadDetenidos}
                                             changeEstatus={this.changeEstatus}
+                                            openModalWithInput={this.openModalWithInput}
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="cancelados">
