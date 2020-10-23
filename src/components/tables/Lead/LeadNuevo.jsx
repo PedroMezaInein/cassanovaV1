@@ -96,38 +96,38 @@ class LeadNuevo extends Component {
                                                     </ul>
                                                 </td>
                                                 <td className="text-center">
-                                                    {/* <span className="label label-md label-light-info label-inline font-weight-bold">EN ESPERA</span> */}
                                                     {
-                                                        lead.prospecto ?
-                                                            lead.prospecto.estatus_prospecto ?
-                                                                <Dropdown>
-                                                                    <Dropdown.Toggle style={{ backgroundColor: lead.prospecto.estatus_prospecto.color_fondo, color: lead.prospecto.estatus_prospecto.color_texto, border: 'transparent', padding: '2.8px 5.6px', width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '0.863rem', fontWeight: 500 }}
-                                                                    >
-                                                                        {lead.prospecto.estatus_prospecto.estatus.toUpperCase()}
-                                                                    </Dropdown.Toggle>
-                                                                    <Dropdown.Menu className="p-0">
-                                                                        <Dropdown.Header>
-                                                                            <span className="font-size-sm">Elige una opción</span>
-                                                                        </Dropdown.Header>
-                                                                        {/* <Dropdown.Divider /> */}
-                                                                        <Dropdown.Item href="#"  className="p-0">
-                                                                            <span className="navi-link w-100">
-                                                                                <span className="navi-text">
-                                                                                    <span className="label label-xl label-inline bg-light-danger rounded-0 w-100">CANCELADO</span>
-                                                                                </span>
+                                                        lead.estatus ?
+                                                            <Dropdown>
+                                                                <Dropdown.Toggle 
+                                                                    style = {
+                                                                        {   
+                                                                            backgroundColor: lead.estatus.color_fondo, color: lead.estatus.color_texto, border: 'transparent', padding: '2.8px 5.6px', 
+                                                                            width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '0.863rem', 
+                                                                            fontWeight: 500 }}>
+                                                                    {lead.estatus.estatus.toUpperCase()}
+                                                                </Dropdown.Toggle>
+                                                                <Dropdown.Menu className="p-0">
+                                                                    <Dropdown.Header>
+                                                                        <span className="font-size-sm">Elige una opción</span>
+                                                                    </Dropdown.Header>
+                                                                    <Dropdown.Item className="p-0">
+                                                                        <span className="navi-link w-100">
+                                                                            <span className="navi-text">
+                                                                                <span className="label label-xl label-inline bg-light-danger rounded-0 w-100">CANCELADO</span>
                                                                             </span>
-                                                                        </Dropdown.Item>
-                                                                        <Dropdown.Item href="#"  className="p-0">
-                                                                            <span className="navi-link w-100">
-                                                                                <span className="navi-text">
-                                                                                    <span className="label label-xl label-inline bg-light-danger rounded-0 w-100">RECHAZADO</span>
-                                                                                </span>
+                                                                        </span>
+                                                                    </Dropdown.Item>
+                                                                    <Dropdown.Item className="p-0">
+                                                                        <span className="navi-link w-100">
+                                                                            <span className="navi-text">
+                                                                                <span className="label label-xl label-inline bg-light-danger rounded-0 w-100">RECHAZADO</span>
                                                                             </span>
-                                                                        </Dropdown.Item>
-                                                                    </Dropdown.Menu>
-                                                                </Dropdown>
-                                                                : ''
-                                                            : ''
+                                                                        </span>
+                                                                    </Dropdown.Item>
+                                                                </Dropdown.Menu>
+                                                            </Dropdown>
+                                                        : ''
                                                     }
                                                 </td>
                                                 <td className="pr-0 text-center">
