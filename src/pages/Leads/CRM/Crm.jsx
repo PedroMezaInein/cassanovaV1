@@ -91,13 +91,8 @@ class Crm extends Component {
         lead: '',
         form: {
             fecha: new Date(),
-            hora: '',
-            minuto: '',
-            correos: [],
-            correo: '',
-            titulo: '',
-            ubicacion: '',
-            link: ''
+            hora: '08',
+            minuto: '00',
         },
         modal: false
     }
@@ -614,6 +609,7 @@ class Crm extends Component {
         await axios.put(URL_DEV + 'crm/email/solicitud-llamada/' + lead.id, {}, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert('Correo enviado con éxito');
+                this.getLeadsWeb()
             },
             (error) => {
                 console.log(error, 'error')
@@ -629,14 +625,23 @@ class Crm extends Component {
         })
     }
 
-    agendarLlamada = async () => {
-        console.log('this.agendarLlamada')
+    agendarLlamada = async() => {
         const { lead, form } = this.state
         waitAlert()
         const { access_token } = this.props.authUser
         await axios.post(URL_DEV + 'crm/add/evento/' + lead.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                doneAlert('Correo enviado con éxito');
+                const { form } = this.state
+                form.fecha = new Date()
+                form.hora = 0
+                form.minuto = 0
+                this.setState({
+                    ...this.state,
+                    form,
+                    modal: false
+                })
+                doneAlert('Evento generado con éxito');
+                this.getLeadsWeb()
             },
             (error) => {
                 console.log(error, 'error')
