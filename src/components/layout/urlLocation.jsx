@@ -2,10 +2,11 @@ import React, { Component } from 'react'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../functions/routers"
 import { Button } from '../../components/form-components';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 class UrlLocation extends Component {
     state = {
         paths: [],
-        url:[]
+        url: []
     }
 
     componentDidMount() {
@@ -18,7 +19,7 @@ class UrlLocation extends Component {
         }
         this.setState({
             paths: aux,
-            url:url_direccion
+            url: url_direccion
         })
     }
     changePageAdd = tipo => {
@@ -28,7 +29,7 @@ class UrlLocation extends Component {
         });
     }
     render() {
-        const { paths, url} = this.state
+        const { paths, url } = this.state
         const modulos = this.props.authUser.modulos
         const active = this.props.active;
         let icon;
@@ -64,13 +65,13 @@ class UrlLocation extends Component {
                 }
             }
         }
-            
+
 
 
         return (
             <>
                 {
-                    
+
                     paths.length > 0 ?
                         <div className="subheader py-2 py-lg-4 subheader-solid" id="kt_subheader">
                             <div className="container-fluid d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
@@ -103,45 +104,31 @@ class UrlLocation extends Component {
                                 </div>
                                 <div className="d-flex justify-content-end flex-wrap">
                                     {
-                                        url==="leads/crm"?
-                                        <>
-                                            <Button
-                                                // icon=''
-                                                // onClick={() => { this.changePageAdd('telefono') }}
-                                                // className="btn btn-light-primary mr-2 rounded-0"
-                                                // only_icon="fas fa-phone icon-md mr-2"
-                                                // // tooltip={{ text: 'TELÉFONO' }}
-                                                // text='TELÉFONO'
-                                                icon=''
-                                                onClick={() => { this.changePageAdd('telefono') }}
-                                                className="btn btn-light-primary mr-2 rounded-0 btn-sm"
-                                                only_icon="fas fa-phone pr-0"
-                                                tooltip={{ text: 'TELÉFONO' }}
-                                            />
-                                            {/* <Button
-                                                icon=''
-                                                onClick={() => { this.changePageAdd('telefono') }}
-                                                className="btn btn-light-primary mr-2 rounded-0 btn-sm"
-                                                only_icon="fas fa-phone pr-0"
-                                                tooltip={{ text: 'TELÉFONO' }}
-                                            />
-                                            <Button
-                                                icon=''
-                                                className="btn btn-light-warning mr-2 rounded-0 btn-sm"
-                                                only_icon="flaticon2-black-back-closed-envelope-shape pr-0"
-                                                tooltip={{ text: 'CORREO' }}
-                                            />
-                                            <Button
-                                                icon=''
-                                                className="btn btn-light-info mr-2 rounded-0 btn-sm"
-                                                only_icon="fas fa-dove pr-0"
-                                                tooltip={{ text: 'TAWK TO' }}
-                                            /> */}
-                                        </>
-
-                                        :''
+                                        url === "leads/crm" ?
+                                            <>
+                                                {/* <Button
+                                                    // icon=''
+                                                    // onClick={() => { this.changePageAdd('telefono') }}
+                                                    // className="btn btn-light-primary mr-2 rounded-0"
+                                                    // only_icon="fas fa-phone icon-md mr-2"
+                                                    // // tooltip={{ text: 'TELÉFONO' }}
+                                                    // text='TELÉFONO'
+                                                    icon=''
+                                                    onClick={() => { this.changePageAdd('telefono') }}
+                                                    className="btn btn-light-primary mr-2 rounded-0 btn-sm"
+                                                    only_icon="fas fa-phone pr-0"
+                                                    tooltip={{ text: 'TELÉFONO' }}
+                                                /> */}
+                                                <OverlayTrigger overlay={<Tooltip>LLAMADA ENTRANTE</Tooltip>}>
+                                                    <a onClick={() => { this.changePageAdd('telefono') }} className="btn btn-light btn-text-primary btn-hover-text-primary btn-sm">
+                                                        <span className="svg-icon svg-icon-md mr-0">
+                                                            <SVG src={toAbsoluteUrl('/images/svg/Incoming-call.svg')} />
+                                                        </span>
+                                                    </a>
+                                                </OverlayTrigger>
+                                            </>
+                                            : ''
                                     }
-                                    
                                 </div>
                             </div>
                         </div>

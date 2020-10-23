@@ -22,7 +22,6 @@ class LeadNoContratado extends Component {
     }
     render() {
         const { leads, onClickNext, onClickPrev } = this.props
-        console.log(leads)
         return (
             <div className="tab-content">
                 <div className="table-responsive-lg">
@@ -34,7 +33,7 @@ class LeadNoContratado extends Component {
                                 </th>
                                 <th style={{ minWidth: "140px" }}>Fecha</th>
                                 <th style={{ minWidth: "100px" }}>Origen</th>
-                                <th style={{ minWidth: "100px" }} className="text-center">Vendedor</th>
+                                {/* <th style={{ minWidth: "100px" }} className="text-center">Vendedor</th> */}
                                 <th style={{ minWidth: "100px" }} className="text-center">Estatus</th>
                                 <th style={{ minWidth: "70px" }}></th>
                             </tr>
@@ -73,7 +72,7 @@ class LeadNoContratado extends Component {
                                                         : ''
                                                 }
                                             </td>
-                                            <td className="d-flex justify-content-center">
+                                            {/* <td className="d-flex justify-content-center">
                                                 <div className="symbol-group symbol-hover">
                                                     {
                                                         lead.prospecto.vendedores.map((vendedor, index) => {
@@ -87,7 +86,7 @@ class LeadNoContratado extends Component {
                                                         })
                                                     }
                                                 </div>
-                                            </td>
+                                            </td> */}
                                             <td className="text-center">
                                                 {
                                                     lead.estatus ?
