@@ -110,14 +110,14 @@ class LeadDetenido extends Component {
                                                                     <Dropdown.Item href="#"  className="p-0">
                                                                         <span className="navi-link w-100">
                                                                             <span className="navi-text">
-                                                                                <span className="label label-xl label-inline bg-light-danger rounded-0 w-100">CANCELADO</span>
+                                                                                <span className="label label-xl label-inline label-light-danger rounded-0 w-100">CANCELADO</span>
                                                                             </span>
                                                                         </span>
                                                                     </Dropdown.Item>
                                                                     <Dropdown.Item href="#"  className="p-0">
                                                                         <span className="navi-link w-100">
                                                                             <span className="navi-text">
-                                                                                <span className="label label-xl label-inline bg-light-danger rounded-0 w-100">RECHAZADO</span>
+                                                                                <span className="label label-xl label-inline label-light-danger rounded-0 w-100">RECHAZADO</span>
                                                                             </span>
                                                                         </span>
                                                                     </Dropdown.Item>
