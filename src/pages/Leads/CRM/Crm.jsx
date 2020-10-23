@@ -7,7 +7,7 @@ import swal from 'sweetalert'
 import { Col, Row, Card, Form, Tab, Nav, DropdownButton, Dropdown } from 'react-bootstrap'
 import { setOptions } from '../../../functions/setters'
 import { UltimosContactosCard, SinContacto, UltimosIngresosCard } from '../../../components/cards'
-import { forbiddenAccessAlert, errorAlert, waitAlert, doneAlert } from '../../../functions/alert'
+import { forbiddenAccessAlert, errorAlert, waitAlert, doneAlert,questionAlert, questionAlert2} from '../../../functions/alert'
 import LeadRhProveedor from '../../../components/tables/Lead/LeadRhProveedor'
 import LeadNuevo from '../../../components/tables/Lead/LeadNuevo'
 import LeadContacto from '../../../components/tables/Lead/LeadContacto'
@@ -698,6 +698,65 @@ class Crm extends Component {
             lead: ''
         })
     }
+    async changeEstatusAxios(data) {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.put(URL_DEV + 'crm/lead/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert('El estatus fue actualizado con éxito.')
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    async changeEstatusCanceladoRechazadoAxios(data) {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        data.motivo = document.getElementById('motivo').value
+        await axios.put(URL_DEV + 'crm/lead/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert('El estatus fue actualizado con éxito.')
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    changeEstatus = (estatus, id) => {
+        questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios({ id: id, estatus: estatus }))
+    }
+
+    openModalWithInput = (estatus, id) => {
+        questionAlert2('ESCRIBE EL MOTIVO DEL RECHAZO O CANCELACIÓN', '', () => this.changeEstatusCanceladoRechazadoAxios({ id: id, estatus: estatus }),
+            <div>
+                <Form.Control
+                    placeholder='MOTIVO DE CANCELACIÓN'
+                    className="form-control form-control-solid h-auto py-7 px-6"
+                    id='motivo'
+                    as="textarea"
+                    rows="3"
+                />
+            </div>
+        )
+    }
 
     render() {
         const { ultimos_contactados, prospectos_sin_contactar, ultimos_ingresados, lead_web, activeTable, leads_en_contacto,
@@ -762,16 +821,16 @@ class Crm extends Component {
                                                 id={`dropdown-button-drop-left-crm`}
                                             >
                                                 <Dropdown.Item eventKey="rh-proveedores" className="text-hover-primary" id="rh-proveedores">
-                                                    <span class="navi-icon">
-                                                        <i class="fas fa-users pr-3 text"></i>
+                                                    <span className="navi-icon">
+                                                        <i className="fas fa-users pr-3 text"></i>
                                                     </span>
-                                                    <span class="navi-text align-self-center">RH/PROVEEDORES</span>
+                                                    <span className="navi-text align-self-center">RH/PROVEEDORES</span>
                                                 </Dropdown.Item>
                                                 <Dropdown.Item eventKey="cancelados" className="text-hover-primary" id="cancelados-rechazados">
-                                                    <span class="navi-icon">
-                                                        <i class="fas fa-user-times pr-3 text"></i>
+                                                    <span className="navi-icon">
+                                                        <i className="fas fa-user-times pr-3 text"></i>
                                                     </span>
-                                                    <span class="navi-text align-self-center">CANCELADOS/RECHAZADOS</span>
+                                                    <span className="navi-text align-self-center">CANCELADOS/RECHAZADOS</span>
                                                 </Dropdown.Item>
                                             </DropdownButton>
                                         </Nav.Item>
@@ -867,6 +926,7 @@ class Crm extends Component {
                                             onClickPrev={this.prevPageLeadWeb}
                                             sendEmail={this.sendEmailNewWebLead}
                                             openModal={this.openModal}
+                                            openModalWithInput={this.openModalWithInput}
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="contacto">
@@ -874,10 +934,12 @@ class Crm extends Component {
                                             leads={leads_en_contacto}
                                             onClickNext={this.nextPageLeadEnContacto}
                                             onClickPrev={this.prevPageLeadEnContacto}
+                                            changeEstatus={this.changeEstatus}
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="negociacion">
                                         <LeadNegociacion
+                                            changeEstatus={this.changeEstatus}
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="contratados">
@@ -892,6 +954,7 @@ class Crm extends Component {
                                             leads={leads_detenidos}
                                             onClickNext={this.nextPageLeadDetenidos}
                                             onClickPrev={this.prevPageLeadDetenidos}
+                                            changeEstatus={this.changeEstatus}
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="cancelados">
