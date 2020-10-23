@@ -42,7 +42,6 @@ class LeadRhProveedor extends Component {
     }
     render() {
         const { leads, onClickPrev, onClickNext, sendEmail } = this.props
-        // console.log(leads)
         return (
             <>
                 <div className="tab-content">
@@ -55,8 +54,7 @@ class LeadRhProveedor extends Component {
                                     </th>
                                     <th style={{ minWidth: "140px" }}>Fecha</th>
                                     <th style={{ minWidth: "100px" }}>Empresa</th>
-                                    <th style={{ minWidth: "100px" }}>Servicios</th>
-                                    <th style={{ minWidth: "100px" }}className="text-center">Estatus</th>
+                                    <th style={{ minWidth: "100px" }}>Tipo</th>
                                     <th style={{ minWidth: "92px" }}></th>
                                 </tr>
                             </thead>
@@ -82,20 +80,12 @@ class LeadRhProveedor extends Component {
                                                     <span className="text-dark-75 font-weight-bolder d-block font-size-lg">{lead.empresa.name}</span>
                                                 </td>
                                                 <td>
-                                                    <ul className="list-unstyled">
-                                                    {
-                                                        lead.servicios.length > 0 ?
-                                                            lead.servicios.map((servicio, key) => {
-                                                                return (
-                                                                    <li key={key}className="text-dark-75 font-weight-bolder">{servicio.servicio}</li>
-                                                                )
-                                                            })
-                                                            : <span className="text-dark-75 font-weight-bolder">Sin servicios</span>
-                                                    }
-                                                    </ul>
-                                                </td>
-                                                <td className="text-center">
-                                                    <span className="label label-md bg-light-pink text-pink label-inline font-weight-bold">EN ESPERA</span>
+                                                    <span className="text-dark-75 font-weight-bolder d-block font-size-lg">
+                                                        {
+                                                            lead.proveedor?'PROVEEDOR':
+                                                            lead.rh?'BOLSA DE TRABAJO':''
+                                                        }
+                                                    </span>
                                                 </td>
                                                 <td className="pr-0 text-center">
                                                     {
