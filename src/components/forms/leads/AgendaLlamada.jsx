@@ -56,7 +56,7 @@ class AgendaLlamada extends Component {
                         <div className="d-flex justify-content-center" style={{ height: '1px' }}>
                             <label className="text-center font-weight-bolder">Fecha</label>
                         </div>
-                        <CalendarDay />
+                        <CalendarDay value = { form.fecha } name = 'fecha' onChange = { onChange } />
                     </Col>
                 </div>
                 {/* <Col md="12">

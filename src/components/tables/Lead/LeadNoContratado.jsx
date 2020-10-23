@@ -33,7 +33,7 @@ class LeadNoContratado extends Component {
                                 </th>
                                 <th style={{ minWidth: "140px" }}>Fecha</th>
                                 <th style={{ minWidth: "100px" }}>Origen</th>
-                                <th style={{ minWidth: "100px" }} className="text-center">Vendedor</th>
+                                {/* <th style={{ minWidth: "100px" }} className="text-center">Vendedor</th> */}
                                 <th style={{ minWidth: "100px" }} className="text-center">Estatus</th>
                                 <th style={{ minWidth: "70px" }}></th>
                             </tr>
@@ -72,7 +72,7 @@ class LeadNoContratado extends Component {
                                                         : ''
                                                 }
                                             </td>
-                                            <td className="d-flex justify-content-center">
+                                            {/* <td className="d-flex justify-content-center">
                                                 <div className="symbol-group symbol-hover">
                                                     {
                                                         lead.prospecto.vendedores.map((vendedor, index) => {
@@ -86,37 +86,12 @@ class LeadNoContratado extends Component {
                                                         })
                                                     }
                                                 </div>
-                                            </td>
+                                            </td> */}
                                             <td className="text-center">
                                                 {
                                                     lead.estatus ?
-                                                        /* lead.prospecto.estatus_prospecto ? */
-                                                            <Dropdown>
-                                                                <Dropdown.Toggle style={{ backgroundColor: lead.estatus.color_fondo, color: lead.estatus.color_texto,
-                                                                    border: 'transparent', padding: '2.8px 5.6px', width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '0.863rem', fontWeight: 500 }}
-                                                                >
-                                                                    {lead.estatus.estatus.toUpperCase()}
-                                                                </Dropdown.Toggle>
-                                                                <Dropdown.Menu className="p-0">
-                                                                    <Dropdown.Header>
-                                                                        <span className="font-size-sm">Elige una opción</span>
-                                                                    </Dropdown.Header>
-                                                                    <Dropdown.Item href="#"  className="p-0">
-                                                                        <span className="navi-link w-100">
-                                                                            <span className="navi-text">
-                                                                                <span className="label label-xl label-inline label-light-info rounded-0 w-100">En proceso</span>
-                                                                            </span>
-                                                                        </span>
-                                                                    </Dropdown.Item>
-                                                                    <Dropdown.Item href="#"  className="p-0">
-                                                                        <span className="navi-link w-100">
-                                                                            <span className="navi-text">
-                                                                                <span className="label label-xl label-inline bg-light-gray text-gray rounded-0 w-100">DETENIDO</span>
-                                                                            </span>
-                                                                        </span>
-                                                                    </Dropdown.Item>
-                                                                </Dropdown.Menu>
-                                                            </Dropdown>
+                                                        // lead.prospecto.estatus_prospecto ?
+                                                            <span className="label label-md label-light-danger label-inline font-weight-bold">{lead.estatus.estatus.toUpperCase()}</span>
                                                             : ''
                                                         /* : '' */
                                                 }

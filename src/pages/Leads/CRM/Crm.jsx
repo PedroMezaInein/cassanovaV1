@@ -4,10 +4,11 @@ import axios from 'axios'
 import { URL_DEV } from '../../../constants'
 import Layout from '../../../components/layout/layout';
 import swal from 'sweetalert'
-import { Col, Row, Card, Form, Tab, Nav } from 'react-bootstrap'
+import { Col, Row, Card, Form, Tab, Nav, DropdownButton, Dropdown } from 'react-bootstrap'
 import { setOptions } from '../../../functions/setters'
 import { UltimosContactosCard, SinContacto, UltimosIngresosCard } from '../../../components/cards'
 import { forbiddenAccessAlert, errorAlert, waitAlert, doneAlert } from '../../../functions/alert'
+import LeadRhProveedor from '../../../components/tables/Lead/LeadRhProveedor'
 import LeadNuevo from '../../../components/tables/Lead/LeadNuevo'
 import LeadContacto from '../../../components/tables/Lead/LeadContacto'
 import LeadNegociacion from '../../../components/tables/Lead/LeadNegociacion'
@@ -15,7 +16,7 @@ import LeadContrato from '../../../components/tables/Lead/LeadContrato'
 import LeadNoContratado from '../../../components/tables/Lead/LeadNoContratado'
 import LeadDetenido from '../../../components/tables/Lead/LeadDetenido'
 import { Modal } from '../../../components/singles'
-import {AgendaLlamada} from '../../../components/forms'
+import { AgendaLlamada } from '../../../components/forms'
 
 class Crm extends Component {
     state = {
@@ -88,15 +89,10 @@ class Crm extends Component {
             value: "detenidos"
         },
         lead: '',
-        form:{
+        form: {
             fecha: new Date(),
-            hora: '',
-            minuto: '',
-            correos: [],
-            correo: '',
-            titulo: '',
-            ubicacion: '',
-            link: ''
+            hora: '08',
+            minuto: '00',
         },
         modal: false
     }
@@ -310,7 +306,29 @@ class Crm extends Component {
             })
             this.getLeadsDetenidos()
         }
-    }    
+    }
+    nextPageRhProveedor = (e) => {
+        e.preventDefault()
+        const { lead_rh_proveedores } = this.state
+        if (lead_rh_proveedores.numPage < lead_rh_proveedores.total_paginas - 1) {
+            lead_rh_proveedores.numPage++
+            this.setState({
+                lead_rh_proveedores
+            })
+        }
+        this.getLeadsRhProveedores()
+    }
+    prevPageRhProveedor = (e) => {
+        e.preventDefault()
+        const { lead_rh_proveedores } = this.state
+        if (lead_rh_proveedores.numPage > 0) {
+            lead_rh_proveedores.numPage--
+            this.setState({
+                lead_rh_proveedores
+            })
+            this.getLeadsRhProveedores()
+        }
+    }
     async getUltimosContactos() {
         const { access_token } = this.props.authUser
         const { ultimos_contactados } = this.state
@@ -398,7 +416,7 @@ class Crm extends Component {
             console.log(error, 'error')
         })
     }
-    async getLeadsRhProveedores(){
+    async getLeadsRhProveedores() {
         const { access_token } = this.props.authUser
         const { lead_rh_proveedores } = this.state
         await axios.get(URL_DEV + 'crm/table/lead-rh-proveedor/' + lead_rh_proveedores.numPage, { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -543,7 +561,7 @@ class Crm extends Component {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
-    }    
+    }
     async getLeadsDetenidos() {
         const { access_token } = this.props.authUser
         const { leads_detenidos } = this.state
@@ -591,6 +609,7 @@ class Crm extends Component {
         await axios.put(URL_DEV + 'crm/email/solicitud-llamada/' + lead.id, {}, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert('Correo enviado con éxito');
+                this.getLeadsWeb()
             },
             (error) => {
                 console.log(error, 'error')
@@ -607,13 +626,22 @@ class Crm extends Component {
     }
 
     agendarLlamada = async() => {
-        console.log('this.agendarLlamada')
         const { lead, form } = this.state
         waitAlert()
         const { access_token } = this.props.authUser
         await axios.post(URL_DEV + 'crm/add/evento/' + lead.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                doneAlert('Correo enviado con éxito');
+                const { form } = this.state
+                form.fecha = new Date()
+                form.hora = 0
+                form.minuto = 0
+                this.setState({
+                    ...this.state,
+                    form,
+                    modal: false
+                })
+                doneAlert('Evento generado con éxito');
+                this.getLeadsWeb()
             },
             (error) => {
                 console.log(error, 'error')
@@ -660,7 +688,7 @@ class Crm extends Component {
         this.setState({
             ...this.state,
             modal: true,
-            lead:lead
+            lead: lead
         })
     }
     handleCloseModal = () => {
@@ -711,9 +739,6 @@ class Crm extends Component {
                                 <div className="card-toolbar">
                                     <Nav className="nav-tabs nav-bold nav-tabs-line nav-tabs-line-3x border-0">
                                         <Nav.Item className="nav-item">
-                                            <Nav.Link eventKey="rh-proveedores">RH/PROVEEDORES</Nav.Link>
-                                        </Nav.Item>
-                                        <Nav.Item className="nav-item">
                                             <Nav.Link eventKey="web">PAGINA WEB</Nav.Link>
                                         </Nav.Item>
                                         <Nav.Item className="nav-item">
@@ -728,8 +753,27 @@ class Crm extends Component {
                                         <Nav.Item className="nav-item">
                                             <Nav.Link eventKey="detenidos">DETENIDOS</Nav.Link>
                                         </Nav.Item>
-                                        <Nav.Item className="nav-item">
-                                            <Nav.Link eventKey="cancelados">CANCELADOS</Nav.Link>
+                                        <Nav.Item className="nav-item pt-2">
+                                            <DropdownButton
+                                                menuAlign="right"
+                                                title={
+                                                    <i className="fas fa-chevron-down icon-nm p-0"></i>
+                                                }
+                                                id={`dropdown-button-drop-left-crm`}
+                                            >
+                                                <Dropdown.Item eventKey="rh-proveedores" className="text-hover-primary" id="rh-proveedores">
+                                                    <span class="navi-icon">
+                                                        <i class="fas fa-users pr-3 text"></i>
+                                                    </span>
+                                                    <span class="navi-text align-self-center">RH/PROVEEDORES</span>
+                                                </Dropdown.Item>
+                                                <Dropdown.Item eventKey="cancelados" className="text-hover-primary" id="cancelados-rechazados">
+                                                    <span class="navi-icon">
+                                                        <i class="fas fa-user-times pr-3 text"></i>
+                                                    </span>
+                                                    <span class="navi-text align-self-center">CANCELADOS/RECHAZADOS</span>
+                                                </Dropdown.Item>
+                                            </DropdownButton>
                                         </Nav.Item>
                                     </Nav>
                                 </div>
@@ -769,22 +813,39 @@ class Crm extends Component {
                                                 <option value={"linkedin"} className="bg-white">Linkedin</option>
                                             </Form.Control>
                                         </div>
-                                        {/* <div className="col-md-2">
-                                            <Form.Control
-                                                className="form-control text-uppercase form-control-solid"
-                                                defaultValue={0}
-                                                // value = {form.estatus} 
-                                                // onChange={onChange} 
-                                                // name='estatus' 
-                                                // formeditado={formeditado} 
-                                                as="select">
-                                                <option disabled value={0}>Selecciona el estatus</option>
-                                                <option value={"pendiente"} className="bg-white">Pendiente</option>
-                                                <option value={"contacto"} className="bg-white">En contacto</option>
-                                                <option value={"negociacion"} className="bg-white">En negociación</option>
-                                                <option value={"contratado"} className="bg-white">Contratado</option>
-                                            </Form.Control>
-                                        </div> */}
+                                        {
+                                            activeTable === 'cancelados' ?
+                                                <div className="col-md-2">
+                                                    <Form.Control
+                                                        className="form-control text-uppercase form-control-solid"
+                                                        defaultValue={0}
+                                                        // value = {form.estatus} 
+                                                        // onChange={onChange} 
+                                                        // name='estatus' 
+                                                        // formeditado={formeditado} 
+                                                        as="select">
+                                                        <option disabled value={0}>Selecciona el estatus</option>
+                                                        <option value={"cancelado"} className="bg-white">CANCELADO</option>
+                                                        <option value={"rechazado"} className="bg-white">RECHAZADO</option>
+                                                    </Form.Control>
+                                                </div>
+                                                : activeTable === 'rh-proveedores' ?
+                                                    <div className="col-md-2">
+                                                        <Form.Control
+                                                            className="form-control text-uppercase form-control-solid"
+                                                            defaultValue={0}
+                                                            // value = {form.estatus} 
+                                                            // onChange={onChange} 
+                                                            // name='estatus' 
+                                                            // formeditado={formeditado} 
+                                                            as="select">
+                                                            <option disabled value={0}>Tipo</option>
+                                                            <option value={"proveedor"} className="bg-white">PROVEEDOR</option>
+                                                            <option value={"bolsa_trabajo"} className="bg-white">BOLSA DE TRABAJO</option>
+                                                        </Form.Control>
+                                                    </div>
+                                                    : ''
+                                        }
                                         <div className="col-md-1">
                                             <span className="btn btn-light-primary px-6 font-weight-bold">Buscar</span>
                                         </div>
@@ -792,12 +853,11 @@ class Crm extends Component {
                                 </div>
                                 <Tab.Content>
                                     <Tab.Pane eventKey="rh-proveedores">
-                                        <LeadNuevo
+                                        <LeadRhProveedor
                                             leads={lead_rh_proveedores}
-                                            onClickNext={this.nextPageLeadWeb}
-                                            onClickPrev={this.prevPageLeadWeb}
+                                            onClickNext={this.nextPageRhProveedor}
+                                            onClickPrev={this.prevPageRhProveedor}
                                             sendEmail={this.sendEmailNewWebLead}
-                                            openModal = { this.openModal }
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="web">
@@ -806,7 +866,7 @@ class Crm extends Component {
                                             onClickNext={this.nextPageLeadWeb}
                                             onClickPrev={this.prevPageLeadWeb}
                                             sendEmail={this.sendEmailNewWebLead}
-                                            openModal = { this.openModal }
+                                            openModal={this.openModal}
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="contacto">
@@ -818,7 +878,6 @@ class Crm extends Component {
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="negociacion">
                                         <LeadNegociacion
-
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="contratados">
@@ -847,13 +906,13 @@ class Crm extends Component {
                         </Card>
                     </Tab.Container>
                 </Col>
-                <Modal title = 'Agenda una nueva llamada.' show = { modal } handleClose = { this.handleCloseModal }>
+                <Modal title='Agenda una nueva llamada.' show={modal} handleClose={this.handleCloseModal}>
                     <AgendaLlamada
                         form={form}
                         onChange={this.onChange}
-                        onSubmit = { this.agendarLlamada }
-                        user = { this.props.authUser.user }
-                        lead = { lead }
+                        onSubmit={this.agendarLlamada}
+                        user={this.props.authUser.user}
+                        lead={lead}
                     />
                 </Modal>
             </Layout>

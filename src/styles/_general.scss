@@ -342,6 +342,112 @@ td.concepto {
     }
 }
 
+//Inicio: Dropdown para: CRM
+#dropdown-button-drop-left-crm {
+    color: #B5B5C3;
+    background-color: transparent;
+    border-color: transparent;
+    height: 30px;
+    width: 30px;
+    justify-content: center;
+    display: inline-flex;
+    align-items: center;
+
+    // align-self:center;
+    &:hover {
+        background-color: #F3F6F9;
+        border-color: transparent;
+    }
+
+    &:active {
+        background-color: #F3F6F9;
+        border-color: transparent;
+    }
+
+    i {
+        display: inline-flex;
+        -webkit-box-align: center;
+        align-items: center;
+        -webkit-box-pack: center;
+        justify-content: center;
+        color: #B5B5C3;
+
+        &:hover {
+            color: #2171c1;
+        }
+
+        &:active {
+            color: #2171c1;
+        }
+
+    }
+    // span.navi-text.align-self-center.text-dark-50.font-weight-bold{
+    //     font-weight: 500 !important;
+    //     color: #80808F;
+    //     &:hover {
+    //         color: #2171c1;
+    //     }
+
+    //     &:active {
+    //         color: #2171c1;
+    //     }
+    // }
+}
+
+a#rh-proveedores {
+    font-weight: 500;
+    color: #7f7f7f;
+    &:hover {
+        color: #2171c1;
+        text-decoration: none;
+        background-color: #F3F6F9;
+    }
+
+    &:active {
+        color: #2171c1;
+        text-decoration: none;
+        background-color: #F3F6F9;
+    }
+}
+
+a#cancelados-rechazados {
+    font-weight: 500;
+    color: #7f7f7f;
+    &:hover {
+        color: #2171c1;
+        text-decoration: none;
+        background-color: #F3F6F9;
+    }
+
+    &:active {
+        color: #2171c1;
+        text-decoration: none;
+        background-color: #F3F6F9;
+    }
+}
+
+a#cancelados-rechazados.text-hover-primary.dropdown-item.active {
+    color: #2171c1;
+    text-decoration: none;
+    background-color: #F3F6F9;
+    font-weight: 500;
+
+    i {
+        color: #2171c1;
+    }
+}
+
+a#rh-proveedores.text-hover-primary.dropdown-item.active {
+    color: #2171c1;
+    text-decoration: none;
+    background-color: #F3F6F9;
+    font-weight: 500;
+
+    i {
+        color: #2171c1;
+    }
+}
+
 // .btn.btn-primary:hover:not(.btn-text), .btn.btn-primary:focus:not(.btn-text), .btn.btn-primary.focus:not(.btn-text) {
 //     color: #FFFFFF!important;
 //     background-color: #2171c1!important;
@@ -441,44 +547,55 @@ table.dataTable.display tbody>tr.selected>.sorting_1 {
 .dataTables_wrapper .dataTable tbody tr.selected td {
     background-color: #ECF0F3 !important;
 }
+
 // COLOR PINK
 .bg-light-pink {
     background-color: #fbeff7 !important;
 }
+
 .text-pink {
     color: #e44e93 !important;
 }
+
 a.text-hover-pink:hover,
 .text-hover-pink:hover {
     transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
     color: #e44e93 !important;
 }
+
 // COLOR BROWN
 .bg-light-brown {
     background-color: #EFEBE9 !important;
 }
+
 .text-brown {
     color: #5D4037 !important;
 }
+
 a.text-hover-brown:hover,
 .text-hover-brown:hover {
     transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
     color: #5D4037 !important;
 }
+
 // COLOR GREEN
 .bg-light-green {
     background-color: #E8F5E9 !important;
 }
+
 .text-green {
     color: #388E3C !important;
 }
+
 // COLOR GRAY
 .bg-light-gray {
     background-color: #ECEFF1 !important;
 }
+
 .text-gray {
     color: #5F6A6A !important;
 }
+
 a.text-hover-gray:hover,
 .text-hover-gray:hover {
     transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
@@ -563,11 +680,12 @@ table#esquemas {
     color: #686871 !important;
 }
 
-.timeline-label{
-    font-size: 0.759rem!important;
+.timeline-label {
+    font-size: 0.759rem !important;
 }
-div#asideMenuScroll{
+
+div#asideMenuScroll {
     @include screen($xxl) {
-        height: 989px!important;
+        height: 989px !important;
     }
 }
