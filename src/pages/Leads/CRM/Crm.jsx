@@ -93,6 +93,7 @@ class Crm extends Component {
             fecha: new Date(),
             hora: '08',
             minuto: '00',
+            cliente: ''
         },
         modal: false
     }
@@ -418,8 +419,8 @@ class Crm extends Component {
     }
     async getLeadsRhProveedores() {
         const { access_token } = this.props.authUser
-        const { lead_rh_proveedores } = this.state
-        await axios.get(URL_DEV + 'crm/table/lead-rh-proveedor/' + lead_rh_proveedores.numPage, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        const { lead_rh_proveedores, form } = this.state
+        await axios.put(URL_DEV + 'crm/table/lead-rh-proveedor/' + lead_rh_proveedores.numPage, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { leads, total } = response.data
                 const { lead_rh_proveedores } = this.state
@@ -448,8 +449,8 @@ class Crm extends Component {
 
     async getLeadsWeb() {
         const { access_token } = this.props.authUser
-        const { lead_web } = this.state
-        await axios.get(URL_DEV + 'crm/table/lead-web/' + lead_web.numPage, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        const { lead_web, form } = this.state
+        await axios.put(URL_DEV + 'crm/table/lead-web/' + lead_web.numPage, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { leads, total } = response.data
                 const { lead_web } = this.state
@@ -477,8 +478,8 @@ class Crm extends Component {
     }
     async getLeadsEnContacto() {
         const { access_token } = this.props.authUser
-        const { leads_en_contacto } = this.state
-        await axios.get(URL_DEV + 'crm/table/lead-en-contacto/' + leads_en_contacto.numPage, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        const { leads_en_contacto, form } = this.state
+        await axios.put(URL_DEV + 'crm/table/lead-en-contacto/' + leads_en_contacto.numPage, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { leads, total } = response.data
                 const { leads_en_contacto } = this.state
@@ -506,8 +507,8 @@ class Crm extends Component {
     }
     async getLeadsCancelados() {
         const { access_token } = this.props.authUser
-        const { leads_cancelados } = this.state
-        await axios.get(URL_DEV + 'crm/table/lead-cancelados/' + leads_cancelados.numPage, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        const { leads_cancelados, form } = this.state
+        await axios.put(URL_DEV + 'crm/table/lead-cancelados/' + leads_cancelados.numPage, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { leads, total } = response.data
                 const { leads_cancelados } = this.state
@@ -535,8 +536,8 @@ class Crm extends Component {
     }
     async getLeadsContratados() {
         const { access_token } = this.props.authUser
-        const { leads_contratados } = this.state
-        await axios.get(URL_DEV + 'crm/table/lead-contratados/' + leads_contratados.numPage, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        const { leads_contratados, form } = this.state
+        await axios.put(URL_DEV + 'crm/table/lead-contratados/' + leads_contratados.numPage, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { leads, total } = response.data
                 const { leads_contratados } = this.state
@@ -564,8 +565,8 @@ class Crm extends Component {
     }
     async getLeadsDetenidos() {
         const { access_token } = this.props.authUser
-        const { leads_detenidos } = this.state
-        await axios.get(URL_DEV + 'crm/table/lead-detenidos/' + leads_detenidos.numPage, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        const { leads_detenidos, form } = this.state
+        await axios.put(URL_DEV + 'crm/table/lead-detenidos/' + leads_detenidos.numPage, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { leads, total } = response.data
                 const { leads_detenidos } = this.state
@@ -593,9 +594,7 @@ class Crm extends Component {
     }
     onChange = e => {
         const { name, value } = e.target
-        console.log(name, value)
         const { form } = this.state
-        console.log(name, value)
         form[name] = value
         this.setState({
             ...this.state,
@@ -658,6 +657,10 @@ class Crm extends Component {
     }
 
     changeActiveTable = key => {
+        const { form, activeTable } = this.state
+        if( key !== activeTable ){
+            form.cliente = '';
+        }
         switch (key) {
             case 'rh-proveedores':
                 this.getLeadsRhProveedores();
@@ -681,7 +684,8 @@ class Crm extends Component {
         }
         this.setState({
             ...this.state,
-            activeTable: key
+            activeTable: key,
+            form
         })
     }
     openModal = lead => {
@@ -842,7 +846,8 @@ class Crm extends Component {
                                     <div className="form-group row form-group-marginless d-flex justify-content-center">
                                         <div className="col-md-3">
                                             <div className="input-icon">
-                                                <input type="text" className="form-control form-control-solid" placeholder="BUSCAR CLIENTE" />
+                                                <input value = { form.cliente } type="text" className="form-control form-control-solid" 
+                                                    placeholder="BUSCAR CLIENTE" onChange = { this.onChange } name = 'cliente' />
                                                 <span>
                                                     <i className="flaticon2-search-1 text-muted"></i>
                                                 </span>
@@ -856,22 +861,26 @@ class Crm extends Component {
                                                 </span>
                                             </div>
                                         </div>
-                                        <div className="col-md-3">
-                                            <Form.Control
-                                                className="form-control text-uppercase form-control-solid"
-                                                defaultValue={0}
-                                                // value = {form.origen} 
-                                                // onChange={onChange} 
-                                                name='origen'
-                                                // formeditado={formeditado} 
-                                                as="select">
-                                                <option disabled value={0}>Selecciona el origen</option>
-                                                <option value={"web"} className="bg-white" >Web</option>
-                                                <option value={"facebook"} className="bg-white">Facebook</option>
-                                                <option value={"google"} className="bg-white">Google</option>
-                                                <option value={"linkedin"} className="bg-white">Linkedin</option>
-                                            </Form.Control>
-                                        </div>
+                                        {
+                                            activeTable !== 'web' ?
+                                                <div className="col-md-3">
+                                                    <Form.Control
+                                                        className="form-control text-uppercase form-control-solid"
+                                                        defaultValue={0}
+                                                        // value = {form.origen} 
+                                                        // onChange={onChange} 
+                                                        name='origen'
+                                                        // formeditado={formeditado} 
+                                                        as="select">
+                                                        <option disabled value={0}>Selecciona el origen</option>
+                                                        <option value={"web"} className="bg-white" >Web</option>
+                                                        <option value={"facebook"} className="bg-white">Facebook</option>
+                                                        <option value={"google"} className="bg-white">Google</option>
+                                                        <option value={"linkedin"} className="bg-white">Linkedin</option>
+                                                    </Form.Control>
+                                                </div>
+                                            : ''
+                                        }
                                         {
                                             activeTable === 'cancelados' ?
                                                 <div className="col-md-2">
@@ -905,7 +914,7 @@ class Crm extends Component {
                                                     </div>
                                                     : ''
                                         }
-                                        <div className="col-md-1">
+                                        <div className="col-md-1" onClick = { (e) => { e.preventDefault(); this.changeActiveTable(activeTable) } } >
                                             <span className="btn btn-light-primary px-6 font-weight-bold">Buscar</span>
                                         </div>
                                     </div>
