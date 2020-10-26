@@ -88,7 +88,7 @@ class Notificaciones extends Component {
                                                 </div>
                                                 <div className = 'd-flex justify-content-end text-dark-50 mt-3'>
                                                     {
-                                                        setDateTableLG(Notificacion.created_at)
+                                                        setDateTableLG(notificacion.created_at)
                                                     }
                                                 </div>
                                             </div>
