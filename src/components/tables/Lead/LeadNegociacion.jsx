@@ -4,6 +4,7 @@ import { OverlayTrigger, Tooltip, Dropdown } from 'react-bootstrap'
 class LeadNegociacion extends Component {
 
     render() {
+        const { leads, onClickNext, onClickPrev,openModalWithInput, changeEstatus} = this.props
         return (
             <div className="tab-content">
                 <div className="table-responsive-lg">
@@ -59,6 +60,7 @@ class LeadNegociacion extends Component {
                                         </OverlayTrigger>
                                     </div>
                                 </td>
+                                
                                 <td className="text-center">
                                     <Dropdown>
                                         <Dropdown.Toggle style={{ backgroundColor: '#EFEBE9', color: '#5D4037', border: 'transparent', padding: '2.8px 5.6px', width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '0.863rem', fontWeight: 500 }}
@@ -69,21 +71,21 @@ class LeadNegociacion extends Component {
                                             <Dropdown.Header>
                                                 <span className="font-size-sm">Elige una opción</span>
                                             </Dropdown.Header>
-                                            <Dropdown.Item href="#" className="p-0">
+                                            <Dropdown.Item href="#" className="p-0" >{/* onClick={(e) => { e.preventDefault(); changeEstatus('Contratado', lead.id ) }} */}
                                                 <span className="navi-link w-100">
                                                     <span className="navi-text">
                                                         <span className="label label-xl label-inline label-light-success rounded-0 w-100">CONTRATADO</span>
                                                     </span>
                                                 </span>
                                             </Dropdown.Item>
-                                            <Dropdown.Item href="#" className="p-0">
+                                            <Dropdown.Item href="#" className="p-0" > {/*onClick={(e) => { e.preventDefault(); changeEstatus('Detenido', lead.id ) }} */}
                                                 <span className="navi-link w-100">
                                                     <span className="navi-text">
                                                         <span className="label label-xl label-inline bg-light-gray text-gray rounded-0 w-100">DETENIDO</span>
                                                     </span>
                                                 </span>
                                             </Dropdown.Item>
-                                            <Dropdown.Item href="#" className="p-0">
+                                            <Dropdown.Item href="#" className="p-0" >{/* onClick={(e) => { e.preventDefault(); openModalWithInput('Cancelado', lead.id ) }} */}
                                                 <span className="navi-link w-100">
                                                     <span className="navi-text">
                                                         <span className="label label-xl label-inline label-light-danger rounded-0 w-100">CANCELADO</span>

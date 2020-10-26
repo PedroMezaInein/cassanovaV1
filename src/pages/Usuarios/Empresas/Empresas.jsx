@@ -55,6 +55,12 @@ class Empresas extends Component {
                 id: 'letras',
                 value: '',
                 files: []
+            },
+            {
+                placeholder: 'Firma de contacto',
+                id: 'firma_contacto',
+                value: '',
+                files: []
             }
         ],
         adjuntos: [],
@@ -153,6 +159,7 @@ class Empresas extends Component {
             empresa: empresa,
             form: this.clearForm(),
             formeditado: 0,
+            defaultActiveKey: 'logos'
         })
     }
     
@@ -394,7 +401,7 @@ class Empresas extends Component {
         })
     }
     render() {
-        const { modalDelete, empresa, modalAdjuntos, showadjuntos, defaultactivekey, modalSee } = this.state
+        const { modalDelete, empresa, modalAdjuntos, showadjuntos, defaultActiveKey, modalSee } = this.state
         return (
             <Layout active={'usuarios'} {...this.props}>
                 <NewTableServerRender 
@@ -427,7 +434,7 @@ class Empresas extends Component {
                     <div className="p-2">
                         <Card className="card-custom card-without-box-shadown">
                             <Card.Body>
-                                <Tab.Container id="left-tabs-example" defaultActiveKey={defaultactivekey}>
+                                <Tab.Container id="left-tabs-example" defaultActiveKey={defaultActiveKey}>
                                     <Row>
                                         <Col md={3} className="navi navi-accent navi-hover navi-bold border-nav">
                                             <Nav variant="pills" className="flex-column navi navi-hover navi-active">

@@ -21,13 +21,13 @@ class LeadTelefono extends Component {
             obra: '',
             email: '',
             tipoProyectoNombre: '',
-            origen:''
+            origen: ''
         },
         tipo: '',
         options: {
             empresas: [],
             tipos: [],
-            origenes:[]
+            origenes: []
         }
     }
     componentDidMount() {
@@ -87,8 +87,9 @@ class LeadTelefono extends Component {
     }
 
     updateMessages2 = (name, value) => {
-        const { form, options, empresa: emp} = this.state
+        const { form, options, empresa: emp } = this.state
         const { name: usuario } = this.props.authUser.user
+        
         switch (name) {
             case 'empresa_dirigida':
                 let empresa = ''
@@ -98,18 +99,38 @@ class LeadTelefono extends Component {
                     }
                     return false
                 })
-                return <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">Buen día. Asesoría comercial, <span className="font-weight-boldest">{empresa.name}</span>, lo atiende {usuario}, <span className="font-weight-boldest"><em>¿Con quién tengo el gusto?</em></span></div>;
+                if (empresa.name === 'INFRAESTRUCTURA MÉDICA') {
+                    return <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">Buen día. Asesoría comercial, <span className="font-weight-boldest">{empresa.name}</span>, lo atiende {usuario}, <span className="font-weight-boldest"><em>¿Con quién tengo el gusto?</em></span></div>;
+                } else if (empresa.name === 'INEIN') {
+                    return <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">Buenos días. <span className="font-weight-boldest">Infraestructura e Interiores</span>, soy {usuario}, <span className="font-weight-boldest"><em>¿Con quién tengo el gusto?</em></span></div>;
+                }
             case 'name':
-                return <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">Mucho gusto <span className="font-weight-boldest">{value}, <em>¿Cuál es el motivo de su llamada?</em></span></div>;
+                if (emp.name === 'INFRAESTRUCTURA MÉDICA') {
+                    return <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">Mucho gusto <span className="font-weight-boldest">{value}, <em>¿Cuál es el motivo de su llamada?</em></span></div>;
+                } else if (emp.name === 'INEIN') {
+                    return <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">Mucho gusto <span className="font-weight-boldest">{value}, <em>¿En que puedo ayudarte?</em></span></div>;
+                }
             case 'tipoProyecto':
-            case 'tipoProyectoNombre':    
+            case 'tipoProyectoNombre':
+                if (emp.name === 'INFRAESTRUCTURA MÉDICA') {
                 return <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">En <span className="font-weight-boldest">{emp.name}</span> somos especialistas en el diseño, construcción y remodelación de  <span className="font-weight-boldest">{form.tipoProyectoNombre}</span><span className="font-weight-boldest">{form.tipo_proyecto}</span>. <span className="font-weight-boldest"><em>¿Su proyecto se trata de diseño o construcción?</em></span></div>;
-            case 'diseño':
+                } else if (emp.name === 'INEIN') {
+                    return <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">¡Excelente! Te agradezco que nos tomes en cuenta para tu proyecto puedes indicarme <span className="font-weight-boldest"><em>¿Cuál es el alcance de este?</em></span></div>;
+                }
+                case 'diseño':
             case 'obra':
-                return <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">Me gustaría conocer más detalles específicos acerca su proyecto <span className="font-weight-boldest"><em>por lo que le solicito me pueda proporcionar su correo electrónico </em></span>para hacerle llegar un cuestionario</div>;
-            case 'email':
+                if (emp.name === 'INFRAESTRUCTURA MÉDICA') {
+                    return <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">Me gustaría conocer más detalles específicos acerca su proyecto <span className="font-weight-boldest"><em>por lo que le solicito me pueda proporcionar su correo electrónico </em></span>para hacerle llegar un cuestionario</div>;
+                } else if (emp.name === 'INEIN') {
+                    return <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">Me gustaría conocer más detalles de tu proyecto <span className="font-weight-boldest"><em>¿Me podrías proporcionar tu correo electrónico?</em></span>&nbsp;Para hacerte llegar un cuestionario</div>;
+                }
+                case 'email':
+                if (emp.name === 'INFRAESTRUCTURA MÉDICA') {
                 return <><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Gracias <span className="font-weight-boldest">{form.name}</span>, en unos minutos le <span className="font-weight-boldest"><em>estaré enviado dicho cuestionario a su correo y además le anexare un documento que será útil para usted </em></span>, en él se describe detalladamente cada servicio que podemos brindarle.</div><div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Una vez que me haga llegar su información, la analizare y <span className="font-weight-boldest"><em>posteriormente me estaré comunicado con usted.</em></span></div><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">Gracias por contactarnos, que tenga un excelente día.</div></>;
-            default:
+                } else if (emp.name === 'INEIN') {
+                return <><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">En unos minutos hare<span className="font-weight-boldest"><em> llegar a tu correo un cuestionario</em></span>, te pido nos apoyes en constarlo, para que una vez que yo lo reciba pueda evaluar tu proyecto, ¿De acuerdo?.</div><div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">¿Existiría algo mas en lo que te pueda ayudar antes de finalizar esta llamada?</div><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">Muy bien <span className="font-weight-boldest">{form.name}</span>, en un momento te hago el envio del cuestionario. Que tengas un excelente día.</div></>;
+                }
+                default:
                 return ''
         }
     }
@@ -119,10 +140,10 @@ class LeadTelefono extends Component {
         await axios.get(URL_DEV + 'crm/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 swal.close()
-                const { empresas, origenes} = response.data
+                const { empresas, origenes } = response.data
                 const { options } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
-                options['origenes'] = setOptions(origenes, 'origen','id')
+                options['origenes'] = setOptions(origenes, 'origen', 'id')
                 this.setState({
                     ...this.state,
                     options
@@ -141,7 +162,7 @@ class LeadTelefono extends Component {
         })
     }
 
-    onSubmit = async(e) =>{
+    onSubmit = async (e) => {
         waitAlert();
         const { form } = this.state
         const { access_token } = this.props.authUser
@@ -151,7 +172,7 @@ class LeadTelefono extends Component {
                 const { history } = this.props
                 history.push({
                     pathname: '/leads/crm',
-                    state: { tipo: 'lead-telefono'}
+                    state: { tipo: 'lead-telefono' }
                 });
             },
             (error) => {
@@ -179,7 +200,7 @@ class LeadTelefono extends Component {
                     <div className="card-body pt-0">
                         {messages}
                         <Form id="form-lead-telefono"
-                            onSubmit = {
+                            onSubmit={
                                 (e) => {
                                     e.preventDefault();
                                     validateAlert(this.onSubmit, e, 'form-lead-telefono')
@@ -283,52 +304,52 @@ class LeadTelefono extends Component {
                                 }
                                 {
                                     form.email !== '' ?
-                                    <>
-                                        <div className="col-md-4">
-                                            <InputGray
-                                                name='empresa'
-                                                withicon={1}
-                                                value={form.empresa}
-                                                placeholder='Empresa'
-                                                onChange={this.onChange}
-                                                iconclass='fas fa-building'
-                                            />
-                                        </div>
-                                        <div className="col-md-4">
-                                            <InputPhoneGray
-                                                placeholder="TELÉFONO DE CONTACTO"
-                                                withicon={1}
-                                                iconclass="fas fa-mobile-alt"
-                                                name="telefono"
-                                                value={form.telefono}
-                                                onChange={this.onChange}
-                                                patterns={TEL}
-                                                thousandseparator={false}
-                                                prefix=''
-                                            />
-                                        </div>
-                                        <div className="col-md-8">
-                                            <InputGray
-                                                placeholder="COMENTARIO"
-                                                withicon={0}
-                                                name="comentario"
-                                                value={form.comentario}
-                                                onChange={this.onChange}
-                                                rows={1}
-                                                as='textarea'
-                                            />
-                                        </div>
-                                        <div className="col-md-4">
-                                            <SelectSearchGray
-                                                options={options.origenes}
-                                                placeholder="SELECCIONA EL ORIGEN PARA EL LEAD"
-                                                name="origen"
-                                                value={form.origen}
-                                                onChange={this.updateOrigen}
-                                                iconclass="fas fa-mail-bulk"
-                                            />
-                                        </div>
-                                    </>
+                                        <>
+                                            <div className="col-md-4">
+                                                <InputGray
+                                                    name='empresa'
+                                                    withicon={1}
+                                                    value={form.empresa}
+                                                    placeholder='Empresa'
+                                                    onChange={this.onChange}
+                                                    iconclass='fas fa-building'
+                                                />
+                                            </div>
+                                            <div className="col-md-4">
+                                                <InputPhoneGray
+                                                    placeholder="TELÉFONO DE CONTACTO"
+                                                    withicon={1}
+                                                    iconclass="fas fa-mobile-alt"
+                                                    name="telefono"
+                                                    value={form.telefono}
+                                                    onChange={this.onChange}
+                                                    patterns={TEL}
+                                                    thousandseparator={false}
+                                                    prefix=''
+                                                />
+                                            </div>
+                                            <div className="col-md-8">
+                                                <InputGray
+                                                    placeholder="COMENTARIO"
+                                                    withicon={0}
+                                                    name="comentario"
+                                                    value={form.comentario}
+                                                    onChange={this.onChange}
+                                                    rows={1}
+                                                    as='textarea'
+                                                />
+                                            </div>
+                                            <div className="col-md-4">
+                                                <SelectSearchGray
+                                                    options={options.origenes}
+                                                    placeholder="SELECCIONA EL ORIGEN PARA EL LEAD"
+                                                    name="origen"
+                                                    value={form.origen}
+                                                    onChange={this.updateOrigen}
+                                                    iconclass="fas fa-mail-bulk"
+                                                />
+                                            </div>
+                                        </>
                                         : ''
                                 }
                             </div>
@@ -336,14 +357,14 @@ class LeadTelefono extends Component {
                                 form.telefono ?
                                     <div className="card-footer py-3 pr-1 text-right">
                                         <Button text='ENVIAR' type='submit' className="btn btn-primary mr-2" icon=''
-                                            onClick = {
+                                            onClick={
                                                 (e) => {
                                                     e.preventDefault();
                                                     validateAlert(this.onSubmit, e, 'form-lead-telefono')
                                                 }
-                                            }/>
+                                            } />
                                     </div>
-                                :''
+                                    : ''
                             }
                         </Form>
                     </div>
