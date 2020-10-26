@@ -33,6 +33,7 @@ class LeadNoContratado extends Component {
                                 </th>
                                 <th style={{ minWidth: "140px" }}>Fecha</th>
                                 <th style={{ minWidth: "100px" }}>Origen</th>
+                                <th style={{ minWidth: "180px" }}>Motivo</th>
                                 {/* <th style={{ minWidth: "100px" }} className="text-center">Vendedor</th> */}
                                 <th style={{ minWidth: "100px" }} className="text-center">Estatus</th>
                                 <th style={{ minWidth: "70px" }}></th>
@@ -54,14 +55,29 @@ class LeadNoContratado extends Component {
                                                         <a href={`mailto:+${lead.email}`} className="text-dark-75 font-weight-bolder text-hover-danger mb-1 font-size-lg">
                                                             {lead.nombre}
                                                         </a>
-                                                        <span className="text-muted font-weight-bold d-block">{lead.prospecto.tipo_proyecto.tipo}
-                                                        </span>
+                                                        {
+                                                            lead.prospecto ?
+                                                                lead.prospecto.tipo_proyecto ?
+                                                                    <span className="text-muted font-weight-bold d-block">{lead.prospecto.tipo_proyecto.tipo}</span>    
+                                                                : ''
+                                                            : ''
+                                                        }
                                                     </div>
                                                 </div>
                                             </td>
                                             <td className="font-size-lg text-left font-weight-bolder">
                                                 <span>Ingreso: </span><span className="text-muted font-weight-bold font-size-sm">{setDateTableLG(lead.created_at)}</span><br />
-                                                <span>Último contacto: </span><span className="text-muted font-weight-bold font-size-sm">{setDateTableLG(lead.prospecto.contactos[0].created_at)}</span>
+                                                <span>Último contacto: </span><span className="text-muted font-weight-bold font-size-sm">
+                                                    {
+                                                        lead.prospecto ?
+                                                            lead.prospecto.contactos ?
+                                                                lead.prospecto.contactos.length > 0 ?
+                                                                    setDateTableLG(lead.prospecto.contactos[0].created_at)
+                                                                : ''
+                                                            : ''
+                                                        : ''
+                                                    }
+                                                </span>
                                             </td>
                                             <td>
                                                 {
@@ -71,6 +87,11 @@ class LeadNoContratado extends Component {
                                                         </span>
                                                         : ''
                                                 }
+                                            </td>
+                                            <td>
+                                                <span className="text-muted font-weight-bold font-size-sm">
+                                                    {lead.motivo}
+                                                </span>
                                             </td>
                                             {/* <td className="d-flex justify-content-center">
                                                 <div className="symbol-group symbol-hover">
