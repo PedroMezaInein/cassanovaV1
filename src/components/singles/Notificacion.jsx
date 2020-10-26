@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../functions/routers"
+import { AudioApp } from '../singles'
 
 class Notificacion extends Component {
 
@@ -26,6 +27,7 @@ class Notificacion extends Component {
         const { data } = this.props
         return (
             <div className="row mx-0">
+                <AudioApp />
                 <div className="col-3 d-flex justify-content-center align-items-center">
                     <span className="svg-icon svg-icon-lg svg-icon-success mx-2">
                         <SVG src = { this.setIcon(data.tipo) } />

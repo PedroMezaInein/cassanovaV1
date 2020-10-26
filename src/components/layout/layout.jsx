@@ -56,9 +56,9 @@ class Layout extends Component {
     async getNotificacionesAxios() {
         const options = {
             position: "top-right",
-            autoClose: 5000,
+            autoClose: false,
             hideProgressBar: true,
-            closeOnClick: false,
+            closeOnClick: true,
             pauseOnHover: true,
             draggable: false,
             progress: undefined,
