@@ -36,6 +36,21 @@ export default function NavUser() {
 						</div>
 					</div>
 				</a>
+				<a href="/mis-notificaciones" className="navi-item">
+					<div className="navi-link">
+						<div className="symbol symbol-40 bg-light mr-3">
+							<div className="symbol-label">
+								<span className="text-warning">
+								<i className="flaticon2-file text-warning"></i>
+								</span>
+							</div>
+						</div>
+						<div className="navi-text">
+							<div className="font-weight-bold text-dark text-hover-info">Notificaciones</div>
+							<div className="text-muted">Mis notificaciones</div>
+						</div>
+					</div>
+				</a>
 			</div>
         </>
     );
