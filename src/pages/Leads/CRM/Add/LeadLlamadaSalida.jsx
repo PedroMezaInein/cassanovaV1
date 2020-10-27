@@ -203,9 +203,9 @@ class LeadLlamadaSalida extends Component {
 
     onSubmit = async (e) => {
         waitAlert();
-        const { form } = this.state
+        const { form, lead } = this.state
         const { access_token } = this.props.authUser
-        await axios.post(URL_DEV + 'crm/add/lead/telefono', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.put(URL_DEV +`crm/update/lead/llamada-saliente/${lead.id}`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Actualizaste los permisos.',)
                 const { history } = this.props
