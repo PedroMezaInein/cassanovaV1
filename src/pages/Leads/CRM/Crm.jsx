@@ -837,6 +837,13 @@ class Crm extends Component {
             state: { lead: lead }
         });
     }
+    changePageDetails = (lead) => {
+        const { history } = this.props
+        history.push({
+            pathname: '/leads/crm/info/info',
+            state: { lead: lead }
+        });
+    }
 
     render() {
         const { ultimos_contactados, prospectos_sin_contactar, ultimos_ingresados, lead_web, activeTable, leads_en_contacto,
@@ -1035,6 +1042,7 @@ class Crm extends Component {
                                             onClickPrev={this.prevPageLeadEnContacto}
                                             changeEstatus={this.changeEstatus}
                                             openModalWithInput={this.openModalWithInput}
+                                            changePageDetails={this.changePageDetails}
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="negociacion">

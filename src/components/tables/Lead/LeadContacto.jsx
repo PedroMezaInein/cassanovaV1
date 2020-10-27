@@ -23,7 +23,7 @@ class LeadContacto extends Component {
     }
 
     render() {
-        const { leads, onClickNext, onClickPrev,openModalWithInput, changeEstatus} = this.props
+        const { leads, onClickNext, onClickPrev,openModalWithInput, changeEstatus, changePageDetails} = this.props
         return (
             <div className="tab-content">
                 <div className="table-responsive-lg">
@@ -140,7 +140,7 @@ class LeadContacto extends Component {
                                             </td>
                                             <td className="pr-0 text-center">
                                                 <OverlayTrigger overlay={<Tooltip>Ver más</Tooltip>}>
-                                                    <a href='/leads/crm/info/info' className="btn btn-default btn-icon btn-sm mr-2">
+                                                    <a  onClick={(e)=> {changePageDetails(lead)}} className="btn btn-default btn-icon btn-sm mr-2">
                                                         <i className="flaticon2-plus icon-nm"></i>
                                                     </a>
                                                 </OverlayTrigger>
