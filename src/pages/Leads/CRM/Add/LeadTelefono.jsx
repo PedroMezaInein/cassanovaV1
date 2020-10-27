@@ -194,7 +194,7 @@ class LeadTelefono extends Component {
                 <div className="card-custom card-stretch gutter-b py-2 card">
                     <div className="align-items-center border-0 card-header">
                         <h3 className="card-title align-items-start flex-column">
-                            <span className="font-weight-bolder text-dark">Formulario por llamada</span>
+                            <span className="font-weight-bolder text-dark">Formulario por llamada entrante</span>
                         </h3>
                     </div>
                     <div className="card-body pt-0">
