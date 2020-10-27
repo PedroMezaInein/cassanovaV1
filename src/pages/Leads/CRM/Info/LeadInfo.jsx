@@ -1,14 +1,106 @@
+import { connect } from 'react-redux';
 import React, { Component } from 'react'
 import Layout from '../../../../components/layout/layout'
 import { Col, Row, Card, Tab, Nav } from 'react-bootstrap'
 import { Button, InputGray, InputPhoneGray } from '../../../../components/form-components';
-import { TEL } from '../../../../constants'
+import { TEL, URL_DEV, EMAIL} from '../../../../constants'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../../functions/routers"
+import { setOptions,setDateTableLG } from '../../../../functions/setters';
+import axios from 'axios'
+import { doneAlert, errorAlert, forbiddenAccessAlert, validateAlert, waitAlert } from '../../../../functions/alert';
+import swal from 'sweetalert';
 class LeadInfo extends Component {
-
+    state = {
+        messages: [],
+        form: {
+            name: '',
+            empresa: '',
+            empresa_dirigida: '',
+            tipoProyecto: '',
+            comentario: '',
+            diseño: '',
+            obra: '',
+            email: '',
+            tipoProyectoNombre: '',
+            origen: '',
+            telefono: '',
+        },
+        tipo: '',
+        options: {
+            empresas: [],
+            tipos: [],
+            origenes: []
+        },
+        formeditado: 0
+    }
+    componentDidMount() {
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
+        const { match: { params: { action } } } = this.props
+        const { history, location: { state } } = this.props
+        if (state) {
+            if (state.lead) {
+                const { form, options } = this.state
+                const { lead } = state
+                form.name = lead.nombre==='SIN ESPECIFICAR'?'':lead.nombre.toUpperCase()
+                form.email = lead.email.toUpperCase()
+                form.empresa_dirigida = lead.empresa.id.toString()
+                form.telefono= lead.telefono
+                // options['tipos'] = setOptions(lead.empresa.tipos, 'tipo', 'id')
+                this.setState({
+                    ...this.state,
+                    lead: lead,
+                    form,
+                    formeditado: 1,
+                    options
+                })
+            }
+        }
+        this.getOptionsAxios()
+    }
+    async getOptionsAxios() {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'crm/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                swal.close()
+                const { empresas, origenes } = response.data
+                const { options } = this.state
+                options['empresas'] = setOptions(empresas, 'name', 'id')
+                options['origenes'] = setOptions(origenes, 'origen', 'id')
+                
+                // console.log(options.empresas)
+                this.setState({
+                    ...this.state,
+                    options
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401)
+                    forbiddenAccessAlert();
+                else
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    onChange = e => {
+        const { form } = this.state
+        const { name, value } = e.target
+        form[name] = value
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
     render() {
-        const { formeditado, onChange } = this.props
+        const { formeditado } = this.props
+        const {lead, form } = this.state
+        console.log(lead)
         return (
             <Layout active={'leads'}  {...this.props}>
                 <Tab.Container defaultActiveKey="1" className="p-5">
@@ -23,30 +115,55 @@ class LeadInfo extends Component {
                                             only_icon="fab fa-whatsapp pr-0"
                                             tooltip={{ text: 'CONTACTAR POR WHATSAPP' }}
                                         />
+                                        
                                     </div>
-                                    <div className="table-responsive">
-                                        <div className="list min-w-300px" >
-                                            <div className="d-flex align-items-center">
-                                                <div className="symbol symbol-75  symbol-xxl-100 mr-3 align-self-start align-self-xxl-center">
-                                                    <span className="symbol-label font-size-h5 font-weight-bolder">KERALTY</span>
-                                                </div>
-                                                <div className="text-center">
-                                                    <div className="font-weight-bolder font-size-h6 text-dark-75 mb-2">JORDI TIMONEDA </div>
-                                                    <div className="text-muted font-size-sm">KERALTY CENTAURO - OBRA - CUAUHTEMOC MONTERREY</div>
+                                    {
+                                        lead ?
+                                            <div className="table-responsive">
+                                                <div className="list min-w-300px" >
+                                                    <div className="d-flex align-items-center">
+                                                        <div className="symbol symbol-75 symbol-xxl-100 mr-3 col-3">
+                                                            <span className="symbol-label font-weight-bolder">{lead.nombre.split(" ", 1)}</span>
+                                                        </div>
+                                                        <div className="text-center col">
+                                                            <div className="font-weight-bolder font-size-h6 text-dark-75 mb-2">{lead.nombre} </div>
+                                                            <div className="text-muted font-size-sm">{lead.empresa.name}</div>
+                                                            {
+                                                                lead ?
+                                                                    lead.prospecto.estatus_prospecto ?
+                                                                    <span style={{ color: lead.prospecto.estatus_prospecto.color_texto, backgroundColor: lead.prospecto.estatus_prospecto.color_fondo }} className="font-weight-bolder label label-inline mt-2 font-size-xs">{lead.prospecto.estatus_prospecto.estatus}</span>
+                                                                    :''
+                                                                :''
+                                                            }
+                                                        </div>
+                                                    </div>
+                                                    <div className="my-4">
+                                                        <div className="d-flex align-items-center justify-content-between mb-2">
+                                                            <span className="font-weight-bolder mr-2">Origen:</span>
+                                                            <div className="text-muted font-weight-bold text-hover-dark">{lead.origen.origen}</div>
+                                                            
+                                                        </div>
+                                                        {/* <div className="d-flex align-items-center justify-content-between mb-2">
+                                                            <span className="font-weight-bolder mr-2">Teléfono:</span>
+                                                            <a href={`tel:+${lead.telefono}`} className="text-muted font-weight-bold text-hover-dark">{lead.telefono}</a>
+                                                        </div>
+                                                        <div className="d-flex align-items-center justify-content-between mb-2">
+                                                            <span className="font-weight-bolder mr-2">Email:</span>
+                                                                <a href={`mailto:+${lead.email}`} className="text-muted font-weight-bold text-hover-dark">{lead.email}</a>
+                                                        </div> */}
+                                                        <div className="d-flex align-items-center justify-content-between mb-2">
+                                                            <span className="font-weight-bolder mr-2">Fecha de ingreso:</span>
+                                                            <div className="text-muted font-weight-bold text-hover-dark">{setDateTableLG(lead.created_at)}</div>
+                                                        </div>
+                                                        <div className="d-flex align-items-center justify-content-between mb-2">
+                                                            <span className="font-weight-bolder mr-2">Fecha último contacto:</span>
+                                                            <div className="text-muted font-weight-bold text-hover-dark">{setDateTableLG(lead.prospecto.contactos[0].created_at)}</div>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div className="my-4">
-                                                <div className="d-flex align-items-center justify-content-between mb-2">
-                                                    <span className="font-weight-bolder mr-2">Correo electrónico:</span>
-                                                    <a href="mailto:KERALTY@KERALTY.com" className="text-muted font-weight-bold text-hover-dark">KERALTY@KERALTY.com</a>
-                                                </div>
-                                                <div className="d-flex align-items-center justify-content-between mb-2">
-                                                    <span className="font-weight-bolder mr-2">Teléfono:</span>
-                                                    <a href="tel:+5500112233" className="text-muted font-weight-bold text-hover-dark">(55) 0011 - 2233</a>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                            :''
+                                    }
                                     <Nav className="navi navi-bold navi-hover navi-active navi-link-rounded">
                                         <Nav.Item className="navi-item mb-2">
                                             <Nav.Link className="navi-link px-2" eventKey="1">
@@ -63,6 +180,19 @@ class LeadInfo extends Component {
                                         </Nav.Item>
                                         <Nav.Item className="navi-item mb-2">
                                             <Nav.Link className="navi-link px-2" eventKey="2">
+                                                <span className="navi-icon mr-2">
+                                                    <span className="svg-icon">
+                                                        <SVG src={toAbsoluteUrl('/images/svg/Group-chat.svg')} />
+                                                    </span>
+                                                </span>
+                                                <div className="navi-text">
+                                                    <span className="d-block font-weight-bold">Contacto</span>
+                                                    {/* <span className="text-muted">Descripción del paso 2</span> */}
+                                                </div>
+                                            </Nav.Link>
+                                        </Nav.Item>
+                                        <Nav.Item className="navi-item mb-2">
+                                            <Nav.Link className="navi-link px-2" eventKey="3">
                                                 <span className="navi-icon mr-2">
                                                     <span className="svg-icon">
                                                         <SVG src={toAbsoluteUrl('/images/svg/File.svg')} />
@@ -93,50 +223,49 @@ class LeadInfo extends Component {
                                         <Card.Body className="pt-0">
                                             <div className="form-group row form-group-marginless">
                                                 <div className="col-md-4">
-                                                    <InputGray
-                                                        formeditado={formeditado}
-                                                        name='nombre'
-                                                        value={''}
-                                                        onChange={onChange}
-                                                        type='text'
-                                                        placeholder='NOMBRE DEL LEAD'
-                                                        iconclass={'far fa-user'}
+                                                <InputGray
+                                                    placeholder='NOMBRE DEL LEAD'
+                                                    withicon={1}
+                                                    iconclass="far fa-user"
+                                                    name='name'
+                                                    value={form.name}
+                                                    onChange={this.onChange}
                                                     />
                                                 </div>
                                                 <div className="col-md-4">
                                                     <InputGray
-                                                        formeditado={formeditado}
-                                                        name='correo'
-                                                        value={''}
-                                                        onChange={onChange}
-                                                        type='text'
-                                                        placeholder='CORREO ELECTRÓNICO'
-                                                        iconclass={'far fa-envelope'}
+                                                        placeholder="CORREO ELECTRÓNICO DE CONTACTO"
+                                                        withicon={1}
+                                                        iconclass="fas fa-envelope"
+                                                        type="email"
+                                                        name="email"
+                                                        value={form.email}
+                                                        onChange={this.onChange}
+                                                        patterns={EMAIL}
                                                     />
                                                 </div>
                                                 <div className="col-md-4">
                                                     <InputPhoneGray
-                                                        thousandseparator={false}
-                                                        prefix={''}
-                                                        name='telefono'
-                                                        value={''}
-                                                        placeholder='TELÉFONO'
-                                                        onChange={onChange}
-                                                        iconclass={'fas fa-mobile-alt'}
-                                                        messageinc='Incorrecto. Ingresa el número de teléfono.'
+                                                        placeholder="TELÉFONO DE CONTACTO"
+                                                        withicon={1}
+                                                        iconclass="fas fa-mobile-alt"
+                                                        name="telefono"
+                                                        value={form.telefono}
+                                                        onChange={this.onChange}
                                                         patterns={TEL}
-                                                        formeditado={formeditado}
+                                                        thousandseparator={false}
+                                                        prefix=''
                                                     />
                                                 </div>
                                             </div>
-                                            <div className="separator separator-dashed mt-1 mb-2"></div>
+                                            {/* <div className="separator separator-dashed mt-1 mb-2"></div>
                                             <div className="form-group row form-group-marginless">
                                                 <div className="col-md-4">
                                                     <InputGray
                                                         formeditado={formeditado}
                                                         name='nombre'
                                                         value={''}
-                                                        onChange={onChange}
+                                                        onChange={this.onChange}
                                                         type='text'
                                                         placeholder='NOMBRE DEL LEAD'
                                                         iconclass={'far fa-user'}
@@ -147,7 +276,7 @@ class LeadInfo extends Component {
                                                         formeditado={formeditado}
                                                         name='correo'
                                                         value={''}
-                                                        onChange={onChange}
+                                                        onChange={this.onChange}
                                                         type='text'
                                                         placeholder='CORREO ELECTRÓNICO'
                                                         iconclass={'far fa-envelope'}
@@ -160,7 +289,7 @@ class LeadInfo extends Component {
                                                         name='telefono'
                                                         value={''}
                                                         placeholder='TELÉFONO'
-                                                        onChange={onChange}
+                                                        onChange={this.onChange}
                                                         iconclass={'fas fa-mobile-alt'}
                                                         messageinc='Incorrecto. Ingresa el número de teléfono.'
                                                         patterns={TEL}
@@ -175,19 +304,32 @@ class LeadInfo extends Component {
                                                         rows="2"
                                                         name='correo'
                                                         value={'dedee'}
-                                                        onChange={onChange}
+                                                        onChange={this.onChange}
                                                         type='text'
                                                         style={{ paddingLeft: "10px" }}
                                                     />
                                                 </div>
-                                            </div>
+                                            </div> */}
                                         </Card.Body>
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="2">
                                         <Card.Header className="align-items-center border-0 mt-4 pt-3">
                                             <Card.Title>
                                                 <h3 className="card-title align-items-start flex-column">
-                                                    <span className="font-weight-bolder text-dark">Contrato</span>
+                                                    <span className="font-weight-bolder text-dark">Historial de contacto</span>
+                                                    {/* <span class="text-muted mt-3 font-weight-bold font-size-sm">890,344 Sales</span> */}
+                                                </h3>
+                                            </Card.Title>
+                                        </Card.Header>
+                                        <Card.Body>
+                                            1
+                                        </Card.Body>
+                                    </Tab.Pane>
+                                    <Tab.Pane eventKey="3">
+                                        <Card.Header className="align-items-center border-0 mt-4 pt-3">
+                                            <Card.Title>
+                                                <h3 className="card-title align-items-start flex-column">
+                                                    <span className="font-weight-bolder text-dark">Historial de contacto</span>
                                                     {/* <span class="text-muted mt-3 font-weight-bold font-size-sm">890,344 Sales</span> */}
                                                 </h3>
                                             </Card.Title>
@@ -205,5 +347,13 @@ class LeadInfo extends Component {
         )
     }
 }
+const mapStateToProps = (state) => {
+    return {
+        authUser: state.authUser
+    }
+}
 
-export default LeadInfo
+const mapDispatchToProps = (dispatch) => {
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(LeadInfo)

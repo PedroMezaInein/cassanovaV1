@@ -94,12 +94,12 @@ class Contabilidad extends Component {
                                 name: tipo.tipo,
                                 id: tipo.id,
                                 parametricos: {
-                                    construccion_civil_inf: tipo.pivot.construccion_civil_inf,
-                                    construccion_civil_sup: tipo.pivot.construccion_civil_sup,
-                                    construccion_interiores_inf: tipo.pivot.construccion_interiores_inf,
-                                    construccion_interiores_sup: tipo.pivot.construccion_interiores_sup,
-                                    mobiliario_inf: tipo.pivot.mobiliario_inf,
-                                    mobiliario_sup: tipo.pivot.mobiliario_sup
+                                    construccion_civil_inf: tipo.construccion_civil_inf,
+                                    construccion_civil_sup: tipo.construccion_civil_sup,
+                                    construccion_interiores_inf: tipo.construccion_interiores_inf,
+                                    construccion_interiores_sup: tipo.construccion_interiores_sup,
+                                    mobiliario_inf: tipo.mobiliario_inf,
+                                    mobiliario_sup: tipo.mobiliario_sup
                                 }
                             })
                         })
@@ -355,12 +355,12 @@ class Contabilidad extends Component {
                 name: tipo.tipo,
                 id: tipo.id,
                 parametricos: {
-                    construccion_civil_inf: tipo.pivot.construccion_civil_inf,
-                    construccion_civil_sup: tipo.pivot.construccion_civil_sup,
-                    construccion_interiores_inf: tipo.pivot.construccion_interiores_inf,
-                    construccion_interiores_sup: tipo.pivot.construccion_interiores_sup,
-                    mobiliario_inf: tipo.pivot.mobiliario_inf,
-                    mobiliario_sup: tipo.pivot.mobiliario_sup
+                    construccion_civil_inf: tipo.construccion_civil_inf,
+                    construccion_civil_sup: tipo.construccion_civil_sup,
+                    construccion_interiores_inf: tipo.construccion_interiores_inf,
+                    construccion_interiores_sup: tipo.construccion_interiores_sup,
+                    mobiliario_inf: tipo.mobiliario_inf,
+                    mobiliario_sup: tipo.mobiliario_sup
                 }
             })
         })
