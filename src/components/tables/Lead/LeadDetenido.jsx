@@ -31,7 +31,8 @@ class LeadDetenido extends Component {
                                 <th style={{ minWidth: "100px" }} className="pl-7">
                                     <span>Nombre del cliente y proyecto</span>
                                 </th>
-                                <th style={{ minWidth: "140px" }}>Fecha</th>
+                                <th style={{ minWidth: "120px" }}>Fecha</th>
+                                <th style={{ minWidth: "120px" }}>Empresa</th>
                                 <th style={{ minWidth: "100px" }}>Origen</th>
                                 <th style={{ minWidth: "100px" }} className="text-center">Vendedor</th>
                                 <th style={{ minWidth: "100px" }} className="text-center">Estatus</th>
@@ -62,6 +63,9 @@ class LeadDetenido extends Component {
                                             <td className="font-size-lg text-left font-weight-bolder">
                                                 <span>Ingreso: </span><span className="text-muted font-weight-bold font-size-sm">{setDateTableLG(lead.created_at)}</span><br />
                                                 <span>Último contacto: </span><span className="text-muted font-weight-bold font-size-sm">{setDateTableLG(lead.prospecto.contactos[0].created_at)}</span>
+                                            </td>
+                                            <td>
+                                                <span className="text-dark-75 font-weight-bolder d-block font-size-lg">{lead.empresa.name}</span>
                                             </td>
                                             <td>
                                                 {

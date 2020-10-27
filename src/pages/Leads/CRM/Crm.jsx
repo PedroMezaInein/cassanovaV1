@@ -95,7 +95,10 @@ class Crm extends Component {
             minuto: '00',
             cliente: '',
             tipo: 0,
-            proyecto: ''
+            origen: 0,
+            proyecto: '',
+            empresa: 0,
+            estatus: 0
         },
         modal: false
     }
@@ -121,9 +124,18 @@ class Crm extends Component {
         await axios.get(URL_DEV + 'crm/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 swal.close()
-                const { empresas } = response.data
+                const { empresas, origenes } = response.data
                 const { options } = this.state
                 options.empresas = setOptions(empresas, 'name', 'id')
+                console.log(options.empresas, 'empresas')
+                let aux = []
+                origenes.map((origen)=>{
+                    aux.push({
+                        value: origen.id.toString(),
+                        text: origen.origen
+                    })
+                })
+                options.origenes = aux
                 this.setState({
                     ...this.state,
                     options
@@ -676,6 +688,9 @@ class Crm extends Component {
             form.cliente = ''
             form.tipo = 0
             form.proyecto = ''
+            form.origen = 0
+            form.empresa = 0
+            form.estatus = 0
         }
         switch (key) {
             case 'rh-proveedores':
@@ -704,6 +719,42 @@ class Crm extends Component {
             form
         })
     }
+
+    cleanForm = () => {
+        const { form, activeTable } = this.state
+        form.cliente = ''
+        form.tipo = 0
+        form.proyecto = ''
+        form.origen = 0
+        form.empresa = 0
+        form.estatus = 0
+        switch (activeTable) {
+            case 'rh-proveedores':
+                this.getLeadsRhProveedores();
+                break;
+            case 'web':
+                this.getLeadsWeb();
+                break;
+            case 'contacto':
+                this.getLeadsEnContacto();
+                break;
+            case 'contratados':
+                this.getLeadsContratados();
+                break;
+            case 'cancelados':
+                this.getLeadsCancelados();
+                break;
+            case 'detenidos':
+                this.getLeadsDetenidos();
+                break;
+            default: break;
+        }
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
+
     openModal = lead => {
         this.setState({
             ...this.state,
@@ -869,7 +920,7 @@ class Crm extends Component {
                             <div className="card-body">
                                 <div className="mb-5">
                                     <div className="form-group row form-group-marginless d-flex justify-content-center">
-                                        <div className="col-md-3">
+                                        <div className="col-md-2">
                                             <div className="input-icon">
                                                 <input value = { form.cliente } type="text" className="form-control form-control-solid" 
                                                     placeholder="BUSCAR CLIENTE" onChange = { this.onChange } name = 'cliente' />
@@ -878,69 +929,82 @@ class Crm extends Component {
                                                 </span>
                                             </div>
                                         </div>
-                                        <div className="col-md-3">
-                                            <div className="input-icon">
-                                                <input value = { form.proyecto } type="text" className="form-control form-control-solid" 
-                                                    placeholder="BUCAR PROYECTO" onChange = { this.onChange } name = 'proyecto' />
-                                                <span>
-                                                    <i className="flaticon2-search-1 text-muted"></i>
-                                                </span>
-                                            </div>
-                                        </div>
                                         {
-                                            activeTable !== 'web' ?
-                                                <div className="col-md-3">
-                                                    <Form.Control
-                                                        className="form-control text-uppercase form-control-solid"
-                                                        defaultValue={0}
-                                                        // value = {form.origen} 
-                                                        // onChange={onChange} 
-                                                        name='origen'
-                                                        // formeditado={formeditado} 
-                                                        as="select">
-                                                        <option disabled value={0}>Selecciona el origen</option>
-                                                        <option value={"web"} className="bg-white" >Web</option>
-                                                        <option value={"facebook"} className="bg-white">Facebook</option>
-                                                        <option value={"google"} className="bg-white">Google</option>
-                                                        <option value={"linkedin"} className="bg-white">Linkedin</option>
-                                                    </Form.Control>
+                                            activeTable !== "rh-proveedores" && activeTable !== 'cancelados' ?
+                                                <div className="col-md-2">
+                                                    <div className="input-icon">
+                                                        <input value = { form.proyecto } type="text" className="form-control form-control-solid" 
+                                                            placeholder="BUCAR PROYECTO" onChange = { this.onChange } name = 'proyecto' />
+                                                        <span>
+                                                            <i className="flaticon2-search-1 text-muted"></i>
+                                                        </span>
+                                                    </div>
                                                 </div>
                                             : ''
                                         }
                                         {
-                                            activeTable === 'cancelados' ?
+                                            activeTable !== 'web' && activeTable !== 'rh-proveedores' ?
                                                 <div className="col-md-2">
                                                     <Form.Control
                                                         className="form-control text-uppercase form-control-solid"
-                                                        defaultValue={0}
-                                                        // value = {form.estatus} 
-                                                        // onChange={onChange} 
-                                                        // name='estatus' 
-                                                        // formeditado={formeditado} 
-                                                        as="select">
-                                                        <option disabled value={0}>Selecciona el estatus</option>
-                                                        <option value={"cancelado"} className="bg-white">CANCELADO</option>
-                                                        <option value={"rechazado"} className="bg-white">RECHAZADO</option>
+                                                        value = { form.origen }
+                                                        onChange = { this.onChange }
+                                                        name = 'origen'
+                                                        as = "select">
+                                                        <option  value={0}>Selecciona el origen</option>
+                                                        {
+                                                            options.origenes.map((origen, key)=>{
+                                                                return(
+                                                                    <option key = { key } value = { origen.value } className="bg-white" >{origen.text}</option>
+                                                                )
+                                                            })
+                                                        }
                                                     </Form.Control>
                                                 </div>
-                                                : activeTable === 'rh-proveedores' ?
-                                                    <div className="col-md-2">
-                                                        <Form.Control
-                                                            className="form-control text-uppercase form-control-solid"
-                                                            defaultValue = { 0 }
-                                                            value = {form.tipo} 
-                                                            onChange = { this.onChange } 
-                                                            name = 'tipo' 
-                                                            as="select">
-                                                            <option disabled value={0}>Tipo</option>
-                                                            <option value={"proveedor"} className="bg-white">PROVEEDOR</option>
-                                                            <option value={"bolsa_trabajo"} className="bg-white">BOLSA DE TRABAJO</option>
-                                                        </Form.Control>
-                                                    </div>
-                                                    : ''
+                                            : ''
                                         }
-                                        <div className="col-md-1" onClick = { (e) => { e.preventDefault(); this.changeActiveTable(activeTable) } } >
+                                        <div className="col-md-2">
+                                            <Form.Control className="form-control text-uppercase form-control-solid"
+                                                value = { form.empresa } onChange = { this.onChange } name = 'empresa' as = "select">
+                                                <option  value={0}>Selecciona la empresa</option>
+                                                {
+                                                    options.empresas.map((empresa, key)=>{
+                                                        return(
+                                                            <option key = { key } value = { empresa.value } className="bg-white" >{empresa.name}</option>
+                                                        )
+                                                    })
+                                                }
+                                            </Form.Control>
+                                        </div>
+                                        {
+                                            activeTable === 'cancelados' ?
+                                                <div className="col-md-2">
+                                                    <Form.Control className="form-control text-uppercase form-control-solid"
+                                                        value = { form.estatus } onChange = { this.onChange } name = 'estatus' as="select">
+                                                        <option value = { 0 } > Selecciona el estatus </option>
+                                                        <option value = "cancelado" className = "bg-white" >CANCELADO</option>
+                                                        <option value = "rechazado" className = "bg-white" >RECHAZADO</option>
+                                                    </Form.Control>
+                                                </div>
+                                                : ''
+                                        }
+                                        {
+                                            activeTable === 'rh-proveedores' ?
+                                                <div className="col-md-2">
+                                                    <Form.Control className="form-control text-uppercase form-control-solid"
+                                                        value = {form.tipo} onChange = { this.onChange }  name = 'tipo' as="select">
+                                                        <option value = { 0 } >Tipo</option>
+                                                        <option value = "proveedor" className="bg-white">PROVEEDOR</option>
+                                                        <option value = "bolsa_trabajo" className="bg-white">BOLSA DE TRABAJO</option>
+                                                    </Form.Control>
+                                                </div>
+                                                : ''
+                                        }
+                                        <div className="col-md-1 text-center" onClick = { (e) => { e.preventDefault(); this.changeActiveTable(activeTable) } } >
                                             <span className="btn btn-light-primary px-6 font-weight-bold">Buscar</span>
+                                        </div>
+                                        <div className="col-md-1 text-center" onClick = { this.cleanForm } >
+                                            <span className="btn btn-light-danger px-6 font-weight-bold">Limpiar</span>
                                         </div>
                                     </div>
                                 </div>
