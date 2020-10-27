@@ -703,6 +703,8 @@ class Crm extends Component {
         const { access_token } = this.props.authUser
         await axios.put(URL_DEV + 'crm/lead/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                const {activeTable}=this.state
+                this.changeActiveTable(activeTable)            
                 doneAlert('El estatus fue actualizado con éxito.')
             },
             (error) => {
@@ -756,11 +758,18 @@ class Crm extends Component {
                 />
             </div>
         )
+    }    
+    changePageLlamadaSalida = (lead) => {
+        const { history } = this.props
+        history.push({
+            pathname: '/leads/crm/add/llamada-salida',
+            state: { lead: lead }
+        });
     }
 
     render() {
         const { ultimos_contactados, prospectos_sin_contactar, ultimos_ingresados, lead_web, activeTable, leads_en_contacto,
-            leads_contratados, leads_cancelados, leads_detenidos, modal, form, lead, lead_rh_proveedores } = this.state
+            leads_contratados, leads_cancelados, leads_detenidos, modal, form, lead, lead_rh_proveedores, options} = this.state
         return (
             <Layout active='leads' {...this.props} >
                 <Row>
@@ -927,6 +936,7 @@ class Crm extends Component {
                                             sendEmail={this.sendEmailNewWebLead}
                                             openModal={this.openModal}
                                             openModalWithInput={this.openModalWithInput}
+                                            changePageLlamadaSalida={this.changePageLlamadaSalida}
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="contacto">
