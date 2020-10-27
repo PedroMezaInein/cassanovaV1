@@ -8,7 +8,7 @@ import { doneAlert, errorAlert, forbiddenAccessAlert, validateAlert, waitAlert }
 import swal from 'sweetalert';
 import { setOptions } from '../../../../functions/setters';
 import { TEL, URL_DEV, EMAIL } from '../../../../constants';
-class LeadTelefono extends Component {
+class LeadLlamadaSalida extends Component {
     state = {
         messages: [],
         form: {
@@ -21,19 +21,52 @@ class LeadTelefono extends Component {
             obra: '',
             email: '',
             tipoProyectoNombre: '',
-            origen: ''
+            origen: '',
+            telefono: '',
         },
         tipo: '',
         options: {
             empresas: [],
             tipos: [],
             origenes: []
-        }
+        },
+        formeditado: 0
     }
     componentDidMount() {
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
+        const { match: { params: { action } } } = this.props
+        const { history, location: { state } } = this.props
+        if (state) {
+            if (state.lead) {
+                const { form, options } = this.state
+                const { lead } = state
+                console.log(lead,'lead')
+                form.name = lead.nombre==='SIN ESPECIFICAR'?'':lead.nombre.toUpperCase()
+                form.email = lead.email.toUpperCase()
+                form.empresa_dirigida = lead.empresa.id.toString()
+                form.telefono= lead.telefono
+                options['tipos'] = setOptions(lead.empresa.tipos, 'tipo', 'id')
+                this.setState({
+                    ...this.state,
+                    lead: lead,
+                    form,
+                    formeditado: 1,
+                    options
+                })
+            }
+        }
         this.getOptionsAxios()
     }
-    setOptions = (name, array) => {
+    // setOptions = (name, array) => {
+    //     const { options } = this.state
+    //     options[name] = setOptions(array, 'nombre', 'id')
+    //     this.setState({
+    //         ...this.state,
+    //         options
+    //     })
+    // }
+    setOptionsTipo = (name, array) => {
         const { options } = this.state
         options[name] = setOptions(array, 'tipo', 'id')
         this.setState({
@@ -47,7 +80,7 @@ class LeadTelefono extends Component {
         empresas.map(element => {
             if (value.toString() === element.value.toString()) {
                 empresa = element
-                this.setOptions('tipos', element.tipos)
+                this.setOptionsTipo('tipos', element.tipos)
             }
             return false
         })
@@ -57,21 +90,23 @@ class LeadTelefono extends Component {
     }
 
     updateTipoProyecto = value => {
-        const { empresa: { tipos } } = this.state
+        // console.log(empresa.tipos,'empresa')
+        // const { empresa: { tipos } } = this.state
+        const { options } = this.state
         this.onChange({ target: { value: value, name: 'tipoProyecto' } })
         let tipoProyecto = ''
-        tipos.map((tipo) => {
-            if (value.toString() === tipo.id.toString()) {
+        options.tipos.map((tipo) => {
+            if (value.toString() === tipo.value.toString()) {
                 tipoProyecto = tipo.tipo
             }
             return false
         })
         this.onChange({ target: { value: tipoProyecto, name: 'tipoProyectoNombre' } })
     }
+
     updateOrigen = value => {
         this.onChange({ target: { value: value, name: 'origen' } })
     }
-
     onChange = e => {
         const { name, value, checked, type } = e.target
         const { form, } = this.state
@@ -85,53 +120,55 @@ class LeadTelefono extends Component {
             tipo: name
         })
     }
-
+    servicio = servicios => {
+        let servicio = ""
+        servicios.map((element) => {
+            servicio = element.servicio
+            return false
+        })
+        return servicio
+    }
     updateMessages2 = (name, value) => {
-        const { form, options, empresa: emp } = this.state
+        const { form, options, empresa: emp, lead } = this.state
         const { name: usuario } = this.props.authUser.user
-        
         switch (name) {
-            case 'empresa_dirigida':
-                let empresa = ''
-                options.empresas.map((emp) => {
-                    if (emp.value.toString() === value.toString()) {
-                        empresa = emp
-                    }
-                    return false
-                })
-                if (empresa.name === 'INFRAESTRUCTURA MÉDICA') {
-                    return <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">Buen día. Asesoría comercial, <span className="font-weight-boldest">{empresa.name}</span>, lo atiende {usuario}, <span className="font-weight-boldest"><em>¿Con quién tengo el gusto?</em></span></div>;
-                } else if (empresa.name === 'INEIN') {
-                    return <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">Buenos días. <span className="font-weight-boldest">Infraestructura e Interiores</span>, soy {usuario}, <span className="font-weight-boldest"><em>¿Con quién tengo el gusto?</em></span></div>;
-                }
             case 'name':
-                if (emp.name === 'INFRAESTRUCTURA MÉDICA') {
-                    return <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">Mucho gusto <span className="font-weight-boldest">{value}, <em>¿Cuál es el motivo de su llamada?</em></span></div>;
-                } else if (emp.name === 'INEIN') {
-                    return <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">Mucho gusto <span className="font-weight-boldest">{value}, <em>¿En que puedo ayudarte?</em></span></div>;
+                if (lead.empresa.name === 'INFRAESTRUCTURA MÉDICA') {
+                return <><div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Mucho gusto <span className="font-weight-boldest"><em>{form.name.split(" ", 1)}</em></span>, recibimos exitosamente su información a través de nuestro sitio web. Me pongo en contacto con usted a relación del servicio que seleccionó de <span className="font-weight-boldest"><em>{this.servicio(lead.servicios)}</em></span> {this.servicio(lead.servicios)==='Diseño de proyectos para el sector salud'?'.':'para el sector salud.'}</div><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">Excelente, puede indicarme <span className="font-weight-boldest"><em>¿Qué tipo de proyecto es?</em></span></div></>;
+                } else if (lead.empresa.name === 'INEIN') {
+                    return <><div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Mucho gusto <span className="font-weight-boldest"><em>{form.name.split(" ", 1)}</em></span>, recibimos exitosamente su información a través de nuestro sitio web. Me pongo en contacto en relación del servicio que seleccionaste de <span className="font-weight-boldest"><em>{this.servicio(lead.servicios)}</em>.</span></div><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">¡EXCELENTE! TE AGRADEZCO QUE NOS TOMES EN CUENTA PARA TU PROYECTO, PUEDES INDICARME <span className="font-weight-boldest"><em>¿Qué tipo de proyecto es?</em></span></div></>;
                 }
             case 'tipoProyecto':
             case 'tipoProyectoNombre':
-                if (emp.name === 'INFRAESTRUCTURA MÉDICA') {
-                return <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">En <span className="font-weight-boldest">{emp.name}</span> somos especialistas en el diseño, construcción y remodelación de  <span className="font-weight-boldest">{form.tipoProyectoNombre}</span><span className="font-weight-boldest">{form.tipo_proyecto}</span>. <span className="font-weight-boldest"><em>¿Su proyecto se trata de diseño o construcción?</em></span></div>;
-                } else if (emp.name === 'INEIN') {
-                    return <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">¡Excelente! Te agradezco que nos tomes en cuenta para tu proyecto puedes indicarme <span className="font-weight-boldest"><em>¿Cuál es el alcance de este?</em></span></div>;
+                if (lead.empresa.name === 'INFRAESTRUCTURA MÉDICA') {
+                    return <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">En <span className="font-weight-boldest">IM {lead.empresa.name}</span> somos especialistas en el diseño, construcción y remodelación de  <span className="font-weight-boldest">{form.tipoProyectoNombre}</span><span className="font-weight-boldest">{form.tipo_proyecto}</span>. <span className="font-weight-boldest"><em>¿Su proyecto se trata de diseño o construcción?</em></span></div>;
+                } else if (lead.empresa.name === 'INEIN') {
+                    return <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">De acuerdo, me parece increíble. <span className="font-weight-boldest"><em>¿Tu proyecto se trata de diseño o construcción?</em></span></div>;
                 }
-                case 'diseño':
+            case 'diseño':
             case 'obra':
-                if (emp.name === 'INFRAESTRUCTURA MÉDICA') {
-                    return <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">Me gustaría conocer más detalles específicos acerca su proyecto <span className="font-weight-boldest"><em>por lo que le solicito me pueda proporcionar su correo electrónico </em></span>para hacerle llegar un cuestionario</div>;
-                } else if (emp.name === 'INEIN') {
-                    return <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">Me gustaría conocer más detalles de tu proyecto <span className="font-weight-boldest"><em>¿Me podrías proporcionar tu correo electrónico?</em></span>&nbsp;Para hacerte llegar un cuestionario</div>;
+                if (lead.empresa.name === 'INFRAESTRUCTURA MÉDICA') {
+                    if(lead.email===null){
+                        return<div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">Me gustaría conocer más detalles específicos acerca su proyecto <span className="font-weight-boldest"><em>por lo que le solicito me pueda proporcionar su correo electrónico </em></span> para hacerle llegar un cuestionario</div>;
+                    }else{
+                    return<><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify mb-3">Me gustaría conocer más detalles específicos acerca su proyecto <span className="font-weight-boldest"><em>por lo que le solicito me pueda corroborar su correo electrónico </em></span> para hacerle llegar un cuestionario. Su correo es: <span className="font-weight-boldest"><em>{lead.email}</em></span></div><div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Gracias, en unos minutos le <span className="font-weight-boldest"><em>estaré enviado dicho cuestionario a su correo y además le anexare un documento que será útil para usted </em></span>, en él se describe detalladamente cada servicio que podemos brindarle.</div><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Una vez que me haga llegar su información, la analizare y <span className="font-weight-boldest"><em>posteriormente me estaré comunicado con usted.</em></span></div><div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg text-justify">Gracias por contactarnos, que tenga un excelente día.</div></>;
+                    }
                 }
-                case 'email':
-                if (emp.name === 'INFRAESTRUCTURA MÉDICA') {
-                return <><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Gracias <span className="font-weight-boldest">{form.name}</span>, en unos minutos le <span className="font-weight-boldest"><em>estaré enviado dicho cuestionario a su correo y además le anexare un documento que será útil para usted </em></span>, en él se describe detalladamente cada servicio que podemos brindarle.</div><div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Una vez que me haga llegar su información, la analizare y <span className="font-weight-boldest"><em>posteriormente me estaré comunicado con usted.</em></span></div><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">Gracias por contactarnos, que tenga un excelente día.</div></>;
-                } else if (emp.name === 'INEIN') {
-                return <><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">En unos minutos hare<span className="font-weight-boldest"><em> llegar a tu correo un cuestionario</em></span>, te pido nos apoyes en constarlo, para que una vez que yo lo reciba pueda evaluar tu proyecto, ¿De acuerdo?.</div><div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">¿Existiría algo mas en lo que te pueda ayudar antes de finalizar esta llamada?</div><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">Muy bien <span className="font-weight-boldest">{form.name}</span>, en un momento te hago el envio del cuestionario. Que tengas un excelente día.</div></>;
+                else if (lead.empresa.name === 'INEIN') {
+                    if(lead.email===null){
+                        return<div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">Me gustaría conocer más detalles de tu proyecto <span className="font-weight-boldest"><em>¿Me podrías proporcionar tu correo electrónico?</em></span> para hacerte llegar un cuestionario</div>;
+                    }else{
+                        return <><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify mb-3">Me gustaría conocer más detalles de tu proyecto <span className="font-weight-boldest"><em>¿Me podrías corroborar tu correo electrónico?</em></span>&nbsp;para hacerte llegar un cuestionario. Tu correo es: <span className="font-weight-boldest"><em>{lead.email}</em></span></div><div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">En unos minutos te hare<span className="font-weight-boldest"><em> llegar a tu correo un cuestionario</em></span>, te pido nos apoyes en constarlo, para que una vez que yo lo reciba pueda evaluar tu proyecto, ¿De acuerdo?.</div><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">¿Existiría algo mas en lo que te pueda ayudar antes de finalizar esta llamada?</div><div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg text-justify">Muy bien <span className="font-weight-boldest">{form.name.split(" ", 1)}</span>, en un momento te hago el envio del cuestionario. Que tengas un excelente día.</div></>;
                 }
-                default:
-                return ''
+            }
+            case 'email':
+                if (lead.empresa.name === 'INFRAESTRUCTURA MÉDICA') {
+                    return <><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Gracias, en unos minutos le <span className="font-weight-boldest"><em>estaré enviado dicho cuestionario a su correo y además le anexare un documento que será útil para usted </em></span>, en él se describe detalladamente cada servicio que podemos brindarle.</div><div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Una vez que me haga llegar su información, la analizare y <span className="font-weight-boldest"><em>posteriormente me estaré comunicado con usted.</em></span></div><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">Gracias por contactarnos, que tenga un excelente día.</div></>;
+                } else if (lead.empresa.name === 'INEIN') {
+                    return <><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">En unos minutos te hare<span className="font-weight-boldest"><em> llegar a tu correo un cuestionario</em></span>, te pido nos apoyes en constarlo, para que una vez que yo lo reciba pueda evaluar tu proyecto, ¿De acuerdo?.</div><div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">¿Existiría algo mas en lo que te pueda ayudar antes de finalizar esta llamada?</div><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">Muy bien <span className="font-weight-boldest">{form.name.split(" ", 1)}</span>, en un momento te hago el envio del cuestionario. Que tengas un excelente día.</div></>;
+                }
+            default:
+                return <></>
         }
     }
     async getOptionsAxios() {
@@ -144,6 +181,8 @@ class LeadTelefono extends Component {
                 const { options } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['origenes'] = setOptions(origenes, 'origen', 'id')
+                
+                // console.log(options.empresas)
                 this.setState({
                     ...this.state,
                     options
@@ -188,17 +227,28 @@ class LeadTelefono extends Component {
         })
     }
     render() {
-        const { messages, form, options } = this.state
+        const { messages, form, options, formeditado, lead } = this.state
+        const { name: usuario } = this.props.authUser.user
         return (
             <Layout active='leads' {...this.props} >
                 <div className="card-custom card-stretch gutter-b py-2 card">
                     <div className="align-items-center border-0 card-header">
                         <h3 className="card-title align-items-start flex-column">
-                            <span className="font-weight-bolder text-dark">Formulario por llamada entrante</span>
+                            <span className="font-weight-bolder text-dark">Formulario por llamada de salida</span>
                         </h3>
                     </div>
                     <div className="card-body pt-0">
-                        {messages}
+                        {
+                            messages.length === 0 ?
+                                lead !== undefined ?
+                                    lead.empresa.name === 'INFRAESTRUCTURA MÉDICA' ?
+                        <><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Buen día mi nombre es {usuario}, asesora comercial en <span className="font-weight-boldest">IM {lead.empresa.name}</span>. {lead.nombre==='SIN ESPECIFICAR'? '¿Con quién tengo el gusto':'¿Tengo el gusto con'}<span className="font-weight-boldest"><em>{lead.nombre==='SIN ESPECIFICAR'?'':lead.nombre}</em></span>?</div><div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Mucho gusto <span className="font-weight-boldest"><em>{lead.nombre.split(" ", 1)}</em></span>, recibimos exitosamente su información a través de nuestro sitio web. Me pongo en contacto con usted a relación del servicio que seleccionó de <span className="font-weight-boldest"><em>{this.servicio(lead.servicios)}</em></span> {this.servicio(lead.servicios)==='Diseño de proyectos para el sector salud'?'.':'para el sector salud.'}</div><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">Excelente, puede indicarme <span className="font-weight-boldest"><em>¿Qué tipo de proyecto es?</em></span></div></>
+                                        : lead.empresa.name === 'INEIN' ?
+                                            <><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Buen día mi nombre es {usuario}, asesora comercial en <span className="font-weight-boldest">Infraestructura e Interiores</span>. {lead.nombre==='SIN ESPECIFICAR'? '¿Con quién tengo el gusto':'¿Tengo el gusto con'}<span className="font-weight-boldest"><em>{lead.nombre==='SIN ESPECIFICAR'?'':lead.nombre}</em></span>?</div><div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Mucho gusto <span className="font-weight-boldest"><em>{lead.nombre.split(" ", 1)}</em></span>, recibimos exitosamente su información a través de nuestro sitio web. Me pongo en contacto a relación del servicio que seleccionaste de <span className="font-weight-boldest"><em>{this.servicio(lead.servicios)}</em></span>.</div><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">¡EXCELENTE! TE AGRADEZCO QUE NOS TOMES EN CUENTA PARA TU PROYECTO, PUEDES INDICARME <span className="font-weight-boldest"><em>¿Qué tipo de proyecto es?</em></span></div></>
+                                            : ''
+                                    : ''
+                                : messages
+                        }
                         <Form id="form-lead-telefono"
                             onSubmit={
                                 (e) => {
@@ -208,7 +258,7 @@ class LeadTelefono extends Component {
                             }
                             {...this.props}>
                             <div className="form-group row form-group-marginless mt-4 mb-0">
-                                <div className="col-md-4">
+                                {/* <div className="col-md-4">
                                     <SelectSearchGray
                                         options={options.empresas}
                                         placeholder="¿A QUÉ EMPRESA VA DIRIGIDA EL LEAD?"
@@ -216,35 +266,30 @@ class LeadTelefono extends Component {
                                         value={form.empresa_dirigida}
                                         onChange={this.updateEmpresa}
                                         iconclass="fas fa-building"
+                                        formeditado={formeditado}
+                                    />
+                                </div> */}
+                                <div className="col-md-4">
+                                    <InputGray
+                                        placeholder='NOMBRE DEL LEAD'
+                                        withicon={1}
+                                        iconclass="far fa-user"
+                                        name='name'
+                                        value={form.name}
+                                        onChange={this.onChange}
+                                    // formeditado={formeditado}
                                     />
                                 </div>
-                                {
-                                    form.empresa_dirigida !== '' ?
-                                        <div className="col-md-4">
-                                            <InputGray
-                                                placeholder='NOMBRE DEL LEAD'
-                                                withicon={1}
-                                                iconclass="far fa-user"
-                                                name='name'
-                                                value={form.name}
-                                                onChange={this.onChange}
-                                            />
-                                        </div>
-                                        : ''
-                                }
-                                {
-                                    form.name !== '' ?
-                                        <div className="col-md-4">
-                                            <SelectSearchGray
-                                                options={options.tipos}
-                                                placeholder="SELECCIONA EL TIPO DE PROYECTO"
-                                                onChange={this.updateTipoProyecto}
-                                                name="tipoProyecto"
-                                                value={form.tipoProyecto}
-                                            />
-                                        </div>
-                                        : ''
-                                }
+
+                                <div className="col-md-4">
+                                    <SelectSearchGray
+                                        options={options.tipos}
+                                        placeholder="SELECCIONA EL TIPO DE PROYECTO"
+                                        onChange={this.updateTipoProyecto}
+                                        name="tipoProyecto"
+                                        value={form.tipoProyecto}
+                                    />
+                                </div>
                                 {
                                     form.tipoProyecto !== '' ?
                                         <>
@@ -303,7 +348,7 @@ class LeadTelefono extends Component {
                                         : ''
                                 }
                                 {
-                                    form.email !== '' ?
+                                    form.diseño || form.obra !== '' ?
                                         <>
                                             <div className="col-md-4">
                                                 <InputGray
@@ -328,7 +373,7 @@ class LeadTelefono extends Component {
                                                     prefix=''
                                                 />
                                             </div>
-                                            <div className="col-md-8">
+                                            <div className="col-md-12">
                                                 <InputGray
                                                     placeholder="COMENTARIO"
                                                     withicon={0}
@@ -339,7 +384,7 @@ class LeadTelefono extends Component {
                                                     as='textarea'
                                                 />
                                             </div>
-                                            <div className="col-md-4">
+                                            {/* <div className="col-md-4">
                                                 <SelectSearchGray
                                                     options={options.origenes}
                                                     placeholder="SELECCIONA EL ORIGEN PARA EL LEAD"
@@ -348,7 +393,7 @@ class LeadTelefono extends Component {
                                                     onChange={this.updateOrigen}
                                                     iconclass="fas fa-mail-bulk"
                                                 />
-                                            </div>
+                                            </div> */}
                                         </>
                                         : ''
                                 }
@@ -383,4 +428,4 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(LeadTelefono)
+export default connect(mapStateToProps, mapDispatchToProps)(LeadLlamadaSalida)

@@ -93,7 +93,9 @@ class Crm extends Component {
             fecha: new Date(),
             hora: '08',
             minuto: '00',
-            cliente: ''
+            cliente: '',
+            tipo: 0,
+            proyecto: ''
         },
         modal: false
     }
@@ -418,10 +420,12 @@ class Crm extends Component {
         })
     }
     async getLeadsRhProveedores() {
+        waitAlert()
         const { access_token } = this.props.authUser
         const { lead_rh_proveedores, form } = this.state
         await axios.put(URL_DEV + 'crm/table/lead-rh-proveedor/' + lead_rh_proveedores.numPage, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                swal.close()
                 const { leads, total } = response.data
                 const { lead_rh_proveedores } = this.state
                 lead_rh_proveedores.data = leads
@@ -448,10 +452,12 @@ class Crm extends Component {
     }
 
     async getLeadsWeb() {
+        waitAlert()
         const { access_token } = this.props.authUser
         const { lead_web, form } = this.state
         await axios.put(URL_DEV + 'crm/table/lead-web/' + lead_web.numPage, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                swal.close()
                 const { leads, total } = response.data
                 const { lead_web } = this.state
                 lead_web.data = leads
@@ -477,10 +483,12 @@ class Crm extends Component {
         })
     }
     async getLeadsEnContacto() {
+        waitAlert()
         const { access_token } = this.props.authUser
         const { leads_en_contacto, form } = this.state
         await axios.put(URL_DEV + 'crm/table/lead-en-contacto/' + leads_en_contacto.numPage, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                swal.close()
                 const { leads, total } = response.data
                 const { leads_en_contacto } = this.state
                 leads_en_contacto.data = leads
@@ -506,10 +514,12 @@ class Crm extends Component {
         })
     }
     async getLeadsCancelados() {
+        waitAlert()
         const { access_token } = this.props.authUser
         const { leads_cancelados, form } = this.state
         await axios.put(URL_DEV + 'crm/table/lead-cancelados/' + leads_cancelados.numPage, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                swal.close()
                 const { leads, total } = response.data
                 const { leads_cancelados } = this.state
                 leads_cancelados.data = leads
@@ -535,10 +545,12 @@ class Crm extends Component {
         })
     }
     async getLeadsContratados() {
+        waitAlert()
         const { access_token } = this.props.authUser
         const { leads_contratados, form } = this.state
         await axios.put(URL_DEV + 'crm/table/lead-contratados/' + leads_contratados.numPage, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                swal.close()
                 const { leads, total } = response.data
                 const { leads_contratados } = this.state
                 leads_contratados.data = leads
@@ -564,10 +576,12 @@ class Crm extends Component {
         })
     }
     async getLeadsDetenidos() {
+        waitAlert()
         const { access_token } = this.props.authUser
         const { leads_detenidos, form } = this.state
         await axios.put(URL_DEV + 'crm/table/lead-detenidos/' + leads_detenidos.numPage, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                swal.close()
                 const { leads, total } = response.data
                 const { leads_detenidos } = this.state
                 leads_detenidos.data = leads
@@ -659,7 +673,9 @@ class Crm extends Component {
     changeActiveTable = key => {
         const { form, activeTable } = this.state
         if( key !== activeTable ){
-            form.cliente = '';
+            form.cliente = ''
+            form.tipo = 0
+            form.proyecto = ''
         }
         switch (key) {
             case 'rh-proveedores':
@@ -707,6 +723,8 @@ class Crm extends Component {
         const { access_token } = this.props.authUser
         await axios.put(URL_DEV + 'crm/lead/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                const {activeTable}=this.state
+                this.changeActiveTable(activeTable)            
                 doneAlert('El estatus fue actualizado con éxito.')
             },
             (error) => {
@@ -760,11 +778,18 @@ class Crm extends Component {
                 />
             </div>
         )
+    }    
+    changePageLlamadaSalida = (lead) => {
+        const { history } = this.props
+        history.push({
+            pathname: '/leads/crm/add/llamada-salida',
+            state: { lead: lead }
+        });
     }
 
     render() {
         const { ultimos_contactados, prospectos_sin_contactar, ultimos_ingresados, lead_web, activeTable, leads_en_contacto,
-            leads_contratados, leads_cancelados, leads_detenidos, modal, form, lead, lead_rh_proveedores } = this.state
+            leads_contratados, leads_cancelados, leads_detenidos, modal, form, lead, lead_rh_proveedores, options} = this.state
         return (
             <Layout active='leads' {...this.props} >
                 <Row>
@@ -855,7 +880,8 @@ class Crm extends Component {
                                         </div>
                                         <div className="col-md-3">
                                             <div className="input-icon">
-                                                <input type="text" className="form-control form-control-solid" placeholder="BUCAR PROYECTO" />
+                                                <input value = { form.proyecto } type="text" className="form-control form-control-solid" 
+                                                    placeholder="BUCAR PROYECTO" onChange = { this.onChange } name = 'proyecto' />
                                                 <span>
                                                     <i className="flaticon2-search-1 text-muted"></i>
                                                 </span>
@@ -901,11 +927,10 @@ class Crm extends Component {
                                                     <div className="col-md-2">
                                                         <Form.Control
                                                             className="form-control text-uppercase form-control-solid"
-                                                            defaultValue={0}
-                                                            // value = {form.estatus} 
-                                                            // onChange={onChange} 
-                                                            // name='estatus' 
-                                                            // formeditado={formeditado} 
+                                                            defaultValue = { 0 }
+                                                            value = {form.tipo} 
+                                                            onChange = { this.onChange } 
+                                                            name = 'tipo' 
                                                             as="select">
                                                             <option disabled value={0}>Tipo</option>
                                                             <option value={"proveedor"} className="bg-white">PROVEEDOR</option>
@@ -936,6 +961,7 @@ class Crm extends Component {
                                             sendEmail={this.sendEmailNewWebLead}
                                             openModal={this.openModal}
                                             openModalWithInput={this.openModalWithInput}
+                                            changePageLlamadaSalida={this.changePageLlamadaSalida}
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="contacto">
