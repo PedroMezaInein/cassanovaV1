@@ -888,17 +888,21 @@ class Crm extends Component {
                                                 </span>
                                             </div>
                                         </div>
-                                        <div className="col-md-3">
-                                            <div className="input-icon">
-                                                <input value = { form.proyecto } type="text" className="form-control form-control-solid" 
-                                                    placeholder="BUCAR PROYECTO" onChange = { this.onChange } name = 'proyecto' />
-                                                <span>
-                                                    <i className="flaticon2-search-1 text-muted"></i>
-                                                </span>
-                                            </div>
-                                        </div>
                                         {
-                                            activeTable !== 'web' ?
+                                            activeTable !== "rh-proveedores" ?
+                                                <div className="col-md-3">
+                                                    <div className="input-icon">
+                                                        <input value = { form.proyecto } type="text" className="form-control form-control-solid" 
+                                                            placeholder="BUCAR PROYECTO" onChange = { this.onChange } name = 'proyecto' />
+                                                        <span>
+                                                            <i className="flaticon2-search-1 text-muted"></i>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            : ''
+                                        }
+                                        {
+                                            activeTable !== 'web' && activeTable !== 'rh-proveedores' && activeTable !== 'cancelados' ?
                                                 <div className="col-md-3">
                                                     <Form.Control
                                                         className="form-control text-uppercase form-control-solid"

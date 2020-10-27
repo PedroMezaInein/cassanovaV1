@@ -32,6 +32,7 @@ class LeadNoContratado extends Component {
                                     <span>Nombre del cliente y proyecto</span>
                                 </th>
                                 <th style={{ minWidth: "140px" }}>Fecha</th>
+                                <th style={{ minWidth: "140px" }}>Empresa</th>
                                 <th style={{ minWidth: "100px" }}>Origen</th>
                                 <th style={{ minWidth: "180px" }}>Motivo</th>
                                 {/* <th style={{ minWidth: "100px" }} className="text-center">Vendedor</th> */}
@@ -78,6 +79,9 @@ class LeadNoContratado extends Component {
                                                         : ''
                                                     }
                                                 </span>
+                                            </td>
+                                            <td>
+                                                <span className="text-dark-75 font-weight-bolder d-block font-size-lg">{lead.empresa.name}</span>
                                             </td>
                                             <td>
                                                 {
