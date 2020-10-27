@@ -95,6 +95,7 @@ class Crm extends Component {
             minuto: '00',
             cliente: '',
             tipo: 0,
+            origen: 0,
             proyecto: ''
         },
         modal: false
@@ -121,9 +122,17 @@ class Crm extends Component {
         await axios.get(URL_DEV + 'crm/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 swal.close()
-                const { empresas } = response.data
+                const { empresas, origenes } = response.data
                 const { options } = this.state
                 options.empresas = setOptions(empresas, 'name', 'id')
+                let aux = []
+                origenes.map((origen)=>{
+                    aux.push({
+                        value: origen.id.toString(),
+                        text: origen.origen
+                    })
+                })
+                options.origenes = aux
                 this.setState({
                     ...this.state,
                     options
@@ -676,6 +685,7 @@ class Crm extends Component {
             form.cliente = ''
             form.tipo = 0
             form.proyecto = ''
+            form.origen = 0
         }
         switch (key) {
             case 'rh-proveedores':
@@ -892,17 +902,18 @@ class Crm extends Component {
                                                 <div className="col-md-3">
                                                     <Form.Control
                                                         className="form-control text-uppercase form-control-solid"
-                                                        defaultValue={0}
-                                                        // value = {form.origen} 
-                                                        // onChange={onChange} 
-                                                        name='origen'
-                                                        // formeditado={formeditado} 
-                                                        as="select">
+                                                        value = { form.origen }
+                                                        onChange = { this.onChange }
+                                                        name = 'origen'
+                                                        as = "select">
                                                         <option disabled value={0}>Selecciona el origen</option>
-                                                        <option value={"web"} className="bg-white" >Web</option>
-                                                        <option value={"facebook"} className="bg-white">Facebook</option>
-                                                        <option value={"google"} className="bg-white">Google</option>
-                                                        <option value={"linkedin"} className="bg-white">Linkedin</option>
+                                                        {
+                                                            options.origenes.map((origen, key)=>{
+                                                                return(
+                                                                    <option key = { key } value = { origen.value } className="bg-white" >{origen.text}</option>
+                                                                )
+                                                            })
+                                                        }
                                                     </Form.Control>
                                                 </div>
                                             : ''
