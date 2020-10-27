@@ -42,7 +42,7 @@ class LeadNuevo extends Component {
         return true
     }
     render() {
-        const { leads, onClickPrev, onClickNext, sendEmail, openModal, openModalWithInput } = this.props
+        const { leads, onClickPrev, onClickNext, sendEmail, openModal, openModalWithInput, changePageLlamadaSalida} = this.props
         // console.log(leads)
         return (
             <>
@@ -152,7 +152,7 @@ class LeadNuevo extends Component {
                                                         </span>
                                                     </OverlayTrigger>
                                                     <OverlayTrigger overlay={<Tooltip>SEGUIMIENTO (SCRIPT)</Tooltip>}>
-                                                        <a href="#" className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-info">
+                                                        <a onClick={(e)=> {changePageLlamadaSalida(lead)}} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-info">
                                                             <span className="svg-icon svg-icon-md">
                                                                 <SVG src={toAbsoluteUrl('/images/svg/File.svg')} />
                                                             </span>
