@@ -10,7 +10,7 @@ import { setOptions, setDateTableLG } from '../../../../functions/setters';
 import axios from 'axios'
 import { errorAlert, forbiddenAccessAlert, waitAlert } from '../../../../functions/alert';
 import swal from 'sweetalert';
-import { HistorialContactoForm, AgendarCitaForm } from '../../../../components/forms'
+import { HistorialContactoForm, AgendarCitaForm, PresupuestoDiseñoCRMForm } from '../../../../components/forms'
 class LeadInfo extends Component {
     state = {
         messages: [],
@@ -26,6 +26,7 @@ class LeadInfo extends Component {
             tipoProyectoNombre: '',
             origen: '',
             telefono: '',
+            proyecto:''
         },
         formHistorial: {
             comentario: '',
@@ -54,12 +55,79 @@ class LeadInfo extends Component {
             correos: [],
             correo: '',
         },
+        formDiseño: {
+            empresa: '',
+            m2: '',
+            tipo_partida: '',
+            esquema: 'esquema_1',
+            fecha: new Date(),
+            tiempo_ejecucion_diseno: '',
+            descuento: 0.0,
+            conceptos: [
+                {
+                    value: '',
+                    text: 'REUNIÓN DE AMBOS EQUIPOS',
+                    name: 'concepto1'
+                },
+                {
+                    value: '',
+                    text: 'DESARROLLO DEL MATERIAL PARA LA PRIMERA REVISIÓN PRESENCIAL',
+                    name: 'concepto2'
+                },
+                {
+                    value: '',
+                    text: 'JUNTA PRESENCIAL PARA PRIMERA REVISIÓN DE LA PROPUESTA DE DISEÑO',
+                    name: 'concepto3'
+                },
+                {
+                    value: '',
+                    text: 'DESARROLLO DEL PROYECTO',
+                    name: 'concepto4'
+                },
+                {
+                    value: '',
+                    text: 'JUNTA PRESENCIAL PARA SEGUNDA REVISIÓN DE LA PROPUESTA DE DISEÑO',
+                    name: 'concepto5'
+                },
+                {
+                    value: '',
+                    text: 'DESARROLLO DEL PROYECTO EJECUTIVO',
+                    name: 'concepto6'
+                },
+                {
+                    value: '',
+                    text: 'ENTREGA FINAL DEL PROYECTO EN DIGITAL',
+                    name: 'concepto7'
+                },
+            ],
+            precio_inferior_construccion: '',
+            precio_superior_construccion: '',
+            tiempo_ejecucion_construccion: '',
+            precio_inferior_mobiliario: '',
+            precio_superior_mobiliario: '',
+            semanas: [
+                {
+                    lunes: false,
+                    martes: false,
+                    miercoles: false,
+                    jueves: false,
+                    viernes: false,
+                    sabado: false,
+                    domingo: false
+                }
+            ],
+            partidasInein: [],
+            partidasIm: [],
+            proyecto: ''
+        },
         tipo: '',
         options: {
             empresas: [],
             tipos: [],
             origenes: [],
-            tiposContactos: []
+            tiposContactos: [],
+            precios: [],
+            esquemas: []
         },
         formeditado: 0,
         showForm: false,
@@ -106,9 +174,9 @@ class LeadInfo extends Component {
         await axios.get(URL_DEV + 'crm/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 swal.close()
-                const { medios } = response.data
+                const { empresas,medios } = response.data
                 const { options } = this.state
-                // options['empresas'] = setOptions(empresas, 'name', 'id')
+                options['empresas'] = setOptions(empresas, 'name', 'id')
                 // options['origenes'] = setOptions(origenes, 'origen', 'id')
                 options['tiposContactos'] = setOptions(medios, 'tipo', 'id')
                 options.tiposContactos.push({
@@ -194,10 +262,10 @@ class LeadInfo extends Component {
         })
     }
     render() {
-        const { lead, form, formHistorial, options, formAgenda } = this.state
+        const { lead, form, formHistorial, options, formAgenda, formDiseño} = this.state
         return (
             <Layout active={'leads'}  {...this.props}>
-                <Tab.Container defaultActiveKey="2" className="p-5">
+                <Tab.Container defaultActiveKey="3" className="p-5">
                     <Row>
                         <Col md={3} className="mb-3">
                             <Card className="card-custom card-stretch">
@@ -291,6 +359,19 @@ class LeadInfo extends Component {
                                                     </span>
                                                 </span>
                                                 <div className="navi-text">
+                                                    <span className="d-block font-weight-bold">Presupuesto de diseño</span>
+                                                    {/* <span className="text-muted">Descripción del paso 2</span> */}
+                                                </div>
+                                            </Nav.Link>
+                                        </Nav.Item>
+                                        <Nav.Item className="navi-item mb-2">
+                                            <Nav.Link className="navi-link px-2" eventKey="4">
+                                                <span className="navi-icon mr-2">
+                                                    <span className="svg-icon">
+                                                        <SVG src={toAbsoluteUrl('/images/svg/File.svg')} />
+                                                    </span>
+                                                </span>
+                                                <div className="navi-text">
                                                     <span className="d-block font-weight-bold">Contrato</span>
                                                     {/* <span className="text-muted">Descripción del paso 2</span> */}
                                                 </div>
@@ -347,6 +428,16 @@ class LeadInfo extends Component {
                                                         patterns={TEL}
                                                         thousandseparator={false}
                                                         prefix=''
+                                                    />
+                                                </div>
+                                                <div className="col-md-4">
+                                                    <InputGray
+                                                        placeholder='NOMBRE DEL PROYECTO'
+                                                        withicon={1}
+                                                        iconclass="far fa-folder-open"
+                                                        name='proyecto'
+                                                        value={form.proyecto}
+                                                        onChange={this.onChange}
                                                     />
                                                 </div>
                                             </div>
@@ -489,6 +580,22 @@ class LeadInfo extends Component {
                                         </Card.Body>
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="3">
+                                        <Card.Header className="align-items-center border-0 mt-4 pt-3">
+                                            <Card.Title>
+                                                <h3 className="card-title align-items-start flex-column">
+                                                    <span className="font-weight-bolder text-dark">Presupuesto de diseño</span>
+                                                    {/* <span class="text-muted mt-3 font-weight-bold font-size-sm">890,344 Sales</span> */}
+                                                </h3>
+                                            </Card.Title>
+                                        </Card.Header>
+                                        <Card.Body>
+                                            <PresupuestoDiseñoCRMForm
+                                                options={options}
+                                                formDiseño={formDiseño}
+                                            />
+                                        </Card.Body>
+                                    </Tab.Pane>
+                                    <Tab.Pane eventKey="4">
                                         <Card.Header className="align-items-center border-0 mt-4 pt-3">
                                             <Card.Title>
                                                 <h3 className="card-title align-items-start flex-column">
