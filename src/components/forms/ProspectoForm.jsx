@@ -33,12 +33,12 @@ class ProspectoForm extends Component {
         const { title, form, formCliente, children, vendedores, estatusProspectos, clientes, tipoProyecto, estatusContratacion, tiposContactos, onChange, onChangeCliente, onChangeContacto, formContacto, onSubmit, formeditado, options, handleChange, ...props } = this.props
         const { newTipoProyecto, } = this.state
         return (
-            <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
+            <div className="wizard wizard-3" id="for2-wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
                     <div className="wizard-steps">
                         {
                             title === 'Editar prospecto' ? '' :
-                                <div id="wizard-1" className="wizard-step" data-wizard-state="current" data-wizard-type="step" onClick={() => { openWizard1_for2_wizard() }}>
+                                <div id="for2-wizard-1" className="wizard-step" data-wizard-state="current" data-wizard-type="step" onClick={() => { openWizard1_for2_wizard() }}>
                                     <div className="wizard-label">
                                         <h3 className="wizard-title">
                                             <span>1.</span> Datos de generales</h3>
@@ -49,7 +49,7 @@ class ProspectoForm extends Component {
                         }
                         {
                             title !== 'Editar prospecto' &&
-                            <div id="wizard-2" className="wizard-step" data-wizard-type="step" onClick={() => { openWizard2_for2_wizard() }}>
+                            <div id="for2-wizard-2" className="wizard-step" data-wizard-type="step" onClick={() => { openWizard2_for2_wizard() }}>
                                 <div className="wizard-label">
                                     <h3 className="wizard-title">
                                         <span>2.</span> Información de contacto</h3>
@@ -70,7 +70,7 @@ class ProspectoForm extends Component {
                             }
                             {...props}
                         >
-                            <div id="wizard-1-content" className="pb-3 px-2" data-wizard-type="step-content" data-wizard-state="current">
+                            <div id="for2-wizard-1-content" className="pb-3 px-2" data-wizard-type="step-content" data-wizard-state="current">
                             {
                                 title === 'Editar prospecto' ? '' :
                                 <h5 className="mb-4 font-weight-bold text-dark">INGRESA LOS DATOS DE GENERALES</h5>
@@ -179,7 +179,7 @@ class ProspectoForm extends Component {
                                     </div>
                                 </div>
                             </div>
-                            <div id="wizard-2-content" className="pb-3" data-wizard-type="step-content">
+                            <div id="for2-wizard-2-content" className="pb-3" data-wizard-type="step-content">
                                 <h5 className="mb-4 font-weight-bold text-dark">INFORMACIÓN DEL CONTACTO</h5>
                                 {
                                     title !== 'Editar prospecto' &&
