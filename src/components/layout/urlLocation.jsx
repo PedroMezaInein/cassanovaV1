@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../functions/routers"
-import { Button } from '../../components/form-components';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 class UrlLocation extends Component {
     state = {

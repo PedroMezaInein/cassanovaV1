@@ -1,4 +1,3 @@
-import { countBy } from 'lodash';
 import React, { Component } from 'react'
 import { OverlayTrigger, Tooltip, Dropdown} from 'react-bootstrap'
 import SVG from "react-inlinesvg";

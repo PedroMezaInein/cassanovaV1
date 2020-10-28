@@ -60,10 +60,7 @@ class LeadInfo extends Component {
         })
     }
     componentDidMount() {
-        const { authUser: { user: { permisos } } } = this.props
-        const { history: { location: { pathname } } } = this.props
-        const { match: { params: { action } } } = this.props
-        const { history, location: { state } } = this.props
+        const { location: { state } } = this.props
         if (state) {
             if (state.lead) {
                 const { form, options } = this.state
@@ -152,7 +149,7 @@ class LeadInfo extends Component {
         })
     }
     render() {
-        const { formeditado } = this.props
+        // const { formeditado } = this.props
         const { lead, form, formHistorial, options } = this.state
         console.log(lead)
         return (

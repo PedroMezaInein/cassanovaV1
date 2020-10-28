@@ -33,9 +33,9 @@ class LeadLlamadaSalida extends Component {
         formeditado: 0
     }
     componentDidMount() {
-        const { authUser: { user: { permisos } } } = this.props
-        const { history: { location: { pathname } } } = this.props
-        const { match: { params: { action } } } = this.props
+        // const { authUser: { user: { permisos } } } = this.props
+        // const { history: { location: { pathname } } } = this.props
+        // const { match: { params: { action } } } = this.props
         const { history, location: { state } } = this.props
         if (state) {
             if (state.lead) {
@@ -129,8 +129,8 @@ class LeadLlamadaSalida extends Component {
         return servicio
     }
     updateMessages2 = (name, value) => {
-        const { form, options, empresa: emp, lead } = this.state
-        const { name: usuario } = this.props.authUser.user
+        const { form, lead } = this.state
+        // const { name: usuario } = this.props.authUser.user
         switch (name) {
             case 'name':
                 if (lead.empresa.name === 'INFRAESTRUCTURA MÉDICA') {

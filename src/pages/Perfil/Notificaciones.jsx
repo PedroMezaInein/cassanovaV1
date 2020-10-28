@@ -4,7 +4,6 @@ import Layout from '../../components/layout/layout';
 import { errorAlert, forbiddenAccessAlert } from '../../functions/alert';
 import axios from 'axios'
 import { URL_DEV } from '../../constants';
-import { Notificacion } from '../../components/singles'
 import { Card } from 'react-bootstrap';
 import { setDateTableLG } from '../../functions/setters';
 import SVG from "react-inlinesvg";

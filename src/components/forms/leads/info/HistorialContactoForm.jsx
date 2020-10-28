@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
-import { RadioGroupGray, Calendar, InputGray, SelectSearchGray, CalendarDay, Button} from '../../../form-components'
-import { DATE } from '../../../../constants'
+import { RadioGroupGray, InputGray, SelectSearchGray, CalendarDay, Button} from '../../../form-components'
 import { ItemSlider } from '../../../../components/singles'
-
 import { openWizard1_for2_wizard, openWizard2_for2_wizard } from '../../../../functions/wizard'
 import { validateAlert } from '../../../../functions/alert'
 import { Form } from 'react-bootstrap'
