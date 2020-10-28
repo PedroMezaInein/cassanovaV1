@@ -10,6 +10,7 @@ import { DiseñoForm, ObraForm } from '../../components/forms'
 import { Line } from 'react-chartjs-2';
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../functions/routers"
+import ItemSlider from '../../components/singles/ItemSlider'
 
 class Contabilidad extends Component {
 
@@ -42,13 +43,26 @@ class Contabilidad extends Component {
                 superior: '',
                 cambio: ''
             }],
-            tipos: []
+            tipos: [],
+            adjuntos: {
+                subportafolio: {
+                    value: '',
+                    placeholder: 'Subportafolio',
+                    files: []
+                },
+                ejemplo: {
+                    value: '',
+                    placeholder: 'Ejemplo',
+                    files: []
+                }
+            }
         },
         data: {
             empresas: []
         },
         formeditado: 0,
-        empresa: ''
+        empresa: '',
+        activeTipo: ''
     }
 
     componentDidMount() {
@@ -69,6 +83,7 @@ class Contabilidad extends Component {
         await axios.get(URL_DEV + 'empresa/tabulador', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { empresas } = response.data
+                let { activeTipo } = response.data
                 const { options, data, form } = this.state
                 let { empresa, grafica } = this.state
                 data.empresas = empresas
@@ -77,6 +92,8 @@ class Contabilidad extends Component {
                     if (empresas.length) {
                         empresa = empresas[0]
 
+                        if(empresas[0].tipos.length)
+                            activeTipo = empresas[0].tipos[0].id
 
                         form.precio_inicial_diseño = empresa.precio_inicial_diseño
                         form.incremento_esquema_2 = empresa.incremento_esquema_2
@@ -94,12 +111,12 @@ class Contabilidad extends Component {
                                 name: tipo.tipo,
                                 id: tipo.id,
                                 parametricos: {
-                                    construccion_civil_inf: tipo.pivot.construccion_civil_inf,
-                                    construccion_civil_sup: tipo.pivot.construccion_civil_sup,
-                                    construccion_interiores_inf: tipo.pivot.construccion_interiores_inf,
-                                    construccion_interiores_sup: tipo.pivot.construccion_interiores_sup,
-                                    mobiliario_inf: tipo.pivot.mobiliario_inf,
-                                    mobiliario_sup: tipo.pivot.mobiliario_sup
+                                    construccion_civil_inf: tipo.construccion_civil_inf,
+                                    construccion_civil_sup: tipo.construccion_civil_sup,
+                                    construccion_interiores_inf: tipo.construccion_interiores_inf,
+                                    construccion_interiores_sup: tipo.construccion_interiores_sup,
+                                    mobiliario_inf: tipo.mobiliario_inf,
+                                    mobiliario_sup: tipo.mobiliario_sup
                                 }
                             })
                         })
@@ -113,7 +130,8 @@ class Contabilidad extends Component {
                     data,
                     empresa,
                     form,
-                    grafica
+                    grafica,
+                    activeTipo
                 })
             },
             (error) => {
@@ -322,9 +340,11 @@ class Contabilidad extends Component {
     }
 
     changeActiveKey = empresa => {
+
         const { form } = this.state
-        let { grafica } = this.state
+        let { grafica, activeTipo } = this.state
         let aux = []
+        
         form.precio_inicial_diseño = empresa.precio_inicial_diseño
         form.incremento_esquema_2 = empresa.incremento_esquema_2
         form.incremento_esquema_3 = empresa.incremento_esquema_3
@@ -350,17 +370,18 @@ class Contabilidad extends Component {
         grafica = this.setGrafica(form)
 
         aux = []
+        
         empresa.tipos.map((tipo) => {
             aux.push({
                 name: tipo.tipo,
                 id: tipo.id,
                 parametricos: {
-                    construccion_civil_inf: tipo.pivot.construccion_civil_inf,
-                    construccion_civil_sup: tipo.pivot.construccion_civil_sup,
-                    construccion_interiores_inf: tipo.pivot.construccion_interiores_inf,
-                    construccion_interiores_sup: tipo.pivot.construccion_interiores_sup,
-                    mobiliario_inf: tipo.pivot.mobiliario_inf,
-                    mobiliario_sup: tipo.pivot.mobiliario_sup
+                    construccion_civil_inf: tipo.construccion_civil_inf,
+                    construccion_civil_sup: tipo.construccion_civil_sup,
+                    construccion_interiores_inf: tipo.construccion_interiores_inf,
+                    construccion_interiores_sup: tipo.construccion_interiores_sup,
+                    mobiliario_inf: tipo.mobiliario_inf,
+                    mobiliario_sup: tipo.mobiliario_sup
                 }
             })
         })
@@ -382,10 +403,27 @@ class Contabilidad extends Component {
 
         form.tipos = aux
 
+        let auxEjemplos = []
+        let auxSubportafolios = []
+
+        if(empresa.tipos.length){
+            activeTipo = empresa.tipos[0].id    
+            empresa.tipos[0].adjuntos.map((adjunto)=>{
+                if(adjunto.pivot.tipo === 'subportafolio')
+                    auxSubportafolios.push(adjunto)
+                if(adjunto.pivot.tipo === 'ejemplo')
+                    auxEjemplos.push(adjunto)
+            })
+        }
+
+        form.adjuntos.ejemplo.files = auxEjemplos
+        form.adjuntos.subportafolio.files = auxSubportafolios
+
         this.setState({
             empresa: empresa,
             form,
-            grafica
+            grafica,
+            activeTipo
         })
     }
 
@@ -483,8 +521,59 @@ class Contabilidad extends Component {
         return '-'
     }
 
+    updateAdjuntosTab = select => {
+        const { empresa, form } = this.state
+        let aux = ''
+        empresa.tipos.map((tipo)=>{
+            if(tipo.id.toString() === select.toString())
+                aux = tipo
+        })
+        if(aux !== ''){
+
+            let auxSubportafolios = []
+            let auxEjemplos = []
+
+            aux.adjuntos.map((adjunto)=>{
+                if(adjunto.pivot.tipo === 'subportafolio')
+                    auxSubportafolios.push(adjunto)
+                if(adjunto.pivot.tipo === 'ejemplo')
+                    auxEjemplos.push(adjunto)
+            })
+
+            form.adjuntos.ejemplo.files = auxEjemplos
+            form.adjuntos.subportafolio.files = auxSubportafolios
+            
+            this.setState({
+                ...this.state,
+                activeTipo: aux.id,
+                form
+            })
+        }
+    }
+
+    handleChange = (files, item) => {
+        const { form } = this.state
+        let aux = []
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        form['adjuntos'][item].value = files
+        form['adjuntos'][item].files = aux
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
+
     render() {
-        const { form, empresa, data, grafica } = this.state
+        const { form, empresa, data, grafica, activeTipo } = this.state
         return (
             <Layout active={'catalogos'}  {...this.props}>
                 <Tab.Container activeKey={empresa !== '' ? empresa.id : ''} >
@@ -575,9 +664,50 @@ class Contabilidad extends Component {
                                             addRow={this.addParametricRow}
                                         />
                                     </Tab.Pane>
-                                    <Tab.Pane eventKey="adjuntos">
-                                        Adjuntos
-                                    </Tab.Pane>
+                                    {
+                                        empresa ?
+                                            <Tab.Pane eventKey="adjuntos">
+                                                <Tab.Container activeKey = { activeTipo } 
+                                                    onSelect={(select) => { this.updateAdjuntosTab(select) }}>
+                                                    <div className='row mx-0'>
+                                                        <div className='col-md-3 navi navi-accent navi-hover navi-bold border-nav'>
+                                                            <Nav variant="pills" className="flex-column navi navi-hover navi-active">
+                                                                {
+                                                                    empresa.tipos.map((tipo, key)=>{
+                                                                        return(
+                                                                            <Nav.Item className='navi-item' key = { key } >
+                                                                                <Nav.Link className="navi-link" eventKey={tipo.id}>
+                                                                                    <span className="navi-text">{tipo.tipo}</span>
+                                                                                </Nav.Link>
+                                                                            </Nav.Item>
+                                                                        )
+                                                                    })
+                                                                }
+                                                            </Nav>
+                                                        </div>
+                                                        <div className='col-md-9'>
+                                                            <div className='row mx-0'>
+                                                                <div className='col-md-6'>
+                                                                    <div className="text-dark-80 text-center pb-3 pt-2">
+                                                                        Subportafolio
+                                                                    </div>
+                                                                    <ItemSlider item = 'subportafolio' items = { form.adjuntos.subportafolio.files } 
+                                                                        handleChange = { this.handleChange } />
+                                                                </div>
+                                                                <div className='col-md-6'>
+                                                                    <div className="text-dark-80 text-center pb-3 pt-2">
+                                                                        Ejemplos
+                                                                    </div>
+                                                                    <ItemSlider item = 'ejemplo' items = { form.adjuntos.ejemplo.files }
+                                                                        handleChange = { this.handleChange } />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </Tab.Container>
+                                            </Tab.Pane>
+                                        : ''
+                                    }
                                 </Tab.Content>
                             </Tab.Container>
                             
