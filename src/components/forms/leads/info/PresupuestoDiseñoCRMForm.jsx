@@ -247,7 +247,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                 </div>
                             </div>
                             <div id="wizard-3-content" className="pb-3" data-wizard-type="step-content">
-                                <h5 className="mb-4 font-weight-bold text-dark">Selecciona el tipo de pago, impuesto y estatus</h5>
+                                <h5 className="mb-4 font-weight-bold text-dark">Ingresa los precios, las partidas y el tiempo de ejecución</h5>
                                 {/* <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
                                         <InputNumberGray
