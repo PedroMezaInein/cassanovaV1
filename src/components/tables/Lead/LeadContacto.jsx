@@ -58,7 +58,11 @@ class LeadContacto extends Component {
                                                             {lead.nombre}
                                                         </a>
                                                         <span className="text-muted font-weight-bold d-block">
-                                                            {lead.prospecto.tipo_proyecto.tipo}
+                                                            {
+                                                                lead.prospecto.tipo_proyecto?
+                                                                    lead.prospecto.tipo_proyecto.tipo
+                                                                :''
+                                                            }
                                                         </span>
                                                     </div>
                                                 </div>
