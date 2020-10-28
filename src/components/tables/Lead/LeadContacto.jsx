@@ -140,7 +140,6 @@ class LeadContacto extends Component {
                                                             /* : '' */
                                                         : ''
                                                 }
-
                                             </td>
                                             <td className="pr-0 text-center">
                                                 <OverlayTrigger overlay={<Tooltip>Ver más</Tooltip>}>
