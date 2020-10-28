@@ -41,6 +41,8 @@ class LeadContrato extends Component {
                         </thead>
                         <tbody>
                             {
+                                leads.total === 0 ?
+                                <td colSpan="6" className="text-center text-dark-75 font-weight-bolder font-size-lg pt-3">NO SE ENCONTRARON RESULTADOS</td> :
                                 leads.data.map((lead, index) => {
                                     return (
                                         <tr key={index}>
