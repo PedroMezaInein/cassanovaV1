@@ -10,6 +10,7 @@ import { setOptions,setDateTableLG } from '../../../../functions/setters';
 import axios from 'axios'
 import { doneAlert, errorAlert, forbiddenAccessAlert, validateAlert, waitAlert } from '../../../../functions/alert';
 import swal from 'sweetalert';
+import { HistorialContactoForm } from '../../../../components/forms'
 class LeadInfo extends Component {
     state = {
         messages: [],
@@ -26,11 +27,26 @@ class LeadInfo extends Component {
             origen: '',
             telefono: '',
         },
+        formHistorial: {
+            comentario: '',
+            fechaContacto: '',
+            success: 'Contactado',
+            tipoContacto: '',
+            newTipoContacto: '',
+            adjuntos:{
+                adjuntos:{
+                    files: [],
+                    value: '',
+                    placeholder: 'Adjuntos'
+                }
+            }
+        },
         tipo: '',
         options: {
             empresas: [],
             tipos: [],
-            origenes: []
+            origenes: [],
+            tiposContactos: []
         },
         formeditado: 0
     }
@@ -99,11 +115,11 @@ class LeadInfo extends Component {
     }
     render() {
         const { formeditado } = this.props
-        const {lead, form } = this.state
+        const {lead, form, formHistorial, options } = this.state
         console.log(lead)
         return (
             <Layout active={'leads'}  {...this.props}>
-                <Tab.Container defaultActiveKey="1" className="p-5">
+                <Tab.Container defaultActiveKey="2" className="p-5">
                     <Row>
                         <Col md={3} className="mb-3">
                             <Card className="card-custom card-stretch">
@@ -186,7 +202,7 @@ class LeadInfo extends Component {
                                                     </span>
                                                 </span>
                                                 <div className="navi-text">
-                                                    <span className="d-block font-weight-bold">Contacto</span>
+                                                    <span className="d-block font-weight-bold">Historial de contacto</span>
                                                     {/* <span className="text-muted">Descripción del paso 2</span> */}
                                                 </div>
                                             </Nav.Link>
@@ -321,8 +337,60 @@ class LeadInfo extends Component {
                                                 </h3>
                                             </Card.Title>
                                         </Card.Header>
-                                        <Card.Body>
-                                            1
+                                        <Card.Body className="d-flex justify-content-center pt-0 row">
+                                            <div className="col-md-12">
+                                                <HistorialContactoForm
+                                                    options={options}
+                                                    formHistorial={formHistorial}
+                                                    // onChangeContacto={this.onChangeContacto}
+                                                    // handleChange = { this.handleChange }
+                                                />
+                                            </div>
+                                            <div className="col-md-8">
+                                                {
+                                                    lead ?
+                                                        lead.prospecto.contactos.map((contacto, key) => {
+                                                            return (
+                                                                <div className="timeline timeline-6">
+                                                                    <div className="timeline-items">
+                                                                        <div className="timeline-item">
+                                                                                <div className={ contacto.success? "timeline-media bg-light-success":"timeline-media bg-light-danger"}>
+                                                                                    <span className={ contacto.success? "svg-icon svg-icon-success svg-icon-md":"svg-icon svg-icon-danger  svg-icon-md"}>
+                                                                                        {
+                                                                                            contacto.tipo_contacto.tipo==='Llamada'?
+                                                                                                <SVG src={toAbsoluteUrl('/images/svg/Outgoing-call.svg')}/>
+                                                                                            :contacto.tipo_contacto.tipo==='Correo'?
+                                                                                                <SVG src={toAbsoluteUrl('/images/svg/Outgoing-mail.svg')}/>
+                                                                                            :contacto.tipo_contacto.tipo==='VIDEO LLAMADA'?
+                                                                                                <SVG src={toAbsoluteUrl('/images/svg/Video-camera.svg')}/>
+                                                                                            :contacto.tipo_contacto.tipo==='Whatsapp'?
+                                                                                                <i className={ contacto.success?"socicon-whatsapp text-success icon-16px":"socicon-whatsapp text-danger icon-16px"}></i>
+                                                                                            :contacto.tipo_contacto.tipo==='TAWK TO ADS'?
+                                                                                                <i className={ contacto.success?"fas fa-dove text-success icon-16px":"fas fa-dove text-danger icon-16px"}></i>
+                                                                                            :contacto.tipo_contacto.tipo==='REUNIÓN PRESENCIAL'?
+                                                                                                <i className={ contacto.success?"fas fa-users text-success icon-16px":"fas fa-users text-danger icon-16px"}></i>
+                                                                                            :contacto.tipo_contacto.tipo==='Visita'?
+                                                                                                <i className={ contacto.success?"fas fa-house-user text-success icon-16px":"fas fa-house-user text-danger icon-16px"}></i>
+                                                                                            :<i className={ contacto.success?"fas fa-mail-bulk text-success icon-16px":"fas fa-mail-bulk text-danger icon-16px"}></i>
+                                                                                        }                                                                                       
+                                                                                    </span>
+                                                                                </div>
+                                                                            <div className={contacto.success? "timeline-desc timeline-desc-light-success":"timeline-desc timeline-desc-light-danger"}>
+                                                                                <span className={contacto.success? "font-weight-bolder text-success":"font-weight-bolder text-danger"}>{setDateTableLG(contacto.created_at)}</span>
+                                                                                <div className="font-weight-light pb-2 text-justify position-relative mt-2" style={{borderRadius:'0.42rem', padding:'1rem 1.5rem', backgroundColor:'#F3F6F9'}}>
+                                                                                    <div className="text-dark-75 font-weight-bold mb-2">{contacto.tipo_contacto.tipo}</div>
+                                                                                    {contacto.comentario}
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                                
+                                                            )
+                                                        })
+                                                        :''
+                                                }
+                                            </div>
                                         </Card.Body>
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="3">
@@ -335,7 +403,7 @@ class LeadInfo extends Component {
                                             </Card.Title>
                                         </Card.Header>
                                         <Card.Body>
-                                            1
+                                            ...
                                         </Card.Body>
                                     </Tab.Pane>
                                 </Tab.Content>
