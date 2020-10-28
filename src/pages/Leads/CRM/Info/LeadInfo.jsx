@@ -10,7 +10,7 @@ import { setOptions, setDateTableLG } from '../../../../functions/setters';
 import axios from 'axios'
 import { errorAlert, forbiddenAccessAlert, waitAlert } from '../../../../functions/alert';
 import swal from 'sweetalert';
-import { HistorialContactoForm } from '../../../../components/forms'
+import { HistorialContactoForm, AgendarCitaForm } from '../../../../components/forms'
 class LeadInfo extends Component {
     state = {
         messages: [],
@@ -41,6 +41,19 @@ class LeadInfo extends Component {
                 }
             }
         },
+        formAgenda: {
+            fecha: new Date(),
+            hora: '08',
+            minuto: '00',
+            cliente: '',
+            tipo: 0,
+            origen: 0,
+            proyecto: '',
+            empresa: 0,
+            estatus: 0,
+            correos: [],
+            correo: '',
+        },
         tipo: '',
         options: {
             empresas: [],
@@ -49,7 +62,8 @@ class LeadInfo extends Component {
             tiposContactos: []
         },
         formeditado: 0,
-        showForm: false
+        showForm: false,
+        showAgenda: false,
     }
 
     mostrarFormulario() {
@@ -57,6 +71,13 @@ class LeadInfo extends Component {
         this.setState({
             ...this.state,
             showForm: !showForm
+        })
+    }
+    mostrarAgenda() {
+        const { showAgenda } = this.state
+        this.setState({
+            ...this.state,
+            showAgenda: !showAgenda
         })
     }
     componentDidMount() {
@@ -148,10 +169,32 @@ class LeadInfo extends Component {
             formHistorial
         })
     }
+    onChangeAgenda = e => {
+        const { name, value } = e.target
+        const { formAgenda } = this.state
+        formAgenda[name] = value
+        this.setState({
+            ...this.state,
+            formAgenda
+        })
+    }
+    removeCorreo = value => {
+        const { formAgenda } = this.state
+        let aux = []
+        formAgenda.correos.map((correo, key) => {
+            if (correo !== value) {
+                aux.push(correo)
+            }
+            return false
+        })
+        formAgenda.correos = aux
+        this.setState({
+            ...this.state,
+            formAgenda
+        })
+    }
     render() {
-        // const { formeditado } = this.props
-        const { lead, form, formHistorial, options } = this.state
-        console.log(lead)
+        const { lead, form, formHistorial, options, formAgenda } = this.state
         return (
             <Layout active={'leads'}  {...this.props}>
                 <Tab.Container defaultActiveKey="2" className="p-5">
@@ -365,13 +408,22 @@ class LeadInfo extends Component {
                                         <Card.Header className="border-0 mt-4 pt-3">
                                             <h3 className="card-title d-flex justify-content-between">
                                                 <span className="font-weight-bolder text-dark align-self-center">Historial de contacto</span>
-                                                <Button
-                                                    icon=''
-                                                    className={"btn btn-icon btn-xs p-3 btn-light-success success2"}
-                                                    onClick={() => { this.mostrarFormulario() }}
-                                                    only_icon={"flaticon2-plus icon-13px"}
-                                                    tooltip={{ text: 'AGREGAR NUEVO CONTACTO ' }}
-                                                />
+                                                <div>
+                                                    <Button
+                                                        icon=''
+                                                        className={"btn btn-icon btn-xs p-3 btn-light-success success2 mr-2"}
+                                                        onClick={() => { this.mostrarFormulario() }}
+                                                        only_icon={"flaticon2-plus icon-13px"}
+                                                        tooltip={{ text: 'AGREGAR NUEVO CONTACTO' }}
+                                                    />
+                                                    <Button
+                                                        icon=''
+                                                        className={"btn btn-icon btn-xs p-3 btn-light-primary"}
+                                                        onClick={() => { this.mostrarAgenda() }}
+                                                        only_icon={"flaticon2-calendar-2 icon-md"}
+                                                        tooltip={{ text: 'AGENDAR CITA' }}
+                                                    />
+                                                </div>
                                             </h3>
                                         </Card.Header>
                                         <Card.Body className="d-flex justify-content-center pt-0 row">
@@ -383,12 +435,19 @@ class LeadInfo extends Component {
                                                     handleChange={this.handleChange}
                                                 />
                                             </div>
+                                            <div className={this.state.showAgenda ? 'col-md-12 mb-5' : 'd-none'}>
+                                                <AgendarCitaForm
+                                                    formAgenda={formAgenda}
+                                                    onChange={this.onChangeAgenda}
+                                                    removeCorreo={this.removeCorreo}
+                                                />
+                                            </div>
                                             <div className="col-md-8">
                                                 {
                                                     lead ?
                                                         lead.prospecto.contactos.map((contacto, key) => {
                                                             return (
-                                                                <div className="timeline timeline-6">
+                                                                <div className="timeline timeline-6" key={key}>
                                                                     <div className="timeline-items">
                                                                         <div className="timeline-item">
                                                                             <div className={contacto.success ? "timeline-media bg-light-success" : "timeline-media bg-light-danger"}>
