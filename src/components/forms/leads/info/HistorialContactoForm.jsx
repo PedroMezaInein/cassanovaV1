@@ -34,17 +34,17 @@ class HistorialContactoForm extends Component {
         const { form, onSubmit, formeditado, onChange, options, handleChange, formHistorial ,onChangeHistorial, ...props } = this.props
         const { newTipoContacto } = this.state
         return (
-            <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
+            <div className="wizard wizard-3" id="for2-wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
                     <div className="wizard-steps">
-                        <div id="wizard-1" className="wizard-step" data-wizard-state="current" data-wizard-type="step" onClick={() => { openWizard1_for2_wizard() }}>
+                        <div id="for2-wizard-1" className="wizard-step" data-wizard-state="current" data-wizard-type="step" onClick={() => { openWizard1_for2_wizard() }}>
                             <div className="wizard-label pt-1">
                                 <h3 className="wizard-title">
                                     <span>1.</span> Datos de generales</h3>
                                 <div className="wizard-bar"></div>
                             </div>
                         </div>
-                        <div id="wizard-2" className="wizard-step" data-wizard-type="step" onClick={() => { openWizard2_for2_wizard() }}>
+                        <div id="for2-wizard-2" className="wizard-step" data-wizard-type="step" onClick={() => { openWizard2_for2_wizard() }}>
                             <div className="wizard-label pt-1">
                                 <h3 className="wizard-title">
                                     <span>2.</span> Adjunto y fecha</h3>
@@ -64,7 +64,7 @@ class HistorialContactoForm extends Component {
                             }
                             {...props}
                         >
-                            <div id="wizard-1-content" className="pb-3 px-2" data-wizard-type="step-content" data-wizard-state="current">
+                            <div id="for2-wizard-1-content" className="pb-3 px-2" data-wizard-type="step-content" data-wizard-state="current">
                                 <h5 className="mb-4 font-weight-bold text-dark">Ingresa los datos</h5>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
@@ -138,7 +138,7 @@ class HistorialContactoForm extends Component {
                                     </div>
                                 </div>
                             </div>
-                            <div id="wizard-2-content" className="pb-3" data-wizard-type="step-content">
+                            <div id="for2-wizard-2-content" className="pb-3" data-wizard-type="step-content">
                                 <h5 className="mb-4 font-weight-bold text-dark">Adjunto y fecha de contacto</h5>
                                 <div className="form-group row form-group-marginless d-flex justify-content-center">
                                     <div className="col-md-6 text-center align-self-center">
