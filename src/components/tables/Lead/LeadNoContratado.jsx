@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { OverlayTrigger, Tooltip, Dropdown } from 'react-bootstrap'
+import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { setDateTableLG } from '../../../functions/setters'
 
 class LeadNoContratado extends Component {

@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
-import { RadioGroupGray, Calendar, InputGray, SelectSearchGray, CalendarDay, Button} from '../../../form-components'
-import { DATE } from '../../../../constants'
+import { RadioGroupGray, InputGray, SelectSearchGray, CalendarDay, Button} from '../../../form-components'
 import { ItemSlider } from '../../../../components/singles'
-
 import { openWizard1_for2_wizard, openWizard2_for2_wizard } from '../../../../functions/wizard'
 import { validateAlert } from '../../../../functions/alert'
 import { Form } from 'react-bootstrap'
@@ -13,8 +11,8 @@ class HistorialContactoForm extends Component {
     }
 
     updateTipoContacto = value => {
-        const { onChangeContacto } = this.props
-        onChangeContacto({ target: { name: 'tipoContacto', value: value } })
+        const { onChangeHistorial } = this.props
+        onChangeHistorial({ target: { name: 'tipoContacto', value: value } })
         if (value === 'New') {
             this.setState({
                 newTipoContacto: true
@@ -27,27 +25,27 @@ class HistorialContactoForm extends Component {
     }
 
     handleChangeDate = (date) => {
-        const { onChangeContacto } = this.props
-        onChangeContacto({ target: { name: 'fechaContacto', value: date } })
+        const { onChangeHistorial } = this.props
+        onChangeHistorial({ target: { name: 'fechaContacto', value: date } })
     }
 
     render() {
         
-        const { form, onSubmit, formeditado, onChange, options, handleChange, formHistorial ,onChangeContacto, ...props } = this.props
+        const { form, onSubmit, formeditado, onChange, options, handleChange, formHistorial ,onChangeHistorial, ...props } = this.props
         const { newTipoContacto } = this.state
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
                     <div className="wizard-steps">
                         <div id="wizard-1" className="wizard-step" data-wizard-state="current" data-wizard-type="step" onClick={() => { openWizard1_for2_wizard() }}>
-                            <div className="wizard-label">
+                            <div className="wizard-label pt-1">
                                 <h3 className="wizard-title">
                                     <span>1.</span> Datos de generales</h3>
                                 <div className="wizard-bar"></div>
                             </div>
                         </div>
                         <div id="wizard-2" className="wizard-step" data-wizard-type="step" onClick={() => { openWizard2_for2_wizard() }}>
-                            <div className="wizard-label">
+                            <div className="wizard-label pt-1">
                                 <h3 className="wizard-title">
                                     <span>2.</span> Adjunto y fecha</h3>
                                 <div className="wizard-bar"></div>
@@ -74,7 +72,7 @@ class HistorialContactoForm extends Component {
                                             placeholder="Selecciona el estatus del intento de contacto"
                                             formeditado={formeditado}
                                             name={'success'}
-                                            onChange={onChangeContacto}
+                                            onChange={onChangeHistorial}
                                             options={
                                                 [
                                                     {
@@ -107,7 +105,7 @@ class HistorialContactoForm extends Component {
                                             <InputGray
                                                 formeditado={formeditado}
                                                 requirevalidation={0}
-                                                onChange={onChangeContacto}
+                                                onChange={onChangeHistorial}
                                                 name="newTipoContacto"
                                                 type="text"
                                                 value={formHistorial.newTipoContacto}
@@ -125,7 +123,7 @@ class HistorialContactoForm extends Component {
                                             as='textarea'
                                             name='descripcion'
                                             placeholder='DESCRIPCIÓN DEL CONTACTO'
-                                            onChange={onChangeContacto}
+                                            onChange={onChangeHistorial}
                                             value={formHistorial.descripcion}
                                             rows='3'
                                             style={{ paddingLeft: "10px" }}
@@ -142,8 +140,8 @@ class HistorialContactoForm extends Component {
                             </div>
                             <div id="wizard-2-content" className="pb-3" data-wizard-type="step-content">
                                 <h5 className="mb-4 font-weight-bold text-dark">Adjunto y fecha de contacto</h5>
-                                <div className="form-group row form-group-marginless">
-                                    <div className="col-md-6 d-flex justify-content-center">
+                                <div className="form-group row form-group-marginless d-flex justify-content-center">
+                                    <div className="col-md-6 text-center align-self-center">
                                         <ItemSlider 
                                             items={formHistorial.adjuntos.adjuntos.files}
                                             item='adjuntos' 
@@ -151,7 +149,7 @@ class HistorialContactoForm extends Component {
                                             multiple={false}
                                         />
                                     </div>
-                                    <div className="col-md-6 d-flex justify-content-center">
+                                    <div className="col-md-6 text-center align-self-center">
                                         {/* <Calendar
                                             formeditado={formeditado}
                                             onChangeCalendar={this.handleChangeDate}
@@ -163,7 +161,7 @@ class HistorialContactoForm extends Component {
                                         <CalendarDay
                                             id="contacto_lead"
                                             date = {formHistorial.fechaContacto} 
-                                            onChange = { onChangeContacto } 
+                                            onChange = { onChangeHistorial } 
                                             name = 'fechaContacto'
                                         />
                                     </div>

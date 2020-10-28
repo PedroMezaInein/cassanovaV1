@@ -235,7 +235,7 @@ class ActualizarPresupuestoForm extends Component {
                                             className={"btn btn-icon btn-light-primary"}
                                             onClick={() => { this.mostrarFormulario() }}
                                             only_icon={"flaticon2-calendar-9"}
-                                            tooltip={{text:'Mostrar fechas'}}                                        
+                                            tooltip={{text:'MOSTRAR FECHAS'}}                                        
                                         />
                                 </div>
                                 <div className={this.state.showFechas ? 'w-100 formulario-escondido' : 'w-0 overflow-hidden formulario-escondido'}>

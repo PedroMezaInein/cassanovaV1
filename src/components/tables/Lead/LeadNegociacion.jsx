@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
 import { OverlayTrigger, Tooltip, Dropdown } from 'react-bootstrap'
-
 class LeadNegociacion extends Component {
 
     render() {
-        const { leads, onClickNext, onClickPrev,openModalWithInput, changeEstatus} = this.props
+        // const { leads, onClickNext, onClickPrev,openModalWithInput, changeEstatus} = this.props
         return (
             <div className="tab-content">
                 <div className="table-responsive-lg">

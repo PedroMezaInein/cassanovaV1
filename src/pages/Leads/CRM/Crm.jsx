@@ -127,7 +127,7 @@ class Crm extends Component {
                 const { empresas, origenes } = response.data
                 const { options } = this.state
                 options.empresas = setOptions(empresas, 'name', 'id')
-                console.log(options.empresas, 'empresas')
+                // console.log(options.empresas, 'empresas')
                 let aux = []
                 origenes.map((origen)=>{
                     aux.push({
@@ -1043,6 +1043,7 @@ class Crm extends Component {
                                             changeEstatus={this.changeEstatus}
                                             openModalWithInput={this.openModalWithInput}
                                             changePageDetails={this.changePageDetails}
+                                            options={options}
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="negociacion">

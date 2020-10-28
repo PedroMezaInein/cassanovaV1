@@ -3,12 +3,12 @@ import React, { Component } from 'react'
 import Layout from '../../../../components/layout/layout'
 import { Col, Row, Card, Tab, Nav } from 'react-bootstrap'
 import { Button, InputGray, InputPhoneGray } from '../../../../components/form-components';
-import { TEL, URL_DEV, EMAIL} from '../../../../constants'
+import { TEL, URL_DEV, EMAIL } from '../../../../constants'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../../functions/routers"
-import { setOptions,setDateTableLG } from '../../../../functions/setters';
+import { setOptions, setDateTableLG } from '../../../../functions/setters';
 import axios from 'axios'
-import { doneAlert, errorAlert, forbiddenAccessAlert, validateAlert, waitAlert } from '../../../../functions/alert';
+import { errorAlert, forbiddenAccessAlert, waitAlert } from '../../../../functions/alert';
 import swal from 'sweetalert';
 import { HistorialContactoForm } from '../../../../components/forms'
 class LeadInfo extends Component {
@@ -33,8 +33,8 @@ class LeadInfo extends Component {
             success: 'Contactado',
             tipoContacto: '',
             newTipoContacto: '',
-            adjuntos:{
-                adjuntos:{
+            adjuntos: {
+                adjuntos: {
                     files: [],
                     value: '',
                     placeholder: 'Adjuntos'
@@ -48,22 +48,26 @@ class LeadInfo extends Component {
             origenes: [],
             tiposContactos: []
         },
-        formeditado: 0
+        formeditado: 0,
+        showForm: false
+    }
+
+    mostrarFormulario() {
+        const { showForm } = this.state
+        this.setState({
+            ...this.state,
+            showForm: !showForm
+        })
     }
     componentDidMount() {
-        const { authUser: { user: { permisos } } } = this.props
-        const { history: { location: { pathname } } } = this.props
-        const { match: { params: { action } } } = this.props
-        const { history, location: { state } } = this.props
+        const { location: { state } } = this.props
         if (state) {
             if (state.lead) {
                 const { form, options } = this.state
                 const { lead } = state
-                form.name = lead.nombre==='SIN ESPECIFICAR'?'':lead.nombre.toUpperCase()
+                form.name = lead.nombre === 'SIN ESPECIFICAR' ? '' : lead.nombre.toUpperCase()
                 form.email = lead.email.toUpperCase()
-                form.empresa_dirigida = lead.empresa.id.toString()
-                form.telefono= lead.telefono
-                // options['tipos'] = setOptions(lead.empresa.tipos, 'tipo', 'id')
+                form.telefono = lead.telefono
                 this.setState({
                     ...this.state,
                     lead: lead,
@@ -81,12 +85,14 @@ class LeadInfo extends Component {
         await axios.get(URL_DEV + 'crm/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 swal.close()
-                const { empresas, origenes } = response.data
+                const { medios } = response.data
                 const { options } = this.state
-                options['empresas'] = setOptions(empresas, 'name', 'id')
-                options['origenes'] = setOptions(origenes, 'origen', 'id')
-                
-                // console.log(options.empresas)
+                // options['empresas'] = setOptions(empresas, 'name', 'id')
+                // options['origenes'] = setOptions(origenes, 'origen', 'id')
+                options['tiposContactos'] = setOptions(medios, 'tipo', 'id')
+                options.tiposContactos.push({
+                    value: 'New', name: '+ Agregar nuevo'
+                })
                 this.setState({
                     ...this.state,
                     options
@@ -113,9 +119,38 @@ class LeadInfo extends Component {
             form
         })
     }
+    handleChange = (files, item) => {
+        const { formHistorial } = this.state
+        let aux = []
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        formHistorial['adjuntos'][item].value = files
+        formHistorial['adjuntos'][item].files = aux
+        this.setState({
+            ...this.state,
+            formHistorial
+        })
+    }
+    onChangeHistorial = e => {
+        const { formHistorial } = this.state
+        const { name, value } = e.target
+        formHistorial[name] = value
+        this.setState({
+            ...this.state,
+            formHistorial
+        })
+    }
     render() {
-        const { formeditado } = this.props
-        const {lead, form, formHistorial, options } = this.state
+        // const { formeditado } = this.props
+        const { lead, form, formHistorial, options } = this.state
         console.log(lead)
         return (
             <Layout active={'leads'}  {...this.props}>
@@ -131,7 +166,6 @@ class LeadInfo extends Component {
                                             only_icon="fab fa-whatsapp pr-0"
                                             tooltip={{ text: 'CONTACTAR POR WHATSAPP' }}
                                         />
-                                        
                                     </div>
                                     {
                                         lead ?
@@ -147,9 +181,9 @@ class LeadInfo extends Component {
                                                             {
                                                                 lead ?
                                                                     lead.prospecto.estatus_prospecto ?
-                                                                    <span style={{ color: lead.prospecto.estatus_prospecto.color_texto, backgroundColor: lead.prospecto.estatus_prospecto.color_fondo }} className="font-weight-bolder label label-inline mt-2 font-size-xs">{lead.prospecto.estatus_prospecto.estatus}</span>
-                                                                    :''
-                                                                :''
+                                                                        <span style={{ color: lead.prospecto.estatus_prospecto.color_texto, backgroundColor: lead.prospecto.estatus_prospecto.color_fondo }} className="font-weight-bolder label label-inline mt-2 font-size-xs">{lead.prospecto.estatus_prospecto.estatus}</span>
+                                                                        : ''
+                                                                    : ''
                                                             }
                                                         </div>
                                                     </div>
@@ -157,7 +191,6 @@ class LeadInfo extends Component {
                                                         <div className="d-flex align-items-center justify-content-between mb-2">
                                                             <span className="font-weight-bolder mr-2">Origen:</span>
                                                             <div className="text-muted font-weight-bold text-hover-dark">{lead.origen.origen}</div>
-                                                            
                                                         </div>
                                                         {/* <div className="d-flex align-items-center justify-content-between mb-2">
                                                             <span className="font-weight-bolder mr-2">Teléfono:</span>
@@ -178,7 +211,7 @@ class LeadInfo extends Component {
                                                     </div>
                                                 </div>
                                             </div>
-                                            :''
+                                            : ''
                                     }
                                     <Nav className="navi navi-bold navi-hover navi-active navi-link-rounded">
                                         <Nav.Item className="navi-item mb-2">
@@ -239,13 +272,13 @@ class LeadInfo extends Component {
                                         <Card.Body className="pt-0">
                                             <div className="form-group row form-group-marginless">
                                                 <div className="col-md-4">
-                                                <InputGray
-                                                    placeholder='NOMBRE DEL LEAD'
-                                                    withicon={1}
-                                                    iconclass="far fa-user"
-                                                    name='name'
-                                                    value={form.name}
-                                                    onChange={this.onChange}
+                                                    <InputGray
+                                                        placeholder='NOMBRE DEL LEAD'
+                                                        withicon={1}
+                                                        iconclass="far fa-user"
+                                                        name='name'
+                                                        value={form.name}
+                                                        onChange={this.onChange}
                                                     />
                                                 </div>
                                                 <div className="col-md-4">
@@ -329,21 +362,25 @@ class LeadInfo extends Component {
                                         </Card.Body>
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="2">
-                                        <Card.Header className="align-items-center border-0 mt-4 pt-3">
-                                            <Card.Title>
-                                                <h3 className="card-title align-items-start flex-column">
-                                                    <span className="font-weight-bolder text-dark">Historial de contacto</span>
-                                                    {/* <span class="text-muted mt-3 font-weight-bold font-size-sm">890,344 Sales</span> */}
-                                                </h3>
-                                            </Card.Title>
+                                        <Card.Header className="border-0 mt-4 pt-3">
+                                            <h3 className="card-title d-flex justify-content-between">
+                                                <span className="font-weight-bolder text-dark align-self-center">Historial de contacto</span>
+                                                <Button
+                                                    icon=''
+                                                    className={"btn btn-icon btn-xs p-3 btn-light-success success2"}
+                                                    onClick={() => { this.mostrarFormulario() }}
+                                                    only_icon={"flaticon2-plus icon-13px"}
+                                                    tooltip={{ text: 'AGREGAR NUEVO CONTACTO ' }}
+                                                />
+                                            </h3>
                                         </Card.Header>
                                         <Card.Body className="d-flex justify-content-center pt-0 row">
-                                            <div className="col-md-12">
+                                            <div className={this.state.showForm ? 'col-md-12 mb-5' : 'd-none'}>
                                                 <HistorialContactoForm
                                                     options={options}
                                                     formHistorial={formHistorial}
-                                                    // onChangeContacto={this.onChangeContacto}
-                                                    // handleChange = { this.handleChange }
+                                                    onChangeHistorial={this.onChangeHistorial}
+                                                    handleChange={this.handleChange}
                                                 />
                                             </div>
                                             <div className="col-md-8">
@@ -354,30 +391,30 @@ class LeadInfo extends Component {
                                                                 <div className="timeline timeline-6">
                                                                     <div className="timeline-items">
                                                                         <div className="timeline-item">
-                                                                                <div className={ contacto.success? "timeline-media bg-light-success":"timeline-media bg-light-danger"}>
-                                                                                    <span className={ contacto.success? "svg-icon svg-icon-success svg-icon-md":"svg-icon svg-icon-danger  svg-icon-md"}>
-                                                                                        {
-                                                                                            contacto.tipo_contacto.tipo==='Llamada'?
-                                                                                                <SVG src={toAbsoluteUrl('/images/svg/Outgoing-call.svg')}/>
-                                                                                            :contacto.tipo_contacto.tipo==='Correo'?
-                                                                                                <SVG src={toAbsoluteUrl('/images/svg/Outgoing-mail.svg')}/>
-                                                                                            :contacto.tipo_contacto.tipo==='VIDEO LLAMADA'?
-                                                                                                <SVG src={toAbsoluteUrl('/images/svg/Video-camera.svg')}/>
-                                                                                            :contacto.tipo_contacto.tipo==='Whatsapp'?
-                                                                                                <i className={ contacto.success?"socicon-whatsapp text-success icon-16px":"socicon-whatsapp text-danger icon-16px"}></i>
-                                                                                            :contacto.tipo_contacto.tipo==='TAWK TO ADS'?
-                                                                                                <i className={ contacto.success?"fas fa-dove text-success icon-16px":"fas fa-dove text-danger icon-16px"}></i>
-                                                                                            :contacto.tipo_contacto.tipo==='REUNIÓN PRESENCIAL'?
-                                                                                                <i className={ contacto.success?"fas fa-users text-success icon-16px":"fas fa-users text-danger icon-16px"}></i>
-                                                                                            :contacto.tipo_contacto.tipo==='Visita'?
-                                                                                                <i className={ contacto.success?"fas fa-house-user text-success icon-16px":"fas fa-house-user text-danger icon-16px"}></i>
-                                                                                            :<i className={ contacto.success?"fas fa-mail-bulk text-success icon-16px":"fas fa-mail-bulk text-danger icon-16px"}></i>
-                                                                                        }                                                                                       
-                                                                                    </span>
-                                                                                </div>
-                                                                            <div className={contacto.success? "timeline-desc timeline-desc-light-success":"timeline-desc timeline-desc-light-danger"}>
-                                                                                <span className={contacto.success? "font-weight-bolder text-success":"font-weight-bolder text-danger"}>{setDateTableLG(contacto.created_at)}</span>
-                                                                                <div className="font-weight-light pb-2 text-justify position-relative mt-2" style={{borderRadius:'0.42rem', padding:'1rem 1.5rem', backgroundColor:'#F3F6F9'}}>
+                                                                            <div className={contacto.success ? "timeline-media bg-light-success" : "timeline-media bg-light-danger"}>
+                                                                                <span className={contacto.success ? "svg-icon svg-icon-success svg-icon-md" : "svg-icon svg-icon-danger  svg-icon-md"}>
+                                                                                    {
+                                                                                        contacto.tipo_contacto.tipo === 'Llamada' ?
+                                                                                            <SVG src={toAbsoluteUrl('/images/svg/Outgoing-call.svg')} />
+                                                                                            : contacto.tipo_contacto.tipo === 'Correo' ?
+                                                                                                <SVG src={toAbsoluteUrl('/images/svg/Outgoing-mail.svg')} />
+                                                                                                : contacto.tipo_contacto.tipo === 'VIDEO LLAMADA' ?
+                                                                                                    <SVG src={toAbsoluteUrl('/images/svg/Video-camera.svg')} />
+                                                                                                    : contacto.tipo_contacto.tipo === 'Whatsapp' ?
+                                                                                                        <i className={contacto.success ? "socicon-whatsapp text-success icon-16px" : "socicon-whatsapp text-danger icon-16px"}></i>
+                                                                                                        : contacto.tipo_contacto.tipo === 'TAWK TO ADS' ?
+                                                                                                            <i className={contacto.success ? "fas fa-dove text-success icon-16px" : "fas fa-dove text-danger icon-16px"}></i>
+                                                                                                            : contacto.tipo_contacto.tipo === 'REUNIÓN PRESENCIAL' ?
+                                                                                                                <i className={contacto.success ? "fas fa-users text-success icon-16px" : "fas fa-users text-danger icon-16px"}></i>
+                                                                                                                : contacto.tipo_contacto.tipo === 'Visita' ?
+                                                                                                                    <i className={contacto.success ? "fas fa-house-user text-success icon-16px" : "fas fa-house-user text-danger icon-16px"}></i>
+                                                                                                                    : <i className={contacto.success ? "fas fa-mail-bulk text-success icon-16px" : "fas fa-mail-bulk text-danger icon-16px"}></i>
+                                                                                    }
+                                                                                </span>
+                                                                            </div>
+                                                                            <div className={contacto.success ? "timeline-desc timeline-desc-light-success" : "timeline-desc timeline-desc-light-danger"}>
+                                                                                <span className={contacto.success ? "font-weight-bolder text-success" : "font-weight-bolder text-danger"}>{setDateTableLG(contacto.created_at)}</span>
+                                                                                <div className="font-weight-light pb-2 text-justify position-relative mt-2" style={{ borderRadius: '0.42rem', padding: '1rem 1.5rem', backgroundColor: '#F3F6F9' }}>
                                                                                     <div className="text-dark-75 font-weight-bold mb-2">{contacto.tipo_contacto.tipo}</div>
                                                                                     {contacto.comentario}
                                                                                 </div>
@@ -385,10 +422,9 @@ class LeadInfo extends Component {
                                                                         </div>
                                                                     </div>
                                                                 </div>
-                                                                
                                                             )
                                                         })
-                                                        :''
+                                                        : ''
                                                 }
                                             </div>
                                         </Card.Body>
