@@ -1,14 +1,14 @@
 import { connect } from 'react-redux';
 import React, { Component } from 'react'
 import Layout from '../../../../components/layout/layout'
-import { Col, Row, Card, Tab, Nav } from 'react-bootstrap'
+import { Col, Row, Card, Tab, Nav, Dropdown, Form} from 'react-bootstrap'
 import { Button, InputGray, InputPhoneGray } from '../../../../components/form-components';
 import { TEL, URL_DEV, EMAIL } from '../../../../constants'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../../functions/routers"
 import { setOptions, setDateTableLG } from '../../../../functions/setters';
 import axios from 'axios'
-import { doneAlert, errorAlert, forbiddenAccessAlert, waitAlert } from '../../../../functions/alert';
+import { doneAlert, errorAlert, forbiddenAccessAlert, waitAlert, questionAlert2 } from '../../../../functions/alert';
 import swal from 'sweetalert';
 import { HistorialContactoForm, AgendarCitaForm, PresupuestoDiseñoCRMForm } from '../../../../components/forms'
 class LeadInfo extends Component {
@@ -342,9 +342,45 @@ class LeadInfo extends Component {
             console.log(error, 'error')
         })
     }
+    openModalWithInput = (estatus, id) => {
+        questionAlert2('ESCRIBE EL MOTIVO DEL RECHAZO O CANCELACIÓN', '', () => this.changeEstatusCanceladoRechazadoAxios({ id: id, estatus: estatus }),
+            <div>
+                <Form.Control
+                    placeholder='MOTIVO DE CANCELACIÓN'
+                    className="form-control form-control-solid h-auto py-7 px-6"
+                    id='motivo'
+                    as="textarea"
+                    rows="3"
+                />
+            </div>
+        )
+    }
+    async changeEstatusCanceladoRechazadoAxios(data) {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        data.motivo = document.getElementById('motivo').value
+        await axios.put(URL_DEV + 'crm/lead/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert('El estatus fue actualizado con éxito.')
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     
     render() {
-        const { lead, form, formHistorial, options, formAgenda, formDiseño} = this.state
+        const { lead, form, formHistorial, options, formAgenda, formDiseño } = this.state
+        console.log(lead)
         return (
             <Layout active={'leads'}  {...this.props}>
                 <Tab.Container defaultActiveKey="3" className="p-5">
@@ -355,7 +391,7 @@ class LeadInfo extends Component {
                                     <div className="d-flex justify-content-end mb-2">
                                         <Button
                                             icon=''
-                                            className="btn btn-light-success mr-2 btn-sm"
+                                            className="btn btn-light-success btn-sm"
                                             only_icon="fab fa-whatsapp pr-0"
                                             tooltip={{ text: 'CONTACTAR POR WHATSAPP' }}
                                         />
@@ -370,12 +406,48 @@ class LeadInfo extends Component {
                                                         </div>
                                                         <div className="text-center col">
                                                             <div className="font-weight-bolder font-size-h6 text-dark-75 mb-2">{lead.nombre} </div>
-                                                            <div className="text-muted font-size-sm">{lead.empresa.name}</div>
-                                                            {
+                                                            <div className="text-muted font-size-sm mb-2">{lead.empresa.name}</div>
+                                                            {/* {
                                                                 lead ?
                                                                     lead.prospecto.estatus_prospecto ?
                                                                         <span style={{ color: lead.prospecto.estatus_prospecto.color_texto, backgroundColor: lead.prospecto.estatus_prospecto.color_fondo }} className="font-weight-bolder label label-inline mt-2 font-size-xs">{lead.prospecto.estatus_prospecto.estatus}</span>
                                                                         : ''
+                                                                    : ''
+                                                            } */}
+                                                            {
+                                                                lead ?
+                                                                    lead.prospecto.estatus_prospecto ?
+                                                                        <Dropdown>
+                                                                            <Dropdown.Toggle
+                                                                                style={
+                                                                                    {
+                                                                                        backgroundColor: lead.prospecto.estatus_prospecto.color_fondo, color: lead.prospecto.estatus_prospecto.color_texto, border: 'transparent', padding: '0.15rem 0.75rem',
+                                                                                        width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '0.8rem',
+                                                                                        fontWeight: 600
+                                                                                    }}>
+                                                                                {lead.prospecto.estatus_prospecto.estatus.toUpperCase()}
+                                                                            </Dropdown.Toggle>
+                                                                            <Dropdown.Menu className="p-0">
+                                                                                <Dropdown.Header>
+                                                                                    <span className="font-size-sm">Elige una opción</span>
+                                                                                </Dropdown.Header>
+                                                                                <Dropdown.Item className="p-0" onClick={(e) => { e.preventDefault(); this.openModalWithInput('Cancelado', lead.id) }} >
+                                                                                    <span className="navi-link w-100">
+                                                                                        <span className="navi-text">
+                                                                                            <span className="label label-xl label-inline label-light-danger rounded-0 w-100 font-weight-bolder">CANCELADO</span>
+                                                                                        </span>
+                                                                                    </span>
+                                                                                </Dropdown.Item>
+                                                                                <Dropdown.Item className="p-0" onClick={(e) => { e.preventDefault(); this.openModalWithInput('Rechazado', lead.id) }} >
+                                                                                    <span className="navi-link w-100">
+                                                                                        <span className="navi-text">
+                                                                                            <span className="label label-xl label-inline label-light-danger rounded-0 w-100 font-weight-bolder">RECHAZADO</span>
+                                                                                        </span>
+                                                                                    </span>
+                                                                                </Dropdown.Item>
+                                                                            </Dropdown.Menu>
+                                                                        </Dropdown>
+                                                                    : ''
                                                                     : ''
                                                             }
                                                         </div>
