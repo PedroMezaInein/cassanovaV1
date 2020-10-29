@@ -61,6 +61,18 @@ class Empresas extends Component {
                 id: 'firma_contacto',
                 value: '',
                 files: []
+            },
+            {
+                placeholder: 'Portafolio',
+                id: 'portafolio',
+                value: '',
+                files: []
+            },
+            {
+                placeholder: 'Cuestionario',
+                id: 'cuestionario',
+                value: '',
+                files: []
             }
         ],
         adjuntos: [],
