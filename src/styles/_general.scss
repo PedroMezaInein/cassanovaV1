@@ -80,6 +80,7 @@ $l-black-gold: #423b28;
 
 body {
     text-transform: uppercase;
+    font-family: Poppins, Helvetica, "sans-serif";
 }
 
 .border-nav {
@@ -678,6 +679,7 @@ table#esquemas {
 .icon-15px {
     font-size: 15px !important;
 }
+
 .icon-16px {
     font-size: 16px !important;
 }
@@ -771,7 +773,7 @@ div#asideMenuScroll {
 }
 
 .timeline.timeline-6 .timeline-items .timeline-item .timeline-desc.timeline-desc-light-success::before {
-    background-color: #E8F5E9 ;
+    background-color: #E8F5E9;
 }
 
 .timeline.timeline-6 .timeline-items .timeline-item .timeline-desc.timeline-desc-info::before {
@@ -827,34 +829,57 @@ div#asideMenuScroll {
     padding-bottom: 0;
 }
 
-.radio.radio-dark-60 > span {
+.radio.radio-dark-60>span {
     background-color: #ECF0F3;
-    border: 1px solid transparent; }
-  .radio.radio-dark-60 > input:focus ~ span {
-    border: 1px solid transparent; }
-  .radio.radio-dark-60 > input:checked ~ span {
-    background-color: #686871 ; }
-    .radio.radio-dark-60 > input:checked ~ span:after {
-      background-color: #ffffff;
-      border-color: #ffffff; }
-  .radio.checkbox-light-dark-60 > span {
+    border: 1px solid transparent;
+}
+
+.radio.radio-dark-60>input:focus~span {
+    border: 1px solid transparent;
+}
+
+.radio.radio-dark-60>input:checked~span {
+    background-color: #686871;
+}
+
+.radio.radio-dark-60>input:checked~span:after {
+    background-color: #ffffff;
+    border-color: #ffffff;
+}
+
+.radio.checkbox-light-dark-60>span {
     background-color: #E5EAEE;
-    border: 1px solid transparent; }
-  .radio.checkbox-light-dark-60 > input:focus ~ span {
-    border: 1px solid transparent; }
-  .radio.checkbox-light-dark-60 > input:checked ~ span {
-    background-color: #686871  !important; }
-    .radio.checkbox-light-dark-60 > input:checked ~ span:after {
-      border-color: #ffffff; }
-  .radio.radio-outline.radio-dark-60 > span {
+    border: 1px solid transparent;
+}
+
+.radio.checkbox-light-dark-60>input:focus~span {
+    border: 1px solid transparent;
+}
+
+.radio.checkbox-light-dark-60>input:checked~span {
+    background-color: #686871 !important;
+}
+
+.radio.checkbox-light-dark-60>input:checked~span:after {
+    border-color: #ffffff;
+}
+
+.radio.radio-outline.radio-dark-60>span {
     background-color: transparent;
-    border-color: #D6D6E0; }
-  .radio.radio-outline.radio-dark-60 > input:focus ~ span {
+    border-color: #D6D6E0;
+}
+
+.radio.radio-outline.radio-dark-60>input:focus~span {
     background-color: transparent;
-    border-color: #D6D6E0; }
-  .radio.radio-outline.radio-dark-60 > input:checked ~ span {
+    border-color: #D6D6E0;
+}
+
+.radio.radio-outline.radio-dark-60>input:checked~span {
     background-color: transparent;
-    border-color: #686871 ; }
-    .radio.radio-outline.radio-dark-60 > input:checked ~ span:after {
-      background-color: #686871 ;
-      border-color: #686871 ; }
+    border-color: #686871;
+}
+
+.radio.radio-outline.radio-dark-60>input:checked~span:after {
+    background-color: #686871;
+    border-color: #686871;
+}

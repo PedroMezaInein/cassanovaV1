@@ -45,6 +45,10 @@ class SelectSearchGray extends Component {
                         </>
                         :
                         <InputGray
+                            withtaglabel={1}
+                            withtextlabel={1}
+                            withplaceholder={1}
+                            withicon={1}
                             iconclass={iconclass}
                             readOnly
                             type="text"
