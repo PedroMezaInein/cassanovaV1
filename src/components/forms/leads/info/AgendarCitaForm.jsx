@@ -90,6 +90,16 @@ class AgendarCitaForm extends Component {
                         </div>
                     </Col>
                     <Col md="6" className="text-center align-self-center">
+                        <div className="d-flex justify-content-center align-items-end ">
+                            <div class="btn btn-icon btn-light w-auto btn-clean d-inline-flex align-items-center btn-lg px-2 mr-5">
+                                <span class="text-dark-50 font-weight-bolder font-size-base mr-3">Solicitar cita</span>
+                                <span class="symbol symbol-35 bg-light-gray">
+                                    <span class="symbol-label font-size-h5 font-weight-bold">
+                                        <i class="far fa-calendar-check text-gray icon-md"></i>
+                                    </span>
+                                </span>
+                            </div>
+                        </div>
                         <div className="form-group row form-group-marginless mt-4 pb-0 mb-0">
                             <div className="col-md-12 text-left">
                                 <InputGray
@@ -105,24 +115,24 @@ class AgendarCitaForm extends Component {
                                 />
                             </div>
                             <div className="col-md-10 text-left">
-                                    <InputGray
-                                        withtaglabel={1}
-                                        withtextlabel={1}
-                                        withplaceholder={1}
-                                        withicon={1}
-                                        placeholder="CORREO DE CONTACTO"
-                                        iconclass='fas fa-envelope'
-                                        name='correo'
-                                        value={formAgenda.correo}
-                                        onChange={onChange}
-                                        patterns={EMAIL}
-                                    />
-                                </div>
-                                <div className="col-md-2 mt-3 d-flex justify-content-center align-items-center">
-                                    <Button icon={faPlus} pulse={"pulse-ring"} className={"btn btn-icon btn-light-gray pulse pulse-dark mr-5"} onClick={(e) => { e.preventDefault(); this.addCorreo() }} />
-                                </div>
+                                <InputGray
+                                    withtaglabel={1}
+                                    withtextlabel={1}
+                                    withplaceholder={1}
+                                    withicon={1}
+                                    placeholder="CORREO DE CONTACTO"
+                                    iconclass='fas fa-envelope'
+                                    name='correo'
+                                    value={formAgenda.correo}
+                                    onChange={onChange}
+                                    patterns={EMAIL}
+                                />
+                            </div>
+                            <div className="col-md-2 mt-3 d-flex justify-content-center align-items-center">
+                                <Button icon={faPlus} pulse={"pulse-ring"} className={"btn btn-icon btn-light-gray pulse pulse-dark mr-5"} onClick={(e) => { e.preventDefault(); this.addCorreo() }} />
+                            </div>
                         </div>
-                        <div> 
+                        <div>
                             <div className="form-group row form-group-marginless">
                                 <div className="col-md-12 row mx-0">
                                     {
@@ -162,7 +172,7 @@ class AgendarCitaForm extends Component {
                 <div className="card-footer pt-3 pr-1 pb-0">
                     <div className="row">
                         <div className="col-lg-12 text-right pr-0 pb-0">
-                            
+
                         </div>
                     </div>
                 </div>
