@@ -1,47 +1,13 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
-import { DATE } from '../../../constants'
-import { SelectSearch, Button, Input, Calendar, InputSinText, InputNumber, OptionsCheckbox, InputMoney} from '../../form-components'
-import { openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
-import { validateAlert } from '../../../functions/alert'
+import { InputGray, Select, SelectSearch, Button, Calendar, InputNumberGray, RadioGroup } from '../../../form-components'
+import { openWizard1, openWizard2, openWizard3 } from '../../../../functions/wizard'
+import { validateAlert } from '../../../../functions/alert'
 
-class PresupuestoDiseñoForm extends Component {
-
-    handleChangeDate = date => {
-        const { onChange } = this.props
-        onChange({ target: { value: date, name: 'fecha' } })
-    }
-
-    updateEmpresa = value => {
-        const { onChange } = this.props
-        onChange({ target: { value: value, name: 'empresa' } })
-    }
-
-    updateM2 = value => {
-        const { onChange } = this.props
-        onChange({ target: { value: value, name: 'm2' } })
-    }
-
-    updateEsquema = value => {
-        const { onChange } = this.props
-        onChange({ target: { value: value, name: 'esquema' } })
-    }
-
-    handleChangeCheckbox = e => {
-        const { name, checked } = e.target
-        const { form, onChangeCheckboxes } = this.props
-        let aux = form[form.tipo_partida]
-        aux.find(function (_aux, index) {
-            if (_aux.id.toString() === name.toString()) {
-                _aux.checked = checked
-            }
-            return false
-        });
-        onChangeCheckboxes(aux)
-    }
+class PresupuestoDiseñoCRMForm extends Component {
 
     render() {
-        const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, onSubmit, submitPDF, onChangeCheckboxes, checkButtonSemanas, formeditado, onChangeConceptos, ...props } = this.props
+        const { title, options, formDiseño, onChange, setOptions, onChangeAdjunto, clearFiles, onSubmit, submitPDF, onChangeCheckboxes, checkButtonSemanas, formeditado, onChangeConceptos, ...props } = this.props
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
@@ -56,7 +22,7 @@ class PresupuestoDiseñoForm extends Component {
                         <div id="wizard-2" className="wizard-step" data-wizard-type="step" onClick={() => { openWizard2() }}>
                             <div className="wizard-label pt-0">
                                 <h3 className="wizard-title">
-                                    <span>2.</span> Fase 1: Diseño (Tiempos)</h3>
+                                    <span>2.</span> Fase 1: Diseño</h3>
                                 <div className="wizard-bar"></div>
                             </div>
                         </div>
@@ -82,25 +48,14 @@ class PresupuestoDiseñoForm extends Component {
                         >
                             <div id="wizard-1-content" className="pb-3 px-2" data-wizard-type="step-content" data-wizard-state="current">
                                 <h5 className="mb-4 font-weight-bold text-dark">Ingresa los datos del presupuesto de diseño</h5>
-                                <div className="form-group row form-group-marginless">
-                                    <div className="col-md-4">
-                                        <SelectSearch
-                                            formeditado={formeditado}
-                                            options={options.empresas}
-                                            placeholder="SELECCIONA LA EMPRESA"
-                                            name="empresa"
-                                            value={form.empresa}
-                                            onChange={this.updateEmpresa}
-                                            iconclass={"far fa-building"}
-                                        />
-                                    </div>
+                                {/* <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
                                         <SelectSearch
                                             formeditado={formeditado}
                                             options={options.precios}
                                             placeholder="SELECCIONA LOS M2"
                                             name="m2"
-                                            value={form.m2}
+                                            value={formDiseño.m2}
                                             onChange={this.updateM2}
                                             iconclass={"fas fa-ruler-combined"}
                                         />
@@ -111,9 +66,19 @@ class PresupuestoDiseñoForm extends Component {
                                             options={options.esquemas}
                                             placeholder="ESQUEMA"
                                             name="esquema"
-                                            value={form.esquema}
+                                            value={formDiseño.esquema}
                                             onChange={this.updateEsquema}
                                             iconclass={"flaticon2-sheet"}
+                                        />
+                                    </div>
+                                    <div className="col-md-4">
+                                        <InputNumberGray
+                                            requirevalidation={0}
+                                            placeholder="Total"
+                                            value={formDiseño.total}
+                                            iconclass={"fas fa-dollar-sign"}
+                                            thousandseparator={true}
+                                            disabled={true}
                                         />
                                     </div>
                                 </div>
@@ -126,27 +91,27 @@ class PresupuestoDiseñoForm extends Component {
                                             onChangeCalendar={this.handleChangeDate}
                                             placeholder="FECHA"
                                             name="fecha"
-                                            value={form.fecha}
+                                            value={formDiseño.fecha}
                                             patterns={DATE}
                                         />
                                     </div>
                                     <div className="col-md-4">
-                                        <InputNumber
+                                        <InputNumberGray
                                             requirevalidation={1}
                                             formeditado={formeditado}
                                             placeholder="TIEMPO DE EJECUCIÓN (DÍAS)"
-                                            value={form.tiempo_ejecucion_diseno}
+                                            value={formDiseño.tiempo_ejecucion_diseno}
                                             name="tiempo_ejecucion_diseno"
                                             onChange={onChange}
                                             iconclass={"flaticon-calendar-with-a-clock-time-tools"}
                                         />
                                     </div>
                                     <div className="col-md-4">
-                                        <InputMoney
+                                        <InputMoneyGray
                                             requirevalidation={0}
                                             type="text"
                                             placeholder="DESCUENTO"
-                                            value={form.descuento}
+                                            value={formDiseño.descuento}
                                             iconclass={"fas fa-percentage"}
                                             thousandseparator={true}
                                             onChange={onChange}
@@ -156,31 +121,7 @@ class PresupuestoDiseñoForm extends Component {
                                             name="descuento"
                                         />
                                     </div>
-                                </div>
-                                <div className="separator separator-dashed mt-1 mb-2"></div>
-                                <div className="form-group row form-group-marginless">
-                                    <div className="col-md-4">
-                                        <InputNumber
-                                            requirevalidation={0}
-                                            placeholder="Total"
-                                            value={form.total}
-                                            iconclass={"fas fa-dollar-sign"}
-                                            thousandseparator={true}
-                                            disabled={true}
-                                        />
-                                    </div>
-                                    <div className="col-md-4">
-                                        <Input
-                                            requirevalidation={0}
-                                            formeditado={formeditado}
-                                            placeholder="NOMBRE DEL PROYECTO"
-                                            value={form.proyecto}
-                                            name="proyecto"
-                                            onChange={onChange}
-                                            iconclass={"far fa-folder-open"}
-                                        />
-                                    </div>
-                                </div>
+                                </div> */}
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2"></div>
                                     <div>
@@ -190,7 +131,7 @@ class PresupuestoDiseñoForm extends Component {
                             </div>
                             <div id="wizard-2-content" className="pb-3" data-wizard-type="step-content">
                                 <h5 className="mb-4 font-weight-bold text-dark">INGRESA LOS TIEMPOS</h5>
-                                <div className="form-group row form-group-marginless">
+                                {/* <div className="form-group row form-group-marginless">
                                     <div className="table-responsive-lg col-md-6">
                                         <table className="table">
                                             <thead >
@@ -201,7 +142,7 @@ class PresupuestoDiseñoForm extends Component {
                                             </thead>
                                             <tbody className="text-justify">
                                                 {
-                                                    form.conceptos.map((concepto, key) => {
+                                                    formDiseño.conceptos.map((concepto, key) => {
                                                         return (
                                                             <tr key={key}>
                                                                 <td className="dia" >
@@ -242,7 +183,7 @@ class PresupuestoDiseñoForm extends Component {
                                             </thead>
                                             <tbody>
                                                 {
-                                                    form.semanas.map((semana, key) => {
+                                                    formDiseño.semanas.map((semana, key) => {
                                                         return (
                                                             <tr className="text-center" key={key}>
                                                                 <th scope="row">SEMANA {key + 1}</th>
@@ -295,7 +236,7 @@ class PresupuestoDiseñoForm extends Component {
                                             </tbody>
                                         </table>
                                     </div>
-                                </div>
+                                </div> */}
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2">
                                         <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase" onClick={() => { openWizard1() }} data-wizard-type="action-prev">Anterior</button>
@@ -307,13 +248,13 @@ class PresupuestoDiseñoForm extends Component {
                             </div>
                             <div id="wizard-3-content" className="pb-3" data-wizard-type="step-content">
                                 <h5 className="mb-4 font-weight-bold text-dark">Ingresa los precios, las partidas y el tiempo de ejecución</h5>
-                                <div className="form-group row form-group-marginless">
+                                {/* <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
-                                        <InputNumber
+                                        <InputNumberGray
                                             requirevalidation={0}
                                             formeditado={formeditado}
                                             placeholder="PRECIO PARAMÉTRICO DE CONSTRUCCIÓN INFERIOR"
-                                            value={form.precio_inferior_construccion}
+                                            value={formDiseño.precio_inferior_construccion}
                                             name="precio_inferior_construccion"
                                             onChange={onChange}
                                             messageinc="Incorrecto. Ingresa el precio paramétrico de construcción inferior."
@@ -322,11 +263,11 @@ class PresupuestoDiseñoForm extends Component {
                                         />
                                     </div>
                                     <div className="col-md-4">
-                                        <InputNumber
+                                        <InputNumberGray
                                             requirevalidation={0}
                                             formeditado={formeditado}
                                             placeholder="PRECIO PARAMÉTRICO DE CONSTRUCCIÓN SUPERIOR"
-                                            value={form.precio_superior_construccion}
+                                            value={formDiseño.precio_superior_construccion}
                                             name="precio_superior_construccion"
                                             onChange={onChange}
                                             messageinc="Incorrecto. Ingresa el precio paramétrico de construcción superior."
@@ -335,11 +276,11 @@ class PresupuestoDiseñoForm extends Component {
                                         />
                                     </div>
                                     <div className="col-md-4">
-                                        <Input
+                                        <InputGray
                                             requirevalidation={0}
                                             formeditado={formeditado}
                                             placeholder="TIEMPO DE EJECUCIÓN"
-                                            value={form.tiempo_ejecucion_construccion}
+                                            value={formDiseño.tiempo_ejecucion_construccion}
                                             name="tiempo_ejecucion_construccion"
                                             onChange={onChange}
                                             iconclass={"flaticon-calendar-with-a-clock-time-tools"}
@@ -349,11 +290,11 @@ class PresupuestoDiseñoForm extends Component {
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
-                                        <InputNumber
+                                        <InputNumberGray
                                             requirevalidation={0}
                                             formeditado={formeditado}
                                             placeholder="PRECIO PARAMÉTRICO DE MOBILIARIO INFERIOR"
-                                            value={form.precio_inferior_mobiliario}
+                                            value={formDiseño.precio_inferior_mobiliario}
                                             name="precio_inferior_mobiliario"
                                             onChange={onChange}
                                             messageinc="Incorrecto. Ingresa el precio paramétrico de mobiliario inferior."
@@ -362,11 +303,11 @@ class PresupuestoDiseñoForm extends Component {
                                         />
                                     </div>
                                     <div className="col-md-4">
-                                        <InputNumber
+                                        <InputNumberGray
                                             requirevalidation={0}
                                             formeditado={formeditado}
                                             placeholder="PRECIO PARAMÉTRICO DE MOBILIARIO SUPERIOR"
-                                            value={form.precio_superior_mobiliario}
+                                            value={formDiseño.precio_superior_mobiliario}
                                             name="precio_superior_mobiliario"
                                             onChange={onChange}
                                             messageinc="Incorrecto. Ingresa el precio paramétrico de mobiliario superior."
@@ -381,16 +322,13 @@ class PresupuestoDiseñoForm extends Component {
                                             requirevalidation={0}
                                             formeditado={formeditado}
                                             placeholder="SELECCIONA LAS PARTIDAS"
-                                            options={form.tipo_partida === "partidasInein" ? form.partidasInein : form.partidasIm}
-                                            name={form.tipo_partida}
-                                            value={form.tipo_partida === "partidasInein" ? form.partidasInein : form.partidasIm}
+                                            options={formDiseño.tipo_partida === "partidasInein" ? formDiseño.partidasInein : formDiseño.partidasIm}
+                                            name={formDiseño.tipo_partida}
+                                            value={formDiseño.tipo_partida === "partidasInein" ? formDiseño.partidasInein : formDiseño.partidasIm}
                                             onChange={this.handleChangeCheckbox}
                                         />
-
-
                                     </div>
-                                </div>
-
+                                </div> */}
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2">
                                         <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase" onClick={() => { openWizard2() }} data-wizard-type="action-prev">Anterior</button>
@@ -416,4 +354,4 @@ class PresupuestoDiseñoForm extends Component {
     }
 }
 
-export default PresupuestoDiseñoForm
+export default PresupuestoDiseñoCRMForm

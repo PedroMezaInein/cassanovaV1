@@ -21,17 +21,17 @@ class ProcesoTicketForm extends Component {
     render() {
         const { form, onSubmit, formeditado, onChange, options, handleChange, deleteFile, generateEmail, estatus, ...props } = this.props
         return (
-            <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
+            <div className="wizard wizard-3" id="for2-wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
                     <div className="wizard-steps">
-                        <div id="wizard-1" className="wizard-step" data-wizard-state="current" data-wizard-type="step" onClick={() => { openWizard1_for2_wizard() }}>
+                        <div id="for2-wizard-1" className="wizard-step" data-wizard-state="current" data-wizard-type="step" onClick={() => { openWizard1_for2_wizard() }}>
                             <div className="wizard-label">
                                 <h3 className="wizard-title">
                                     <span>1.</span> Datos de solicitud</h3>
                                 <div className="wizard-bar"></div>
                             </div>
                         </div>
-                        <div id="wizard-2" className="wizard-step" data-wizard-type="step" onClick={() => { openWizard2_for2_wizard() }}>
+                        <div id="for2-wizard-2" className="wizard-step" data-wizard-type="step" onClick={() => { openWizard2_for2_wizard() }}>
                             <div className="wizard-label">
                                 <h3 className="wizard-title">
                                     <span>2.</span> Reporte de archivos</h3>
@@ -51,7 +51,7 @@ class ProcesoTicketForm extends Component {
                             }
                             {...props}
                         >
-                            <div id="wizard-1-content" className="pb-3 px-2" data-wizard-type="step-content" data-wizard-state="current">
+                            <div id="for2-wizard-1-content" className="pb-3 px-2" data-wizard-type="step-content" data-wizard-state="current">
                                 <h5 className="mb-4 font-weight-bold text-dark">Ingresa los datos</h5>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
@@ -116,7 +116,7 @@ class ProcesoTicketForm extends Component {
                                     </div>
                                 </div>
                             </div>
-                            <div id="wizard-2-content" className="pb-3" data-wizard-type="step-content">
+                            <div id="for2-wizard-2-content" className="pb-3" data-wizard-type="step-content">
                                 <h5 className="mb-4 font-weight-bold text-dark">Adjunta los reportes</h5>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-6">

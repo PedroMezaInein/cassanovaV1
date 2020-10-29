@@ -65,7 +65,9 @@ import prestamosForm from './recursoshumanos/PrestamosForm'
 import abonoPrestamosForm from './recursoshumanos/AbonoPrestamosForm'
 import adjuntosEmpresaForm from './catalogos/AdjuntosEmpresaForm'
 import agendaLlamada from './leads/AgendaLlamada'
-
+import historialContactoForm from './leads/info/HistorialContactoForm'
+import agendarCitaForm from './leads/info/AgendarCitaForm'
+import presupuestoDiseñoCRMForm from './leads/info/PresupuestoDiseñoCRMForm'
 
 export const RegisterUserForm = registerUserForm
 export const EmpresaForm = empresaForm
@@ -134,4 +136,7 @@ export const PrestamosForm = prestamosForm
 export const AbonoPrestamosForm = abonoPrestamosForm
 export const AdjuntosEmpresaForm = adjuntosEmpresaForm
 export const AgendaLlamada = agendaLlamada
+export const HistorialContactoForm = historialContactoForm
+export const AgendarCitaForm = agendarCitaForm
+export const PresupuestoDiseñoCRMForm = presupuestoDiseñoCRMForm
 

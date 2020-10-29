@@ -3,7 +3,7 @@ import { CalendarDay, Button } from '../../form-components'
 import { Col, Form } from 'react-bootstrap'
 class AgendaLlamada extends Component {
     render() {
-        const { form, onChange, user, lead, onSubmit } = this.props
+        const { form, onChange, onSubmit } = this.props
         return (
             <Form>
                 <div className="row">
@@ -59,22 +59,6 @@ class AgendaLlamada extends Component {
                         <CalendarDay value = { form.fecha } name = 'fecha' onChange = { onChange } />
                     </Col>
                 </div>
-                {/* <Col md="12">
-                        <div className="separator separator-dashed mt-4 mb-2"></div>
-                        <div className="d-flex justify-content-center my-4">
-                            <span className="bg-gray-200 text-dark-50 font-size-h6 p-1 font-weight-bolder">Asistentes</span>
-                        </div>
-                        <div className="d-flex justify-content-center mt-2">
-                            <div className="mr-5 text-center">
-                                <div className="text-dark-75 font-weight-bolder text-hover-primary mb-1 font-size-lg">{user.name}</div>
-                                <span className="text-muted font-weight-bold d-block">Asesor comercial</span>
-                            </div>
-                            <div className="ml-5 text-center">
-                                <div className="text-dark-75 font-weight-bolder text-hover-primary mb-1 font-size-lg">{lead.nombre}</div>
-                                <span className="text-muted font-weight-bold d-block">Lead</span>
-                            </div>
-                        </div>
-                    </Col> */}
                 <div className="card-footer pt-3 pr-1 pb-0">
                     <div className="row">
                         <div className="col-lg-12 text-right pr-0 pb-0">

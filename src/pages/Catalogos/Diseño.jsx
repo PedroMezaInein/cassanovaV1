@@ -3,17 +3,19 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV } from '../../constants'
 import { setSelectOptions } from '../../functions/setters'
-import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert } from '../../functions/alert'
+import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert, questionAlert } from '../../functions/alert'
 import Layout from '../../components/layout/layout'
 import { Card, Nav, Tab } from 'react-bootstrap'
 import { DiseñoForm, ObraForm } from '../../components/forms'
 import { Line } from 'react-chartjs-2';
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../functions/routers"
+import ItemSlider from '../../components/singles/ItemSlider'
 
 class Contabilidad extends Component {
 
     state = {
+        
         title: 'Diseño',
         empresas: {
             precio_inicial_diseño: '',
@@ -42,13 +44,26 @@ class Contabilidad extends Component {
                 superior: '',
                 cambio: ''
             }],
-            tipos: []
+            tipos: [],
+            adjuntos: {
+                subportafolio: {
+                    value: '',
+                    placeholder: 'Subportafolio',
+                    files: []
+                },
+                ejemplo: {
+                    value: '',
+                    placeholder: 'Ejemplo',
+                    files: []
+                }
+            }
         },
         data: {
             empresas: []
         },
         formeditado: 0,
-        empresa: ''
+        empresa: '',
+        activeTipo: ''
     }
 
     componentDidMount() {
@@ -69,6 +84,7 @@ class Contabilidad extends Component {
         await axios.get(URL_DEV + 'empresa/tabulador', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { empresas } = response.data
+                let { activeTipo } = response.data
                 const { options, data, form } = this.state
                 let { empresa, grafica } = this.state
                 data.empresas = empresas
@@ -77,6 +93,8 @@ class Contabilidad extends Component {
                     if (empresas.length) {
                         empresa = empresas[0]
 
+                        if(empresas[0].tipos.length)
+                            activeTipo = empresas[0].tipos[0].id
 
                         form.precio_inicial_diseño = empresa.precio_inicial_diseño
                         form.incremento_esquema_2 = empresa.incremento_esquema_2
@@ -113,8 +131,75 @@ class Contabilidad extends Component {
                     data,
                     empresa,
                     form,
-                    grafica
+                    grafica,
+                    activeTipo
                 })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    handleChange = (files, item) => {
+        questionAlert('ENVIAR ARCHIVO', '¿ESTÁS SEGURO QUE DESEAS ENVIARLO?', () => this.onChangeAdjuntos({ target: { name: item, value: files, files: files } }))
+    }
+
+    onChangeAdjuntos = e => {
+        const { form } = this.state
+        const { files, value, name } = e.target
+        let aux = []
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        form['adjuntos'][name].value = value
+        form['adjuntos'][name].files = aux
+        this.setState({
+            ...this.state,
+            form
+        })
+
+        this.addAdjunto()
+    }
+
+    async addAdjunto(){
+        
+        const { access_token } = this.props.authUser
+        const { activeTipo, empresa, form } = this.state
+
+        let data = new FormData();
+
+        let aux = Object.keys(form.adjuntos)
+        
+        aux.map((element) => {
+            if (form.adjuntos[element].value !== '') {
+                for (var i = 0; i < form.adjuntos[element].files.length; i++) {
+                    data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
+                    data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
+                }
+                data.append('adjuntos[]', element)
+            }
+            return false
+        })
+
+        await axios.post(URL_DEV + 'empresa/' + empresa.id + '/proyecto/' + activeTipo + '/adjuntos', data, { headers: { 'Content-Type': 'multipart/form-data;', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                
             },
             (error) => {
                 console.log(error, 'error')
@@ -322,9 +407,11 @@ class Contabilidad extends Component {
     }
 
     changeActiveKey = empresa => {
+
         const { form } = this.state
-        let { grafica } = this.state
+        let { grafica, activeTipo } = this.state
         let aux = []
+        
         form.precio_inicial_diseño = empresa.precio_inicial_diseño
         form.incremento_esquema_2 = empresa.incremento_esquema_2
         form.incremento_esquema_3 = empresa.incremento_esquema_3
@@ -350,6 +437,7 @@ class Contabilidad extends Component {
         grafica = this.setGrafica(form)
 
         aux = []
+        
         empresa.tipos.map((tipo) => {
             aux.push({
                 name: tipo.tipo,
@@ -382,10 +470,27 @@ class Contabilidad extends Component {
 
         form.tipos = aux
 
+        let auxEjemplos = []
+        let auxSubportafolios = []
+
+        if(empresa.tipos.length){
+            activeTipo = empresa.tipos[0].id    
+            empresa.tipos[0].adjuntos.map((adjunto)=>{
+                if(adjunto.pivot.tipo === 'subportafolio')
+                    auxSubportafolios.push(adjunto)
+                if(adjunto.pivot.tipo === 'ejemplo')
+                    auxEjemplos.push(adjunto)
+            })
+        }
+
+        form.adjuntos.ejemplo.files = auxEjemplos
+        form.adjuntos.subportafolio.files = auxSubportafolios
+
         this.setState({
             empresa: empresa,
             form,
-            grafica
+            grafica,
+            activeTipo
         })
     }
 
@@ -483,8 +588,38 @@ class Contabilidad extends Component {
         return '-'
     }
 
+    updateAdjuntosTab = select => {
+        const { empresa, form } = this.state
+        let aux = ''
+        empresa.tipos.map((tipo)=>{
+            if(tipo.id.toString() === select.toString())
+                aux = tipo
+        })
+        if(aux !== ''){
+
+            let auxSubportafolios = []
+            let auxEjemplos = []
+
+            aux.adjuntos.map((adjunto)=>{
+                if(adjunto.pivot.tipo === 'subportafolio')
+                    auxSubportafolios.push(adjunto)
+                if(adjunto.pivot.tipo === 'ejemplo')
+                    auxEjemplos.push(adjunto)
+            })
+
+            form.adjuntos.ejemplo.files = auxEjemplos
+            form.adjuntos.subportafolio.files = auxSubportafolios
+            
+            this.setState({
+                ...this.state,
+                activeTipo: aux.id,
+                form
+            })
+        }
+    }
+
     render() {
-        const { form, empresa, data, grafica } = this.state
+        const { form, empresa, data, grafica, activeTipo } = this.state
         return (
             <Layout active={'catalogos'}  {...this.props}>
                 <Tab.Container activeKey={empresa !== '' ? empresa.id : ''} >
@@ -535,7 +670,7 @@ class Contabilidad extends Component {
                                             <span className="nav-icon mr-2">
                                                 <span className="svg-icon mr-3">
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                                        <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                        <g stroke="none" strokeWidth="1" fill="none" fill-rule="evenodd">
                                                             <rect x="0" y="0" width="24" height="24"></rect>
                                                             <path d="M13.2070325,4 C13.0721672,4.47683179 13,4.97998812 13,5.5 C13,8.53756612 15.4624339,11 18.5,11 C19.0200119,11 19.5231682,10.9278328 20,10.7929675 L20,17 C20,18.6568542 18.6568542,20 17,20 L7,20 C5.34314575,20 4,18.6568542 4,17 L4,7 C4,5.34314575 5.34314575,4 7,4 L13.2070325,4 Z" fill="#000000"></path>
                                                             <circle fill="#000000" opacity="0.3" cx="18.5" cy="5.5" r="2.5"></circle>
@@ -575,9 +710,50 @@ class Contabilidad extends Component {
                                             addRow={this.addParametricRow}
                                         />
                                     </Tab.Pane>
-                                    <Tab.Pane eventKey="adjuntos">
-                                        Adjuntos
-                                    </Tab.Pane>
+                                    {
+                                        empresa ?
+                                            <Tab.Pane eventKey="adjuntos">
+                                                <Tab.Container activeKey = { activeTipo } 
+                                                    onSelect={(select) => { this.updateAdjuntosTab(select) }}>
+                                                    <div className='row mx-0'>
+                                                        <div className='col-md-3 navi navi-accent navi-hover navi-bold border-nav'>
+                                                            <Nav variant="pills" className="flex-column navi navi-hover navi-active">
+                                                                {
+                                                                    empresa.tipos.map((tipo, key)=>{
+                                                                        return(
+                                                                            <Nav.Item className='navi-item' key = { key } >
+                                                                                <Nav.Link className="navi-link" eventKey={tipo.id}>
+                                                                                    <span className="navi-text">{tipo.tipo}</span>
+                                                                                </Nav.Link>
+                                                                            </Nav.Item>
+                                                                        )
+                                                                    })
+                                                                }
+                                                            </Nav>
+                                                        </div>
+                                                        <div className='col-md-9'>
+                                                            <div className='row mx-0'>
+                                                                <div className='col-md-6'>
+                                                                    <div className="text-dark-80 text-center pb-3 pt-2">
+                                                                        Subportafolio
+                                                                    </div>
+                                                                    <ItemSlider item = 'subportafolio' items = { form.adjuntos.subportafolio.files } 
+                                                                        handleChange = { this.handleChange } />
+                                                                </div>
+                                                                <div className='col-md-6'>
+                                                                    <div className="text-dark-80 text-center pb-3 pt-2">
+                                                                        Ejemplos
+                                                                    </div>
+                                                                    <ItemSlider item = 'ejemplo' items = { form.adjuntos.ejemplo.files }
+                                                                        handleChange = { this.handleChange } />
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </Tab.Container>
+                                            </Tab.Pane>
+                                        : ''
+                                    }
                                 </Tab.Content>
                             </Tab.Container>
                             
