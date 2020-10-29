@@ -35,7 +35,7 @@ class AgendarCitaForm extends Component {
             <Form>
                 <div className="row">
                     <Col md="6" className="text-center align-self-center">
-                        <div className="form-group row form-group-marginless d-flex justify-content-center">
+                        <div className="form-group row form-group-marginless d-flex justify-content-center mb-0 pb-0">
                             <div className="col-md-12 text-center" style={{ height: '14px' }}>
                                 <label className="text-center font-weight-bolder">Fecha</label>
                             </div>
@@ -90,7 +90,7 @@ class AgendarCitaForm extends Component {
                         </div>
                     </Col>
                     <Col md="6" className="text-center align-self-center">
-                        <div className="form-group row form-group-marginless mt-4">
+                        <div className="form-group row form-group-marginless mt-4 pb-0 mb-0">
                             <div className="col-md-12 text-left">
                                 <InputGray
                                     withtaglabel={1}
@@ -149,18 +149,20 @@ class AgendarCitaForm extends Component {
                         </div>
                     </Col>
                 </div>
+                <div className='text-center pb-4'>
+                    <Button icon='' className="btn btn-primary mr-2"
+                        onClick={
+                            (e) => {
+                                e.preventDefault();
+                                onSubmit()
+                            }
+                        }
+                        text="AGENDAR" />
+                </div>
                 <div className="card-footer pt-3 pr-1 pb-0">
                     <div className="row">
                         <div className="col-lg-12 text-right pr-0 pb-0">
-                            <Button icon='' className="btn btn-primary mr-2"
-                                onClick={
-                                    (e) => {
-                                        e.preventDefault();
-                                        onSubmit()
-                                    }
-                                }
-                                text="ENVIAR"
-                            />
+                            
                         </div>
                     </div>
                 </div>
