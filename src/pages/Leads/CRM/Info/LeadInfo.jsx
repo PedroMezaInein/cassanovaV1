@@ -588,7 +588,7 @@ class LeadInfo extends Component {
                                                 </h3>
                                             </Card.Title>
                                         </Card.Header>
-                                        <Card.Body>
+                                        <Card.Body className="pt-0">
                                             <PresupuestoDiseñoCRMForm
                                                 options={options}
                                                 formDiseño={formDiseño}
