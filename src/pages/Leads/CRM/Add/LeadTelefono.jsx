@@ -222,8 +222,11 @@ class LeadTelefono extends Component {
                                     form.empresa_dirigida !== '' ?
                                         <div className="col-md-4">
                                             <InputGray
-                                                placeholder='NOMBRE DEL LEAD'
+                                                withtaglabel={1}
+                                                withtextlabel={1}
+                                                withplaceholder={1}
                                                 withicon={1}
+                                                placeholder='NOMBRE DEL LEAD'
                                                 iconclass="far fa-user"
                                                 name='name'
                                                 value={form.name}
@@ -290,8 +293,11 @@ class LeadTelefono extends Component {
                                     form.diseño || form.obra !== '' ?
                                         <div className="col-md-4">
                                             <InputGray
-                                                placeholder="CORREO ELECTRÓNICO DE CONTACTO"
+                                                withtaglabel={1}
+                                                withtextlabel={1}
+                                                withplaceholder={1}
                                                 withicon={1}
+                                                placeholder="CORREO ELECTRÓNICO DE CONTACTO"
                                                 iconclass="fas fa-envelope"
                                                 type="email"
                                                 name="email"
@@ -307,8 +313,11 @@ class LeadTelefono extends Component {
                                         <>
                                             <div className="col-md-4">
                                                 <InputGray
-                                                    name='empresa'
+                                                    withtaglabel={1}
+                                                    withtextlabel={1}
+                                                    withplaceholder={1}
                                                     withicon={1}
+                                                    name='empresa'
                                                     value={form.empresa}
                                                     placeholder='Empresa'
                                                     onChange={this.onChange}
@@ -330,8 +339,11 @@ class LeadTelefono extends Component {
                                             </div>
                                             <div className="col-md-8">
                                                 <InputGray
-                                                    placeholder="COMENTARIO"
+                                                    withtaglabel={1}
+                                                    withtextlabel={1}
+                                                    withplaceholder={1}
                                                     withicon={0}
+                                                    placeholder="COMENTARIO"
                                                     name="comentario"
                                                     value={form.comentario}
                                                     onChange={this.onChange}

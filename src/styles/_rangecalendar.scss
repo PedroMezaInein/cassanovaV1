@@ -189,3 +189,20 @@ span.rdrDayStartPreview,
         color: #FFA800!important;
     }
 }
+.rdrMonthAndYearWrapper{
+    height: 50px;
+    padding-top: 0;
+}
+// .rdrMonthsVertical {
+//     padding-top: 20px;
+// }
+.rdrDateDisplayWrapper{
+    display: none;
+}
+@media screen and (max-width: 1280px) {
+    .col-md-4{
+        .rdrCalendarWrapper{
+            font-size: 9.7px !important;
+        }
+    }
+}

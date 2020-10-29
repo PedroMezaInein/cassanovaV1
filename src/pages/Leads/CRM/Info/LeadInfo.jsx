@@ -208,6 +208,33 @@ class LeadInfo extends Component {
             form
         })
     }
+    onChangeHistorial = e => {
+        const { formHistorial } = this.state
+        const { name, value } = e.target
+        formHistorial[name] = value
+        this.setState({
+            ...this.state,
+            formHistorial
+        })
+    }
+    onChangeAgenda = e => {
+        const { name, value } = e.target
+        const { formAgenda } = this.state
+        formAgenda[name] = value
+        this.setState({
+            ...this.state,
+            formAgenda
+        })
+    }
+    onChangePresupuesto = e => {
+        const { name, value } = e.target
+        const { formDiseño } = this.state
+        formDiseño[name] = value
+        this.setState({
+            ...this.state,
+            formDiseño
+        })
+    }
     handleChange = (files, item) => {
         const { formHistorial } = this.state
         let aux = []
@@ -228,24 +255,6 @@ class LeadInfo extends Component {
             formHistorial
         })
     }
-    onChangeHistorial = e => {
-        const { formHistorial } = this.state
-        const { name, value } = e.target
-        formHistorial[name] = value
-        this.setState({
-            ...this.state,
-            formHistorial
-        })
-    }
-    onChangeAgenda = e => {
-        const { name, value } = e.target
-        const { formAgenda } = this.state
-        formAgenda[name] = value
-        this.setState({
-            ...this.state,
-            formAgenda
-        })
-    }
     removeCorreo = value => {
         const { formAgenda } = this.state
         let aux = []
@@ -259,6 +268,44 @@ class LeadInfo extends Component {
         this.setState({
             ...this.state,
             formAgenda
+        })
+    }
+    onChangeConceptos = (e, key) => {
+        const { value, formDiseño } = e.target
+        formDiseño.conceptos[key].value = value
+        this.setState({
+            ...this.state,
+            formDiseño
+        })
+    }
+    checkButtonSemanas = (e, key, dia) => {
+        const { formDiseño } = this.state
+        const { checked } = e.target
+        formDiseño.semanas[key][dia] = checked
+        let count = 0;
+        let aux = Object.keys(
+            {
+                lunes: false,
+                martes: false,
+                miercoles: false,
+                jueves: false,
+                viernes: false,
+                sabado: false,
+                domingo: false
+            }
+        )
+        formDiseño.semanas.map((semana) => {
+            aux.map((element) => {
+                if (semana[element])
+                    count++;
+                return false
+            })
+            return false
+        })
+        formDiseño.tiempo_ejecucion_diseno = count
+        this.setState({
+            ...this.state,
+            formDiseño
         })
     }
     render() {
@@ -334,7 +381,6 @@ class LeadInfo extends Component {
                                                 </span>
                                                 <div className="navi-text">
                                                     <span className="d-block font-weight-bold">Información personal</span>
-                                                    {/* <span className="text-muted">Descripción del paso 1</span> */}
                                                 </div>
                                             </Nav.Link>
                                         </Nav.Item>
@@ -347,7 +393,6 @@ class LeadInfo extends Component {
                                                 </span>
                                                 <div className="navi-text">
                                                     <span className="d-block font-weight-bold">Historial de contacto</span>
-                                                    {/* <span className="text-muted">Descripción del paso 2</span> */}
                                                 </div>
                                             </Nav.Link>
                                         </Nav.Item>
@@ -360,7 +405,6 @@ class LeadInfo extends Component {
                                                 </span>
                                                 <div className="navi-text">
                                                     <span className="d-block font-weight-bold">Presupuesto de diseño</span>
-                                                    {/* <span className="text-muted">Descripción del paso 2</span> */}
                                                 </div>
                                             </Nav.Link>
                                         </Nav.Item>
@@ -389,7 +433,6 @@ class LeadInfo extends Component {
                                             <Card.Title>
                                                 <h3 className="card-title align-items-start flex-column">
                                                     <span className="font-weight-bolder text-dark">Información general</span>
-                                                    {/* <span class="text-muted mt-3 font-weight-bold font-size-sm">890,344 Sales</span> */}
                                                 </h3>
                                             </Card.Title>
                                         </Card.Header>
@@ -397,8 +440,11 @@ class LeadInfo extends Component {
                                             <div className="form-group row form-group-marginless">
                                                 <div className="col-md-4">
                                                     <InputGray
-                                                        placeholder='NOMBRE DEL LEAD'
+                                                        withtaglabel={1}
+                                                        withtextlabel={1}
+                                                        withplaceholder={1}
                                                         withicon={1}
+                                                        placeholder='NOMBRE DEL LEAD'
                                                         iconclass="far fa-user"
                                                         name='name'
                                                         value={form.name}
@@ -407,8 +453,11 @@ class LeadInfo extends Component {
                                                 </div>
                                                 <div className="col-md-4">
                                                     <InputGray
-                                                        placeholder="CORREO ELECTRÓNICO DE CONTACTO"
+                                                        withtaglabel={1}
+                                                        withtextlabel={1}
+                                                        withplaceholder={1}
                                                         withicon={1}
+                                                        placeholder="CORREO ELECTRÓNICO DE CONTACTO"
                                                         iconclass="fas fa-envelope"
                                                         type="email"
                                                         name="email"
@@ -419,8 +468,11 @@ class LeadInfo extends Component {
                                                 </div>
                                                 <div className="col-md-4">
                                                     <InputPhoneGray
-                                                        placeholder="TELÉFONO DE CONTACTO"
+                                                        withtaglabel={1}
+                                                        withtextlabel={1}
+                                                        withplaceholder={1}
                                                         withicon={1}
+                                                        placeholder="TELÉFONO DE CONTACTO"
                                                         iconclass="fas fa-mobile-alt"
                                                         name="telefono"
                                                         value={form.telefono}
@@ -432,8 +484,11 @@ class LeadInfo extends Component {
                                                 </div>
                                                 <div className="col-md-4">
                                                     <InputGray
-                                                        placeholder='NOMBRE DEL PROYECTO'
+                                                        withtaglabel={1}
+                                                        withtextlabel={1}
+                                                        withplaceholder={1}
                                                         withicon={1}
+                                                        placeholder='NOMBRE DEL PROYECTO'
                                                         iconclass="far fa-folder-open"
                                                         name='proyecto'
                                                         value={form.proyecto}
@@ -441,58 +496,6 @@ class LeadInfo extends Component {
                                                     />
                                                 </div>
                                             </div>
-                                            {/* <div className="separator separator-dashed mt-1 mb-2"></div>
-                                            <div className="form-group row form-group-marginless">
-                                                <div className="col-md-4">
-                                                    <InputGray
-                                                        formeditado={formeditado}
-                                                        name='nombre'
-                                                        value={''}
-                                                        onChange={this.onChange}
-                                                        type='text'
-                                                        placeholder='NOMBRE DEL LEAD'
-                                                        iconclass={'far fa-user'}
-                                                    />
-                                                </div>
-                                                <div className="col-md-4">
-                                                    <InputGray
-                                                        formeditado={formeditado}
-                                                        name='correo'
-                                                        value={''}
-                                                        onChange={this.onChange}
-                                                        type='text'
-                                                        placeholder='CORREO ELECTRÓNICO'
-                                                        iconclass={'far fa-envelope'}
-                                                    />
-                                                </div>
-                                                <div className="col-md-4">
-                                                    <InputPhoneGray
-                                                        thousandseparator={false}
-                                                        prefix={''}
-                                                        name='telefono'
-                                                        value={''}
-                                                        placeholder='TELÉFONO'
-                                                        onChange={this.onChange}
-                                                        iconclass={'fas fa-mobile-alt'}
-                                                        messageinc='Incorrecto. Ingresa el número de teléfono.'
-                                                        patterns={TEL}
-                                                        formeditado={formeditado}
-                                                    />
-                                                </div>
-                                                <div className="col-md-12">
-                                                    <InputGray
-                                                        formeditado={formeditado}
-                                                        as="textarea"
-                                                        placeholder="DESCRIPCIÓN"
-                                                        rows="2"
-                                                        name='correo'
-                                                        value={'dedee'}
-                                                        onChange={this.onChange}
-                                                        type='text'
-                                                        style={{ paddingLeft: "10px" }}
-                                                    />
-                                                </div>
-                                            </div> */}
                                         </Card.Body>
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="2">
@@ -584,7 +587,6 @@ class LeadInfo extends Component {
                                             <Card.Title>
                                                 <h3 className="card-title align-items-start flex-column">
                                                     <span className="font-weight-bolder text-dark">Presupuesto de diseño</span>
-                                                    {/* <span class="text-muted mt-3 font-weight-bold font-size-sm">890,344 Sales</span> */}
                                                 </h3>
                                             </Card.Title>
                                         </Card.Header>
@@ -592,6 +594,9 @@ class LeadInfo extends Component {
                                             <PresupuestoDiseñoCRMForm
                                                 options={options}
                                                 formDiseño={formDiseño}
+                                                onChange={this.onChangePresupuesto}
+                                                onChangeConceptos={this.onChangeConceptos}
+                                                checkButtonSemanas={this.checkButtonSemanas}
                                             />
                                         </Card.Body>
                                     </Tab.Pane>

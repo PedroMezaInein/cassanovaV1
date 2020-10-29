@@ -103,6 +103,10 @@ class HistorialContactoForm extends Component {
                                         newTipoContacto &&
                                         <div className="col-md-4">
                                             <InputGray
+                                                withtaglabel={1}
+                                                withtextlabel={1}
+                                                withplaceholder={1}
+                                                withicon={1}
                                                 formeditado={formeditado}
                                                 requirevalidation={0}
                                                 onChange={onChangeHistorial}
@@ -118,6 +122,10 @@ class HistorialContactoForm extends Component {
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-12">
                                         <InputGray
+                                            withtaglabel={1}
+                                            withtextlabel={1}
+                                            withplaceholder={1}
+                                            withicon={0}
                                             formeditado={formeditado}
                                             requirevalidation={0}
                                             as='textarea'
@@ -126,7 +134,6 @@ class HistorialContactoForm extends Component {
                                             onChange={onChangeHistorial}
                                             value={formHistorial.descripcion}
                                             rows='3'
-                                            style={{ paddingLeft: "10px" }}
                                             messageinc="Incorrecto. Ingresa una descripción."
                                         />
                                     </div>
