@@ -8,7 +8,7 @@ import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../../functions/routers"
 import { setOptions, setDateTableLG } from '../../../../functions/setters';
 import axios from 'axios'
-import { errorAlert, forbiddenAccessAlert, waitAlert } from '../../../../functions/alert';
+import { doneAlert, errorAlert, forbiddenAccessAlert, waitAlert } from '../../../../functions/alert';
 import swal from 'sweetalert';
 import { HistorialContactoForm, AgendarCitaForm, PresupuestoDiseñoCRMForm } from '../../../../components/forms'
 class LeadInfo extends Component {
@@ -308,6 +308,41 @@ class LeadInfo extends Component {
             formDiseño
         })
     }
+
+    async agendarEvento() {
+        const { lead, formAgenda } = this.state
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.post(URL_DEV + 'crm/agendar/evento/' + lead.id, formAgenda, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { form } = this.state
+                formAgenda.fecha = new Date()
+                formAgenda.hora = '08'
+                formAgenda.minuto = '00'
+                formAgenda.titulo = ''
+                formAgenda.correo = ''
+                formAgenda.correos = []
+                this.setState({
+                    ...this.state,
+                    formAgenda,
+                    modal: false
+                })
+                doneAlert('Evento generado con éxito');
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    
     render() {
         const { lead, form, formHistorial, options, formAgenda, formDiseño} = this.state
         return (
@@ -526,15 +561,14 @@ class LeadInfo extends Component {
                                                     options={options}
                                                     formHistorial={formHistorial}
                                                     onChangeHistorial={this.onChangeHistorial}
-                                                    handleChange={this.handleChange}
-                                                />
+                                                    handleChange={this.handleChange}/>
                                             </div>
                                             <div className={this.state.showAgenda ? 'col-md-12 mb-5' : 'd-none'}>
                                                 <AgendarCitaForm
                                                     formAgenda={formAgenda}
                                                     onChange={this.onChangeAgenda}
                                                     removeCorreo={this.removeCorreo}
-                                                />
+                                                    onSubmit = { () => { waitAlert(); this.agendarEvento()} } />
                                             </div>
                                             <div className="col-md-8">
                                                 {
