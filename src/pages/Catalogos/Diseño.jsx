@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV } from '../../constants'
 import { setSelectOptions } from '../../functions/setters'
-import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert, questionAlert } from '../../functions/alert'
+import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert, questionAlert, errorAlert2 } from '../../functions/alert'
 import Layout from '../../components/layout/layout'
 import { Card, Nav, Tab } from 'react-bootstrap'
 import { DiseñoForm, ObraForm } from '../../components/forms'
@@ -11,10 +11,12 @@ import { Line } from 'react-chartjs-2';
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../functions/routers"
 import ItemSlider from '../../components/singles/ItemSlider'
+import { FormikProvider } from 'formik'
 
 class Contabilidad extends Component {
 
     state = {
+        
         title: 'Diseño',
         empresas: {
             precio_inicial_diseño: '',
@@ -54,6 +56,11 @@ class Contabilidad extends Component {
                     value: '',
                     placeholder: 'Ejemplo',
                     files: []
+                },
+                portada: {
+                    value: '',
+                    placeholder: 'Portada',
+                    files: []
                 }
             }
         },
@@ -92,8 +99,24 @@ class Contabilidad extends Component {
                     if (empresas.length) {
                         empresa = empresas[0]
 
-                        if(empresas[0].tipos.length)
+                        if(empresas[0].tipos.length){
                             activeTipo = empresas[0].tipos[0].id
+                            let auxSub = []
+                            let auxEj = []
+                            let auxPortada = []
+                            empresas[0].tipos[0].adjuntos.map((adjunto)=>{
+                                if(adjunto.pivot.tipo === 'subportafolio')
+                                    auxSub.push(adjunto)
+                                if(adjunto.pivot.tipo === 'ejemplo')
+                                    auxEj.push(adjunto)
+                                if(adjunto.pivot.tipo === 'portada')
+                                    auxPortada.push(adjunto)
+                            })
+                            form.adjuntos.ejemplo.files = auxEj
+                            form.adjuntos.subportafolio.files = auxSub
+                            form.adjuntos.portada.files = auxPortada
+                            
+                        }
 
                         form.precio_inicial_diseño = empresa.precio_inicial_diseño
                         form.incremento_esquema_2 = empresa.incremento_esquema_2
@@ -149,40 +172,65 @@ class Contabilidad extends Component {
     }
 
     handleChange = (files, item) => {
-        questionAlert('ENVIAR ARCHIVO', '¿ESTÁS SEGURO QUE DESEAS ENVIARLO?', () => this.onChangeAdjuntos({ target: { name: item, value: files, files: files } }))
+        const { form } = this.state
+        this.onChangeAdjuntos({ target: { name: item, value: files, files: files } })
+        if(form.adjuntos[item].value !== '')
+            questionAlert('ENVIAR ARCHIVO', '¿ESTÁS SEGURO QUE DESEAS ENVIARLO?', () => { waitAlert(); this.addAdjunto(item) })
     }
 
     onChangeAdjuntos = e => {
         const { form } = this.state
         const { files, value, name } = e.target
         let aux = []
+        let aux2 = []
+        let size = 0
         for (let counter = 0; counter < files.length; counter++) {
-            aux.push(
-                {
-                    name: files[counter].name,
-                    file: files[counter],
-                    url: URL.createObjectURL(files[counter]),
-                    key: counter
-                }
-            )
+            size = files[counter].size;
+            size = size / (Math.pow(2, 20))
+            if(size <= 2)
+                aux.push(
+                    {
+                        name: files[counter].name,
+                        file: files[counter],
+                        url: URL.createObjectURL(files[counter]),
+                        key: counter
+                    }
+                )
+            else
+                aux2.push(files[counter].name)
         }
-        form['adjuntos'][name].value = value
-        form['adjuntos'][name].files = aux
+        
+        if(aux2.length){
+            let html = '<ul>'
+            aux2.map((element)=>{
+                html += '<li>' + element + '</li>'
+            })
+            html += '</ul>'
+
+            errorAlert2(
+                'Ocurrió un error',
+                'Los siguientes archivos no se pudieron adjuntar, pesan más de 2M',
+                html
+            )
+            form['adjuntos'][name].value = ''
+        }else{
+            form['adjuntos'][name].value = value
+            form['adjuntos'][name].files = aux
+        }
+
         this.setState({
             ...this.state,
             form
         })
-
-        this.addAdjunto()
     }
 
-    async addAdjunto(){
+    async addAdjunto(name){
         
         const { access_token } = this.props.authUser
         const { activeTipo, empresa, form } = this.state
 
         let data = new FormData();
-
+        data.append('tipo', name)
         let aux = Object.keys(form.adjuntos)
         
         aux.map((element) => {
@@ -196,9 +244,34 @@ class Contabilidad extends Component {
             return false
         })
 
-        await axios.post(URL_DEV + 'empresa/' + empresa.id + '/proyecto/' + activeTipo + '/adjuntos', data, { headers: { 'Content-Type': 'multipart/form-data;', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(URL_DEV + 'empresa/' + empresa.id + '/proyecto/' + activeTipo + '/adjuntos', data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                
+                const { empresas } = response.data
+                let { empresa } = this.state
+                const { activeTipo, form } = this.state
+                empresas.map((element)=>{
+                    if(element.id === empresa.id){
+                        empresa = element
+                    }
+                })
+                let arregloAuxiliar = []
+                empresa.tipos.map((element)=>{
+                    if(element.id.toString() === activeTipo.toString()){
+                        element.adjuntos.map((adjunto)=>{
+                            if(adjunto.pivot.tipo === name)
+                                arregloAuxiliar.push(adjunto)
+                        })
+                    }
+                })
+                form.adjuntos[name].files = arregloAuxiliar
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Archivo adjuntado con éxito')
+                this.setState({
+                    ...this.state,
+                    empresa,
+                    form
+                })
+
             },
             (error) => {
                 console.log(error, 'error')
@@ -471,6 +544,7 @@ class Contabilidad extends Component {
 
         let auxEjemplos = []
         let auxSubportafolios = []
+        let auxPortadas = []
 
         if(empresa.tipos.length){
             activeTipo = empresa.tipos[0].id    
@@ -479,11 +553,14 @@ class Contabilidad extends Component {
                     auxSubportafolios.push(adjunto)
                 if(adjunto.pivot.tipo === 'ejemplo')
                     auxEjemplos.push(adjunto)
+                if(adjunto.pivot.tipo === 'portada')
+                    auxPortadas.push(adjunto)
             })
         }
 
         form.adjuntos.ejemplo.files = auxEjemplos
         form.adjuntos.subportafolio.files = auxSubportafolios
+        form.adjuntos.portada.files = auxPortadas
 
         this.setState({
             empresa: empresa,
@@ -598,16 +675,20 @@ class Contabilidad extends Component {
 
             let auxSubportafolios = []
             let auxEjemplos = []
+            let auxPortadas = []
 
             aux.adjuntos.map((adjunto)=>{
                 if(adjunto.pivot.tipo === 'subportafolio')
                     auxSubportafolios.push(adjunto)
                 if(adjunto.pivot.tipo === 'ejemplo')
                     auxEjemplos.push(adjunto)
+                if(adjunto.pivot.tipo === 'portada')
+                    auxPortadas.push(adjunto)
             })
 
             form.adjuntos.ejemplo.files = auxEjemplos
             form.adjuntos.subportafolio.files = auxSubportafolios
+            form.adjuntos.portada.files = auxPortadas
             
             this.setState({
                 ...this.state,
@@ -731,19 +812,26 @@ class Contabilidad extends Component {
                                                             </Nav>
                                                         </div>
                                                         <div className='col-md-9'>
-                                                            <div className='row mx-0'>
-                                                                <div className='col-md-6'>
+                                                            <div className='row mx-0 justify-content-center'>
+                                                                <div className='col-md-6 mb-3'>
                                                                     <div className="text-dark-80 text-center pb-3 pt-2">
                                                                         Subportafolio
                                                                     </div>
                                                                     <ItemSlider item = 'subportafolio' items = { form.adjuntos.subportafolio.files } 
                                                                         handleChange = { this.handleChange } />
                                                                 </div>
-                                                                <div className='col-md-6'>
+                                                                <div className='col-md-6 mb-3'>
                                                                     <div className="text-dark-80 text-center pb-3 pt-2">
                                                                         Ejemplos
                                                                     </div>
                                                                     <ItemSlider item = 'ejemplo' items = { form.adjuntos.ejemplo.files }
+                                                                        handleChange = { this.handleChange } />
+                                                                </div>
+                                                                <div className='col-md-6 mb-3'>
+                                                                    <div className="text-dark-80 text-center pb-3 pt-2">
+                                                                        Portada
+                                                                    </div>
+                                                                    <ItemSlider item = 'portada' items = { form.adjuntos.portada.files }
                                                                         handleChange = { this.handleChange } />
                                                                 </div>
                                                             </div>
