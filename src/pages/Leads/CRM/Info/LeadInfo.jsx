@@ -439,7 +439,7 @@ class LeadInfo extends Component {
         console.log(lead)
         return (
             <Layout active={'leads'}  {...this.props}>
-                <Tab.Container defaultActiveKey="3" className="p-5">
+                <Tab.Container defaultActiveKey="2" className="p-5">
                     <Row>
                         <Col md={3} className="mb-3">
                             <Card className="card-custom card-stretch">
@@ -483,21 +483,14 @@ class LeadInfo extends Component {
                                                                                     }}>
                                                                                 {lead.prospecto.estatus_prospecto.estatus.toUpperCase()}
                                                                             </Dropdown.Toggle>
-                                                                            <Dropdown.Menu className="p-0">
+                                                                            <Dropdown.Menu className="p-0" >
                                                                                 <Dropdown.Header>
                                                                                     <span className="font-size-sm">Elige una opción</span>
                                                                                 </Dropdown.Header>
                                                                                 <Dropdown.Item className="p-0" onClick={(e) => { e.preventDefault(); this.openModalWithInput('Cancelado', lead.id) }} >
                                                                                     <span className="navi-link w-100">
                                                                                         <span className="navi-text">
-                                                                                            <span className="label label-xl label-inline label-light-danger rounded-0 w-100 font-weight-bolder">CANCELADO</span>
-                                                                                        </span>
-                                                                                    </span>
-                                                                                </Dropdown.Item>
-                                                                                <Dropdown.Item className="p-0" onClick={(e) => { e.preventDefault(); this.openModalWithInput('Rechazado', lead.id) }} >
-                                                                                    <span className="navi-link w-100">
-                                                                                        <span className="navi-text">
-                                                                                            <span className="label label-xl label-inline label-light-danger rounded-0 w-100 font-weight-bolder">RECHAZADO</span>
+                                                                                            <span className="label label-xl label-inline label-light-danger rounded-0 w-100 ">CANCELADO</span>
                                                                                         </span>
                                                                                     </span>
                                                                                 </Dropdown.Item>
