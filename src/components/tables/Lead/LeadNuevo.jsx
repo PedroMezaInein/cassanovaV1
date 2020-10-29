@@ -42,7 +42,6 @@ class LeadNuevo extends Component {
     }
     render() {
         const { leads, onClickPrev, onClickNext, sendEmail, openModal, openModalWithInput, changePageLlamadaSalida } = this.props
-        console.log(leads)
         return (
             <>
                 <div className="tab-content">
