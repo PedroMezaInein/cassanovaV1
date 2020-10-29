@@ -36,7 +36,7 @@ class AgendarCitaForm extends Component {
                 <div className="row">
                     <Col md="6" className="text-center align-self-center">
                         <div className="form-group row form-group-marginless d-flex justify-content-center">
-                            <div className="col-md-12 text-center" style={{ height: '1px' }}>
+                            <div className="col-md-12 text-center" style={{ height: '14px' }}>
                                 <label className="text-center font-weight-bolder">Fecha</label>
                             </div>
                             <div className="col-md-12 text-center">
@@ -93,8 +93,11 @@ class AgendarCitaForm extends Component {
                         <div className="form-group row form-group-marginless mt-4">
                             <div className="col-md-12 text-left">
                                 <InputGray
-                                    placeholder='Titulo'
+                                    withtaglabel={1}
+                                    withtextlabel={1}
+                                    withplaceholder={1}
                                     withicon={1}
+                                    placeholder='Titulo'
                                     iconclass="fas fa-users"
                                     name='titulo'
                                     value={formAgenda.titulo}
@@ -103,8 +106,11 @@ class AgendarCitaForm extends Component {
                             </div>
                             <div className="col-md-10 text-left">
                                     <InputGray
-                                        placeholder="CORREO DE CONTACTO"
+                                        withtaglabel={1}
+                                        withtextlabel={1}
+                                        withplaceholder={1}
                                         withicon={1}
+                                        placeholder="CORREO DE CONTACTO"
                                         iconclass='fas fa-envelope'
                                         name='correo'
                                         value={formAgenda.correo}
