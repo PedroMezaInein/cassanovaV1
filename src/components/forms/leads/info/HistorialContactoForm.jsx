@@ -138,7 +138,7 @@ class HistorialContactoForm extends Component {
                                         />
                                     </div>
                                 </div>
-                                <div className="d-flex justify-content-between border-top mt-3 pt-3">
+                                <div className="d-flex justify-content-between border-bottom mt-3 py-3">
                                     <div className="mr-2"></div>
                                     <div>
                                         <button type="button" className="btn btn-primary font-weight-bold text-uppercase" onClick={() => { openWizard2_for2_wizard() }} data-wizard-type="action-next">Siguiente</button>
@@ -173,7 +173,7 @@ class HistorialContactoForm extends Component {
                                         />
                                     </div>
                                 </div>
-                                <div className="border-top mt-3 pt-3">
+                                <div className="border-bottom mt-3 py-3">
                                     <div className="row">
                                         <div className="col-lg-6 text-left">
                                             <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase" onClick={() => { openWizard1_for2_wizard() }} data-wizard-type="action-prev">Anterior</button>
