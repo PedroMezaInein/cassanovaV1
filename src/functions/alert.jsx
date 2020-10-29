@@ -146,6 +146,18 @@ export function questionAlert2(title, text, action, html) {
     })
 }
 
+export function errorAlert2(title, html) {
+    MySwal.fire({
+        title: title,
+        icon: "error",
+        html: html,
+        showCancelButton: false,
+        showConfirmButton: true,
+        reverseButtons: false,
+        timer: 5000
+    });
+}
+
 
 export function forbiddenAccessAlert() {
     swal({
