@@ -179,9 +179,9 @@ class LeadInfo extends Component {
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 // options['origenes'] = setOptions(origenes, 'origen', 'id')
                 options['tiposContactos'] = setOptions(medios, 'tipo', 'id')
-                options.tiposContactos.push({
+                /* options.tiposContactos.push({
                     value: 'New', name: '+ Agregar nuevo'
-                })
+                }) */
                 this.setState({
                     ...this.state,
                     options
@@ -306,6 +306,62 @@ class LeadInfo extends Component {
         this.setState({
             ...this.state,
             formDiseño
+        })
+    }
+
+    async agregarContacto(){
+        waitAlert()
+        const { lead, formHistorial } = this.state
+        const { access_token } = this.props.authUser
+        const data = new FormData();
+        let aux = Object.keys(formHistorial)
+        aux.map((element) => {
+            switch (element) {
+                case 'fechaContacto':
+                    data.append(element, (new Date(formHistorial[element])).toDateString())
+                    break
+                case 'adjuntos':
+                    break;
+                default:
+                    data.append(element, formHistorial[element]);
+                    break
+            }
+            return false
+        })
+        aux = Object.keys(formHistorial.adjuntos)
+        aux.map((element) => {
+            if (formHistorial.adjuntos[element].value !== '') {
+                for (var i = 0; i < formHistorial.adjuntos[element].files.length; i++) {
+                    data.append(`files_name_${element}[]`, formHistorial.adjuntos[element].files[i].name)
+                    data.append(`files_${element}[]`, formHistorial.adjuntos[element].files[i].file)
+                }
+                data.append('adjuntos[]', element)
+            }
+            return false
+        })
+        await axios.post(URL_DEV + 'crm/contacto/lead/' + lead.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { lead } = response.data
+                console.log(lead, 'lead')
+                const { formHistorial } = this.state
+                this.setState({
+                    ...this.state,
+                    formHistorial,
+                    lead: lead
+                })
+                doneAlert('Historial actualizado con éxito');
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
@@ -558,10 +614,11 @@ class LeadInfo extends Component {
                                         <Card.Body className="d-flex justify-content-center pt-0 row">
                                             <div className={this.state.showForm ? 'col-md-12 mb-5' : 'd-none'}>
                                                 <HistorialContactoForm
-                                                    options={options}
-                                                    formHistorial={formHistorial}
-                                                    onChangeHistorial={this.onChangeHistorial}
-                                                    handleChange={this.handleChange}/>
+                                                    options = { options }
+                                                    formHistorial = { formHistorial }
+                                                    onChangeHistorial = { this.onChangeHistorial }
+                                                    handleChange = { this.handleChange }
+                                                    onSubmit = { () => { waitAlert(); this.agregarContacto()} } />
                                             </div>
                                             <div className={this.state.showAgenda ? 'col-md-12 mb-5' : 'd-none'}>
                                                 <AgendarCitaForm

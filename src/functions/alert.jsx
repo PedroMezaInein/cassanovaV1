@@ -146,11 +146,11 @@ export function questionAlert2(title, text, action, html) {
     })
 }
 
-export function errorAlert2(title, html) {
+export function errorAdjuntos(title, text, html) {
     MySwal.fire({
         title: title,
         icon: "error",
-        html: html,
+        html: text+':</br></br><div class="text-center"><b>'+html+'</b></div>',
         showCancelButton: false,
         showConfirmButton: true,
         reverseButtons: false,

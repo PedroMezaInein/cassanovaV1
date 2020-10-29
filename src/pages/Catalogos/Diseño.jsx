@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV } from '../../constants'
 import { setSelectOptions } from '../../functions/setters'
-import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert, questionAlert, errorAlert2 } from '../../functions/alert'
+import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert, questionAlert, errorAdjuntos } from '../../functions/alert'
 import Layout from '../../components/layout/layout'
 import { Card, Nav, Tab } from 'react-bootstrap'
 import { DiseñoForm, ObraForm } from '../../components/forms'
@@ -199,16 +199,27 @@ class Contabilidad extends Component {
             else
                 aux2.push(files[counter].name)
         }
-        
+        // if(aux2.length){
+        //     let html = '<ul style="padding-left: 20px;">'
+        //     aux2.map((element)=>{
+        //         html += '<li>' + '<div class="mb-2">'+ element +'</div>' + '</li>'
+        //     })
+        //     html += '</ul>'
+        //     errorAdjuntos(
+        //         'OCURRIÓ UN ERROR',
+        //         'Los siguientes archivos no se pudieron adjuntar, pesan más de 2M',
+        //         html
+        //     )
+        //     form['adjuntos'][name].value = ''
+        // }
         if(aux2.length){
-            let html = '<ul>'
+            let html = ''
             aux2.map((element)=>{
-                html += '<li>' + element + '</li>'
+                html += '<div class="mb-2 text-dark-50">'+ '&bull;&nbsp;'+element +'<br/>'+'</div>'
             })
-            html += '</ul>'
-
-            errorAlert2(
-                'Ocurrió un error',
+            // html
+            errorAdjuntos(
+                'OCURRIÓ UN ERROR',
                 'Los siguientes archivos no se pudieron adjuntar, pesan más de 2M',
                 html
             )
