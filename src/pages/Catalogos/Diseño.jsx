@@ -15,6 +15,7 @@ import ItemSlider from '../../components/singles/ItemSlider'
 class Contabilidad extends Component {
 
     state = {
+        
         title: 'Diseño',
         empresas: {
             precio_inicial_diseño: '',
