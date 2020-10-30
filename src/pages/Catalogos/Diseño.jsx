@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV } from '../../constants'
 import { setSelectOptions } from '../../functions/setters'
-import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert, questionAlert, errorAdjuntos, createAlertSA2, deleteAlertSA2Parametro, createAlertSA2Parametro } from '../../functions/alert'
+import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert, questionAlert, errorAdjuntos, deleteAlertSA2Parametro, createAlertSA2Parametro } from '../../functions/alert'
 import Layout from '../../components/layout/layout'
 import { Card, Nav, Tab } from 'react-bootstrap'
 import { DiseñoForm, ObraForm } from '../../components/forms'
@@ -12,7 +12,6 @@ import { Line } from 'react-chartjs-2';
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../functions/routers"
 import ItemSlider from '../../components/singles/ItemSlider'
-import { countBy } from 'lodash'
 import InputSinText from '../../components/form-components/SinText/InputSinText'
 import Input from '../../components/form-components/Input'
 
@@ -461,7 +460,7 @@ class Contabilidad extends Component {
         const { empresa, form } = this.state
         await axios.post(`${URL_DEV}empresa/${empresa.id}/tabulador/obra`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { empresa: { respuesta } } = response.data
+                // const { empresa: { respuesta } } = response.data
                 this.setState({
                     ...this.state,
                     empresa: ''

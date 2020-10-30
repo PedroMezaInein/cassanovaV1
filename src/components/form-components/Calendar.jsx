@@ -36,7 +36,7 @@ class Calendar extends Component{
 
     render(){
         const { placeholder, onChangeCalendar, name, value, messageinc, iconclass, ...props } = this.props
-        const { minDate, endDate, selectsEnd, startDate, selectsStart, onChangeCalendar: { funcionOnChangeCalendar }, ...props2} = this.props
+        const { minDate, endDate, selectsEnd, startDate, selectsStart, ...props2} = this.props
         const { calendarValido } = this.state
         return(
             <div>  
