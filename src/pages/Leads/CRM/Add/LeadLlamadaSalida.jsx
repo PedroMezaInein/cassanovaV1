@@ -36,7 +36,8 @@ class LeadLlamadaSalida extends Component {
         // const { authUser: { user: { permisos } } } = this.props
         // const { history: { location: { pathname } } } = this.props
         // const { match: { params: { action } } } = this.props
-        const { history, location: { state } } = this.props
+        // const { history, location: { state } } = this.props
+        const { location: { state } } = this.props
         if (state) {
             if (state.lead) {
                 const { form, options } = this.state
@@ -138,6 +139,7 @@ class LeadLlamadaSalida extends Component {
                 } else if (lead.empresa.name === 'INEIN') {
                     return <><div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Mucho gusto <span className="font-weight-boldest"><em>{form.name.split(" ", 1)}</em></span>, recibimos exitosamente su información a través de nuestro sitio web. Me pongo en contacto en relación del servicio que seleccionaste de <span className="font-weight-boldest"><em>{this.servicio(lead.servicios)}</em>.</span></div><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">¡EXCELENTE! TE AGRADEZCO QUE NOS TOMES EN CUENTA PARA TU PROYECTO, PUEDES INDICARME <span className="font-weight-boldest"><em>¿Qué tipo de proyecto es?</em></span></div></>;
                 }
+                break;
             case 'tipoProyecto':
             case 'tipoProyectoNombre':
                 if (lead.empresa.name === 'INFRAESTRUCTURA MÉDICA') {
@@ -145,6 +147,7 @@ class LeadLlamadaSalida extends Component {
                 } else if (lead.empresa.name === 'INEIN') {
                     return <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">De acuerdo, me parece increíble. <span className="font-weight-boldest"><em>¿Tu proyecto se trata de diseño o construcción?</em></span></div>;
                 }
+                break;
             case 'diseño':
             case 'obra':
                 if (lead.empresa.name === 'INFRAESTRUCTURA MÉDICA') {
@@ -161,14 +164,17 @@ class LeadLlamadaSalida extends Component {
                         return <><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify mb-3">Me gustaría conocer más detalles de tu proyecto <span className="font-weight-boldest"><em>¿Me podrías corroborar tu correo electrónico?</em></span>&nbsp;para hacerte llegar un cuestionario. Tu correo es: <span className="font-weight-boldest"><em>{lead.email}</em></span></div><div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">En unos minutos te hare<span className="font-weight-boldest"><em> llegar a tu correo un cuestionario</em></span>, te pido nos apoyes en constarlo, para que una vez que yo lo reciba pueda evaluar tu proyecto, ¿De acuerdo?.</div><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">¿Existiría algo mas en lo que te pueda ayudar antes de finalizar esta llamada?</div><div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg text-justify">Muy bien <span className="font-weight-boldest">{form.name.split(" ", 1)}</span>, en un momento te hago el envio del cuestionario. Que tengas un excelente día.</div></>;
                 }
             }
+                break;
             case 'email':
                 if (lead.empresa.name === 'INFRAESTRUCTURA MÉDICA') {
                     return <><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Gracias, en unos minutos le <span className="font-weight-boldest"><em>estaré enviado dicho cuestionario a su correo y además le anexare un documento que será útil para usted </em></span>, en él se describe detalladamente cada servicio que podemos brindarle.</div><div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Una vez que me haga llegar su información, la analizare y <span className="font-weight-boldest"><em>posteriormente me estaré comunicado con usted.</em></span></div><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">Gracias por contactarnos, que tenga un excelente día.</div></>;
                 } else if (lead.empresa.name === 'INEIN') {
                     return <><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">En unos minutos te hare<span className="font-weight-boldest"><em> llegar a tu correo un cuestionario</em></span>, te pido nos apoyes en constarlo, para que una vez que yo lo reciba pueda evaluar tu proyecto, ¿De acuerdo?.</div><div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">¿Existiría algo mas en lo que te pueda ayudar antes de finalizar esta llamada?</div><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">Muy bien <span className="font-weight-boldest">{form.name.split(" ", 1)}</span>, en un momento te hago el envio del cuestionario. Que tengas un excelente día.</div></>;
                 }
+                break;
             default:
                 return <></>
+                break;
         }
     }
     async getOptionsAxios() {
@@ -227,7 +233,7 @@ class LeadLlamadaSalida extends Component {
         })
     }
     render() {
-        const { messages, form, options, formeditado, lead } = this.state
+        const { messages, form, options, lead } = this.state
         const { name: usuario } = this.props.authUser.user
         return (
             <Layout active='leads' {...this.props} >
