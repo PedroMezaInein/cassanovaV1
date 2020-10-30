@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import React, { Component } from 'react'
 import Layout from '../../../../components/layout/layout'
-import { Col, Row, Card, Tab, Nav, Dropdown, Form} from 'react-bootstrap'
+import { Col, Row, Card, Tab, Nav, Dropdown, Form } from 'react-bootstrap'
 import { Button, InputGray, InputPhoneGray } from '../../../../components/form-components';
 import { TEL, URL_DEV, EMAIL } from '../../../../constants'
 import SVG from "react-inlinesvg";
@@ -26,7 +26,7 @@ class LeadInfo extends Component {
             tipoProyectoNombre: '',
             origen: '',
             telefono: '',
-            proyecto:''
+            proyecto: ''
         },
         formHistorial: {
             comentario: '',
@@ -139,7 +139,7 @@ class LeadInfo extends Component {
         this.setState({
             ...this.state,
             showForm: !showForm,
-            showAgenda:false
+            showAgenda: false
         })
     }
     mostrarAgenda() {
@@ -147,7 +147,7 @@ class LeadInfo extends Component {
         this.setState({
             ...this.state,
             showAgenda: !showAgenda,
-            showForm:false
+            showForm: false
         })
     }
     componentDidMount() {
@@ -176,7 +176,7 @@ class LeadInfo extends Component {
         await axios.get(URL_DEV + 'crm/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 swal.close()
-                const { empresas,medios } = response.data
+                const { empresas, medios } = response.data
                 const { options } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 // options['origenes'] = setOptions(origenes, 'origen', 'id')
@@ -311,7 +311,7 @@ class LeadInfo extends Component {
         })
     }
 
-    async agregarContacto(){
+    async agregarContacto() {
         waitAlert()
         const { lead, formHistorial } = this.state
         const { access_token } = this.props.authUser
@@ -373,7 +373,6 @@ class LeadInfo extends Component {
         const { access_token } = this.props.authUser
         await axios.post(URL_DEV + 'crm/agendar/evento/' + lead.id, formAgenda, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { form } = this.state
                 formAgenda.fecha = new Date()
                 formAgenda.hora = '08'
                 formAgenda.minuto = '00'
@@ -435,7 +434,7 @@ class LeadInfo extends Component {
         })
     }
 
-    
+
     render() {
         const { lead, form, formHistorial, options, formAgenda, formDiseño } = this.state
         console.log(lead)
@@ -498,7 +497,7 @@ class LeadInfo extends Component {
                                                                                 </Dropdown.Item>
                                                                             </Dropdown.Menu>
                                                                         </Dropdown>
-                                                                    : ''
+                                                                        : ''
                                                                     : ''
                                                             }
                                                         </div>
@@ -681,18 +680,18 @@ class LeadInfo extends Component {
                                         <Card.Body className="d-flex justify-content-center pt-0 row">
                                             <div className={this.state.showForm ? 'col-md-12 mb-5' : 'd-none'}>
                                                 <HistorialContactoForm
-                                                    options = { options }
-                                                    formHistorial = { formHistorial }
-                                                    onChangeHistorial = { this.onChangeHistorial }
-                                                    handleChange = { this.handleChange }
-                                                    onSubmit = { () => { waitAlert(); this.agregarContacto()} } />
+                                                    options={options}
+                                                    formHistorial={formHistorial}
+                                                    onChangeHistorial={this.onChangeHistorial}
+                                                    handleChange={this.handleChange}
+                                                    onSubmit={() => { waitAlert(); this.agregarContacto() }} />
                                             </div>
                                             <div className={this.state.showAgenda ? 'col-md-12 mb-5' : 'd-none'}>
                                                 <AgendarCitaForm
                                                     formAgenda={formAgenda}
                                                     onChange={this.onChangeAgenda}
                                                     removeCorreo={this.removeCorreo}
-                                                    onSubmit = { () => { waitAlert(); this.agendarEvento()} } />
+                                                    onSubmit={() => { waitAlert(); this.agendarEvento() }} />
                                             </div>
                                             <div className="col-md-8">
                                                 {
@@ -728,6 +727,17 @@ class LeadInfo extends Component {
                                                                                 <div className="font-weight-light pb-2 text-justify position-relative mt-2" style={{ borderRadius: '0.42rem', padding: '1rem 1.5rem', backgroundColor: '#F3F6F9' }}>
                                                                                     <div className="text-dark-75 font-weight-bold mb-2">{contacto.tipo_contacto.tipo}</div>
                                                                                     {contacto.comentario}
+                                                                                    {
+                                                                                        contacto.adjunto ?
+                                                                                            <div className="d-flex justify-content-end">
+                                                                                                <a href={contacto.adjunto.url} target='_blank' rel="noopener noreferrer" className="text-muted text-hover-primary font-weight-bold">
+                                                                                                    <span className="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
+                                                                                                        <SVG src={toAbsoluteUrl('/images/svg/Attachment1.svg')} />
+                                                                                                    </span>VER ADJUNTO
+                                                                                                    </a>
+                                                                                            </div>
+                                                                                            : ''
+                                                                                    }
                                                                                 </div>
                                                                             </div>
                                                                         </div>
