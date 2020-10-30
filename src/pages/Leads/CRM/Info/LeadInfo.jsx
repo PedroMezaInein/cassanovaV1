@@ -8,7 +8,7 @@ import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../../functions/routers"
 import { setOptions, setDateTableLG } from '../../../../functions/setters';
 import axios from 'axios'
-import { doneAlert, errorAlert, forbiddenAccessAlert, waitAlert, questionAlert2 } from '../../../../functions/alert';
+import { doneAlert, errorAlert, forbiddenAccessAlert, waitAlert, questionAlert2, questionAlert } from '../../../../functions/alert';
 import swal from 'sweetalert';
 import { HistorialContactoForm, AgendarCitaForm, PresupuestoDiseñoCRMForm } from '../../../../components/forms'
 class LeadInfo extends Component {
@@ -152,6 +152,7 @@ class LeadInfo extends Component {
     }
     componentDidMount() {
         const { location: { state } } = this.props
+        const { history } = this.props
         if (state) {
             if (state.lead) {
                 const { form, options } = this.state
@@ -167,7 +168,11 @@ class LeadInfo extends Component {
                     options
                 })
             }
+            else
+                history.push('/leads/crm')
         }
+        else 
+            history.push('/leads/crm')
         this.getOptionsAxios()
     }
     async getOptionsAxios() {
@@ -344,7 +349,6 @@ class LeadInfo extends Component {
         await axios.post(URL_DEV + 'crm/contacto/lead/' + lead.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { lead } = response.data
-                console.log(lead, 'lead')
                 const { formHistorial } = this.state
                 this.setState({
                     ...this.state,
@@ -352,6 +356,11 @@ class LeadInfo extends Component {
                     lead: lead
                 })
                 doneAlert('Historial actualizado con éxito');
+                const { history } = this.props
+                history.push({
+                    pathname: '/leads/crm/info/info',
+                    state: { lead: lead }
+                });
             },
             (error) => {
                 console.log(error, 'error')
@@ -403,7 +412,7 @@ class LeadInfo extends Component {
         questionAlert2('ESCRIBE EL MOTIVO DEL RECHAZO O CANCELACIÓN', '', () => this.changeEstatusCanceladoRechazadoAxios({ id: id, estatus: estatus }),
             <div>
                 <Form.Control
-                    placeholder='MOTIVO DE CANCELACIÓN'
+                    placeholder='MOTIVO DE RECHAZO'
                     className="form-control form-control-solid h-auto py-7 px-6"
                     id='motivo'
                     as="textarea"
@@ -412,13 +421,93 @@ class LeadInfo extends Component {
             </div>
         )
     }
+
+    async getLeadEnContacto() {
+        const { access_token } = this.props.authUser
+        const { lead } = this.state
+        await axios.get(URL_DEV + 'crm/table/lead-en-contacto/' + lead.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { lead } = response.data
+                const { history } = this.props
+                history.push({
+                    pathname: '/leads/crm/info/info',
+                    state: { lead: lead }
+                });
+                this.setState({
+                    ...this.state,
+                    lead: lead
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     async changeEstatusCanceladoRechazadoAxios(data) {
         waitAlert()
         const { access_token } = this.props.authUser
         data.motivo = document.getElementById('motivo').value
         await axios.put(URL_DEV + 'crm/lead/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                const { history } = this.props
+                history.push('/leads/crm')
                 doneAlert('El estatus fue actualizado con éxito.')
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    async changeEstatusAxios(data) {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.put(URL_DEV + 'crm/lead/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {       
+                const { history } = this.props
+                history.push('/leads/crm')    
+                doneAlert('El estatus fue actualizado con éxito.')
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    changeEstatus = (estatus, id) => {
+        questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios({ id: id, estatus: estatus }))
+    }
+
+    solicitarFechaCita = async() => {
+        const { access_token } = this.props.authUser
+        const { lead } = this.state
+        await axios.put(URL_DEV + 'crm/email/lead-potencial/' + lead.id, {}, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert('Correo enviado con éxito');
+                this.getLeadEnContacto()
             },
             (error) => {
                 console.log(error, 'error')
@@ -488,10 +577,17 @@ class LeadInfo extends Component {
                                                                                 <Dropdown.Header>
                                                                                     <span className="font-size-sm">Elige una opción</span>
                                                                                 </Dropdown.Header>
-                                                                                <Dropdown.Item className="p-0" onClick={(e) => { e.preventDefault(); this.openModalWithInput('Cancelado', lead.id) }} >
+                                                                                <Dropdown.Item href="#"  className="p-0" onClick={(e) => { e.preventDefault(); this.changeEstatus('Detenido', lead.id ) }} >
                                                                                     <span className="navi-link w-100">
                                                                                         <span className="navi-text">
-                                                                                            <span className="label label-xl label-inline label-light-danger rounded-0 w-100 ">CANCELADO</span>
+                                                                                            <span className="label label-xl label-inline bg-light-gray text-gray rounded-0 w-100">DETENIDO</span>
+                                                                                        </span>
+                                                                                    </span>
+                                                                                </Dropdown.Item>
+                                                                                <Dropdown.Item className="p-0" onClick={(e) => { e.preventDefault(); this.openModalWithInput('Rechazado', lead.id) }} >
+                                                                                    <span className="navi-link w-100">
+                                                                                        <span className="navi-text">
+                                                                                            <span className="label label-xl label-inline label-light-danger rounded-0 w-100">Rechazado</span>
                                                                                         </span>
                                                                                     </span>
                                                                                 </Dropdown.Item>
@@ -691,6 +787,7 @@ class LeadInfo extends Component {
                                                     formAgenda={formAgenda}
                                                     onChange={this.onChangeAgenda}
                                                     removeCorreo={this.removeCorreo}
+                                                    solicitarFechaCita = { () => { waitAlert(); this.solicitarFechaCita() } }
                                                     onSubmit={() => { waitAlert(); this.agendarEvento() }} />
                                             </div>
                                             <div className="col-md-8">
