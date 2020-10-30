@@ -3,15 +3,17 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV } from '../../constants'
 import { setSelectOptions } from '../../functions/setters'
-import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert, questionAlert, errorAdjuntos } from '../../functions/alert'
+import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert, questionAlert, errorAdjuntos, createAlertSA2, deleteAlertSA2Parametro, createAlertSA2Parametro } from '../../functions/alert'
 import Layout from '../../components/layout/layout'
 import { Card, Nav, Tab } from 'react-bootstrap'
 import { DiseñoForm, ObraForm } from '../../components/forms'
+import { Button } from '../../components/form-components'
 import { Line } from 'react-chartjs-2';
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../functions/routers"
 import ItemSlider from '../../components/singles/ItemSlider'
-import { FormikProvider } from 'formik'
+import { countBy } from 'lodash'
+import InputSinText from '../../components/form-components/SinText/InputSinText'
 
 class Contabilidad extends Component {
 
@@ -62,7 +64,10 @@ class Contabilidad extends Component {
                     placeholder: 'Portada',
                     files: []
                 }
-            }
+            },
+            esquema_1:[],
+            esquema_2:[],
+            esquema_3:[],
         },
         data: {
             empresas: []
@@ -144,9 +149,135 @@ class Contabilidad extends Component {
                             })
                         })
                         form.tipos = aux
+
+                        let auxEsquema1 = []
+                        let auxEsquema2 = []
+                        let auxEsquema3 = []
+
+                        empresas[0].planos.map((plano) => {
+                            if(plano.esquema_1)
+                                auxEsquema1.push(plano)
+                            if(plano.esquema_2)
+                                auxEsquema2.push(plano)
+                            if(plano.esquema_3)
+                                auxEsquema3.push(plano)
+                        })
+                        
+                        auxEsquema1.push({id: '', nombre: ''})
+                        auxEsquema2.push({id: '', nombre: ''})
+                        auxEsquema3.push({id: '', nombre: '', tipo: ''})
+
+                        form.esquema_1 = auxEsquema1
+                        form.esquema_2 = auxEsquema2
+                        form.esquema_3 = auxEsquema3
+
                         grafica = this.setGrafica(empresa)
                     }
                 }
+                this.setState({
+                    ...this.state,
+                    options,
+                    data,
+                    empresa,
+                    form,
+                    grafica,
+                    activeTipo
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async getSingleDiseño(id) {
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'empresa/tabulador/one/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { empresa } = response.data
+                let { activeTipo } = response.data
+                const { options, data, form } = this.state
+                let { grafica } = this.state
+                if (empresa) {
+                    if(empresa.tipos.length){
+                        activeTipo = empresa.tipos[0].id
+                        let auxSub = []
+                        let auxEj = []
+                        let auxPortada = []
+                        empresa.tipos[0].adjuntos.map((adjunto)=>{
+                            if(adjunto.pivot.tipo === 'subportafolio')
+                                auxSub.push(adjunto)
+                            if(adjunto.pivot.tipo === 'ejemplo')
+                                auxEj.push(adjunto)
+                            if(adjunto.pivot.tipo === 'portada')
+                                auxPortada.push(adjunto)
+                        })
+                        form.adjuntos.ejemplo.files = auxEj
+                        form.adjuntos.subportafolio.files = auxSub
+                        form.adjuntos.portada.files = auxPortada
+                            
+                    }
+
+                    form.precio_inicial_diseño = empresa.precio_inicial_diseño
+                    form.incremento_esquema_2 = empresa.incremento_esquema_2
+                    form.incremento_esquema_3 = empresa.incremento_esquema_3
+
+                    empresa.variaciones.map((variacion, index) => {
+                        this.onChangeVariaciones(index, { target: { value: variacion.superior } }, 'superior')
+                        this.onChangeVariaciones(index, { target: { value: variacion.inferior } }, 'inferior')
+                        this.onChangeVariaciones(index, { target: { value: variacion.cambio } }, 'cambio')
+                    })
+
+                    let aux = []
+
+                    empresa.tipos.map((tipo) => {
+                        aux.push({
+                            name: tipo.tipo,
+                            id: tipo.id,
+                            parametricos: {
+                                construccion_civil_inf: tipo.construccion_civil_inf,
+                                construccion_civil_sup: tipo.construccion_civil_sup,
+                                construccion_interiores_inf: tipo.construccion_interiores_inf,
+                                construccion_interiores_sup: tipo.construccion_interiores_sup,
+                                mobiliario_inf: tipo.mobiliario_inf,
+                                mobiliario_sup: tipo.mobiliario_sup
+                            }
+                        })
+                    })
+                    form.tipos = aux
+
+                    let auxEsquema1 = []
+                    let auxEsquema2 = []
+                    let auxEsquema3 = []
+
+                    empresa.planos.map((plano) => {
+                        if(plano.esquema_1)
+                            auxEsquema1.push(plano)
+                        if(plano.esquema_2)
+                            auxEsquema2.push(plano)
+                        if(plano.esquema_3)
+                            auxEsquema3.push(plano)
+                    })
+                
+                    auxEsquema1.push({id: '', nombre: ''})
+                    auxEsquema2.push({id: '', nombre: ''})
+                    auxEsquema3.push({id: '', nombre: '', tipo: ''})
+
+                    form.esquema_1 = auxEsquema1
+                    form.esquema_2 = auxEsquema2
+                    form.esquema_3 = auxEsquema3
+
+                    grafica = this.setGrafica(empresa)
+                }
+                
                 this.setState({
                     ...this.state,
                     options,
@@ -491,94 +622,11 @@ class Contabilidad extends Component {
 
     changeActiveKey = empresa => {
 
-        const { form } = this.state
-        let { grafica, activeTipo } = this.state
-        let aux = []
-        
-        form.precio_inicial_diseño = empresa.precio_inicial_diseño
-        form.incremento_esquema_2 = empresa.incremento_esquema_2
-        form.incremento_esquema_3 = empresa.incremento_esquema_3
-
-        empresa.variaciones.map((variacion) => {
-            aux.push({
-                inferior: variacion.inferior,
-                superior: variacion.superior,
-                cambio: variacion.cambio
-            })
-        })
-
-        if (empresa.variaciones.length === 0) {
-            aux.push({
-                inferior: 0,
-                superior: 0,
-                cambio: 0
-            })
-        }
-
-        form.variaciones = aux
-
-        grafica = this.setGrafica(form)
-
-        aux = []
-        
-        empresa.tipos.map((tipo) => {
-            aux.push({
-                name: tipo.tipo,
-                id: tipo.id,
-                parametricos: {
-                    construccion_civil_inf: tipo.construccion_civil_inf,
-                    construccion_civil_sup: tipo.construccion_civil_sup,
-                    construccion_interiores_inf: tipo.construccion_interiores_inf,
-                    construccion_interiores_sup: tipo.construccion_interiores_sup,
-                    mobiliario_inf: tipo.mobiliario_inf,
-                    mobiliario_sup: tipo.mobiliario_sup
-                }
-            })
-        })
-
-        if (empresa.tipos.length === 0) {
-            aux.push({
-                name: '',
-                id: '',
-                parametricos: {
-                    construccion_civil_inf: 0,
-                    construccion_civil_sup: 0,
-                    construccion_interiores_inf: 0,
-                    construccion_interiores_sup: 0,
-                    mobiliario_inf: 0,
-                    mobiliario_sup: 0
-                }
-            })
-        }
-
-        form.tipos = aux
-
-        let auxEjemplos = []
-        let auxSubportafolios = []
-        let auxPortadas = []
-
-        if(empresa.tipos.length){
-            activeTipo = empresa.tipos[0].id    
-            empresa.tipos[0].adjuntos.map((adjunto)=>{
-                if(adjunto.pivot.tipo === 'subportafolio')
-                    auxSubportafolios.push(adjunto)
-                if(adjunto.pivot.tipo === 'ejemplo')
-                    auxEjemplos.push(adjunto)
-                if(adjunto.pivot.tipo === 'portada')
-                    auxPortadas.push(adjunto)
-            })
-        }
-
-        form.adjuntos.ejemplo.files = auxEjemplos
-        form.adjuntos.subportafolio.files = auxSubportafolios
-        form.adjuntos.portada.files = auxPortadas
-
         this.setState({
-            empresa: empresa,
-            form,
-            grafica,
-            activeTipo
+            empresa: empresa
         })
+
+        this.getSingleDiseño(empresa.id)
     }
 
     setGrafica = empresa => {
@@ -709,6 +757,92 @@ class Contabilidad extends Component {
         }
     }
 
+    handleChangePlanos = (esquema, e, key) => {
+        const { name, value } = e.target
+        let { form } = this.state
+        form[esquema][key][name] = value
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
+
+    sendPlano = (esquema, key) => {
+        const { form } = this.state
+        if(form[esquema][key].nombre !== '')
+            if(esquema === 'esquema_3')
+                if(form[esquema][key].tipo !== '')
+                    createAlertSA2Parametro(
+                        '¿Confirmas el envío de información?', '', this.sendPlanoAxios, {esquema: esquema, value: form[esquema][key]}
+                    )
+                else
+                    errorAlert('No llenaste todos los campos')
+            else
+                createAlertSA2Parametro(
+                    '¿Confirmas el envío de información?', '', this.sendPlanoAxios, {esquema: esquema, value: form[esquema][key]}
+                )
+        else
+            errorAlert('No llenaste todos los campos')   
+    }
+
+    sendPlanoAxios = async(datos) => {
+
+        const { access_token } = this.props.authUser
+        const { empresa } = this.state
+
+        await axios.post(URL_DEV + 'empresa/' + empresa.id + '/plano/' + datos.esquema, datos.value, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { empresa } = response.data
+
+                this.getSingleDiseño(empresa.id)
+                doneAlert('Plano agregado con éxito')
+
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    deletePlano = id => {
+        deleteAlertSA2Parametro('¿Estás seguro que deseas eliminar el plano?', 'Esta acción no podrá ser revertida',
+            this.deletePlanoAxios, {id: id})
+    }
+
+    deletePlanoAxios = async(data) => {
+        const { access_token } = this.props.authUser
+        const { empresa } = this.state
+
+        await axios.delete(URL_DEV + 'empresa/' + empresa.id + '/planos/' + data.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { empresa } = response.data
+
+                this.getSingleDiseño(empresa.id)
+                doneAlert('Plano eliminado con éxito')
+
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     render() {
         const { form, empresa, data, grafica, activeTipo } = this.state
         return (
@@ -770,6 +904,16 @@ class Contabilidad extends Component {
                                                 </span>
                                             </span>
                                             <span className="nav-text">Adjuntos</span>
+                                        </Nav.Link>
+                                    </Nav.Item>
+                                    <Nav.Item className="nav-item mr-3">
+                                        <Nav.Link eventKey="planos">
+                                            <span className="nav-icon mr-2">
+                                                <span className="svg-icon mr-3">
+                                                    <SVG src={toAbsoluteUrl('/images/svg/highvoltage.svg')} />
+                                                </span>
+                                            </span>
+                                            <span className="nav-text">Planos</span>
                                         </Nav.Link>
                                     </Nav.Item>
                                 </Nav>
@@ -849,6 +993,223 @@ class Contabilidad extends Component {
                                                         </div>
                                                     </div>
                                                 </Tab.Container>
+                                            </Tab.Pane>
+                                        : ''
+                                    }
+                                    {
+                                        empresa ?
+                                            <Tab.Pane eventKey="planos">
+                                                <div className = 'row mx-0'>
+                                                    <div className = 'col-md-4'>
+                                                        <Card>
+                                                            <Card.Header>
+                                                                <div className="card-custom">
+                                                                    <h3 className="card-label">
+                                                                        Esquema 1
+                                                                    </h3>
+                                                                </div>
+                                                            </Card.Header>
+                                                            <Card.Body className = 'py-0'>
+                                                                <div className="pt-2">
+                                                                    {
+                                                                        form.esquema_1.map((plano, key) => {
+                                                                            return(
+                                                                                <div className = { plano.id !== '' ? 'row mx-0 border-bottom py-4' : 'row mx-0 py-4'} key = { key } >
+                                                                                    <div className='col-2'>
+                                                                                        {
+                                                                                            plano.id !== '' ?
+                                                                                                <Button
+                                                                                                    icon = ''
+                                                                                                    onClick = { () => { this.deletePlano(plano.id) } } 
+                                                                                                    className = "btn btn-icon btn-light-danger btn-sm mr-2 ml-auto"
+                                                                                                    only_icon = "flaticon2-delete icon-sm"
+                                                                                                    tooltip={{text:'Eliminar'}}/>
+                                                                                            : ''
+                                                                                        }                                                                            
+                                                                                    </div>
+                                                                                    <div className={plano.id !== '' ? 'col-10 w-100 d-flex align-items-center' : 'col-8 w-100 d-flex align-items-center'}>
+                                                                                        {
+                                                                                            plano.id !== '' ?
+                                                                                                plano.nombre
+                                                                                            :
+                                                                                                <InputSinText
+                                                                                                    name = 'nombre'
+                                                                                                    requireValidation = { 1 }
+                                                                                                    value = { plano.nombre }
+                                                                                                    onChange = { (e) => { this.handleChangePlanos('esquema_1', e, key) }}
+                                                                                                    customclass="border-top-0 border-left-0 border-right-0 rounded-0 text-center pl-0 w-100" 
+                                                                                                />
+                                                                                        }
+                                                                                    </div>
+                                                                                    {
+                                                                                        plano.id !== '' ? 
+                                                                                            ''
+                                                                                        :
+                                                                                            <div className='col-2'>
+                                                                                                <Button
+                                                                                                    icon = ''
+                                                                                                    onClick = { () => { this.sendPlano('esquema_1', key) } } 
+                                                                                                    className = "btn btn-icon btn-light-success btn-sm mr-2 ml-auto"
+                                                                                                    only_icon = "flaticon2-arrow icon-sm"
+                                                                                                    tooltip={{text:'Enviar'}}/>
+                                                                                            </div>
+                                                                                    }
+                                                                                </div>
+                                                                            )
+                                                                        })
+                                                                    }
+                                                                </div>
+                                                            </Card.Body>
+                                                        </Card>
+                                                    </div>
+                                                    <div className = 'col-md-4'>
+                                                        <Card>
+                                                            <Card.Header>
+                                                                <div className="card-custom">
+                                                                    <h3 className="card-label">
+                                                                        Esquema 2
+                                                                    </h3>
+                                                                </div>
+                                                            </Card.Header>
+                                                            <Card.Body className = 'py-0'>
+                                                            <div className="pt-2">
+                                                                    {
+                                                                        form.esquema_2.map((plano, key) => {
+                                                                            return(
+                                                                                <div className = { plano.id !== '' ? 'row mx-0 border-bottom py-4' : 'row mx-0 py-4'} key = { key } >
+                                                                                    <div className='col-2'>
+                                                                                        {
+                                                                                            plano.id !== '' ?
+                                                                                                <Button
+                                                                                                    icon = ''
+                                                                                                    onClick = { () => { this.deletePlano(plano.id) } } 
+                                                                                                    className = "btn btn-icon btn-light-danger btn-sm mr-2 ml-auto"
+                                                                                                    only_icon = "flaticon2-delete icon-sm"
+                                                                                                    tooltip={{text:'Eliminar'}}/>
+                                                                                            : ''
+                                                                                        }                                                                            
+                                                                                    </div>
+                                                                                    <div className={plano.id !== '' ? 'col-10 w-100 d-flex align-items-center' : 'col-8 w-100 d-flex align-items-center'}>
+                                                                                        {
+                                                                                            plano.id !== '' ?
+                                                                                                plano.nombre
+                                                                                            :
+                                                                                                <InputSinText
+                                                                                                    name = 'nombre'
+                                                                                                    requireValidation = { 1 }
+                                                                                                    value = { plano.nombre }
+                                                                                                    onChange = { (e) => { this.handleChangePlanos('esquema_2', e, key) }}
+                                                                                                    customclass="border-top-0 border-left-0 border-right-0 rounded-0 text-center pl-0 w-100" 
+                                                                                                />
+                                                                                        }
+                                                                                    </div>
+                                                                                    {
+                                                                                        plano.id !== '' ? 
+                                                                                            ''
+                                                                                        :
+                                                                                            <div className='col-2'>
+                                                                                                <Button
+                                                                                                    icon = ''
+                                                                                                    onClick = { () => { this.sendPlano('esquema_2', key) } } 
+                                                                                                    className = "btn btn-icon btn-light-success btn-sm mr-2 ml-auto"
+                                                                                                    only_icon = "flaticon2-arrow icon-sm"
+                                                                                                    tooltip={{text:'Enviar'}}/>
+                                                                                            </div>
+                                                                                    }
+                                                                                </div>
+                                                                            )
+                                                                        })
+                                                                    }
+                                                                </div>
+                                                            </Card.Body>
+                                                        </Card>
+                                                    </div>
+                                                    <div className = 'col-md-4'>
+                                                        <Card>
+                                                            <Card.Header>
+                                                                <div className="card-custom">
+                                                                    <h3 className="card-label">
+                                                                        Esquema 3
+                                                                    </h3>
+                                                                </div>
+                                                            </Card.Header>
+                                                            <Card.Body className = 'py-0'>
+                                                                <div className="pt-2">
+                                                                    {
+                                                                        form.esquema_3.map((plano, key) => {
+                                                                            return(
+                                                                                <>
+                                                                                    {
+                                                                                        form.esquema_3.length === 0 ? plano.tipo : ''
+                                                                                    }
+                                                                                    {
+                                                                                        key === 0 ? plano.tipo : 
+                                                                                            plano.tipo !== form.esquema_3[key - 1].tipo ? plano.tipo : ''
+                                                                                    }
+                                                                                    <div className = { plano.id !== '' ? 'row mx-0 border-bottom py-4' : 'row mx-0 py-4'} key = { key } >
+                                                                                        <div className='col-1'>
+                                                                                            {
+                                                                                                plano.id !== '' ?
+                                                                                                    <Button
+                                                                                                        icon = ''
+                                                                                                        onClick = { () => { this.deletePlano(plano.id) } } 
+                                                                                                        className = "btn btn-icon btn-light-danger btn-sm mr-2 ml-auto"
+                                                                                                        only_icon = "flaticon2-delete icon-sm"
+                                                                                                        tooltip={{text:'Eliminar'}}/>
+                                                                                                : ''
+                                                                                            }                                                                            
+                                                                                        </div>
+                                                                                        <div className={plano.id !== '' ? 'col-6 w-100 d-flex align-items-center' : 'col-5 w-100 d-flex align-items-center'}>
+                                                                                            {
+                                                                                                plano.id !== '' ?
+                                                                                                    plano.nombre
+                                                                                                :
+                                                                                                    <InputSinText
+                                                                                                        name = 'nombre'
+                                                                                                        requireValidation = { 1 }
+                                                                                                        value = { plano.nombre }
+                                                                                                        onChange = { (e) => { this.handleChangePlanos('esquema_3', e, key) }}
+                                                                                                        customclass="border-top-0 border-left-0 border-right-0 rounded-0 text-center pl-0 w-100" 
+                                                                                                    />
+                                                                                            }
+                                                                                        </div>
+                                                                                        <div className={plano.id !== '' ? 'col-6 w-100 d-flex align-items-center' : 'col-5 w-100 d-flex align-items-center'}>
+                                                                                            {
+                                                                                                plano.id !== '' ?
+                                                                                                    ''
+                                                                                                :
+                                                                                                    <InputSinText
+                                                                                                        name = 'tipo'
+                                                                                                        requireValidation = { 1 }
+                                                                                                        value = { plano.tipo }
+                                                                                                        onChange = { (e) => { this.handleChangePlanos('esquema_3', e, key) }}
+                                                                                                        customclass="border-top-0 border-left-0 border-right-0 rounded-0 text-center pl-0 w-100" 
+                                                                                                    />
+                                                                                            }
+                                                                                        </div>
+                                                                                        {
+                                                                                            plano.id !== '' ? 
+                                                                                                ''
+                                                                                            :
+                                                                                                <div className='col-1'>
+                                                                                                    <Button
+                                                                                                        icon = ''
+                                                                                                        onClick = { () => { this.sendPlano('esquema_3', key) } } 
+                                                                                                        className = "btn btn-icon btn-light-success btn-sm mr-2 ml-auto"
+                                                                                                        only_icon = "flaticon2-arrow icon-sm"
+                                                                                                        tooltip={{text:'Enviar'}}/>
+                                                                                                </div>
+                                                                                        }
+                                                                                    </div>
+                                                                                </>
+                                                                            )
+                                                                        })
+                                                                    }
+                                                                </div>
+                                                            </Card.Body>
+                                                        </Card>
+                                                    </div>
+                                                </div>
                                             </Tab.Pane>
                                         : ''
                                     }
