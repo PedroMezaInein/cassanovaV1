@@ -14,6 +14,7 @@ import { toAbsoluteUrl } from "../../functions/routers"
 import ItemSlider from '../../components/singles/ItemSlider'
 import { countBy } from 'lodash'
 import InputSinText from '../../components/form-components/SinText/InputSinText'
+import Input from '../../components/form-components/Input'
 
 class Contabilidad extends Component {
 
@@ -1034,6 +1035,7 @@ class Contabilidad extends Component {
                                                                                             :
                                                                                                 <InputSinText
                                                                                                     name = 'nombre'
+                                                                                                    placeholder = 'Plano'
                                                                                                     requireValidation = { 1 }
                                                                                                     value = { plano.nombre }
                                                                                                     onChange = { (e) => { this.handleChangePlanos('esquema_1', e, key) }}
@@ -1096,6 +1098,7 @@ class Contabilidad extends Component {
                                                                                             :
                                                                                                 <InputSinText
                                                                                                     name = 'nombre'
+                                                                                                    placeholder = 'Plano'
                                                                                                     requireValidation = { 1 }
                                                                                                     value = { plano.nombre }
                                                                                                     onChange = { (e) => { this.handleChangePlanos('esquema_2', e, key) }}
@@ -1166,6 +1169,7 @@ class Contabilidad extends Component {
                                                                                                 :
                                                                                                     <InputSinText
                                                                                                         name = 'nombre'
+                                                                                                        placeholder = 'Plano'
                                                                                                         requireValidation = { 1 }
                                                                                                         value = { plano.nombre }
                                                                                                         onChange = { (e) => { this.handleChangePlanos('esquema_3', e, key) }}
@@ -1180,6 +1184,7 @@ class Contabilidad extends Component {
                                                                                                 :
                                                                                                     <InputSinText
                                                                                                         name = 'tipo'
+                                                                                                        placeholder = 'Tipo'
                                                                                                         requireValidation = { 1 }
                                                                                                         value = { plano.tipo }
                                                                                                         onChange = { (e) => { this.handleChangePlanos('esquema_3', e, key) }}
