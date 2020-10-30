@@ -403,7 +403,7 @@ class LeadInfo extends Component {
         questionAlert2('ESCRIBE EL MOTIVO DEL RECHAZO O CANCELACIÓN', '', () => this.changeEstatusCanceladoRechazadoAxios({ id: id, estatus: estatus }),
             <div>
                 <Form.Control
-                    placeholder='MOTIVO DE CANCELACIÓN'
+                    placeholder='MOTIVO DE RECHAZO'
                     className="form-control form-control-solid h-auto py-7 px-6"
                     id='motivo'
                     as="textarea"
@@ -418,6 +418,8 @@ class LeadInfo extends Component {
         data.motivo = document.getElementById('motivo').value
         await axios.put(URL_DEV + 'crm/lead/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                const { history } = this.props
+                history.push('/leads/crm')
                 doneAlert('El estatus fue actualizado con éxito.')
             },
             (error) => {
@@ -488,10 +490,10 @@ class LeadInfo extends Component {
                                                                                 <Dropdown.Header>
                                                                                     <span className="font-size-sm">Elige una opción</span>
                                                                                 </Dropdown.Header>
-                                                                                <Dropdown.Item className="p-0" onClick={(e) => { e.preventDefault(); this.openModalWithInput('Cancelado', lead.id) }} >
+                                                                                <Dropdown.Item className="p-0" onClick={(e) => { e.preventDefault(); this.openModalWithInput('Rechazado', lead.id) }} >
                                                                                     <span className="navi-link w-100">
                                                                                         <span className="navi-text">
-                                                                                            <span className="label label-xl label-inline label-light-danger rounded-0 w-100 ">CANCELADO</span>
+                                                                                            <span className="label label-xl label-inline label-light-danger rounded-0 w-100 ">Rechazado</span>
                                                                                         </span>
                                                                                     </span>
                                                                                 </Dropdown.Item>
