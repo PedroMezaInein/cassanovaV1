@@ -138,14 +138,16 @@ class LeadInfo extends Component {
         const { showForm } = this.state
         this.setState({
             ...this.state,
-            showForm: !showForm
+            showForm: !showForm,
+            showAgenda:false
         })
     }
     mostrarAgenda() {
         const { showAgenda } = this.state
         this.setState({
             ...this.state,
-            showAgenda: !showAgenda
+            showAgenda: !showAgenda,
+            showForm:false
         })
     }
     componentDidMount() {
