@@ -113,6 +113,38 @@ export function createAlertSA2(title, text, action) {
     })
 }
 
+export function createAlertSA2Parametro(title, text, action, parametro) {
+    MySwal.fire({
+        title: title,
+        text: text,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Aceptar',
+        cancelButtonText: 'Cancelar',
+        reverseButtons: true,
+    }).then((result) => {
+        if (result.value) {
+            action(parametro)
+        }
+    })
+}
+
+export function deleteAlertSA2Parametro(title, text, action, parametro) {
+    MySwal.fire({
+        title: title,
+        text: text,
+        icon: 'delete',
+        showCancelButton: true,
+        confirmButtonText: 'Aceptar',
+        cancelButtonText: 'Cancelar',
+        reverseButtons: true,
+    }).then((result) => {
+        if (result.value) {
+            action(parametro)
+        }
+    })
+}
+
 export function questionAlert(title, text, action) {
     MySwal.fire({
         title: title,
