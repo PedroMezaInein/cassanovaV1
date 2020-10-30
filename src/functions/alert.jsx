@@ -18,8 +18,8 @@ let done = wrapperDone.firstChild;
 
 export async function waitAlert() {
     swal({
-        title: '¡Un momento!',
-        text: 'La información está siendo procesada.',
+        title: '¡UN MOMENTO!',
+        text: 'LA INFORMACIÓN ESTÁ SIENDO PROCESADA.',
         buttons: false,
         content: sending
     })
@@ -27,7 +27,7 @@ export async function waitAlert() {
 
 export async function doneAlert(texto) {
     swal({
-        title: '¡Felicidades 🥳!',
+        title: 'FELICIDADES 🥳!',
         text: texto,
         buttons: false,
         timer: 2500,
@@ -37,7 +37,7 @@ export async function doneAlert(texto) {
 
 export function errorAlert(text) {
     swal({
-        title: '¡Ups 😕!',
+        title: 'UPS 😕!',
         text: text,
         icon: 'error',
     })
@@ -48,14 +48,14 @@ export function deleteAlert(text, action) {
         title: text,
         buttons: {
             cancel: {
-                text: "Cancelar",
+                text: "CANCELAR",
                 value: null,
                 visible: true,
                 className: "button__green btn-primary cancel",
                 closeModal: true,
             },
             confirm: {
-                text: "Aceptar",
+                text: "ACEPTAR",
                 value: true,
                 visible: true,
                 className: "button__red btn-primary",
@@ -76,14 +76,14 @@ export function createAlert(title, text, action) {
         text: text,
         buttons: {
             cancel: {
-                text: "Cancelar",
+                text: "CANCELAR",
                 value: null,
                 visible: true,
                 className: "btn btn-light-danger",
                 closeModal: true,
             },
             confirm: {
-                text: "Aceptar",
+                text: "ACEPTAR",
                 value: true,
                 visible: true,
                 className: "btn btn-light-primary",
@@ -103,8 +103,8 @@ export function createAlertSA2(title, text, action) {
         text: text,
         icon: 'question',
         showCancelButton: true,
-        confirmButtonText: 'Aceptar',
-        cancelButtonText: 'Cancelar',
+        confirmButtonText: 'ACEPTAR',
+        cancelButtonText: 'CANCELAR',
         reverseButtons: true,
     }).then((result) => {
         if (result.value) {
@@ -119,8 +119,8 @@ export function createAlertSA2Parametro(title, text, action, parametro) {
         text: text,
         icon: 'question',
         showCancelButton: true,
-        confirmButtonText: 'Aceptar',
-        cancelButtonText: 'Cancelar',
+        confirmButtonText: 'ACEPTAR',
+        cancelButtonText: 'CANCELAR',
         reverseButtons: true,
     }).then((result) => {
         if (result.value) {
@@ -135,8 +135,8 @@ export function deleteAlertSA2Parametro(title, text, action, parametro) {
         text: text,
         icon: 'delete',
         showCancelButton: true,
-        confirmButtonText: 'Aceptar',
-        cancelButtonText: 'Cancelar',
+        confirmButtonText: 'ACEPTAR',
+        cancelButtonText: 'CANCELAR',
         reverseButtons: true,
     }).then((result) => {
         if (result.value) {
@@ -151,7 +151,7 @@ export function questionAlert(title, text, action) {
         text: text,
         icon: "question",
         showCancelButton: true,
-        confirmButtonText: "Enviar",
+        confirmButtonText: "ENVIAR",
         cancelButtonText: "CANCELAR",
         reverseButtons: true,
     }).then((result) => {
@@ -168,7 +168,7 @@ export function questionAlert2(title, text, action, html) {
         icon: "question",
         html: html,
         showCancelButton: true,
-        confirmButtonText: "Enviar",
+        confirmButtonText: "ENVIAR",
         cancelButtonText: "CANCELAR",
         reverseButtons: true,
     }).then((result) => {
@@ -194,9 +194,9 @@ export function errorAdjuntos(title, text, html) {
 export function forbiddenAccessAlert() {
     swal({
         title: '¡Ups 😕!',
-        text: 'Parece que no has iniciado sesión',
+        text: 'PARECE QUE NO HAS INICIADO SESIÓN',
         icon: 'warning',
-        confirmButtonText: 'Inicia sesión'
+        confirmButtonText: 'INICIA SESIÓN'
     });
 }
 
@@ -205,7 +205,7 @@ export function validateAlert(success, e, name) {
     if (elementsInvalid.length === 0) {
         success(e)
     } else {
-        alert("Rellena todos los campos")
+        alert("RELLENA TODOS LOS CAMPOS")
     }
 }
 

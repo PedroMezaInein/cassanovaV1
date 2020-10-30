@@ -8,7 +8,7 @@ import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../../functions/routers"
 import { setOptions, setDateTableLG } from '../../../../functions/setters';
 import axios from 'axios'
-import { doneAlert, errorAlert, forbiddenAccessAlert, waitAlert, questionAlert2 } from '../../../../functions/alert';
+import { doneAlert, errorAlert, forbiddenAccessAlert, waitAlert, questionAlert2, questionAlert } from '../../../../functions/alert';
 import swal from 'sweetalert';
 import { HistorialContactoForm, AgendarCitaForm, PresupuestoDiseñoCRMForm } from '../../../../components/forms'
 class LeadInfo extends Component {
@@ -474,6 +474,32 @@ class LeadInfo extends Component {
             console.log(error, 'error')
         })
     }
+    async changeEstatusAxios(data) {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.put(URL_DEV + 'crm/lead/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {       
+                const { history } = this.props
+                history.push('/leads/crm')    
+                doneAlert('El estatus fue actualizado con éxito.')
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    changeEstatus = (estatus, id) => {
+        questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios({ id: id, estatus: estatus }))
+    }
 
     solicitarFechaCita = async() => {
         const { access_token } = this.props.authUser
@@ -551,10 +577,17 @@ class LeadInfo extends Component {
                                                                                 <Dropdown.Header>
                                                                                     <span className="font-size-sm">Elige una opción</span>
                                                                                 </Dropdown.Header>
+                                                                                <Dropdown.Item href="#"  className="p-0" onClick={(e) => { e.preventDefault(); this.changeEstatus('Detenido', lead.id ) }} >
+                                                                                    <span className="navi-link w-100">
+                                                                                        <span className="navi-text">
+                                                                                            <span className="label label-xl label-inline bg-light-gray text-gray rounded-0 w-100">DETENIDO</span>
+                                                                                        </span>
+                                                                                    </span>
+                                                                                </Dropdown.Item>
                                                                                 <Dropdown.Item className="p-0" onClick={(e) => { e.preventDefault(); this.openModalWithInput('Rechazado', lead.id) }} >
                                                                                     <span className="navi-link w-100">
                                                                                         <span className="navi-text">
-                                                                                            <span className="label label-xl label-inline label-light-danger rounded-0 w-100 ">Rechazado</span>
+                                                                                            <span className="label label-xl label-inline label-light-danger rounded-0 w-100">Rechazado</span>
                                                                                         </span>
                                                                                     </span>
                                                                                 </Dropdown.Item>
