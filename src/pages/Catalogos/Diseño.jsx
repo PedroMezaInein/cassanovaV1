@@ -338,7 +338,7 @@ class Contabilidad extends Component {
         //     html += '</ul>'
         //     errorAdjuntos(
         //         'OCURRIÓ UN ERROR',
-        //         'Los siguientes archivos no se pudieron adjuntar, pesan más de 2M',
+        //         'LOS SIGUIENTES ARCHIVOS NO SE PUDIERON ADJUNTAR, PESAN MÁS DE 2M',
         //         html
         //     )
         //     form['adjuntos'][name].value = ''
@@ -351,7 +351,7 @@ class Contabilidad extends Component {
             // html
             errorAdjuntos(
                 'OCURRIÓ UN ERROR',
-                'Los siguientes archivos no se pudieron adjuntar, pesan más de 2M',
+                'LOS SIGUIENTES ARCHIVOS NO SE PUDIERON ADJUNTAR, PESAN MÁS DE 2M',
                 html
             )
             form['adjuntos'][name].value = ''
@@ -773,16 +773,16 @@ class Contabilidad extends Component {
             if(esquema === 'esquema_3')
                 if(form[esquema][key].tipo !== '')
                     createAlertSA2Parametro(
-                        '¿Confirmas el envío de información?', '', this.sendPlanoAxios, {esquema: esquema, value: form[esquema][key]}
+                        '¿CONFIRMAS EL ENVÍO DE INFORMACIÓN?', '', this.sendPlanoAxios, {esquema: esquema, value: form[esquema][key]}
                     )
                 else
-                    errorAlert('No llenaste todos los campos')
+                    errorAlert('NO LLENASTE TODOS LOS CAMPOS')
             else
                 createAlertSA2Parametro(
-                    '¿Confirmas el envío de información?', '', this.sendPlanoAxios, {esquema: esquema, value: form[esquema][key]}
+                    '¿CONFIRMAS EL ENVÍO DE INFORMACIÓN?', '', this.sendPlanoAxios, {esquema: esquema, value: form[esquema][key]}
                 )
         else
-            errorAlert('No llenaste todos los campos')   
+            errorAlert('NO LLENASTE TODOS LOS CAMPOS')   
     }
 
     sendPlanoAxios = async(datos) => {
@@ -813,7 +813,7 @@ class Contabilidad extends Component {
     }
 
     deletePlano = id => {
-        deleteAlertSA2Parametro('¿Estás seguro que deseas eliminar el plano?', 'Esta acción no podrá ser revertida',
+        deleteAlertSA2Parametro('¿ESTÁS SEGURO QUE DESEAS ELIMINAR EL PLANO?', 'ESTA ACCIÓN NO PODRÁ SER REVERTIDA',
             this.deletePlanoAxios, {id: id})
     }
 
@@ -868,7 +868,7 @@ class Contabilidad extends Component {
                             </div>
                         </Card.Header>
                         <Card.Body className="pt-2">
-                            <Tab.Container defaultActiveKey="diseño">
+                            <Tab.Container defaultActiveKey="planos">
                                 <Nav className="nav nav-tabs nav-tabs-space-lg nav-tabs-line nav-bold nav-tabs-line-3x border-0">
                                     <Nav.Item className="nav-item">
                                         <Nav.Link className="nav-link" eventKey="diseño">
@@ -894,13 +894,7 @@ class Contabilidad extends Component {
                                         <Nav.Link eventKey="adjuntos">
                                             <span className="nav-icon mr-2">
                                                 <span className="svg-icon mr-3">
-                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24" version="1.1">
-                                                        <g stroke="none" strokeWidth="1" fill="none" fill-rule="evenodd">
-                                                            <rect x="0" y="0" width="24" height="24"></rect>
-                                                            <path d="M13.2070325,4 C13.0721672,4.47683179 13,4.97998812 13,5.5 C13,8.53756612 15.4624339,11 18.5,11 C19.0200119,11 19.5231682,10.9278328 20,10.7929675 L20,17 C20,18.6568542 18.6568542,20 17,20 L7,20 C5.34314575,20 4,18.6568542 4,17 L4,7 C4,5.34314575 5.34314575,4 7,4 L13.2070325,4 Z" fill="#000000"></path>
-                                                            <circle fill="#000000" opacity="0.3" cx="18.5" cy="5.5" r="2.5"></circle>
-                                                        </g>
-                                                    </svg>
+                                                    <SVG src={toAbsoluteUrl('/images/svg/Attachment1.svg')} />
                                                 </span>
                                             </span>
                                             <span className="nav-text">Adjuntos</span>
@@ -951,7 +945,7 @@ class Contabilidad extends Component {
                                                 <Tab.Container activeKey = { activeTipo } 
                                                     onSelect={(select) => { this.updateAdjuntosTab(select) }}>
                                                     <div className='row mx-0'>
-                                                        <div className='col-md-3 navi navi-accent navi-hover navi-bold border-nav'>
+                                                        <div className='col-md-2 navi navi-accent navi-hover navi-bold border-nav'>
                                                             <Nav variant="pills" className="flex-column navi navi-hover navi-active">
                                                                 {
                                                                     empresa.tipos.map((tipo, key)=>{
@@ -966,24 +960,24 @@ class Contabilidad extends Component {
                                                                 }
                                                             </Nav>
                                                         </div>
-                                                        <div className='col-md-9'>
+                                                        <div className='col-md-10'>
                                                             <div className='row mx-0 justify-content-center'>
                                                                 <div className='col-md-6 mb-3'>
-                                                                    <div className="text-dark-80 text-center pb-3 pt-2">
+                                                                    <div className="text-dark-65 text-center pb-2 pt-2 font-weight-bolder">
                                                                         Subportafolio
                                                                     </div>
                                                                     <ItemSlider item = 'subportafolio' items = { form.adjuntos.subportafolio.files } 
                                                                         handleChange = { this.handleChange } />
                                                                 </div>
                                                                 <div className='col-md-6 mb-3'>
-                                                                    <div className="text-dark-80 text-center pb-3 pt-2">
+                                                                    <div className="text-dark-65 text-center pb-2 pt-2 font-weight-bolder">
                                                                         Ejemplos
                                                                     </div>
                                                                     <ItemSlider item = 'ejemplo' items = { form.adjuntos.ejemplo.files }
                                                                         handleChange = { this.handleChange } />
                                                                 </div>
                                                                 <div className='col-md-6 mb-3'>
-                                                                    <div className="text-dark-80 text-center pb-3 pt-2">
+                                                                    <div className="text-dark-65 text-center pb-2 pt-2 font-weight-bolder">
                                                                         Portada
                                                                     </div>
                                                                     <ItemSlider item = 'portada' items = { form.adjuntos.portada.files }
@@ -996,49 +990,47 @@ class Contabilidad extends Component {
                                             </Tab.Pane>
                                         : ''
                                     }
+                                    
                                     {
                                         empresa ?
                                             <Tab.Pane eventKey="planos">
                                                 <div className = 'row mx-0'>
-                                                    <div className = 'col-md-4'>
-                                                        <Card>
-                                                            <Card.Header>
-                                                                <div className="card-custom">
-                                                                    <h3 className="card-label">
-                                                                        Esquema 1
-                                                                    </h3>
-                                                                </div>
+                                                    <div className = 'col-md-4 mb-4'>
+                                                        <Card className="border-0">
+                                                            <Card.Header className="p-3 border-0 bg-light">
+                                                                <div class="card-label text-dark font-size-h6 font-weight-bold text-center">ESQUEMA 1</div>
                                                             </Card.Header>
-                                                            <Card.Body className = 'py-0'>
+                                                            <Card.Body className='py-0 px-3' style={{border:"3px solid #F3F6F9"}} >
                                                                 <div className="pt-2">
                                                                     {
                                                                         form.esquema_1.map((plano, key) => {
                                                                             return(
-                                                                                <div className = { plano.id !== '' ? 'row mx-0 border-bottom py-4' : 'row mx-0 py-4'} key = { key } >
-                                                                                    <div className='col-2'>
-                                                                                        {
-                                                                                            plano.id !== '' ?
+                                                                                <div className = { plano.id !== '' ? 'row borderBottom mx-0 py-2 ' : 'row mx-0 py-2'} key = { key } >
+                                                                                    {
+                                                                                        plano.id !== '' ?
+                                                                                            <div className='col-1 px-1 change-col-2'>
                                                                                                 <Button
                                                                                                     icon = ''
                                                                                                     onClick = { () => { this.deletePlano(plano.id) } } 
-                                                                                                    className = "btn btn-icon btn-light-danger btn-sm mr-2 ml-auto"
-                                                                                                    only_icon = "flaticon2-delete icon-sm"
-                                                                                                    tooltip={{text:'Eliminar'}}/>
-                                                                                            : ''
-                                                                                        }                                                                            
-                                                                                    </div>
-                                                                                    <div className={plano.id !== '' ? 'col-10 w-100 d-flex align-items-center' : 'col-8 w-100 d-flex align-items-center'}>
+                                                                                                    className = "btn btn-icon btn-light-danger btn-xs mr-2"
+                                                                                                    only_icon = "flaticon2-delete icon-xs"
+                                                                                                    tooltip={{text:'ELIMINAR'}}
+                                                                                                />
+                                                                                            </div>
+                                                                                        : ''
+                                                                                    }   
+                                                                                    <div className={plano.id !== '' ? 'col-11 w-100 px-2 align-self-center text-justify change-col-10' : 'col-11 w-100 px-2 align-self-center text-justify change-col-10'}>
                                                                                         {
                                                                                             plano.id !== '' ?
-                                                                                                plano.nombre
+                                                                                                <span className="text-dark font-weight-bold font-size-lg">{plano.nombre}</span>
                                                                                             :
                                                                                                 <InputSinText
                                                                                                     name = 'nombre'
-                                                                                                    placeholder = 'Plano'
+                                                                                                    placeholder = 'PLANO'
                                                                                                     requireValidation = { 1 }
                                                                                                     value = { plano.nombre }
                                                                                                     onChange = { (e) => { this.handleChangePlanos('esquema_1', e, key) }}
-                                                                                                    customclass="border-top-0 border-left-0 border-right-0 rounded-0 text-center pl-0 w-100" 
+                                                                                                    customclass="border-top-0 border-left-0 border-right-0 rounded-0 text-center pl-0 w-100"
                                                                                                 />
                                                                                         }
                                                                                     </div>
@@ -1046,13 +1038,13 @@ class Contabilidad extends Component {
                                                                                         plano.id !== '' ? 
                                                                                             ''
                                                                                         :
-                                                                                            <div className='col-2'>
+                                                                                            <div className='col-1 text-center d-flex align-items-end justify-content-center'>
                                                                                                 <Button
                                                                                                     icon = ''
                                                                                                     onClick = { () => { this.sendPlano('esquema_1', key) } } 
-                                                                                                    className = "btn btn-icon btn-light-success btn-sm mr-2 ml-auto"
-                                                                                                    only_icon = "flaticon2-arrow icon-sm"
-                                                                                                    tooltip={{text:'Enviar'}}/>
+                                                                                                    className = "btn btn-icon btn-light-success btn-xs px-2"
+                                                                                                    only_icon = "fas fa-plus icon-xs"
+                                                                                                    tooltip={{text:'ENVIAR'}}/>
                                                                                             </div>
                                                                                     }
                                                                                 </div>
@@ -1063,41 +1055,37 @@ class Contabilidad extends Component {
                                                             </Card.Body>
                                                         </Card>
                                                     </div>
-                                                    <div className = 'col-md-4'>
-                                                        <Card>
-                                                            <Card.Header>
-                                                                <div className="card-custom">
-                                                                    <h3 className="card-label">
-                                                                        Esquema 2
-                                                                    </h3>
-                                                                </div>
+                                                    <div className = 'col-md-4 mb-4'>
+                                                        <Card className="border-0">
+                                                            <Card.Header className="p-3 border-0 bg-light">
+                                                                <div class="card-label text-dark font-size-h6 font-weight-bold text-center">ESQUEMA 2</div>
                                                             </Card.Header>
-                                                            <Card.Body className = 'py-0'>
+                                                            <Card.Body className='py-0 px-3' style={{border:"3px solid #F3F6F9"}}>
                                                             <div className="pt-2">
                                                                     {
                                                                         form.esquema_2.map((plano, key) => {
                                                                             return(
-                                                                                <div className = { plano.id !== '' ? 'row mx-0 border-bottom py-4' : 'row mx-0 py-4'} key = { key } >
-                                                                                    <div className='col-2'>
-                                                                                        {
-                                                                                            plano.id !== '' ?
+                                                                                <div className = { plano.id !== '' ? 'row borderBottom mx-0 py-2' : 'row mx-0 py-2'} key = { key } >
+                                                                                    {
+                                                                                        plano.id !== '' ?
+                                                                                            <div className='col-1 px-1 change-col-2 '>
                                                                                                 <Button
                                                                                                     icon = ''
                                                                                                     onClick = { () => { this.deletePlano(plano.id) } } 
-                                                                                                    className = "btn btn-icon btn-light-danger btn-sm mr-2 ml-auto"
-                                                                                                    only_icon = "flaticon2-delete icon-sm"
-                                                                                                    tooltip={{text:'Eliminar'}}/>
-                                                                                            : ''
-                                                                                        }                                                                            
-                                                                                    </div>
-                                                                                    <div className={plano.id !== '' ? 'col-10 w-100 d-flex align-items-center' : 'col-8 w-100 d-flex align-items-center'}>
+                                                                                                    className = "btn btn-icon btn-light-danger btn-xs mr-2"
+                                                                                                    only_icon = "flaticon2-delete icon-xs"
+                                                                                                    tooltip={{text:'ELIMINAR'}}
+                                                                                                />
+                                                                                        </div> : ''
+                                                                                    } 
+                                                                                    <div className={plano.id !== '' ? 'col-11 w-100 px-2 align-self-center text-justify change-col-10 ' : 'col-11 w-100 px-2 align-self-center text-justify change-col-10'}>
                                                                                         {
                                                                                             plano.id !== '' ?
-                                                                                                plano.nombre
+                                                                                                <span className="text-dark font-weight-bold font-size-lg">{plano.nombre}</span>
                                                                                             :
                                                                                                 <InputSinText
                                                                                                     name = 'nombre'
-                                                                                                    placeholder = 'Plano'
+                                                                                                    placeholder = 'PLANO'
                                                                                                     requireValidation = { 1 }
                                                                                                     value = { plano.nombre }
                                                                                                     onChange = { (e) => { this.handleChangePlanos('esquema_2', e, key) }}
@@ -1109,13 +1097,13 @@ class Contabilidad extends Component {
                                                                                         plano.id !== '' ? 
                                                                                             ''
                                                                                         :
-                                                                                            <div className='col-2'>
+                                                                                            <div className='col-1 text-center d-flex align-items-end justify-content-center'>
                                                                                                 <Button
                                                                                                     icon = ''
                                                                                                     onClick = { () => { this.sendPlano('esquema_2', key) } } 
-                                                                                                    className = "btn btn-icon btn-light-success btn-sm mr-2 ml-auto"
-                                                                                                    only_icon = "flaticon2-arrow icon-sm"
-                                                                                                    tooltip={{text:'Enviar'}}/>
+                                                                                                    className = "btn btn-icon btn-light-success btn-xs px-2"
+                                                                                                    only_icon = "fas fa-plus icon-xs"
+                                                                                                    tooltip={{text:'ENVIAR'}}/>
                                                                                             </div>
                                                                                     }
                                                                                 </div>
@@ -1126,16 +1114,12 @@ class Contabilidad extends Component {
                                                             </Card.Body>
                                                         </Card>
                                                     </div>
-                                                    <div className = 'col-md-4'>
-                                                        <Card>
-                                                            <Card.Header>
-                                                                <div className="card-custom">
-                                                                    <h3 className="card-label">
-                                                                        Esquema 3
-                                                                    </h3>
-                                                                </div>
+                                                    <div className = 'col-md-4 mb-4'>
+                                                        <Card className="border-0">
+                                                            <Card.Header className="p-3 border-0 bg-light">
+                                                            <div class="card-label text-dark font-size-h6 font-weight-bold text-center">ESQUEMA 3</div>
                                                             </Card.Header>
-                                                            <Card.Body className = 'py-0'>
+                                                            <Card.Body className='py-0 px-3' style={{border:"3px solid #F3F6F9"}}>
                                                                 <div className="pt-2">
                                                                     {
                                                                         form.esquema_3.map((plano, key) => {
@@ -1144,31 +1128,34 @@ class Contabilidad extends Component {
                                                                                     {
                                                                                         form.esquema_3.length === 0 ? plano.tipo : ''
                                                                                     }
-                                                                                    {
-                                                                                        key === 0 ? plano.tipo : 
-                                                                                            plano.tipo !== form.esquema_3[key - 1].tipo ? plano.tipo : ''
-                                                                                    }
-                                                                                    <div className = { plano.id !== '' ? 'row mx-0 border-bottom py-4' : 'row mx-0 py-4'} key = { key } >
-                                                                                        <div className='col-1'>
+                                                                                    <div className="text-muted font-weight-bolder my-3">
+                                                                                        {
+                                                                                            key === 0 ? plano.tipo : 
+                                                                                                plano.tipo !== form.esquema_3[key - 1].tipo ? plano.tipo : ''
+                                                                                        }
+                                                                                    </div>
+                                                                                    <div className = { plano.id !== '' ? 'row borderBottom mx-0 py-2' : 'row mx-0 py-2'} key = { key } >
                                                                                             {
                                                                                                 plano.id !== '' ?
-                                                                                                    <Button
-                                                                                                        icon = ''
-                                                                                                        onClick = { () => { this.deletePlano(plano.id) } } 
-                                                                                                        className = "btn btn-icon btn-light-danger btn-sm mr-2 ml-auto"
-                                                                                                        only_icon = "flaticon2-delete icon-sm"
-                                                                                                        tooltip={{text:'Eliminar'}}/>
+                                                                                                    <div className='col-1 px-1 change-col-2 '>
+                                                                                                        <Button
+                                                                                                            icon = ''
+                                                                                                            onClick = { () => { this.deletePlano(plano.id) } } 
+                                                                                                            className = "btn btn-icon btn-light-danger btn-xs mr-2"
+                                                                                                            only_icon = "flaticon2-delete icon-xs"
+                                                                                                            tooltip={{text:'Eliminar'}}
+                                                                                                        />
+                                                                                                    </div>
                                                                                                 : ''
-                                                                                            }                                                                            
-                                                                                        </div>
-                                                                                        <div className={plano.id !== '' ? 'col-6 w-100 d-flex align-items-center' : 'col-5 w-100 d-flex align-items-center'}>
+                                                                                            }  
+                                                                                        <div className={plano.id !== '' ? 'col-10 w-100 px-2 align-self-center text-justify change-col-10' : 'col-5 w-100 align-self-center text-justify'}>
                                                                                             {
                                                                                                 plano.id !== '' ?
-                                                                                                    plano.nombre
+                                                                                                    <span className="text-dark font-weight-bold font-size-lg">{plano.nombre}</span>
                                                                                                 :
                                                                                                     <InputSinText
                                                                                                         name = 'nombre'
-                                                                                                        placeholder = 'Plano'
+                                                                                                        placeholder = 'PLANO'
                                                                                                         requireValidation = { 1 }
                                                                                                         value = { plano.nombre }
                                                                                                         onChange = { (e) => { this.handleChangePlanos('esquema_3', e, key) }}
@@ -1176,7 +1163,7 @@ class Contabilidad extends Component {
                                                                                                     />
                                                                                             }
                                                                                         </div>
-                                                                                        <div className={plano.id !== '' ? 'col-6 w-100 d-flex align-items-center' : 'col-5 w-100 d-flex align-items-center'}>
+                                                                                        <div className={plano.id !== '' ? 'col-10 w-100 px-2 align-self-center text-justify change-col-10' : 'col-5 w-100 align-self-center text-justify'}>
                                                                                             {
                                                                                                 plano.id !== '' ?
                                                                                                     ''
@@ -1195,13 +1182,13 @@ class Contabilidad extends Component {
                                                                                             plano.id !== '' ? 
                                                                                                 ''
                                                                                             :
-                                                                                                <div className='col-1'>
+                                                                                                <div className='col-2 text-center d-flex align-items-end justify-content-center'>
                                                                                                     <Button
                                                                                                         icon = ''
                                                                                                         onClick = { () => { this.sendPlano('esquema_3', key) } } 
-                                                                                                        className = "btn btn-icon btn-light-success btn-sm mr-2 ml-auto"
-                                                                                                        only_icon = "flaticon2-arrow icon-sm"
-                                                                                                        tooltip={{text:'Enviar'}}/>
+                                                                                                        className = "btn btn-icon btn-light-success btn-xs mr-2 px-2"
+                                                                                                        only_icon = "fas fa-plus icon-xs"
+                                                                                                        tooltip={{text:'ENVIAR'}}/>
                                                                                                 </div>
                                                                                         }
                                                                                     </div>
