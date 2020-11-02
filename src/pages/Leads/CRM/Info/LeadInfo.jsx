@@ -763,7 +763,30 @@ class LeadInfo extends Component {
             console.log(error, 'error')
         })
     }
-
+    submitForm = e => {
+        e.preventDefault();
+        this.addLeadInfoAxios()
+    }
+    async addLeadInfoAxios() {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        await axios.post(URL_DEV + '', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Creaste con éxito el lead.')
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
 
     render() {
         const { lead, form, formHistorial, options, formAgenda, formDiseño } = this.state
@@ -929,67 +952,72 @@ class LeadInfo extends Component {
                                                 </h3>
                                             </Card.Title>
                                         </Card.Header>
-                                        <Card.Body className="pt-0">
-                                            <div className="form-group row form-group-marginless">
-                                                <div className="col-md-4">
-                                                    <InputGray
-                                                        withtaglabel={1}
-                                                        withtextlabel={1}
-                                                        withplaceholder={1}
-                                                        withicon={1}
-                                                        placeholder='NOMBRE DEL LEAD'
-                                                        iconclass="far fa-user"
-                                                        name='name'
-                                                        value={form.name}
-                                                        onChange={this.onChange}
-                                                    />
+                                        <Form onSubmit={this.submitForm}>
+                                            <Card.Body className="pt-0">
+                                                <div className="form-group row form-group-marginless">
+                                                    <div className="col-md-4">
+                                                        <InputGray
+                                                            withtaglabel={1}
+                                                            withtextlabel={1}
+                                                            withplaceholder={1}
+                                                            withicon={1}
+                                                            placeholder='NOMBRE DEL LEAD'
+                                                            iconclass="far fa-user"
+                                                            name='name'
+                                                            value={form.name}
+                                                            onChange={this.onChange}
+                                                        />
+                                                    </div>
+                                                    <div className="col-md-4">
+                                                        <InputGray
+                                                            withtaglabel={1}
+                                                            withtextlabel={1}
+                                                            withplaceholder={1}
+                                                            withicon={1}
+                                                            placeholder="CORREO ELECTRÓNICO DE CONTACTO"
+                                                            iconclass="fas fa-envelope"
+                                                            type="email"
+                                                            name="email"
+                                                            value={form.email}
+                                                            onChange={this.onChange}
+                                                            patterns={EMAIL}
+                                                        />
+                                                    </div>
+                                                    <div className="col-md-4">
+                                                        <InputPhoneGray
+                                                            withtaglabel={1}
+                                                            withtextlabel={1}
+                                                            withplaceholder={1}
+                                                            withicon={1}
+                                                            placeholder="TELÉFONO DE CONTACTO"
+                                                            iconclass="fas fa-mobile-alt"
+                                                            name="telefono"
+                                                            value={form.telefono}
+                                                            onChange={this.onChange}
+                                                            patterns={TEL}
+                                                            thousandseparator={false}
+                                                            prefix=''
+                                                        />
+                                                    </div>
+                                                    <div className="col-md-4">
+                                                        <InputGray
+                                                            withtaglabel={1}
+                                                            withtextlabel={1}
+                                                            withplaceholder={1}
+                                                            withicon={1}
+                                                            placeholder='NOMBRE DEL PROYECTO'
+                                                            iconclass="far fa-folder-open"
+                                                            name='proyecto'
+                                                            value={form.proyecto}
+                                                            onChange={this.onChange}
+                                                        />
+                                                    </div>
                                                 </div>
-                                                <div className="col-md-4">
-                                                    <InputGray
-                                                        withtaglabel={1}
-                                                        withtextlabel={1}
-                                                        withplaceholder={1}
-                                                        withicon={1}
-                                                        placeholder="CORREO ELECTRÓNICO DE CONTACTO"
-                                                        iconclass="fas fa-envelope"
-                                                        type="email"
-                                                        name="email"
-                                                        value={form.email}
-                                                        onChange={this.onChange}
-                                                        patterns={EMAIL}
-                                                    />
-                                                </div>
-                                                <div className="col-md-4">
-                                                    <InputPhoneGray
-                                                        withtaglabel={1}
-                                                        withtextlabel={1}
-                                                        withplaceholder={1}
-                                                        withicon={1}
-                                                        placeholder="TELÉFONO DE CONTACTO"
-                                                        iconclass="fas fa-mobile-alt"
-                                                        name="telefono"
-                                                        value={form.telefono}
-                                                        onChange={this.onChange}
-                                                        patterns={TEL}
-                                                        thousandseparator={false}
-                                                        prefix=''
-                                                    />
-                                                </div>
-                                                <div className="col-md-4">
-                                                    <InputGray
-                                                        withtaglabel={1}
-                                                        withtextlabel={1}
-                                                        withplaceholder={1}
-                                                        withicon={1}
-                                                        placeholder='NOMBRE DEL PROYECTO'
-                                                        iconclass="far fa-folder-open"
-                                                        name='proyecto'
-                                                        value={form.proyecto}
-                                                        onChange={this.onChange}
-                                                    />
-                                                </div>
-                                            </div>
-                                        </Card.Body>
+                                            </Card.Body>
+                                            <Card.Footer className="text-right">
+                                                <Button icon=''  className="btn btn-primary" type="submit" text="ENVIAR" />
+                                            </Card.Footer>
+                                        </Form>
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="2">
                                         <Card.Header className="border-0 mt-4 pt-3">
