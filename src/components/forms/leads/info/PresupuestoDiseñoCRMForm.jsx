@@ -104,15 +104,12 @@ class PresupuestoDiseñoCRMForm extends Component {
                                     <Col md={8} className="align-self-center">
                                         <div className="form-group row form-group-marginless">
                                             <div className="col-md-4">
-                                                <InputGray
-                                                    withtaglabel={1}
-                                                    withtextlabel={1}
-                                                    withplaceholder={1}
-                                                    withicon={1}
+                                                <InputNumberGray
+                                                    requirevalidation={1}
                                                     formeditado={formeditado}
                                                     placeholder="M2"
-                                                    name="m2"
                                                     value={formDiseño.m2}
+                                                    name="m2"
                                                     onChange={onChange}
                                                     iconclass={"fas fa-ruler-combined"}
                                                 />
