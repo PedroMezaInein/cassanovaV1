@@ -310,7 +310,7 @@ class LeadInfo extends Component {
         const { formDiseño, data} = this.state
         
         formDiseño[name] = value
-
+/* 
         if (name === 'tiempo_ejecucion_diseno') {
             let modulo = parseFloat(value) % 6
             let aux = Object.keys(
@@ -364,7 +364,7 @@ class LeadInfo extends Component {
                     domingo: false
                 })
             }
-        }
+        } */
 
         if(name === 'm2' || name === 'esquema')
             if(formDiseño.m2 && formDiseño.esquema){
