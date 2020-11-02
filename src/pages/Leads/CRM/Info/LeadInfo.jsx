@@ -44,8 +44,10 @@ class LeadInfo extends Component {
         },
         formAgenda: {
             fecha: new Date(),
-            hora: '08',
-            minuto: '00',
+            hora_inicio: '08',
+            minuto_inicio: '00',
+            hora_final: '08',
+            minuto_final: '15',
             cliente: '',
             tipo: 0,
             origen: 0,
@@ -220,21 +222,21 @@ class LeadInfo extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'crm/options/presupuesto-diseño/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { empresa, tipoProyecto, partidas } = response.data
+                const { empresa, tipo, partidas } = response.data
                 const { data, formDiseño } = this.state
                 let planos = []
 
                 data.empresa = empresa
-                data.tipoProyecto = tipoProyecto
+                data.tipoProyecto = tipo
                 data.partidas = partidas
                 
-                if(tipoProyecto){
-                    formDiseño.construccion_interiores_inf = tipoProyecto.construccion_interiores_inf
-                    formDiseño.construccion_interiores_sup = tipoProyecto.construccion_interiores_sup
-                    formDiseño.construccion_civil_inf = tipoProyecto.construccion_civil_inf
-                    formDiseño.construccion_civil_inf = tipoProyecto.construccion_civil_inf
-                    formDiseño.mobiliario_inf = tipoProyecto.mobiliario_inf
-                    formDiseño.mobiliario_sup = tipoProyecto.mobiliario_sup
+                if(tipo){
+                    formDiseño.construccion_interiores_inf = tipo.construccion_interiores_inf
+                    formDiseño.construccion_interiores_sup = tipo.construccion_interiores_sup
+                    formDiseño.construccion_civil_inf = tipo.construccion_civil_inf
+                    formDiseño.construccion_civil_sup = tipo.construccion_civil_sup
+                    formDiseño.mobiliario_inf = tipo.mobiliario_inf
+                    formDiseño.mobiliario_sup = tipo.mobiliario_sup
                 }
 
                 formDiseño.partidas = this.setOptionsCheckboxes(partidas, true)
@@ -305,7 +307,7 @@ class LeadInfo extends Component {
 
     onChangePresupuesto = e => {
         const { name, value } = e.target
-        const { formDiseño, data } = this.state
+        const { formDiseño, data} = this.state
         
         formDiseño[name] = value
 /* 
@@ -619,8 +621,10 @@ class LeadInfo extends Component {
         await axios.post(URL_DEV + 'crm/agendar/evento/' + lead.id, formAgenda, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 formAgenda.fecha = new Date()
-                formAgenda.hora = '08'
-                formAgenda.minuto = '00'
+                formAgenda.hora_inicio= '08'
+                formAgenda.minuto_inicio = '00'
+                formAgenda.hora_final = '08'
+                formAgenda.minuto_final = '15'
                 formAgenda.titulo = ''
                 formAgenda.correo = ''
                 formAgenda.correos = []
@@ -629,6 +633,7 @@ class LeadInfo extends Component {
                     formAgenda,
                     modal: false
                 })
+                this.getLeadEnContacto()
                 doneAlert('Evento generado con éxito');
             },
             (error) => {
