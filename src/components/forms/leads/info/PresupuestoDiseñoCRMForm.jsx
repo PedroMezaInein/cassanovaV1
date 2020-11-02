@@ -8,25 +8,43 @@ import 'react-date-range/dist/styles.css';
 import 'react-date-range/dist/theme/default.css';
 import es from "date-fns/locale/es";
 class PresupuestoDiseñoCRMForm extends Component {
+    
     state = {
         date: new Date()
     }
+    
     updateEsquema = value => {
         const { onChange } = this.props
         onChange({ target: { value: value, name: 'esquema' } })
     }
-    handleChangeCheckbox = e => {
+
+    handleChangeCheckboxPartidas = e => {
         const { name, checked } = e.target
         const { formDiseño, onChangeCheckboxes } = this.props
-        let aux = formDiseño[formDiseño.tipo_partida]
+        let aux = formDiseño.partidas
         aux.find(function (_aux, index) {
             if (_aux.id.toString() === name.toString()) {
                 _aux.checked = checked
             }
             return false
         });
-        onChangeCheckboxes(aux)
+        onChangeCheckboxes(aux, 'partidas')
     }
+    
+
+    handleChangeCheckboxPlanos = e => {
+        const { name, checked } = e.target
+        const { formDiseño, onChangeCheckboxes } = this.props
+        let aux = formDiseño.planos
+        aux.find(function (_aux, index) {
+            if (_aux.id.toString() === name.toString()) {
+                _aux.checked = checked
+            }
+            return false
+        });
+        onChangeCheckboxes(aux, 'planos')
+    }
+    
     render() {
         const { options, formDiseño, onChange, onSubmit, submitPDF, onChangeCheckboxes, checkButtonSemanas, formeditado, onChangeConceptos, ...props } = this.props
         const { date } = this.state
@@ -101,13 +119,13 @@ class PresupuestoDiseñoCRMForm extends Component {
                                             </div>
                                             <div className="col-md-4">
                                                 <SelectSearchGray
-                                                    formeditado={formeditado}
-                                                    options={options.esquemas}
-                                                    placeholder="ESQUEMA"
-                                                    name="esquema"
-                                                    value={formDiseño.esquema}
-                                                    onChange={this.updateEsquema}
-                                                    iconclass={"flaticon2-sheet"}
+                                                    formeditado = { formeditado }
+                                                    options = { options.esquemas }
+                                                    placeholder = "ESQUEMA"
+                                                    name = "esquema"
+                                                    value = { formDiseño.esquema }
+                                                    onChange = { this.updateEsquema }
+                                                    iconclass = "flaticon2-sheet"
                                                 />
                                             </div>
                                             <div className="col-md-4">
@@ -151,6 +169,19 @@ class PresupuestoDiseñoCRMForm extends Component {
                                         </div>
                                     </Col>
                                 </Row>
+                                <div className="form-group row form-group-marginless">
+                                    <div className="col-md-12">
+                                        <OptionsCheckbox
+                                            requirevalidation = { 0 }
+                                            formeditado = { formeditado }
+                                            placeholder = "SELECCIONA LAS PLANOS"
+                                            options = { formDiseño.planos }
+                                            name = 'planos' 
+                                            value = { formDiseño.planos }
+                                            onChange = { this.handleChangeCheckboxPlanos }
+                                            />
+                                    </div>
+                                </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2"></div>
                                     <div>
@@ -367,13 +398,13 @@ class PresupuestoDiseñoCRMForm extends Component {
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-12">
                                         <OptionsCheckbox
-                                            requirevalidation={0}
-                                            formeditado={formeditado}
-                                            placeholder="SELECCIONA LAS PARTIDAS"
-                                            options={formDiseño.tipo_partida === "partidasInein" ? formDiseño.partidasInein : formDiseño.partidasIm}
-                                            name={formDiseño.tipo_partida}
-                                            value={formDiseño.tipo_partida === "partidasInein" ? formDiseño.partidasInein : formDiseño.partidasIm}
-                                            onChange={this.handleChangeCheckbox}
+                                            requirevalidation = { 0 }
+                                            formeditado = { formeditado }
+                                            placeholder = "SELECCIONA LAS PARTIDAS"
+                                            options = { formDiseño.partidas }
+                                            name = 'partidas' 
+                                            value = { formDiseño.partidas }
+                                            onChange = { this.handleChangeCheckboxPartidas }
                                         />
                                     </div>
                                 </div>
