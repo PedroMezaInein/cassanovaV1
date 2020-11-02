@@ -104,15 +104,12 @@ class PresupuestoDiseñoCRMForm extends Component {
                                     <Col md={8} className="align-self-center">
                                         <div className="form-group row form-group-marginless">
                                             <div className="col-md-4">
-                                                <InputGray
-                                                    withtaglabel={1}
-                                                    withtextlabel={1}
-                                                    withplaceholder={1}
-                                                    withicon={1}
+                                                <InputNumberGray
+                                                    requirevalidation={1}
                                                     formeditado={formeditado}
                                                     placeholder="M2"
-                                                    name="m2"
                                                     value={formDiseño.m2}
+                                                    name="m2"
                                                     onChange={onChange}
                                                     iconclass={"fas fa-ruler-combined"}
                                                 />
@@ -324,33 +321,88 @@ class PresupuestoDiseñoCRMForm extends Component {
                             <div id="wizard-3-content" className="pb-3" data-wizard-type="step-content">
                                 <h5 className="mb-4 font-weight-bold text-dark">Ingresa los precios, las partidas y el tiempo de ejecución</h5>
                                 <div className="form-group row form-group-marginless">
-                                    <div className="col-md-4">
+                                    <div className="col-md-3">
                                         <InputNumberGray
                                             requirevalidation={0}
                                             formeditado={formeditado}
-                                            placeholder="PRECIO PARAMÉTRICO DE CONSTRUCCIÓN INFERIOR"
-                                            value={formDiseño.precio_inferior_construccion}
-                                            name="precio_inferior_construccion"
+                                            placeholder="PRECIO DE CONSTR. INTERIOR INF."
+                                            value={formDiseño.construccion_interiores_inf}
+                                            name="construccion_interiores_inf"
                                             onChange={onChange}
-                                            messageinc="Incorrecto. Ingresa el precio paramétrico de construcción inferior."
+                                            messageinc="Incorrecto. Ingresa el precio de constr. interior inf."
                                             iconclass={"fas fa-dollar-sign"}
                                             thousandseparator={true}
                                         />
                                     </div>
-                                    <div className="col-md-4">
+                                    <div className="col-md-3">
                                         <InputNumberGray
                                             requirevalidation={0}
                                             formeditado={formeditado}
-                                            placeholder="PRECIO PARAMÉTRICO DE CONSTRUCCIÓN SUPERIOR"
-                                            value={formDiseño.precio_superior_construccion}
-                                            name="precio_superior_construccion"
+                                            placeholder="PRECIO DE CONSTR. INTERIOR SUP."
+                                            value={formDiseño.construccion_interiores_sup}
+                                            name="construccion_interiores_sup"
                                             onChange={onChange}
-                                            messageinc="Incorrecto. Ingresa el precio paramétrico de construcción superior."
+                                            messageinc="Incorrecto. Ingresa el precio de constr. de interiores sup."
                                             iconclass={"fas fa-dollar-sign"}
                                             thousandseparator={true}
                                         />
                                     </div>
-                                    <div className="col-md-4">
+                                    <div className="col-md-3">
+                                        <InputNumberGray
+                                            requirevalidation={0}
+                                            formeditado={formeditado}
+                                            placeholder="PRECIO DE MOBILIARIO INF."
+                                            value={formDiseño.mobiliario_inf}
+                                            name="mobiliario_inf"
+                                            onChange={onChange}
+                                            messageinc="Incorrecto. Ingresa el precio de mobiliario inf."
+                                            iconclass={"fas fa-dollar-sign"}
+                                            thousandseparator={true}
+                                        />
+                                    </div>
+                                    <div className="col-md-3">
+                                        <InputNumberGray
+                                            requirevalidation={0}
+                                            formeditado={formeditado}
+                                            placeholder="PRECIO DE MOBILIARIO SUP."
+                                            value={formDiseño.mobiliario_sup}
+                                            name="mobiliario_sup"
+                                            onChange={onChange}
+                                            messageinc="Incorrecto. Ingresa el precio de mobiliario sup."
+                                            iconclass={"fas fa-dollar-sign"}
+                                            thousandseparator={true}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="separator separator-dashed mt-1 mb-2"></div>
+                                <div className="form-group row form-group-marginless">
+                                    <div className="col-md-3">
+                                        <InputNumberGray
+                                            requirevalidation={0}
+                                            formeditado={formeditado}
+                                            placeholder="PRECIO DE CONST. CIVIL INF."
+                                            value={formDiseño.construccion_civil_inf}
+                                            name="construccion_civil_inf"
+                                            onChange={onChange}
+                                            messageinc="Incorrecto. Ingresa el precio de const. civil inf."
+                                            iconclass={"fas fa-dollar-sign"}
+                                            thousandseparator={true}
+                                        />
+                                    </div>
+                                    <div className="col-md-3">
+                                        <InputNumberGray
+                                            requirevalidation={0}
+                                            formeditado={formeditado}
+                                            placeholder="PRECIO DE CONST. CIVIL SUP."
+                                            value={formDiseño.construccion_civil_sup}
+                                            name="construccion_civil_sup"
+                                            onChange={onChange}
+                                            messageinc="Incorrecto. Ingresa el precio de const. civil sup."
+                                            iconclass={"fas fa-dollar-sign"}
+                                            thousandseparator={true}
+                                        />
+                                    </div>
+                                    <div className="col-md-3">
                                         <InputGray
                                             withtaglabel={1}
                                             withtextlabel={1}
@@ -363,35 +415,6 @@ class PresupuestoDiseñoCRMForm extends Component {
                                             name="tiempo_ejecucion_construccion"
                                             onChange={onChange}
                                             iconclass={"flaticon-calendar-with-a-clock-time-tools"}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="separator separator-dashed mt-1 mb-2"></div>
-                                <div className="form-group row form-group-marginless">
-                                    <div className="col-md-4">
-                                        <InputNumberGray
-                                            requirevalidation={0}
-                                            formeditado={formeditado}
-                                            placeholder="PRECIO PARAMÉTRICO DE MOBILIARIO INFERIOR"
-                                            value={formDiseño.precio_inferior_mobiliario}
-                                            name="precio_inferior_mobiliario"
-                                            onChange={onChange}
-                                            messageinc="Incorrecto. Ingresa el precio paramétrico de mobiliario inferior."
-                                            iconclass={"fas fa-dollar-sign"}
-                                            thousandseparator={true}
-                                        />
-                                    </div>
-                                    <div className="col-md-4">
-                                        <InputNumberGray
-                                            requirevalidation={0}
-                                            formeditado={formeditado}
-                                            placeholder="PRECIO PARAMÉTRICO DE MOBILIARIO SUPERIOR"
-                                            value={formDiseño.precio_superior_mobiliario}
-                                            name="precio_superior_mobiliario"
-                                            onChange={onChange}
-                                            messageinc="Incorrecto. Ingresa el precio paramétrico de mobiliario superior."
-                                            iconclass={"fas fa-dollar-sign"}
-                                            thousandseparator={true}
                                         />
                                     </div>
                                 </div>
