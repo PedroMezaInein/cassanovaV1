@@ -1170,7 +1170,7 @@ class Contabilidad extends Component {
                                                                                                 :
                                                                                                     <InputSinText
                                                                                                         name = 'tipo'
-                                                                                                        placeholder = 'Tipo'
+                                                                                                        placeholder = 'TIPO'
                                                                                                         requireValidation = { 1 }
                                                                                                         value = { plano.tipo }
                                                                                                         onChange = { (e) => { this.handleChangePlanos('esquema_3', e, key) }}
