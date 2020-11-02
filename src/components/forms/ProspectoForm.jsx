@@ -62,10 +62,11 @@ class ProspectoForm extends Component {
                 <div className="row justify-content-center">
                     <div className="col-md-12">
                         <Form
+                            id = 'prospecto-form-id'
                             onSubmit={
                                 (e) => {
                                     e.preventDefault();
-                                    validateAlert(onSubmit, e, 'wizard-2-content')
+                                    validateAlert(onSubmit, e, 'for2-wizard-1-content')
                                 }
                             }
                             {...props}
@@ -201,7 +202,7 @@ class ProspectoForm extends Component {
                                                     onClick={
                                                         (e) => {
                                                             e.preventDefault();
-                                                            validateAlert(onSubmit, e, 'wizard-2-content')
+                                                            validateAlert(onSubmit, e, 'for2-wizard-1-content')
                                                         }
                                                     }
                                                     text="Enviar" />
