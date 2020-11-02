@@ -883,3 +883,20 @@ div#asideMenuScroll {
     background-color: #686871;
     border-color: #686871;
 }
+
+.borderBottom{
+    border-bottom: 1px dashed #ECF0F3;
+}
+
+.change-col-2 {
+    @include down-screen($xs) {
+        flex: 0 0 16.66667%;
+        max-width: 16.66667%;
+    }
+}
+.change-col-10 {
+    @include down-screen($xs) {
+        flex: 0 0 83.33333%;
+        max-width: 83.33333%;
+    }
+}

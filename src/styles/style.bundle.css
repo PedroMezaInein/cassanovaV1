@@ -42529,10 +42529,13 @@ code {
   border-radius: 0.85rem; }
 
 .navi.navi-hover .navi-item .navi-link:hover {
-  background-color: #F3F6F9; }
+  background-color: #F3F6F9;
+  border-radius: 0; }
 
 .navi.navi-active .navi-item .navi-link.active {
-  background-color: #F3F6F9; }
+  background-color: #F3F6F9; 
+  border-radius: 0;
+}
 
 .navi.navi-accent .navi-item .navi-link {
   position: relative; }
