@@ -1147,7 +1147,22 @@ class Contabilidad extends Component {
                                                                                                         />
                                                                                                     </div>
                                                                                                 : ''
-                                                                                            }  
+                                                                                            }
+                                                                                        <div className={plano.id !== '' ? ' ': 'col-5 w-100 align-self-center text-justify'}>
+                                                                                            {
+                                                                                                plano.id !== '' ?
+                                                                                                    ''
+                                                                                                :
+                                                                                                    <InputSinText
+                                                                                                        name = 'tipo'
+                                                                                                        placeholder = 'TIPO'
+                                                                                                        requireValidation = { 1 }
+                                                                                                        value = { plano.tipo }
+                                                                                                        onChange = { (e) => { this.handleChangePlanos('esquema_3', e, key) }}
+                                                                                                        customclass="border-top-0 border-left-0 border-right-0 rounded-0 text-center pl-0 w-100" 
+                                                                                                    />
+                                                                                            }
+                                                                                        </div>
                                                                                         <div className={plano.id !== '' ? 'col-10 w-100 px-2 align-self-center text-justify change-col-10' : 'col-5 w-100 align-self-center text-justify'}>
                                                                                             {
                                                                                                 plano.id !== '' ?
@@ -1158,21 +1173,6 @@ class Contabilidad extends Component {
                                                                                                         placeholder = 'PLANO'
                                                                                                         requireValidation = { 1 }
                                                                                                         value = { plano.nombre }
-                                                                                                        onChange = { (e) => { this.handleChangePlanos('esquema_3', e, key) }}
-                                                                                                        customclass="border-top-0 border-left-0 border-right-0 rounded-0 text-center pl-0 w-100" 
-                                                                                                    />
-                                                                                            }
-                                                                                        </div>
-                                                                                        <div className={plano.id !== '' ? 'col-10 w-100 px-2 align-self-center text-justify change-col-10' : 'col-5 w-100 align-self-center text-justify'}>
-                                                                                            {
-                                                                                                plano.id !== '' ?
-                                                                                                    ''
-                                                                                                :
-                                                                                                    <InputSinText
-                                                                                                        name = 'tipo'
-                                                                                                        placeholder = 'TIPO'
-                                                                                                        requireValidation = { 1 }
-                                                                                                        value = { plano.tipo }
                                                                                                         onChange = { (e) => { this.handleChangePlanos('esquema_3', e, key) }}
                                                                                                         customclass="border-top-0 border-left-0 border-right-0 rounded-0 text-center pl-0 w-100" 
                                                                                                     />
