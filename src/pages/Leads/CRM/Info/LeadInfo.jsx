@@ -167,6 +167,7 @@ class LeadInfo extends Component {
                 form.name = lead.nombre === 'SIN ESPECIFICAR' ? '' : lead.nombre.toUpperCase()
                 form.email = lead.email.toUpperCase()
                 form.telefono = lead.telefono
+                form.proyecto = lead.prospecto.nombre_proyecto
                 this.setState({
                     ...this.state,
                     lead: lead,
@@ -669,14 +670,19 @@ class LeadInfo extends Component {
         await axios.get(URL_DEV + 'crm/table/lead-en-contacto/' + lead.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { lead } = response.data
-                const { history } = this.props
+                const { history, form } = this.props
+                form.name = lead.name
+                form.email = lead.email
+                form.telefono = lead.telefono
+                form.proyecto = lead.prospecto.nombre_proyecto
                 history.push({
                     pathname: '/leads/crm/info/info',
                     state: { lead: lead }
                 });
                 this.setState({
                     ...this.state,
-                    lead: lead
+                    lead: lead,
+                    form
                 })
             },
             (error) => {
@@ -769,10 +775,11 @@ class LeadInfo extends Component {
     }
     async addLeadInfoAxios() {
         const { access_token } = this.props.authUser
-        const { form } = this.state
-        await axios.post(URL_DEV + '', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        const { form, lead } = this.state
+        await axios.put(URL_DEV + 'crm/update/lead-en-contacto/' + lead.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Creaste con éxito el lead.')
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito el lead.')
+                this.getLeadEnContacto()
             },
             (error) => {
                 console.log(error, 'error')
