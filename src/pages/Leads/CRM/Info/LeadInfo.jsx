@@ -44,8 +44,10 @@ class LeadInfo extends Component {
         },
         formAgenda: {
             fecha: new Date(),
-            hora: '08',
-            minuto: '00',
+            hora_inicio: '08',
+            minuto_inicio: '00',
+            hora_final: '08',
+            minuto_final: '15',
             cliente: '',
             tipo: 0,
             origen: 0,
@@ -305,7 +307,7 @@ class LeadInfo extends Component {
 
     onChangePresupuesto = e => {
         const { name, value } = e.target
-        const { formDiseño, data } = this.state
+        const { formDiseño, data} = this.state
         
         formDiseño[name] = value
 
@@ -619,8 +621,10 @@ class LeadInfo extends Component {
         await axios.post(URL_DEV + 'crm/agendar/evento/' + lead.id, formAgenda, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 formAgenda.fecha = new Date()
-                formAgenda.hora = '08'
-                formAgenda.minuto = '00'
+                formAgenda.hora_inicio= '08'
+                formAgenda.minuto_inicio = '00'
+                formAgenda.hora_final = '08'
+                formAgenda.minuto_final = '15'
                 formAgenda.titulo = ''
                 formAgenda.correo = ''
                 formAgenda.correos = []
