@@ -310,7 +310,7 @@ class LeadInfo extends Component {
         const { formDiseño, data} = this.state
         
         formDiseño[name] = value
-/* 
+
         if (name === 'tiempo_ejecucion_diseno') {
             let modulo = parseFloat(value) % 6
             let aux = Object.keys(
@@ -324,9 +324,9 @@ class LeadInfo extends Component {
                     domingo: false
                 }
             )
-            form.semanas = [];
+            formDiseño.semanas = [];
             for (let i = 0; i < Math.floor(parseFloat(value) / 6); i++) {
-                form.semanas.push({
+                formDiseño.semanas.push({
                     lunes: true,
                     martes: true,
                     miercoles: true,
@@ -336,7 +336,7 @@ class LeadInfo extends Component {
                     domingo: false
                 })
             }
-            form.semanas.push({
+            formDiseño.semanas.push({
                 lunes: false,
                 martes: false,
                 miercoles: false,
@@ -347,14 +347,14 @@ class LeadInfo extends Component {
             })
             aux.map((element, key) => {
                 if (key < modulo) {
-                    form.semanas[form.semanas.length - 1][element] = true
+                    formDiseño.semanas[formDiseño.semanas.length - 1][element] = true
                 } else {
-                    form.semanas[form.semanas.length - 1][element] = false
+                    formDiseño.semanas[formDiseño.semanas.length - 1][element] = false
                 }
                 return false
             })
             if (modulo > 2) {
-                form.semanas.push({
+                formDiseño.semanas.push({
                     lunes: false,
                     martes: false,
                     miercoles: false,
@@ -364,7 +364,7 @@ class LeadInfo extends Component {
                     domingo: false
                 })
             }
-        } */
+        }
 
         if(name === 'm2' || name === 'esquema')
             if(formDiseño.m2 && formDiseño.esquema){
