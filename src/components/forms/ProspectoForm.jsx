@@ -168,7 +168,7 @@ class ProspectoForm extends Component {
                                                             onClick={
                                                                 (e) => {
                                                                     e.preventDefault();
-                                                                    validateAlert(onSubmit, e, 'wizard-2-content')
+                                                                    validateAlert(onSubmit, e, 'for2-wizard-1-content')
                                                                 }
                                                             }
                                                             text="Enviar" />

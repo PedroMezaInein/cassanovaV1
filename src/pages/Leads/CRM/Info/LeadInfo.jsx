@@ -56,7 +56,6 @@ class LeadInfo extends Component {
             correo: '',
         },
         formDiseño: {
-            empresa: '',
             m2: '',
             tipo_partida: '',
             esquema: 'esquema_1',
@@ -100,11 +99,12 @@ class LeadInfo extends Component {
                     name: 'concepto7'
                 },
             ],
-            precio_inferior_construccion: '',
-            precio_superior_construccion: '',
-            tiempo_ejecucion_construccion: '',
-            precio_inferior_mobiliario: '',
-            precio_superior_mobiliario: '',
+            construccion_interiores_inf: '',
+            construccion_interiores_sup: '',
+            mobiliario_inf: '',
+            mobiliario_sup: '',
+            construccion_civil_inf: '',
+            construccion_civil_sup: '',
             semanas: [
                 {
                     lunes: false,
@@ -116,9 +116,9 @@ class LeadInfo extends Component {
                     domingo: false
                 }
             ],
-            partidasInein: [],
-            partidasIm: [],
-            proyecto: ''
+            partidas: [],
+            planos: [],
+            subtotal: 0.0
         },
         tipo: '',
         options: {
@@ -132,6 +132,11 @@ class LeadInfo extends Component {
         formeditado: 0,
         showForm: false,
         showAgenda: false,
+        data:{
+            empresa: null,
+            tipoProyecto: null,
+            partidas: null
+        }
     }
 
     mostrarFormulario() {
@@ -167,6 +172,7 @@ class LeadInfo extends Component {
                     formeditado: 1,
                     options
                 })
+                this.getPresupuestoDiseñoOptionsAxios(lead.id)
             }
             else
                 history.push('/leads/crm')
@@ -175,6 +181,7 @@ class LeadInfo extends Component {
             history.push('/leads/crm')
         this.getOptionsAxios()
     }
+
     async getOptionsAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -184,11 +191,12 @@ class LeadInfo extends Component {
                 const { empresas, medios } = response.data
                 const { options } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
-                // options['origenes'] = setOptions(origenes, 'origen', 'id')
                 options['tiposContactos'] = setOptions(medios, 'tipo', 'id')
-                /* options.tiposContactos.push({
-                    value: 'New', name: '+ Agregar nuevo'
-                }) */
+                options.esquemas = setOptions([
+                    {name: 'Esquema 1', value: 'esquema_1'},
+                    {name: 'Esquema 2', value: 'esquema_2'},
+                    {name: 'Esquema 3', value: 'esquema_3'},
+                ], 'name', 'value')
                 this.setState({
                     ...this.state,
                     options
@@ -206,6 +214,58 @@ class LeadInfo extends Component {
             console.log(error, 'error')
         })
     }
+
+    async getPresupuestoDiseñoOptionsAxios(id) {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'crm/options/presupuesto-diseño/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { empresa, tipoProyecto, partidas } = response.data
+                const { data, formDiseño } = this.state
+                let planos = []
+
+                data.empresa = empresa
+                data.tipoProyecto = tipoProyecto
+                data.partidas = partidas
+                
+                if(tipoProyecto){
+                    formDiseño.construccion_interiores_inf = tipoProyecto.construccion_interiores_inf
+                    formDiseño.construccion_interiores_sup = tipoProyecto.construccion_interiores_sup
+                    formDiseño.construccion_civil_inf = tipoProyecto.construccion_civil_inf
+                    formDiseño.construccion_civil_inf = tipoProyecto.construccion_civil_inf
+                    formDiseño.mobiliario_inf = tipoProyecto.mobiliario_inf
+                    formDiseño.mobiliario_sup = tipoProyecto.mobiliario_sup
+                }
+
+                formDiseño.partidas = this.setOptionsCheckboxes(partidas, true)
+
+                if(empresa)
+                    empresa.planos.map( (plano) => {
+                        if(plano[formDiseño.esquema])
+                            planos.push(plano)
+                    })
+
+                formDiseño.planos = this.setOptionsCheckboxes(planos, true)
+
+                this.setState({
+                    ...this.state,
+                    data,
+                    formDiseño
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401)
+                    forbiddenAccessAlert();
+                else
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     onChange = e => {
         const { form } = this.state
         const { name, value } = e.target
@@ -233,10 +293,96 @@ class LeadInfo extends Component {
             formAgenda
         })
     }
+
+    handleChangeCheckbox = (array, type) => {
+        const { formDiseño } = this.state
+        formDiseño[type] = array
+        this.setState({
+            ...this.state,
+            formDiseño: formDiseño
+        })
+    }
+
     onChangePresupuesto = e => {
         const { name, value } = e.target
-        const { formDiseño } = this.state
+        const { formDiseño, data } = this.state
+        
         formDiseño[name] = value
+/* 
+        if (name === 'tiempo_ejecucion_diseno') {
+            let modulo = parseFloat(value) % 6
+            let aux = Object.keys(
+                {
+                    lunes: false,
+                    martes: false,
+                    miercoles: false,
+                    jueves: false,
+                    viernes: false,
+                    sabado: false,
+                    domingo: false
+                }
+            )
+            form.semanas = [];
+            for (let i = 0; i < Math.floor(parseFloat(value) / 6); i++) {
+                form.semanas.push({
+                    lunes: true,
+                    martes: true,
+                    miercoles: true,
+                    jueves: true,
+                    viernes: true,
+                    sabado: true,
+                    domingo: false
+                })
+            }
+            form.semanas.push({
+                lunes: false,
+                martes: false,
+                miercoles: false,
+                jueves: false,
+                viernes: false,
+                sabado: false,
+                domingo: false
+            })
+            aux.map((element, key) => {
+                if (key < modulo) {
+                    form.semanas[form.semanas.length - 1][element] = true
+                } else {
+                    form.semanas[form.semanas.length - 1][element] = false
+                }
+                return false
+            })
+            if (modulo > 2) {
+                form.semanas.push({
+                    lunes: false,
+                    martes: false,
+                    miercoles: false,
+                    jueves: false,
+                    viernes: false,
+                    sabado: false,
+                    domingo: false
+                })
+            }
+        } */
+
+        if(name === 'm2' || name === 'esquema')
+            if(formDiseño.m2 && formDiseño.esquema){
+                formDiseño.subtotal = this.getSubtotal(formDiseño.m2, formDiseño.esquema)
+                
+            }
+        if(formDiseño.subtotal > 0){
+            formDiseño.total = formDiseño.subtotal * ( 1 - (formDiseño.descuento / 100))
+        }
+
+        if(name === 'esquema'){
+            let planos = []
+            if(data.empresa)
+                data.empresa.planos.map( (plano) => {
+                    if(plano[formDiseño.esquema])
+                        planos.push(plano)
+                })
+            formDiseño.planos = this.setOptionsCheckboxes(planos, true)
+        }
+        
         this.setState({
             ...this.state,
             formDiseño
@@ -262,6 +408,7 @@ class LeadInfo extends Component {
             formHistorial
         })
     }
+
     removeCorreo = value => {
         const { formAgenda } = this.state
         let aux = []
@@ -277,14 +424,17 @@ class LeadInfo extends Component {
             formAgenda
         })
     }
+
     onChangeConceptos = (e, key) => {
-        const { value, formDiseño } = e.target
+        const { value } = e.target
+        const { formDiseño } = this.state
         formDiseño.conceptos[key].value = value
         this.setState({
             ...this.state,
             formDiseño
         })
     }
+
     checkButtonSemanas = (e, key, dia) => {
         const { formDiseño } = this.state
         const { checked } = e.target
@@ -314,6 +464,92 @@ class LeadInfo extends Component {
             ...this.state,
             formDiseño
         })
+    }
+
+    setOptionsCheckboxes = (partidas, value) => {
+        let checkBoxPartida = []
+        partidas.map((partida, key) => {
+            checkBoxPartida.push({ checked: value, text: partida.nombre, id: partida.id, tipo: partida.tipo })
+            return false
+        })
+        return checkBoxPartida
+    }
+
+    getSubtotal = (m2, esquema) => {
+
+        if(m2 === '')
+            return 0.0
+        
+        const { data } = this.state
+        
+        let precio_inicial = 0
+        let incremento = 0
+        let aux = false
+        let limiteInf = 0.0
+        let limiteSup = 0.0
+        let m2Aux = parseInt(m2)
+        let acumulado = 0
+        let total = 0
+        
+
+        if(data.empresa)
+            precio_inicial = data.empresa.precio_inicial_diseño
+        else{
+            errorAlert('No fue posible calcular el total')
+            return 0.0
+        }
+        
+        if(data.empresa.variaciones.length === 0){
+            errorAlert('No fue posible calcular el total')
+            return 0.0
+        }   
+
+        switch(esquema){
+            case 'esquema_2':
+                incremento = data.empresa.incremento_esquema_2 / 100;
+                break
+            case 'esquema_3':
+                incremento = data.empresa.incremento_esquema_3 / 100;
+                break
+            default:
+                incremento = 0
+                break
+        }
+
+        data.empresa.variaciones.sort(function (a, b) {
+            return parseInt(a.inferior) - parseInt(b.inferior)
+        })
+
+        limiteInf = parseInt(data.empresa.variaciones[0].inferior)
+        limiteSup = parseInt(data.empresa.variaciones[ data.empresa.variaciones.length - 1 ].superior)
+
+        if (limiteInf <= m2Aux && limiteSup >= m2Aux) {
+            data.empresa.variaciones.map((variacion, index) => {
+                if (index === 0) {
+                    acumulado = parseFloat(precio_inicial) - ((parseInt(m2) - parseInt(variacion.inferior)) * parseFloat(variacion.cambio))
+                    if (m2Aux >= parseInt(variacion.superior))
+                        acumulado = parseFloat(precio_inicial) - ((parseInt(variacion.superior) - parseInt(variacion.inferior)) * parseFloat(variacion.cambio))
+                    if (m2Aux >= parseInt(variacion.inferior) && m2Aux <= parseInt(variacion.superior))
+                        total = parseFloat(acumulado) * parseFloat(m2)
+                } else {
+                    if (m2Aux >= parseInt(variacion.superior))
+                        acumulado = parseFloat(acumulado) - ((parseInt(variacion.superior) - parseInt(variacion.inferior) + 1) * parseFloat(variacion.cambio))
+                    else {
+                        acumulado = parseFloat(acumulado) - ((parseInt(m2) - parseInt(variacion.inferior) + 1) * parseFloat(variacion.cambio))
+                    }
+                    if (m2Aux >= parseInt(variacion.inferior) && m2Aux <= parseInt(variacion.superior))
+                        total = parseFloat(acumulado) * parseFloat(m2)
+                }
+            })
+
+            return total = total * (1 + incremento)
+        }
+
+        if(limiteSup < m2Aux){
+            errorAlert('Los m2 no están considerados en los límites')
+            return 0.0
+        }
+
     }
 
     async agregarContacto() {
@@ -526,7 +762,6 @@ class LeadInfo extends Component {
 
     render() {
         const { lead, form, formHistorial, options, formAgenda, formDiseño } = this.state
-        console.log(lead)
         return (
             <Layout active={'leads'}  {...this.props}>
                 <Tab.Container defaultActiveKey="2" className="p-5">
@@ -862,6 +1097,7 @@ class LeadInfo extends Component {
                                                 onChange={this.onChangePresupuesto}
                                                 onChangeConceptos={this.onChangeConceptos}
                                                 checkButtonSemanas={this.checkButtonSemanas}
+                                                onChangeCheckboxes = { this.handleChangeCheckbox }
                                             />
                                         </Card.Body>
                                     </Tab.Pane>
@@ -893,7 +1129,7 @@ const mapStateToProps = (state) => {
     }
 }
 
-const mapDispatchToProps = (dispatch) => {
-}
+const mapDispatchToProps = dispatch => ({
+})
 
 export default connect(mapStateToProps, mapDispatchToProps)(LeadInfo)
