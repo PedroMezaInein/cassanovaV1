@@ -63,6 +63,7 @@ class LeadInfo extends Component {
             esquema: 'esquema_1',
             fecha: new Date(),
             tiempo_ejecucion_diseno: '',
+            tiempo_ejecucion_construccion: 0,
             descuento: 0.0,
             conceptos: [
                 {
@@ -176,6 +177,7 @@ class LeadInfo extends Component {
                     options
                 })
                 this.getPresupuestoDiseñoOptionsAxios(lead.id)
+                this.getLeadEnContacto(lead.id)
             }
             else
                 history.push('/leads/crm')
@@ -634,7 +636,7 @@ class LeadInfo extends Component {
                     formAgenda,
                     modal: false
                 })
-                this.getLeadEnContacto()
+                this.getLeadEnContacto(lead.id)
                 doneAlert('Evento generado con éxito');
             },
             (error) => {
@@ -664,25 +666,84 @@ class LeadInfo extends Component {
         )
     }
 
-    async getLeadEnContacto() {
+    async getLeadEnContacto(id) {
         const { access_token } = this.props.authUser
-        const { lead } = this.state
-        await axios.get(URL_DEV + 'crm/table/lead-en-contacto/' + lead.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(URL_DEV + 'crm/table/lead-en-contacto/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { lead } = response.data
-                const { history, form } = this.props
+                const { history } = this.props
+                const { form, formDiseño } = this.state
                 form.name = lead.name
                 form.email = lead.email
                 form.telefono = lead.telefono
                 form.proyecto = lead.prospecto.nombre_proyecto
+
+                if(lead.presupuesto_diseño){
+                    console.log(lead.presupuesto_diseño, 'PRESUPUESTO DISEÑO')
+
+                    let aux = JSON.parse(lead.presupuesto_diseño.actividades)
+                    if(aux){
+                        aux = aux.actividades
+                        formDiseño.conceptos = aux
+                    }   
+                                        
+                    aux = JSON.parse(lead.presupuesto_diseño.semanas)
+                    if(aux){
+                        aux = aux.semanas
+                        formDiseño.semanas = aux
+                    }
+
+                    aux = JSON.parse(lead.presupuesto_diseño.planos)
+                    if(aux){
+                        aux = aux.planos
+                        aux.map((element) => {
+                            formDiseño.planos.map((plano)=>{
+                                if(plano.id.toString() === element.toString())
+                                    plano.checked = true
+                                else
+                                    plano.checked = false
+                            })
+                        })
+                    }    
+
+                    aux = JSON.parse(lead.presupuesto_diseño.partidas)
+                    if(aux){
+                        aux = aux.partidas
+                        aux.map((element) => {
+                            formDiseño.partidas.map((partida)=>{
+                                if(partida.id.toString() === element.toString())
+                                    partida.checked = true
+                                else
+                                    partida.checked = false
+                            })
+                        })
+                    }
+
+                    formDiseño.construccion_civil_inf = lead.presupuesto_diseño.construccion_civil_inf
+                    formDiseño.construccion_civil_sup = lead.presupuesto_diseño.construccion_civil_sup
+                    formDiseño.construccion_interiores_inf = lead.presupuesto_diseño.construccion_interiores_inf
+                    formDiseño.construccion_interiores_sup = lead.presupuesto_diseño.construccion_interiores_sup
+                    formDiseño.mobiliario_inf = lead.presupuesto_diseño.mobiliario_inf
+                    formDiseño.mobiliario_sup = lead.presupuesto_diseño.mobiliario_sup
+                    formDiseño.tiempo_ejecucion_construccion = lead.presupuesto_diseño.tiempo_ejecucion_construccion
+                    formDiseño.tiempo_ejecucion_diseno = lead.presupuesto_diseño.tiempo_ejecucion_diseño
+                    formDiseño.m2 = lead.presupuesto_diseño.m2
+                    formDiseño.fecha = lead.presupuesto_diseño.fecha
+                    formDiseño.total = lead.presupuesto_diseño.total
+                    formDiseño.subtotal = lead.presupuesto_diseño.subtotal
+                    formDiseño.esquema = lead.presupuesto_diseño.esquema
+                    formDiseño.descuento = lead.presupuesto_diseño.descuento
+
+                }
+
                 history.push({
-                    pathname: '/leads/crm/info/info',
                     state: { lead: lead }
-                });
+                })
                 this.setState({
                     ...this.state,
                     lead: lead,
-                    form
+                    form,
+                    formDiseño
                 })
             },
             (error) => {
@@ -754,7 +815,7 @@ class LeadInfo extends Component {
         await axios.put(URL_DEV + 'crm/email/lead-potencial/' + lead.id, {}, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert('Correo enviado con éxito');
-                this.getLeadEnContacto()
+                this.getLeadEnContacto(lead.id)
             },
             (error) => {
                 console.log(error, 'error')
@@ -779,7 +840,29 @@ class LeadInfo extends Component {
         await axios.put(URL_DEV + 'crm/update/lead-en-contacto/' + lead.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito el lead.')
-                this.getLeadEnContacto()
+                this.getLeadEnContacto(lead.i)
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    onSubmitPresupuestoDiseño = async(e) =>{
+        waitAlert();
+        const { access_token } = this.props.authUser
+        const { formDiseño, lead } = this.state
+        await axios.post(URL_DEV + 'crm/add/presupuesto-diseño/' + lead.id, formDiseño, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                
             },
             (error) => {
                 console.log(error, 'error')
@@ -1138,6 +1221,7 @@ class LeadInfo extends Component {
                                                 onChangeConceptos={this.onChangeConceptos}
                                                 checkButtonSemanas={this.checkButtonSemanas}
                                                 onChangeCheckboxes = { this.handleChangeCheckbox }
+                                                onSubmit = { this.onSubmitPresupuestoDiseño }
                                             />
                                         </Card.Body>
                                     </Tab.Pane>
