@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Form, Col, Row } from 'react-bootstrap'
-import { InputGray, SelectSearchGray, Button, InputNumberGray, OptionsCheckbox, InputMoneyGray, CalendarDay } from '../../../form-components'
+import { InputGray, SelectSearchGray, Button, InputNumberGray, OptionsCheckbox,OptionsCheckboxHeaders, InputMoneyGray, CalendarDay } from '../../../form-components'
 import { openWizard1, openWizard2, openWizard3 } from '../../../../functions/wizard'
 import { validateAlert } from '../../../../functions/alert'
 import { Calendar } from 'react-date-range'
@@ -168,7 +168,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                 </Row>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-12">
-                                        <OptionsCheckbox
+                                        <OptionsCheckboxHeaders
                                             requirevalidation = { 0 }
                                             formeditado = { formeditado }
                                             placeholder = "SELECCIONA LAS PLANOS"
@@ -319,13 +319,13 @@ class PresupuestoDiseñoCRMForm extends Component {
                                 </div>
                             </div>
                             <div id="wizard-3-content" className="pb-3" data-wizard-type="step-content">
-                                <h5 className="mb-4 font-weight-bold text-dark">Ingresa los precios, las partidas y el tiempo de ejecución</h5>
+                                <h5 className="mb-4 font-weight-bold text-dark">INGRESA LOS PRECIOS PARAMÉTRICOS Y EL TIEMPO DE EJECUCIÓN</h5>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-3">
                                         <InputNumberGray
                                             requirevalidation={0}
                                             formeditado={formeditado}
-                                            placeholder="PRECIO DE CONSTR. INTERIOR INF."
+                                            placeholder="CONSTR. INTERIOR INF."
                                             value={formDiseño.construccion_interiores_inf}
                                             name="construccion_interiores_inf"
                                             onChange={onChange}
@@ -338,7 +338,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                         <InputNumberGray
                                             requirevalidation={0}
                                             formeditado={formeditado}
-                                            placeholder="PRECIO DE CONSTR. INTERIOR SUP."
+                                            placeholder="CONSTR. INTERIOR SUP."
                                             value={formDiseño.construccion_interiores_sup}
                                             name="construccion_interiores_sup"
                                             onChange={onChange}
@@ -351,7 +351,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                         <InputNumberGray
                                             requirevalidation={0}
                                             formeditado={formeditado}
-                                            placeholder="PRECIO DE MOBILIARIO INF."
+                                            placeholder="MOBILIARIO INF."
                                             value={formDiseño.mobiliario_inf}
                                             name="mobiliario_inf"
                                             onChange={onChange}
@@ -364,7 +364,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                         <InputNumberGray
                                             requirevalidation={0}
                                             formeditado={formeditado}
-                                            placeholder="PRECIO DE MOBILIARIO SUP."
+                                            placeholder="MOBILIARIO SUP."
                                             value={formDiseño.mobiliario_sup}
                                             name="mobiliario_sup"
                                             onChange={onChange}
@@ -380,7 +380,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                         <InputNumberGray
                                             requirevalidation={0}
                                             formeditado={formeditado}
-                                            placeholder="PRECIO DE CONST. CIVIL INF."
+                                            placeholder="CONST. CIVIL INF."
                                             value={formDiseño.construccion_civil_inf}
                                             name="construccion_civil_inf"
                                             onChange={onChange}
@@ -393,7 +393,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                         <InputNumberGray
                                             requirevalidation={0}
                                             formeditado={formeditado}
-                                            placeholder="PRECIO DE CONST. CIVIL SUP."
+                                            placeholder="CONST. CIVIL SUP."
                                             value={formDiseño.construccion_civil_sup}
                                             name="construccion_civil_sup"
                                             onChange={onChange}
@@ -436,15 +436,25 @@ class PresupuestoDiseñoCRMForm extends Component {
                                         <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase" onClick={() => { openWizard2() }} data-wizard-type="action-prev">Anterior</button>
                                     </div>
                                     <div>
-                                        <Button icon='' className="btn btn-primary font-weight-bold text-uppercase mr-4"
+                                        <Button 
+                                            icon=''
+                                            className="btn btn-light-primary btn-sm mr-2"
+                                            only_icon="far fa-save pr-0"
+                                            tooltip={{ text: 'GUARDAR' }}
                                             onClick={
                                                 (e) => {
                                                     e.preventDefault();
                                                     validateAlert(onSubmit, e, 'wizard-3-content')
                                                 }
                                             }
-                                            text="ENVIAR" />
-                                        <Button icon='' className="btn btn-primary font-weight-bold text-uppercase" onClick={submitPDF} text="ENVIAR Y GENERAR PDF" />
+                                        />
+                                        <Button 
+                                            icon=''
+                                            className="btn btn-light-success btn-sm mr-2"
+                                            only_icon="far fa-file-pdf pr-0"
+                                            tooltip={{ text: 'GENERAR PDF' }}
+                                            onClick={submitPDF}
+                                        />
                                     </div>
                                 </div>
                             </div>
