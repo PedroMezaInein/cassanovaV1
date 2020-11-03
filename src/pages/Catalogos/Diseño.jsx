@@ -637,8 +637,8 @@ class Contabilidad extends Component {
             let aux = empresa.variaciones
             let limiteInf = aux[0].inferior
             let limiteSup = aux[aux.length - 1].superior
-            for (let i = 0; i <= 39; i++) {
-                let limite = (limiteInf + (i * (limiteSup - limiteInf) / 40))
+            for (let i = 0; i <= 19; i++) {
+                let limite = (limiteInf + (i * (limiteSup - limiteInf) / 20))
                 limite = parseInt(parseFloat(limite).toFixed(2))
                 labels.push(limite)
                 data.push(this.getPrecioEsquemas(form, limite))
@@ -868,7 +868,7 @@ class Contabilidad extends Component {
                             </div>
                         </Card.Header>
                         <Card.Body className="pt-2">
-                            <Tab.Container defaultActiveKey="planos">
+                            <Tab.Container defaultActiveKey="diseño">
                                 <Nav className="nav nav-tabs nav-tabs-space-lg nav-tabs-line nav-bold nav-tabs-line-3x border-0">
                                     <Nav.Item className="nav-item">
                                         <Nav.Link className="nav-link" eventKey="diseño">
@@ -913,23 +913,28 @@ class Contabilidad extends Component {
                                 </Nav>
                                 <Tab.Content className="py-5">
                                     <Tab.Pane eventKey="diseño">
-                                        <DiseñoForm
-                                            form={form}
-                                            onChange={this.onChange}
-                                            onSubmit={this.onSubmit}
-                                            addRow={this.addRow}
-                                            deleteRow={this.deleteRow}
-                                            onChangeVariaciones={this.onChangeVariaciones}
-                                        />
-                                        {
-                                            grafica !== '' ?
-                                                <div className="row mx-0 justify-content-center p-3">
-                                                    <div className="col-md-8">
-                                                        <Line data={grafica} />
-                                                    </div>
-                                                </div>
-                                                : <></>
-                                        }
+                                    <div className="row">
+                                        <div className="col-md-5">
+                                            <DiseñoForm
+                                                form={form}
+                                                onChange={this.onChange}
+                                                onSubmit={this.onSubmit}
+                                                addRow={this.addRow}
+                                                deleteRow={this.deleteRow}
+                                                onChangeVariaciones={this.onChangeVariaciones}
+                                                grafica={grafica}
+                                            />
+                                        </div>
+                                        <div className="col-lg-7 d-flex justify-content-center align-items-center">
+                                            {
+                                                grafica !== '' ?
+                                                        <div className="col-md-11">
+                                                            <Line data={grafica} />
+                                                        </div>
+                                                    : <></>
+                                            }
+                                        </div>
+                                    </div>
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="obra">
                                         <ObraForm
@@ -1147,7 +1152,22 @@ class Contabilidad extends Component {
                                                                                                         />
                                                                                                     </div>
                                                                                                 : ''
-                                                                                            }  
+                                                                                            }
+                                                                                        <div className={plano.id !== '' ? ' ': 'col-5 w-100 align-self-center text-justify'}>
+                                                                                            {
+                                                                                                plano.id !== '' ?
+                                                                                                    ''
+                                                                                                :
+                                                                                                    <InputSinText
+                                                                                                        name = 'tipo'
+                                                                                                        placeholder = 'TIPO'
+                                                                                                        requireValidation = { 1 }
+                                                                                                        value = { plano.tipo }
+                                                                                                        onChange = { (e) => { this.handleChangePlanos('esquema_3', e, key) }}
+                                                                                                        customclass="border-top-0 border-left-0 border-right-0 rounded-0 text-center pl-0 w-100" 
+                                                                                                    />
+                                                                                            }
+                                                                                        </div>
                                                                                         <div className={plano.id !== '' ? 'col-10 w-100 px-2 align-self-center text-justify change-col-10' : 'col-5 w-100 align-self-center text-justify'}>
                                                                                             {
                                                                                                 plano.id !== '' ?
@@ -1158,21 +1178,6 @@ class Contabilidad extends Component {
                                                                                                         placeholder = 'PLANO'
                                                                                                         requireValidation = { 1 }
                                                                                                         value = { plano.nombre }
-                                                                                                        onChange = { (e) => { this.handleChangePlanos('esquema_3', e, key) }}
-                                                                                                        customclass="border-top-0 border-left-0 border-right-0 rounded-0 text-center pl-0 w-100" 
-                                                                                                    />
-                                                                                            }
-                                                                                        </div>
-                                                                                        <div className={plano.id !== '' ? 'col-10 w-100 px-2 align-self-center text-justify change-col-10' : 'col-5 w-100 align-self-center text-justify'}>
-                                                                                            {
-                                                                                                plano.id !== '' ?
-                                                                                                    ''
-                                                                                                :
-                                                                                                    <InputSinText
-                                                                                                        name = 'tipo'
-                                                                                                        placeholder = 'TIPO'
-                                                                                                        requireValidation = { 1 }
-                                                                                                        value = { plano.tipo }
                                                                                                         onChange = { (e) => { this.handleChangePlanos('esquema_3', e, key) }}
                                                                                                         customclass="border-top-0 border-left-0 border-right-0 rounded-0 text-center pl-0 w-100" 
                                                                                                     />

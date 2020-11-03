@@ -44,8 +44,10 @@ class LeadInfo extends Component {
         },
         formAgenda: {
             fecha: new Date(),
-            hora: '08',
-            minuto: '00',
+            hora_inicio: '08',
+            minuto_inicio: '00',
+            hora_final: '08',
+            minuto_final: '15',
             cliente: '',
             tipo: 0,
             origen: 0,
@@ -165,6 +167,7 @@ class LeadInfo extends Component {
                 form.name = lead.nombre === 'SIN ESPECIFICAR' ? '' : lead.nombre.toUpperCase()
                 form.email = lead.email.toUpperCase()
                 form.telefono = lead.telefono
+                form.proyecto = lead.prospecto.nombre_proyecto
                 this.setState({
                     ...this.state,
                     lead: lead,
@@ -220,21 +223,21 @@ class LeadInfo extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'crm/options/presupuesto-diseño/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { empresa, tipoProyecto, partidas } = response.data
+                const { empresa, tipo, partidas } = response.data
                 const { data, formDiseño } = this.state
                 let planos = []
 
                 data.empresa = empresa
-                data.tipoProyecto = tipoProyecto
+                data.tipoProyecto = tipo
                 data.partidas = partidas
                 
-                if(tipoProyecto){
-                    formDiseño.construccion_interiores_inf = tipoProyecto.construccion_interiores_inf
-                    formDiseño.construccion_interiores_sup = tipoProyecto.construccion_interiores_sup
-                    formDiseño.construccion_civil_inf = tipoProyecto.construccion_civil_inf
-                    formDiseño.construccion_civil_inf = tipoProyecto.construccion_civil_inf
-                    formDiseño.mobiliario_inf = tipoProyecto.mobiliario_inf
-                    formDiseño.mobiliario_sup = tipoProyecto.mobiliario_sup
+                if(tipo){
+                    formDiseño.construccion_interiores_inf = tipo.construccion_interiores_inf
+                    formDiseño.construccion_interiores_sup = tipo.construccion_interiores_sup
+                    formDiseño.construccion_civil_inf = tipo.construccion_civil_inf
+                    formDiseño.construccion_civil_sup = tipo.construccion_civil_sup
+                    formDiseño.mobiliario_inf = tipo.mobiliario_inf
+                    formDiseño.mobiliario_sup = tipo.mobiliario_sup
                 }
 
                 formDiseño.partidas = this.setOptionsCheckboxes(partidas, true)
@@ -305,10 +308,10 @@ class LeadInfo extends Component {
 
     onChangePresupuesto = e => {
         const { name, value } = e.target
-        const { formDiseño, data } = this.state
+        const { formDiseño, data} = this.state
         
         formDiseño[name] = value
-/* 
+
         if (name === 'tiempo_ejecucion_diseno') {
             let modulo = parseFloat(value) % 6
             let aux = Object.keys(
@@ -322,9 +325,9 @@ class LeadInfo extends Component {
                     domingo: false
                 }
             )
-            form.semanas = [];
+            formDiseño.semanas = [];
             for (let i = 0; i < Math.floor(parseFloat(value) / 6); i++) {
-                form.semanas.push({
+                formDiseño.semanas.push({
                     lunes: true,
                     martes: true,
                     miercoles: true,
@@ -334,7 +337,7 @@ class LeadInfo extends Component {
                     domingo: false
                 })
             }
-            form.semanas.push({
+            formDiseño.semanas.push({
                 lunes: false,
                 martes: false,
                 miercoles: false,
@@ -345,14 +348,14 @@ class LeadInfo extends Component {
             })
             aux.map((element, key) => {
                 if (key < modulo) {
-                    form.semanas[form.semanas.length - 1][element] = true
+                    formDiseño.semanas[formDiseño.semanas.length - 1][element] = true
                 } else {
-                    form.semanas[form.semanas.length - 1][element] = false
+                    formDiseño.semanas[formDiseño.semanas.length - 1][element] = false
                 }
                 return false
             })
             if (modulo > 2) {
-                form.semanas.push({
+                formDiseño.semanas.push({
                     lunes: false,
                     martes: false,
                     miercoles: false,
@@ -362,7 +365,7 @@ class LeadInfo extends Component {
                     domingo: false
                 })
             }
-        } */
+        }
 
         if(name === 'm2' || name === 'esquema')
             if(formDiseño.m2 && formDiseño.esquema){
@@ -619,8 +622,10 @@ class LeadInfo extends Component {
         await axios.post(URL_DEV + 'crm/agendar/evento/' + lead.id, formAgenda, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 formAgenda.fecha = new Date()
-                formAgenda.hora = '08'
-                formAgenda.minuto = '00'
+                formAgenda.hora_inicio= '08'
+                formAgenda.minuto_inicio = '00'
+                formAgenda.hora_final = '08'
+                formAgenda.minuto_final = '15'
                 formAgenda.titulo = ''
                 formAgenda.correo = ''
                 formAgenda.correos = []
@@ -629,6 +634,7 @@ class LeadInfo extends Component {
                     formAgenda,
                     modal: false
                 })
+                this.getLeadEnContacto()
                 doneAlert('Evento generado con éxito');
             },
             (error) => {
@@ -664,14 +670,19 @@ class LeadInfo extends Component {
         await axios.get(URL_DEV + 'crm/table/lead-en-contacto/' + lead.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { lead } = response.data
-                const { history } = this.props
+                const { history, form } = this.props
+                form.name = lead.name
+                form.email = lead.email
+                form.telefono = lead.telefono
+                form.proyecto = lead.prospecto.nombre_proyecto
                 history.push({
                     pathname: '/leads/crm/info/info',
                     state: { lead: lead }
                 });
                 this.setState({
                     ...this.state,
-                    lead: lead
+                    lead: lead,
+                    form
                 })
             },
             (error) => {
@@ -758,7 +769,31 @@ class LeadInfo extends Component {
             console.log(error, 'error')
         })
     }
-
+    submitForm = e => {
+        e.preventDefault();
+        this.addLeadInfoAxios()
+    }
+    async addLeadInfoAxios() {
+        const { access_token } = this.props.authUser
+        const { form, lead } = this.state
+        await axios.put(URL_DEV + 'crm/update/lead-en-contacto/' + lead.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito el lead.')
+                this.getLeadEnContacto()
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
 
     render() {
         const { lead, form, formHistorial, options, formAgenda, formDiseño } = this.state
@@ -924,67 +959,72 @@ class LeadInfo extends Component {
                                                 </h3>
                                             </Card.Title>
                                         </Card.Header>
-                                        <Card.Body className="pt-0">
-                                            <div className="form-group row form-group-marginless">
-                                                <div className="col-md-4">
-                                                    <InputGray
-                                                        withtaglabel={1}
-                                                        withtextlabel={1}
-                                                        withplaceholder={1}
-                                                        withicon={1}
-                                                        placeholder='NOMBRE DEL LEAD'
-                                                        iconclass="far fa-user"
-                                                        name='name'
-                                                        value={form.name}
-                                                        onChange={this.onChange}
-                                                    />
+                                        <Form onSubmit={this.submitForm}>
+                                            <Card.Body className="pt-0">
+                                                <div className="form-group row form-group-marginless">
+                                                    <div className="col-md-4">
+                                                        <InputGray
+                                                            withtaglabel={1}
+                                                            withtextlabel={1}
+                                                            withplaceholder={1}
+                                                            withicon={1}
+                                                            placeholder='NOMBRE DEL LEAD'
+                                                            iconclass="far fa-user"
+                                                            name='name'
+                                                            value={form.name}
+                                                            onChange={this.onChange}
+                                                        />
+                                                    </div>
+                                                    <div className="col-md-4">
+                                                        <InputGray
+                                                            withtaglabel={1}
+                                                            withtextlabel={1}
+                                                            withplaceholder={1}
+                                                            withicon={1}
+                                                            placeholder="CORREO ELECTRÓNICO DE CONTACTO"
+                                                            iconclass="fas fa-envelope"
+                                                            type="email"
+                                                            name="email"
+                                                            value={form.email}
+                                                            onChange={this.onChange}
+                                                            patterns={EMAIL}
+                                                        />
+                                                    </div>
+                                                    <div className="col-md-4">
+                                                        <InputPhoneGray
+                                                            withtaglabel={1}
+                                                            withtextlabel={1}
+                                                            withplaceholder={1}
+                                                            withicon={1}
+                                                            placeholder="TELÉFONO DE CONTACTO"
+                                                            iconclass="fas fa-mobile-alt"
+                                                            name="telefono"
+                                                            value={form.telefono}
+                                                            onChange={this.onChange}
+                                                            patterns={TEL}
+                                                            thousandseparator={false}
+                                                            prefix=''
+                                                        />
+                                                    </div>
+                                                    <div className="col-md-4">
+                                                        <InputGray
+                                                            withtaglabel={1}
+                                                            withtextlabel={1}
+                                                            withplaceholder={1}
+                                                            withicon={1}
+                                                            placeholder='NOMBRE DEL PROYECTO'
+                                                            iconclass="far fa-folder-open"
+                                                            name='proyecto'
+                                                            value={form.proyecto}
+                                                            onChange={this.onChange}
+                                                        />
+                                                    </div>
                                                 </div>
-                                                <div className="col-md-4">
-                                                    <InputGray
-                                                        withtaglabel={1}
-                                                        withtextlabel={1}
-                                                        withplaceholder={1}
-                                                        withicon={1}
-                                                        placeholder="CORREO ELECTRÓNICO DE CONTACTO"
-                                                        iconclass="fas fa-envelope"
-                                                        type="email"
-                                                        name="email"
-                                                        value={form.email}
-                                                        onChange={this.onChange}
-                                                        patterns={EMAIL}
-                                                    />
-                                                </div>
-                                                <div className="col-md-4">
-                                                    <InputPhoneGray
-                                                        withtaglabel={1}
-                                                        withtextlabel={1}
-                                                        withplaceholder={1}
-                                                        withicon={1}
-                                                        placeholder="TELÉFONO DE CONTACTO"
-                                                        iconclass="fas fa-mobile-alt"
-                                                        name="telefono"
-                                                        value={form.telefono}
-                                                        onChange={this.onChange}
-                                                        patterns={TEL}
-                                                        thousandseparator={false}
-                                                        prefix=''
-                                                    />
-                                                </div>
-                                                <div className="col-md-4">
-                                                    <InputGray
-                                                        withtaglabel={1}
-                                                        withtextlabel={1}
-                                                        withplaceholder={1}
-                                                        withicon={1}
-                                                        placeholder='NOMBRE DEL PROYECTO'
-                                                        iconclass="far fa-folder-open"
-                                                        name='proyecto'
-                                                        value={form.proyecto}
-                                                        onChange={this.onChange}
-                                                    />
-                                                </div>
-                                            </div>
-                                        </Card.Body>
+                                            </Card.Body>
+                                            <Card.Footer className="text-right">
+                                                <Button icon=''  className="btn btn-primary" type="submit" text="ENVIAR" />
+                                            </Card.Footer>
+                                        </Form>
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="2">
                                         <Card.Header className="border-0 mt-4 pt-3">
