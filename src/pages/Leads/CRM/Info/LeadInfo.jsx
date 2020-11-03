@@ -672,13 +672,14 @@ class LeadInfo extends Component {
             (response) => {
                 const { lead } = response.data
                 const { history } = this.props
-                const { form, formDiseño } = this.state
-                form.name = lead.name
+                const { form, formDiseño, data } = this.state
+                form.name = lead.nombre
                 form.email = lead.email
                 form.telefono = lead.telefono
                 form.proyecto = lead.prospecto.nombre_proyecto
 
                 if(lead.presupuesto_diseño){
+
                     console.log(lead.presupuesto_diseño, 'PRESUPUESTO DISEÑO')
 
                     let aux = JSON.parse(lead.presupuesto_diseño.actividades)
@@ -693,6 +694,14 @@ class LeadInfo extends Component {
                         formDiseño.semanas = aux
                     }
 
+                    let planos = []
+                    if(data.empresa)
+                        data.empresa.planos.map( (plano) => {
+                            if(plano[lead.presupuesto_diseño.esquema])
+                                planos.push(plano)
+                        })
+                    formDiseño.planos = this.setOptionsCheckboxes(planos, true)
+                    
                     aux = JSON.parse(lead.presupuesto_diseño.planos)
                     if(aux){
                         aux = aux.planos
@@ -704,18 +713,31 @@ class LeadInfo extends Component {
                                     plano.checked = false
                             })
                         })
-                    }    
+                    }
+                    
+                    aux = JSON.parse(lead.presupuesto_diseño.planos)
+                    if(aux){
+                        aux = aux.planos
+                        formDiseño.planos.map((plano)=>{
+                            let bandera = false
+                            aux.map((element) => {
+                                if(plano.id.toString() === element.toString())
+                                    bandera = true
+                            })
+                            plano.checked = bandera
+                        })
+                    }
 
                     aux = JSON.parse(lead.presupuesto_diseño.partidas)
                     if(aux){
                         aux = aux.partidas
-                        aux.map((element) => {
-                            formDiseño.partidas.map((partida)=>{
+                        formDiseño.partidas.map((partida)=>{
+                            let bandera = false
+                            aux.map((element) => {
                                 if(partida.id.toString() === element.toString())
-                                    partida.checked = true
-                                else
-                                    partida.checked = false
+                                    bandera = true
                             })
+                            partida.checked = bandera
                         })
                     }
 
@@ -840,7 +862,7 @@ class LeadInfo extends Component {
         await axios.put(URL_DEV + 'crm/update/lead-en-contacto/' + lead.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito el lead.')
-                this.getLeadEnContacto(lead.i)
+                this.getLeadEnContacto(lead.id)
             },
             (error) => {
                 console.log(error, 'error')
@@ -862,7 +884,8 @@ class LeadInfo extends Component {
         const { formDiseño, lead } = this.state
         await axios.post(URL_DEV + 'crm/add/presupuesto-diseño/' + lead.id, formDiseño, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                
+                doneAlert('Presupuesto generado con éxito')
+                this.getLeadEnContacto(lead.id)
             },
             (error) => {
                 console.log(error, 'error')
