@@ -10,9 +10,13 @@ import { setOptions, setDateTableLG } from '../../../../functions/setters';
 import axios from 'axios'
 import { doneAlert, errorAlert, forbiddenAccessAlert, waitAlert, questionAlert2, questionAlert } from '../../../../functions/alert';
 import swal from 'sweetalert';
-import { HistorialContactoForm, AgendarCitaForm, PresupuestoDiseñoCRMForm } from '../../../../components/forms'
+import { HistorialContactoForm, AgendarCitaForm, PresupuestoDiseñoCRMForm, PresupuestoGenerado} from '../../../../components/forms'
+import { Modal } from '../../../../components/singles'
 class LeadInfo extends Component {
     state = {
+        modal: {
+            presupuesto: false,
+        },
         messages: [],
         form: {
             name: '',
@@ -794,12 +798,27 @@ class LeadInfo extends Component {
             console.log(error, 'error')
         })
     }
-
+    openModalPresupuesto= () => {
+        const { modal } = this.state
+        modal.presupuesto = true
+        this.setState({
+            ...this.state,
+            modal
+        })
+    }
+    handleCloseModalPresupuesto = () => {
+        const { modal } = this.state
+        modal.presupuesto = false
+        this.setState({
+            ...this.state,
+            modal
+        })
+    }
     render() {
-        const { lead, form, formHistorial, options, formAgenda, formDiseño } = this.state
+        const { lead, form, formHistorial, options, formAgenda, formDiseño, modal} = this.state
         return (
             <Layout active={'leads'}  {...this.props}>
-                <Tab.Container defaultActiveKey="2" className="p-5">
+                <Tab.Container defaultActiveKey="3" className="p-5">
                     <Row>
                         <Col md={3} className="mb-3">
                             <Card className="card-custom card-stretch">
@@ -1033,7 +1052,7 @@ class LeadInfo extends Component {
                                                 <div>
                                                     <Button
                                                         icon=''
-                                                        className={"btn btn-icon btn-xs p-3 btn-light-success success2 mr-2"}
+                                                        className={"btn btn-icon btn-xs p-3 btn-light-success mr-2"}
                                                         onClick={() => { this.mostrarFormulario() }}
                                                         only_icon={"flaticon2-plus icon-13px"}
                                                         tooltip={{ text: 'AGREGAR NUEVO CONTACTO' }}
@@ -1123,12 +1142,19 @@ class LeadInfo extends Component {
                                         </Card.Body>
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="3">
-                                        <Card.Header className="align-items-center border-0 mt-4 pt-3">
-                                            <Card.Title>
-                                                <h3 className="card-title align-items-start flex-column">
-                                                    <span className="font-weight-bolder text-dark">Presupuesto de diseño</span>
-                                                </h3>
-                                            </Card.Title>
+                                        <Card.Header className="border-0 mt-4 pt-3">
+                                            <h3 className="card-title d-flex justify-content-between">
+                                                <span className="font-weight-bolder text-dark align-self-center">Presupuesto de diseño</span>
+                                                <div>
+                                                    <Button
+                                                        icon=''
+                                                        className={"btn btn-icon btn-xs p-3 btn-light-primary mr-2"}
+                                                        onClick={() => { this.openModalPresupuesto() }}
+                                                        only_icon={"far fa-file-pdf icon-15px"}
+                                                        tooltip={{ text:'PRESUPUESTOS GENERADOS'}}
+                                                    />
+                                                </div>
+                                            </h3>
                                         </Card.Header>
                                         <Card.Body className="pt-0">
                                             <PresupuestoDiseñoCRMForm
@@ -1159,6 +1185,11 @@ class LeadInfo extends Component {
                         </Col>
                     </Row >
                 </Tab.Container>
+                <Modal title="Presupuestos generados" show={modal.presupuesto} handleClose={this.handleCloseModalPresupuesto} >
+                    <PresupuestoGenerado
+                    
+                    />
+                </Modal>
             </Layout >
         )
     }
