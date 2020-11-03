@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
-import { Button, InputNumber, InputMoney, InputNumberSinText, InputMoneySinText } from '../../form-components'
+import { Button, InputNumberSinText, InputMoneySinText } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 import { setMoneyTableForNominas } from '../../../functions/setters'
-import { Line } from 'react-chartjs-2';
 class DiseñoForm extends Component {
     render() {
         const { form, onChange, onSubmit, formeditado, requirevalidation, onChangeVariaciones, addRow, deleteRow, grafica, ...props } = this.props
