@@ -55,7 +55,7 @@ class InputNumberGray extends Component {
         }
     }
     render() {
-        const { error, onChange, placeholder, iconclass, messageinc, typeformat, customlabel, customclass, customstyle, ...props } = this.props
+        const { error, onChange, placeholder, iconclass, messageinc, typeformat, customlabel, customclass, customstyle, thousandseparator,...props } = this.props
         return (
             <div className="form-group">
                 <label className={`col-form-label font-weight-bold text-dark-60  ${customlabel}`}>{placeholder}</label>
@@ -69,9 +69,11 @@ class InputNumberGray extends Component {
                         placeholder={placeholder}
                         className={`form-control text-dark-50 font-weight-bold ${customclass}`}
                         onChange={(e) => { e.preventDefault(); this.validarInput(e); onChange(e) }}
+                        thousandSeparator={thousandseparator ? ',' : ''}
                         {...props}
                         format={typeformat}
                         style={customstyle}
+                        decimalScale={2}
                     />
                 </div>
             </div>
