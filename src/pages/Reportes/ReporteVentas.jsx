@@ -23,10 +23,10 @@ import ReporteVentasIm from '../../components/pdfs/ReporteVentasIm'
 const options = {
     plugins: {
         datalabels: {
-            color: '#000',
-            backgroundColor: '#f2eded',
+            color: '#fff',
 		    font: {
-                size: 15
+                size: 18,
+                weight: 'bold'
             }
         }
     },
@@ -45,11 +45,11 @@ const options = {
 const options2 = {
     plugins: {
         datalabels: {
-            color: '#000',
-            backgroundColor: '#f2eded',
+            color: '#fff',
 		    font: {
-                size: 15
-            },
+                size: 18,
+                weight: 'bold'
+            }
         }
     },
     legend:{
