@@ -42,7 +42,6 @@ class LeadLlamadaSalida extends Component {
             if (state.lead) {
                 const { form, options } = this.state
                 const { lead } = state
-                console.log(lead,'lead')
                 form.name = lead.nombre==='SIN ESPECIFICAR'?'':lead.nombre.toUpperCase()
                 form.email = lead.email.toUpperCase()
                 form.empresa_dirigida = lead.empresa.id.toString()
@@ -185,8 +184,6 @@ class LeadLlamadaSalida extends Component {
                 const { options } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['origenes'] = setOptions(origenes, 'origen', 'id')
-                
-                // console.log(options.empresas)
                 this.setState({
                     ...this.state,
                     options
