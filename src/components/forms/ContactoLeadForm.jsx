@@ -82,8 +82,7 @@ class ContactoLeadForm extends Component {
                             patterns={DATE}
                         />
                         {/* <CalendarDay
-                            id="contacto_lead"
-                            date = {formContacto.fechaContacto} 
+                            value = {formContacto.fechaContacto} 
                             onChange = { onChangeContacto } 
                             name = 'fechaContacto'
                         /> */}
