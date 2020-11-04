@@ -166,8 +166,7 @@ class HistorialContactoForm extends Component {
                                             patterns={DATE}
                                         /> */}
                                         <CalendarDay
-                                            id="contacto_lead"
-                                            date = {formHistorial.fechaContacto} 
+                                            value = {formHistorial.fechaContacto} 
                                             onChange = { onChangeHistorial } 
                                             name = 'fechaContacto'
                                         />

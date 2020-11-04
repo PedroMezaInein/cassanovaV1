@@ -94,7 +94,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                         </div>
                                         <div className="col-md-12 text-center px-0">
                                             <CalendarDay
-                                                date={formDiseño.fecha}
+                                                value={formDiseño.fecha}
                                                 onChange={onChange}
                                                 name='fecha'
                                             />
