@@ -24,20 +24,20 @@ const options = {
     plugins: {
         datalabels: {
             color: '#000',
-            backgroundColor: '#fff',
+            backgroundColor: '#f2eded',
 		    font: {
-                size: 30
+                size: 15
             }
         }
     },
     legend:{
         display: true,
         position: "right",
-        fullWidth: true,
+        fullWidth: false,
         reverse: false,
         labels: {
             fontColor: '#000',
-            fontSize: 20
+            fontSize: 12
         }
     },
 }
@@ -46,10 +46,10 @@ const options2 = {
     plugins: {
         datalabels: {
             color: '#000',
-            backgroundColor: '#fff',
+            backgroundColor: '#f2eded',
 		    font: {
-                size: 30
-            }
+                size: 15
+            },
         }
     },
     legend:{
