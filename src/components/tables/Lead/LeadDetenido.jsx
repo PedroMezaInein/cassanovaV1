@@ -21,7 +21,7 @@ class LeadDetenido extends Component {
         return false;
     }
     render() {
-        const { leads, onClickNext, onClickPrev, openModalWithInput, changeEstatus} = this.props
+        const { leads, onClickNext, onClickPrev, openModalWithInput, changeEstatus } = this.props
         return (
             <div className="tab-content">
                 <div className="table-responsive-lg">
@@ -42,66 +42,69 @@ class LeadDetenido extends Component {
                         <tbody>
                             {
                                 leads.total === 0 ?
-                                <td colSpan="6" className="text-center text-dark-75 font-weight-bolder font-size-lg pt-3">NO SE ENCONTRARON RESULTADOS</td> :
-                                leads.data.map((lead, index) => {
-                                    return (
-                                        <tr key={index}>
-                                            <td className="pl-0 py-8">
-                                                <div className="d-flex align-items-center">
-                                                    <div className="symbol symbol-45 mr-3">
-                                                        <span className="symbol-label font-size-h5 bg-light-gray text-gray">
-                                                            {lead.nombre.charAt(0)}
-                                                        </span>
+                                    <tr>
+                                        <td colSpan="6" className="text-center text-dark-75 font-weight-bolder font-size-lg pt-3">NO SE ENCONTRARON RESULTADOS</td>
+                                    </tr>
+                                    :
+                                    leads.data.map((lead, index) => {
+                                        return (
+                                            <tr key={index}>
+                                                <td className="pl-0 py-8">
+                                                    <div className="d-flex align-items-center">
+                                                        <div className="symbol symbol-45 mr-3">
+                                                            <span className="symbol-label font-size-h5 bg-light-gray text-gray">
+                                                                {lead.nombre.charAt(0)}
+                                                            </span>
+                                                        </div>
+                                                        <div>
+                                                            <a href={`mailto:+${lead.email}`} className="text-dark-75 font-weight-bolder text-hover-gray mb-1 font-size-lg">
+                                                                {lead.nombre}
+                                                            </a>
+                                                            <span className="text-muted font-weight-bold d-block">
+                                                                {
+                                                                    lead.prospecto.tipo_proyecto ?
+                                                                        lead.prospecto.tipo_proyecto.tipo
+                                                                        : ''
+                                                                }
+                                                            </span>
+                                                        </div>
                                                     </div>
-                                                    <div>
-                                                        <a href={`mailto:+${lead.email}`} className="text-dark-75 font-weight-bolder text-hover-gray mb-1 font-size-lg">
-                                                            {lead.nombre}
-                                                        </a>
-                                                        <span className="text-muted font-weight-bold d-block">
-                                                            {
-                                                                lead.prospecto.tipo_proyecto?
-                                                                    lead.prospecto.tipo_proyecto.tipo
-                                                                :''
-                                                            }
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="font-size-lg text-left font-weight-bolder">
-                                                <span>Ingreso: </span><span className="text-muted font-weight-bold font-size-sm">{setDateTableLG(lead.created_at)}</span><br />
-                                                <span>Último contacto: </span><span className="text-muted font-weight-bold font-size-sm">{setDateTableLG(lead.prospecto.contactos[0].created_at)}</span>
-                                            </td>
-                                            <td>
-                                                <span className="text-dark-75 font-weight-bolder d-block font-size-lg">{lead.empresa.name}</span>
-                                            </td>
-                                            <td>
-                                                {
-                                                    lead.origen ?
-                                                        <span className="text-dark-75 font-weight-bolder d-block font-size-lg">
-                                                            {lead.origen.origen}
-                                                        </span>
-                                                        : ''
-                                                }
-                                            </td>
-                                            <td className="d-flex justify-content-center">
-                                                <div className="symbol-group symbol-hover">
+                                                </td>
+                                                <td className="font-size-lg text-left font-weight-bolder">
+                                                    <span>Ingreso: </span><span className="text-muted font-weight-bold font-size-sm">{setDateTableLG(lead.created_at)}</span><br />
+                                                    <span>Último contacto: </span><span className="text-muted font-weight-bold font-size-sm">{setDateTableLG(lead.prospecto.contactos[0].created_at)}</span>
+                                                </td>
+                                                <td>
+                                                    <span className="text-dark-75 font-weight-bolder d-block font-size-lg">{lead.empresa.name}</span>
+                                                </td>
+                                                <td>
                                                     {
-                                                        lead.prospecto.vendedores.map((vendedor, index) => {
-                                                            return (
-                                                                <OverlayTrigger key={index} overlay={<Tooltip>{vendedor.name}</Tooltip>}>
-                                                                    <div className="symbol symbol-35 symbol-circle">
-                                                                        <img alt="Pic" src={vendedor.avatar ? vendedor.avatar : "/default.jpg"} />
-                                                                    </div>
-                                                                </OverlayTrigger>
-                                                            )
-                                                        })
+                                                        lead.origen ?
+                                                            <span className="text-dark-75 font-weight-bolder d-block font-size-lg">
+                                                                {lead.origen.origen}
+                                                            </span>
+                                                            : ''
                                                     }
-                                                </div>
-                                            </td>
-                                            <td className="text-center">
-                                                {
-                                                    lead.estatus ?
-                                                        /* lead.prospecto.estatus_prospecto ? */
+                                                </td>
+                                                <td className="d-flex justify-content-center">
+                                                    <div className="symbol-group symbol-hover">
+                                                        {
+                                                            lead.prospecto.vendedores.map((vendedor, index) => {
+                                                                return (
+                                                                    <OverlayTrigger key={index} overlay={<Tooltip>{vendedor.name}</Tooltip>}>
+                                                                        <div className="symbol symbol-35 symbol-circle">
+                                                                            <img alt="Pic" src={vendedor.avatar ? vendedor.avatar : "/default.jpg"} />
+                                                                        </div>
+                                                                    </OverlayTrigger>
+                                                                )
+                                                            })
+                                                        }
+                                                    </div>
+                                                </td>
+                                                <td className="text-center">
+                                                    {
+                                                        lead.estatus ?
+                                                            /* lead.prospecto.estatus_prospecto ? */
                                                             <Dropdown>
                                                                 <Dropdown.Toggle style={{ backgroundColor: lead.estatus.color_fondo, color: lead.estatus.color_texto, border: 'transparent', padding: '2.8px 5.6px', width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '0.863rem', fontWeight: 500 }}
                                                                 >
@@ -111,21 +114,21 @@ class LeadDetenido extends Component {
                                                                     <Dropdown.Header>
                                                                         <span className="font-size-sm">Elige una opción</span>
                                                                     </Dropdown.Header>
-                                                                    <Dropdown.Item href="#"  className="p-0" className="p-0" onClick={(e) => { e.preventDefault(); changeEstatus('En proceso', lead.id ) }}>
+                                                                    <Dropdown.Item href="#" className="p-0" className="p-0" onClick={(e) => { e.preventDefault(); changeEstatus('En proceso', lead.id) }}>
                                                                         <span className="navi-link w-100">
                                                                             <span className="navi-text">
                                                                                 <span className="label label-xl label-inline label-light-info rounded-0 w-100">EN PROCESO</span>
                                                                             </span>
                                                                         </span>
                                                                     </Dropdown.Item>
-                                                                    <Dropdown.Item href="#"  className="p-0" onClick={(e) => { e.preventDefault(); openModalWithInput('Cancelado', lead.id ) }} >
+                                                                    <Dropdown.Item href="#" className="p-0" onClick={(e) => { e.preventDefault(); openModalWithInput('Cancelado', lead.id) }} >
                                                                         <span className="navi-link w-100">
                                                                             <span className="navi-text">
                                                                                 <span className="label label-xl label-inline label-light-danger rounded-0 w-100">CANCELADO</span>
                                                                             </span>
                                                                         </span>
                                                                     </Dropdown.Item>
-                                                                    <Dropdown.Item href="#"  className="p-0"  onClick={(e) => { e.preventDefault(); openModalWithInput('Rechazado', lead.id ) }} >
+                                                                    <Dropdown.Item href="#" className="p-0" onClick={(e) => { e.preventDefault(); openModalWithInput('Rechazado', lead.id) }} >
                                                                         <span className="navi-link w-100">
                                                                             <span className="navi-text">
                                                                                 <span className="label label-xl label-inline label-light-danger rounded-0 w-100">RECHAZADO</span>
@@ -136,18 +139,18 @@ class LeadDetenido extends Component {
                                                             </Dropdown>
                                                             : ''
                                                         /* : '' */
-                                                }
-                                            </td>
-                                            <td className="pr-0 text-center">
-                                                <OverlayTrigger overlay={<Tooltip>Ver más</Tooltip>}>
-                                                    <a href='/leads/crm/info/info' className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-gray">
-                                                        <i className="flaticon2-plus icon-nm"></i>
-                                                    </a>
-                                                </OverlayTrigger>
-                                            </td>
-                                        </tr>
-                                    )
-                                })
+                                                    }
+                                                </td>
+                                                <td className="pr-0 text-center">
+                                                    <OverlayTrigger overlay={<Tooltip>Ver más</Tooltip>}>
+                                                        <a href='/leads/crm/info/info' className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-gray">
+                                                            <i className="flaticon2-plus icon-nm"></i>
+                                                        </a>
+                                                    </OverlayTrigger>
+                                                </td>
+                                            </tr>
+                                        )
+                                    })
                             }
                         </tbody>
                     </table>

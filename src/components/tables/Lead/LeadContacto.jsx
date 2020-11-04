@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { OverlayTrigger, Tooltip, Dropdown } from 'react-bootstrap'
-import { setDateTableLG} from '../../../functions/setters'
+import { setDateTableLG } from '../../../functions/setters'
 
 class LeadContacto extends Component {
 
@@ -23,7 +23,7 @@ class LeadContacto extends Component {
     }
 
     render() {
-        const { leads, onClickNext, onClickPrev,openModalWithInput, changeEstatus, changePageDetails} = this.props
+        const { leads, onClickNext, onClickPrev, openModalWithInput, changeEstatus, changePageDetails } = this.props
         return (
             <div className="tab-content">
                 <div className="table-responsive-lg">
@@ -44,68 +44,71 @@ class LeadContacto extends Component {
                         <tbody>
                             {
                                 leads.total === 0 ?
-                                <td colSpan="6" className="text-center text-dark-75 font-weight-bolder font-size-lg pt-3">NO SE ENCONTRARON RESULTADOS</td> :
-                                leads.data.map((lead, index) => {
-                                    return (
-                                        <tr key={index}>
-                                            <td className="pl-0 py-8">
-                                                <div className="d-flex align-items-center">
-                                                    <div className="symbol symbol-45 symbol-light-primary mr-3">
-                                                        <span className="symbol-label font-size-h5">
-                                                            {lead.nombre.charAt(0)}
-                                                        </span>
+                                    <tr>
+                                        <td colSpan="6" className="text-center text-dark-75 font-weight-bolder font-size-lg pt-3">NO SE ENCONTRARON RESULTADOS</td>
+                                    </tr>
+                                    :
+                                    leads.data.map((lead, index) => {
+                                        return (
+                                            <tr key={index}>
+                                                <td className="pl-0 py-8">
+                                                    <div className="d-flex align-items-center">
+                                                        <div className="symbol symbol-45 symbol-light-primary mr-3">
+                                                            <span className="symbol-label font-size-h5">
+                                                                {lead.nombre.charAt(0)}
+                                                            </span>
+                                                        </div>
+                                                        <div>
+                                                            <a href={`mailto:+${lead.email}`} className="text-dark-75 font-weight-bolder text-hover-primary mb-1 font-size-lg">
+                                                                {lead.nombre}
+                                                            </a>
+                                                            <span className="text-muted font-weight-bold d-block">
+                                                                {
+                                                                    lead.prospecto.tipo_proyecto ?
+                                                                        lead.prospecto.tipo_proyecto.tipo
+                                                                        : ''
+                                                                }
+                                                            </span>
+                                                        </div>
                                                     </div>
-                                                    <div>
-                                                        <a href={`mailto:+${lead.email}`} className="text-dark-75 font-weight-bolder text-hover-primary mb-1 font-size-lg">
-                                                            {lead.nombre}
-                                                        </a>
-                                                        <span className="text-muted font-weight-bold d-block">
-                                                            {
-                                                                lead.prospecto.tipo_proyecto?
-                                                                    lead.prospecto.tipo_proyecto.tipo
-                                                                :''
-                                                            }
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="font-size-lg text-left font-weight-bolder">
-                                                <span>Ingreso: </span><span className="text-muted font-weight-bold font-size-sm">{setDateTableLG(lead.created_at)}</span><br />
-                                                <span>Último contacto: </span><span className="text-muted font-weight-bold font-size-sm">
-                                                    {setDateTableLG(lead.prospecto.contactos[0].created_at)}
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <span className="text-dark-75 font-weight-bolder d-block font-size-lg">{lead.empresa.name}</span>
-                                            </td>
-                                            <td>
-                                                {
-                                                    lead.origen ?
-                                                        <span className="text-dark-75 font-weight-bolder d-block font-size-lg">
-                                                            {lead.origen.origen}
-                                                        </span>
-                                                        : ''
-                                                }
-                                            </td>
-                                            <td className="d-flex justify-content-center">
-                                                <div className="symbol-group symbol-hover">
+                                                </td>
+                                                <td className="font-size-lg text-left font-weight-bolder">
+                                                    <span>Ingreso: </span><span className="text-muted font-weight-bold font-size-sm">{setDateTableLG(lead.created_at)}</span><br />
+                                                    <span>Último contacto: </span><span className="text-muted font-weight-bold font-size-sm">
+                                                        {setDateTableLG(lead.prospecto.contactos[0].created_at)}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span className="text-dark-75 font-weight-bolder d-block font-size-lg">{lead.empresa.name}</span>
+                                                </td>
+                                                <td>
                                                     {
-                                                        lead.prospecto.vendedores.map((vendedor, index) => {
-                                                            return (
-                                                                <OverlayTrigger key={index} overlay={<Tooltip>{vendedor.name}</Tooltip>}>
-                                                                    <div className="symbol symbol-35 symbol-circle">
-                                                                        <img alt="Pic" src={vendedor.avatar ? vendedor.avatar : "/default.jpg"} />
-                                                                    </div>
-                                                                </OverlayTrigger>
-                                                            )
-                                                        })
+                                                        lead.origen ?
+                                                            <span className="text-dark-75 font-weight-bolder d-block font-size-lg">
+                                                                {lead.origen.origen}
+                                                            </span>
+                                                            : ''
                                                     }
-                                                </div>
-                                            </td>
-                                            <td className="text-center">
-                                                {
-                                                    lead.estatus ?
-                                                        /* lead.prospecto.estatus_prospecto ? */
+                                                </td>
+                                                <td className="d-flex justify-content-center">
+                                                    <div className="symbol-group symbol-hover">
+                                                        {
+                                                            lead.prospecto.vendedores.map((vendedor, index) => {
+                                                                return (
+                                                                    <OverlayTrigger key={index} overlay={<Tooltip>{vendedor.name}</Tooltip>}>
+                                                                        <div className="symbol symbol-35 symbol-circle">
+                                                                            <img alt="Pic" src={vendedor.avatar ? vendedor.avatar : "/default.jpg"} />
+                                                                        </div>
+                                                                    </OverlayTrigger>
+                                                                )
+                                                            })
+                                                        }
+                                                    </div>
+                                                </td>
+                                                <td className="text-center">
+                                                    {
+                                                        lead.estatus ?
+                                                            /* lead.prospecto.estatus_prospecto ? */
                                                             <Dropdown>
                                                                 <Dropdown.Toggle style={{ backgroundColor: lead.estatus.color_fondo, color: lead.estatus.color_texto, border: 'transparent', padding: '2.8px 5.6px', width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '0.863rem', fontWeight: 500 }}
                                                                 >
@@ -116,21 +119,21 @@ class LeadContacto extends Component {
                                                                         <span className="font-size-sm">Elige una opción</span>
                                                                     </Dropdown.Header>
                                                                     {/* <Dropdown.Divider /> */}
-                                                                    <Dropdown.Item href="#"  className="p-0" onClick={(e) => { e.preventDefault(); changeEstatus('Detenido', lead.id ) }} >
+                                                                    <Dropdown.Item href="#" className="p-0" onClick={(e) => { e.preventDefault(); changeEstatus('Detenido', lead.id) }} >
                                                                         <span className="navi-link w-100">
                                                                             <span className="navi-text">
                                                                                 <span className="label label-xl label-inline bg-light-gray text-gray rounded-0 w-100">DETENIDO</span>
                                                                             </span>
                                                                         </span>
                                                                     </Dropdown.Item>
-                                                                    <Dropdown.Item href="#"  className="p-0" onClick={(e) => { e.preventDefault(); openModalWithInput('Cancelado', lead.id ) }} >
+                                                                    <Dropdown.Item href="#" className="p-0" onClick={(e) => { e.preventDefault(); openModalWithInput('Cancelado', lead.id) }} >
                                                                         <span className="navi-link w-100">
                                                                             <span className="navi-text">
                                                                                 <span className="label label-xl label-inline label-light-danger rounded-0 w-100">CANCELADO</span>
                                                                             </span>
                                                                         </span>
                                                                     </Dropdown.Item>
-                                                                    <Dropdown.Item href="#"  className="p-0" onClick={(e) => { e.preventDefault(); openModalWithInput('Rechazado', lead.id ) }} >
+                                                                    <Dropdown.Item href="#" className="p-0" onClick={(e) => { e.preventDefault(); openModalWithInput('Rechazado', lead.id) }} >
                                                                         <span className="navi-link w-100">
                                                                             <span className="navi-text">
                                                                                 <span className="label label-xl label-inline label-light-danger rounded-0 w-100">RECHAZADO</span>
@@ -140,19 +143,19 @@ class LeadContacto extends Component {
                                                                 </Dropdown.Menu>
                                                             </Dropdown>
                                                             /* : '' */
-                                                        : ''
-                                                }
-                                            </td>
-                                            <td className="pr-0 text-center">
-                                                <OverlayTrigger overlay={<Tooltip>Ver más</Tooltip>}>
-                                                    <a  onClick={(e)=> {changePageDetails(lead)}} className="btn btn-default btn-icon btn-sm mr-2">
-                                                        <i className="flaticon2-plus icon-nm"></i>
-                                                    </a>
-                                                </OverlayTrigger>
-                                            </td>
-                                        </tr>
-                                    )
-                                })
+                                                            : ''
+                                                    }
+                                                </td>
+                                                <td className="pr-0 text-center">
+                                                    <OverlayTrigger overlay={<Tooltip>Ver más</Tooltip>}>
+                                                        <a onClick={(e) => { changePageDetails(lead) }} className="btn btn-default btn-icon btn-sm mr-2">
+                                                            <i className="flaticon2-plus icon-nm"></i>
+                                                        </a>
+                                                    </OverlayTrigger>
+                                                </td>
+                                            </tr>
+                                        )
+                                    })
                             }
                         </tbody>
                     </table>

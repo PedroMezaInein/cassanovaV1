@@ -43,63 +43,66 @@ class LeadNoContratado extends Component {
                         <tbody>
                             {
                                 leads.total === 0 ?
-                                <td colSpan="6" className="text-center text-dark-75 font-weight-bolder font-size-lg pt-3">NO SE ENCONTRARON RESULTADOS</td> :
-                                leads.data.map((lead, index) => {
-                                    return (
-                                        <tr key={index}>
-                                            <td className="pl-0 py-8">
-                                                <div className="d-flex align-items-center">
-                                                    <div className="symbol symbol-45 symbol-light-danger mr-3">
-                                                        <span className="symbol-label font-size-h5">
-                                                            {lead.nombre.charAt(0)}
-                                                        </span>
+                                    <tr>
+                                        <td colSpan="6" className="text-center text-dark-75 font-weight-bolder font-size-lg pt-3">NO SE ENCONTRARON RESULTADOS</td>
+                                    </tr>
+                                    :
+                                    leads.data.map((lead, index) => {
+                                        return (
+                                            <tr key={index}>
+                                                <td className="pl-0 py-8">
+                                                    <div className="d-flex align-items-center">
+                                                        <div className="symbol symbol-45 symbol-light-danger mr-3">
+                                                            <span className="symbol-label font-size-h5">
+                                                                {lead.nombre.charAt(0)}
+                                                            </span>
+                                                        </div>
+                                                        <div>
+                                                            <a href={`mailto:+${lead.email}`} className="text-dark-75 font-weight-bolder text-hover-danger mb-1 font-size-lg">
+                                                                {lead.nombre}
+                                                            </a>
+                                                            {
+                                                                lead.prospecto ?
+                                                                    lead.prospecto.tipo_proyecto ?
+                                                                        <span className="text-muted font-weight-bold d-block">{lead.prospecto.tipo_proyecto.tipo}</span>
+                                                                        : ''
+                                                                    : ''
+                                                            }
+                                                        </div>
                                                     </div>
-                                                    <div>
-                                                        <a href={`mailto:+${lead.email}`} className="text-dark-75 font-weight-bolder text-hover-danger mb-1 font-size-lg">
-                                                            {lead.nombre}
-                                                        </a>
+                                                </td>
+                                                <td className="font-size-lg text-left font-weight-bolder">
+                                                    <span>Ingreso: </span><span className="text-muted font-weight-bold font-size-sm">{setDateTableLG(lead.created_at)}</span><br />
+                                                    <span>Último contacto: </span><span className="text-muted font-weight-bold font-size-sm">
                                                         {
                                                             lead.prospecto ?
-                                                                lead.prospecto.tipo_proyecto ?
-                                                                    <span className="text-muted font-weight-bold d-block">{lead.prospecto.tipo_proyecto.tipo}</span>    
+                                                                lead.prospecto.contactos ?
+                                                                    lead.prospecto.contactos.length > 0 ?
+                                                                        setDateTableLG(lead.prospecto.contactos[0].created_at)
+                                                                        : ''
+                                                                    : ''
                                                                 : ''
-                                                            : ''
                                                         }
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="font-size-lg text-left font-weight-bolder">
-                                                <span>Ingreso: </span><span className="text-muted font-weight-bold font-size-sm">{setDateTableLG(lead.created_at)}</span><br />
-                                                <span>Último contacto: </span><span className="text-muted font-weight-bold font-size-sm">
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span className="text-dark-75 font-weight-bolder d-block font-size-lg">{lead.empresa.name}</span>
+                                                </td>
+                                                <td>
                                                     {
-                                                        lead.prospecto ?
-                                                            lead.prospecto.contactos ?
-                                                                lead.prospecto.contactos.length > 0 ?
-                                                                    setDateTableLG(lead.prospecto.contactos[0].created_at)
-                                                                : ''
+                                                        lead.origen ?
+                                                            <span className="text-dark-75 font-weight-bolder d-block font-size-lg">
+                                                                {lead.origen.origen}
+                                                            </span>
                                                             : ''
-                                                        : ''
                                                     }
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <span className="text-dark-75 font-weight-bolder d-block font-size-lg">{lead.empresa.name}</span>
-                                            </td>
-                                            <td>
-                                                {
-                                                    lead.origen ?
-                                                        <span className="text-dark-75 font-weight-bolder d-block font-size-lg">
-                                                            {lead.origen.origen}
-                                                        </span>
-                                                        : ''
-                                                }
-                                            </td>
-                                            <td>
-                                                <span className="text-muted font-weight-bold font-size-sm">
-                                                    {lead.motivo}
-                                                </span>
-                                            </td>
-                                            {/* <td className="d-flex justify-content-center">
+                                                </td>
+                                                <td>
+                                                    <span className="text-muted font-weight-bold font-size-sm">
+                                                        {lead.motivo}
+                                                    </span>
+                                                </td>
+                                                {/* <td className="d-flex justify-content-center">
                                                 <div className="symbol-group symbol-hover">
                                                     {
                                                         lead.prospecto.vendedores.map((vendedor, index) => {
@@ -114,25 +117,25 @@ class LeadNoContratado extends Component {
                                                     }
                                                 </div>
                                             </td> */}
-                                            <td className="text-center">
-                                                {
-                                                    lead.estatus ?
-                                                        // lead.prospecto.estatus_prospecto ?
+                                                <td className="text-center">
+                                                    {
+                                                        lead.estatus ?
+                                                            // lead.prospecto.estatus_prospecto ?
                                                             <span className="label label-md label-light-danger label-inline font-weight-bold">{lead.estatus.estatus.toUpperCase()}</span>
                                                             : ''
                                                         /* : '' */
-                                                }
-                                            </td>
-                                            <td className="pr-0 text-center">
-                                                <OverlayTrigger overlay={<Tooltip>Ver más</Tooltip>}>
-                                                    <a href='/leads/crm/info/info' className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-danger">
-                                                        <i className="flaticon2-plus icon-nm"></i>
-                                                    </a>
-                                                </OverlayTrigger>
-                                            </td>
-                                        </tr>
-                                    )
-                                })
+                                                    }
+                                                </td>
+                                                <td className="pr-0 text-center">
+                                                    <OverlayTrigger overlay={<Tooltip>Ver más</Tooltip>}>
+                                                        <a href='/leads/crm/info/info' className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-danger">
+                                                            <i className="flaticon2-plus icon-nm"></i>
+                                                        </a>
+                                                    </OverlayTrigger>
+                                                </td>
+                                            </tr>
+                                        )
+                                    })
                             }
                         </tbody>
                     </table>
