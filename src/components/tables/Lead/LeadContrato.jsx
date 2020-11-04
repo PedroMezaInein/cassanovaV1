@@ -21,7 +21,7 @@ class LeadContrato extends Component {
         return false;
     }
     render() {
-        const { leads, onClickPrev, onClickNext} = this.props
+        const { leads, onClickPrev, onClickNext } = this.props
         return (
             <div className="tab-content">
                 <div className="table-responsive-lg">
@@ -42,73 +42,76 @@ class LeadContrato extends Component {
                         <tbody>
                             {
                                 leads.total === 0 ?
-                                <td colSpan="6" className="text-center text-dark-75 font-weight-bolder font-size-lg pt-3">NO SE ENCONTRARON RESULTADOS</td> :
-                                leads.data.map((lead, index) => {
-                                    return (
-                                        <tr key={index}>
-                                            <td className="pl-0 py-8">
-                                                <div className="d-flex align-items-center">
-                                                    <div className="symbol symbol-45 symbol-light-success mr-3">
-                                                        <span className="symbol-label font-size-h5">{lead.nombre.charAt(0)}</span>
+                                    <tr>
+                                        <td colSpan="6" className="text-center text-dark-75 font-weight-bolder font-size-lg pt-3">NO SE ENCONTRARON RESULTADOS</td>
+                                    </tr>
+                                    :
+                                    leads.data.map((lead, index) => {
+                                        return (
+                                            <tr key={index}>
+                                                <td className="pl-0 py-8">
+                                                    <div className="d-flex align-items-center">
+                                                        <div className="symbol symbol-45 symbol-light-success mr-3">
+                                                            <span className="symbol-label font-size-h5">{lead.nombre.charAt(0)}</span>
+                                                        </div>
+                                                        <div>
+                                                            <a href={`mailto:+${lead.email}`} className="text-dark-75 font-weight-bolder text-hover-success mb-1 font-size-lg">{lead.nombre}</a>
+                                                            <span className="text-muted font-weight-bold d-block">
+                                                                {
+                                                                    lead.prospecto.tipo_proyecto ?
+                                                                        lead.prospecto.tipo_proyecto.tipo
+                                                                        : ''
+                                                                }
+                                                            </span>
+                                                        </div>
                                                     </div>
-                                                    <div>
-                                                        <a href={`mailto:+${lead.email}`} className="text-dark-75 font-weight-bolder text-hover-success mb-1 font-size-lg">{lead.nombre}</a>
-                                                        <span className="text-muted font-weight-bold d-block">
-                                                            {
-                                                                lead.prospecto.tipo_proyecto?
-                                                                    lead.prospecto.tipo_proyecto.tipo
-                                                                :''
-                                                            }
-                                                        </span>
-                                                    </div>
-                                                </div>
-                                            </td>
-                                            <td className="font-size-lg text-left font-weight-bolder">
-                                                <span>Ingreso: </span><span className="text-muted font-weight-bold font-size-sm">{setDateTableLG(lead.created_at)}</span><br />
-                                                <span>Último contacto: </span><span className="text-muted font-weight-bold font-size-sm">
-                                                    {setDateTableLG(lead.prospecto.contactos[0].created_at)}
-                                                </span>
-                                            </td>
-                                            <td>
-                                                <span className="text-dark-75 font-weight-bolder d-block font-size-lg">{lead.empresa.name}</span>
-                                            </td>
-                                            <td>
-                                                {
-                                                    lead.origen ?
-                                                        <span className="text-dark-75 font-weight-bolder d-block font-size-lg">
-                                                            {lead.origen.origen}
-                                                        </span>
-                                                        : ''
-                                                }
-                                            </td>
-                                            <td className="d-flex justify-content-center">
-                                                <div className="symbol-group symbol-hover">
+                                                </td>
+                                                <td className="font-size-lg text-left font-weight-bolder">
+                                                    <span>Ingreso: </span><span className="text-muted font-weight-bold font-size-sm">{setDateTableLG(lead.created_at)}</span><br />
+                                                    <span>Último contacto: </span><span className="text-muted font-weight-bold font-size-sm">
+                                                        {setDateTableLG(lead.prospecto.contactos[0].created_at)}
+                                                    </span>
+                                                </td>
+                                                <td>
+                                                    <span className="text-dark-75 font-weight-bolder d-block font-size-lg">{lead.empresa.name}</span>
+                                                </td>
+                                                <td>
                                                     {
-                                                        lead.prospecto.vendedores.map((vendedor, index) => {
-                                                            return (
-                                                                <OverlayTrigger key={index} overlay={<Tooltip>{vendedor.name}</Tooltip>}>
-                                                                    <div className="symbol symbol-35 symbol-circle">
-                                                                        <img alt="Pic" src={vendedor.avatar ? vendedor.avatar : "/default.jpg"} />
-                                                                    </div>
-                                                                </OverlayTrigger>
-                                                            )
-                                                        })
+                                                        lead.origen ?
+                                                            <span className="text-dark-75 font-weight-bolder d-block font-size-lg">
+                                                                {lead.origen.origen}
+                                                            </span>
+                                                            : ''
                                                     }
-                                                </div>
-                                            </td>
-                                            <td className="text-center">
-                                                <span className="label label-md label-light-success label-inline font-weight-bold">CONTRATADO</span>
-                                            </td>
-                                            <td className="pr-0 text-center">
-                                                <OverlayTrigger overlay={<Tooltip>Ver más</Tooltip>}>
-                                                    <a href='/leads/crm/info/info' className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-success">
-                                                        <i className="flaticon2-plus icon-nm"></i>
-                                                    </a>
-                                                </OverlayTrigger>
-                                            </td>
-                                        </tr>
-                                    )
-                                })
+                                                </td>
+                                                <td className="d-flex justify-content-center">
+                                                    <div className="symbol-group symbol-hover">
+                                                        {
+                                                            lead.prospecto.vendedores.map((vendedor, index) => {
+                                                                return (
+                                                                    <OverlayTrigger key={index} overlay={<Tooltip>{vendedor.name}</Tooltip>}>
+                                                                        <div className="symbol symbol-35 symbol-circle">
+                                                                            <img alt="Pic" src={vendedor.avatar ? vendedor.avatar : "/default.jpg"} />
+                                                                        </div>
+                                                                    </OverlayTrigger>
+                                                                )
+                                                            })
+                                                        }
+                                                    </div>
+                                                </td>
+                                                <td className="text-center">
+                                                    <span className="label label-md label-light-success label-inline font-weight-bold">CONTRATADO</span>
+                                                </td>
+                                                <td className="pr-0 text-center">
+                                                    <OverlayTrigger overlay={<Tooltip>Ver más</Tooltip>}>
+                                                        <a href='/leads/crm/info/info' className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-success">
+                                                            <i className="flaticon2-plus icon-nm"></i>
+                                                        </a>
+                                                    </OverlayTrigger>
+                                                </td>
+                                            </tr>
+                                        )
+                                    })
                             }
                         </tbody>
                     </table>
