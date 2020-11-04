@@ -28,6 +28,7 @@ import selectSearchGray from './Gray/SelectSearchGray'
 import inputMoneyGray from './Gray/InputMoneyGray'
 import inputNumberGray from './Gray/InputNumberGray'
 import radioGroupGray from './Gray/RadioGroupGray'
+import optionsCheckboxHeaders from './OptionsCheckboxHeaders'
 
 export const Button = button
 export const Input = input
@@ -59,3 +60,4 @@ export const SelectSearchGray = selectSearchGray
 export const InputMoneyGray = inputMoneyGray
 export const InputNumberGray = inputNumberGray
 export const RadioGroupGray = radioGroupGray
+export const OptionsCheckboxHeaders = optionsCheckboxHeaders
