@@ -42,7 +42,6 @@ class LeadLlamadaSalida extends Component {
             if (state.lead) {
                 const { form, options } = this.state
                 const { lead } = state
-                console.log(lead,'lead')
                 form.name = lead.nombre==='SIN ESPECIFICAR'?'':lead.nombre.toUpperCase()
                 form.email = lead.email.toUpperCase()
                 form.empresa_dirigida = lead.empresa.id.toString()
@@ -91,14 +90,12 @@ class LeadLlamadaSalida extends Component {
     }
 
     updateTipoProyecto = value => {
-        // console.log(empresa.tipos,'empresa')
-        // const { empresa: { tipos } } = this.state
         const { options } = this.state
         this.onChange({ target: { value: value, name: 'tipoProyecto' } })
         let tipoProyecto = ''
         options.tipos.map((tipo) => {
             if (value.toString() === tipo.value.toString()) {
-                tipoProyecto = tipo.tipo
+                tipoProyecto = tipo.name
             }
             return false
         })
@@ -187,8 +184,6 @@ class LeadLlamadaSalida extends Component {
                 const { options } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['origenes'] = setOptions(origenes, 'origen', 'id')
-                
-                // console.log(options.empresas)
                 this.setState({
                     ...this.state,
                     options
@@ -248,9 +243,9 @@ class LeadLlamadaSalida extends Component {
                             messages.length === 0 ?
                                 lead !== undefined ?
                                     lead.empresa.name === 'INFRAESTRUCTURA MÉDICA' ?
-                        <><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Buen día mi nombre es {usuario}, asesora comercial en <span className="font-weight-boldest">IM {lead.empresa.name}</span>. {lead.nombre==='SIN ESPECIFICAR'? '¿Con quién tengo el gusto':'¿Tengo el gusto con'}<span className="font-weight-boldest"><em>{lead.nombre==='SIN ESPECIFICAR'?'':lead.nombre}</em></span>?</div><div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Mucho gusto <span className="font-weight-boldest"><em>{lead.nombre.split(" ", 1)}</em></span>, recibimos exitosamente su información a través de nuestro sitio web. Me pongo en contacto con usted a relación del servicio que seleccionó de <span className="font-weight-boldest"><em>{this.servicio(lead.servicios)}</em></span> {this.servicio(lead.servicios)==='Diseño de proyectos para el sector salud'?'.':'para el sector salud.'}</div><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">Excelente, puede indicarme <span className="font-weight-boldest"><em>¿Qué tipo de proyecto es?</em></span></div></>
+                        <><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Buen día mi nombre es {usuario}, asesora comercial en <span className="font-weight-boldest">IM {lead.empresa.name}</span>. {lead.nombre==='SIN ESPECIFICAR'? '¿Con quién tengo el gusto ':'¿Tengo el gusto con '}<span className="font-weight-boldest"><em>{lead.nombre==='SIN ESPECIFICAR'?'':lead.nombre}</em></span>?</div><div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Mucho gusto <span className="font-weight-boldest"><em>{lead.nombre.split(" ", 1)}</em></span>, recibimos exitosamente su información a través de nuestro sitio web. Me pongo en contacto con usted a relación del servicio que seleccionó de <span className="font-weight-boldest"><em>{this.servicio(lead.servicios)}</em></span> {this.servicio(lead.servicios)==='Diseño de proyectos para el sector salud'?'.':'para el sector salud.'}</div><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">Excelente, puede indicarme <span className="font-weight-boldest"><em>¿Qué tipo de proyecto es?</em></span></div></>
                                         : lead.empresa.name === 'INEIN' ?
-                                            <><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Buen día mi nombre es {usuario}, asesora comercial en <span className="font-weight-boldest">Infraestructura e Interiores</span>. {lead.nombre==='SIN ESPECIFICAR'? '¿Con quién tengo el gusto':'¿Tengo el gusto con'}<span className="font-weight-boldest"><em>{lead.nombre==='SIN ESPECIFICAR'?'':lead.nombre}</em></span>?</div><div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Mucho gusto <span className="font-weight-boldest"><em>{lead.nombre.split(" ", 1)}</em></span>, recibimos exitosamente su información a través de nuestro sitio web. Me pongo en contacto a relación del servicio que seleccionaste de <span className="font-weight-boldest"><em>{this.servicio(lead.servicios)}</em></span>.</div><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">¡EXCELENTE! TE AGRADEZCO QUE NOS TOMES EN CUENTA PARA TU PROYECTO, PUEDES INDICARME <span className="font-weight-boldest"><em>¿Qué tipo de proyecto es?</em></span></div></>
+                                            <><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Buen día mi nombre es {usuario}, asesora comercial en <span className="font-weight-boldest">Infraestructura e Interiores</span>. {lead.nombre==='SIN ESPECIFICAR'? '¿Con quién tengo el gusto ':'¿Tengo el gusto con '}<span className="font-weight-boldest"><em>{lead.nombre==='SIN ESPECIFICAR'?'':lead.nombre}</em></span>?</div><div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Mucho gusto <span className="font-weight-boldest"><em>{lead.nombre.split(" ", 1)}</em></span>, recibimos exitosamente su información a través de nuestro sitio web. Me pongo en contacto a relación del servicio que seleccionaste de <span className="font-weight-boldest"><em>{this.servicio(lead.servicios)}</em></span>.</div><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">¡EXCELENTE! TE AGRADEZCO QUE NOS TOMES EN CUENTA PARA TU PROYECTO, PUEDES INDICARME <span className="font-weight-boldest"><em>¿Qué tipo de proyecto es?</em></span></div></>
                                             : ''
                                     : ''
                                 : messages

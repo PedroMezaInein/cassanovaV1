@@ -10,7 +10,7 @@ class AgendarCitaForm extends Component {
         const { onChange, formAgenda } = this.props
         let aux = false
         let array = []
-        if (/^(?:[^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*|"[^\n"]+")@(?:[^<>()[\].,;:\s@"]+\.)+[^<>()[\]\.,;:\s@"]{2,63}$/i.test(formAgenda.correo)) {
+        if (/^(?:[^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*|"[^\n"]+")@(?:[^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,63}$/i.test(formAgenda.correo)) {
             if (formAgenda.correo) {
                 formAgenda.correos.map((correo) => {
                     if (correo === formAgenda.correo) {
