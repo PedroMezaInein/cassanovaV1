@@ -31,7 +31,6 @@ class PresupuestoDiseñoCRMForm extends Component {
         onChangeCheckboxes(aux, 'partidas')
     }
     
-
     handleChangeCheckboxPlanos = e => {
         const { name, checked } = e.target
         const { formDiseño, onChangeCheckboxes } = this.props
@@ -447,13 +446,18 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                     validateAlert(onSubmit, e, 'wizard-3-content')
                                                 }
                                             }
-                                        />
+                                            text="ENVIAR" />
                                         <Button 
                                             icon=''
                                             className="btn btn-light-success btn-sm mr-2"
                                             only_icon="far fa-file-pdf pr-0"
                                             tooltip={{ text: 'GENERAR PDF' }}
-                                            onClick={submitPDF}
+                                            onClick={
+                                                (e) => {
+                                                    e.preventDefault();
+                                                    validateAlert(submitPDF, e, 'wizard-3-content')
+                                                }
+                                            }                                            
                                         />
                                     </div>
                                 </div>
