@@ -1130,16 +1130,16 @@ class MiProyecto extends Component {
                                         <>
                                             <Button
                                                 onClick={() => { this.changeEstatus('En proceso') }} 
-                                                className={"btn btn-icon btn-light-success success2 btn-sm mr-2"}
+                                                className={"btn btn-icon btn-light-success btn-sm mr-2"}
                                                 only_icon={"flaticon2-check-mark icon-sm"}
-                                                tooltip={{text:'Aceptar'}}
+                                                tooltip={{text:'ACEPTAR'}}
                                                 icon=''
                                             />
                                             <Button 
                                                 onClick={() => { this.changeEstatus('En espera') }} 
                                                 className="btn btn-icon  btn-light-danger btn-sm pulse pulse-danger"
                                                 only_icon={"flaticon2-cross icon-sm"}
-                                                tooltip={{text:'Rechazar'}}
+                                                tooltip={{text:'RECHAZAR'}}
                                                 icon=''
                                             />  
                                         </>

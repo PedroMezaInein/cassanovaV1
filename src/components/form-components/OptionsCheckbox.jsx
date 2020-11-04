@@ -15,7 +15,7 @@ class Input extends Component{
                             
                             options.map((option, key) => {
                                 return(  
-                                        <label key = {key} className="checkbox checkbox-outline checkbox-outline-2x checkbox-primary">
+                                        <label key = {key} className="checkbox checkbox-outline checkbox-outline-2x checkbox-primary font-weight-light">
                                             <input 
                                             type="checkbox" 
                                             onChange={ (e) => { onChange(e)} } 

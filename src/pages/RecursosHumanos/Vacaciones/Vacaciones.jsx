@@ -450,7 +450,7 @@ class Vacaciones extends Component {
                                                                     <span className="font-size-lg">{setDateTableLG(vacacion.fecha_fin)}</span>
                                                                 </td>
                                                                 <td className="pr-0">
-                                                                    <span className="btn btn-icon btn-light-success success2 btn-sm mr-2 ml-auto" onClick = { (e) =>  { 
+                                                                    <span className="btn btn-icon btn-light-success btn-sm mr-2 ml-auto" onClick = { (e) =>  { 
                                                                         e.preventDefault(); 
                                                                         createAlert('¿Estás seguro que deseas aceptar las vacaciones?', '', 
                                                                         () => this.editVacacionesAxios(vacacion, 'Aceptadas'))
