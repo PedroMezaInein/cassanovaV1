@@ -774,6 +774,9 @@ class Crm extends Component {
             case 'detenidos':
                 this.getLeadsDetenidos();
                 break;
+            case 'negociacion':
+                this.getLeadsEnNegociacion();
+                break;
             default: break;
         }
         this.setState({
@@ -809,6 +812,9 @@ class Crm extends Component {
                 break;
             case 'detenidos':
                 this.getLeadsDetenidos();
+                break;
+            case 'negociacion':
+                this.getLeadsEnNegociacion();
                 break;
             default: break;
         }
@@ -909,7 +915,7 @@ class Crm extends Component {
     }
 
     render() {
-        const { ultimos_contactados, prospectos_sin_contactar, ultimos_ingresados, lead_web, activeTable, leads_en_contacto,
+        const { ultimos_contactados, prospectos_sin_contactar, ultimos_ingresados, lead_web, activeTable, leads_en_contacto, leads_en_negociacion,
             leads_contratados, leads_cancelados, leads_detenidos, modal, form, lead, lead_rh_proveedores, options} = this.state
         return (
             <Layout active='leads' {...this.props} >
@@ -1111,8 +1117,11 @@ class Crm extends Component {
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="negociacion">
                                         <LeadNegociacion
-                                            changeEstatus={this.changeEstatus}
-                                            openModalWithInput={this.openModalWithInput}
+                                            leads = { leads_en_negociacion }
+                                            onClickNext = { this.nextPageLeadEnNegociacion }
+                                            onClickPrev = { this.prevPageLeadEnNegociacion }
+                                            changeEstatus = { this.changeEstatus }
+                                            openModalWithInput = { this.openModalWithInput }
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="contratados">
