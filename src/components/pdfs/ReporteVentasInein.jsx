@@ -141,7 +141,8 @@ const styles = StyleSheet.create({
         fontWeight: 100,
         fontSize: 12,
         paddingTop:1,
-        paddingBottom: 1
+        paddingBottom: 1,
+        textAlign: "left"
     },
     imagenCentrada:{
         width: '70%',
@@ -240,6 +241,10 @@ export default class ReporteVentasInein extends Component {
             return styles.tableRowBodyPar
         else
             return styles.tableRowBodyNon
+    }
+
+    clearElement = element => {
+        return element.replace(/&nbsp;/gi,'')
     }
 
     render() {
@@ -600,7 +605,7 @@ export default class ReporteVentasInein extends Component {
                                             <View style = { styles.cellLista }>
                                                 <Text>
                                                     {
-                                                        element
+                                                        this.clearElement(element)
                                                     }
                                                 </Text>
                                             </View>
