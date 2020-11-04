@@ -94,7 +94,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                         </div>
                                         <div className="col-md-12 text-center px-0">
                                             <CalendarDay
-                                                date={formDiseño.fecha}
+                                                value={formDiseño.fecha}
                                                 onChange={onChange}
                                                 name='fecha'
                                             />
@@ -438,7 +438,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                         <Button 
                                             icon=''
                                             className="btn btn-light-primary btn-sm mr-2"
-                                            only_icon="far fa-save pr-0"
+                                            only_icon="far fa-save pr-2"
                                             tooltip={{ text: 'GUARDAR' }}
                                             onClick={
                                                 (e) => {
