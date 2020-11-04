@@ -67,6 +67,13 @@ class Crm extends Component {
             total_paginas: 0,
             value: "en_contacto"
         },
+        leads_en_negociacion:{
+            data: [],
+            numPage: 0,
+            total: 0,
+            total_paginas: 0,
+            value: "en_negociacion"
+        },
         leads_contratados: {
             data: [],
             numPage: 0,
@@ -254,6 +261,28 @@ class Crm extends Component {
                 leads_en_contacto
             })
             this.getLeadsEnContacto()
+        }
+    }
+    nextPageLeadEnNegociacion = (e) => {
+        e.preventDefault()
+        const { leads_en_negociacion } = this.state
+        if (leads_en_negociacion.numPage < leads_en_negociacion.total_paginas - 1) {
+            leads_en_negociacion.numPage++
+            this.setState({
+                leads_en_negociacion
+            })
+        }
+        this.getLeadsEnNegociacion()
+    }
+    prevPageLeadEnNegociacion = (e) => {
+        e.preventDefault()
+        const { leads_en_negociacion } = this.state
+        if (leads_en_negociacion.numPage > 0) {
+            leads_en_negociacion.numPage--
+            this.setState({
+                leads_en_negociacion
+            })
+            this.getLeadsEnNegociacion()
         }
     }
     nextPageLeadCancelados = (e) => {
@@ -494,6 +523,39 @@ class Crm extends Component {
             console.log(error, 'error')
         })
     }
+
+    async getLeadsEnNegociacion(){
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { leads_en_negociacion, form } = this.state
+        await axios.put(URL_DEV + 'crm/table/lead-en-negociacion/' + leads_en_negociacion.numPage, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                swal.close()
+                const { leads, total } = response.data
+                const { leads_en_negociacion } = this.state
+                leads_en_negociacion.data = leads
+                leads_en_negociacion.total = total
+                let total_paginas = Math.ceil(total / 10)
+                leads_en_negociacion.total_paginas = total_paginas
+                this.setState({
+                    ...this.state,
+                    leads_en_negociacion
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     async getLeadsEnContacto() {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -525,6 +587,7 @@ class Crm extends Component {
             console.log(error, 'error')
         })
     }
+
     async getLeadsCancelados() {
         waitAlert()
         const { access_token } = this.props.authUser
