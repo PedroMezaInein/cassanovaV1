@@ -857,12 +857,16 @@ class LeadInfo extends Component {
     }
 
     sendCorreoPresupuesto = async() => {
+        waitAlert()
         const { access_token } = this.props.authUser
         const { lead } = this.state
-        await axios.put(URL_DEV + 'crm/email/enviar-presupuesto/' + lead.id, {identificador: 101}, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.put(URL_DEV + 'crm/email/envio-cotizacion/' + lead.id, {identificador: 101}, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                doneAlert('Correo enviado con éxito');
-                this.getLeadEnContacto(lead.id)
+                const { history } = this.props
+                doneAlert('Correo enviado con éxito')
+                history.push({
+                    pathname: '/leads/crm'
+                });
             },
             (error) => {
                 console.log(error, 'error')
@@ -935,8 +939,16 @@ class LeadInfo extends Component {
         await axios.post(URL_DEV + 'crm/add/presupuesto-diseño/' + lead.id, formDiseño, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 if(formDiseño.pdf){
-                    swal.close()
-                    questionAlert2('¡NO PODRÁS REVERTIR ESTO!', '', () => this.sendCorreoPresupuesto(), this.getTextAlert('https://inein.mx'))
+                    const { presupuesto } = response.data
+                    if(presupuesto)
+                        if(presupuesto.pdfs)
+                            if(presupuesto.pdfs[0])
+                                if(presupuesto.pdfs[0].pivot){
+                                    swal.close()
+                                    questionAlert2('¡NO PODRÁS REVERTIR ESTO!', '', 
+                                    () => this.sendCorreoPresupuesto(presupuesto.pdfs[0].pivot.identificador), 
+                                    this.getTextAlert(presupuesto.pdfs[0].pivot.url))
+                                }
                 }
                 else
                     doneAlert('Presupuesto generado con éxito')
