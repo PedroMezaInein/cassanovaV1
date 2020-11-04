@@ -500,7 +500,6 @@ class LeadInfo extends Component {
         let acumulado = 0
         let total = 0
 
-
         if (data.empresa)
             precio_inicial = data.empresa.precio_inicial_diseño
         else {
