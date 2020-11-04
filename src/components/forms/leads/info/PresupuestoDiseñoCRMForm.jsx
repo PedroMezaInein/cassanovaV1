@@ -438,7 +438,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                         <Button 
                                             icon=''
                                             className="btn btn-light-primary btn-sm mr-2"
-                                            only_icon="far fa-save pr-2"
+                                            only_icon="far fa-save pr-0"
                                             tooltip={{ text: 'GUARDAR' }}
                                             onClick={
                                                 (e) => {
@@ -446,7 +446,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                     validateAlert(onSubmit, e, 'wizard-3-content')
                                                 }
                                             }
-                                            text="ENVIAR" />
+                                        />
                                         <Button 
                                             icon=''
                                             className="btn btn-light-success btn-sm mr-2"
