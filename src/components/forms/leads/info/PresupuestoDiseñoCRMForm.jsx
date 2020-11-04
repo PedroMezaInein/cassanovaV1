@@ -444,7 +444,14 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                 }
                                             }
                                             text="ENVIAR" />
-                                        <Button icon='' className="btn btn-primary font-weight-bold text-uppercase" onClick={submitPDF} text="ENVIAR Y GENERAR PDF" />
+                                        <Button icon='' className="btn btn-primary font-weight-bold text-uppercase" 
+                                            onClick={
+                                                (e) => {
+                                                    e.preventDefault();
+                                                    validateAlert(submitPDF, e, 'wizard-3-content')
+                                                }
+                                            }
+                                            text="ENVIAR Y GENERAR PDF" />
                                     </div>
                                 </div>
                             </div>

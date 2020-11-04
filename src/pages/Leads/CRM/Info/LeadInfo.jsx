@@ -496,7 +496,6 @@ class LeadInfo extends Component {
         let acumulado = 0
         let total = 0
         
-
         if(data.empresa)
             precio_inicial = data.empresa.precio_inicial_diseño
         else{
@@ -852,10 +851,34 @@ class LeadInfo extends Component {
             console.log(error, 'error')
         })
     }
+
+    sendCorreoPresupuesto = async() => {
+        const { access_token } = this.props.authUser
+        const { lead } = this.state
+        await axios.put(URL_DEV + 'crm/email/enviar-presupuesto/' + lead.id, {identificador: 101}, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert('Correo enviado con éxito');
+                this.getLeadEnContacto(lead.id)
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     submitForm = e => {
         e.preventDefault();
         this.addLeadInfoAxios()
     }
+    
     async addLeadInfoAxios() {
         const { access_token } = this.props.authUser
         const { form, lead } = this.state
@@ -878,13 +901,41 @@ class LeadInfo extends Component {
         })
     }
 
-    onSubmitPresupuestoDiseño = async(e) =>{
-        waitAlert();
+    onSubmitPDF = () => {
+        this.onSubmitPresupuestoDiseñoAxios(true)
+    }
+
+    onSubmitPresupuestoDiseño = () => {
+        this.onSubmitPresupuestoDiseñoAxios(false)
+    }
+
+    getTextAlert = url => {
+        return(
+            <div>
+                <span className="text-dark-50 font-weight-bolder">
+                    ¿Deseas mandar el 
+                    <a href = { url } target = '_blank' className = 'text-hover-success text-dark-75 mx-2'>
+                        presupuesto
+                    </a>
+                    al cliente?
+                </span>  
+            </div>
+        )
+    }
+
+    onSubmitPresupuestoDiseñoAxios = async(pdf) =>{
+        /* waitAlert(); */
         const { access_token } = this.props.authUser
         const { formDiseño, lead } = this.state
+        formDiseño.pdf = pdf
         await axios.post(URL_DEV + 'crm/add/presupuesto-diseño/' + lead.id, formDiseño, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                doneAlert('Presupuesto generado con éxito')
+                if(formDiseño.pdf){
+                    swal.close()
+                    questionAlert2('¡NO PODRÁS REVERTIR ESTO!', '', () => this.sendCorreoPresupuesto(), this.getTextAlert('https://inein.mx'))
+                }
+                else
+                    doneAlert('Presupuesto generado con éxito')
                 this.getLeadEnContacto(lead.id)
             },
             (error) => {
@@ -1245,6 +1296,7 @@ class LeadInfo extends Component {
                                                 checkButtonSemanas={this.checkButtonSemanas}
                                                 onChangeCheckboxes = { this.handleChangeCheckbox }
                                                 onSubmit = { this.onSubmitPresupuestoDiseño }
+                                                submitPDF = { this.onSubmitPDF }
                                             />
                                         </Card.Body>
                                     </Tab.Pane>
