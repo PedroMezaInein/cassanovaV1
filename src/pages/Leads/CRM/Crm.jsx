@@ -954,7 +954,7 @@ class Crm extends Component {
                                 <div className="card-toolbar">
                                     <Nav className="nav-tabs nav-bold nav-tabs-line nav-tabs-line-3x border-0">
                                         <Nav.Item className="nav-item">
-                                            <Nav.Link eventKey="web">PAGINA WEB</Nav.Link>
+                                            <Nav.Link eventKey="web">PÁGINA WEB</Nav.Link>
                                         </Nav.Item>
                                         <Nav.Item className="nav-item">
                                             <Nav.Link eventKey="contacto">EN CONTACTO</Nav.Link>
