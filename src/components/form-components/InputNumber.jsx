@@ -81,7 +81,7 @@ class InputNumber extends Component {
                         thousandSeparator={thousandseparator ? ',' : ''}
                         {...props}
                         format={typeformat}
-
+                        decimalScale={2}
                     />
                 </div>
                 <span className={inputValido ? "form-text text-danger hidden" : "form-text text-danger"}> {messageinc} </span>

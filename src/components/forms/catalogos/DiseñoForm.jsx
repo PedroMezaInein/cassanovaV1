@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
-import { Button, InputNumber, InputMoney, InputNumberSinText, InputMoneySinText } from '../../form-components'
+import { Button, InputNumberSinText, InputMoneySinText } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 import { setMoneyTableForNominas } from '../../../functions/setters'
-import { Line } from 'react-chartjs-2';
 class DiseñoForm extends Component {
     render() {
         const { form, onChange, onSubmit, formeditado, requirevalidation, onChangeVariaciones, addRow, deleteRow, grafica, ...props } = this.props
@@ -135,7 +134,7 @@ class DiseñoForm extends Component {
                         <Button
                             icon=''
                             onClick={addRow}
-                            className={"btn btn-icon btn-xs p-3 btn-light-success success2 mr-2"}
+                            className={"btn btn-icon btn-xs p-3 btn-light-success mr-2"}
                             only_icon={"flaticon2-plus icon-13px"}
                             tooltip={{ text: 'AGREGAR' }}
                         />
@@ -144,7 +143,7 @@ class DiseñoForm extends Component {
                             onClick={deleteRow}
                             className={"btn btn-icon btn-xs p-3 btn-light-danger"}
                             only_icon={"far fa-trash-alt icon-15px"}
-                            tooltip={{ text: 'Eliminar' }}
+                            tooltip={{ text: 'ELIMINAR' }}
                         />
                     </div>
                     <div className="d-flex justify-content-center">

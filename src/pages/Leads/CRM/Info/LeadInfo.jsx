@@ -10,9 +10,13 @@ import { setOptions, setDateTableLG } from '../../../../functions/setters';
 import axios from 'axios'
 import { doneAlert, errorAlert, forbiddenAccessAlert, waitAlert, questionAlert2, questionAlert } from '../../../../functions/alert';
 import swal from 'sweetalert';
-import { HistorialContactoForm, AgendarCitaForm, PresupuestoDiseñoCRMForm } from '../../../../components/forms'
+import { HistorialContactoForm, AgendarCitaForm, PresupuestoDiseñoCRMForm, PresupuestoGenerado } from '../../../../components/forms'
+import { Modal } from '../../../../components/singles'
 class LeadInfo extends Component {
     state = {
+        modal: {
+            presupuesto: false,
+        },
         messages: [],
         form: {
             name: '',
@@ -135,7 +139,7 @@ class LeadInfo extends Component {
         formeditado: 0,
         showForm: false,
         showAgenda: false,
-        data:{
+        data: {
             empresa: null,
             tipoProyecto: null,
             partidas: null
@@ -182,7 +186,7 @@ class LeadInfo extends Component {
             else
                 history.push('/leads/crm')
         }
-        else 
+        else
             history.push('/leads/crm')
         this.getOptionsAxios()
     }
@@ -198,9 +202,9 @@ class LeadInfo extends Component {
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['tiposContactos'] = setOptions(medios, 'tipo', 'id')
                 options.esquemas = setOptions([
-                    {name: 'Esquema 1', value: 'esquema_1'},
-                    {name: 'Esquema 2', value: 'esquema_2'},
-                    {name: 'Esquema 3', value: 'esquema_3'},
+                    { name: 'Esquema 1', value: 'esquema_1' },
+                    { name: 'Esquema 2', value: 'esquema_2' },
+                    { name: 'Esquema 3', value: 'esquema_3' },
                 ], 'name', 'value')
                 this.setState({
                     ...this.state,
@@ -232,8 +236,8 @@ class LeadInfo extends Component {
                 data.empresa = empresa
                 data.tipoProyecto = tipo
                 data.partidas = partidas
-                
-                if(tipo){
+
+                if (tipo) {
                     formDiseño.construccion_interiores_inf = tipo.construccion_interiores_inf
                     formDiseño.construccion_interiores_sup = tipo.construccion_interiores_sup
                     formDiseño.construccion_civil_inf = tipo.construccion_civil_inf
@@ -244,9 +248,9 @@ class LeadInfo extends Component {
 
                 formDiseño.partidas = this.setOptionsCheckboxes(partidas, true)
 
-                if(empresa)
-                    empresa.planos.map( (plano) => {
-                        if(plano[formDiseño.esquema])
+                if (empresa)
+                    empresa.planos.map((plano) => {
+                        if (plano[formDiseño.esquema])
                             planos.push(plano)
                     })
 
@@ -310,8 +314,8 @@ class LeadInfo extends Component {
 
     onChangePresupuesto = e => {
         const { name, value } = e.target
-        const { formDiseño, data} = this.state
-        
+        const { formDiseño, data } = this.state
+
         formDiseño[name] = value
 
         if (name === 'tiempo_ejecucion_diseno') {
@@ -369,25 +373,25 @@ class LeadInfo extends Component {
             }
         }
 
-        if(name === 'm2' || name === 'esquema')
-            if(formDiseño.m2 && formDiseño.esquema){
+        if (name === 'm2' || name === 'esquema')
+            if (formDiseño.m2 && formDiseño.esquema) {
                 formDiseño.subtotal = this.getSubtotal(formDiseño.m2, formDiseño.esquema)
-                
+
             }
-        if(formDiseño.subtotal > 0){
-            formDiseño.total = formDiseño.subtotal * ( 1 - (formDiseño.descuento / 100))
+        if (formDiseño.subtotal > 0) {
+            formDiseño.total = formDiseño.subtotal * (1 - (formDiseño.descuento / 100))
         }
 
-        if(name === 'esquema'){
+        if (name === 'esquema') {
             let planos = []
-            if(data.empresa)
-                data.empresa.planos.map( (plano) => {
-                    if(plano[formDiseño.esquema])
+            if (data.empresa)
+                data.empresa.planos.map((plano) => {
+                    if (plano[formDiseño.esquema])
                         planos.push(plano)
                 })
             formDiseño.planos = this.setOptionsCheckboxes(planos, true)
         }
-        
+
         this.setState({
             ...this.state,
             formDiseño
@@ -482,11 +486,11 @@ class LeadInfo extends Component {
 
     getSubtotal = (m2, esquema) => {
 
-        if(m2 === '')
+        if (m2 === '')
             return 0.0
-        
+
         const { data } = this.state
-        
+
         let precio_inicial = 0
         let incremento = 0
         let aux = false
@@ -495,21 +499,20 @@ class LeadInfo extends Component {
         let m2Aux = parseInt(m2)
         let acumulado = 0
         let total = 0
-        
 
-        if(data.empresa)
+        if (data.empresa)
             precio_inicial = data.empresa.precio_inicial_diseño
-        else{
+        else {
             errorAlert('No fue posible calcular el total')
             return 0.0
         }
-        
-        if(data.empresa.variaciones.length === 0){
+
+        if (data.empresa.variaciones.length === 0) {
             errorAlert('No fue posible calcular el total')
             return 0.0
-        }   
+        }
 
-        switch(esquema){
+        switch (esquema) {
             case 'esquema_2':
                 incremento = data.empresa.incremento_esquema_2 / 100;
                 break
@@ -526,7 +529,7 @@ class LeadInfo extends Component {
         })
 
         limiteInf = parseInt(data.empresa.variaciones[0].inferior)
-        limiteSup = parseInt(data.empresa.variaciones[ data.empresa.variaciones.length - 1 ].superior)
+        limiteSup = parseInt(data.empresa.variaciones[data.empresa.variaciones.length - 1].superior)
 
         if (limiteInf <= m2Aux && limiteSup >= m2Aux) {
             data.empresa.variaciones.map((variacion, index) => {
@@ -550,7 +553,7 @@ class LeadInfo extends Component {
             return total = total * (1 + incremento)
         }
 
-        if(limiteSup < m2Aux){
+        if (limiteSup < m2Aux) {
             errorAlert('Los m2 no están considerados en los límites')
             return 0.0
         }
@@ -624,7 +627,7 @@ class LeadInfo extends Component {
         await axios.post(URL_DEV + 'crm/agendar/evento/' + lead.id, formAgenda, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 formAgenda.fecha = new Date()
-                formAgenda.hora_inicio= '08'
+                formAgenda.hora_inicio = '08'
                 formAgenda.minuto_inicio = '00'
                 formAgenda.hora_final = '08'
                 formAgenda.minuto_final = '15'
@@ -678,50 +681,50 @@ class LeadInfo extends Component {
                 form.telefono = lead.telefono
                 form.proyecto = lead.prospecto.nombre_proyecto
 
-                if(lead.presupuesto_diseño){
+                if (lead.presupuesto_diseño) {
 
                     console.log(lead.presupuesto_diseño, 'PRESUPUESTO DISEÑO')
 
                     let aux = JSON.parse(lead.presupuesto_diseño.actividades)
-                    if(aux){
+                    if (aux) {
                         aux = aux.actividades
                         formDiseño.conceptos = aux
-                    }   
-                                        
+                    }
+
                     aux = JSON.parse(lead.presupuesto_diseño.semanas)
-                    if(aux){
+                    if (aux) {
                         aux = aux.semanas
                         formDiseño.semanas = aux
                     }
 
                     let planos = []
-                    if(data.empresa)
-                        data.empresa.planos.map( (plano) => {
-                            if(plano[lead.presupuesto_diseño.esquema])
+                    if (data.empresa)
+                        data.empresa.planos.map((plano) => {
+                            if (plano[lead.presupuesto_diseño.esquema])
                                 planos.push(plano)
                         })
                     formDiseño.planos = this.setOptionsCheckboxes(planos, true)
-                    
+
                     aux = JSON.parse(lead.presupuesto_diseño.planos)
-                    if(aux){
+                    if (aux) {
                         aux = aux.planos
                         aux.map((element) => {
-                            formDiseño.planos.map((plano)=>{
-                                if(plano.id.toString() === element.toString())
+                            formDiseño.planos.map((plano) => {
+                                if (plano.id.toString() === element.toString())
                                     plano.checked = true
                                 else
                                     plano.checked = false
                             })
                         })
                     }
-                    
+
                     aux = JSON.parse(lead.presupuesto_diseño.planos)
-                    if(aux){
+                    if (aux) {
                         aux = aux.planos
-                        formDiseño.planos.map((plano)=>{
+                        formDiseño.planos.map((plano) => {
                             let bandera = false
                             aux.map((element) => {
-                                if(plano.id.toString() === element.toString())
+                                if (plano.id.toString() === element.toString())
                                     bandera = true
                             })
                             plano.checked = bandera
@@ -729,12 +732,12 @@ class LeadInfo extends Component {
                     }
 
                     aux = JSON.parse(lead.presupuesto_diseño.partidas)
-                    if(aux){
+                    if (aux) {
                         aux = aux.partidas
-                        formDiseño.partidas.map((partida)=>{
+                        formDiseño.partidas.map((partida) => {
                             let bandera = false
                             aux.map((element) => {
-                                if(partida.id.toString() === element.toString())
+                                if (partida.id.toString() === element.toString())
                                     bandera = true
                             })
                             partida.checked = bandera
@@ -808,9 +811,9 @@ class LeadInfo extends Component {
         waitAlert()
         const { access_token } = this.props.authUser
         await axios.put(URL_DEV + 'crm/lead/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {       
+            (response) => {
                 const { history } = this.props
-                history.push('/leads/crm')    
+                history.push('/leads/crm')
                 doneAlert('El estatus fue actualizado con éxito.')
             },
             (error) => {
@@ -831,7 +834,7 @@ class LeadInfo extends Component {
         questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios({ id: id, estatus: estatus }))
     }
 
-    solicitarFechaCita = async() => {
+    solicitarFechaCita = async () => {
         const { access_token } = this.props.authUser
         const { lead } = this.state
         await axios.put(URL_DEV + 'crm/email/lead-potencial/' + lead.id, {}, { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -852,10 +855,34 @@ class LeadInfo extends Component {
             console.log(error, 'error')
         })
     }
+
+    sendCorreoPresupuesto = async() => {
+        const { access_token } = this.props.authUser
+        const { lead } = this.state
+        await axios.put(URL_DEV + 'crm/email/enviar-presupuesto/' + lead.id, {identificador: 101}, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert('Correo enviado con éxito');
+                this.getLeadEnContacto(lead.id)
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     submitForm = e => {
         e.preventDefault();
         this.addLeadInfoAxios()
     }
+    
     async addLeadInfoAxios() {
         const { access_token } = this.props.authUser
         const { form, lead } = this.state
@@ -878,13 +905,41 @@ class LeadInfo extends Component {
         })
     }
 
-    onSubmitPresupuestoDiseño = async(e) =>{
-        waitAlert();
+    onSubmitPDF = () => {
+        this.onSubmitPresupuestoDiseñoAxios(true)
+    }
+
+    onSubmitPresupuestoDiseño = () => {
+        this.onSubmitPresupuestoDiseñoAxios(false)
+    }
+
+    getTextAlert = url => {
+        return(
+            <div>
+                <span className="text-dark-50 font-weight-bolder">
+                    ¿Deseas mandar el 
+                    <a href = { url } target = '_blank' className = 'text-hover-success text-dark-75 mx-2'>
+                        presupuesto
+                    </a>
+                    al cliente?
+                </span>  
+            </div>
+        )
+    }
+
+    onSubmitPresupuestoDiseñoAxios = async(pdf) =>{
+        /* waitAlert(); */
         const { access_token } = this.props.authUser
         const { formDiseño, lead } = this.state
+        formDiseño.pdf = pdf
         await axios.post(URL_DEV + 'crm/add/presupuesto-diseño/' + lead.id, formDiseño, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                doneAlert('Presupuesto generado con éxito')
+                if(formDiseño.pdf){
+                    swal.close()
+                    questionAlert2('¡NO PODRÁS REVERTIR ESTO!', '', () => this.sendCorreoPresupuesto(), this.getTextAlert('https://inein.mx'))
+                }
+                else
+                    doneAlert('Presupuesto generado con éxito')
                 this.getLeadEnContacto(lead.id)
             },
             (error) => {
@@ -900,14 +955,173 @@ class LeadInfo extends Component {
             console.log(error, 'error')
         })
     }
-
+    openModalPresupuesto = () => {
+        const { modal } = this.state
+        modal.presupuesto = true
+        this.setState({
+            ...this.state,
+            modal
+        })
+    }
+    handleCloseModalPresupuesto = () => {
+        const { modal } = this.state
+        modal.presupuesto = false
+        this.setState({
+            ...this.state,
+            modal
+        })
+    }
     render() {
-        const { lead, form, formHistorial, options, formAgenda, formDiseño } = this.state
+        const { lead, form, formHistorial, options, formAgenda, formDiseño, modal } = this.state
         return (
             <Layout active={'leads'}  {...this.props}>
-                <Tab.Container defaultActiveKey="2" className="p-5">
+                <Tab.Container defaultActiveKey="3" className="p-5">
                     <Row>
-                        <Col md={3} className="mb-3">
+                        <Col md={12} className="mb-3">
+                            <Card class="card-custom gutter-b">
+                                <Card.Body className="p-2">
+                                    <div class="d-flex">
+                                        {
+                                            lead ?
+                                                <>
+                                                    <div class="d-flex align-items-center flex-wrap justify-content-between col-md-12">
+                                                        <div class="font-weight-bold text-dark-50 py-1">
+                                                            <div class="d-flex align-items-center">
+                                                                <div className="symbol symbol-75 symbol-xxl-85">
+                                                                    <span className="symbol-label font-weight-bolder">{lead.nombre.split(" ", 1)}</span>
+                                                                </div>
+                                                                <div class="d-flex flex-column font-weight-bold ml-2">
+                                                                    <div>
+                                                                        <div class="d-flex align-items-center text-dark font-size-h5 font-weight-bold mr-3 text-center">{lead.nombre}
+                                                                        <span class="ml-4">
+                                                                            {
+                                                                                lead ?
+                                                                                    lead.prospecto.estatus_prospecto ?
+                                                                                        <Dropdown>
+                                                                                            <Dropdown.Toggle
+                                                                                                style={
+                                                                                                    {
+                                                                                                        backgroundColor: lead.prospecto.estatus_prospecto.color_fondo, color: lead.prospecto.estatus_prospecto.color_texto, border: 'transparent', padding: '0.15rem 0.75rem',
+                                                                                                        width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '0.8rem',
+                                                                                                        fontWeight: 600
+                                                                                                    }}>
+                                                                                                {lead.prospecto.estatus_prospecto.estatus.toUpperCase()}
+                                                                                            </Dropdown.Toggle>
+                                                                                            <Dropdown.Menu className="p-0" >
+                                                                                                <Dropdown.Header>
+                                                                                                    <span className="font-size-sm">Elige una opción</span>
+                                                                                                </Dropdown.Header>
+                                                                                                <Dropdown.Item href="#" className="p-0" onClick={(e) => { e.preventDefault(); this.changeEstatus('Detenido', lead.id) }} >
+                                                                                                    <span className="navi-link w-100">
+                                                                                                        <span className="navi-text">
+                                                                                                            <span className="label label-xl label-inline bg-light-gray text-gray rounded-0 w-100">DETENIDO</span>
+                                                                                                        </span>
+                                                                                                    </span>
+                                                                                                </Dropdown.Item>
+                                                                                                <Dropdown.Item className="p-0" onClick={(e) => { e.preventDefault(); this.openModalWithInput('Rechazado', lead.id) }} >
+                                                                                                    <span className="navi-link w-100">
+                                                                                                        <span className="navi-text">
+                                                                                                            <span className="label label-xl label-inline label-light-danger rounded-0 w-100">Rechazado</span>
+                                                                                                        </span>
+                                                                                                    </span>
+                                                                                                </Dropdown.Item>
+                                                                                            </Dropdown.Menu>
+                                                                                        </Dropdown>
+                                                                                        : ''
+                                                                                    : ''
+                                                                            }
+                                                                        </span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="d-flex flex-wrap my-2">
+                                                                        <a href={`mailto:+${lead.email}`} class="text-muted text-hover-primary font-weight-bold mr-4">
+                                                                            <span class="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
+                                                                                <SVG src={toAbsoluteUrl('/images/svg/Mail-notification.svg')} />
+                                                                            </span>{lead.email}
+                                                                        </a>
+                                                                        <a href={`tel:+${lead.telefono}`} class="text-muted text-hover-primary font-weight-bold mr-4">
+                                                                            <span class="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
+                                                                                <SVG src={toAbsoluteUrl('/images/svg/Active-call.svg')} />
+                                                                            </span>{lead.telefono}
+                                                                        </a>
+                                                                        <div class="text-muted text-hover-primary font-weight-bold mr-4">
+                                                                            <span class="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
+                                                                                <SVG src={toAbsoluteUrl('/images/svg/Building.svg')} />
+                                                                            </span>{lead.empresa.name}
+                                                                        </div>
+                                                                        <div class="text-muted text-hover-primary font-weight-bold">
+                                                                            <span class="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
+                                                                                <SVG src={toAbsoluteUrl('/images/svg/Mail-heart.svg')} />
+                                                                            </span>{lead.origen.origen}
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <div class="d-flex flex-wrap align-items-end py-2">
+                                                            <div class="d-flex align-items-center">
+                                                                <Nav className="navi navi-bold navi-hover navi-active navi-link-rounded d-inline-flex d-flex justify-content-center">
+                                                                    <Nav.Item className="navi-item mr-3">
+                                                                        <Nav.Link className="navi-link px-2" eventKey="1" style={{display:'-webkit-box'}}>
+                                                                            <span className="navi-icon mr-2">
+                                                                                <span className="svg-icon">
+                                                                                    <SVG src={toAbsoluteUrl('/images/svg/User.svg')} />
+                                                                                </span>
+                                                                            </span>
+                                                                            <div className="navi-text">
+                                                                                <span className="d-block font-weight-bold">Información personal</span>
+                                                                            </div>
+                                                                        </Nav.Link>
+                                                                    </Nav.Item>
+                                                                    <Nav.Item className="navi-item mr-3">
+                                                                        <Nav.Link className="navi-link px-2" eventKey="2" style={{display:'-webkit-box'}}>
+                                                                            <span className="navi-icon mr-2">
+                                                                                <span className="svg-icon">
+                                                                                    <SVG src={toAbsoluteUrl('/images/svg/Group-chat.svg')} />
+                                                                                </span>
+                                                                            </span>
+                                                                            <div className="navi-text">
+                                                                                <span className="d-block font-weight-bold">Historial de contacto</span>
+                                                                            </div>
+                                                                        </Nav.Link>
+                                                                    </Nav.Item>
+                                                                    <Nav.Item className="navi-item">
+                                                                        <Nav.Link className="navi-link px-2" eventKey="3" style={{display:'-webkit-box'}}>
+                                                                            <span className="navi-icon mr-2">
+                                                                                <span className="svg-icon">
+                                                                                    <SVG src={toAbsoluteUrl('/images/svg/File.svg')} />
+                                                                                </span>
+                                                                            </span>
+                                                                            <div className="navi-text">
+                                                                                <span className="d-block font-weight-bold">Presupuesto de diseño</span>
+                                                                            </div>
+                                                                        </Nav.Link>
+                                                                    </Nav.Item>
+                                                                </Nav>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    {/* <div class="my-lg-0 my-1">
+                                                                    <Button
+                                                                        icon=''
+                                                                        className="btn btn-light-success btn-sm"
+                                                                        only_icon="fab fa-whatsapp pr-0"
+                                                                        tooltip={{ text: 'CONTACTAR POR WHATSAPP' }}
+                                                                    />
+                                                                </div> */}
+                                                    {/* <div class="d-flex align-items-center flex-wrap justify-content-between">
+                                                            </div> */}
+                                                </>
+                                                : ''
+                                        }
+                                    </div>
+                                    {/* <div class="separator separator-solid my-4"></div> */}
+
+                                </Card.Body>
+                            </Card>
+                        </Col>
+                        {/* <Col md={12} className="mb-3">
                             <Card className="card-custom card-stretch">
                                 <Card.Body >
                                     <div className="d-flex justify-content-end mb-2">
@@ -929,13 +1143,6 @@ class LeadInfo extends Component {
                                                         <div className="text-center col">
                                                             <div className="font-weight-bolder font-size-h6 text-dark-75 mb-2">{lead.nombre} </div>
                                                             <div className="text-muted font-size-sm mb-2">{lead.empresa.name}</div>
-                                                            {/* {
-                                                                lead ?
-                                                                    lead.prospecto.estatus_prospecto ?
-                                                                        <span style={{ color: lead.prospecto.estatus_prospecto.color_texto, backgroundColor: lead.prospecto.estatus_prospecto.color_fondo }} className="font-weight-bolder label label-inline mt-2 font-size-xs">{lead.prospecto.estatus_prospecto.estatus}</span>
-                                                                        : ''
-                                                                    : ''
-                                                            } */}
                                                             {
                                                                 lead ?
                                                                     lead.prospecto.estatus_prospecto ?
@@ -953,7 +1160,7 @@ class LeadInfo extends Component {
                                                                                 <Dropdown.Header>
                                                                                     <span className="font-size-sm">Elige una opción</span>
                                                                                 </Dropdown.Header>
-                                                                                <Dropdown.Item href="#"  className="p-0" onClick={(e) => { e.preventDefault(); this.changeEstatus('Detenido', lead.id ) }} >
+                                                                                <Dropdown.Item href="#" className="p-0" onClick={(e) => { e.preventDefault(); this.changeEstatus('Detenido', lead.id) }} >
                                                                                     <span className="navi-link w-100">
                                                                                         <span className="navi-text">
                                                                                             <span className="label label-xl label-inline bg-light-gray text-gray rounded-0 w-100">DETENIDO</span>
@@ -978,15 +1185,7 @@ class LeadInfo extends Component {
                                                         <div className="d-flex align-items-center justify-content-between mb-2">
                                                             <span className="font-weight-bolder mr-2">Origen:</span>
                                                             <div className="text-muted font-weight-bold text-hover-dark">{lead.origen.origen}</div>
-                                                        </div>
-                                                        {/* <div className="d-flex align-items-center justify-content-between mb-2">
-                                                            <span className="font-weight-bolder mr-2">Teléfono:</span>
-                                                            <a href={`tel:+${lead.telefono}`} className="text-muted font-weight-bold text-hover-dark">{lead.telefono}</a>
-                                                        </div>
-                                                        <div className="d-flex align-items-center justify-content-between mb-2">
-                                                            <span className="font-weight-bolder mr-2">Email:</span>
-                                                                <a href={`mailto:+${lead.email}`} className="text-muted font-weight-bold text-hover-dark">{lead.email}</a>
-                                                        </div> */}
+                                                        </div> 
                                                         <div className="d-flex align-items-center justify-content-between mb-2">
                                                             <span className="font-weight-bolder mr-2">Fecha de ingreso:</span>
                                                             <div className="text-muted font-weight-bold text-hover-dark">{setDateTableLG(lead.created_at)}</div>
@@ -1000,61 +1199,11 @@ class LeadInfo extends Component {
                                             </div>
                                             : ''
                                     }
-                                    <Nav className="navi navi-bold navi-hover navi-active navi-link-rounded">
-                                        <Nav.Item className="navi-item mb-2">
-                                            <Nav.Link className="navi-link px-2" eventKey="1">
-                                                <span className="navi-icon mr-2">
-                                                    <span className="svg-icon">
-                                                        <SVG src={toAbsoluteUrl('/images/svg/User.svg')} />
-                                                    </span>
-                                                </span>
-                                                <div className="navi-text">
-                                                    <span className="d-block font-weight-bold">Información personal</span>
-                                                </div>
-                                            </Nav.Link>
-                                        </Nav.Item>
-                                        <Nav.Item className="navi-item mb-2">
-                                            <Nav.Link className="navi-link px-2" eventKey="2">
-                                                <span className="navi-icon mr-2">
-                                                    <span className="svg-icon">
-                                                        <SVG src={toAbsoluteUrl('/images/svg/Group-chat.svg')} />
-                                                    </span>
-                                                </span>
-                                                <div className="navi-text">
-                                                    <span className="d-block font-weight-bold">Historial de contacto</span>
-                                                </div>
-                                            </Nav.Link>
-                                        </Nav.Item>
-                                        <Nav.Item className="navi-item mb-2">
-                                            <Nav.Link className="navi-link px-2" eventKey="3">
-                                                <span className="navi-icon mr-2">
-                                                    <span className="svg-icon">
-                                                        <SVG src={toAbsoluteUrl('/images/svg/File.svg')} />
-                                                    </span>
-                                                </span>
-                                                <div className="navi-text">
-                                                    <span className="d-block font-weight-bold">Presupuesto de diseño</span>
-                                                </div>
-                                            </Nav.Link>
-                                        </Nav.Item>
-                                        <Nav.Item className="navi-item mb-2">
-                                            <Nav.Link className="navi-link px-2" eventKey="4">
-                                                <span className="navi-icon mr-2">
-                                                    <span className="svg-icon">
-                                                        <SVG src={toAbsoluteUrl('/images/svg/File.svg')} />
-                                                    </span>
-                                                </span>
-                                                <div className="navi-text">
-                                                    <span className="d-block font-weight-bold">Contrato</span>
-                                                    {/* <span className="text-muted">Descripción del paso 2</span> */}
-                                                </div>
-                                            </Nav.Link>
-                                        </Nav.Item>
-                                    </Nav>
+
                                 </Card.Body>
                             </Card >
-                        </Col >
-                        <Col md={9} className="mb-3">
+                        </Col > */}
+                        <Col md={12} className="mb-3">
                             <Card className="card-custom card-stretch">
                                 <Tab.Content>
                                     <Tab.Pane eventKey="1">
@@ -1128,7 +1277,7 @@ class LeadInfo extends Component {
                                                 </div>
                                             </Card.Body>
                                             <Card.Footer className="text-right">
-                                                <Button icon=''  className="btn btn-primary" type="submit" text="ENVIAR" />
+                                                <Button icon='' className="btn btn-primary" type="submit" text="ENVIAR" />
                                             </Card.Footer>
                                         </Form>
                                     </Tab.Pane>
@@ -1139,7 +1288,7 @@ class LeadInfo extends Component {
                                                 <div>
                                                     <Button
                                                         icon=''
-                                                        className={"btn btn-icon btn-xs p-3 btn-light-success success2 mr-2"}
+                                                        className={"btn btn-icon btn-xs p-3 btn-light-success mr-2"}
                                                         onClick={() => { this.mostrarFormulario() }}
                                                         only_icon={"flaticon2-plus icon-13px"}
                                                         tooltip={{ text: 'AGREGAR NUEVO CONTACTO' }}
@@ -1168,7 +1317,7 @@ class LeadInfo extends Component {
                                                     formAgenda={formAgenda}
                                                     onChange={this.onChangeAgenda}
                                                     removeCorreo={this.removeCorreo}
-                                                    solicitarFechaCita = { () => { waitAlert(); this.solicitarFechaCita() } }
+                                                    solicitarFechaCita={() => { waitAlert(); this.solicitarFechaCita() }}
                                                     onSubmit={() => { waitAlert(); this.agendarEvento() }} />
                                             </div>
                                             <div className="col-md-8">
@@ -1229,12 +1378,19 @@ class LeadInfo extends Component {
                                         </Card.Body>
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="3">
-                                        <Card.Header className="align-items-center border-0 mt-4 pt-3">
-                                            <Card.Title>
-                                                <h3 className="card-title align-items-start flex-column">
-                                                    <span className="font-weight-bolder text-dark">Presupuesto de diseño</span>
-                                                </h3>
-                                            </Card.Title>
+                                        <Card.Header className="border-0 mt-4 pt-3">
+                                            <h3 className="card-title d-flex justify-content-between">
+                                                <span className="font-weight-bolder text-dark align-self-center">Presupuesto de diseño</span>
+                                                <div>
+                                                    <Button
+                                                        icon=''
+                                                        className={"btn btn-icon btn-xs p-3 btn-light-primary mr-2"}
+                                                        onClick={() => { this.openModalPresupuesto() }}
+                                                        only_icon={"far fa-file-pdf icon-15px"}
+                                                        tooltip={{ text: 'PRESUPUESTOS GENERADOS' }}
+                                                    />
+                                                </div>
+                                            </h3>
                                         </Card.Header>
                                         <Card.Body className="pt-0">
                                             <PresupuestoDiseñoCRMForm
@@ -1245,20 +1401,8 @@ class LeadInfo extends Component {
                                                 checkButtonSemanas={this.checkButtonSemanas}
                                                 onChangeCheckboxes = { this.handleChangeCheckbox }
                                                 onSubmit = { this.onSubmitPresupuestoDiseño }
+                                                submitPDF = { this.onSubmitPDF }
                                             />
-                                        </Card.Body>
-                                    </Tab.Pane>
-                                    <Tab.Pane eventKey="4">
-                                        <Card.Header className="align-items-center border-0 mt-4 pt-3">
-                                            <Card.Title>
-                                                <h3 className="card-title align-items-start flex-column">
-                                                    <span className="font-weight-bolder text-dark">Historial de contacto</span>
-                                                    {/* <span class="text-muted mt-3 font-weight-bold font-size-sm">890,344 Sales</span> */}
-                                                </h3>
-                                            </Card.Title>
-                                        </Card.Header>
-                                        <Card.Body>
-                                            ...
                                         </Card.Body>
                                     </Tab.Pane>
                                 </Tab.Content>
@@ -1266,6 +1410,10 @@ class LeadInfo extends Component {
                         </Col>
                     </Row >
                 </Tab.Container>
+                <Modal title="Presupuestos generados" show={modal.presupuesto} handleClose={this.handleCloseModalPresupuesto} >
+                    <PresupuestoGenerado
+                    />
+                </Modal>
             </Layout >
         )
     }
