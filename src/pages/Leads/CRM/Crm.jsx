@@ -860,6 +860,35 @@ class Crm extends Component {
             console.log(error, 'error')
         })
     }
+
+    async changeOrigenAxios(data) {
+
+        waitAlert()
+
+        const { access_token } = this.props.authUser
+        
+        await axios.put(URL_DEV + 'crm/lead/origen/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                
+                const {activeTable}=this.state
+                this.changeActiveTable(activeTable)            
+                doneAlert('El origen fue actualizado con éxito.')
+                
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     async changeEstatusCanceladoRechazadoAxios(data) {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -884,6 +913,10 @@ class Crm extends Component {
 
     changeEstatus = (estatus, id) => {
         questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios({ id: id, estatus: estatus }))
+    }
+
+    changeOrigen = ( origen, id ) => {
+        questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.changeOrigenAxios({ id: id, origen: origen }))
     }
 
     openModalWithInput = (estatus, id) => {
@@ -1106,13 +1139,14 @@ class Crm extends Component {
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="contacto">
                                         <LeadContacto
-                                            leads={leads_en_contacto}
-                                            onClickNext={this.nextPageLeadEnContacto}
-                                            onClickPrev={this.prevPageLeadEnContacto}
-                                            changeEstatus={this.changeEstatus}
-                                            openModalWithInput={this.openModalWithInput}
-                                            changePageDetails={this.changePageDetails}
-                                            options={options}
+                                            leads = { leads_en_contacto }
+                                            onClickNext = { this.nextPageLeadEnContacto }
+                                            onClickPrev = { this.prevPageLeadEnContacto }
+                                            changeEstatus = { this.changeEstatus }
+                                            openModalWithInput = { this.openModalWithInput }
+                                            changePageDetails = { this.changePageDetails }
+                                            options = { options }
+                                            changeOrigen = { this.changeOrigen }
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="negociacion">

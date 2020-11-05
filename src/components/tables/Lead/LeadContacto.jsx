@@ -23,7 +23,7 @@ class LeadContacto extends Component {
     }
 
     render() {
-        const { leads, onClickNext, onClickPrev, openModalWithInput, changeEstatus, changePageDetails, options } = this.props
+        const { leads, onClickNext, onClickPrev, openModalWithInput, changeEstatus, changePageDetails, options, changeOrigen } = this.props
         return (
             <div className="tab-content">
                 <div className="table-responsive-lg">
@@ -100,14 +100,18 @@ class LeadContacto extends Component {
                                                                         options.origenes.map((origen,key) => {
                                                                             return(
                                                                                 <>
-                                                                                <Dropdown.Item className="p-0" key={key}>
-                                                                                    <span className="navi-link w-100">
-                                                                                        <span className="navi-text">
-                                                                                            <span className="label label-xl label-inline  text-gray rounded-0 w-100 font-weight-bolder">{origen.text}</span>
+                                                                                    <Dropdown.Item className="p-0" key = { key } onClick = { () => { changeOrigen( origen.value, lead.id ) } } >
+                                                                                        <span className="navi-link w-100">
+                                                                                            <span className="navi-text">
+                                                                                                <span className="label label-xl label-inline  text-gray rounded-0 w-100 font-weight-bolder">
+                                                                                                    {
+                                                                                                        origen.text
+                                                                                                    }
+                                                                                                </span>
+                                                                                            </span>
                                                                                         </span>
-                                                                                    </span>
-                                                                                </Dropdown.Item>
-                                                                                <Dropdown.Divider className="m-0" style={{borderTop:'1px solid #fff'}}/>
+                                                                                    </Dropdown.Item>
+                                                                                    <Dropdown.Divider className="m-0" style={{borderTop:'1px solid #fff'}}/>
                                                                                 </>
                                                                             )
                                                                         })
