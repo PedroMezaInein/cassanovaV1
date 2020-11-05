@@ -125,7 +125,10 @@ class LeadInfo extends Component {
             ],
             partidas: [],
             planos: [],
-            subtotal: 0.0
+            subtotal: 0.0,
+            fase1:true,
+            fase2:true,
+            total_renders:''
         },
         tipo: '',
         options: {

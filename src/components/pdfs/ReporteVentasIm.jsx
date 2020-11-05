@@ -120,7 +120,11 @@ const styles = StyleSheet.create({
         display: 'flex',
         justifyContent: 'flex-start',
         flexWrap: 'wrap',
-        width: '95%'
+        width: '95%',
+        fontSize: '11',
+        marginBottom: 5,
+        textAlign: "justify",
+        lineHeight: 1.2
     },
     cell20: {
         display: 'flex',
@@ -613,7 +617,7 @@ export default class ReporteVentasInein extends Component {
                                             <View style = { styles.cellLista }>
                                                 <Text>
                                                     {
-                                                        this.clearElement(element)
+                                                        element
                                                     }
                                                 </Text>
                                             </View>
