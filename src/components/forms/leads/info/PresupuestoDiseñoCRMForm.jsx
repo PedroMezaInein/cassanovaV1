@@ -160,13 +160,25 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                     iconclass={"fas fa-dollar-sign"}
                                                     thousandseparator={true}
                                                     disabled={true}
+                                                    name="total"
+                                                />
+                                            </div>
+                                            <div className="col-md-4">
+                                                <InputNumberGray
+                                                    requirevalidation={0}
+                                                    placeholder="NÚMERO DE RENDERS"
+                                                    value={formDiseño.total_renders}
+                                                    iconclass={"fas fa-photo-video"}
+                                                    thousandseparator={true}
+                                                    disabled={true}
+                                                    name="total_renders"
                                                 />
                                             </div>
                                         </div>
                                     </Col>
                                 </Row>
                                 <div className="form-group row form-group-marginless">
-                                    <div className="col-md-12">
+                                    <div className="col-md-6 mb-2">
                                         <OptionsCheckboxHeaders
                                             requirevalidation = { 0 }
                                             formeditado = { formeditado }
@@ -176,6 +188,32 @@ class PresupuestoDiseñoCRMForm extends Component {
                                             value = { formDiseño.planos }
                                             onChange = { this.handleChangeCheckboxPlanos }
                                             />
+                                    </div>
+                                    <div className="col-md-6">
+                                        <div className="form-group">
+                                            <label className="font-weight-bolder m-0">Fases</label>
+                                            <div className="checkbox-list pt-2">
+                                                <label className="checkbox font-weight-light">
+                                                    <input
+                                                        name = 'fase1'
+                                                        type="checkbox"
+                                                        checked = { formDiseño.fase1 }
+                                                        onChange={""} 
+                                                    /> Fase 1
+                                                    <span></span>
+                                                </label>
+                                                <label className="checkbox font-weight-light">
+                                                    <input 
+                                                        name = 'fase2'
+                                                        type="checkbox"
+                                                        checked = { formDiseño.fase2 }
+                                                        onChange={""}
+                                                    /> 
+                                                    Fase 2
+                                                    <span></span>
+                                                </label>  
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
