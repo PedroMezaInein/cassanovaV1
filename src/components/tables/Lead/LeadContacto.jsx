@@ -23,7 +23,7 @@ class LeadContacto extends Component {
     }
 
     render() {
-        const { leads, onClickNext, onClickPrev, openModalWithInput, changeEstatus, changePageDetails } = this.props
+        const { leads, onClickNext, onClickPrev, openModalWithInput, changeEstatus, changePageDetails, options } = this.props
         return (
             <div className="tab-content">
                 <div className="table-responsive-lg">
@@ -85,7 +85,35 @@ class LeadContacto extends Component {
                                                     {
                                                         lead.origen ?
                                                             <span className="text-dark-75 font-weight-bolder d-block font-size-lg">
-                                                                {lead.origen.origen}
+                                                                {/* {lead.origen.origen} */}
+                                                                <Dropdown>
+                                                                <Dropdown.Toggle style={{ backgroundColor:'#F3F6F9', color: '#80808F', border: 'transparent', padding: '2.8px 5.6px', width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '12.5px', fontWeight: 500 }}
+                                                                >
+                                                                    {lead.origen.origen.toUpperCase()}
+                                                                </Dropdown.Toggle>
+                                                                <Dropdown.Menu className="p-0">
+                                                                    <Dropdown.Header>
+                                                                        <span className="font-size-sm">Elige una opción</span>
+                                                                    </Dropdown.Header>
+                                                                    {/* <Dropdown.Divider /> */}
+                                                                    {
+                                                                        options.origenes.map((origen,key) => {
+                                                                            return(
+                                                                                <>
+                                                                                <Dropdown.Item className="p-0" key={key}>
+                                                                                    <span className="navi-link w-100">
+                                                                                        <span className="navi-text">
+                                                                                            <span className="label label-xl label-inline  text-gray rounded-0 w-100 font-weight-bolder">{origen.text}</span>
+                                                                                        </span>
+                                                                                    </span>
+                                                                                </Dropdown.Item>
+                                                                                <Dropdown.Divider className="m-0" style={{borderTop:'1px solid #fff'}}/>
+                                                                                </>
+                                                                            )
+                                                                        })
+                                                                    }
+                                                                </Dropdown.Menu>
+                                                            </Dropdown>
                                                             </span>
                                                             : ''
                                                     }
