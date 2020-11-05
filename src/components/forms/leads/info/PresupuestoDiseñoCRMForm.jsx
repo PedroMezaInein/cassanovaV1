@@ -167,11 +167,11 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                 <InputNumberGray
                                                     requirevalidation={0}
                                                     placeholder="NÚMERO DE RENDERS"
-                                                    value={formDiseño.total_renders}
+                                                    value={formDiseño.renders}
                                                     iconclass={"fas fa-photo-video"}
                                                     thousandseparator={true}
-                                                    disabled={true}
-                                                    name="total_renders"
+                                                    onChange={onChange}
+                                                    name="renders"
                                                 />
                                             </div>
                                         </div>
@@ -198,7 +198,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                         name = 'fase1'
                                                         type="checkbox"
                                                         checked = { formDiseño.fase1 }
-                                                        onChange={""} 
+                                                        onChange={onChange} 
                                                     /> Fase 1
                                                     <span></span>
                                                 </label>
@@ -207,7 +207,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                         name = 'fase2'
                                                         type="checkbox"
                                                         checked = { formDiseño.fase2 }
-                                                        onChange={""}
+                                                        onChange={onChange}
                                                     /> 
                                                     Fase 2
                                                     <span></span>
