@@ -128,7 +128,7 @@ class LeadInfo extends Component {
             subtotal: 0.0,
             fase1:true,
             fase2:true,
-            total_renders:''
+            renders:''
         },
         tipo: '',
         options: {
@@ -316,10 +316,13 @@ class LeadInfo extends Component {
     }
 
     onChangePresupuesto = e => {
-        const { name, value } = e.target
+        const { name, value, type, checked } = e.target
         const { formDiseño, data } = this.state
-
-        formDiseño[name] = value
+        
+        if(type === 'checkbox')
+            formDiseño[name] = checked
+        else
+            formDiseño[name] = value
 
         if (name === 'tiempo_ejecucion_diseno') {
             let modulo = parseFloat(value) % 6
@@ -687,6 +690,10 @@ class LeadInfo extends Component {
                 if (lead.presupuesto_diseño) {
 
                     console.log(lead.presupuesto_diseño, 'PRESUPUESTO DISEÑO')
+
+                    formDiseño.fase1 = lead.presupuesto_diseño.fase1
+                    formDiseño.fase2 = lead.presupuesto_diseño.fase2
+                    formDiseño.renders = lead.presupuesto_diseño.renders
 
                     let aux = JSON.parse(lead.presupuesto_diseño.actividades)
                     if (aux) {

@@ -67,13 +67,13 @@ class InputGray extends Component {
     render() {
         const { error, onChange, placeholder, iconclass, letterCase, customlabel, customstyle, customclass, withicon, withtextlabel, withtaglabel, withplaceholder, customdiv, ...props } = this.props
         const toInputUppercase = e => {
-            if (letterCase === undefined)
-                e.target.value = ("" + e.target.value).toUpperCase();
-            else {
-                if (letterCase === true)
-                    e.target.value = ("" + e.target.value).toUpperCase();
-            }
-        };
+            const { name, value, selectionStart, selectionEnd } = e.target
+            e.target.setSelectionRange(selectionStart, selectionEnd)
+            e.target.value = value.toUpperCase()
+            e.target.selectionStart = selectionStart
+            e.target.selectionEnd = selectionEnd
+            return e
+        }
         return (
             <div className={`form-group ${customdiv}`}>
                 {
@@ -99,7 +99,7 @@ class InputGray extends Component {
                             e.preventDefault(); 
                             this.validarInput(e); 
                             onChange(
-                                e
+                                toInputUppercase(e)
                             ) 
                         }}
                         // onInput={toInputUppercase}
