@@ -78,9 +78,11 @@ class InputSinText extends Component {
         return (
             <Form.Control
                 placeholder={placeholder}
-                className={inputValido ? `form-control form-control-sm is-valid  sin_icono ${customclass}` : `form-control form-control-sm is-invalid sin_icono ${customclass}`}
+                className = { inputValido ? 
+                        `text-uppercase form-control form-control-sm is-valid sin_icono ${customclass}` 
+                    : `text-uppercase form-control form-control-sm is-invalid sin_icono ${customclass}` }
                 onChange={(e) => { e.preventDefault(); this.validarInput(e); onChange(e) }}
-                onInput={toInputUppercase}
+                /* onInput={toInputUppercase} */
                 {...props}
                 style={customstyle}
             />
