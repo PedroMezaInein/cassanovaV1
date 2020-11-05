@@ -68,20 +68,20 @@ class InputSinText extends Component {
         const { error, onChange, placeholder, iconclass, messageinc, letterCase, customstyle,customclass, ...props } = this.props
         const { inputValido } = this.state
         const toInputUppercase = e => {
-            if (letterCase === undefined)
-                e.target.value = ("" + e.target.value).toUpperCase();
-            else {
-                if (letterCase === true)
-                    e.target.value = ("" + e.target.value).toUpperCase();
-            }
-        };
+            const { name, value, selectionStart, selectionEnd } = e.target
+            e.target.setSelectionRange(selectionStart, selectionEnd)
+            e.target.value = value.toUpperCase()
+            e.target.selectionStart = selectionStart
+            e.target.selectionEnd = selectionEnd
+            return e
+        }
         return (
             <Form.Control
                 placeholder={placeholder}
                 className = { inputValido ? 
-                        `text-uppercase form-control form-control-sm is-valid sin_icono ${customclass}` 
-                    : `text-uppercase form-control form-control-sm is-invalid sin_icono ${customclass}` }
-                onChange={(e) => { e.preventDefault(); this.validarInput(e); onChange(e) }}
+                        `form-control form-control-sm is-valid sin_icono ${customclass}` 
+                    : `form-control form-control-sm is-invalid sin_icono ${customclass}` }
+                onChange={(e) => { e.preventDefault(); this.validarInput(e); onChange(toInputUppercase(e)) }}
                 /* onInput={toInputUppercase} */
                 {...props}
                 style={customstyle}

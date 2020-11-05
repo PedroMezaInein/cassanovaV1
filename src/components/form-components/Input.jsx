@@ -83,13 +83,14 @@ class Input extends Component {
         const { inputValido } =  this.state  
         
         const toInputUppercase = e => {
-            if(letterCase === undefined)
-                e.target.value = ("" + e.target.value).toUpperCase();
-            else{
-                if(letterCase === true)
-                    e.target.value = ("" + e.target.value).toUpperCase();
-            }
-        };
+            const { name, value, selectionStart, selectionEnd } = e.target
+            e.target.setSelectionRange(selectionStart, selectionEnd)
+            e.target.value = value.toUpperCase()
+            e.target.selectionStart = selectionStart
+            e.target.selectionEnd = selectionEnd
+            return e
+        }
+
         return (
             <div >
                 <label className = {`col-form-label ${customlabel}`}>{placeholder}</label>
@@ -100,7 +101,7 @@ class Input extends Component {
                         <Form.Control 
                             placeholder={placeholder} 
                             className={ inputValido ? " form-control is-valid text-uppercase " : " form-control is-invalid text-uppercase" }
-                            onChange={(e) => { e.preventDefault(); this.validarInput(e); onChange(e) }}  
+                            onChange={(e) => { e.preventDefault(); this.validarInput(e); onChange(toInputUppercase(e)) }}  
                             // onInput={toInputUppercase}
                             {...props} 
                         /> 

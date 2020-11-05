@@ -284,22 +284,31 @@ class ReporteVentas extends Component {
                 url: this.chartEstatusProspectosReference.current.chartInstance.toBase64Image()
             }
         )
-        let lista = draftToMarkdown(convertToRaw(editorState.getCurrentContent()))
-        lista = lista.toUpperCase();
-        lista = lista.replace(/\n|\r/g, "");
-        lista = lista.split('-')
+
+        let lista = convertToRaw(editorState.getCurrentContent())
+        
+        let _lista = []
+        
+        lista.blocks.map((element)=>{
+            _lista.push(element.text.toUpperCase())
+        })
+        
         const blob = await pdf((
-            this.setReporte( aux, lista )
+            this.setReporte( aux, _lista )
         )).toBlob();
+        
         form.adjuntos.reportes.files = [
             {
                 name: 'reporte.pdf',
                 url: URL.createObjectURL(blob)
             }
         ]
+        
         if(form.adjuntos.reportes.files.length > 0)
             window.open(form.adjuntos.reportes.files[0].url, '_blank');
+        
         swal.close()
+        
         this.setState({
             ...this.state,
             form
