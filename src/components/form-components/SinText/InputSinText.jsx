@@ -68,11 +68,12 @@ class InputSinText extends Component {
         const { error, onChange, placeholder, iconclass, messageinc, letterCase, customstyle,customclass, ...props } = this.props
         const { inputValido } = this.state
         const toInputUppercase = e => {
-            const { name, value, selectionStart, selectionEnd } = e.target
-            e.target.setSelectionRange(selectionStart, selectionEnd)
+            const { type, value, selectionStart, selectionEnd } = e.target
             e.target.value = value.toUpperCase()
-            e.target.selectionStart = selectionStart
-            e.target.selectionEnd = selectionEnd
+            if( type !== 'email'){
+                e.target.selectionStart = selectionStart
+                e.target.selectionEnd = selectionEnd
+            }
             return e
         }
         return (

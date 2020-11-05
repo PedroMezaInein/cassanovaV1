@@ -83,11 +83,12 @@ class Input extends Component {
         const { inputValido } =  this.state  
         
         const toInputUppercase = e => {
-            const { name, value, selectionStart, selectionEnd } = e.target
-            e.target.setSelectionRange(selectionStart, selectionEnd)
+            const { type, value, selectionStart, selectionEnd } = e.target
             e.target.value = value.toUpperCase()
-            e.target.selectionStart = selectionStart
-            e.target.selectionEnd = selectionEnd
+            if( type !== 'email'){
+                e.target.selectionStart = selectionStart
+                e.target.selectionEnd = selectionEnd
+            }
             return e
         }
 
