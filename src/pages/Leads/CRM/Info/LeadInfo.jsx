@@ -1092,7 +1092,7 @@ class LeadInfo extends Component {
                                                                                 </span>
                                                                             </span>
                                                                             <div className="navi-text">
-                                                                                <span className="d-block font-weight-bold">Información personal</span>
+                                                                                <span className="d-block font-weight-bold">Información general</span>
                                                                             </div>
                                                                         </Nav.Link>
                                                                     </Nav.Item>
@@ -1214,6 +1214,22 @@ class LeadInfo extends Component {
                                             <h3 className="card-title d-flex justify-content-between">
                                                 <span className="font-weight-bolder text-dark align-self-center">Historial de contacto</span>
                                                 <div>
+                                                    {/* <div className="btn btn-icon btn-light w-auto btn-clean d-inline-flex align-items-center btn-icon px-2 mr-2" style={{height:"30px"}}
+                                                        onClick={() => { waitAlert(); this.solicitarFechaCita() }} >
+                                                        <span className="text-dark-50 font-weight-bolder font-size-base mr-3">Solicitar cita</span>
+                                                            <span className="symbol symbol-25 bg-light-gray">
+                                                                <span className="symbol-label font-size-h5 font-weight-bold ">
+                                                                    <i className="far fa-calendar-check text-gray icon-md"></i>
+                                                                </span>
+                                                        </span>
+                                                    </div> */}
+                                                    <Button
+                                                        icon=''
+                                                        className={"btn btn-icon btn-xs p-3 btn-light-gray mr-2"}
+                                                        onClick={() => { waitAlert(); this.solicitarFechaCita() }}
+                                                        only_icon={"far fa-calendar-check icon-15px"}
+                                                        tooltip={{ text: 'SOLICITAR CITA' }}
+                                                    />
                                                     <Button
                                                         icon=''
                                                         className={"btn btn-icon btn-xs p-3 btn-light-success mr-2"}
@@ -1245,7 +1261,7 @@ class LeadInfo extends Component {
                                                     formAgenda={formAgenda}
                                                     onChange={this.onChangeAgenda}
                                                     removeCorreo={this.removeCorreo}
-                                                    solicitarFechaCita={() => { waitAlert(); this.solicitarFechaCita() }}
+                                                    // solicitarFechaCita={() => { waitAlert(); this.solicitarFechaCita() }}
                                                     onSubmit={() => { waitAlert(); this.agendarEvento() }} />
                                             </div>
                                             <div className="col-md-8">
