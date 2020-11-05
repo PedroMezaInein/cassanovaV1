@@ -133,17 +133,6 @@ class AgendarCitaForm extends Component {
                         </div>
                     </Col>
                     <Col md="6" className="text-center align-self-center">
-                        <div className="d-flex justify-content-center align-items-end ">
-                            <div className="btn btn-icon btn-light w-auto btn-clean d-inline-flex align-items-center btn-lg px-2 mr-5"
-                                onClick={solicitarFechaCita} >
-                                <span className="text-dark-50 font-weight-bolder font-size-base mr-3">Solicitar cita</span>
-                                <span className="symbol symbol-35 bg-light-gray">
-                                    <span className="symbol-label font-size-h5 font-weight-bold">
-                                        <i className="far fa-calendar-check text-gray icon-md"></i>
-                                    </span>
-                                </span>
-                            </div>
-                        </div>
                         <div className="form-group row form-group-marginless mt-4 pb-0 mb-0">
                             <div className="col-md-12 text-left">
                                 <InputGray
