@@ -617,6 +617,7 @@ class ComprasForm extends Component {
                 const { options, form } = this.state
                 form.solicitud = solicitud.id
                 form.factura = solicitud.factura ? 'Con factura' : 'Sin factura'
+                form.fecha = new Date(solicitud.created_at)
                 if (solicitud.factura) {
                     let aux = ''
                     options.tiposImpuestos.find(function (element, index) {
@@ -634,12 +635,13 @@ class ComprasForm extends Component {
                     }
                 }
                 if (solicitud.proyecto) {
-                    if (solicitud.proyecto.clientes) {
+                    form.proyecto = solicitud.proyecto.id.toString()
+                    /* if (solicitud.proyecto.clientes) {
                         if (solicitud.proyecto.clientes.proyectos) {
                             options['proyectos'] = setOptions(solicitud.proyecto.clientes.proyectos, 'nombre', 'id')
                             form.proyecto = solicitud.proyecto.id.toString()
                         }
-                    }
+                    } */
                 }
                 if (solicitud.empresa) {
                     if (solicitud.empresa.cuentas) {
