@@ -60,6 +60,9 @@ class LeadInfo extends Component {
             estatus: 0,
             correos: [],
             correo: '',
+            lugar: 'presencial',
+            url: '',
+            ubicacion: ''
         },
         formDiseño: {
             m2: '',
@@ -640,6 +643,9 @@ class LeadInfo extends Component {
                 formAgenda.titulo = ''
                 formAgenda.correo = ''
                 formAgenda.correos = []
+                formAgenda.lugar = 'presencial'
+                formAgenda.ubicacion = ''
+                formAgenda.url = ''
                 this.setState({
                     ...this.state,
                     formAgenda,
@@ -1232,13 +1238,6 @@ class LeadInfo extends Component {
                                                     </div> */}
                                                     <Button
                                                         icon=''
-                                                        className={"btn btn-icon btn-xs p-3 btn-light-gray mr-2"}
-                                                        onClick={() => { waitAlert(); this.solicitarFechaCita() }}
-                                                        only_icon={"far fa-calendar-check icon-15px"}
-                                                        tooltip={{ text: 'SOLICITAR CITA' }}
-                                                    />
-                                                    <Button
-                                                        icon=''
                                                         className={"btn btn-icon btn-xs p-3 btn-light-success mr-2"}
                                                         onClick={() => { this.mostrarFormulario() }}
                                                         only_icon={"flaticon2-plus icon-13px"}
@@ -1246,10 +1245,18 @@ class LeadInfo extends Component {
                                                     />
                                                     <Button
                                                         icon=''
-                                                        className={"btn btn-icon btn-xs p-3 btn-light-primary"}
+                                                        className={"btn btn-icon btn-xs p-3 btn-light-primary mr-2"}
                                                         onClick={() => { this.mostrarAgenda() }}
                                                         only_icon={"flaticon2-calendar-2 icon-md"}
                                                         tooltip={{ text: 'AGENDAR CITA' }}
+                                                    />
+                                                    <Button
+                                                        icon=''
+                                                        className={"btn btn-icon btn-xs w-auto p-3 btn-light-gray"}
+                                                        onClick={() => { waitAlert(); this.solicitarFechaCita() }}
+                                                        only_icon={"far fa-calendar-check icon-15px mr-2"}
+                                                        text='SOLICITAR CITA'
+                                                        tooltip={{ text: 'SOLICITAR CITA' }}
                                                     />
                                                 </div>
                                             </h3>
