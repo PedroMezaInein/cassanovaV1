@@ -23,6 +23,7 @@ class Notificacion extends Component {
                 return toAbsoluteUrl('/images/svg/portapapeles.svg');
         }
     }
+
     render() {
         const { data } = this.props
         return (
