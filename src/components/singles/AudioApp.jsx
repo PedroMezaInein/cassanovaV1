@@ -2,7 +2,7 @@ import React, { useEffect } from 'react';
 import { toAbsoluteUrl } from '../../functions/routers'
 
 function AudioApp(){
-  const audioTune = new Audio(toAbsoluteUrl('/sounds/alert.mp3'));
+  const audioTune = new Audio(toAbsoluteUrl('/sounds/alert2.mp3'));
   // variable to play audio in loop
   
   // load audio file on component load

@@ -78,15 +78,13 @@ class Layout extends Component {
                 })
                 setTimeout(() => {
                     this.getNotificacionesAxios()
-                }, (numero * 2500) + 1000000)
+                }, (numero * 2500) + 500000)
             },
             (error) => {
             }
         ).catch((error) => {
         })
     }
-
-
 
     async logoutUserAxios() {
         const { logout, authUser: { access_token }, history } = this.props
