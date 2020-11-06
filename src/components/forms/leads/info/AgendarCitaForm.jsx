@@ -4,6 +4,7 @@ import { Col, Form } from 'react-bootstrap'
 import { EMAIL } from '../../../../constants'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { messageAlert } from '../../../../functions/alert'
+import RadioGroupGray from '../../../form-components/Gray/RadioGroupGray'
 
 class AgendarCitaForm extends Component {
     addCorreo = () => {
@@ -134,7 +135,7 @@ class AgendarCitaForm extends Component {
                     </Col>
                     <Col md="6" className="text-center align-self-center">
                         <div className="form-group row form-group-marginless mt-4 pb-0 mb-0">
-                            <div className="col-md-12 text-left">
+                            <div className="col-md-8 text-left">
                                 <InputGray
                                     withtaglabel={1}
                                     withtextlabel={1}
@@ -147,8 +148,45 @@ class AgendarCitaForm extends Component {
                                     onChange={onChange}
                                 />
                             </div>
-                            <div className="col-md-10 text-left">
+                        </div>
+                        <div className="form-group row form-group-marginless pb-0 mb-0">
+                            <div className='col-md-8 text-left'>
+                                <RadioGroupGray
+                                    placeholder = "¿Cita presencial o remota?"
+                                    name = 'lugar'
+                                    onChange = { onChange }
+                                    options = {
+                                        [
+                                            {
+                                                label: 'Presencial',
+                                                value: 'presencial'
+                                            },
+                                            {
+                                                label: 'Remota',
+                                                value: 'remota'
+                                            }
+                                        ]
+                                    }
+                                    value = { formAgenda.lugar }
+                                    />
+                            </div>
+                            <div className='col-md-8 text-left'>
                                 <InputGray
+                                    letterCase = { formAgenda.lugar === 'presencial' ? true : false }
+                                    withtaglabel = { 1 }
+                                    withtextlabel = { 1 }
+                                    withplaceholder = { 1 }
+                                    withicon = { 1 }
+                                    placeholder = { formAgenda.lugar === 'presencial' ? 'Ubicación' : 'URL' }
+                                    iconclass = { formAgenda.lugar === 'presencial' ? 'fas fa-map-marker-alt' : ' fas fa-link' }
+                                    name = { formAgenda.lugar === 'presencial' ? 'ubicacion' : 'url' }
+                                    value = { formAgenda.lugar === 'presencial' ? formAgenda.ubicacion : formAgenda.url }
+                                    onChange = { onChange }
+                                />
+                            </div>
+                            <div className="col-md-8 text-left">
+                                <InputGray
+                                    letterCase = { false }
                                     withtaglabel={1}
                                     withtextlabel={1}
                                     withplaceholder={1}
@@ -171,7 +209,7 @@ class AgendarCitaForm extends Component {
                                     {
                                         formAgenda.correos.map((correo, key) => {
                                             return (
-                                                <div className="tagify form-control p-1 col-md-6 px-2 d-flex justify-content-center align-items-center white-space" tabIndex="-1" style={{ borderWidth: "0px" }} key={key}>
+                                                <div className="tagify form-control p-1 col-md-4 px-2 d-flex justify-content-center align-items-center white-space" tabIndex="-1" style={{ borderWidth: "0px" }} key={key}>
                                                     <div className=" image-upload d-flex px-3 align-items-center tagify__tag tagify__tag--primary tagify--noAnim white-space"  >
                                                         <div
                                                             title="Borrar archivo"

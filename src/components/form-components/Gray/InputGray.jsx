@@ -68,7 +68,9 @@ class InputGray extends Component {
         const { error, onChange, placeholder, iconclass, letterCase, customlabel, customstyle, customclass, withicon, withtextlabel, withtaglabel, withplaceholder, customdiv, ...props } = this.props
         const toInputUppercase = e => {
             const { type, value, selectionStart, selectionEnd } = e.target
-            e.target.value = value.toUpperCase()
+            console.log(letterCase, 'lettercase')
+            if(letterCase !== false)
+                e.target.value = value.toUpperCase()
             if( type !== 'email'){
                 e.target.selectionStart = selectionStart
                 e.target.selectionEnd = selectionEnd
@@ -95,7 +97,7 @@ class InputGray extends Component {
                     
                     <Form.Control
                         placeholder={withplaceholder?placeholder:''}
-                        className={`form-control text-uppercase text-dark-50 font-weight-bold ${customclass}`}
+                        className={`form-control text-dark-50 font-weight-bold ${customclass}`}
                         onChange={(e) => { 
                             e.preventDefault(); 
                             this.validarInput(e); 
