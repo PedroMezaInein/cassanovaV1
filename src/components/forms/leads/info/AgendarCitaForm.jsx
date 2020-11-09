@@ -177,7 +177,7 @@ class AgendarCitaForm extends Component {
                                     withtextlabel = { 1 }
                                     withplaceholder = { 1 }
                                     withicon = { 1 }
-                                    placeholder = { formAgenda.lugar === 'presencial' ? 'Ubicación' : 'URL' }
+                                    placeholder = { formAgenda.lugar === 'presencial' ? 'UBICACIÓN' : 'URL' }
                                     iconclass = { formAgenda.lugar === 'presencial' ? 'fas fa-map-marker-alt' : ' fas fa-link' }
                                     name = { formAgenda.lugar === 'presencial' ? 'ubicacion' : 'url' }
                                     value = { formAgenda.lugar === 'presencial' ? formAgenda.ubicacion : formAgenda.url }
@@ -187,16 +187,16 @@ class AgendarCitaForm extends Component {
                             <div className="col-md-8 text-left">
                                 <InputGray
                                     letterCase = { false }
-                                    withtaglabel={1}
-                                    withtextlabel={1}
-                                    withplaceholder={1}
-                                    withicon={1}
-                                    placeholder="CORREO DE CONTACTO"
-                                    iconclass='fas fa-envelope'
-                                    name='correo'
-                                    value={formAgenda.correo}
-                                    onChange={onChange}
-                                    patterns={EMAIL}
+                                    withtaglabel = { 1 }
+                                    withtextlabel = { 1 }
+                                    withplaceholder = { 1 }
+                                    withicon = { 1 }
+                                    placeholder = "CORREO DE CONTACTO"
+                                    iconclass = 'fas fa-envelope'
+                                    name = 'correo'
+                                    value = { formAgenda.correo }
+                                    onChange = { onChange }
+                                    patterns = { EMAIL }
                                 />
                             </div>
                             <div className="col-md-2 mt-3 d-flex justify-content-center align-items-center">
