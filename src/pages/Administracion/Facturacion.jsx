@@ -6,7 +6,7 @@ import axios from 'axios'
 import { URL_DEV, FACTURAS_COLUMNS } from '../../constants'
 import { Small, B } from '../../components/texts'
 import { setTextTable, setMoneyTable, setDateTable, setOptions, setLabelTable } from '../../functions/setters'
-import { errorAlert, forbiddenAccessAlert, doneAlert, waitAlert, createAlert } from '../../functions/alert'
+import { errorAlert, forbiddenAccessAlert, doneAlert, waitAlert, createAlert, questionAlertY } from '../../functions/alert'
 import { Modal, ItemSlider } from '../../components/singles'
 import { Button, FileInput } from '../../components/form-components'
 import swal from 'sweetalert'
@@ -146,14 +146,24 @@ class Facturacion extends Component {
                 iconclass: 'flaticon2-magnifier-tool',
                 action: 'see',
                 tooltip: { id: 'see', text: 'Mostrar', type: 'primary' },
-            },
+            }
         )
+        if(!factura.detenida){
+            aux.push(
+            {
+                text:'Inhabilitar&nbsp;factura',
+                btnclass: 'info',
+                iconclass: 'flaticon2-lock',
+                action: 'inhabilitar',
+                tooltip: { id: 'inhabilitar', text: 'Inhabilitar factura', type: 'info' },
+            })
+        }
         if (!factura.cancelada) {
             aux.push(
                 {
                     text: 'Cancelar',
                     btnclass: 'danger',
-                    iconclass: "flaticon-close",
+                    iconclass: "flaticon-circle",
                     action: 'cancelarFactura',
                     tooltip: { id: 'delete-Adjunto', text: 'Eliminar', type: 'error' },
                 })
@@ -170,6 +180,39 @@ class Facturacion extends Component {
         }
         return aux
     }
+
+    inhabilitar = (factura) =>  {
+        questionAlertY('¿ESTÁS SEGURO?', '¿DESEAS INHABILITAR LA FACTURA?', () => this.inhabilitarFactura(factura))    
+    }
+
+    async inhabilitarFactura(factura) {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.put(URL_DEV + 'facturas/detener/' + factura.id, {}, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { key } = this.state
+                if (key === 'compras') {
+                    this.getComprasAxios()
+                }
+                if (key === 'ventas') {
+                    this.getVentasAxios()
+                }
+                doneAlert('La factura fue inhabilitado con éxito.')
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     setLabelTable = objeto => {
         let restante = objeto.total - objeto.ventas_compras_count - objeto.ingresos_egresos_count
         let text = {}
@@ -692,7 +735,8 @@ class Facturacion extends Component {
                             onClick={this.openModal}
                             actions={{
                                 'see': { function: this.openModalSee },
-                                'cancelarFactura': { function: this.cancelarFactura }
+                                'cancelarFactura': { function: this.cancelarFactura },
+                                'inhabilitar': { function: this.inhabilitar },
                             }}
                             idTable='kt_datatable_ventas'
                             accessToken={this.props.authUser.access_token}
@@ -716,7 +760,8 @@ class Facturacion extends Component {
                             onClick={this.openModal}
                             actions={{
                                 'see': { function: this.openModalSee },
-                                'cancelarFactura': { function: this.cancelarFactura }
+                                'cancelarFactura': { function: this.cancelarFactura },
+                                'inhabilitar': { function: this.inhabilitar },
                             }}
                             idTable='kt_datatable_compras'
                             accessToken={this.props.authUser.access_token}
