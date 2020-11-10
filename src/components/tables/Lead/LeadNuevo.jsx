@@ -55,6 +55,7 @@ class LeadNuevo extends Component {
                                     <th style={{ minWidth: "140px" }}>Fecha</th>
                                     <th style={{ minWidth: "100px" }}>Empresa</th>
                                     <th style={{ minWidth: "100px" }}>Servicios</th>
+                                    <th style={{ minWidth: "100px" }}>Origen</th>
                                     <th style={{ minWidth: "100px" }} className="text-center">Estatus</th>
                                     <th style={{ minWidth: "92px" }}></th>
                                 </tr>
@@ -97,6 +98,15 @@ class LeadNuevo extends Component {
                                                                     : <span className="text-dark-75 font-weight-bolder">Sin servicios</span>
                                                             }
                                                         </ul>
+                                                    </td>
+                                                    <td className="text-center">
+                                                        <div className="text-dark-75 font-weight-bolder font-size-lg">
+                                                            {
+                                                                lead.origen ?
+                                                                    lead.origen.origen
+                                                                : ''
+                                                            }
+                                                        </div>
                                                     </td>
                                                     <td className="text-center">
                                                         {
@@ -187,6 +197,5 @@ class LeadNuevo extends Component {
         )
     }
 }
-
 
 export default LeadNuevo
