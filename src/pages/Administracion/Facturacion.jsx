@@ -13,6 +13,7 @@ import swal from 'sweetalert'
 import { Tabs, Tab, Form } from 'react-bootstrap'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
 import { FacturacionCard } from '../../components/cards'
+import NumberFormat from 'react-number-format'
 const $ = require('jquery');
 class Facturacion extends Component {
     state = {
@@ -20,6 +21,7 @@ class Facturacion extends Component {
         modalFacturas: false,
         modalCancelar: false,
         modalSee: false,
+        modalRestante: false,
         facturas: [],
         factura: '',
         data: {
@@ -66,6 +68,7 @@ class Facturacion extends Component {
         if (!conceptos)
             history.push('/')
         this.getOptionsAxios()
+        this.getRestante()
     }
     async getOptionsAxios() {
         waitAlert()
@@ -77,6 +80,32 @@ class Facturacion extends Component {
                 data.clientes = clientes
                 data.empresas = empresas
                 swal.close()
+                this.setState({
+                    ...this.state,
+                    data
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    async getRestante() {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'facturas/ventas/restante', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { empresas } = response.data
+                const { data } = this.state
+                data.empresas = empresas
                 this.setState({
                     ...this.state,
                     data
@@ -148,15 +177,15 @@ class Facturacion extends Component {
                 tooltip: { id: 'see', text: 'Mostrar', type: 'primary' },
             }
         )
-        if(!factura.detenida){
+        if (!factura.detenida) {
             aux.push(
-            {
-                text:'Inhabilitar&nbsp;factura',
-                btnclass: 'info',
-                iconclass: 'flaticon2-lock',
-                action: 'inhabilitar',
-                tooltip: { id: 'inhabilitar', text: 'Inhabilitar factura', type: 'info' },
-            })
+                {
+                    text: 'Inhabilitar&nbsp;factura',
+                    btnclass: 'info',
+                    iconclass: 'flaticon2-lock',
+                    action: 'inhabilitar',
+                    tooltip: { id: 'inhabilitar', text: 'Inhabilitar factura', type: 'info' },
+                })
         }
         if (!factura.cancelada) {
             aux.push(
@@ -181,8 +210,8 @@ class Facturacion extends Component {
         return aux
     }
 
-    inhabilitar = (factura) =>  {
-        questionAlertY('¿ESTÁS SEGURO?', '¿DESEAS INHABILITAR LA FACTURA?', () => this.inhabilitarFactura(factura))    
+    inhabilitar = (factura) => {
+        questionAlertY('¿ESTÁS SEGURO?', '¿DESEAS INHABILITAR LA FACTURA?', () => this.inhabilitarFactura(factura))
     }
 
     async inhabilitarFactura(factura) {
@@ -216,12 +245,12 @@ class Facturacion extends Component {
     setLabelTable = objeto => {
         let restante = objeto.total - objeto.ventas_compras_count - objeto.ingresos_egresos_count
         let text = {}
-        if(objeto.detenida){
+        if (objeto.detenida) {
             text.letra = '#5F6A6A'
             text.fondo = '#ECEFF1'
             text.estatus = 'DETENIDA'
         }
-        else{
+        else {
             if (objeto.cancelada) {
                 text.letra = '#8950FC'
                 text.fondo = '#EEE5FF'
@@ -460,6 +489,23 @@ class Facturacion extends Component {
             // form: this.clearForm()
         })
     }
+
+    openModalRestante = () => {
+        this.setState({
+            ...this.state,
+            modalRestante: true,
+            title: 'Restante por empresa',
+        })
+    }
+
+    handleCloseRestante = () => {
+        const { modalRestante } = this.state
+        this.setState({
+            ...this.state,
+            modalRestante: !modalRestante,
+        })
+    }
+
     onChangeAdjuntoFacturas = e => {
         const { form, data } = this.state
         const { files, value, name } = e.target
@@ -727,7 +773,7 @@ class Facturacion extends Component {
         })
     }
     render() {
-        const { factura, modalSee, modalCancelar, form, modalFacturas, key } = this.state
+        const { factura, modalSee, modalCancelar, form, modalFacturas, key, modalRestante, data } = this.state
         return (
             <Layout active={'administracion'}  {...this.props}>
                 <Tabs defaultActiveKey="ventas" activeKey={key} onSelect={(value) => { this.controlledTab(value) }}>
@@ -740,6 +786,8 @@ class Facturacion extends Component {
                             abrir_modal={true}
                             mostrar_acciones={true}
                             onClick={this.openModal}
+                            restante_empresa={true}
+                            onClickRestante={this.openModalRestante}
                             actions={{
                                 'see': { function: this.openModalSee },
                                 'cancelarFactura': { function: this.cancelarFactura },
@@ -765,6 +813,8 @@ class Facturacion extends Component {
                             abrir_modal={true}
                             mostrar_acciones={true}
                             onClick={this.openModal}
+                            restante_empresa={true}
+                            onClickRestante={this.openModalRestante}
                             actions={{
                                 'see': { function: this.openModalSee },
                                 'cancelarFactura': { function: this.cancelarFactura },
@@ -799,7 +849,7 @@ class Facturacion extends Component {
                     <div className="card-footer py-3 pr-1">
                         <div className="row">
                             <div className="col-lg-12 text-right pr-0 pb-0">
-                                <Button 
+                                <Button
                                     icon=''
                                     text='ENVIAR'
                                     onClick={(e) => { e.preventDefault(); waitAlert(); this.cancelarFacturaAxios() }}
@@ -838,6 +888,51 @@ class Facturacion extends Component {
                 </Modal>
                 <Modal size="lg" title="Factura" show={modalSee} handleClose={this.handleCloseSee} >
                     <FacturacionCard factura={factura} />
+                </Modal>
+
+                <Modal title="Restante por empresa" show={modalRestante} handleClose={this.handleCloseRestante} >
+                    {console.log(data.empresas)}
+                    <div className="table-responsive mt-4">
+                        <table className="table table-head-bg table-borderless table-vertical-center">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        <div className="text-left text-muted font-size-sm d-flex justify-content-start">EMPRESA</div>
+                                    </th>
+                                    <th className="text-center text-muted font-size-sm">
+                                        <div className="text-left text-muted font-size-sm d-flex justify-content-end">RESTANTE</div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {
+                                    data.empresas ?
+                                        data.empresas.map((empresa, key) => {
+                                            return (
+                                                <tr key={key}>
+                                                    <td>
+                                                        <span className="text-dark-75 font-weight-bolder d-block font-size-lg">{empresa.name}</span>
+                                                    </td>
+                                                    <td className="text-right">
+                                                        <span className="text-dark-75 font-weight-bolder d-block font-size-lg">
+                                                            <NumberFormat
+                                                                value={empresa.restante}
+                                                                displayType={'text'}
+                                                                thousandSeparator={true}
+                                                                prefix={'$'}
+                                                                renderText={value => <div>{value}</div>}
+                                                            />
+                                                        </span>
+                                                    </td>
+                                                </tr>
+                                            )
+                                        })
+                                        : <span>-</span>
+                                }
+                                
+                            </tbody>
+                        </table>
+                    </div>
                 </Modal>
             </Layout>
         )
