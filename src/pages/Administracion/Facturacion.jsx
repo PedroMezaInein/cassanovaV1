@@ -216,19 +216,26 @@ class Facturacion extends Component {
     setLabelTable = objeto => {
         let restante = objeto.total - objeto.ventas_compras_count - objeto.ingresos_egresos_count
         let text = {}
-        if (objeto.cancelada) {
-            text.letra = '#8950FC'
-            text.fondo = '#EEE5FF'
-            text.estatus = 'CANCELADA'
-        } else {
-            if (restante <= 1) {
-                text.letra = '#388E3C'
-                text.fondo = '#E8F5E9'
-                text.estatus = 'PAGADA'
+        if(objeto.detenida){
+            text.letra = '#5F6A6A'
+            text.fondo = '#ECEFF1'
+            text.estatus = 'DETENIDA'
+        }
+        else{
+            if (objeto.cancelada) {
+                text.letra = '#8950FC'
+                text.fondo = '#EEE5FF'
+                text.estatus = 'CANCELADA'
             } else {
-                text.letra = '#F64E60'
-                text.fondo = '#FFE2E5'
-                text.estatus = 'PENDIENTE'
+                if (restante <= 1) {
+                    text.letra = '#388E3C'
+                    text.fondo = '#E8F5E9'
+                    text.estatus = 'PAGADA'
+                } else {
+                    text.letra = '#F64E60'
+                    text.fondo = '#FFE2E5'
+                    text.estatus = 'PENDIENTE'
+                }
             }
         }
         return setLabelTable(text)
@@ -836,7 +843,6 @@ class Facturacion extends Component {
         )
     }
 }
-
 
 const mapStateToProps = state => {
     return {
