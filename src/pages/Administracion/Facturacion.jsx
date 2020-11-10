@@ -891,7 +891,6 @@ class Facturacion extends Component {
                 </Modal>
 
                 <Modal title="Restante por empresa" show={modalRestante} handleClose={this.handleCloseRestante} >
-                    {console.log(data.empresas)}
                     <div className="table-responsive mt-4">
                         <table className="table table-head-bg table-borderless table-vertical-center">
                             <thead>
