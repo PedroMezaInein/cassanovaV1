@@ -948,7 +948,7 @@ class LeadInfo extends Component {
     }
 
     onSubmitPresupuestoDiseñoAxios = async (pdf) => {
-        /* waitAlert(); */
+        waitAlert();
         const { access_token } = this.props.authUser
         const { formDiseño, lead } = this.state
         formDiseño.pdf = pdf
