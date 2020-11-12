@@ -29,13 +29,13 @@ class LeadContacto extends Component {
                 <div className="table-responsive-lg">
                     <table className="table table-borderless table-vertical-center">
                         <thead>
-                            <tr className="text-left text-uppercase bg-primary-o-20 text-primary">
+                            <tr className="text-uppercase bg-primary-o-20 text-primary">
                                 <th style={{ minWidth: "100px" }} className="pl-7">
                                     <span>Nombre del cliente y proyecto</span>
                                 </th>
                                 <th style={{ minWidth: "120px" }}>Fecha</th>
-                                <th style={{ minWidth: "120px" }}>Empresa</th>
-                                <th style={{ minWidth: "100px" }}>Origen</th>
+                                <th style={{ minWidth: "120px" }} className="text-center">Empresa</th>
+                                <th style={{ minWidth: "100px" }} className="text-center">Origen</th>
                                 <th style={{ minWidth: "100px" }} className="text-center">Vendedor</th>
                                 <th style={{ minWidth: "100px" }} className="text-center">Estatus</th>
                                 <th style={{ minWidth: "70px" }}></th>
@@ -79,45 +79,66 @@ class LeadContacto extends Component {
                                                     </span>
                                                 </td>
                                                 <td>
-                                                    <span className="text-dark-75 font-weight-bolder d-block font-size-lg">{lead.empresa.name}</span>
+                                                    {
+                                                        lead.empresa.isotipos.length > 0 ?
+                                                            lead.empresa.isotipos.map((isotipo, key) => {
+                                                                return (
+                                                                    <OverlayTrigger key={key} overlay={<Tooltip>{lead.empresa.name}</Tooltip>}>
+                                                                        <div className="symbol-group symbol-hover d-flex justify-content-center">
+                                                                            <div className="symbol symbol-40 symbol-circle">
+                                                                                <img alt="Pic" src={isotipo.url} />
+                                                                            </div>
+                                                                        </div>
+                                                                    </OverlayTrigger>
+                                                                )
+                                                            })
+                                                            : <span className="text-dark-75 font-weight-bolder">{lead.empresa.name}</span>
+                                                    }
                                                 </td>
-                                                <td>
+                                                <td className="text-center">
                                                     {
                                                         lead.origen ?
                                                             <span className="text-dark-75 font-weight-bolder d-block font-size-lg">
                                                                 {/* {lead.origen.origen} */}
                                                                 <Dropdown>
-                                                                <Dropdown.Toggle style={{ backgroundColor:'#F3F6F9', color: '#80808F', border: 'transparent', padding: '2.8px 5.6px', width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '12.5px', fontWeight: 500 }}
-                                                                >
-                                                                    {lead.origen.origen.toUpperCase()}
-                                                                </Dropdown.Toggle>
-                                                                <Dropdown.Menu className="p-0">
-                                                                    <Dropdown.Header>
-                                                                        <span className="font-size-sm">Elige una opción</span>
-                                                                    </Dropdown.Header>
-                                                                    {/* <Dropdown.Divider /> */}
-                                                                    {
-                                                                        options.origenes.map((origen,key) => {
-                                                                            return(
-                                                                                <>
-                                                                                    <Dropdown.Item className="p-0" key = { key } onClick = { () => { changeOrigen( origen.value, lead.id ) } } >
-                                                                                        <span className="navi-link w-100">
-                                                                                            <span className="navi-text">
-                                                                                                <span className="label label-xl label-inline  text-gray rounded-0 w-100 font-weight-bolder">
-                                                                                                    {
-                                                                                                        origen.text
-                                                                                                    }
+                                                                    <Dropdown.Toggle 
+                                                                        style={
+                                                                            { 
+                                                                                backgroundColor: '#F3F6F9', color: '#80808F', border: 'transparent', padding: '2.8px 5.6px',
+                                                                                width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '11.5px',
+                                                                                fontWeight: 500
+                                                                            }
+                                                                        }
+                                                                    >
+                                                                        {lead.origen.origen.toUpperCase()}
+                                                                    </Dropdown.Toggle>
+                                                                    <Dropdown.Menu className="p-0">
+                                                                        <Dropdown.Header>
+                                                                            <span className="font-size-sm">Elige una opción</span>
+                                                                        </Dropdown.Header>
+                                                                        {/* <Dropdown.Divider /> */}
+                                                                        {
+                                                                            options.origenes.map((origen, key) => {
+                                                                                return (
+                                                                                    <>
+                                                                                        <Dropdown.Item className="p-0" key={key} onClick={() => { changeOrigen(origen.value, lead.id) }} >
+                                                                                            <span className="navi-link w-100">
+                                                                                                <span className="navi-text">
+                                                                                                    <span className="label label-xl label-inline  text-gray rounded-0 w-100 font-weight-bolder">
+                                                                                                        {
+                                                                                                            origen.text
+                                                                                                        }
+                                                                                                    </span>
                                                                                                 </span>
                                                                                             </span>
-                                                                                        </span>
-                                                                                    </Dropdown.Item>
-                                                                                    <Dropdown.Divider className="m-0" style={{borderTop:'1px solid #fff'}}/>
-                                                                                </>
-                                                                            )
-                                                                        })
-                                                                    }
-                                                                </Dropdown.Menu>
-                                                            </Dropdown>
+                                                                                        </Dropdown.Item>
+                                                                                        <Dropdown.Divider className="m-0" style={{ borderTop: '1px solid #fff' }} />
+                                                                                    </>
+                                                                                )
+                                                                            })
+                                                                        }
+                                                                    </Dropdown.Menu>
+                                                                </Dropdown>
                                                             </span>
                                                             : ''
                                                     }
@@ -142,7 +163,14 @@ class LeadContacto extends Component {
                                                         lead.estatus ?
                                                             /* lead.prospecto.estatus_prospecto ? */
                                                             <Dropdown>
-                                                                <Dropdown.Toggle style={{ backgroundColor: lead.estatus.color_fondo, color: lead.estatus.color_texto, border: 'transparent', padding: '2.8px 5.6px', width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '0.863rem', fontWeight: 500 }}
+                                                                <Dropdown.Toggle 
+                                                                    style={
+                                                                        {
+                                                                            backgroundColor: lead.estatus.color_fondo, color: lead.estatus.color_texto, border: 'transparent', padding: '2.8px 5.6px',
+                                                                            width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '10.7px',
+                                                                            fontWeight: 500
+                                                                        }
+                                                                    }
                                                                 >
                                                                     {lead.estatus.estatus.toUpperCase()}
                                                                 </Dropdown.Toggle>

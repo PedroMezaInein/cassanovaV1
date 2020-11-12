@@ -27,13 +27,13 @@ class LeadContrato extends Component {
                 <div className="table-responsive-lg">
                     <table className="table table-borderless table-vertical-center">
                         <thead>
-                            <tr className="text-left text-uppercase bg-light-green text-green">
+                            <tr className="text-uppercase bg-light-green text-green">
                                 <th style={{ minWidth: "100px" }} className="pl-7">
                                     <span>Nombre del cliente y proyecto</span>
                                 </th>
                                 <th style={{ minWidth: "120px" }}>Fecha</th>
-                                <th style={{ minWidth: "120px" }}>Empresa</th>
                                 <th style={{ minWidth: "100px" }}>Origen</th>
+                                <th style={{ minWidth: "120px" }} className="text-center">Empresa</th>
                                 <th style={{ minWidth: "100px" }} className="text-center">Vendedor</th>
                                 <th style={{ minWidth: "100px" }} className="text-center">Estatus</th>
                                 <th style={{ minWidth: "70px" }}></th>
@@ -73,15 +73,29 @@ class LeadContrato extends Component {
                                                     </span>
                                                 </td>
                                                 <td>
-                                                    <span className="text-dark-75 font-weight-bolder d-block font-size-lg">{lead.empresa.name}</span>
-                                                </td>
-                                                <td>
                                                     {
                                                         lead.origen ?
                                                             <span className="text-dark-75 font-weight-bolder d-block font-size-lg">
                                                                 {lead.origen.origen}
                                                             </span>
                                                             : ''
+                                                    }
+                                                </td>
+                                                <td>
+                                                    {
+                                                        lead.empresa.isotipos.length > 0 ?
+                                                            lead.empresa.isotipos.map((isotipo, key) => {
+                                                                return (
+                                                                    <OverlayTrigger key={key} overlay={<Tooltip>{lead.empresa.name}</Tooltip>}>
+                                                                        <div className="symbol-group symbol-hover d-flex justify-content-center">
+                                                                            <div className="symbol symbol-40 symbol-circle">
+                                                                                <img alt="Pic" src={isotipo.url} />
+                                                                            </div>
+                                                                        </div>
+                                                                    </OverlayTrigger>
+                                                                )
+                                                            })
+                                                            : <span className="text-dark-75 font-weight-bolder">{lead.empresa.name}</span>
                                                     }
                                                 </td>
                                                 <td className="d-flex justify-content-center">
@@ -100,7 +114,7 @@ class LeadContrato extends Component {
                                                     </div>
                                                 </td>
                                                 <td className="text-center">
-                                                    <span className="label label-md label-light-success label-inline font-weight-bold">CONTRATADO</span>
+                                                    <span className="label label-md label-light-success label-inline font-weight-bold" style={{fontSize: '10.7px'}}>CONTRATADO</span>
                                                 </td>
                                                 <td className="pr-0 text-center">
                                                     <OverlayTrigger overlay={<Tooltip>Ver más</Tooltip>}>

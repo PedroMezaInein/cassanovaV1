@@ -1135,6 +1135,8 @@ class Crm extends Component {
                                             openModal={this.openModal}
                                             openModalWithInput={this.openModalWithInput}
                                             changePageLlamadaSalida={this.changePageLlamadaSalida}
+                                            options = { options }
+                                            changeOrigen = { this.changeOrigen }
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="contacto">
