@@ -695,8 +695,6 @@ class LeadInfo extends Component {
 
                 if (lead.presupuesto_diseño) {
 
-                    console.log(lead.presupuesto_diseño, 'PRESUPUESTO DISEÑO')
-
                     formDiseño.fase1 = lead.presupuesto_diseño.fase1
                     formDiseño.fase2 = lead.presupuesto_diseño.fase2
                     formDiseño.renders = lead.presupuesto_diseño.renders
@@ -769,7 +767,7 @@ class LeadInfo extends Component {
                     formDiseño.tiempo_ejecucion_construccion = lead.presupuesto_diseño.tiempo_ejecucion_construccion
                     formDiseño.tiempo_ejecucion_diseno = lead.presupuesto_diseño.tiempo_ejecucion_diseño
                     formDiseño.m2 = lead.presupuesto_diseño.m2
-                    formDiseño.fecha = lead.presupuesto_diseño.fecha
+                    formDiseño.fecha = new Date(lead.presupuesto_diseño.fecha)
                     formDiseño.total = lead.presupuesto_diseño.total
                     formDiseño.subtotal = lead.presupuesto_diseño.subtotal
                     formDiseño.esquema = lead.presupuesto_diseño.esquema
@@ -1339,15 +1337,25 @@ class LeadInfo extends Component {
                                         <Card.Header className="border-0 mt-4 pt-3">
                                             <h3 className="card-title d-flex justify-content-between">
                                                 <span className="font-weight-bolder text-dark align-self-center">Presupuesto de diseño</span>
-                                                <div>
-                                                    <Button
-                                                        icon=''
-                                                        className={"btn btn-icon btn-xs p-3 btn-light-primary mr-2"}
-                                                        onClick={() => { this.openModalPresupuesto() }}
-                                                        only_icon={"far fa-file-pdf icon-15px"}
-                                                        tooltip={{ text: 'PRESUPUESTOS GENERADOS' }}
-                                                    />
-                                                </div>
+                                                { 
+                                                    lead ?
+                                                        lead.presupuesto_diseño ?
+                                                            lead.presupuesto_diseño.pdfs ?
+                                                                lead.presupuesto_diseño.pdfs.length ?
+                                                                    <div>
+                                                                        <Button
+                                                                            icon=''
+                                                                            className={"btn btn-icon btn-xs p-3 btn-light-primary mr-2"}
+                                                                            onClick={() => { this.openModalPresupuesto() }}
+                                                                            only_icon={"far fa-file-pdf icon-15px"}
+                                                                            tooltip={{ text: 'PRESUPUESTOS GENERADOS' }}
+                                                                        />
+                                                                    </div>
+                                                                : ''
+                                                            : ''
+                                                        : ''
+                                                    : ''
+                                                }
                                             </h3>
                                         </Card.Header>
                                         <Card.Body className="pt-0">
