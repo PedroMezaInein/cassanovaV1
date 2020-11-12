@@ -145,7 +145,7 @@ class ProyectosForm extends Component {
                                                                     onChange={e => this.handleToggler(e)}
                                                                     disabled = { form.fase1_relacionado === false ? false : form.fase1_relacionado }
                                                                     />
-                                                                <span></span>
+                                                                <span class = { form.fase1_relacionado === false ? '' : 'disabled-label-span' } ></span>
                                                             </label>
                                                         </div>
                                                     </Form.Group>
@@ -166,7 +166,7 @@ class ProyectosForm extends Component {
                                                                     onChange={e => this.handleToggler(e)}
                                                                     disabled = { form.fase2_relacionado === false ? false : form.fase2_relacionado }
                                                                     />
-                                                                <span></span>
+                                                                <span class = { form.fase2_relacionado === false ? '' : 'disabled-label-span' } ></span>
                                                             </label>
                                                         </div>
                                                     </Form.Group>
@@ -187,7 +187,7 @@ class ProyectosForm extends Component {
                                                                     onChange={e => this.handleToggler(e)}
                                                                     disabled = { form.fase3_relacionado === false ? false : form.fase3_relacionado }
                                                                     />
-                                                                <span></span>
+                                                                <span class = { form.fase3_relacionado === false ? '' : 'disabled-label-span' } ></span>
                                                             </label>
                                                         </div>
                                                     </Form.Group>
