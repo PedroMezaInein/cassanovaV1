@@ -4,9 +4,9 @@ import axios from 'axios'
 import swal from 'sweetalert';
 import { URL_DEV } from '../../../constants'
 import Layout from '../../../components/layout/layout'
-import { errorAlert, forbiddenAccessAlert, doneAlert, waitAlert, questionAlert} from '../../../functions/alert'
+import { errorAlert, forbiddenAccessAlert, doneAlert, waitAlert, questionAlert } from '../../../functions/alert'
 import { setOptions } from '../../../functions/setters'
-import { Card, Accordion } from 'react-bootstrap'
+import { Card, Accordion, Dropdown } from 'react-bootstrap'
 import { ProspectoForm as ProspectoFormulario } from '../../../components/forms'
 import { LeadCard } from '../../../components/cards'
 import { faEye } from '@fortawesome/free-solid-svg-icons'
@@ -37,8 +37,8 @@ class ProspectosForm extends Component {
             success: 'Contactado',
             tipoContacto: '',
             newTipoContacto: '',
-            adjuntos:{
-                adjuntos:{
+            adjuntos: {
+                adjuntos: {
                     files: [],
                     value: '',
                     placeholder: 'Adjuntos'
@@ -285,23 +285,23 @@ class ProspectosForm extends Component {
         })
     }
 
-    changeEstatus = estatus =>  {
-        if(estatus === 'Detenido'){
+    changeEstatus = estatus => {
+        if (estatus === 'Detenido') {
             questionAlert('¿ESTÁS SEGURO?', 'DETENDRÁS EL PROSPECTO ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios(estatus))
         }
-        if(estatus === 'Cancelado' ){
+        if (estatus === 'Cancelado') {
             questionAlert('¿ESTÁS SEGURO?', 'DARÁS POR CANCELADO EL PROSPECTO ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios(estatus))
         }
-        if(estatus === 'Contratado'){
+        if (estatus === 'Contratado') {
             questionAlert('¿ESTÁS SEGURO?', 'DARÁS POR CONTRATADO EL PROSPECTO ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios(estatus))
         }
     }
 
-    async changeEstatusAxios(estatus){
+    async changeEstatusAxios(estatus) {
         waitAlert()
         const { prospecto } = this.state
         const { access_token } = this.props.authUser
-        await axios.put(`${URL_DEV}prospecto/${prospecto.id}/estatus`,{estatus: estatus}, { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.put(`${URL_DEV}prospecto/${prospecto.id}/estatus`, { estatus: estatus }, { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 swal.close()
                 doneAlert('Estado actualizado con éxito')
@@ -324,6 +324,18 @@ class ProspectosForm extends Component {
         })
     }
 
+    
+    estatusText = () => {
+        let estatus = ''
+        const { options, form } = this.state
+        options.estatusProspectos.map(element => { 
+            if (form.estatusProspecto.toString() === element.value.toString()) {
+                estatus = element.name.toUpperCase()
+            }
+            return false
+        })
+        return estatus
+    }
 
     render() {
         const { options, form, formContacto, title, formeditado, lead } = this.state
@@ -337,27 +349,44 @@ class ProspectosForm extends Component {
                         {
                             title === 'Editar prospecto' ?
                                 <div className="card-toolbar">
-                                    <Button
-                                        icon=''
-                                        onClick={() => { this.changeEstatus('Detenido') }}
-                                        className={"btn btn-icon btn-light-info btn-sm mr-2 ml-auto"}
-                                        only_icon={"far fa-clock icon-md"}
-                                        tooltip={{ text: 'DETENER' }}
-                                    />
-                                    <Button
-                                        icon=''
-                                        onClick={() => { this.changeEstatus('Cancelado') }}
-                                        className={"btn btn-icon btn-light-danger btn-sm mr-2"}
-                                        only_icon={"fas fa-times icon-md"}
-                                        tooltip={{ text: 'CANCELAR' }}
-                                    />
-                                    <Button
-                                        icon=''
-                                        onClick={() => { this.changeEstatus('Contratado') }}
-                                        className={"btn btn-icon btn-light-warning btn-sm"}
-                                        only_icon={"fas fa-user-check icon-md"}
-                                        tooltip={{ text: 'CONTRATADO' }}
-                                    />
+                                    <Dropdown>
+                                        <Dropdown.Toggle
+                                            style={
+                                                { 
+                                                    backgroundColor: '#F3F6F9', color: '#80808F', border: 'transparent', padding: '2.8px 5.6px', 
+                                                    width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center',
+                                                    fontSize: '12.5px', fontWeight: 500 
+                                                }
+                                            }
+                                        >
+                                            {this.estatusText()} 
+                                        </Dropdown.Toggle>
+                                        <Dropdown.Menu className="p-0">
+                                            <Dropdown.Header>
+                                                <span className="font-size-sm">Elige una opción</span>
+                                            </Dropdown.Header>
+                                            {
+                                                options.estatusProspectos.map((estatus, key) => {
+                                                    return (
+                                                        <>
+                                                            <Dropdown.Item className="p-0" key={key} onClick={() => { this.changeEstatus(estatus.name) }} >
+                                                                <span className="navi-link w-100">
+                                                                    <span className="navi-text">
+                                                                        <span className="label label-xl label-inline  text-gray rounded-0 w-100 font-weight-bolder">
+                                                                            {
+                                                                                estatus.name
+                                                                            }
+                                                                        </span>
+                                                                    </span>
+                                                                </span>
+                                                            </Dropdown.Item>
+                                                            <Dropdown.Divider className="m-0" style={{ borderTop: '1px solid #fff' }} />
+                                                        </>
+                                                    )
+                                                })
+                                            }
+                                        </Dropdown.Menu>
+                                    </Dropdown>
                                 </div>
                                 : ''
                         }
@@ -373,8 +402,8 @@ class ProspectosForm extends Component {
                             onChangeContacto={this.onChangeContacto}
                             onSubmit={this.onSubmit}
                             title={title}
-                            handleChange={this.handleChange}
-                            >
+                            handleChange={this.handleChange} 
+                        >
                             {
                                 lead ?
                                     <Accordion>
