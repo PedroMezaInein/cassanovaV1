@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../../functions/routers"
+import { setDateTableLG } from '../../../../functions/setters';
 class PresupuestoGenerado extends Component {
     render() {
-        const { } = this.props
+        const { pdfs } = this.props
         return (
             <div className="table-responsive mt-4">
                 <table className="table  table-head-bg table-borderless table-vertical-center">
@@ -17,26 +18,36 @@ class PresupuestoGenerado extends Component {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>
-                                <div className="d-flex align-items-center">
-                                    <div>
-                                        <a href="#" className="text-dark-75 font-weight-bolder text-hover-success mb-1 font-size-lg">INEIN-100.PDF</a>
-                                        <span className="text-muted font-weight-bold d-block">Fecha</span>
-                                    </div>
-                                </div>
-                            </td>
-                            <td className="text-center">
-                                <span className="text-dark-75 font-weight-bolder d-block font-size-lg">100</span>
-                            </td>
-                            <td className="text-center">
-                                <a className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-success">
-                                    <span className="svg-icon svg-icon-md">
-                                        <SVG src={toAbsoluteUrl('/images/svg/Sending-mail.svg')} />
-                                    </span>
-                                </a>
-                            </td>
-                        </tr>
+                        {
+                            pdfs.map((pdf, index) => {
+                                return(
+                                    <tr key = { index } >
+                                        <td>
+                                            <div className="d-flex align-items-center">
+                                                <div>
+                                                    <a target="_blank" href={pdf.url} className="text-dark-75 font-weight-bolder text-hover-success mb-1 font-size-lg">{pdf.name}</a>
+                                                    <span className="text-muted font-weight-bold d-block">
+                                                        {
+                                                            setDateTableLG(pdf.created_at)
+                                                        }
+                                                    </span>
+                                                </div>
+                                            </div>
+                                        </td>
+                                        <td className="text-center">
+                                            <span className="text-dark-75 font-weight-bolder d-block font-size-lg">{pdf.pivot.identificador}</span>
+                                        </td>
+                                        <td className="text-center">
+                                            <a className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-success">
+                                                <span className="svg-icon svg-icon-md">
+                                                    <SVG src={toAbsoluteUrl('/images/svg/Sending-mail.svg')} />
+                                                </span>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                )
+                            })
+                        }
                     </tbody>
                 </table>
             </div>
