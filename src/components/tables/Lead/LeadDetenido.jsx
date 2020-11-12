@@ -27,13 +27,13 @@ class LeadDetenido extends Component {
                 <div className="table-responsive-lg">
                     <table className="table table-borderless table-vertical-center">
                         <thead>
-                            <tr className="text-left text-uppercase bg-light-gray text-gray">
+                            <tr className="text-uppercase bg-light-gray text-gray">
                                 <th style={{ minWidth: "100px" }} className="pl-7">
                                     <span>Nombre del cliente y proyecto</span>
                                 </th>
                                 <th style={{ minWidth: "120px" }}>Fecha</th>
-                                <th style={{ minWidth: "120px" }}>Empresa</th>
                                 <th style={{ minWidth: "100px" }}>Origen</th>
+                                <th style={{ minWidth: "120px" }} className="text-center">Empresa</th>
                                 <th style={{ minWidth: "100px" }} className="text-center">Vendedor</th>
                                 <th style={{ minWidth: "100px" }} className="text-center">Estatus</th>
                                 <th style={{ minWidth: "70px" }}></th>
@@ -75,15 +75,29 @@ class LeadDetenido extends Component {
                                                     <span>Último contacto: </span><span className="text-muted font-weight-bold font-size-sm">{setDateTableLG(lead.prospecto.contactos[0].created_at)}</span>
                                                 </td>
                                                 <td>
-                                                    <span className="text-dark-75 font-weight-bolder d-block font-size-lg">{lead.empresa.name}</span>
-                                                </td>
-                                                <td>
                                                     {
                                                         lead.origen ?
                                                             <span className="text-dark-75 font-weight-bolder d-block font-size-lg">
                                                                 {lead.origen.origen}
                                                             </span>
                                                             : ''
+                                                    }
+                                                </td>
+                                                <td>
+                                                    {
+                                                        lead.empresa.isotipos.length > 0 ?
+                                                            lead.empresa.isotipos.map((isotipo, key) => {
+                                                                return (
+                                                                    <OverlayTrigger key={key} overlay={<Tooltip>{lead.empresa.name}</Tooltip>}>
+                                                                        <div className="symbol-group symbol-hover d-flex justify-content-center">
+                                                                            <div className="symbol symbol-40 symbol-circle">
+                                                                                <img alt="Pic" src={isotipo.url} />
+                                                                            </div>
+                                                                        </div>
+                                                                    </OverlayTrigger>
+                                                                )
+                                                            })
+                                                            : <span className="text-dark-75 font-weight-bolder">{lead.empresa.name}</span>
                                                     }
                                                 </td>
                                                 <td className="d-flex justify-content-center">
@@ -106,7 +120,14 @@ class LeadDetenido extends Component {
                                                         lead.estatus ?
                                                             /* lead.prospecto.estatus_prospecto ? */
                                                             <Dropdown>
-                                                                <Dropdown.Toggle style={{ backgroundColor: lead.estatus.color_fondo, color: lead.estatus.color_texto, border: 'transparent', padding: '2.8px 5.6px', width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '0.863rem', fontWeight: 500 }}
+                                                                <Dropdown.Toggle 
+                                                                    style={
+                                                                        {
+                                                                            backgroundColor: lead.estatus.color_fondo, color: lead.estatus.color_texto, border: 'transparent', padding: '2.8px 5.6px',
+                                                                            width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '10.7px',
+                                                                            fontWeight: 500
+                                                                        }
+                                                                    }
                                                                 >
                                                                     {lead.estatus.estatus.toUpperCase()}
                                                                 </Dropdown.Toggle>
