@@ -1377,8 +1377,18 @@ class LeadInfo extends Component {
                     </Row >
                 </Tab.Container>
                 <Modal title="Presupuestos generados" show={modal.presupuesto} handleClose={this.handleCloseModalPresupuesto} >
-                    <PresupuestoGenerado
-                    />
+                    {
+                        lead ?
+                            lead.presupuesto_diseño ?
+                                lead.presupuesto_diseño.pdfs ?
+                                    lead.presupuesto_diseño.pdfs.length ?
+                                        <PresupuestoGenerado pdfs = { lead.presupuesto_diseño.pdfs } />
+                                    : ''
+                                : ''
+                            : ''
+                        : ''
+                    }
+                    
                 </Modal>
             </Layout >
         )
