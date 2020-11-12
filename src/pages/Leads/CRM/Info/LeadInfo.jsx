@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import React, { Component } from 'react'
 import Layout from '../../../../components/layout/layout'
-import { Col, Row, Card, Tab, Nav, Dropdown, Form } from 'react-bootstrap'
+import { Col, Row, Card, Tab, Nav, Dropdown, Form, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { Button, InputGray, InputPhoneGray } from '../../../../components/form-components';
 import { TEL, URL_DEV, EMAIL } from '../../../../constants'
 import SVG from "react-inlinesvg";
@@ -10,10 +10,11 @@ import { setOptions, setDateTableLG } from '../../../../functions/setters';
 import axios from 'axios'
 import { doneAlert, errorAlert, forbiddenAccessAlert, waitAlert, questionAlert2, questionAlert } from '../../../../functions/alert';
 import swal from 'sweetalert';
-import { HistorialContactoForm, AgendarCitaForm, PresupuestoDiseñoCRMForm, PresupuestoGenerado } from '../../../../components/forms'
+import { HistorialContactoForm, AgendarCitaForm, PresupuestoDiseñoCRMForm, PresupuestoGenerado, LlamadaSeguimientoForm } from '../../../../components/forms'
 import { Modal } from '../../../../components/singles'
 class LeadInfo extends Component {
     state = {
+        tipo: '',
         modal: {
             presupuesto: false,
         },
@@ -174,7 +175,8 @@ class LeadInfo extends Component {
         if (state) {
             if (state.lead) {
                 const { form, options } = this.state
-                const { lead } = state
+                const { lead, tipo } = state
+                console.log(tipo, 'tipo')
                 form.name = lead.nombre === 'SIN ESPECIFICAR' ? '' : lead.nombre.toUpperCase()
                 form.email = lead.email.toUpperCase()
                 form.telefono = lead.telefono
@@ -184,10 +186,11 @@ class LeadInfo extends Component {
                     lead: lead,
                     form,
                     formeditado: 1,
-                    options
+                    options,
+                    tipo: tipo
                 })
                 this.getPresupuestoDiseñoOptionsAxios(lead.id)
-                this.getLeadEnContacto(lead.id)
+                this.getOneLead(lead.id, tipo)
             }
             else
                 history.push('/leads/crm')
@@ -651,7 +654,7 @@ class LeadInfo extends Component {
                     formAgenda,
                     modal: false
                 })
-                this.getLeadEnContacto(lead.id)
+                this.getOneLead(lead.id)
                 doneAlert('Evento generado con éxito');
             },
             (error) => {
@@ -681,9 +684,24 @@ class LeadInfo extends Component {
         )
     }
 
-    async getLeadEnContacto(id) {
+    async getOneLead(id, aux) {
+
+        let { tipo } = this.state
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'crm/table/lead-en-contacto/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        
+        if(tipo === '' )
+            tipo = aux
+
+        console.log(aux, 'aux')
+
+        let api = ''
+        
+        if(tipo === 'En contacto')
+            api = 'crm/table/lead-en-contacto/';
+        else
+            api = 'crm/table/lead-en-negociacion/';
+        
+        await axios.get(URL_DEV + api + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { lead } = response.data
                 const { history } = this.props
@@ -854,7 +872,7 @@ class LeadInfo extends Component {
         await axios.put(URL_DEV + 'crm/email/lead-potencial/' + lead.id, {}, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert('Correo enviado con éxito');
-                this.getLeadEnContacto(lead.id)
+                this.getOneLead(lead.id)
             },
             (error) => {
                 console.log(error, 'error')
@@ -907,7 +925,7 @@ class LeadInfo extends Component {
         await axios.put(URL_DEV + 'crm/update/lead-en-contacto/' + lead.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito el lead.')
-                this.getLeadEnContacto(lead.id)
+                this.getOneLead(lead.id)
             },
             (error) => {
                 console.log(error, 'error')
@@ -974,7 +992,7 @@ class LeadInfo extends Component {
                 }
                 else
                     doneAlert('Presupuesto generado con éxito')
-                this.getLeadEnContacto(lead.id)
+                this.getOneLead(lead.id)
             },
             (error) => {
                 console.log(error, 'error')
@@ -1005,10 +1023,11 @@ class LeadInfo extends Component {
             modal
         })
     }
+
     render() {
-        const { lead, form, formHistorial, options, formAgenda, formDiseño, modal } = this.state
+        const { lead, form, formHistorial, options, formAgenda, formDiseño, modal, tipo } = this.state
         return (
-            <Layout active={'leads'}  {...this.props}>
+            <Layout active={'leads'}  {...this.props} botonHeader = { this.botonHeader } >
                 <Tab.Container defaultActiveKey="1" className="p-5">
                     <Row>
                         <Col md={12} className="mb-3">
@@ -1075,7 +1094,7 @@ class LeadInfo extends Component {
                                                                             </span>
                                                                         </div>
                                                                     </div>
-                                                                    <div className="d-flex flex-wrap my-2">
+                                                                    <div className="d-flex flex-wrap mt-2 mb-1">
                                                                         <a href={`mailto:+${lead.email}`} className="text-muted text-hover-primary font-weight-bold mr-4">
                                                                             <span className="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
                                                                                 <SVG src={toAbsoluteUrl('/images/svg/Mail-notification.svg')} />
@@ -1086,6 +1105,8 @@ class LeadInfo extends Component {
                                                                                 <SVG src={toAbsoluteUrl('/images/svg/Active-call.svg')} />
                                                                             </span>{lead.telefono}
                                                                         </a>
+                                                                    </div>
+                                                                    <div className="d-flex flex-wrap mt-0 mb-2">
                                                                         <div className="text-muted text-hover-primary font-weight-bold mr-4">
                                                                             <span className="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
                                                                                 <SVG src={toAbsoluteUrl('/images/svg/Building.svg')} />
@@ -1139,6 +1160,22 @@ class LeadInfo extends Component {
                                                                             </div>
                                                                         </Nav.Link>
                                                                     </Nav.Item>
+                                                                    {
+                                                                        lead.prospecto.estatus_prospecto.estatus === 'En negociación' ?
+                                                                            <Nav.Item className="navi-item ml-3">
+                                                                                <Nav.Link className="navi-link px-2" eventKey="4" style={{ display: '-webkit-box' }}>
+                                                                                    <span className="navi-icon mr-2">
+                                                                                        <span className="svg-icon">
+                                                                                            <SVG src={toAbsoluteUrl('/images/svg/Incoming-call.svg')} />
+                                                                                        </span>
+                                                                                    </span>
+                                                                                    <div className="navi-text">
+                                                                                        <span className="d-block font-weight-bold">Llamada de seguimiento</span>
+                                                                                    </div>
+                                                                                </Nav.Link>
+                                                                            </Nav.Item>
+                                                                        : ''
+                                                                    }
                                                                 </Nav>
                                                             </div>
                                                         </div>
@@ -1377,6 +1414,18 @@ class LeadInfo extends Component {
                                                 onSubmit={this.onSubmitPresupuestoDiseño}
                                                 submitPDF={this.onSubmitPDF}
                                             />
+                                        </Card.Body>
+                                    </Tab.Pane>
+                                    <Tab.Pane eventKey="4">
+                                        <Card.Header className="align-items-center border-0 mt-4 pt-3 pb-0">
+                                            <Card.Title>
+                                                <h3 className="card-title align-items-start flex-column">
+                                                    <span className="font-weight-bolder text-dark">Llamada de seguimiento</span>
+                                                </h3>
+                                            </Card.Title>
+                                        </Card.Header>
+                                        <Card.Body className="py-0">
+                                            <LlamadaSeguimientoForm />
                                         </Card.Body>
                                     </Tab.Pane>
                                 </Tab.Content>

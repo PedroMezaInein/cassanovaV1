@@ -69,6 +69,7 @@ import historialContactoForm from './leads/info/HistorialContactoForm'
 import agendarCitaForm from './leads/info/AgendarCitaForm'
 import presupuestoDiseñoCRMForm from './leads/info/PresupuestoDiseñoCRMForm'
 import presupuestoGenerado from './leads/info/PresupuestoGenerado'
+import llamadaSeguimientoForm from './leads/LlamadaSeguimientoForm'
 
 export const RegisterUserForm = registerUserForm
 export const EmpresaForm = empresaForm
@@ -141,4 +142,4 @@ export const HistorialContactoForm = historialContactoForm
 export const AgendarCitaForm = agendarCitaForm
 export const PresupuestoDiseñoCRMForm = presupuestoDiseñoCRMForm
 export const PresupuestoGenerado = presupuestoGenerado
-
+export const LlamadaSeguimientoForm = llamadaSeguimientoForm

@@ -932,6 +932,7 @@ class Crm extends Component {
             </div>
         )
     }    
+    
     changePageLlamadaSalida = (lead) => {
         const { history } = this.props
         history.push({
@@ -939,11 +940,20 @@ class Crm extends Component {
             state: { lead: lead }
         });
     }
-    changePageDetails = (lead) => {
+
+    changePageDetailsContacto = (lead) => {
         const { history } = this.props
         history.push({
             pathname: '/leads/crm/info/info',
-            state: { lead: lead }
+            state: { lead: lead, tipo: 'En contacto' }
+        });
+    }
+
+    changePageDetailsNegociacion = (lead) => {
+        const { history } = this.props
+        history.push({
+            pathname: '/leads/crm/info/info',
+            state: { lead: lead, tipo: 'En negociación' }
         });
     }
 
@@ -1146,7 +1156,7 @@ class Crm extends Component {
                                             onClickPrev = { this.prevPageLeadEnContacto }
                                             changeEstatus = { this.changeEstatus }
                                             openModalWithInput = { this.openModalWithInput }
-                                            changePageDetails = { this.changePageDetails }
+                                            changePageDetails = { this.changePageDetailsContacto }
                                             options = { options }
                                             changeOrigen = { this.changeOrigen }
                                         />
@@ -1158,6 +1168,7 @@ class Crm extends Component {
                                             onClickPrev = { this.prevPageLeadEnNegociacion }
                                             changeEstatus = { this.changeEstatus }
                                             openModalWithInput = { this.openModalWithInput }
+                                            changePageDetails = { this.changePageDetailsNegociacion }
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="contratados">

@@ -89,7 +89,7 @@ class LeadRhProveedor extends Component {
                                                             }
                                                         </span>
                                                     </td>
-                                                    <td>
+                                                    <td className="text-center">
                                                         {
                                                             lead.empresa.isotipos.length > 0 ?
                                                                 lead.empresa.isotipos.map((isotipo, key) => {
