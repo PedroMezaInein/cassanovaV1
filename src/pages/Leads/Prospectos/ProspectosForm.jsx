@@ -145,6 +145,21 @@ class ProspectosForm extends Component {
             this.addProspectoAxios(form);
     }
 
+    setOptionsEstatus = (arreglo, name, value) => {
+        let aux = []
+        arreglo.map((element) => {
+            aux.push(
+                { 
+                    name: element[name], 
+                    value: element[value].toString(),
+                    color: element.color_texto,
+                    fondo: element.color_fondo
+                }
+            )
+        });
+        return aux
+    }
+
     async getOptionsAxios() {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'prospecto/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -160,10 +175,10 @@ class ProspectosForm extends Component {
                     value: 'New', name: '+ Agregar nuevo'
                 })
                 options.vendedores = setOptions(vendedores, 'name', 'id')
-                options.estatusProspectos = setOptions(estatusProspectos, 'estatus', 'id')
-                options.estatusProspectos.push({
+                options.estatusProspectos = this.setOptionsEstatus(estatusProspectos, 'estatus', 'id')
+                /* options.estatusProspectos.push({
                     value: 'New', name: '+ Agregar nuevo'
-                })
+                }) */
                 this.setState({
                     ...this.state,
                     options
@@ -292,8 +307,14 @@ class ProspectosForm extends Component {
         if (estatus === 'Cancelado') {
             questionAlert('¿ESTÁS SEGURO?', 'DARÁS POR CANCELADO EL PROSPECTO ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios(estatus))
         }
+        if (estatus === 'Rechazado') {
+            questionAlert('¿ESTÁS SEGURO?', 'DARÁS POR RECHAZADO EL PROSPECTO ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios(estatus))
+        }
         if (estatus === 'Contratado') {
             questionAlert('¿ESTÁS SEGURO?', 'DARÁS POR CONTRATADO EL PROSPECTO ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios(estatus))
+        }
+        if (estatus === 'En proceso') {
+            questionAlert('¿ESTÁS SEGURO?', 'REACTIVARÁS EL PROSPECTO ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios(estatus))
         }
     }
 
@@ -324,7 +345,6 @@ class ProspectosForm extends Component {
         })
     }
 
-    
     estatusText = () => {
         let estatus = ''
         const { options, form } = this.state
@@ -367,12 +387,15 @@ class ProspectosForm extends Component {
                                             </Dropdown.Header>
                                             {
                                                 options.estatusProspectos.map((estatus, key) => {
+                                                    if(estatus.name === 'Cancelado' || estatus.name === 'En proceso' || estatus.name === 'Contratado' ||
+                                                        estatus.name === 'Detenido' || estatus.name === 'Rechazado')
                                                     return (
                                                         <>
                                                             <Dropdown.Item className="p-0" key={key} onClick={() => { this.changeEstatus(estatus.name) }} >
                                                                 <span className="navi-link w-100">
                                                                     <span className="navi-text">
-                                                                        <span className="label label-xl label-inline  text-gray rounded-0 w-100 font-weight-bolder">
+                                                                        <span className="label label-xl label-inline rounded-0 w-100 font-weight-bolder" 
+                                                                            style = {{ color: estatus.color, backgroundColor: estatus.fondo }}>
                                                                             {
                                                                                 estatus.name
                                                                             }
