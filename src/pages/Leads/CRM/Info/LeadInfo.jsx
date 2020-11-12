@@ -870,11 +870,11 @@ class LeadInfo extends Component {
         })
     }
 
-    sendCorreoPresupuesto = async() => {
+    sendCorreoPresupuesto = async(identificador) => {
         waitAlert()
         const { access_token } = this.props.authUser
         const { lead } = this.state
-        await axios.put(URL_DEV + 'crm/email/envio-cotizacion/' + lead.id, {identificador: 101}, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.put(URL_DEV + 'crm/email/envio-cotizacion/' + lead.id, {identificador: identificador}, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { history } = this.props
                 doneAlert('Correo enviado con éxito')
@@ -945,6 +945,13 @@ class LeadInfo extends Component {
         )
     }
 
+    onClickSendPresupuesto = pdf => {
+        questionAlert2('¡NO PODRÁS REVERTIR ESTO!', '', 
+            () => this.sendCorreoPresupuesto(pdf.pivot.identificador), 
+            this.getTextAlert(pdf.pivot.url)
+        )
+    }
+
     onSubmitPresupuestoDiseñoAxios = async (pdf) => {
         waitAlert();
         const { access_token } = this.props.authUser
@@ -960,8 +967,9 @@ class LeadInfo extends Component {
                                 if(presupuesto.pdfs[0].pivot){
                                     swal.close()
                                     questionAlert2('¡NO PODRÁS REVERTIR ESTO!', '', 
-                                    () => this.sendCorreoPresupuesto(presupuesto.pdfs[0].pivot.identificador), 
-                                    this.getTextAlert(presupuesto.pdfs[0].pivot.url))
+                                        () => this.sendCorreoPresupuesto(presupuesto.pdfs[0].pivot.identificador), 
+                                        this.getTextAlert(presupuesto.pdfs[0].pivot.url)
+                                    )
                                 }
                 }
                 else
@@ -1382,7 +1390,7 @@ class LeadInfo extends Component {
                             lead.presupuesto_diseño ?
                                 lead.presupuesto_diseño.pdfs ?
                                     lead.presupuesto_diseño.pdfs.length ?
-                                        <PresupuestoGenerado pdfs = { lead.presupuesto_diseño.pdfs } />
+                                        <PresupuestoGenerado pdfs = { lead.presupuesto_diseño.pdfs } onClick = { this.onClickSendPresupuesto } />
                                     : ''
                                 : ''
                             : ''

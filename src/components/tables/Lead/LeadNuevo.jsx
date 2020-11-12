@@ -41,7 +41,7 @@ class LeadNuevo extends Component {
         return true
     }
     render() {
-        const { leads, onClickPrev, onClickNext, sendEmail, openModal, openModalWithInput, changePageLlamadaSalida } = this.props
+        const { leads, onClickPrev, onClickNext, sendEmail, openModal, openModalWithInput, changePageLlamadaSalida, options, changeOrigen } = this.props
         return (
             <>
                 <div className="tab-content">
@@ -53,129 +53,188 @@ class LeadNuevo extends Component {
                                         <span>Nombre del cliente</span>
                                     </th>
                                     <th style={{ minWidth: "140px" }}>Fecha</th>
-                                    <th style={{ minWidth: "100px" }}>Empresa</th>
                                     <th style={{ minWidth: "100px" }}>Servicios</th>
-                                    <th style={{ minWidth: "100px" }}>Origen</th>
+                                    <th style={{ minWidth: "95px" }} className="text-center">Empresa</th>
+                                    <th style={{ minWidth: "100px" }} className="text-center">Origen</th>
                                     <th style={{ minWidth: "100px" }} className="text-center">Estatus</th>
-                                    <th style={{ minWidth: "92px" }}></th>
+                                    <th style={{ minWidth: "105px" }}></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {
-                                    leads.total === 0 ?
-                                        <tr>
-                                            <td colSpan="6" className="text-center text-dark-75 font-weight-bolder font-size-lg pt-3">NO SE ENCONTRARON RESULTADOS</td>
-                                        </tr>
-                                        :
-                                        leads.data.map((lead, key) => {
-                                            return (
-                                                <tr key={key}>
-                                                    <td className="pl-0 py-8">
-                                                        <div className="d-flex align-items-center">
-                                                            <div className="symbol symbol-45 mr-3">
-                                                                <span className="symbol-label font-size-h5 bg-info-o-20 text-info">{lead.nombre.charAt(0)}</span>
+                                    leads.total?
+                                        leads.total === 0 ?
+                                            <tr>
+                                                <td colSpan="6" className="text-center text-dark-75 font-weight-bolder font-size-lg pt-3">NO SE ENCONTRARON RESULTADOS</td>
+                                            </tr>
+                                            :
+                                            leads.data.map((lead, key) => {
+                                                return (
+                                                    <tr key={key}>
+                                                        <td className="pl-0 py-8">
+                                                            <div className="d-flex align-items-center">
+                                                                <div className="symbol symbol-45 mr-3">
+                                                                    <span className="symbol-label font-size-h5 bg-info-o-20 text-info">{lead.nombre.charAt(0)}</span>
+                                                                </div>
+                                                                <div>
+                                                                    <a href={`mailto:+${lead.email}`} className="text-dark-75 font-weight-bolder text-hover-info mb-1 font-size-lg">{lead.nombre}</a>
+                                                                </div>
                                                             </div>
-                                                            <div>
-                                                                <a href={`mailto:+${lead.email}`} className="text-dark-75 font-weight-bolder text-hover-info mb-1 font-size-lg">{lead.nombre}</a>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                    <td className="font-size-lg text-left font-weight-bolder">
-                                                        <span>Ingreso: </span><span className="text-muted font-weight-bold font-size-sm">{setDateTableLG(lead.created_at)}</span><br />
-                                                    </td>
-                                                    <td>
-                                                        <span className="text-dark-75 font-weight-bolder d-block font-size-lg">{lead.empresa.name}</span>
-                                                    </td>
-                                                    <td>
-                                                        <ul className="list-unstyled">
+                                                        </td>
+                                                        <td className="font-size-lg text-left font-weight-bolder">
+                                                            <span>Ingreso: </span><span className="text-muted font-weight-bold font-size-sm">{setDateTableLG(lead.created_at)}</span><br />
+                                                        </td>
+                                                        <td>
+                                                            <ul className="list-unstyled">
+                                                                {
+                                                                    lead.servicios.length > 0 ?
+                                                                        lead.servicios.map((servicio, key) => {
+                                                                            return (
+                                                                                <li key={key} className="text-dark-75 font-weight-bolder">{servicio.servicio}</li>
+                                                                            )
+                                                                        })
+                                                                        : <span className="text-dark-75 font-weight-bolder">Sin servicios</span>
+                                                                }
+                                                            </ul>
+                                                        </td>
+                                                        <td>
                                                             {
-                                                                lead.servicios.length > 0 ?
-                                                                    lead.servicios.map((servicio, key) => {
+                                                                lead.empresa.isotipos.length > 0 ?
+                                                                    lead.empresa.isotipos.map((isotipo, key) => {
                                                                         return (
-                                                                            <li key={key} className="text-dark-75 font-weight-bolder">{servicio.servicio}</li>
+                                                                            <OverlayTrigger key={key} overlay={<Tooltip>{lead.empresa.name}</Tooltip>}>
+                                                                                <div className="symbol-group symbol-hover d-flex justify-content-center">
+                                                                                    <div className="symbol symbol-40 symbol-circle">
+                                                                                        <img alt="Pic" src={isotipo.url}/>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </OverlayTrigger>
                                                                         )
                                                                     })
-                                                                    : <span className="text-dark-75 font-weight-bolder">Sin servicios</span>
+                                                                    : <span className="text-dark-75 font-weight-bolder">{lead.empresa.name}</span>
                                                             }
-                                                        </ul>
-                                                    </td>
-                                                    <td className="text-center">
-                                                        <div className="text-dark-75 font-weight-bolder font-size-lg">
-                                                            {
-                                                                lead.origen ?
-                                                                    lead.origen.origen
-                                                                : ''
-                                                            }
-                                                        </div>
-                                                    </td>
-                                                    <td className="text-center">
-                                                        {
-                                                            lead.estatus ?
-                                                                <Dropdown>
-                                                                    <Dropdown.Toggle
-                                                                        style={
-                                                                            {
-                                                                                backgroundColor: lead.estatus.color_fondo, color: lead.estatus.color_texto, border: 'transparent', padding: '2.8px 5.6px',
-                                                                                width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '0.863rem',
-                                                                                fontWeight: 500
-                                                                            }}>
-                                                                        {lead.estatus.estatus.toUpperCase()}
-                                                                    </Dropdown.Toggle>
-                                                                    <Dropdown.Menu className="p-0">
-                                                                        <Dropdown.Header>
-                                                                            <span className="font-size-sm">Elige una opción</span>
-                                                                        </Dropdown.Header>
-                                                                        <Dropdown.Item className="p-0" onClick={(e) => { e.preventDefault(); openModalWithInput('Cancelado', lead.id) }} >
-                                                                            <span className="navi-link w-100">
-                                                                                <span className="navi-text">
-                                                                                    <span className="label label-xl label-inline label-light-danger rounded-0 w-100">CANCELADO</span>
-                                                                                </span>
-                                                                            </span>
-                                                                        </Dropdown.Item>
-                                                                        <Dropdown.Item className="p-0" onClick={(e) => { e.preventDefault(); openModalWithInput('Rechazado', lead.id) }} >
-                                                                            <span className="navi-link w-100">
-                                                                                <span className="navi-text">
-                                                                                    <span className="label label-xl label-inline label-light-danger rounded-0 w-100">RECHAZADO</span>
-                                                                                </span>
-                                                                            </span>
-                                                                        </Dropdown.Item>
-                                                                    </Dropdown.Menu>
-                                                                </Dropdown>
-                                                                : ''
-                                                        }
-                                                    </td>
-                                                    <td className="pr-0 text-center">
-                                                        {
-                                                            this.canSendFirstEmail(lead) ?
-                                                                <OverlayTrigger overlay={<Tooltip>ENVIAR CORREO</Tooltip>}>
-                                                                    <span onClick={(e) => { questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => sendEmail(lead)) }}
-                                                                        className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-info">
-                                                                        <span className="svg-icon svg-icon-md ">{/* svg-icon-primary */}
-                                                                            <SVG src={toAbsoluteUrl('/images/svg/Outgoing-mail.svg')} />
+                                                        </td>
+                                                        <td className="text-center">
+                                                            <div className="text-dark-75 font-weight-bolder font-size-lg">
+                                                                {
+                                                                    lead.origen ?
+                                                                        <span className="text-dark-75 font-weight-bolder d-block font-size-lg">
+                                                                            {/* {lead.origen.origen} */}
+                                                                            <Dropdown>
+                                                                            <Dropdown.Toggle 
+                                                                                style={
+                                                                                    { 
+                                                                                        backgroundColor:'#F3F6F9', color: '#80808F', border: 'transparent', padding: '2.8px 5.6px',
+                                                                                        width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '11.5px',
+                                                                                        fontWeight: 500 
+                                                                                    }
+                                                                                }
+                                                                            >
+                                                                                {lead.origen.origen.toUpperCase()}
+                                                                            </Dropdown.Toggle>
+                                                                            <Dropdown.Menu className="p-0">
+                                                                                <Dropdown.Header>
+                                                                                    <span className="font-size-sm">Elige una opción</span>
+                                                                                </Dropdown.Header>
+                                                                                {/* <Dropdown.Divider /> */}
+                                                                                {
+                                                                                    options.origenes.map((origen,key) => {
+                                                                                        return(
+                                                                                            <>
+                                                                                                <Dropdown.Item className="p-0" key = { key } onClick = { () => { changeOrigen( origen.value, lead.id ) } } >
+                                                                                                    <span className="navi-link w-100">
+                                                                                                        <span className="navi-text">
+                                                                                                            <span className="label label-xl label-inline  text-gray rounded-0 w-100 font-weight-bolder">
+                                                                                                                {
+                                                                                                                    origen.text
+                                                                                                                }
+                                                                                                            </span>
+                                                                                                        </span>
+                                                                                                    </span>
+                                                                                                </Dropdown.Item>
+                                                                                                <Dropdown.Divider className="m-0" style={{borderTop:'1px solid #fff'}}/>
+                                                                                            </>
+                                                                                        )
+                                                                                    })
+                                                                                }
+                                                                            </Dropdown.Menu>
+                                                                        </Dropdown>
                                                                         </span>
+                                                                        : ''
+                                                                }
+                                                            </div>
+                                                        </td>
+                                                        <td className="text-center">
+                                                            {
+                                                                lead.estatus ?
+                                                                    <Dropdown>
+                                                                        <Dropdown.Toggle
+                                                                            style={
+                                                                                {
+                                                                                    backgroundColor: lead.estatus.color_fondo, color: lead.estatus.color_texto, border: 'transparent', padding: '2.8px 5.6px',
+                                                                                    width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '10.7px',
+                                                                                    fontWeight: 500
+                                                                                }
+                                                                            }
+                                                                        >
+                                                                            {lead.estatus.estatus.toUpperCase()}
+                                                                        </Dropdown.Toggle>
+                                                                        <Dropdown.Menu className="p-0">
+                                                                            <Dropdown.Header>
+                                                                                <span className="font-size-sm">Elige una opción</span>
+                                                                            </Dropdown.Header>
+                                                                            <Dropdown.Item className="p-0" onClick={(e) => { e.preventDefault(); openModalWithInput('Cancelado', lead.id) }} >
+                                                                                <span className="navi-link w-100">
+                                                                                    <span className="navi-text">
+                                                                                        <span className="label label-xl label-inline label-light-danger rounded-0 w-100">CANCELADO</span>
+                                                                                    </span>
+                                                                                </span>
+                                                                            </Dropdown.Item>
+                                                                            <Dropdown.Item className="p-0" onClick={(e) => { e.preventDefault(); openModalWithInput('Rechazado', lead.id) }} >
+                                                                                <span className="navi-link w-100">
+                                                                                    <span className="navi-text">
+                                                                                        <span className="label label-xl label-inline label-light-danger rounded-0 w-100">RECHAZADO</span>
+                                                                                    </span>
+                                                                                </span>
+                                                                            </Dropdown.Item>
+                                                                        </Dropdown.Menu>
+                                                                    </Dropdown>
+                                                                    : ''
+                                                            }
+                                                        </td>
+                                                        <td className="pr-0 text-center">
+                                                            {
+                                                                this.canSendFirstEmail(lead) ?
+                                                                    <OverlayTrigger overlay={<Tooltip>ENVIAR CORREO</Tooltip>}>
+                                                                        <span onClick={(e) => { questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => sendEmail(lead)) }}
+                                                                            className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-info">
+                                                                            <span className="svg-icon svg-icon-md ">{/* svg-icon-primary */}
+                                                                                <SVG src={toAbsoluteUrl('/images/svg/Outgoing-mail.svg')} />
+                                                                            </span>
+                                                                        </span>
+                                                                    </OverlayTrigger>
+                                                                    : ''
+                                                            }
+                                                            <OverlayTrigger overlay={<Tooltip>AGENDAR LLAMADA</Tooltip>}>
+                                                                <span onClick={(e) => { openModal(lead) }}
+                                                                    className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-info">
+                                                                    <span className="svg-icon svg-icon-md">
+                                                                        <SVG src={toAbsoluteUrl('/images/svg/Active-call.svg')} />
                                                                     </span>
-                                                                </OverlayTrigger>
-                                                                : ''
-                                                        }
-                                                        <OverlayTrigger overlay={<Tooltip>AGENDAR LLAMADA</Tooltip>}>
-                                                            <span onClick={(e) => { openModal(lead) }}
-                                                                className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-info">
-                                                                <span className="svg-icon svg-icon-md">
-                                                                    <SVG src={toAbsoluteUrl('/images/svg/Active-call.svg')} />
                                                                 </span>
-                                                            </span>
-                                                        </OverlayTrigger>
-                                                        <OverlayTrigger overlay={<Tooltip>SEGUIMIENTO (SCRIPT)</Tooltip>}>
-                                                            <a onClick={(e) => { changePageLlamadaSalida(lead) }} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-info">
-                                                                <span className="svg-icon svg-icon-md">
-                                                                    <SVG src={toAbsoluteUrl('/images/svg/File.svg')} />
-                                                                </span>
-                                                            </a>
-                                                        </OverlayTrigger>
-                                                    </td>
-                                                </tr>
-                                            )
-                                        })
+                                                            </OverlayTrigger>
+                                                            <OverlayTrigger overlay={<Tooltip>SEGUIMIENTO (SCRIPT)</Tooltip>}>
+                                                                <a onClick={(e) => { changePageLlamadaSalida(lead) }} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-info">
+                                                                    <span className="svg-icon svg-icon-md">
+                                                                        <SVG src={toAbsoluteUrl('/images/svg/File.svg')} />
+                                                                    </span>
+                                                                </a>
+                                                            </OverlayTrigger>
+                                                        </td>
+                                                    </tr>
+                                                )
+                                            })
+                                    :''
                                 }
                             </tbody>
                         </table>

@@ -53,8 +53,8 @@ class LeadRhProveedor extends Component {
                                         <span>Nombre</span>
                                     </th>
                                     <th style={{ minWidth: "140px" }}>Fecha</th>
-                                    <th style={{ minWidth: "100px" }}>Empresa</th>
                                     <th style={{ minWidth: "100px" }}>Tipo</th>
+                                    <th style={{ minWidth: "100px" }} className="text-center">Empresa</th>
                                     <th style={{ minWidth: "92px" }}></th>
                                 </tr>
                             </thead>
@@ -82,15 +82,29 @@ class LeadRhProveedor extends Component {
                                                         <span>Ingreso: </span><span className="text-muted font-weight-bold font-size-sm">{setDateTableLG(lead.created_at)}</span><br />
                                                     </td>
                                                     <td>
-                                                        <span className="text-dark-75 font-weight-bolder d-block font-size-lg">{lead.empresa.name}</span>
-                                                    </td>
-                                                    <td>
                                                         <span className="text-dark-75 font-weight-bolder d-block font-size-lg">
                                                             {
                                                                 lead.proveedor ? 'PROVEEDOR' :
                                                                     lead.rh ? 'BOLSA DE TRABAJO' : ''
                                                             }
                                                         </span>
+                                                    </td>
+                                                    <td>
+                                                        {
+                                                            lead.empresa.isotipos.length > 0 ?
+                                                                lead.empresa.isotipos.map((isotipo, key) => {
+                                                                    return (
+                                                                        <OverlayTrigger key={key} overlay={<Tooltip>{lead.empresa.name}</Tooltip>}>
+                                                                            <div className="symbol-group symbol-hover d-flex justify-content-center">
+                                                                                <div className="symbol symbol-40 symbol-circle">
+                                                                                    <img alt="Pic" src={isotipo.url} />
+                                                                                </div>
+                                                                            </div>
+                                                                        </OverlayTrigger>
+                                                                    )
+                                                                })
+                                                                : <span className="text-dark-75 font-weight-bolder">{lead.empresa.name}</span>
+                                                        }
                                                     </td>
                                                     <td className="pr-0 text-center">
                                                         {
