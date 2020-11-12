@@ -13,7 +13,6 @@ import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../functions/routers"
 import ItemSlider from '../../components/singles/ItemSlider'
 import InputSinText from '../../components/form-components/SinText/InputSinText'
-import Input from '../../components/form-components/Input'
 
 class Contabilidad extends Component {
 
