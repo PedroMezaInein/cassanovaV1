@@ -857,7 +857,7 @@ class Proyectos extends Component {
         proyectos.map((proyecto) => {
             aux.push({
                 actions: this.setActions(proyecto),
-                status: renderToString(setLabelTable(proyecto.estatus)),
+                status: renderToString(proyecto ? setLabelTable(proyecto.estatus) : ''),
                 nombre: renderToString(setTextTable(proyecto.nombre)),
                 cliente: renderToString(setListTable(proyecto.clientes, 'empresa')),
                 direccion: renderToString(this.setDireccionTable(proyecto)),
@@ -1017,16 +1017,27 @@ class Proyectos extends Component {
         const { proyecto } = this.state
         await axios.delete(URL_DEV + 'proyectos/' + proyecto.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { proyectos } = response.data
-                const { data } = this.state
-                data.proyectos = proyectos
+                const { key } = this.state
+                switch(key){
+                    case 'all':
+                        this.getProyectoAxios();
+                        break;
+                    case 'fase1':
+                        this.getProyectoFase1Axios();
+                        break;
+                    case 'fase2':
+                        this.getProyectoFase2Axios();
+                        break;
+                    case 'fase3':
+                        this.getProyectoFase3Axios();
+                        break;
+                    default: break;
+                }
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue eliminado con éxito.')
                 this.setState({
                     ...this.state,
-                    proyectos: this.setProyectos(proyectos),
                     modalDelete: false,
-                    proyecto: '',
-                    data
+                    proyecto: ''
                 })
             },
             (error) => {
@@ -1482,7 +1493,6 @@ class Proyectos extends Component {
         )
     }
 }
-
 
 const mapStateToProps = state => {
     return {
