@@ -15,7 +15,7 @@ function closeButton(){
 class UserPanel extends Component {
 	
 	render(){		
-		const { avatar } = this.props
+		const { avatar, user } = this.props
 		return (
 		<>   
 			<div className="scroll scroll-pull offcanvas offcanvas-right p-5   ">
@@ -35,7 +35,7 @@ class UserPanel extends Component {
 						<CustomUser clickResponsiveMenu={this.clickResponsiveMenu} clickLogout={this.logoutUser} {...this.props}/>
 					</div>
 					<div className="separator separator-dashed mt-4 mb-3"></div>
-					<NavUser/>
+					<NavUser user = { user } />
 					{/*<div className="separator separator-dashed mt-4 mb-4"></div>
 					<UserNotifications/>*/}	
 				</div>
