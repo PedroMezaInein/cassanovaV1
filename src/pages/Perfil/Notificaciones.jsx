@@ -28,7 +28,7 @@ class Notificaciones extends Component {
                     ...this.state,
                     notificaciones: notificaciones
                 })
-                console.log(notificaciones)
+                /* console.log(notificaciones) */
             },
             (error) => {
                 console.log(error, 'error')

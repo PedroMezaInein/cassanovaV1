@@ -68,7 +68,6 @@ class InputGray extends Component {
         const { error, onChange, placeholder, iconclass, letterCase, customlabel, customstyle, customclass, withicon, withtextlabel, withtaglabel, withplaceholder, customdiv, ...props } = this.props
         const toInputUppercase = e => {
             const { type, value, selectionStart, selectionEnd } = e.target
-            console.log(letterCase, 'lettercase')
             if(letterCase !== false)
                 e.target.value = value.toUpperCase()
             if( type !== 'email'){
