@@ -9,6 +9,7 @@ import swal from 'sweetalert';
 import { setOptions } from '../../../../functions/setters';
 import { TEL, URL_DEV, EMAIL } from '../../../../constants';
 class LeadLlamadaSalida extends Component {
+
     state = {
         messages: [],
         form: {
@@ -32,11 +33,8 @@ class LeadLlamadaSalida extends Component {
         },
         formeditado: 0
     }
+
     componentDidMount() {
-        // const { authUser: { user: { permisos } } } = this.props
-        // const { history: { location: { pathname } } } = this.props
-        // const { match: { params: { action } } } = this.props
-        // const { history, location: { state } } = this.props
         const { location: { state } } = this.props
         if (state) {
             if (state.lead) {
@@ -58,14 +56,7 @@ class LeadLlamadaSalida extends Component {
         }
         this.getOptionsAxios()
     }
-    // setOptions = (name, array) => {
-    //     const { options } = this.state
-    //     options[name] = setOptions(array, 'nombre', 'id')
-    //     this.setState({
-    //         ...this.state,
-    //         options
-    //     })
-    // }
+    
     setOptionsTipo = (name, array) => {
         const { options } = this.state
         options[name] = setOptions(array, 'tipo', 'id')
@@ -73,6 +64,7 @@ class LeadLlamadaSalida extends Component {
             options
         })
     }
+
     updateEmpresa = value => {
         this.onChange({ target: { name: 'empresa_dirigida', value: value } })
         let empresa = ''
@@ -105,6 +97,7 @@ class LeadLlamadaSalida extends Component {
     updateOrigen = value => {
         this.onChange({ target: { value: value, name: 'origen' } })
     }
+
     onChange = e => {
         const { name, value, checked, type } = e.target
         const { form, } = this.state
@@ -118,6 +111,7 @@ class LeadLlamadaSalida extends Component {
             tipo: name
         })
     }
+
     servicio = servicios => {
         let servicio = ""
         servicios.map((element) => {
@@ -126,9 +120,9 @@ class LeadLlamadaSalida extends Component {
         })
         return servicio
     }
+
     updateMessages2 = (name, value) => {
         const { form, lead } = this.state
-        // const { name: usuario } = this.props.authUser.user
         switch (name) {
             case 'name':
                 if (lead.empresa.name === 'INFRAESTRUCTURA MÉDICA') {
@@ -174,6 +168,7 @@ class LeadLlamadaSalida extends Component {
                 break;
         }
     }
+
     async getOptionsAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -227,6 +222,7 @@ class LeadLlamadaSalida extends Component {
             console.log(error, 'error')
         })
     }
+
     render() {
         const { messages, form, options, lead } = this.state
         const { name: usuario } = this.props.authUser.user
@@ -259,17 +255,6 @@ class LeadLlamadaSalida extends Component {
                             }
                             {...this.props}>
                             <div className="form-group row form-group-marginless mt-4 mb-0">
-                                {/* <div className="col-md-4">
-                                    <SelectSearchGray
-                                        options={options.empresas}
-                                        placeholder="¿A QUÉ EMPRESA VA DIRIGIDA EL LEAD?"
-                                        name="empresa_dirigida"
-                                        value={form.empresa_dirigida}
-                                        onChange={this.updateEmpresa}
-                                        iconclass="fas fa-building"
-                                        formeditado={formeditado}
-                                    />
-                                </div> */}
                                 <div className="col-md-4">
                                     <InputGray
                                         withtaglabel={1}
@@ -281,7 +266,6 @@ class LeadLlamadaSalida extends Component {
                                         name='name'
                                         value={form.name}
                                         onChange={this.onChange}
-                                    // formeditado={formeditado}
                                     />
                                 </div>
 
@@ -397,16 +381,6 @@ class LeadLlamadaSalida extends Component {
                                                     as='textarea'
                                                 />
                                             </div>
-                                            {/* <div className="col-md-4">
-                                                <SelectSearchGray
-                                                    options={options.origenes}
-                                                    placeholder="SELECCIONA EL ORIGEN PARA EL LEAD"
-                                                    name="origen"
-                                                    value={form.origen}
-                                                    onChange={this.updateOrigen}
-                                                    iconclass="fas fa-mail-bulk"
-                                                />
-                                            </div> */}
                                         </>
                                         : ''
                                 }
