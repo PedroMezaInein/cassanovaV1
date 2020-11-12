@@ -4,7 +4,7 @@ import { toAbsoluteUrl } from "../../../../functions/routers"
 import { setDateTableLG } from '../../../../functions/setters';
 class PresupuestoGenerado extends Component {
     render() {
-        const { pdfs } = this.props
+        const { pdfs, onClick } = this.props
         return (
             <div className="table-responsive mt-4">
                 <table className="table  table-head-bg table-borderless table-vertical-center">
@@ -38,11 +38,11 @@ class PresupuestoGenerado extends Component {
                                             <span className="text-dark-75 font-weight-bolder d-block font-size-lg">{pdf.pivot.identificador}</span>
                                         </td>
                                         <td className="text-center">
-                                            <a className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-success">
+                                            <span onClick = { (e) => { e.preventDefault(); onClick(pdf); } } className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-success">
                                                 <span className="svg-icon svg-icon-md">
                                                     <SVG src={toAbsoluteUrl('/images/svg/Sending-mail.svg')} />
                                                 </span>
-                                            </a>
+                                            </span>
                                         </td>
                                     </tr>
                                 )
