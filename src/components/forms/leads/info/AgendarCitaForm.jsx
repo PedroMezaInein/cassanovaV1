@@ -31,7 +31,7 @@ class AgendarCitaForm extends Component {
         }
     }
     render() {
-        const { formAgenda, onChange, onSubmit, removeCorreo, solicitarFechaCita } = this.props
+        const { formAgenda, onChange, onSubmit, removeCorreo } = this.props
         return (
             <Form>
                 <div className="row">

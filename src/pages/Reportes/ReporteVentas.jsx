@@ -16,7 +16,6 @@ import FlujosReportesVentas from '../../components/forms/reportes/FlujosReportes
 import { Editor } from 'react-draft-wysiwyg';
 import { EditorState, convertToRaw } from 'draft-js';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import draftToMarkdown from 'draftjs-to-markdown';
 import ReporteVentasInein from '../../components/pdfs/ReporteVentasInein'
 import ReporteVentasIm from '../../components/pdfs/ReporteVentasIm'
 
