@@ -462,8 +462,10 @@ class ProyectosForm extends Component {
                         this.cpAxios(proyecto.cp)
                         form.calle = proyecto.calle
                         form.nombre = proyecto.nombre
-                        if(proyecto.fase2 === 1)
-                            form.nombre = proyecto.nombre + ' - FASE 3'
+                        if(proyecto.fase2 === 1){
+                            /* form.nombre = proyecto.nombre + ' - FASE 3' */
+                            this.getNameProyectoAxios(proyecto.nombre)
+                        }
                         else
                             if(proyecto.fase1 === 1)
                                 form.nombre = proyecto.nombre + ' - FASE 2'
@@ -495,6 +497,8 @@ class ProyectosForm extends Component {
                         form.fase1 = proyecto.fase1 === 0 ? false : true
                         form.fase2 = proyecto.fase2 === 0 ? false : true
                         form.fase3 = proyecto.fase3 === 0 ? false : true
+                        if(proyecto.fase1 === 1 && proyecto.fase2 === 1 && proyecto.fase3 === 0)
+                            form.fase3 = true
                         form.fase1_relacionado = proyecto.fase1 === 0 ? false : true
                         form.fase2_relacionado = proyecto.fase2 === 0 ? false : true
                         form.fase3_relacionado = proyecto.fase3 === 0 ? false : true
@@ -710,6 +714,39 @@ class ProyectosForm extends Component {
             questionAlert('¿ESTÁS SEGURO?', 'DETENDRÁS EL PROYECTO ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios(estatus))
         :
             questionAlert('¿ESTÁS SEGURO?', 'DARÁS POR TEMINADO EL PROYECTO ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios(estatus))
+    }
+
+    async getNameProyectoAxios(name){
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}proyectos/nombre/${name}`, { responseType: 'json', headers: { Accept: '*/*',  Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { form } = this.state
+                const { nombre } = response.data
+                form.nombre = nombre
+                this.setState({
+                    ...this.state,
+                    form
+                })
+
+                /* swal.close()
+                doneAlert('Estado actualizado con éxito')
+                const { history } = this.props
+                history.push({
+                    pathname: '/proyectos/proyectos'
+                }); */
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
     }
 
     async changeEstatusAxios(estatus){
