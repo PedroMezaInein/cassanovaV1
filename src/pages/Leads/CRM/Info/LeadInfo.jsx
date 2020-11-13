@@ -176,7 +176,6 @@ class LeadInfo extends Component {
             if (state.lead) {
                 const { form, options } = this.state
                 const { lead, tipo } = state
-                console.log(tipo, 'tipo')
                 form.name = lead.nombre === 'SIN ESPECIFICAR' ? '' : lead.nombre.toUpperCase()
                 form.email = lead.email.toUpperCase()
                 form.telefono = lead.telefono
@@ -190,7 +189,7 @@ class LeadInfo extends Component {
                     tipo: tipo
                 })
                 this.getPresupuestoDiseñoOptionsAxios(lead.id)
-                this.getOneLead(lead.id, tipo)
+                this.getOneLead(lead)
             }
             else
                 history.push('/leads/crm')
@@ -654,7 +653,7 @@ class LeadInfo extends Component {
                     formAgenda,
                     modal: false
                 })
-                this.getOneLead(lead.id)
+                this.getOneLead(lead)
                 doneAlert('Evento generado con éxito');
             },
             (error) => {
@@ -684,24 +683,22 @@ class LeadInfo extends Component {
         )
     }
 
-    async getOneLead(id, aux) {
+    async getOneLead(lead) {
 
         let { tipo } = this.state
         const { access_token } = this.props.authUser
         
         if(tipo === '' )
-            tipo = aux
-
-        console.log(aux, 'aux')
+            tipo = lead.estatus.estatus
 
         let api = ''
         
-        if(tipo === 'En contacto')
+        if(lead.estatus.estatus === 'En proceso')
             api = 'crm/table/lead-en-contacto/';
         else
             api = 'crm/table/lead-en-negociacion/';
         
-        await axios.get(URL_DEV + api + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(URL_DEV + api + lead.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { lead } = response.data
                 const { history } = this.props
@@ -872,7 +869,7 @@ class LeadInfo extends Component {
         await axios.put(URL_DEV + 'crm/email/lead-potencial/' + lead.id, {}, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert('Correo enviado con éxito');
-                this.getOneLead(lead.id)
+                this.getOneLead(lead)
             },
             (error) => {
                 console.log(error, 'error')
@@ -925,7 +922,7 @@ class LeadInfo extends Component {
         await axios.put(URL_DEV + 'crm/update/lead-en-contacto/' + lead.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito el lead.')
-                this.getOneLead(lead.id)
+                this.getOneLead(lead)
             },
             (error) => {
                 console.log(error, 'error')
@@ -966,7 +963,7 @@ class LeadInfo extends Component {
     onClickSendPresupuesto = pdf => {
         questionAlert2('¡NO PODRÁS REVERTIR ESTO!', '', 
             () => this.sendCorreoPresupuesto(pdf.pivot.identificador), 
-            this.getTextAlert(pdf.pivot.url)
+            this.getTextAlert(pdf.url)
         )
     }
 
@@ -986,13 +983,13 @@ class LeadInfo extends Component {
                                     swal.close()
                                     questionAlert2('¡NO PODRÁS REVERTIR ESTO!', '', 
                                         () => this.sendCorreoPresupuesto(presupuesto.pdfs[0].pivot.identificador), 
-                                        this.getTextAlert(presupuesto.pdfs[0].pivot.url)
+                                        this.getTextAlert(presupuesto.pdfs[0].url)
                                     )
                                 }
                 }
                 else
                     doneAlert('Presupuesto generado con éxito')
-                this.getOneLead(lead.id)
+                this.getOneLead(lead)
             },
             (error) => {
                 console.log(error, 'error')

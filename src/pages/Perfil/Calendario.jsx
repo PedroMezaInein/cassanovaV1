@@ -47,9 +47,8 @@ class Calendario extends Component {
         this.getVacacionesAxios()
     }
 
-    handleDateClick = (arg) => { // bind with an arrow function
-        /* alert(arg.dateStr) */
-        /* console.log(arg) */
+    handleDateClick = (arg) => { 
+        
     }
     openModal = () => {
         this.setState({
