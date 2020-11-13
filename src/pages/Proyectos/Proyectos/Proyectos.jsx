@@ -953,14 +953,14 @@ class Proyectos extends Component {
                 tooltip: { id: 'avances', text: 'Avances' }
             }
         )
-        if(proyecto.fase1 !== 1 && proyecto.fase2 !== 1 || proyecto.fase3 !== 1)
-            if(proyecto.fase1 === 1 || proyecto.fase2 === 1 || proyecto.fase3 === 1)
-                aux.push({
-                    text: 'Contratar&nbsp;fases',
-                    btnclass: 'info',
-                    iconclass: 'flaticon-tool',
-                    action: 'proyecto',
-                })
+        if(proyecto.fase3 !== 1)
+            aux.push({
+                text: 'Contratar&nbsp;fases',
+                btnclass: 'info',
+                iconclass: 'flaticon-tool',
+                action: 'proyecto',
+            })
+                
         return aux
     }
     setDireccionTable = proyecto => {
