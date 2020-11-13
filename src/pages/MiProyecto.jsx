@@ -383,16 +383,17 @@ class MiProyecto extends Component {
     }
 
     async getMiProyectoAxios() {
-        const { access_token } = this.props.authUser
+        const { access_token, user } = this.props.authUser
         await axios.get(URL_DEV + 'proyectos/mi-proyecto', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { proyectos, partidas, tiposTrabajo } = response.data
-                const { data, options, id } = this.state
+                const { data, options, id, form } = this.state
                 let { proyecto, tickets } = this.state
                 options.proyectos = setOptions(proyectos, 'nombre', 'id')
                 options.partidas = setOptions(partidas, 'nombre', 'id')
                 options.tiposTrabajo = setOptions(tiposTrabajo, 'tipo', 'id')
                 data.proyectos = proyectos
+                
                 if(id !== ''){
                     proyectos.map( (proy) => {
                         if(proy.id === id){
@@ -401,6 +402,15 @@ class MiProyecto extends Component {
                         return false
                     })
                 }
+
+                if(id === ''){
+                    if( user.tipo.tipo === 'Cliente' ){
+                        if(proyectos.length > 0){
+                            proyecto = proyectos[0]
+                        }
+                    }
+                }
+                
                 if(proyecto !== ''){
                     proyectos.map( (element) => {
                         if(element.id === proyecto.id){
@@ -410,6 +420,7 @@ class MiProyecto extends Component {
                         return false
                     } )
                 }
+                
                 this.setState({
                     ...this.state,
                     data,
@@ -418,6 +429,7 @@ class MiProyecto extends Component {
                     tickets,
                     form: this.clearForm()
                 })
+                
             },
             (error) => {
                 console.log(error, 'error')
@@ -729,7 +741,7 @@ class MiProyecto extends Component {
                         <div className="container">
                             <div className="d-flex align-items-stretch text-center flex-column py-40">
 
-                                <div className="form-group row form-group-marginless d-flex justify-content-center align-items-center">
+                                <div className="form-group row form-group-marginless d-flex justify-content-center align-items-center mb-5">
                                     <div className="col-md-5">
                                         <SelectSearchSinText
                                             options={options.proyectos}
@@ -784,7 +796,6 @@ class MiProyecto extends Component {
                                                                 {proyecto.municipio},
                                                                 {proyecto.estado}. CP:
                                                                 {proyecto.cp}
-
 
                                                                 {/* <Small className="mr-1 mb-0" >
                                                                     {proyecto.calle}, colonia
