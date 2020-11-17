@@ -120,7 +120,7 @@ class LeadContacto extends Component {
                                                                         {
                                                                             options.origenes.map((origen, key) => {
                                                                                 return (
-                                                                                    <>
+                                                                                    <div key = { key } >
                                                                                         <Dropdown.Item className="p-0" key={key} onClick={() => { changeOrigen(origen.value, lead.id) }} >
                                                                                             <span className="navi-link w-100">
                                                                                                 <span className="navi-text">
@@ -133,7 +133,7 @@ class LeadContacto extends Component {
                                                                                             </span>
                                                                                         </Dropdown.Item>
                                                                                         <Dropdown.Divider className="m-0" style={{ borderTop: '1px solid #fff' }} />
-                                                                                    </>
+                                                                                    </div>
                                                                                 )
                                                                             })
                                                                         }

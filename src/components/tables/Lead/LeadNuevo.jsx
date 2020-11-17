@@ -140,7 +140,7 @@ class LeadNuevo extends Component {
                                                                                 {
                                                                                     options.origenes.map((origen,key) => {
                                                                                         return(
-                                                                                            <>
+                                                                                            <div key = {key}>
                                                                                                 <Dropdown.Item className="p-0" key = { key } onClick = { () => { changeOrigen( origen.value, lead.id ) } } >
                                                                                                     <span className="navi-link w-100">
                                                                                                         <span className="navi-text">
@@ -153,7 +153,7 @@ class LeadNuevo extends Component {
                                                                                                     </span>
                                                                                                 </Dropdown.Item>
                                                                                                 <Dropdown.Divider className="m-0" style={{borderTop:'1px solid #fff'}}/>
-                                                                                            </>
+                                                                                            </div>
                                                                                         )
                                                                                     })
                                                                                 }
@@ -234,7 +234,10 @@ class LeadNuevo extends Component {
                                                     </tr>
                                                 )
                                             })
-                                    :''
+                                    :   
+                                        <tr>
+                                            <td colSpan="6" className="text-center text-dark-75 font-weight-bolder font-size-lg pt-3">NO SE ENCONTRARON RESULTADOS</td>
+                                        </tr>
                                 }
                             </tbody>
                         </table>
