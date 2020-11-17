@@ -156,6 +156,15 @@ class Ventas extends Component {
                             Subtotal = Subtotal.substring(0, auxiliar)
                             obj.subtotal = Subtotal
                         }
+                        auxiliar = ''
+                        if (obj.total === '') {
+                            let Total = text.search('Total="')
+                            if (Total)
+                                Total = text.substring(Total + 7)
+                            auxiliar = Total.search('"')
+                            Total = Total.substring(0, aux)
+                            obj.total = Total
+                        }
                         if (obj.fecha === '') {
                             let Fecha = text.search('Fecha="')
                             if (Fecha)
