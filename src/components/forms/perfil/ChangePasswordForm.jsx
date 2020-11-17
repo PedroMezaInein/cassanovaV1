@@ -87,12 +87,14 @@ class ChangePasswordFrom extends Component {
 													</label>
 												</div>
 												<div className=' d-flex align-items-center justify-content-center'>
-													<ItemSlider
-														items = { form.adjuntos.firma.files }
-														item = 'firma'
-														handleChange = { handleChange }
-														multiple = { false }
-													/>
+													<div>
+														<ItemSlider
+															items = { form.adjuntos.firma.files }
+															item = 'firma'
+															handleChange = { handleChange }
+															multiple = { false }
+														/>
+													</div>
 												</div>
 												<div className="mt-4 text-center">
 													<Button icon='' className="btn btn-light-primary font-weight-bold"
