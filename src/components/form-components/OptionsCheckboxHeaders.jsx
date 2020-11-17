@@ -18,9 +18,9 @@ class OptionsCheckboxHeaders extends Component {
             <>
                 <Form.Label className="font-weight-bolder m-0">{placeholder}</Form.Label>
                 {
-                    Object.keys(options_tipo).map(tipo => {
+                    Object.keys(options_tipo).map((tipo, key) => {
                         return (
-                            <div>
+                            <div key = { key } >
                                 {tipo !== "" ? <div className="text-dark-50 font-weight-bolder font-size-base mt-3">{tipo}</div> : ""}
                                 <div>
                                     <div className="checkbox-list pt-2">
