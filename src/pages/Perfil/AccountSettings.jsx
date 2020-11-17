@@ -24,21 +24,14 @@ class AccountSettings extends Component {
                     files: []
                 }
             }
-		}
+        },
+        empresas: [],
+        user: '',
+        activeKey: ''
     }
     
     componentDidMount(){
-        const { avatar, firma }  = this.props.authUser.user
-        const { form } = this.state
-        form.foto = avatar
-        if(firma)
-            form.adjuntos.firma.files = [
-                {name:'firma.png', url: firma}
-            ]
-        this.setState({
-            ...this.state,
-            form
-        })
+        this.getAccountOptions()
     }
 	
 	onChange = e => {
@@ -59,6 +52,51 @@ class AccountSettings extends Component {
         this.setState({
             ...this.state,
             form
+        })
+    }
+
+    onClickEmpresa = empresa => {
+        this.setState({
+            ...this.state,
+            activeKey: empresa
+        })
+        /* const { empresas, user } = this.state
+        let aux = ''
+        user.empleado.firmas.map((element, key)=>{
+            if(element.empleado_id.toString()  === empresa.toString() )
+                aux = element
+        })
+        console.log(aux, 'empresa') */
+    }
+
+    getAccountOptions = async() => {
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'user/users/single/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            ( response ) => {
+                const { user, empresas } = response.data
+                const { form } = this.state
+
+                form.foto = user.avatar
+
+                this.setState({
+                    ...this.state,
+                    empresas: empresas,
+                    form,
+                    user: user
+                })
+
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
@@ -171,9 +209,10 @@ class AccountSettings extends Component {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
-	}
+    }
+    
 	render(){		
-		const { form } = this.state
+		const { form, empresas, activeKey } = this.state
 		return (
 			<>   
 				<Layout { ...this.props}>
@@ -190,8 +229,12 @@ class AccountSettings extends Component {
                                 onSubmit = { (e) => { e.preventDefault(); waitAlert(); this.changePasswordAxios()} }
                                 sendAvatar = { this.sendAvatar }
                                 clearAvatar = { this.clearAvatar }
-                                handleChange={this.handleChange}
-                                sendFirma={this.sendFirma}
+                                handleChange = { this.handleChange }
+                                sendFirma = { this.sendFirma }
+                                empresas = { empresas }
+                                user = { this.user }
+                                onClickEmpresa = { this.onClickEmpresa }
+                                activeKey = { activeKey }
                             />
 						</Card.Body>
 					</Card>
