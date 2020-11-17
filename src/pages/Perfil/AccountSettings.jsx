@@ -56,17 +56,35 @@ class AccountSettings extends Component {
     }
 
     onClickEmpresa = empresa => {
-        this.setState({
-            ...this.state,
-            activeKey: empresa
-        })
-        /* const { empresas, user } = this.state
+
+        this.getAccountOptions()
+        
+        const { user, form } = this.state
+
         let aux = ''
-        user.empleado.firmas.map((element, key)=>{
-            if(element.empleado_id.toString()  === empresa.toString() )
+        
+        user.empleado.firmas.map( (element) => {
+            if(element.empresa_id.toString()  === empresa.toString() )
                 aux = element
         })
-        console.log(aux, 'empresa') */
+        
+        if(aux !== '')
+            form.adjuntos.firma.files = [ { url: aux.firma, name: 'firma.'+this.getExtension(aux.firma) } ]
+        else
+            form.adjuntos.firma.files = []
+
+        this.setState({
+            ...this.state,
+            activeKey: empresa,
+            form
+        })
+    }
+
+    getExtension = firma => {
+        let aux = firma.split('.');
+        if(aux.length > 0)
+            return aux[aux.length - 1]
+        return ''
     }
 
     getAccountOptions = async() => {
@@ -178,11 +196,16 @@ class AccountSettings extends Component {
         })
     }
     sendFirma = async (e) => {
-		e.preventDefault();
-		const { access_token } = this.props.authUser
-        const { form } = this.state
+        
+        e.preventDefault();
+        waitAlert();
+
+        const { access_token } = this.props.authUser
+        const { form, activeKey } = this.state
         const data = new FormData();
+        
         let aux = Object.keys(form.adjuntos)
+        
         aux.map((element) => {
             if (form.adjuntos[element].value !== '') {
                 for (var i = 0; i < form.adjuntos[element].files.length; i++) {
@@ -193,9 +216,13 @@ class AccountSettings extends Component {
             }
             return false
         })
+
+        data.append('empresa', activeKey)
+
         await axios.post(URL_DEV + 'user/users/firma', data,  { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
-				
+                const { activeKey } = this.state
+                doneAlert('Firma actualizada con éxito.')
             },
             (error) => {
                 console.log(error, 'error')
