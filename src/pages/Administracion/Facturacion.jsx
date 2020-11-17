@@ -570,6 +570,15 @@ class Facturacion extends Component {
                             Subtotal = Subtotal.substring(0, auxiliar)
                             obj.subtotal = Subtotal
                         }
+                        aux = ''
+                        if (obj.total === '') {
+                            let Total = text.search('Total="')
+                            if (Total)
+                                Total = text.substring(Total + 7)
+                            aux = Total.search('"')
+                            Total = Total.substring(0, aux)
+                            obj.total = Total
+                        }
                         if (obj.fecha === '') {
                             let Fecha = text.search('Fecha="')
                             if (Fecha)

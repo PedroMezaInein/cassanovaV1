@@ -133,6 +133,15 @@ class EgresosForm extends Component {
                             Subtotal = Subtotal.substring(0, aux)
                             obj.subtotal = Subtotal
                         }
+                        aux = ''
+                        if (obj.total === '') {
+                            let Total = text.search('Total="')
+                            if (Total)
+                                Total = text.substring(Total + 7)
+                            aux = Total.search('"')
+                            Total = Total.substring(0, aux)
+                            obj.total = Total
+                        }
                         if (obj.fecha === '') {
                             let Fecha = text.search('Fecha="')
                             if (Fecha)
@@ -174,6 +183,7 @@ class EgresosForm extends Component {
                         if (auxEmpresa && auxProveedor) {
                             swal.close()
                         }
+                        console.log(obj, 'OBJ')
                         form.facturaObject = obj
                         form.rfc = obj.rfc_emisor
                         this.setState({
