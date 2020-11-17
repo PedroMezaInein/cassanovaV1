@@ -1,12 +1,22 @@
 import React, { Component } from 'react'
 import { validateAlert } from '../../../functions/alert'
 import { Button, Input, ImageUpload } from '../../form-components'
-import { Form, Col } from 'react-bootstrap'
+import { Form, Col, Tab, Nav } from 'react-bootstrap'
 import { ItemSlider } from '../../../components/singles'
 class ChangePasswordFrom extends Component {
 
+	getName = () => {
+		const { empresas, activeKey } = this.props
+		let aux = ''
+		empresas.map((empresa)=>{
+			if(empresa.id.toString() === activeKey)
+				aux = empresa.name
+		})
+		return ' '+aux
+	}
+
 	render() {
-		const { onSubmit, form, onChange, sendAvatar, clearAvatar, handleChange, sendFirma} = this.props
+		const { onSubmit, form, onChange, sendAvatar, clearAvatar, handleChange, sendFirma, empresas, onClickEmpresa, activeKey } = this.props
 		return (<>
 			<div className="row">
 				<Col md="7">
@@ -48,25 +58,58 @@ class ChangePasswordFrom extends Component {
 						}
 					>
 						<div className="col-md-12 text-center mt-5">
-							<label className="col-form-label my-2 font-weight-bolder">{form.adjuntos.firma.placeholder}</label>
-							<ItemSlider
-								items={form.adjuntos.firma.files}
-								item='firma'
-								handleChange={handleChange}
-								multiple={true}
-							/>
-						</div>
-						<div className="form-group row form-group-marginless justify-content-center mb-0">
-							<div className="mt-4 text-center">
-								<Button icon='' className="btn btn-light-primary font-weight-bold"
-									onClick={
-										(e) => {
-											e.preventDefault();
-											validateAlert(sendFirma, e, 'form-firma')
+							{/* <label className="col-form-label my-2 font-weight-bolder">{form.adjuntos.firma.placeholder}</label> */}
+							<Tab.Container activeKey = { activeKey } onSelect={ (select) => { onClickEmpresa(select) }}>
+								<div className = 'row mx-0'>
+									<div className = 'col-md-4 px-0 navi navi-accent navi-hover navi-bold text-left border-nav'>
+										{
+											empresas.map((empresa, key)=>{
+												return(
+													<Nav variant="pills" className="flex-column navi navi-hover navi-active" key = { key } >
+														<Nav.Item className="navi-item">
+                                                			<Nav.Link className = "navi-link" eventKey = { empresa.id } >
+																<span className = "navi-text">
+																	{ empresa.name }
+																</span>
+                                                			</Nav.Link>
+                                            			</Nav.Item>
+													</Nav>
+												)
+											})
 										}
+									</div>
+									{
+										activeKey !== '' ?
+											<div className = 'col-md-8'>
+												<div>
+													<label className="col-form-label my-2 font-weight-bolder">{form.adjuntos.firma.placeholder}
+														{ this.getName() }
+													</label>
+												</div>
+												<div className=' d-flex align-items-center justify-content-center'>
+													<ItemSlider
+														items = { form.adjuntos.firma.files }
+														item = 'firma'
+														handleChange = { handleChange }
+														multiple = { false }
+													/>
+												</div>
+												<div className="mt-4 text-center">
+													<Button icon='' className="btn btn-light-primary font-weight-bold"
+														onClick={
+															(e) => {
+																e.preventDefault();
+																validateAlert(sendFirma, e, 'form-firma')
+															}
+														}
+														text="SUBIR FIRMA" />
+												</div>
+											</div>
+										: ''
 									}
-									text="SUBIR FIRMA" />
-							</div>
+									
+								</div>
+							</Tab.Container>
 						</div>
 					</Form>
 				</Col>
