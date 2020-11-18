@@ -32,11 +32,11 @@ class RegisterUserForm extends Component {
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-3 d-flex align-items-center">
                         <RadioGroup
-                            placeholder='SELECCIONA EL TIPO DE SEXO'
-                            formeditado={formeditado}
-                            name='sexo'
-                            onChange={onChange}
-                            options={
+                            placeholder = 'SELECCIONA EL GÉNERO'
+                            formeditado = { formeditado }
+                            name = 'sexo'
+                            onChange = { onChange }
+                            options = {
                                 [
                                     {
                                         label: 'Femenino',
@@ -45,10 +45,14 @@ class RegisterUserForm extends Component {
                                     {
                                         label: 'Masculino',
                                         value: 'masculino'
+                                    },
+                                    {
+                                        label: 'No binario',
+                                        value: 'no binario'
                                     }
                                 ]
                             }
-                            value={form.sexo}
+                            value = { form.sexo }
                         />
                     </div>
                     {/* <div className="col-md-3">

@@ -33,7 +33,8 @@ class UsuariosForm extends Component {
             departamento: '',
             proyectos: [],
             proyecto: '',
-            empleado: ''
+            empleado: '',
+            sexo: 'femenino'
         },
         options:{
             tipos: [],
@@ -76,6 +77,7 @@ class UsuariosForm extends Component {
                         form.name = user.name
                         form.email = user.email
                         form.tipo = user.tipo
+                        form.sexo = user.genero
                         if((user.tipo===1||user.tipo===2)){
                             let aux = []
                             user.departamentos.map( (depto) => {
@@ -275,7 +277,6 @@ class UsuariosForm extends Component {
         })
     }
 
-    
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
