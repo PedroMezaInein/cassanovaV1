@@ -843,8 +843,8 @@ class Crm extends Component {
         const { access_token } = this.props.authUser
         await axios.put(URL_DEV + 'crm/lead/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const {activeTable}=this.state
-                this.changeActiveTable(activeTable)            
+                const { activeTable } = this.state
+                this.changeActiveTable( activeTable )
                 doneAlert('El estatus fue actualizado con éxito.')
             },
             (error) => {
@@ -895,6 +895,8 @@ class Crm extends Component {
         data.motivo = document.getElementById('motivo').value
         await axios.put(URL_DEV + 'crm/lead/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                const { activeTable } = this.state
+                this.changeActiveTable( activeTable )
                 doneAlert('El estatus fue actualizado con éxito.')
             },
             (error) => {
@@ -920,14 +922,23 @@ class Crm extends Component {
     }
 
     openModalWithInput = (estatus, id) => {
-        questionAlert2('ESCRIBE EL MOTIVO DEL RECHAZO O CANCELACIÓN', '', () => this.changeEstatusCanceladoRechazadoAxios({ id: id, estatus: estatus }),
+        questionAlert2(
+            estatus === 'Cancelado' ?
+                'ESCRIBE EL MOTIVO DE CANCELACIÓN' :
+                'ESCRIBE EL MOTIVO DE RECHAZO', 
+            '', 
+            () => this.changeEstatusCanceladoRechazadoAxios({ id: id, estatus: estatus }),
             <div>
                 <Form.Control
-                    placeholder='MOTIVO DE CANCELACIÓN'
-                    className="form-control form-control-solid h-auto py-7 px-6"
-                    id='motivo'
-                    as="textarea"
-                    rows="3"
+                    placeholder = { 
+                        estatus === 'Cancelado' ?
+                            'MOTIVO DE CANCELACIÓN' :
+                            'MOTIVO DE RECHAZO'
+                    }
+                    className = "form-control form-control-solid h-auto py-7 px-6"
+                    id = 'motivo'
+                    as = "textarea"
+                    rows = "3"
                 />
             </div>
         )

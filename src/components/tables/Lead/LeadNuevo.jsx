@@ -5,6 +5,7 @@ import { toAbsoluteUrl } from "../../../functions/routers"
 import { setDateTableLG } from '../../../functions/setters'
 import { questionAlert } from '../../../functions/alert'
 class LeadNuevo extends Component {
+
     isActiveButton(direction) {
         const { leads } = this.props
         if (leads.total_paginas > 1) {
@@ -22,6 +23,7 @@ class LeadNuevo extends Component {
         }
         return false;
     }
+    
     canSendFirstEmail = lead => {
         if (lead.prospecto) {
             if (lead.prospecto.contactos) {
@@ -40,6 +42,7 @@ class LeadNuevo extends Component {
         }
         return true
     }
+    
     render() {
         const { leads, onClickPrev, onClickNext, sendEmail, openModal, openModalWithInput, changePageLlamadaSalida, options, changeOrigen } = this.props
         return (
