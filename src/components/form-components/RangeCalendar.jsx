@@ -11,8 +11,9 @@ class RangeCalendar extends Component {
     state = {
         range:[{
             startDate: new Date(),
-            endDate: addDays(new Date(), 7),
-            key: 'selection'
+            endDate: new Date(),
+            key: 'selection',
+            autoFocus: true
         }]
     }
 
@@ -20,8 +21,8 @@ class RangeCalendar extends Component {
         const { start, end } = this.props
         const { range } = this.state
         range[0] = {
-            startDate: start,
-            endDate: end,
+            startDate: new Date(start),
+            endDate: new Date(end),
             key: 'selection'
         }
         this.setState({
@@ -31,6 +32,7 @@ class RangeCalendar extends Component {
     }
 
     updateRange = item => {
+
         const { range } = this.state
         const { onChange } = this.props
         range[0] = item.selection
@@ -39,6 +41,7 @@ class RangeCalendar extends Component {
             range
         })
         onChange(range[0])
+
     }
 
     getThisWeek = () => {
@@ -87,63 +90,92 @@ class RangeCalendar extends Component {
     }
 
     render() {
+
         const { range } = this.state
         const { disabledDates } = this.props
+        const rangeHoy = {
+            startDate: new Date(),
+            endDate: new Date()
+        }
+        const rangeEstaSema = this.getThisWeek()
+        const rangeEsteMes = this.getThisMonth()
+        const rangeMesAnterior = this.getLastMonth()
+        const rangeEsteAño = this.getThisYear()
+        const rangeAñoPasado = this.getLastYear()
+        
         return (
+            
             <DateRangePicker
                 disabledDates = { disabledDates }
                 onChange={ (item) => { this.updateRange(item)} }
                 showSelectionPreview = { true }
-                moveRangeOnFirstSelection = { false }
-                months = { 1 }
+                moveRangeOnFirstSelection = { true }
+                editableDateInputs = { true }
                 ranges = { range }
                 direction = "horizontal"
                 locale = { es }
+                editableDateInputs = { true }
+                initialFocusedRange = { [0,0] }
                 staticRanges = {
                     [
                         {
                             label: 'Hoy',
-                            range: () => ({
-                                startDate: new Date(),
-                                endDate: new Date()
-                            }),
-                            isSelected() {
-                                return true;
+                            range: () => (rangeHoy),
+                            isSelected (){ 
+                                if(moment(range[0].startDate).startOf('day').toString() === moment(rangeHoy.startDate).startOf('day').toString()
+                                    && moment(range[0].endDate).startOf('day').toString()  === moment(rangeHoy.endDate).startOf('day').toString() )
+                                    return true
+                                return false
                             }
                         },
                         {
                             label: 'Esta semana',
-                            range: () => ( this.getThisWeek()),
+                            range: () => ( rangeEstaSema ),
                             isSelected() {
-                                return true;
+                                if(moment(range[0].startDate).startOf('day').toString() === moment(rangeEstaSema.startDate).startOf('day').toString() 
+                                    && moment(range[0].endDate).startOf('day').toString()  === moment(rangeEstaSema.endDate).startOf('day').toString() )
+                                    return true
+                                return false
                             }
                         },
                         {
                             label: 'Este mes',
-                            range: () => ( this.getThisMonth()),
+                            range: () => ( rangeEsteMes ),
                             isSelected() {
-                                return true;
+                                if(moment(range[0].startDate).startOf('day').toString() === moment(rangeEsteMes.startDate).startOf('day').toString() 
+                                    && moment(range[0].endDate).startOf('day').toString()  === moment(rangeEsteMes.endDate).startOf('day').toString() )
+                                    return true
+                                return false
                             }
                         },
                         {
                             label: 'Mes anterior',
-                            range: () => ( this.getLastMonth()),
+                            range: () => ( rangeMesAnterior ),
                             isSelected() {
-                                return true;
+                                if(moment(range[0].startDate).startOf('day').toString() === moment(rangeMesAnterior.startDate).startOf('day').toString() 
+                                    && moment(range[0].endDate).startOf('day').toString()  === moment(rangeMesAnterior.endDate).startOf('day').toString() )
+                                    return true
+                                return false
                             }
                         },
                         {
                             label: 'Este año',
-                            range: () => ( this.getThisYear()),
+                            range: () => ( rangeEsteAño ),
                             isSelected() {
-                                return true;
+                                if(moment(range[0].startDate).startOf('day').toString() === moment(rangeEsteAño.startDate).startOf('day').toString() 
+                                    && moment(range[0].endDate).startOf('day').toString()  === moment(rangeEsteAño.endDate).startOf('day').toString() )
+                                    return true
+                                return false
                             }
                         },
                         {
                             label: 'Año pasado',
-                            range: () => ( this.getLastYear()),
+                            range: () => ( rangeAñoPasado ),
                             isSelected() {
-                                return true;
+                                if(moment(range[0].startDate).startOf('day').toString() === moment(rangeAñoPasado.startDate).startOf('day').toString() 
+                                    && moment(range[0].endDate).startOf('day').toString()  === moment(rangeAñoPasado.endDate).startOf('day').toString() )
+                                    return true
+                                return false
                             }
                         }
                     ]
