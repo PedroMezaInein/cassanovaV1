@@ -45,11 +45,11 @@ class RegisterUserForm extends Component {
                                     {
                                         label: 'Masculino',
                                         value: 'masculino'
-                                    },
+                                    }/* ,
                                     {
                                         label: 'No binario',
                                         value: 'no binario'
-                                    }
+                                    } */
                                 ]
                             }
                             value = { form.sexo }
