@@ -11,7 +11,7 @@ class SelectSearchForm extends Component {
 
     renderFontValue = (valueProps, onChange) => {
         const { requirevalidation } = this.state
-        const { customstyle } = this.props
+        const { customstyle, messageinc } = this.props
 
         let validado = false;
         if (requirevalidation) {
@@ -36,7 +36,7 @@ class SelectSearchForm extends Component {
                         style={customstyle}
                     />
                 </div>
-                <span className={validado ? "form-text text-danger hidden" : "form-text text-danger"}> Selecciona una opción </span>
+                <span className={validado ? "form-text text-danger hidden" : "form-text text-danger"}> {messageinc} </span>
             </>
         );
     }

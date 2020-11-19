@@ -9,7 +9,7 @@ import swal from 'sweetalert'
 import { COLORES_GRAFICAS_2, IM_AZUL, INEIN_RED, URL_DEV } from '../../constants'
 import axios from 'axios'
 import { pdf } from '@react-pdf/renderer'
-import {Pie} from 'react-chartjs-2';
+import { Pie, Bar } from 'react-chartjs-2';
 import "chartjs-plugin-datalabels";
 import { setLabelTable, setOptions } from '../../functions/setters';
 import FlujosReportesVentas from '../../components/forms/reportes/FlujosReportesVentas';
@@ -19,65 +19,20 @@ import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import ReporteVentasInein from '../../components/pdfs/ReporteVentasInein'
 import ReporteVentasIm from '../../components/pdfs/ReporteVentasIm'
 
-const options = {
-    plugins: {
-        datalabels: {
-            color: '#fff',
-		    font: {
-                size: 18,
-                weight: 'bold'
-            }
-        }
-    },
-    legend:{
-        display: true,
-        position: "right",
-        fullWidth: false,
-        reverse: false,
-        labels: {
-            fontColor: '#000',
-            fontSize: 12
-        }
-    },
-}
-
-const options2 = {
-    plugins: {
-        datalabels: {
-            color: '#fff',
-		    font: {
-                size: 18,
-                weight: 'bold'
-            }
-        }
-    },
-    legend:{
-        display: false,
-    },
-}
-
 class ReporteVentas extends Component {
 
     state = {
         editorState: EditorState.createEmpty(),
         empresa : '',
         form:{
-            fechaInicio: undefined,
-            fechaFin: undefined,
-            fechaInicioRef: null,
-            fechaFinRef: null,
+            fechaInicio: moment().startOf('month'),
+            fechaFin: moment().endOf('month'),
+            referencia: 'trimestral',
             empresa: '',
-            adjuntos:{
-                reportes:{
-                    value: '',
-                    placeholder: 'Reporte',
-                    files: []
-                }
-            },
-            leads: []
         },
         data:{
-            total: {}
+            total: {},
+            comparativa: {}
         },
         leads: [],
         leadsAnteriores: [],
@@ -89,80 +44,33 @@ class ReporteVentas extends Component {
     constructor(props) {
         super(props);
         this.chartTotalReference = React.createRef();
-        this.chartTotalAnterioresReference = React.createRef();
+        this.chartTotalComparativaReference = React.createRef();
         this.chartTotalOrigenesReference = React.createRef();
+        this.chartComparativaOrigenesReference = React.createRef();
+        this.chartTotalServiciosReference = React.createRef();
+        this.chartComparativaOrigenesReference = React.createRef();
+
+        /* this.chartTotalOrigenesReference = React.createRef();
         this.chartTotalOrigenesAnterioresReference = React.createRef();
         this.chartServiciosReference = React.createRef();
         this.chartServiciosAnterioresReference = React.createRef();
         this.chartTiposReference = React.createRef();
         this.chartTiposAnterioresReference = React.createRef();
         this.chartProspectosReference = React.createRef();
-        this.chartEstatusProspectosReference = React.createRef();
+        this.chartEstatusProspectosReference = React.createRef(); */
     }
 
     componentDidMount() {
         this.getOptionsAxios()
     }
 
-    onChangeRange = range => {
-        const { startDate, endDate } = range
-        const { form } = this.state
-        form.fechaInicio = startDate
-        form.fechaFin = endDate
-        this.setState({
-            ...this.state,
-            form
+    setOpacity = array =>{
+        let aux = [];
+        array.map( (element) => {
+            aux.push(element+'D9')
+            return false
         })
-        if(form.empresa !== '' && form.fechaInicio !== null && form.fechaFin !== null && form.fechaInicioRef !== null && form.fechaFinRef !== null){
-            this.getReporteVentasAxios()
-        }
-    }
-
-    onChangeRangeRef = range => {
-        const { startDate, endDate } = range
-        const { form } = this.state
-        form.fechaInicioRef = startDate
-        form.fechaFinRef = endDate
-        this.setState({
-            ...this.state,
-            form
-        })
-        if(form.empresa !== '' && form.fechaInicio !== null && form.fechaFin !== null && form.fechaInicioRef !== null && form.fechaFinRef !== null){
-            this.getReporteVentasAxios()
-        }
-    }
-
-    onChange = e => {
-        const { name, value } = e.target
-        const { form, options } = this.state
-        let { empresa } = this.state
-        form[name] = value
-        
-        if(form.empresa !== '' && form.fechaInicio !== null && form.fechaFin !== null && form.fechaInicioRef !== null && form.fechaFinRef !== null){
-            this.getReporteVentasAxios()
-        }
-        if(name === 'empresa'){
-            options.empresas.map((emp)=>{
-                if(emp.value === value)
-                    empresa = emp.name
-                return false
-            })
-        }
-        this.setState({
-            ...this.state,
-            form,
-            empresa
-        })
-    }
-
-    onChangeObservaciones = e => {
-        const { name, value } = e.target
-        let { form } = this.state
-        form.leads[name].observacion = value
-        this.setState({
-            ...this.state,
-            form
-        })
+        return aux
     }
 
     getBG = tamaño => {
@@ -175,484 +83,6 @@ class ReporteVentas extends Component {
         return aux
     }
 
-    setOpacity = array =>{
-        let aux = [];
-        array.map( (element) => {
-            aux.push(element+'D9')
-            return false
-        })
-        return aux
-    }
-
-    getMonth = () => {
-        const { form } = this.state
-        let fecha = moment(form.fechaInicio)
-        let mes = fecha.month()
-        let meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
-        return meses[mes]
-    }
-
-    getLastMonth = () => {
-        const { form } = this.state
-        let fecha = moment(form.fechaInicioRef)
-        let mes = fecha.month()
-        let meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
-        return meses[mes]
-    }
-
-    getYear = () => {
-        const { form } = this.state
-        let fecha = moment(form.fechaInicio)
-        let año = fecha.year()
-        return año
-    }
-
-    setReporte = ( images, lista ) => {
-        const { empresa, form  } = this.state
-        switch(empresa){
-            case 'INEIN':
-                return(
-                    <ReporteVentasInein form = { form } images = { images }
-                        lista = { lista } />
-                )
-            case 'INFRAESTRUCTURA MÉDICA':
-                return(
-                    <ReporteVentasIm form = { form } images = { images }
-                        lista = { lista } />
-                )
-            default:
-                break;
-        }
-    }
-
-    setColor = () => {
-        const { empresa } = this.state
-        switch(empresa){
-            case 'INEIN':
-                return INEIN_RED
-            case 'INFRAESTRUCTURA MÉDICA':
-                return IM_AZUL
-            default:
-                break;
-        }
-    }
-
-    async generarPDF(){
-        waitAlert()
-        let aux = []
-        const { form, editorState } = this.state
-        aux.push(
-            {
-                name: 'total',
-                url: this.chartTotalReference.current.chartInstance.toBase64Image()
-            },
-            {
-                name: 'total-anteriores',
-                url: this.chartTotalAnterioresReference.current.chartInstance.toBase64Image()
-            },
-            {
-                name: 'origenes',
-                url: this.chartTotalOrigenesReference.current.chartInstance.toBase64Image()
-            },
-            {
-                name: 'origenes-anteriores',
-                url: this.chartTotalOrigenesAnterioresReference.current.chartInstance.toBase64Image()
-            },
-            {
-                name: 'servicios',
-                url: this.chartServiciosReference.current.chartInstance.toBase64Image()
-            },
-            {
-                name: 'servicios-anteriores',
-                url: this.chartServiciosAnterioresReference.current.chartInstance.toBase64Image()
-            },
-            {
-                name: 'tipos',
-                url: this.chartTiposReference.current.chartInstance.toBase64Image()
-            },
-            {
-                name: 'tipos-anteriores',
-                url: this.chartTiposAnterioresReference.current.chartInstance.toBase64Image()
-            },
-            {
-                name: 'prospectos',
-                url: this.chartProspectosReference.current.chartInstance.toBase64Image()
-            },
-            {
-                name: 'estatus-prospectos',
-                url: this.chartEstatusProspectosReference.current.chartInstance.toBase64Image()
-            }
-        )
-
-        let lista = convertToRaw(editorState.getCurrentContent())
-        
-        let _lista = []
-        
-        lista.blocks.map((element)=>{
-            _lista.push(element.text.toUpperCase())
-        })
-        
-        const blob = await pdf((
-            this.setReporte( aux, _lista )
-        )).toBlob();
-        
-        form.adjuntos.reportes.files = [
-            {
-                name: 'reporte.pdf',
-                url: URL.createObjectURL(blob)
-            }
-        ]
-        
-        if(form.adjuntos.reportes.files.length > 0)
-            window.open(form.adjuntos.reportes.files[0].url, '_blank');
-        
-        swal.close()
-        
-        this.setState({
-            ...this.state,
-            form
-        })
-    }
-
-    async getOptionsAxios() {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'reportes/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                swal.close()
-                const { empresas } = response.data
-                const { options } = this.state
-
-                options.empresas = setOptions(empresas, 'name', 'id')
-
-                this.setState({
-                    ...this.state,
-                    options
-                })
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-
-    async getReporteVentasAxios(){
-        
-        const { access_token } = this.props.authUser
-        const { form } = this.state
-        waitAlert()
-        await axios.post(URL_DEV + 'reportes/ventas', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { leads, leadsAnteriores, servicios, origenes, estatus } = response.data
-                const { data, form } = this.state
-                data.total = {
-                    labels: ['TOTAL'],
-                    datasets: [{
-                        data: [leads.length],
-                        backgroundColor: [
-                            this.setColor()
-                        ],
-                        hoverBackgroundColor: [
-                            this.setColor()+'D9'
-                        ]
-                    }]
-                }
-
-                data.totalAnteriores = {
-                    labels: ['TOTAL'],
-                    datasets: [{
-                        data: [leadsAnteriores.length],
-                        backgroundColor: [
-                            this.setColor()
-                        ],
-                        hoverBackgroundColor: [
-                            this.setColor()+'D9'
-                        ]
-                    }]
-                }
-
-                let contador = 0
-                let contador2 = 0
-                let arrayLabes = []
-                let arrayData = []
-                let arrayLabes2 = []
-                let arrayData2 = []
-                let colors = []
-                let colors2 = []
-                origenes.map((origen, index)=>{
-                    origen.color = COLORES_GRAFICAS_2[index]
-                    return false
-                })
-                origenes.map( (origen) => {
-                    contador = 0
-                    contador2 = 0
-                    leads.map((lead)=> {
-                        if(lead.origen)
-                            if(lead.origen.origen === origen.origen)
-                                contador ++
-                        return false
-                    })
-                    if(contador)
-                    {
-                        arrayLabes.push(origen.origen.toUpperCase())
-                        colors.push(origen.color)
-                        arrayData.push(contador)
-                    }
-                    leadsAnteriores.map((lead)=> {
-                        if(lead.origen)
-                            if(lead.origen.origen === origen.origen)
-                                contador2 ++
-                        return false
-                    })
-                    if(contador2)
-                    {
-                        arrayLabes2.push(origen.origen.toUpperCase())
-                        colors2.push(origen.color)
-                        arrayData2.push(contador2)
-                    }
-                    return false
-                })
-
-                data.totalOrigenes = {
-                    labels: arrayLabes,
-                    datasets: [{
-                        data: arrayData,
-                        backgroundColor: colors,
-                        hoverBackgroundColor: this.setOpacity(colors),
-                    }]
-                }
-
-                data.totalOrigenesAnteriores = {
-                    labels: arrayLabes2,
-                    datasets: [{
-                        data: arrayData2,
-                        backgroundColor: colors2,
-                        hoverBackgroundColor: this.setOpacity(colors2),
-                    }]
-                }
-
-                contador = 0
-                contador2 = 0
-                arrayLabes = []
-                arrayData = []
-                arrayLabes2 = []
-                arrayData2 = []
-                colors = []
-                colors2 = []
-
-                servicios.map((servicio, index)=>{
-                    servicio.color = COLORES_GRAFICAS_2[index]
-                    return false
-                })
-                
-                servicios.map( (servicio) => {
-                    contador = 0
-                    contador2 = 0
-                    leads.map( (lead) => {
-                        lead.servicios.map( (serv) => {
-                            if(servicio.servicio === serv.servicio){
-                                contador ++
-                            }
-                            return false
-                        })
-                        return false
-                    })
-                    if(contador)
-                    {
-                        arrayLabes.push(servicio.servicio.toUpperCase())
-                        colors.push(servicio.color)
-                        arrayData.push(contador)
-                    }
-                    leadsAnteriores.map( (lead) => {
-                        lead.servicios.map( (serv) => {
-                            if(servicio.servicio === serv.servicio){
-                                contador2 ++
-                            }
-                            return false
-                        })
-                        return false
-                    })
-                    if(contador2)
-                    {
-                        arrayLabes2.push(servicio.servicio.toUpperCase())
-                        colors2.push(servicio.color)
-                        arrayData2.push(contador2)
-                    }
-                    return false
-                })
-
-                data.servicios = {
-                    labels: arrayLabes,
-                    datasets: [{
-                        data: arrayData,
-                        backgroundColor: colors,
-                        hoverBackgroundColor: this.setOpacity(colors),
-                    }]
-                }
-
-                data.serviciosAnteriores = {
-                    labels: arrayLabes2,
-                    datasets: [{
-                        data: arrayData2,
-                        backgroundColor: colors2,
-                        hoverBackgroundColor: this.setOpacity(colors2),
-                    }]
-                }
-
-                contador = 0
-                contador2 = 0
-                
-                leads.map((lead)=>{
-                    if(lead.tipo_lead === 'basura')
-                        contador++
-                    if(lead.tipo_lead === 'potencial')
-                        contador2++
-                    return false
-                })
-
-                colors = this.getBG(2);
-
-                data.tipos = {
-                    labels: ['BASURA', 'POTENCIAL'],
-                    datasets: [{
-                        data: [contador, contador2],
-                        backgroundColor: colors,
-                        hoverBackgroundColor: this.setOpacity(colors),
-                    }]
-                }
-
-                contador = 0
-                contador2 = 0
-                
-                leadsAnteriores.map((lead)=>{
-                    if(lead.tipo_lead === 'basura')
-                        contador++
-                    if(lead.tipo_lead === 'potencial')
-                        contador2++
-                    return false
-                })
-
-                colors = this.getBG(2);
-
-                data.tiposAnteriores = {
-                    labels: ['BASURA', 'POTENCIAL'],
-                    datasets: [{
-                        data: [contador, contador2],
-                        backgroundColor: colors,
-                        hoverBackgroundColor: this.setOpacity(colors),
-                    }]
-                }
-
-                contador = 0
-                arrayLabes = []
-                arrayData = []
-                colors = []
-
-                estatus.map( (element, index) => {
-                    element.color = COLORES_GRAFICAS_2[index]
-                    return false
-                })
-
-                estatus.map( (element) => {
-                    contador = 0
-                    leads.map((lead)=>{
-                        if(lead.prospecto){
-                            if(lead.prospecto.estatus_prospecto)
-                            {
-                                if(lead.prospecto.estatus_prospecto.estatus === element.estatus){
-                                    contador ++
-                                }
-                            }
-                        }
-                        return false
-                    })
-                    if(contador)
-                    {
-                        arrayLabes.push(element.estatus.toUpperCase())
-                        colors.push(element.color)
-                        arrayData.push(contador)
-                    }
-                    return false
-                })
-
-                data.estatusProspectos = {
-                    labels: arrayLabes,
-                    datasets: [{
-                        data: arrayData,
-                        backgroundColor: colors,
-                        hoverBackgroundColor: this.setOpacity(colors),
-                    }]
-                }
-
-                contador = 0
-                contador2 = 0
-                
-                leads.map((lead)=>{
-                    if(lead.contactado === 1)
-                        contador++
-                    else
-                        contador2++
-                    return false
-                })
-
-                colors = ['#388E3C', '#F64E60']
-
-                data.prospectos = {
-                    labels: ['CONVERTIDO', 'SIN CONVERTIR'],
-                    datasets: [{
-                        data: [contador, contador2],
-                        backgroundColor: colors,
-                        hoverBackgroundColor: this.setOpacity(colors),
-                    }]
-                }
-                form.leads = leads
-                form.leads.map((lead)=> {
-                    lead.observacion = ''
-                    return false
-                })
-
-                swal.close()
-                this.setState({
-                    ...this.state,
-                    leads: leads,
-                    key: 'one',
-                    form
-                })
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-    changeTabe = value => {
-        this.setState({
-            ...this.state,
-            key: value
-        })
-    }
-    setLabel = (estatus) => {
-        let text = {}
-        text.letra = estatus.color_texto
-        text.fondo = estatus.color_fondo
-        text.estatus = estatus.estatus
-        return setLabelTable(text)
-    }
     setButtons = (left, right, generar) => {
         return(
             <div className = { left !== null ? "d-flex justify-content-between" : 'd-flex justify-content-end'}>
@@ -698,13 +128,361 @@ class ReporteVentas extends Component {
             </div>
         )
     }
-    onEditorStateChange = (editorState) => {
+
+    changeTabe = value => {
         this.setState({
-            editorState,
-        });
-    };
+            ...this.state,
+            key: value
+        })
+    }
+
+    setColor = () => {
+        const { empresa } = this.state
+        switch(empresa){
+            case 'INEIN':
+                return INEIN_RED
+            case 'INFRAESTRUCTURA MÉDICA':
+                return IM_AZUL
+            default:
+                break;
+        }
+    }
+
+    onChangeRange = range => {
+        const { startDate, endDate } = range
+        const { form } = this.state
+        form.fechaInicio = startDate
+        form.fechaFin = endDate
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
+
+    onChange = e => {
+        const { name, value } = e.target
+        const { form, options } = this.state
+        let { empresa } = this.state
+        form[name] = value
+
+        if(name === 'empresa'){
+            options.empresas.map((emp)=>{
+                if(emp.value === value)
+                    empresa = emp.name
+                return false
+            })
+        }
+        
+        this.setState({
+            ...this.state,
+            form,
+            empresa
+        })
+    }
+
+    onSubmit = e => {
+        e.preventDefault();
+        const { form } = this.state
+        if(form.empresa !== '' && form.referencia !== '' && form.fechaInicio !== null && form.fechaFin !== null )
+            this.getReporteVentasAxios()
+        else
+            errorAlert('No completaste todos los campos.')
+    }
+
+    async getOptionsAxios() {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'reportes/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                swal.close()
+                const { empresas } = response.data
+                const { options } = this.state
+
+                options.empresas = setOptions(empresas, 'name', 'id')
+
+                this.setState({
+                    ...this.state,
+                    options
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async getReporteVentasAxios(){
+        
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        waitAlert()
+        await axios.post(URL_DEV + 'reportes/ventas', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { leads, servicios, origenes, estatus } = response.data
+                const { data, form } = this.state
+                swal.close()
+                data.total = {
+                    labels: ['TOTAL'],
+                    datasets: [{
+                        data: [leads[0].leads],
+                        backgroundColor: [
+                            this.setColor()
+                        ],
+                        hoverBackgroundColor: [
+                            this.setColor()+'D9'
+                        ]
+                    }]
+                }
+
+                let arrayLabels = []
+                let arrayData = []
+                let colors = []
+                
+                leads.map((element)=>{
+                    arrayLabels.push(element.label);
+                    arrayData.push(element.leads)
+                })
+
+                colors = this.getBG(arrayData.length);
+
+                data.comparativa = {
+                    labels: arrayLabels,
+                    datasets: [
+                        {
+                            label: 'Total de leads',
+                            data: arrayData,
+                            backgroundColor: colors,
+                            hoverBackgroundColor: this.setOpacity(colors)
+                        }
+                    ]
+                }
+
+                arrayLabels = []
+                arrayData = []
+                colors = []
+
+                let keys = Object.keys(origenes)
+
+                keys.map((element)=>{
+                    if(origenes[element][0].leads > 0){
+                        arrayLabels.push(element)
+                        arrayData.push(origenes[element][0].leads)
+                    }
+                })
+
+                colors = this.getBG(arrayData.length);
+
+                data.origenes = {
+                    labels: arrayLabels,
+                    datasets: [
+                        {
+                            label: 'ORIGEN DE LEADS',
+                            data: arrayData,
+                            backgroundColor: colors,
+                            hoverBackgroundColor: this.setOpacity(colors)
+                        }
+                    ]
+                }
+
+                keys = Object.keys(servicios)
+
+                arrayLabels = []
+                arrayData = []
+                colors = []
+
+                keys.map((element)=>{
+                    if(servicios[element][0].leads > 0){
+                        arrayLabels.push(element)
+                        arrayData.push(servicios[element][0].leads)
+                    }
+                })
+
+                colors = this.getBG(arrayData.length);
+
+                data.servicios = {
+                    labels: arrayLabels,
+                    datasets: [
+                        {
+                            label: 'SERVICIOS SOLICITADOS',
+                            data: arrayData,
+                            backgroundColor: colors,
+                            hoverBackgroundColor: this.setOpacity(colors)
+                        }
+                    ]
+                }
+
+                // Origenes comparativas
+                arrayLabels = []
+                colors = []
+                let arrayDataSets = []
+
+                keys = Object.keys(origenes)
+
+                keys.map((element, key)=>{
+                    arrayLabels.push(element)
+                    if(key === 0){
+                        origenes[element].map((dataSet, index)=>{
+                            if( index <= 2 )
+                                arrayDataSets.push(
+                                    {
+                                        label: dataSet.label,
+                                        data: [],
+                                        backgroundColor: '',
+                                    }
+                                )
+                        })
+                    }
+                })
+
+                colors = this.getBG(arrayDataSets.length);
+                
+                arrayDataSets.map((element, key)=>{
+                    arrayData = []
+                    keys.map((origen) => {
+                        arrayData.push(origenes[origen][key].leads)
+                    })
+                    element.data = arrayData
+                    element.backgroundColor = colors[key]
+                })
+
+                data.origenesComparativa = {
+                    labels: arrayLabels,
+                    datasets: arrayDataSets
+                }
+
+                // Servicios comparativas
+                arrayLabels = []
+                colors = []
+                arrayDataSets = []
+
+                keys = Object.keys(servicios)
+
+                keys.map((element, key)=>{
+                    arrayLabels.push(element)
+                    if(key === 0){
+                        servicios[element].map((dataSet, index)=>{
+                            if( index <= 2 )
+                                arrayDataSets.push(
+                                    {
+                                        label: dataSet.label,
+                                        data: [],
+                                        backgroundColor: '',
+                                    }
+                                )
+                        })
+                    }
+                })
+
+                colors = this.getBG(arrayDataSets.length);
+                
+                arrayDataSets.map((element, key)=>{
+                    arrayData = []
+                    keys.map((servicio) => {
+                        arrayData.push(servicios[servicio][key].leads)
+                    })
+                    element.data = arrayData
+                    element.backgroundColor = colors[key]
+                })
+
+                data.serviciosComparativa = {
+                    labels: arrayLabels,
+                    datasets: arrayDataSets
+                }
+
+                this.setState({
+                    ...this.state,
+                    data,
+                    key: 'one'
+                })
+                
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     render() {
         const { form, leads, data, options: opciones, key, editorState } = this.state
+
+        const optionsPie = {
+            plugins: {
+                datalabels: {
+                    color: '#fff',
+                    font: {
+                        size: 18,
+                        weight: 'bold'
+                    }
+                }
+            },
+            legend:{
+                display: false,
+            },
+        }
+
+        const optionsBar = {
+            plugins: {
+                datalabels: {
+                    color: '#fff',
+                    font: {
+                        size: 18,
+                        weight: 'bold'
+                    }
+                }
+            },
+            scales: {
+            yAxes: [
+                    {
+                        ticks: {
+                            beginAtZero: true,
+                        },
+                    },
+                ],
+            },
+        }
+
+        const optionsBarStacked = {
+            scales: {
+                yAxes: [
+                    {
+                        stacked: false,
+                        ticks: {
+                            beginAtZero: true,
+                        },
+                    },
+                ],
+                xAxes: [
+                    {
+                        stacked: false,
+                    },
+                ],
+            },
+            plugins: {
+                datalabels: {
+                    color: '#fff',
+                    font: {
+                        size: 15,
+                        weight: 'bold'
+                    }
+                }
+            },
+        }
         
         return (
             <Layout active = 'reportes'  {...this.props}>
@@ -716,7 +494,7 @@ class ReporteVentas extends Component {
                     </Card.Header>
                     <Card.Body>
                         <div className="row mx-0">
-                            <div className="col-md-12">                                
+                            <div className="col-md-12">
                                 <FlujosReportesVentas
                                     form = { form }
                                     options = { opciones }
@@ -724,6 +502,7 @@ class ReporteVentas extends Component {
                                     onChangeRangeRef = { this.onChangeRangeRef }
                                     onChange = { this.onChange }
                                     className = "mb-3"
+                                    onSubmit = { this.onSubmit }
                                     />
                             </div>
                         </div>
@@ -740,80 +519,62 @@ class ReporteVentas extends Component {
                                         </h3>
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
-                                        <div className = "col-md-6" >
-                                            <Pie ref = { this.chartTotalReference } data = { data.total } options = { options2 } />
+                                        <div className = "col-md-11" >
+                                            <Pie ref = { this.chartTotalReference } data = { data.total } options = { optionsPie } />
                                         </div>
                                     </div>
                                 </Tab.Pane>
                                 <Tab.Pane eventKey = 'two'>
                                     {this.setButtons('one', 'three', null)}
-                                    <div className = "my-3">
+                                    <div className = " my-3 ">
                                         <h3 className="card-label title-reporte-ventas">
                                             <strong>
-                                                02 
+                                                02
                                             </strong>
-                                            COMPARATIVA LEADS ACTUALES VS { this.getLastMonth() }
+                                            COMPARATIVA DE LEADS TOTALES
                                         </h3>
                                     </div>
-                                    <div className = "row mx-0 mb-2">
-                                        <div className="col-md-6">
-                                            <Pie ref = { this.chartTotalReference } data = { data.total } options = { options2 } />
-                                            <div className = "text-reporte-ventas text-center">
-                                                {this.getMonth()}
-                                            </div>
-                                        </div>
-                                        <div className="col-md-6">
-                                            <Pie ref = { this.chartTotalAnterioresReference } data = { data.totalAnteriores } options = { options2 } />
-                                            <div className = "text-reporte-ventas text-center">
-                                                {this.getLastMonth()}
-                                            </div>
+                                    <div className = "row mx-0 mb-2 justify-content-center">
+                                        <div className = "col-md-11" >
+                                            <Bar ref = { this.chartTotalComparativaReference } data = { data.comparativa } options = { optionsBar } />
                                         </div>
                                     </div>
                                 </Tab.Pane>
                                 <Tab.Pane eventKey = 'three'>
                                     {this.setButtons('two', 'four', null)}
-                                    <div className = "my-3">
+                                    <div className = " my-3 ">
                                         <h3 className="card-label title-reporte-ventas">
                                             <strong>
                                                 03
                                             </strong>
-                                            ORIGEN DE LEADS
+                                            ORIGEN DE LEADSS
                                         </h3>
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
-                                        <div className="col-md-6">
-                                            <Pie ref = { this.chartTotalOrigenesReference } data = { data.totalOrigenes } options = { options } />
+                                        <div className = "col-md-11" >
+                                            <Bar ref = { this.chartTotalOrigenesReference } data = { data.origenes } options = { optionsBar } />
                                         </div>
                                     </div>
                                 </Tab.Pane>
                                 <Tab.Pane eventKey = 'four'>
                                     {this.setButtons('three', 'five', null)}
-                                    <div className = "my-3">
+                                    <div className = " my-3 ">
                                         <h3 className="card-label title-reporte-ventas">
                                             <strong>
                                                 04
                                             </strong>
-                                            COMPARATIVA ORIGEN LEADS ACTUALES VS { this.getLastMonth() }
+                                            COMPARATIVA ORIGEN LEADS
                                         </h3>
                                     </div>
-                                    <div className = "row mx-0 mb-2">
-                                        <div className="col-md-6">
-                                            <Pie ref = { this.chartTotalOrigenesReference } data = { data.totalOrigenes } options = { options } />
-                                            <div className = "text-reporte-ventas text-center">
-                                                {this.getMonth()}
-                                            </div>
-                                        </div>
-                                        <div className="col-md-6">
-                                            <Pie ref = { this.chartTotalOrigenesAnterioresReference } data = { data.totalOrigenesAnteriores } options = { options } />
-                                            <div className = "text-reporte-ventas text-center">
-                                                {this.getLastMonth()}
-                                            </div>
+                                    <div className = "row mx-0 mb-2 justify-content-center">
+                                        <div className = "col-md-11" >
+                                            <Bar ref = { this.chartComparativaOrigenesReference } data = { data.origenesComparativa } options = { optionsBarStacked } />
                                         </div>
                                     </div>
                                 </Tab.Pane>
                                 <Tab.Pane eventKey = 'five'>
                                     {this.setButtons('four', 'six', null)}
-                                    <div className = "my-3">
+                                    <div className = " my-3 ">
                                         <h3 className="card-label title-reporte-ventas">
                                             <strong>
                                                 05
@@ -822,209 +583,26 @@ class ReporteVentas extends Component {
                                         </h3>
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
-                                        <div className="col-md-6">
-                                            <Pie ref = { this.chartServiciosReference } data = { data.servicios } options = { options } />
+                                        <div className = "col-md-11" >
+                                            <Bar ref = { this.chartTotalServiciosReference } data = { data.servicios } options = { optionsBar } />
                                         </div>
                                     </div>
                                 </Tab.Pane>
                                 <Tab.Pane eventKey = 'six'>
                                     {this.setButtons('five', 'seven', null)}
-                                    <div className = "my-3">
+                                    <div className = " my-3 ">
                                         <h3 className="card-label title-reporte-ventas">
                                             <strong>
                                                 06
                                             </strong>
-                                            COMPARATIVA SERVICIOS SOLICITADOS VS { this.getLastMonth() }
-                                        </h3>
-                                    </div>
-                                    <div className = "row mx-0 mb-2">
-                                        <div className="col-md-6">
-                                            <Pie ref = { this.chartServiciosReference } data = { data.servicios } options = { options } />
-                                            <div className = "text-reporte-ventas text-center">
-                                                {this.getMonth()}
-                                            </div>
-                                        </div>
-                                        <div className="col-md-6">
-                                            <Pie ref = { this.chartServiciosAnterioresReference } data = { data.serviciosAnteriores } options = { options } />
-                                            <div className = "text-reporte-ventas text-center">
-                                                {this.getLastMonth()}
-                                            </div>
-                                        </div>
-                                    </div>
-                                </Tab.Pane>
-                                <Tab.Pane eventKey = 'seven'>
-                                    {this.setButtons('six', 'eight', null)}
-                                    <div className = "my-3">
-                                        <h3 className="card-label title-reporte-ventas">
-                                            <strong>
-                                                07
-                                            </strong>
-                                            TIPO DE LEAD
+                                            COMPARATIVA SERVICIOS SOLICITADOS
                                         </h3>
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
-                                        <div className="col-md-6">
-                                            <Pie ref = { this.chartTiposReference } data = { data.tipos } options = { options } />
+                                        <div className = "col-md-11" >
+                                            <Bar ref = { this.chartComparativaServiciosReference } data = { data.serviciosComparativa } options = { optionsBarStacked } />
                                         </div>
                                     </div>
-                                </Tab.Pane>
-                                <Tab.Pane eventKey = 'eight'>
-                                    {this.setButtons('seven', 'nine', null)}
-                                    <div className = "my-3">
-                                        <h3 className="card-label title-reporte-ventas">
-                                            <strong>
-                                                08
-                                            </strong>
-                                            COMPARATIVA TIPO LEADS VS { this.getLastMonth() }
-                                        </h3>
-                                    </div>
-                                    <div className = "row mx-0 mb-2">
-                                        <div className="col-md-6">
-                                            <Pie ref = { this.chartTiposReference } data = { data.tipos } options = { options } />
-                                        </div>
-                                        <div className="col-md-6">
-                                            <Pie ref = { this.chartTiposAnterioresReference } data = { data.tiposAnteriores } options = { options } />
-                                        </div>
-                                    </div>
-                                </Tab.Pane>
-                                <Tab.Pane eventKey = 'nine'>
-                                    {this.setButtons('eight', 'ten', null)}
-                                    <div className = "my-3">
-                                        <h3 className="card-label title-reporte-ventas">
-                                            <strong>
-                                                09
-                                            </strong>
-                                            TOTAL DE PROSPECTOS
-                                        </h3>
-                                    </div>
-                                    <div className = "row mx-0 mb-2 justify-content-center">
-                                        <div className="col-md-6">
-                                            <Pie ref = { this.chartProspectosReference } data = { data.prospectos } options = { options } />
-                                        </div>
-                                    </div>
-                                </Tab.Pane>
-                                <Tab.Pane eventKey = 'ten'>
-                                    {this.setButtons('nine', 'eleven', null)}
-                                    <div className = "my-3">
-                                        <h3 className="card-label title-reporte-ventas">
-                                            <strong>
-                                                10
-                                            </strong>
-                                            STATUS DE PROSPECTOS
-                                        </h3>
-                                    </div>
-                                    <div className = "row mx-0 mb-2 justify-content-center">
-                                        <div className="col-md-6">
-                                            <Pie ref = { this.chartEstatusProspectosReference } data = { data.estatusProspectos } options = { options } />
-                                        </div>
-                                    </div>
-                                </Tab.Pane>
-                                <Tab.Pane eventKey = 'eleven'>
-                                    {this.setButtons('ten', 'twelve', null)}
-                                    <div className = "my-3">
-                                        <h3 className="card-label title-reporte-ventas">
-                                            <strong>
-                                                11
-                                            </strong>
-                                            OBSERVACIONES DE PROSPECTOS
-                                        </h3>
-                                    </div>
-                                    <table className="table table-separate table-responsive-sm">
-                                        <thead>
-                                            <tr>
-                                                <th className="border-0 center_content">
-                                                    <div className="font-size-lg font-weight-bolder text-center">
-                                                        NOMBRE DE LEAD
-                                                    </div>
-                                                </th>
-                                                <th className="clave border-0 center_content">
-                                                    <div className="font-size-lg font-weight-bolder text-center">
-                                                        PROYECTO
-                                                    </div>
-                                                </th>
-                                                <th className="border-0 center_content">
-                                                    <div className="font-size-lg font-weight-bolder text-center">
-                                                        OBSERVACIONES
-                                                    </div>
-                                                </th>
-                                                <th className="clave border-0 center_content">
-                                                    <div className="font-size-lg font-weight-bolder text-center">
-                                                        STATUS
-                                                    </div>
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {
-                                                leads.map((lead, index)=>{
-                                                    if(lead.prospecto)
-                                                        return(
-                                                            <tr key = { index } >
-                                                                <td className="font-size-sm text-center">
-                                                                    {
-                                                                        lead.nombre
-                                                                    }
-                                                                </td>
-                                                                <td className="font-size-sm text-center">
-                                                                    {
-                                                                        lead.servicios.map((serv, index) => {
-                                                                            return serv.servicio
-                                                                        })
-                                                                    }
-                                                                </td>
-                                                                <td>
-                                                                    {
-                                                                        form.leads.length ?
-                                                                            <InputSinText
-                                                                                name = { index}
-                                                                                as = 'textarea'
-                                                                                rows = { 1 }
-                                                                                onChange = { this.onChangeObservaciones }
-                                                                                value = { form.leads[index].observacion }
-                                                                                />
-                                                                        :''
-                                                                    }
-                                                                    
-                                                                </td>
-                                                                <td>
-                                                                    {
-                                                                        lead.prospecto.estatus_prospecto ?
-                                                                            this.setLabel(lead.prospecto.estatus_prospecto)
-                                                                        : ''
-                                                                    }
-                                                                </td>
-                                                            </tr>
-                                                        )
-                                                    return false
-                                                })
-                                            }
-                                        </tbody>
-                                    </table>
-                                </Tab.Pane>
-                                <Tab.Pane eventKey = 'twelve'>
-                                    {this.setButtons('eleven', null, true)}
-                                    <div className = "my-3">
-                                        <h3 className="card-label title-reporte-ventas">
-                                            <strong>
-                                                12
-                                            </strong>
-                                            CONCLUSIONES
-                                        </h3>
-                                    </div>
-                                    <Editor 
-                                        editorClassName = "editor-class"
-                                        toolbar = { 
-                                            {
-                                                options: ['list'],
-                                                list: {
-                                                    inDropdown: false,
-                                                    options: ['unordered'],
-                                                },
-                                            }
-                                        }
-                                        editorState = { editorState }
-                                        onEditorStateChange={this.onEditorStateChange}
-                                        />
                                 </Tab.Pane>
                             </Tab.Content>
                         </Tab.Container>
