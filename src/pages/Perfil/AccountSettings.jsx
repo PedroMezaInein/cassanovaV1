@@ -1,4 +1,4 @@
-import React, { Component } from 'react'; 
+import React, { Component } from 'react';
 import Layout from '../../components/layout/layout'
 import { Card } from 'react-bootstrap'
 import { connect } from 'react-redux'
@@ -11,10 +11,10 @@ import swal from 'sweetalert';
 
 class AccountSettings extends Component {
 
-	state = {
-		form:{
-			oldPassword: '',
-			newPassword: '',
+    state = {
+        form: {
+            oldPassword: '',
+            newPassword: '',
             newPassword2: '',
             foto: '',
             adjuntos: {
@@ -29,21 +29,21 @@ class AccountSettings extends Component {
         user: '',
         activeKey: ''
     }
-    
-    componentDidMount(){
+
+    componentDidMount() {
         this.getAccountOptions()
     }
-	
-	onChange = e => {
+
+    onChange = e => {
         const { form } = this.state
-		const { name, value } = e.target
+        const { name, value } = e.target
         form[name] = value
         this.setState({
             ...this.state,
             form
         })
     }
-    
+
     clearAvatar = () => {
 
         const { avatar } = this.props.authUser.user
@@ -58,18 +58,18 @@ class AccountSettings extends Component {
     onClickEmpresa = empresa => {
 
         this.getAccountOptions()
-        
+
         const { user, form } = this.state
 
         let aux = ''
-        
-        user.empleado.firmas.map( (element) => {
-            if(element.empresa_id.toString()  === empresa.toString() )
+
+        user.empleado.firmas.map((element) => {
+            if (element.empresa_id.toString() === empresa.toString())
                 aux = element
         })
-        
-        if(aux !== '')
-            form.adjuntos.firma.files = [ { url: aux.firma, name: 'firma.'+this.getExtension(aux.firma) } ]
+
+        if (aux !== '')
+            form.adjuntos.firma.files = [{ url: aux.firma, name: 'firma.' + this.getExtension(aux.firma) }]
         else
             form.adjuntos.firma.files = []
 
@@ -82,15 +82,15 @@ class AccountSettings extends Component {
 
     getExtension = firma => {
         let aux = firma.split('.');
-        if(aux.length > 0)
+        if (aux.length > 0)
             return aux[aux.length - 1]
         return ''
     }
 
-    getAccountOptions = async() => {
+    getAccountOptions = async () => {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'user/users/single/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            ( response ) => {
+            (response) => {
                 const { user, empresas } = response.data
                 const { form } = this.state
 
@@ -106,9 +106,9 @@ class AccountSettings extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -118,27 +118,27 @@ class AccountSettings extends Component {
         })
     }
 
-	async changePasswordAxios() {
-		const { access_token } = this.props.authUser
-		const { form } = this.state
-        await axios.post(URL_DEV + 'user/users/change-password', form,  { headers: {Authorization:`Bearer ${access_token}`}}).then(
+    async changePasswordAxios() {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        await axios.post(URL_DEV + 'user/users/change-password', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-				const { history } = this.props
+                const { history } = this.props
 
-				doneAlert(response.data.message !== undefined ? response.data.message : 'La contraseña fue actualizada con éxito.')
-				setTimeout(() => {
-					swal.close()
-					history.push({
-						pathname: '/login'
-					});
-				}, 1500);
-				
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La contraseña fue actualizada con éxito.')
+                setTimeout(() => {
+                    swal.close()
+                    history.push({
+                        pathname: '/login'
+                    });
+                }, 1500);
+
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -146,27 +146,27 @@ class AccountSettings extends Component {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
-	}
+    }
 
-	sendAvatar = async (e) => {
-		e.preventDefault();
-		const { access_token } = this.props.authUser
-		const { form } = this.state
-        await axios.post(URL_DEV + 'user/users/avatar', form,  { headers: {Authorization:`Bearer ${access_token}`}}).then(
+    sendAvatar = async (e) => {
+        e.preventDefault();
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        await axios.post(URL_DEV + 'user/users/avatar', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-				const { update } = this.props
+                const { update } = this.props
                 update({
                     access_token: response.data.access_token,
                     user: response.data.user,
                     modulos: response.data.modulos
                 })
-				doneAlert(response.data.message !== undefined ? response.data.message : 'El avatar fue actualizado con éxito.')
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El avatar fue actualizado con éxito.')
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -174,7 +174,7 @@ class AccountSettings extends Component {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
-	}
+    }
     handleChange = (files, item) => {
         const { form } = this.state
         let aux = []
@@ -196,16 +196,16 @@ class AccountSettings extends Component {
         })
     }
     sendFirma = async (e) => {
-        
+
         e.preventDefault();
         waitAlert();
 
         const { access_token } = this.props.authUser
         const { form, activeKey } = this.state
         const data = new FormData();
-        
+
         let aux = Object.keys(form.adjuntos)
-        
+
         aux.map((element) => {
             if (form.adjuntos[element].value !== '') {
                 for (var i = 0; i < form.adjuntos[element].files.length; i++) {
@@ -219,16 +219,16 @@ class AccountSettings extends Component {
 
         data.append('empresa', activeKey)
 
-        await axios.post(URL_DEV + 'user/users/firma', data,  { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.post(URL_DEV + 'user/users/firma', data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { activeKey } = this.state
                 doneAlert('Firma actualizada con éxito.')
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -237,42 +237,33 @@ class AccountSettings extends Component {
             console.log(error, 'error')
         })
     }
-    
-	render(){		
-		const { form, empresas, activeKey } = this.state
-		return (
-			<>   
-				<Layout { ...this.props}>
-					<Card className="card-custom"> 
-						<Card.Header>
-                        <div className="card-title">
-                            <h3 className="card-label">Mi perfil</h3>
-                        </div>
-                    </Card.Header>
-						<Card.Body>
-                            <ChangePasswordForm
-                                form = { form }
-                                onChange = { this.onChange }
-                                onSubmit = { (e) => { e.preventDefault(); waitAlert(); this.changePasswordAxios()} }
-                                sendAvatar = { this.sendAvatar }
-                                clearAvatar = { this.clearAvatar }
-                                handleChange = { this.handleChange }
-                                sendFirma = { this.sendFirma }
-                                empresas = { empresas }
-                                user = { this.user }
-                                onClickEmpresa = { this.onClickEmpresa }
-                                activeKey = { activeKey }
-                            />
-						</Card.Body>
-					</Card>
-				</Layout>
-			</>
-		)
-	}
+
+    render() {
+        const { form, empresas, activeKey,user } = this.state
+        return (
+            <>
+                <Layout {...this.props}>
+                    <ChangePasswordForm
+                        form={form}
+                        onChange={this.onChange}
+                        onSubmit={(e) => { e.preventDefault(); waitAlert(); this.changePasswordAxios() }}
+                        sendAvatar={this.sendAvatar}
+                        clearAvatar={this.clearAvatar}
+                        handleChange={this.handleChange}
+                        sendFirma={this.sendFirma}
+                        empresas={empresas}
+                        user={user}
+                        onClickEmpresa={this.onClickEmpresa}
+                        activeKey={activeKey}
+                    />
+                </Layout>
+            </>
+        )
+    }
 }
 
 const mapStateToProps = state => {
-    return{
+    return {
         authUser: state.authUser
     }
 }
