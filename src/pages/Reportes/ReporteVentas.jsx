@@ -9,7 +9,7 @@ import swal from 'sweetalert'
 import { COLORES_GRAFICAS_2, IM_AZUL, INEIN_RED, URL_DEV } from '../../constants'
 import axios from 'axios'
 import { pdf } from '@react-pdf/renderer'
-import { Pie, Bar } from 'react-chartjs-2';
+import { Pie, Bar, Line } from 'react-chartjs-2';
 import "chartjs-plugin-datalabels";
 import { setLabelTable, setOptions } from '../../functions/setters';
 import FlujosReportesVentas from '../../components/forms/reportes/FlujosReportesVentas';
@@ -48,16 +48,13 @@ class ReporteVentas extends Component {
         this.chartTotalOrigenesReference = React.createRef();
         this.chartComparativaOrigenesReference = React.createRef();
         this.chartTotalServiciosReference = React.createRef();
-        this.chartComparativaOrigenesReference = React.createRef();
-
-        /* this.chartTotalOrigenesReference = React.createRef();
-        this.chartTotalOrigenesAnterioresReference = React.createRef();
-        this.chartServiciosReference = React.createRef();
-        this.chartServiciosAnterioresReference = React.createRef();
+        this.chartComparativaServiciosReference = React.createRef();
         this.chartTiposReference = React.createRef();
-        this.chartTiposAnterioresReference = React.createRef();
+        this.chartComparativaTiposReference = React.createRef();
         this.chartProspectosReference = React.createRef();
-        this.chartEstatusProspectosReference = React.createRef(); */
+        this.chartComparativaProspectosReference = React.createRef();
+        this.chartEstatusReference = React.createRef();
+        this.chartComparativaEstatusReference = React.createRef();
     }
 
     componentDidMount() {
@@ -68,6 +65,15 @@ class ReporteVentas extends Component {
         let aux = [];
         array.map( (element) => {
             aux.push(element+'D9')
+            return false
+        })
+        return aux
+    }
+
+    setOpacity2 = array =>{
+        let aux = [];
+        array.map( (element) => {
+            aux.push(element+'5F')
             return false
         })
         return aux
@@ -226,7 +232,7 @@ class ReporteVentas extends Component {
         waitAlert()
         await axios.post(URL_DEV + 'reportes/ventas', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { leads, servicios, origenes, estatus } = response.data
+                const { leads, servicios, origenes, tipos, prospectos, estatus } = response.data
                 const { data, form } = this.state
                 swal.close()
                 data.total = {
@@ -319,10 +325,144 @@ class ReporteVentas extends Component {
                     ]
                 }
 
+                keys = ['Basura', 'Potencial']
+
+                arrayLabels = []
+                arrayData = []
+                colors = []
+
+                keys.map((element)=>{
+                    if(tipos[element][0].leads > 0){
+                        arrayLabels.push(element)
+                        arrayData.push(tipos[element][0].leads)
+                    }
+                })
+
+                colors = this.getBG(arrayData.length);
+
+                data.tipos = {
+                    labels: arrayLabels,
+                    datasets: [
+                        {
+                            label: 'TIPO DE LEADS',
+                            data: arrayData,
+                            backgroundColor: colors,
+                            hoverBackgroundColor: this.setOpacity(colors)
+                        }
+                    ]
+                }
+
+                //Comparativa tipo leads
+                arrayLabels = []
+                arrayData = []
+                let arrayDataSets = []
+
+                tipos['Basura'].map((tipo) => {
+                    arrayLabels.push(tipo.label)
+                    arrayData.push(tipo.leads)
+                })
+
+                arrayDataSets.push(
+                    {
+                        label: 'Basura',
+                        data: arrayData,
+                        backgroundColor: colors[0]
+                    }
+                );
+
+                arrayData = []
+                tipos['Potencial'].map((element)=>{
+                    arrayData.push(element.leads)
+                })
+
+                arrayDataSets.push(
+                    {
+                        label: 'Potencial',
+                        data: arrayData,
+                        backgroundColor: colors[1]
+                    }
+                );
+
+                data.tiposComparativa = {
+                    labels: arrayLabels,
+                    datasets: arrayDataSets
+                }
+
+                //Prospectos
+                keys = ['Convertido', 'Sin convertir']
+
+                arrayLabels = []
+                arrayData = []
+                colors = []
+
+                keys.map((element)=>{
+                    if(prospectos[element][0].leads > 0){
+                        arrayLabels.push(element)
+                        arrayData.push(prospectos[element][0].leads)
+                    }
+                })
+
+                colors = this.getBG(arrayData.length)
+                let colors2 = this.setOpacity2(colors)
+
+                data.prospectos = {
+                    labels: arrayLabels,
+                    datasets: [
+                        {
+                            label: 'TOTAL DE PROSPECTOS',
+                            data: arrayData,
+                            backgroundColor: colors,
+                            hoverBackgroundColor: this.setOpacity(colors)
+                        }
+                    ]
+                }
+
+                //Comparativa prospectos
+                arrayLabels = []
+                arrayData = []
+                arrayDataSets = []
+
+                prospectos['Convertido'].map((prospecto) => {
+                    arrayLabels.push(prospecto.label)
+                    arrayData.push(prospecto.leads)
+                })
+
+                arrayDataSets.push(
+                    {
+                        label: 'Convertido',
+                        data: arrayData,
+                        backgroundColor: colors[0],
+                        borderColor: colors2[0],
+                        fill: false,
+                        yAxisID: 'y-axis-1',
+                    }
+                );
+
+                arrayData = []
+                prospectos['Sin convertir'].map((element)=>{
+                    arrayData.push(element.leads)
+                })
+
+                arrayDataSets.push(
+                    {
+                        label: 'Sin convertir',
+                        data: arrayData,
+                        backgroundColor: colors[1],
+                        borderColor: colors2[1],
+                        fill: false,
+                        yAxisID: 'y-axis-1',
+                    }
+                );
+
+                data.prospectosComparativa = {
+                    labels: arrayLabels,
+                    datasets: arrayDataSets
+                }
+
                 // Origenes comparativas
                 arrayLabels = []
                 colors = []
-                let arrayDataSets = []
+                arrayDataSets = []
 
                 keys = Object.keys(origenes)
 
@@ -397,10 +537,76 @@ class ReporteVentas extends Component {
                     datasets: arrayDataSets
                 }
 
+                keys = Object.keys(estatus)
+
+                arrayLabels = []
+                arrayData = []
+                colors = []
+
+                keys.map((element)=>{
+                    if(estatus[element][0].leads > 0){
+                        arrayLabels.push(element)
+                        arrayData.push(estatus[element][0].leads)
+                    }
+                })
+
+                colors = this.getBG(arrayData.length);
+
+                data.estatus = {
+                    labels: arrayLabels,
+                    datasets: [
+                        {
+                            label: 'ESTATUS DE PROSPECTOS',
+                            data: arrayData,
+                            backgroundColor: colors,
+                            hoverBackgroundColor: this.setOpacity(colors)
+                        }
+                    ]
+                }
+
+                //Comparativa status prospectos
+                arrayLabels = []
+                arrayData = []
+                arrayDataSets = []
+                
+                keys = Object.keys(estatus)
+
+                colors = this.getBG(keys.length);
+                colors2 = this.setOpacity2(colors)
+                
+                estatus[keys[0]].map((tipo) => {
+                    arrayLabels.push(tipo.label)
+                    arrayData.push(tipo.leads)
+                })
+
+                keys.map((element, index)=>{
+                    if(index > 0){
+                        arrayData = []
+                        estatus[element].map((tipo) => {
+                            arrayData.push(tipo.leads)
+                        })
+                    }
+                    arrayDataSets.push(
+                        {
+                            label: element,
+                            data: arrayData,
+                            backgroundColor: colors[index],
+                            borderColor: colors2[index],
+                            fill: false,
+                            yAxisID: 'y-axis-1',
+                        }
+                    );
+                })
+
+                data.estatusComparativa = {
+                    labels: arrayLabels,
+                    datasets: arrayDataSets
+                }
+
                 this.setState({
                     ...this.state,
                     data,
-                    key: 'one'
+                    key: 'ten'
                 })
                 
             },
@@ -480,6 +686,32 @@ class ReporteVentas extends Component {
                         size: 15,
                         weight: 'bold'
                     }
+                }
+            },
+        }
+
+        const optionsLine = {
+            scales: {
+                yAxes: [
+                    {
+                        type: 'linear',
+                        display: true,
+                        position: 'left',
+                        id: 'y-axis-1'
+                    },
+                ]
+            },
+            plugins: {
+                datalabels: {
+                    align: '-45',
+                    offset: 2,
+                    anchor: 'end',
+                    rotation: 0,
+                    color: '#000',
+                    font: {
+                        size: 15,
+                        backgroundColor: '#fff'
+                    },
                 }
             },
         }
@@ -601,6 +833,102 @@ class ReporteVentas extends Component {
                                     <div className = "row mx-0 mb-2 justify-content-center">
                                         <div className = "col-md-11" >
                                             <Bar ref = { this.chartComparativaServiciosReference } data = { data.serviciosComparativa } options = { optionsBarStacked } />
+                                        </div>
+                                    </div>
+                                </Tab.Pane>
+                                <Tab.Pane eventKey = 'seven'>
+                                    {this.setButtons('six', 'eight', null)}
+                                    <div className = " my-3 ">
+                                        <h3 className="card-label title-reporte-ventas">
+                                            <strong>
+                                                07
+                                            </strong>
+                                            TIPO DE LEAD
+                                        </h3>
+                                    </div>
+                                    <div className = "row mx-0 mb-2 justify-content-center">
+                                        <div className = "col-md-6" >
+                                            <Bar ref = { this.chartTiposReference } data = { data.tipos } options = { optionsBar } />
+                                        </div>
+                                    </div>
+                                </Tab.Pane>
+                                <Tab.Pane eventKey = 'eight'>
+                                    {this.setButtons('seven', 'nine', null)}
+                                    <div className = " my-3 ">
+                                        <h3 className="card-label title-reporte-ventas">
+                                            <strong>
+                                                08
+                                            </strong>
+                                            COMPARATIVA TIPO DE LEAD
+                                        </h3>
+                                    </div>
+                                    <div className = "row mx-0 mb-2 justify-content-center">
+                                        <div className = "col-md-11" >
+                                            <Bar ref = { this.chartComparativaTiposReference } data = { data.tiposComparativa } options = { optionsBar } />
+                                        </div>
+                                    </div>
+                                </Tab.Pane>
+                                <Tab.Pane eventKey = 'nine'>
+                                    {this.setButtons('eight', 'ten', null)}
+                                    <div className = " my-3 ">
+                                        <h3 className="card-label title-reporte-ventas">
+                                            <strong>
+                                                09
+                                            </strong>
+                                            TOTAL DE PROSPECTOS
+                                        </h3>
+                                    </div>
+                                    <div className = "row mx-0 mb-2 justify-content-center">
+                                        <div className = "col-md-6" >
+                                            <Bar ref = { this.chartProspectosReference } data = { data.prospectos } options = { optionsBar } />
+                                        </div>
+                                    </div>
+                                </Tab.Pane>
+                                <Tab.Pane eventKey = 'ten'>
+                                    {this.setButtons('nine', 'eleven', null)}
+                                    <div className = " my-3 ">
+                                        <h3 className="card-label title-reporte-ventas">
+                                            <strong>
+                                                10
+                                            </strong>
+                                            COMPARATIVA TOTAL DE PROSPECTOS
+                                        </h3>
+                                    </div>
+                                    <div className = "row mx-0 mb-2 justify-content-center">
+                                        <div className = "col-md-6" >
+                                            <Line ref = { this.chartComparativaProspectosReference } data = { data.prospectosComparativa } options = { optionsLine } />
+                                        </div>
+                                    </div>
+                                </Tab.Pane>
+                                <Tab.Pane eventKey = 'eleven'>
+                                    {this.setButtons('ten', 'twelve', null)}
+                                    <div className = " my-3 ">
+                                        <h3 className="card-label title-reporte-ventas">
+                                            <strong>
+                                                11
+                                            </strong>
+                                            STATUS DE PROSPECTOS
+                                        </h3>
+                                    </div>
+                                    <div className = "row mx-0 mb-2 justify-content-center">
+                                        <div className = "col-md-6" >
+                                            <Bar ref = { this.chartEstatusReference } data = { data.estatus } options = { optionsBar } />
+                                        </div>
+                                    </div>
+                                </Tab.Pane>
+                                <Tab.Pane eventKey = 'twelve'>
+                                    {this.setButtons('eleven', 'thirteen', null)}
+                                    <div className = " my-3 ">
+                                        <h3 className="card-label title-reporte-ventas">
+                                            <strong>
+                                                12
+                                            </strong>
+                                            COMPARATIVA STATUS DE PROSPECTOS
+                                        </h3>
+                                    </div>
+                                    <div className = "row mx-0 mb-2 justify-content-center">
+                                        <div className = "col-md-6" >
+                                            <Line ref = { this.chartComparativaEstatusReference } data = { data.estatusComparativa } options = { optionsLine } />
                                         </div>
                                     </div>
                                 </Tab.Pane>
