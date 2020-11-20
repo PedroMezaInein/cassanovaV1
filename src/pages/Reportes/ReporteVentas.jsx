@@ -6,7 +6,7 @@ import { Button, InputSinText } from '../../components/form-components';
 import moment from 'moment'
 import { waitAlert, errorAlert, forbiddenAccessAlert } from '../../functions/alert'
 import swal from 'sweetalert'
-import { COLORES_GRAFICAS_2, IM_AZUL, INEIN_RED, URL_DEV } from '../../constants'
+import { COLORES_GRAFICAS_3, IM_AZUL, INEIN_RED, URL_DEV } from '../../constants'
 import axios from 'axios'
 import { pdf } from '@react-pdf/renderer'
 import { Pie, Bar, Line } from 'react-chartjs-2';
@@ -118,7 +118,7 @@ class ReporteVentas extends Component {
         let aux = []
         for(let i = 0; i < tamaño; i++){
             aux.push(
-                COLORES_GRAFICAS_2[i]
+                COLORES_GRAFICAS_3[i]
             )
         }
         return aux
