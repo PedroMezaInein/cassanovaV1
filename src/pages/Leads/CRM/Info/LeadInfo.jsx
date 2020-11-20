@@ -1157,22 +1157,6 @@ class LeadInfo extends Component {
                                                                             </div>
                                                                         </Nav.Link>
                                                                     </Nav.Item>
-                                                                    {
-                                                                        lead.prospecto.estatus_prospecto.estatus === 'En negociación' ?
-                                                                            <Nav.Item className="navi-item ml-3">
-                                                                                <Nav.Link className="navi-link px-2" eventKey="4" style={{ display: '-webkit-box' }}>
-                                                                                    <span className="navi-icon mr-2">
-                                                                                        <span className="svg-icon">
-                                                                                            <SVG src={toAbsoluteUrl('/images/svg/Incoming-call.svg')} />
-                                                                                        </span>
-                                                                                    </span>
-                                                                                    <div className="navi-text">
-                                                                                        <span className="d-block font-weight-bold">Llamada de seguimiento</span>
-                                                                                    </div>
-                                                                                </Nav.Link>
-                                                                            </Nav.Item>
-                                                                        : ''
-                                                                    }
                                                                 </Nav>
                                                             </div>
                                                         </div>
@@ -1411,18 +1395,6 @@ class LeadInfo extends Component {
                                                 onSubmit={this.onSubmitPresupuestoDiseño}
                                                 submitPDF={this.onSubmitPDF}
                                             />
-                                        </Card.Body>
-                                    </Tab.Pane>
-                                    <Tab.Pane eventKey="4">
-                                        <Card.Header className="align-items-center border-0 mt-4 pt-3 pb-0">
-                                            <Card.Title>
-                                                <h3 className="card-title align-items-start flex-column">
-                                                    <span className="font-weight-bolder text-dark">Llamada de seguimiento</span>
-                                                </h3>
-                                            </Card.Title>
-                                        </Card.Header>
-                                        <Card.Body className="py-0">
-                                            <LlamadaSeguimientoForm />
                                         </Card.Body>
                                     </Tab.Pane>
                                 </Tab.Content>
