@@ -2,9 +2,21 @@ import React, { Component } from 'react'
 import { CalendarDay, Button } from '../../form-components'
 import { Col, Form } from 'react-bootstrap'
 class AgendaLlamada extends Component {
+
     render() {
-        const { form, onChange, onSubmit } = this.props
+        const { form, onChange, onSubmit, lead, cierre} = this.props
         return (
+            <>
+                {
+                    cierre?
+                        lead.empresa.name === 'INFRAESTRUCTURA MÉDICA'?
+                            <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify my-4">Me imagino que ha estado ocupado. <span className="font-weight-boldest">¿Le parece bien si agendamos una llamada para poder hablar sobre la cotización?</span></div>
+                        :
+                        lead.empresa.name === 'INEIN'?
+                            <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify my-4">Me imagino que ha estado ocupado. <span className="font-weight-boldest">¿Te parece bien si agendamos una llamada para poder hablar sobre la cotización?</span></div>
+                        :''
+                    :''
+                }
             <Form>
                 <div className="row">
                     <Col md="12" className="text-center">
@@ -75,6 +87,7 @@ class AgendaLlamada extends Component {
                     </div>
                 </div>
             </Form>
+            </>
         )
     }
 }
