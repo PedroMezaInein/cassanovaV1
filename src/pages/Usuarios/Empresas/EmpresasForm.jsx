@@ -69,7 +69,6 @@ class EmpresasForm extends Component {
         this.handleChange = this.handleChange.bind(this);
     } */
 
-
     tagInputChange = (nuevoTipos) => {
         const uppercased = nuevoTipos.map(tipo => tipo.toUpperCase()); 
         const { form } = this.state 
@@ -122,8 +121,12 @@ class EmpresasForm extends Component {
                         form.name = empresa.name
                         form.razonSocial = empresa.razon_social
                         form.logo = ''
-                        form.file = empresa.logo
                         form.rfc = empresa.rfc
+                        form.facebook = empresa.facebook
+                        form.instagram = empresa.instagram
+                        form.linkedin = empresa.linkedin
+                        form.pinterest = empresa.pinterest
+                        form.direccion = empresa.direccion
 
                         let aux = []
                         empresa.tipos.map((tipo) => {
@@ -193,12 +196,8 @@ class EmpresasForm extends Component {
     async addEmpresaAxios() {
         const { access_token } = this.props.authUser
         const { form } = this.state
-        const data = new FormData();
-        data.append('name', form.name)
-        data.append('razonSocial', form.razonSocial)
-        data.append('logo', form.file)
-        data.append('rfc', form.rfc)
-        await axios.post(URL_DEV + 'empresa', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}`, } }).then(
+
+        await axios.post(URL_DEV + 'empresa', form, { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
 
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Agregaste con éxito la empresa.')
