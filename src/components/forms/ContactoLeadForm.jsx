@@ -96,6 +96,7 @@ class ContactoLeadForm extends Component {
                             name="tipoContacto"
                             value={formContacto.tipoContacto}
                             onChange={this.updateTipoContacto}
+                            messageinc="Incorrecto. Selecciona el medio de contacto"
                         />
                     </div>
                     {

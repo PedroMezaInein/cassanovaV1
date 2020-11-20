@@ -74,6 +74,7 @@ class AgregarConcepto extends Component {
                                     value={form.partida}
                                     onChange={this.updatePartida}
                                     iconclass={" fas fa-book"}
+                                    messageinc="Incorrecto. Selecciona la partida"
                                 />
                             </div>
                             {
@@ -87,6 +88,7 @@ class AgregarConcepto extends Component {
                                             value={form.subpartida}
                                             onChange={this.updateSubpartida}
                                             iconclass={" fas fa-book"}
+                                            messageinc="Incorrecto. Selecciona la subpartida"
                                         />
                                     </div>
                                 :''
@@ -100,6 +102,7 @@ class AgregarConcepto extends Component {
                                     value={form.unidad}
                                     onChange={this.updateUnidades}
                                     iconclass={" fas fa-weight-hanging"}
+                                    messageinc="Incorrecto. Selecciona la unidad"
                                 />
                             </div>
                         </div>
@@ -171,6 +174,7 @@ class AgregarConcepto extends Component {
                                     value={form.partida}
                                     onChange={this.updatePartida}
                                     iconclass={" fas fa-book"}
+                                    messageinc="Incorrecto. Selecciona la partida"
                                 />
                             </div>
                             {
@@ -184,6 +188,7 @@ class AgregarConcepto extends Component {
                                             value={form.subpartida}
                                             onChange={this.updateSubpartida}
                                             iconclass={" fas fa-book"}
+                                            messageinc="Incorrecto. Selecciona el subpartida"
                                         />
                                     </div>
                                 :''

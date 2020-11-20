@@ -34,6 +34,7 @@ class AdjuntosEmpresaForm extends Component {
                             value={form.empresa}
                             onChange={this.updateEmpresa}
                             iconclass={"far fa-building"}
+                            messageinc="Incorrecto. Selecciona la empresa"
                         />
                     </div>
                     <div className="col-md-6">
@@ -45,6 +46,7 @@ class AdjuntosEmpresaForm extends Component {
                             value={form.tipo_adjunto}
                             onChange={this.updateTipoContrato}
                             iconclass={"fas fa-pen-fancy"}
+                            messageinc="Incorrecto. Selecciona el tipo de contrato"
                         />
                     </div>
                 </div>

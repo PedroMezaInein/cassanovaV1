@@ -76,6 +76,7 @@ class ProcesoTicketForm extends Component {
                                             iconclass="fas fa-layer-group"
                                             formeditado={formeditado}
                                             disabled={estatus === 'Terminado' ? true : false}
+                                            messageinc="Incorrecto. Selecciona el técnico que asiste"
                                         />
                                     </div>
                                     <div className="col-md-4">

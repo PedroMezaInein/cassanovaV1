@@ -34,6 +34,7 @@ class AgregarVacacionesForm extends Component {
                             onChange={this.updateEmpleado}
                             iconclass={"fas fa-layer-group"}
                             formeditado={formeditado}
+                            messageinc="Incorrecto. Selecciona el empleado"
                         />
                     </div>
                 </div>

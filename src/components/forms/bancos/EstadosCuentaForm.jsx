@@ -35,6 +35,7 @@ class EstadosCuentaForm extends Component {
                             value={form.cuenta}
                             onChange={this.updateCuenta}
                             iconclass={"far fa-credit-card"}
+                            messageinc="Incorrecto. Selecciona la cuenta"
                         />
                     </div>
                     <div className="col-md-6">

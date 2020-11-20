@@ -63,7 +63,7 @@ class RegisterUserForm extends Component {
                                     <i className="fas fa-venus-mars kt-font-boldest text-primary"></i>
                                 </span>
                             </span>
-                            <Form.Control className="form-control is-valid text-uppercase" value = {form.sexo} onChange={onChange} name='sexo' formeditado={formeditado} as="select">
+                            <Form.Control className="form-control is-valid text-uppercase sin_icono" value = {form.sexo} onChange={onChange} name='sexo' formeditado={formeditado} as="select">
                                 <option disabled selected value = {0}> Selecciona el sexo</option>
                                 <option value={"femenino"}>Femenino</option>
                                 <option value={"masculino"}>Masculino</option>
@@ -125,6 +125,7 @@ class RegisterUserForm extends Component {
                                         onChange={this.updateEmpleado}
                                         iconclass={"fas fa-layer-group"}
                                         formeditado={formeditado}
+                                        messageinc="Incorrecto. Selecciona el empleado"
                                     />
                                 </div>
                                 <div className="col-md-3">
@@ -136,6 +137,7 @@ class RegisterUserForm extends Component {
                                         onChange={this.updateDepartamento}
                                         iconclass={"fas fa-layer-group"}
                                         formeditado={formeditado}
+                                        messageinc="Incorrecto. Selecciona el(los) departamento(s)"
                                     />
                                 </div>
                                 <div className="col-md-6">
@@ -181,6 +183,7 @@ class RegisterUserForm extends Component {
                                         value={form.proyecto}
                                         onChange={this.updateProyecto}
                                         iconclass={"fas fa-layer-group"}
+                                        messageinc="Incorrecto. Selecciona el(los) proyecto(s)"
                                     />
                                 </div>
                                 <div className="col-md-9">

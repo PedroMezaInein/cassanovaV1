@@ -92,6 +92,7 @@ class PresupuestoDiseñoForm extends Component {
                                             value={form.empresa}
                                             onChange={this.updateEmpresa}
                                             iconclass={"far fa-building"}
+                                            messageinc="Incorrecto. Selecciona la empresa"
                                         />
                                     </div>
                                     <div className="col-md-4">
@@ -103,6 +104,7 @@ class PresupuestoDiseñoForm extends Component {
                                             value={form.m2}
                                             onChange={this.updateM2}
                                             iconclass={"fas fa-ruler-combined"}
+                                            messageinc="Incorrecto. Selecciona los m2"
                                         />
                                     </div>
                                     <div className="col-md-4">
@@ -114,6 +116,7 @@ class PresupuestoDiseñoForm extends Component {
                                             value={form.esquema}
                                             onChange={this.updateEsquema}
                                             iconclass={"flaticon2-sheet"}
+                                            messageinc="Incorrecto. Selecciona el esquema"
                                         />
                                     </div>
                                 </div>

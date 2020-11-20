@@ -74,7 +74,8 @@ export default class CuentaForm extends Component {
                             value={form.tipo}
                             onChange={(value) => { this.updateSelect(value, 'tipo') }}
                             iconclass='far fa-address-card'
-                            messageinc='Incorrecto. Selecciona el tipo de cuenta.' />
+                            messageinc='Incorrecto. Selecciona el tipo de cuenta.' 
+                        />
                     </div>
                     <div className="col-md-4">
                         <SelectSearch requirevalidation={1}
@@ -85,7 +86,8 @@ export default class CuentaForm extends Component {
                             value={form.banco}
                             onChange={(value) => { this.updateSelect(value, 'banco') }}
                             iconclass=" fab fa-cc-discover"
-                            messageinc="Incorrecto. Selecciona el banco." />
+                            messageinc="Incorrecto. Selecciona el banco."
+                        />
                     </div>
                     <div className="col-md-4">
                         <SelectSearchTrue requirevalidation={0}
@@ -96,7 +98,8 @@ export default class CuentaForm extends Component {
                             value={form.empresa_principal}
                             onChange={(value) => { this.updateSelect(value, 'empresa_principal') }}
                             iconclass="far fa-building"
-                            messageinc="Incorrecto. Selecciona la empresa." />
+                            messageinc="Incorrecto. Selecciona la empresa."
+                        />
                     </div>
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
@@ -110,7 +113,8 @@ export default class CuentaForm extends Component {
                             value={form.empresa}
                             onChange={(value) => { this.updateSelect(value, 'empresa') }}
                             iconclass="far fa-building"
-                            messageinc="Incorrecto. Selecciona la(s) empresas." />
+                            messageinc="Incorrecto. Selecciona la(s) empresas."
+                        />
                     </div>
                     {
                         form.empresas.length > 0 ?

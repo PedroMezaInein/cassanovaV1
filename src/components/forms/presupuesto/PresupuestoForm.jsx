@@ -252,6 +252,7 @@ class PresupuestoForm extends Component {
                                                                     value={form.proyecto}
                                                                     onChange={this.updateProyecto}
                                                                     iconclass={"far fa-folder-open"}
+                                                                    messageinc="Incorrecto. Selecciona el proyecto"
                                                                 />
                                                             </div>
                                                             <div className="col-md-6">
@@ -263,6 +264,7 @@ class PresupuestoForm extends Component {
                                                                     value={form.area}
                                                                     onChange={this.updateArea}
                                                                     iconclass={"far fa-window-maximize"}
+                                                                    messageinc="Incorrecto. Selecciona el área"
                                                                 />
                                                             </div>
                                                             <div className="col-md-12 separator separator-dashed mt-4 mb-2"></div>
@@ -286,6 +288,7 @@ class PresupuestoForm extends Component {
                                                                             value={form.empresa}
                                                                             onChange={this.updateEmpresa}
                                                                             iconclass={"far fa-building"}
+                                                                            messageinc="Incorrecto. Selecciona la empresa"
                                                                         />
                                                                 }
                                                             </div>

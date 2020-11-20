@@ -127,6 +127,7 @@ class NominaObraForm extends Component {
                                     value={form.empresa}
                                     onChange={this.updateEmpresa}
                                     iconclass={"far fa-building"}
+                                    messageinc="Incorrecto. Selecciona la empresa"
                                 />
                             </div>
                         </div>

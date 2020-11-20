@@ -98,6 +98,7 @@ class ProspectoForm extends Component {
                                             name="vendedor"
                                             value={form.vendedor}
                                             onChange={this.updateVendedor}
+                                            messageinc="Incorrecto. Selecciona al vendedor"
                                         />
                                     </div>
                                     <div className={newTipoProyecto ? 'col-md-3' : 'col-md-4'}>
@@ -108,6 +109,7 @@ class ProspectoForm extends Component {
                                             onChange={this.updateTipoProyecto}
                                             name="tipoProyecto"
                                             value={form.tipoProyecto}
+                                            messageinc="Incorrecto. Selecciona el tipo de proyecto"
                                         />
                                     </div>
                                     {
