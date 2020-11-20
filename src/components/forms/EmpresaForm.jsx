@@ -39,8 +39,7 @@ class EmpresaForm extends Component {
         onChange({target:{value:'', name: 'tipoProyecto'}})
     } 
     render() {
-        const { form, onChange, onSubmit, formeditado,tagInputChange, ...props } = this.props
-         
+        const { form, onChange, onSubmit, formeditado,tagInputChange, tagInputChangeTelefono, ...props } = this.props
         return (
             <Form id="form-empresa"
                 onSubmit={
@@ -51,8 +50,8 @@ class EmpresaForm extends Component {
                 }
                 {...props}
             >
-                <div className="form-group row form-group-marginless pb-1">
-                    <div className="col-md-4">
+                <div className="form-group row form-group-marginless">
+                    <div className="col-md-3">
                         <Input
                             requirevalidation={1}
                             formeditado={formeditado}
@@ -65,7 +64,7 @@ class EmpresaForm extends Component {
                             messageinc="Incorrecto. Ingresa el nombre de la empresa"
                         />
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <Input
                             requirevalidation={1}
                             formeditado={formeditado}
@@ -78,7 +77,7 @@ class EmpresaForm extends Component {
                             messageinc="Incorrecto. Ingresa la razón social"
                         />
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <Input
                             requirevalidation={1}
                             formeditado={formeditado}
@@ -93,10 +92,7 @@ class EmpresaForm extends Component {
                             maxLength="13"
                         />
                     </div>
-                </div>
-                <div className="separator separator-dashed mt-1 mb-2"></div>
-                <div className="form-group row form-group-marginless pb-1">
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <Input
                             requirevalidation={1}
                             formeditado={formeditado}
@@ -104,23 +100,87 @@ class EmpresaForm extends Component {
                             name="direccion"
                             type="text"
                             value={form.direccion}
-                            placeholder="UBICACIÓN DE LA EMPRESA"
+                            placeholder="DIRECCIÓN DE LA EMPRESA"
                             iconclass={"flaticon2-map"}
-                            messageinc="Incorrecto. Ingresa la ubicación de la empresa"
+                            messageinc="Incorrecto. Ingresa la dirección de la empresa"
                         />
-                    </div>
-                    <div className="col-md-8">
-                        <TagInput
-                        tags={form.tipos} 
-                        onChange={tagInputChange} 
-                        placeholder={"TIPOS DE PROYECTO"}/>
                     </div>
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
-
-
+                <div className="form-group row form-group-marginless">
+                    <div className="col-md-3">
+                        <Input
+                            requirevalidation={1}
+                            formeditado={formeditado}
+                            onChange={onChange}
+                            name="facebook"
+                            type="text"
+                            value={form.facebook}
+                            placeholder="Facebook"
+                            iconclass={"socicon-facebook"}
+                            messageinc="Incorrecto. Ingresa la red social"
+                        />
+                    </div>
+                    <div className="col-md-3">
+                        <Input
+                            requirevalidation={1}
+                            formeditado={formeditado}
+                            onChange={onChange}
+                            name="instagram"
+                            type="text"
+                            value={form.instagram}
+                            placeholder="Instagram"
+                            iconclass={"socicon-instagram"}
+                            messageinc="Incorrecto. Ingresa la red social"
+                        />
+                    </div>
+                    <div className="col-md-3">
+                        <Input
+                            requirevalidation={1}
+                            formeditado={formeditado}
+                            onChange={onChange}
+                            name="linkedin"
+                            type="text"
+                            value={form.linkedin}
+                            placeholder="Linkedin"
+                            iconclass={"socicon-linkedin"}
+                            messageinc="Incorrecto. Ingresa la red social"
+                        />
+                    </div>
+                    <div className="col-md-3">
+                        <Input
+                            requirevalidation={1}
+                            formeditado={formeditado}
+                            onChange={onChange}
+                            name="pinterest"
+                            type="text"
+                            value={form.pinterest}
+                            placeholder="Pinterest"
+                            iconclass={"socicon-pinterest"}
+                            messageinc="Incorrecto. Ingresa la red social"
+                        />
+                    </div>
+                </div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
+                <div className="form-group row form-group-marginless">
+                    <div className="col-md-6">
+                        <TagInput
+                            tags={form.tipos} 
+                            onChange={tagInputChange} 
+                            placeholder={"TIPOS DE PROYECTO"}
+                            iconclass={"far fa-folder-open"}
+                        />
+                    </div>
+                    <div className="col-md-6">
+                        <TagInput
+                            tags={form.telefono} 
+                            onChange={tagInputChangeTelefono} 
+                            placeholder={"NÚMEROS TELEFÓNICOS"}
+                            iconclass={"fas fa-phone-alt"}
+                        />
+                    </div>
+                </div>
 {/*  
-
                 <div className="form-group row form-group-marginless pb-1">
                     <div className="col-md-3">
                         <Input
