@@ -14,7 +14,7 @@ class TagInput extends Component {
                     </span>
                     <ReactTagInput
                         tags={tags}
-                        placeholder={placeholder}
+                        placeholder={'PRESIONA ENTER PARA AGREGAR'}
                         editable={true}
                         readOnly={false}
                         removeOnBackspace={true}
