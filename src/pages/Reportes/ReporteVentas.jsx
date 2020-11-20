@@ -40,7 +40,17 @@ class ReporteVentas extends Component {
         },
         data:{
             total: {},
-            comparativa: {}
+            comparativa: {},
+            origenes: {},
+            servicios: {},
+            tipos: {},
+            prospectos: {},
+            estatus: {},
+            origenesComparativa: {},
+            serviciosComparativa: {},
+            tiposComparativa: {},
+            prospectosComparativa: {},
+            estatusComparativa: {}
         },
         leads: [],
         leadsAnteriores: [],
@@ -324,7 +334,7 @@ class ReporteVentas extends Component {
                 let colors = []
                 
                 leads.map((element)=>{
-                    arrayLabels.push(element.label);
+                    arrayLabels.push(element.label.toUpperCase());
                     arrayData.push(element.leads)
                 })
 
@@ -334,7 +344,7 @@ class ReporteVentas extends Component {
                     labels: arrayLabels,
                     datasets: [
                         {
-                            label: 'Total de leads',
+                            label: 'TOTAL DE LEADS',
                             data: arrayData,
                             backgroundColor: colors,
                             hoverBackgroundColor: this.setOpacity(colors)
@@ -350,7 +360,7 @@ class ReporteVentas extends Component {
 
                 keys.map((element)=>{
                     if(origenes[element][0].leads > 0){
-                        arrayLabels.push(element)
+                        arrayLabels.push(element.toUpperCase())
                         arrayData.push(origenes[element][0].leads)
                     }
                 })
@@ -377,7 +387,7 @@ class ReporteVentas extends Component {
 
                 keys.map((element)=>{
                     if(servicios[element][0].leads > 0){
-                        arrayLabels.push(element)
+                        arrayLabels.push(element.toUpperCase())
                         arrayData.push(servicios[element][0].leads)
                     }
                 })
@@ -404,7 +414,7 @@ class ReporteVentas extends Component {
 
                 keys.map((element)=>{
                     if(tipos[element][0].leads > 0){
-                        arrayLabels.push(element)
+                        arrayLabels.push(element.toUpperCase())
                         arrayData.push(tipos[element][0].leads)
                     }
                 })
@@ -429,13 +439,13 @@ class ReporteVentas extends Component {
                 let arrayDataSets = []
 
                 tipos['Basura'].map((tipo) => {
-                    arrayLabels.push(tipo.label)
+                    arrayLabels.push(tipo.label.toUpperCase())
                     arrayData.push(tipo.leads)
                 })
 
                 arrayDataSets.push(
                     {
-                        label: 'Basura',
+                        label: 'BASURA',
                         data: arrayData,
                         backgroundColor: colors[0]
                     }
@@ -448,7 +458,7 @@ class ReporteVentas extends Component {
 
                 arrayDataSets.push(
                     {
-                        label: 'Potencial',
+                        label: 'POTENCIAL',
                         data: arrayData,
                         backgroundColor: colors[1]
                     }
@@ -468,7 +478,7 @@ class ReporteVentas extends Component {
 
                 keys.map((element)=>{
                     if(prospectos[element][0].leads > 0){
-                        arrayLabels.push(element)
+                        arrayLabels.push(element.toUpperCase())
                         arrayData.push(prospectos[element][0].leads)
                     }
                 })
@@ -494,13 +504,13 @@ class ReporteVentas extends Component {
                 arrayDataSets = []
 
                 prospectos['Convertido'].map((prospecto) => {
-                    arrayLabels.push(prospecto.label)
+                    arrayLabels.push(prospecto.label.toUpperCase())
                     arrayData.push(prospecto.leads)
                 })
 
                 arrayDataSets.push(
                     {
-                        label: 'Convertido',
+                        label: 'CONVERTIDO',
                         data: arrayData,
                         backgroundColor: colors[0],
                         borderColor: colors2[0],
@@ -516,7 +526,7 @@ class ReporteVentas extends Component {
 
                 arrayDataSets.push(
                     {
-                        label: 'Sin convertir',
+                        label: 'SIN CONVERTIR',
                         data: arrayData,
                         backgroundColor: colors[1],
                         borderColor: colors2[1],
@@ -535,16 +545,17 @@ class ReporteVentas extends Component {
                 colors = []
                 arrayDataSets = []
 
+                //Grouped bar origenes
                 keys = Object.keys(origenes)
 
                 keys.map((element, key)=>{
-                    arrayLabels.push(element)
+                    arrayLabels.push(element.toUpperCase())
                     if(key === 0){
                         origenes[element].map((dataSet, index)=>{
                             if( index <= 2 )
                                 arrayDataSets.push(
                                     {
-                                        label: dataSet.label,
+                                        label: dataSet.label.toUpperCase(),
                                         data: [],
                                         backgroundColor: '',
                                     }
@@ -563,6 +574,55 @@ class ReporteVentas extends Component {
                     element.data = arrayData
                     element.backgroundColor = colors[key]
                 })
+                let contador = 0
+                let contadorArray = []
+                console.log(arrayDataSets, 'arraydatasets')
+                if(arrayDataSets.length){
+                    arrayDataSets[0].data.map((element, index)=>{
+                        contador = 0
+                        arrayDataSets.map((newElement, key)=>{
+                            contador += newElement.data[index]
+                        })
+                        if(contador === 0 )
+                            contadorArray.push(index)
+                    })
+                }
+
+                contadorArray.map((element)=>{
+                    arrayDataSets.map((newElement)=>{
+                        newElement.data.splice(element, 1)
+                    })
+                    arrayLabels.splice(element, 1)
+                })
+
+                // Stacked origenes 
+                /* keys = Object.keys(origenes)
+
+                keys.map((element, key)=>{
+                    if(key === 0){
+                        origenes[element].map((dataSet, index)=>{
+                            arrayLabels.push(dataSet.label)
+                        })
+                    }
+                    arrayDataSets.push(
+                        {
+                            label: element,
+                            data: [],
+                            backgroundColor: '',
+                        }
+                    )
+                })
+
+                colors = this.getBG(arrayDataSets.length);
+
+                arrayDataSets.map((element,key)=>{
+                    arrayData = []
+                    origenes[element.label].map((origen)=>{
+                        arrayData.push(origen.leads)
+                    })
+                    element.data = arrayData
+                    element.backgroundColor = colors[key]
+                }) */
 
                 data.origenesComparativa = {
                     labels: arrayLabels,
@@ -577,13 +637,13 @@ class ReporteVentas extends Component {
                 keys = Object.keys(servicios)
 
                 keys.map((element, key)=>{
-                    arrayLabels.push(element)
+                    arrayLabels.push(element.toUpperCase())
                     if(key === 0){
                         servicios[element].map((dataSet, index)=>{
                             if( index <= 2 )
                                 arrayDataSets.push(
                                     {
-                                        label: dataSet.label,
+                                        label: dataSet.label.toUpperCase(),
                                         data: [],
                                         backgroundColor: '',
                                     }
@@ -616,7 +676,7 @@ class ReporteVentas extends Component {
 
                 keys.map((element)=>{
                     if(estatus[element][0].leads > 0){
-                        arrayLabels.push(element)
+                        arrayLabels.push(element.toUpperCase())
                         arrayData.push(estatus[element][0].leads)
                     }
                 })
@@ -646,7 +706,7 @@ class ReporteVentas extends Component {
                 colors2 = this.setOpacity2(colors)
                 
                 estatus[keys[0]].map((tipo) => {
-                    arrayLabels.push(tipo.label)
+                    arrayLabels.push(tipo.label.toUpperCase())
                     arrayData.push(tipo.leads)
                 })
 
@@ -659,7 +719,7 @@ class ReporteVentas extends Component {
                     }
                     arrayDataSets.push(
                         {
-                            label: element,
+                            label: element.toUpperCase(),
                             data: arrayData,
                             backgroundColor: colors[index],
                             borderColor: colors2[index],
@@ -776,31 +836,70 @@ class ReporteVentas extends Component {
                 }
             },
             scales: {
-            yAxes: [
+                yAxes: [
+                        {
+                            ticks: {
+                                beginAtZero: true,
+                                fontColor: '#000'
+                            }
+                        },
+                    ],
+                xAxes: [
                     {
                         ticks: {
                             beginAtZero: true,
-                        },
+                            fontSize: 25,
+                            fontColor: '#000',
+                            lineWidth: 10,
+                            padding: 15,
+                            position: 'bottom',
+                            autoSkip: false,
+                            callback: function(value, index, values) {
+                                let aux = value.split(' ')
+                                return aux
+                            }
+                        }
                     },
-                ],
+                ]
+            },
+            legend:{
+                fullWidth: true,
+                labels: {
+                    boxWidth: 20,
+                    padding: 5,
+                    fontSize: 20,
+                    fontColor: '#000'
+                }
             },
         }
 
-        const optionsBarStacked = {
+        const optionsBarGroup = {
             scales: {
                 yAxes: [
                     {
-                        stacked: false,
                         ticks: {
                             beginAtZero: true,
-                        },
+                            fontColor: '#000'
+                        }
                     },
                 ],
                 xAxes: [
                     {
-                        stacked: false,
+                        ticks: {
+                            beginAtZero: true,
+                            fontSize: 20,
+                            fontColor: '#000',
+                            padding: 15,
+                            position: 'bottom',
+                            autoSkip: false,
+                            maxRotation: 0,
+                            callback: function(value, index, values) {
+                                let aux = value.split(' ')
+                                return aux
+                            }
+                        }
                     },
-                ],
+                ]
             },
             plugins: {
                 datalabels: {
@@ -809,6 +908,57 @@ class ReporteVentas extends Component {
                         size: 18,
                         weight: 'bold'
                     }
+                }
+            },
+            legend:{
+                fullWidth: true,
+                labels: {
+                    boxWidth: 20,
+                    padding: 5,
+                    fontSize: 20,
+                }
+            },
+        }
+
+        const optionsBarStacked = {
+            scales: {
+                yAxes: [
+                    {
+                        /* stacked: true, */
+                        ticks: {
+                            beginAtZero: true,
+                            fontColor: '#000'
+                        }
+                    },
+                ],
+                xAxes: [
+                    {
+                        stacked: true,
+                        ticks: {
+                            beginAtZero: true,
+                            fontSize: 20,
+                            fontColor: '#000',
+                            padding: 5,
+                            lineWidth: 10,
+                        }
+                    },
+                ]
+            },
+            plugins: {
+                datalabels: {
+                    color: '#fff',
+                    font: {
+                        size: 18,
+                        weight: 'bold'
+                    }
+                }
+            },
+            legend:{
+                fullWidth: true,
+                labels: {
+                    boxWidth: 20,
+                    padding: 5,
+                    fontSize: 20,
                 }
             },
         }
@@ -820,7 +970,28 @@ class ReporteVentas extends Component {
                         type: 'linear',
                         display: true,
                         position: 'left',
-                        id: 'y-axis-1'
+                        id: 'y-axis-1',
+                        ticks: {
+                            beginAtZero: true,
+                            fontColor: '#000'
+                        }
+                    },
+                ],
+                xAxes: [
+                    {
+                        ticks: {
+                            beginAtZero: true,
+                            fontSize: 20,
+                            fontColor: '#000',
+                            padding: 15,
+                            position: 'bottom',
+                            autoSkip: false,
+                            maxRotation: 0,
+                            callback: function(value, index, values) {
+                                let aux = value.split(' ')
+                                return aux
+                            }
+                        }
                     },
                 ]
             },
@@ -835,6 +1006,14 @@ class ReporteVentas extends Component {
                         size: 18,
                         backgroundColor: '#fff'
                     },
+                }
+            },
+            legend:{
+                fullWidth: true,
+                labels: {
+                    boxWidth: 20,
+                    padding: 5,
+                    fontSize: 18,
                 }
             },
         }
@@ -923,7 +1102,7 @@ class ReporteVentas extends Component {
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
                                         <div className = "col-md-11" >
-                                            <Bar ref = { this.chartComparativaOrigenesReference } data = { data.origenesComparativa } options = { optionsBarStacked } />
+                                            <Bar ref = { this.chartComparativaOrigenesReference } data = { data.origenesComparativa } options = { optionsBarGroup } />
                                         </div>
                                     </div>
                                 </Tab.Pane>
@@ -954,8 +1133,8 @@ class ReporteVentas extends Component {
                                         </h3>
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
-                                        <div className = "col-md-11" >
-                                            <Bar ref = { this.chartComparativaServiciosReference } data = { data.serviciosComparativa } options = { optionsBarStacked } />
+                                        <div className = "col-md-12" >
+                                            <Bar ref = { this.chartComparativaServiciosReference } data = { data.serviciosComparativa } options = { optionsBarGroup } />
                                         </div>
                                     </div>
                                 </Tab.Pane>
@@ -987,7 +1166,7 @@ class ReporteVentas extends Component {
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
                                         <div className = "col-md-11" >
-                                            <Bar ref = { this.chartComparativaTiposReference } data = { data.tiposComparativa } options = { optionsBar } />
+                                            <Bar ref = { this.chartComparativaTiposReference } data = { data.tiposComparativa } options = { optionsBarGroup } />
                                         </div>
                                     </div>
                                 </Tab.Pane>
