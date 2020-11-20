@@ -968,6 +968,14 @@ class Crm extends Component {
         });
     }
 
+    changePageCierreVenta = (lead) => {
+        const { history } = this.props
+        history.push({
+            pathname: '/leads/crm/cierre/llamada-cierre',
+            state: { lead: lead }
+        });
+    }
+
     render() {
         const { ultimos_contactados, prospectos_sin_contactar, ultimos_ingresados, lead_web, activeTable, leads_en_contacto, leads_en_negociacion,
             leads_contratados, leads_cancelados, leads_detenidos, modal, form, lead, lead_rh_proveedores, options} = this.state
@@ -1180,6 +1188,8 @@ class Crm extends Component {
                                             changeEstatus = { this.changeEstatus }
                                             openModalWithInput = { this.openModalWithInput }
                                             changePageDetails = { this.changePageDetailsNegociacion }
+                                            changePageCierreVenta = { this.changePageCierreVenta }
+                                            options = { options }
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="contratados">

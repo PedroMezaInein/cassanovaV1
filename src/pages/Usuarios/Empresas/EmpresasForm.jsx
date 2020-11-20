@@ -20,7 +20,8 @@ class EmpresasForm extends Component {
             file: [],
             rfc: '',
             tipoProyecto: '',
-            tipos: []
+            tipos: [],
+            direccion: '',
         },
         data: {
             empresas: []
@@ -56,45 +57,59 @@ class EmpresasForm extends Component {
             }
         ],
         adjuntos: [],
-        defaultactivekey:"",
+        defaultactivekey: "",
     }
     /* constructor(props) {
         super(props)
         this.handleChange = this.handleChange.bind(this);
     } */
 
+
+    tagInputChange = (nuevoTipos) => {
+
+        const { form } = this.state
+        let unico = {};
+        nuevoTipos.forEach(function (i) {
+            if (!unico[i]) { unico[i] = true }
+        })
+
+        form.tipos = nuevoTipos ? Object.keys(unico) : [];
+        this.setState({
+            form
+        })
+    }
+
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
-        const { match : { params: { action } } } = this.props
+        const { match: { params: { action } } } = this.props
         const { history, location: { state } } = this.props
         const empresas = permisos.find(function (element, index) {
             const { modulo: { url } } = element
             return pathname === url + '/' + action
         });
-        switch(action){
+        switch (action) {
             case 'add':
                 this.setState({
                     ...this.state,
                     title: 'Nueva empresa',
-                    formeditado:0
+                    formeditado: 0
                 })
                 break;
             case 'edit':
-                if(state){
-                    if(state.empresa)
-                    {
+                if (state) {
+                    if (state.empresa) {
                         const { empresa } = state
                         const { form, options } = this.state
-                        
+
                         form.name = empresa.name
                         form.razonSocial = empresa.razon_social
-                        form.logo= ''
-                        form.file= empresa.logo
-                        form.rfc= empresa.rfc
+                        form.logo = ''
+                        form.file = empresa.logo
+                        form.rfc = empresa.rfc
 
                         let aux = []
-                        empresa.tipos.map((tipo)=>{
+                        empresa.tipos.map((tipo) => {
                             aux.push(tipo.tipo)
                             return false
                         })
@@ -106,13 +121,13 @@ class EmpresasForm extends Component {
                             title: 'Editar empresa',
                             empresa: empresa,
                             form,
-                            options,                            
-                            formeditado:1
+                            options,
+                            formeditado: 1
                         })
                     }
                     else
                         history.push('/usuarios/empresas')
-                }else
+                } else
                     history.push('/usuarios/empresas')
                 break;
             default:
@@ -121,34 +136,34 @@ class EmpresasForm extends Component {
         if (!empresas)
             history.push('/')
     }
-    
+
     onSubmit = (e) => {
         e.preventDefault()
-        const{ title } = this.state
+        const { title } = this.state
         waitAlert()
-        if(title === 'Editar empresa'){
+        if (title === 'Editar empresa') {
             this.updateEmpresaAxios()
-        }else
+        } else
             this.addEmpresaAxios();
     }
 
     async updateEmpresaAxios() {
         const { access_token } = this.props.authUser
-        const { form,empresa } = this.state
+        const { form, empresa } = this.state
         await axios.post(URL_DEV + 'empresa/' + empresa.id, form, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Actualizaste con éxito la empresa.')
 
                 const { history } = this.props
-                    history.push({
+                history.push({
                     pathname: '/usuarios/empresas'
                 });
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -170,17 +185,17 @@ class EmpresasForm extends Component {
             (response) => {
 
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Agregaste con éxito la empresa.')
-                
+
                 const { history } = this.props
-                    history.push({
+                history.push({
                     pathname: '/usuarios/empresas'
                 });
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -266,7 +281,7 @@ class EmpresasForm extends Component {
     }
 
     render() {
-        const { form, title, formeditado} = this.state
+        const { form, title, formeditado } = this.state
         return (
             <Layout active={'usuarios'} {...this.props}>
                 <Card className="card-custom">
@@ -278,10 +293,11 @@ class EmpresasForm extends Component {
                     <Card.Body>
                         <EmpresaForm
                             form={form}
-                            onSubmit = {this.onSubmit}
+                            onSubmit={this.onSubmit}
                             onChange={(e) => this.handleChange(e)}
                             title={title}
                             formeditado={formeditado}
+                            tagInputChange={(e) => this.tagInputChange(e)}
                         />
                     </Card.Body>
                 </Card>
