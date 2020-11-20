@@ -260,6 +260,7 @@ class ProyectosForm extends Component {
                                                     value={form.cliente}
                                                     onChange={this.updateCliente}
                                                     iconclass={"far fa-user"}
+                                                    messageinc="Incorrecto. Selecciona el cliente"
                                                 />
                                         }
                                         
@@ -396,6 +397,7 @@ class ProyectosForm extends Component {
                                                 value={form.colonia}
                                                 defaultValue={form.colonia}
                                                 onChange={this.updateColonia}
+                                                messageinc="Incorrecto. Selecciona la colonia"
                                             />
                                         }
                                         {
@@ -448,6 +450,7 @@ class ProyectosForm extends Component {
                                                     value={form.estatus}
                                                     onChange = { this.updateEstatus }
                                                     iconclass={"far fa-user"}
+                                                    messageinc="Incorrecto. Selecciona el estado"
                                                 />
                                             </div>
                                         :''
@@ -461,6 +464,7 @@ class ProyectosForm extends Component {
                                             value={form.empresa}
                                             onChange={this.updateEmpresa}
                                             iconclass={"far fa-building"}
+                                            messageinc="Incorrecto. Selecciona la empresa"
                                         />
                                     </div>
                                     <div className={form.estatus? "col-md-7":"col-md-6"}>

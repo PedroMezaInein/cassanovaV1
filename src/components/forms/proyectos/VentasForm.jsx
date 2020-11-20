@@ -239,6 +239,7 @@ class VentasForm extends Component {
                                                     value={form.empresa}
                                                     onChange={this.updateEmpresa}
                                                     iconclass={"far fa-building"}
+                                                    messageinc="Incorrecto. Selecciona la empresa"
                                                 />
                                         }
                                     </div>
@@ -262,6 +263,7 @@ class VentasForm extends Component {
                                                     value={form.cliente}
                                                     onChange={this.updateCliente}
                                                     iconclass={"far fa-user"}
+                                                    messageinc="Incorrecto. Selecciona el cliente"
                                                 />
                                         }
                                     </div>
@@ -276,6 +278,7 @@ class VentasForm extends Component {
                                                     value={form.proyecto}
                                                     onChange={this.updateProyecto}
                                                     iconclass={"far fa-folder-open"}
+                                                    messageinc="Incorrecto. Selecciona el proyecto"
                                                 />
                                             </div>
                                             : ''
@@ -324,6 +327,7 @@ class VentasForm extends Component {
                                                     value={form.subarea}
                                                     onChange={this.updateSubarea}
                                                     iconclass={"far fa-window-restore"}
+                                                    messageinc="Incorrecto. Selecciona el subárea"
                                                 />
                                             </div>
                                             : ''
@@ -368,6 +372,7 @@ class VentasForm extends Component {
                                                     value={form.cuenta}
                                                     onChange={this.updateCuenta}
                                                     iconclass={"far fa-credit-card"}
+                                                    messageinc="Incorrecto. Selecciona la cuenta"
                                                 />
                                             </div>
                                             : ''

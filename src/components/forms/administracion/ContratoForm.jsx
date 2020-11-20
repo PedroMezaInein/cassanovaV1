@@ -55,6 +55,7 @@ class ContratoForm extends Component {
                                     value={form.cliente}
                                     onChange={this.updateCliente}
                                     iconclass={"far fa-user"}
+                                    messageinc="Incorrecto. Selecciona el cliente"
                                 />
                                 :
                                 <SelectSearch
@@ -65,6 +66,7 @@ class ContratoForm extends Component {
                                     value={form.proveedor}
                                     onChange={this.updateProveedor}
                                     iconclass={"far fa-user"}
+                                    messageinc="Incorrecto. Selecciona el proveedor"
                                 />
                         }
                     </div>
@@ -77,6 +79,7 @@ class ContratoForm extends Component {
                             value={form.empresa}
                             onChange={this.updateEmpresa}
                             iconclass={"far fa-building"}
+                            messageinc="Incorrecto. Selecciona la empresa"
                         />
                     </div>
                     <div className="col-md-3">
@@ -104,6 +107,7 @@ class ContratoForm extends Component {
                             value={form.tipoContrato}
                             onChange={this.updateTipoContrato}
                             iconclass={"fas fa-pen-fancy"}
+                            messageinc="Incorrecto. Selecciona el tipo de contrato"
                         />
                     </div>
                     <div className="col-md-9">

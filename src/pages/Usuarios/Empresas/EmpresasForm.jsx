@@ -22,6 +22,7 @@ class EmpresasForm extends Component {
             tipoProyecto: '',
             tipos: [],
             direccion: '',
+            telefono: [],
         },
         data: {
             empresas: []
@@ -66,14 +67,26 @@ class EmpresasForm extends Component {
 
 
     tagInputChange = (nuevoTipos) => {
-
-        const { form } = this.state
+        const uppercased = nuevoTipos.map(tipo => tipo.toUpperCase()); 
+        const { form } = this.state 
         let unico = {};
-        nuevoTipos.forEach(function (i) {
+        uppercased.forEach(function (i) {
             if (!unico[i]) { unico[i] = true }
         })
+        form.tipos = uppercased ? Object.keys(unico) : [];
+        this.setState({
+            form
+        })
+    }
 
-        form.tipos = nuevoTipos ? Object.keys(unico) : [];
+    tagInputChangeTelefono = (nuevoTelefono) => {
+        const uppercased = nuevoTelefono.map(telefono => telefono.toUpperCase());
+        const { form } = this.state 
+        let unico = {};
+        uppercased.forEach(function (i) {
+            if (!unico[i]) { unico[i] = true }
+        })
+        form.telefono = uppercased ? Object.keys(unico) : [];
         this.setState({
             form
         })
@@ -298,6 +311,7 @@ class EmpresasForm extends Component {
                             title={title}
                             formeditado={formeditado}
                             tagInputChange={(e) => this.tagInputChange(e)}
+                            tagInputChangeTelefono={(e) => this.tagInputChangeTelefono(e)}
                         />
                     </Card.Body>
                 </Card>

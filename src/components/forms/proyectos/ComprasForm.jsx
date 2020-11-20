@@ -216,6 +216,7 @@ class ComprasForm extends Component {
                                             value={form.proveedor} 
                                             onChange={this.updateProveedor} 
                                             iconclass={"far fa-user"}
+                                            messageinc="Incorrecto. Selecciona el proveedor"
                                         />
                                     </div>
                                     <div className="col-md-4">
@@ -226,7 +227,8 @@ class ComprasForm extends Component {
                                             name="proyecto" 
                                             value={form.proyecto} 
                                             onChange={this.updateProyecto}
-                                            iconclass={"far fa-folder-open"} 
+                                            iconclass={"far fa-folder-open"}
+                                            messageinc="Incorrecto. Selecciona el proyecto"
                                         />
                                     </div>
                                     <div className="col-md-4">
@@ -249,6 +251,7 @@ class ComprasForm extends Component {
                                                     value={form.empresa} 
                                                     onChange={this.updateEmpresa} 
                                                     iconclass={"far fa-building"}
+                                                    messageinc="Incorrecto. Selecciona la empresa"
                                                 />
                                         }
                                     </div>
@@ -281,7 +284,8 @@ class ComprasForm extends Component {
                                             name="areas" 
                                             value={form.area} 
                                             onChange={this.updateArea}
-                                            iconclass={"far fa-window-maximize"} 
+                                            iconclass={"far fa-window-maximize"}
+                                            messageinc="Incorrecto. Selecciona el área"
                                         />
                                     </div>
                                     {
@@ -295,6 +299,7 @@ class ComprasForm extends Component {
                                                     value={form.subarea} 
                                                     onChange={this.updateSubarea}
                                                     iconclass={"far fa-window-restore"} 
+                                                    messageinc="Incorrecto. Selecciona el subárea"
                                                 />
                                             </div>
                                         : ''
@@ -338,7 +343,8 @@ class ComprasForm extends Component {
                                                     name="cuenta" 
                                                     value={form.cuenta} 
                                                     onChange={this.updateCuenta}
-                                                    iconclass={"far fa-credit-card"} 
+                                                    iconclass={"far fa-credit-card"}
+                                                    messageinc="Incorrecto. Selecciona la cuenta"
                                                 />
                                             </div>
                                         : ''

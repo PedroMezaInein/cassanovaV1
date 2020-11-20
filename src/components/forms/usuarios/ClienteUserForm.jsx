@@ -28,6 +28,7 @@ class ClienteUserForm extends Component {
                             value={form.proyecto}
                             onChange={this.updateProyectos}
                             iconclass={"far fa-folder-open"}
+                            messageinc="Incorrecto. Selecciona el proyecto"
                         />
                     </div>
                     <div className="col-md-8">

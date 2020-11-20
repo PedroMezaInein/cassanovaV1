@@ -34,7 +34,9 @@ export default class componentName extends Component {
                                 name='empresa'
                                 value={form.empresa}
                                 onChange={this.updateEmpresa}
-                                iconclass='fas fa-building' />
+                                iconclass='fas fa-building'
+                                messageinc="Incorrecto. Selecciona la empresa"
+                            />
                         </div>
                         <div className="col-md-4">
                             <Calendar

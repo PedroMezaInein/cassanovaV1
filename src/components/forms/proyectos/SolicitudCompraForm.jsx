@@ -112,6 +112,7 @@ class SolicitudCompraForm extends Component {
                                             name="proyecto"
                                             value={form.proyecto}
                                             onChange={this.updateProyecto}
+                                            messageinc="Incorrecto. Selecciona el proyecto"
                                         />
                                     </div>
                                     <div className="col-md-6">
@@ -123,6 +124,7 @@ class SolicitudCompraForm extends Component {
                                             name="proveedor"
                                             value={form.proveedor}
                                             onChange={this.updateProveedor}
+                                            messageinc="Incorrecto. Selecciona el proveedor"
                                         />
                                     </div>
                                 </div>
@@ -137,6 +139,7 @@ class SolicitudCompraForm extends Component {
                                             name="empresa"
                                             value={form.empresa}
                                             onChange={this.updateEmpresa}
+                                            messageinc="Incorrecto. Selecciona la empresa"
                                         />
                                     </div>
                                     <div className="col-md-4">
@@ -192,6 +195,7 @@ class SolicitudCompraForm extends Component {
                                             name="areas"
                                             value={form.area}
                                             onChange={this.updateArea}
+                                            messageinc="Incorrecto. Selecciona el área"
                                         />
                                     </div>
                                     {
@@ -205,6 +209,7 @@ class SolicitudCompraForm extends Component {
                                                     name="subarea"
                                                     value={form.subarea}
                                                     onChange={this.updateSubarea}
+                                                    messageinc="Incorrecto. Selecciona el subárea"
                                                 />
                                             </div>
                                             : ''

@@ -212,6 +212,7 @@ class IngresosForm extends Component {
                                                         value={form.cliente} 
                                                         onChange={this.updateCliente} 
                                                         iconclass={"far fa-user"}
+                                                        messageinc="Incorrecto. Selecciona el cliente"
                                                     />                                
                                             }
                                         </div>
@@ -233,7 +234,9 @@ class IngresosForm extends Component {
                                                         name="empresa" 
                                                         value={form.empresa} 
                                                         onChange={this.updateEmpresa} 
-                                                        iconclass={"far fa-building"}/>
+                                                        iconclass={"far fa-building"}
+                                                        messageinc="Incorrecto. Selecciona la empresa"
+                                                    />
                                             }
                                         </div> 
                                     </div>
@@ -264,7 +267,8 @@ class IngresosForm extends Component {
                                                     value={form.area} 
                                                     onChange={this.updateArea} 
                                                     iconclass={"far fa-window-maximize"}
-                                                    formeditado={formeditado}   
+                                                    formeditado={formeditado}
+                                                    messageinc="Incorrecto. Selecciona el área"
                                                 />
                                             </div>
                                             {
@@ -277,6 +281,7 @@ class IngresosForm extends Component {
                                                             value={form.subarea} 
                                                             onChange={this.updateSubarea} 
                                                             iconclass={"far fa-window-restore"}
+                                                            messageinc="Incorrecto. Selecciona el subárea"
                                                         />
                                                     </div>
                                                 : ''
@@ -320,7 +325,8 @@ class IngresosForm extends Component {
                                                             name="cuenta" 
                                                             value={form.cuenta} 
                                                             onChange={this.updateCuenta} 
-                                                            iconclass={"far fa-credit-card"} 
+                                                            iconclass={"far fa-credit-card"}
+                                                            messageinc="Incorrecto. Selecciona la cuenta"
                                                         />
                                                     </div>
                                                 : ''

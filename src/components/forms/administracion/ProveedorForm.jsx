@@ -163,6 +163,7 @@ class ProveedorForm extends Component {
                             onChange={this.updateArea}
                             formeditado={formeditado}
                             iconclass={"far fa-window-maximize"}
+                            messageinc="Incorrecto. Selecciona el área"
                         />
                     </div>
                 </div>
@@ -179,6 +180,7 @@ class ProveedorForm extends Component {
                                     onChange={this.updateSubarea}
                                     formeditado={formeditado}
                                     iconclass={"far fa-window-restore"}
+                                    messageinc="Incorrecto. Selecciona el subárea"
                                 />
                             </div>
                             : ''

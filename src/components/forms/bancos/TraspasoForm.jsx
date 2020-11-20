@@ -38,6 +38,7 @@ class TareaForm extends Component {
                             onChange={this.updateOrigen}
                             placeholder="CUENTA ORIGEN"
                             iconclass={"far fa-credit-card"}
+                            messageinc="Incorrecto. Selecciona la cuenta de origen"
                         />
                     </div>
                     <div className="col-md-3">
@@ -48,6 +49,7 @@ class TareaForm extends Component {
                             onChange={this.updateDestino}
                             placeholder="CUENTA DESTINO"
                             iconclass={"far fa-credit-card"}
+                            messageinc="Incorrecto. Selecciona la cuenta destino"
                         />
                     </div>
                     <div className="col-md-3">
