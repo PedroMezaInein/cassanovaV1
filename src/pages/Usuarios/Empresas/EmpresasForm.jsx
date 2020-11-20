@@ -22,7 +22,11 @@ class EmpresasForm extends Component {
             tipoProyecto: '',
             tipos: [],
             direccion: '',
-            telefono: [],
+            telefonos: [],
+            facebook: '',
+            instagram: '',
+            linkedin: '',
+            pinterest: ''
         },
         data: {
             empresas: []

@@ -3,7 +3,6 @@ import Form from 'react-bootstrap/Form'
 import { Input, Button, TagInput } from '../form-components' 
 import { validateAlert } from '../../functions/alert'
 import { RFC } from '../../constants'
-import { faPlus } from '@fortawesome/free-solid-svg-icons'
 
 class EmpresaForm extends Component {
 
@@ -51,7 +50,7 @@ class EmpresaForm extends Component {
                 {...props}
             >
                 <div className="form-group row form-group-marginless">
-                    <div className="col-md-3">
+                    <div className="col-md-4">
                         <Input
                             requirevalidation={1}
                             formeditado={formeditado}
@@ -64,7 +63,7 @@ class EmpresaForm extends Component {
                             messageinc="Incorrecto. Ingresa el nombre de la empresa"
                         />
                     </div>
-                    <div className="col-md-3">
+                    <div className="col-md-4">
                         <Input
                             requirevalidation={1}
                             formeditado={formeditado}
@@ -77,7 +76,7 @@ class EmpresaForm extends Component {
                             messageinc="Incorrecto. Ingresa la razón social"
                         />
                     </div>
-                    <div className="col-md-3">
+                    <div className="col-md-4">
                         <Input
                             requirevalidation={1}
                             formeditado={formeditado}
@@ -90,19 +89,6 @@ class EmpresaForm extends Component {
                             patterns={RFC}
                             messageinc="Incorrecto. Ej. ABCD001122ABC"
                             maxLength="13"
-                        />
-                    </div>
-                    <div className="col-md-3">
-                        <Input
-                            requirevalidation={1}
-                            formeditado={formeditado}
-                            onChange={onChange}
-                            name="direccion"
-                            type="text"
-                            value={form.direccion}
-                            placeholder="DIRECCIÓN DE LA EMPRESA"
-                            iconclass={"flaticon2-map"}
-                            messageinc="Incorrecto. Ingresa la dirección de la empresa"
                         />
                     </div>
                 </div>
@@ -173,10 +159,26 @@ class EmpresaForm extends Component {
                     </div>
                     <div className="col-md-6">
                         <TagInput
-                            tags={form.telefono} 
+                            tags={form.telefonos} 
                             onChange={tagInputChangeTelefono} 
                             placeholder={"NÚMEROS TELEFÓNICOS"}
                             iconclass={"fas fa-phone-alt"}
+                        />
+                    </div>
+                </div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
+                <div className="form-group row form-group-marginless">
+                    <div className="col-md-12">
+                        <Input
+                            requirevalidation={1}
+                            formeditado={formeditado}
+                            onChange={onChange}
+                            name="direccion"
+                            type="text"
+                            value={form.direccion}
+                            placeholder="DIRECCIÓN DE LA EMPRESA"
+                            iconclass={"flaticon2-map"}
+                            messageinc="Incorrecto. Ingresa la dirección de la empresa"
                         />
                     </div>
                 </div>
