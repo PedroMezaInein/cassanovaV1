@@ -11,7 +11,6 @@ import {
     faAtlas, faCubes
 } from '@fortawesome/free-solid-svg-icons'
 
-
 export const COLORES_GRAFICAS = [
     '#007BFF',
     '#6610F2',
@@ -39,6 +38,24 @@ export const COLORES_GRAFICAS_2 = [
     '#F79ECC',
     '#AD96E4',
     '#6D045A'
+]
+
+export const COLORES_GRAFICAS_3 = [
+    '#40464B',
+    '#D64C92',
+    '#648FB5',
+    '#65B1A2',
+    '#AB4BDE',
+    '#1E91ED',
+    '#89BC25',
+    '#FF3816',
+    '#009ECE',
+    '#2956B2',
+    '#F3E0EC',
+    '#CAEBE2',
+    '#142B3B',
+    '#EC7C7B',
+    '#160812'
 ]
 
 export const INEIN_RED = '#D8005A'
@@ -590,7 +607,6 @@ export const EGRESOS_COLUMNS = [
     },
 ]
 
-
 export const FACTURAS_COLUMNS = [
     {
         Header: 'Opciones',
@@ -880,7 +896,6 @@ export const PROYECTOS_COLUMNS = [
         accessor: 'adjuntos'
     } */
 ]
-
 
 export const VENTAS_COLUMNS = [
     {
@@ -1851,7 +1866,6 @@ export const CLIENTES = [
         accessor: 'proyecto',
     }
 ]
-
 
 export const PRECIO_M2_DISEÑOS_COLUMNS = [
     {
