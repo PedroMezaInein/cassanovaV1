@@ -20,7 +20,8 @@ class EmpresasForm extends Component {
             file: [],
             rfc: '',
             tipoProyecto: '',
-            tipos: []
+            tipos: [],
+            direccion:'',
         },
         data: {
             empresas: []

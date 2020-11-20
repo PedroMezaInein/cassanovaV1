@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
-import { Input, Button } from '../form-components' 
+import { Input, Button, TagInput } from '../form-components' 
 import { validateAlert } from '../../functions/alert'
 import { RFC } from '../../constants'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
@@ -92,6 +92,27 @@ class EmpresaForm extends Component {
                             messageinc="Incorrecto. Ej. ABCD001122ABC"
                             maxLength="13"
                         />
+                    </div>
+                </div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
+                <div className="form-group row form-group-marginless pb-1">
+                    <div className="col-md-4">
+                        <Input
+                            requirevalidation={1}
+                            formeditado={formeditado}
+                            onChange={onChange}
+                            name="direccion"
+                            type="text"
+                            value={form.direccion}
+                            placeholder="UBICACIÓN DE LA EMPRESA"
+                            iconclass={"flaticon2-map"}
+                            messageinc="Incorrecto. Ingresa la ubicación de la empresa"
+                        />
+                    </div>
+                    <div className="col-md-4">
+                        {/* <TagInput/> */}
+                    </div>
+                    <div className="col-md-4">
                     </div>
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
