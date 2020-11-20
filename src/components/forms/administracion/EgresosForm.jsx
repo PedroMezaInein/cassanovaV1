@@ -208,7 +208,6 @@ class EgresosForm extends Component {
                                             onChange={this.updateProveedor}
                                             iconclass={"far fa-user"}
                                             messageinc="Incorrecto. Selecciona el proveedor."
-
                                         />
                                     </div>
                                     <div className="col-md-6">

@@ -105,6 +105,7 @@ class SolicitudVentaForm extends Component {
                                             name="proyecto"
                                             value={form.proyecto}
                                             onChange={this.updateProyecto}
+                                            messageinc="Incorrecto. Selecciona el proyecto"
                                         />
                                     </div>
                                     <div className="col-md-6">
@@ -115,6 +116,7 @@ class SolicitudVentaForm extends Component {
                                             name="empresa"
                                             value={form.empresa}
                                             onChange={this.updateEmpresa}
+                                            messageinc="Incorrecto. Selecciona la empresa"
                                         />
                                     </div>
                                 </div>
@@ -173,6 +175,7 @@ class SolicitudVentaForm extends Component {
                                             name="areas"
                                             value={form.area}
                                             onChange={this.updateArea}
+                                            messageinc="Incorrecto. Selecciona el área"
                                         />
                                     </div>
                                     {
@@ -185,6 +188,7 @@ class SolicitudVentaForm extends Component {
                                                     name="subarea"
                                                     value={form.subarea}
                                                     onChange={this.updateSubarea}
+                                                    messageinc="Incorrecto. Selecciona el subárea"
                                                 />
                                             </div>
                                             : ''

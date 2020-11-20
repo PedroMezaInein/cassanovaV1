@@ -121,6 +121,7 @@ class NominaAdminForm extends Component {
                                     name="empresa"
                                     value={form.empresa}
                                     onChange={this.updateEmpresa}
+                                    messageinc="Incorrecto. Selecciona la empresa"
                                 />
                             </div>
                             {/* <div className="col-md-3">

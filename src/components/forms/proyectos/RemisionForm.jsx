@@ -59,6 +59,7 @@ class ConceptoForm extends Component {
                             value={form.proyecto}
                             onChange={this.updateProyecto}
                             iconclass={"far fa-folder-open"}
+                            messageinc="Incorrecto. Selecciona el proyecto"
                         />
                     </div>
                     <div className={form.area.length ?'col-md-3':'col-md-4'}>
@@ -80,6 +81,7 @@ class ConceptoForm extends Component {
                             value={form.area}
                             onChange={this.updateArea}
                             iconclass={"far fa-window-maximize"}
+                            messageinc="Incorrecto. Selecciona el área"
                         />
                     </div>
                     {
@@ -94,6 +96,7 @@ class ConceptoForm extends Component {
                                     value={form.subarea}
                                     onChange={this.updateSubarea}
                                     iconclass={"far fa-window-restore"}
+                                    messageinc="Incorrecto. Selecciona el subárea"
                                 />
                             </div>
                             : ''

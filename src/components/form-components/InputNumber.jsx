@@ -76,7 +76,7 @@ class InputNumber extends Component {
                     </span>
                     <NumberFormat
                         placeholder={placeholder}
-                        className={inputValido ? " form-control is-valid text-uppercase" : " form-control is-invalid text-uppercase"}
+                        className={inputValido ? " form-control is-valid text-uppercase sin_icono" : " form-control is-invalid text-uppercase sin_icono"}
                         onChange={(e) => { e.preventDefault(); this.validarInput(e); onChange(e) }}
                         thousandSeparator={thousandseparator ? ',' : ''}
                         {...props}

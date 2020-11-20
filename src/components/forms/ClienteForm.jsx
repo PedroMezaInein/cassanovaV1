@@ -162,6 +162,7 @@ class ClienteForm extends Component {
                                 defaultValue={form.colonia}
                                 onChange={updateColonia}
                                 iconclass={"fas fa-map-pin"}
+                                messageinc="Incorrecto. Selecciona la colonia"
                             />
                         }
                         {

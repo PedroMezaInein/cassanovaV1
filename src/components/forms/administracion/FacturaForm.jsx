@@ -62,6 +62,7 @@ export default class FacturaForm extends Component {
                             name="empresa"
                             value={form.empresa}
                             onChange={this.updateEmpresa}
+                            messageinc="Incorrecto. Selecciona la empresa de emisión"
                         />
                     </div>
                     <div className="col-md-4">
@@ -72,6 +73,7 @@ export default class FacturaForm extends Component {
                             name="cliente"
                             value={form.cliente}
                             onChange={this.updateCliente}
+                            messageinc="Incorrecto. Selecciona el nombre del ciente"
                         />
                     </div>
                     <div className="col-md-4">
@@ -123,6 +125,7 @@ export default class FacturaForm extends Component {
                             name="formaPago"
                             value={form.formaPago}
                             onChange={this.updateFormaPago}
+                            messageinc="Incorrecto. Selecciona la forma de pago"
                         />
                     </div>
                 </div>
@@ -149,6 +152,7 @@ export default class FacturaForm extends Component {
                             name="metodoPago"
                             value={form.metodoPago}
                             onChange={this.updateMetodoPago}
+                            messageinc="Incorrecto. Selecciona el método de pago"
                         />
                     </div>
                     <div className="col-md-3">
@@ -159,6 +163,7 @@ export default class FacturaForm extends Component {
                             name="estatusFactura"
                             value={form.estatusFactura}
                             onChange={this.updateEstatusFactura}
+                            messageinc="Incorrecto. Selecciona el estatus"
                         />
                     </div>
                     <div className="col-md-3">

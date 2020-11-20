@@ -48,6 +48,7 @@ class RendimientoForm extends Component {
                             value={form.unidad}
                             onChange={this.updateUnidades}
                             iconclass={"fas fa-weight-hanging"}
+                            messageinc="Incorrecto. Selecciona la unidad"
                         />
                     </div>
                     <div className="col-md-3">
@@ -87,6 +88,7 @@ class RendimientoForm extends Component {
                             value={form.proveedor}
                             onChange={this.updateProveedor}
                             iconclass={"far fa-user"}
+                            messageinc="Incorrecto. Selecciona el proveedor"
                         />
                     </div>
                     <div className="col-md-8">
