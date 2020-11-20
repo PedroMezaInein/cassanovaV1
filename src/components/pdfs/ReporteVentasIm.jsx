@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         flexWrap: 'wrap',
         width: '95%',
-        fontSize: '11',
+        fontSize: '10',
         marginBottom: 5,
         textAlign: "justify",
         lineHeight: 1.2
@@ -133,7 +133,31 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         flexWrap: 'wrap',
         width: '22%'
-    }, 
+    },
+    cell10: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignContent: 'center',
+        textAlign: 'center',
+        flexWrap: 'wrap',
+        width: '11%'
+    },
+    cell15: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignContent: 'center',
+        textAlign: 'center',
+        flexWrap: 'wrap',
+        width: '17%'
+    },
+    cell30: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignContent: 'center',
+        textAlign: 'center',
+        flexWrap: 'wrap',
+        width: '22%'
+    },  
     cell40: {
         display: 'flex',
         justifyContent: 'center',
@@ -145,23 +169,22 @@ const styles = StyleSheet.create({
     headerText:{
         color: 'white',
         fontWeight: 'bold',
-        fontSize: 15,
-        paddingTop:3,
-        paddingBottom: 3
+        fontSize: 10,
+        padding:3,
+        textAlign: 'left'
     },
     bodyText:{
         fontWeight: 100,
-        fontSize: 12,
-        paddingTop:1,
-        paddingBottom: 1,
+        fontSize: 8,
+        padding:1,
         textAlign: "left"
     },
     imagenCentrada:{
-        width: '70%',
+        width: '95%',
         textAlign: 'center',
         marginLeft: 'auto',
         marginRight: 'auto',
-        marginTop: 120
+        marginTop: 40
     },
     imagenDoble:{
         width: '90%',
@@ -214,6 +237,13 @@ const styles = StyleSheet.create({
 
 export default class ReporteVentasInein extends Component {
 
+    getFechaText = (date) => {
+        let fecha = moment(date)
+        let mes = fecha.month() + 1;
+        let aux = fecha.date() + '/' + mes + '/' + fecha.year()
+        return aux
+    }
+
     getFecha = () => {
         const { form } = this.props
         let fecha = moment(form.fechaInicio)
@@ -260,7 +290,7 @@ export default class ReporteVentasInein extends Component {
     }
 
     render() {
-        const { lista, images, form } = this.props
+        const { lista, images, form, anteriores } = this.props
         return (
             <Document style = {{ fontFamily: 'Spartan', color: '#535353' }}>
                 <Page style = {{ position: 'relative', height: '100%' }} size="A4" orientation = "landscape">
@@ -296,44 +326,27 @@ export default class ReporteVentasInein extends Component {
                         <Image style = { styles.imagenCentrada }  src = { images[0].url }/>
                     </View>
                 </Page>
-                <Page style = { styles.pagina } size="A4" orientation = "landscape" >
+                
+                <Page style = { styles.pagina2 } size="A4" orientation = "landscape">
                     <View style = { styles.page } >
                         <View style = {{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end'}}>
-                            <View >
+                            <View>
                                 <Text style = { styles.paginacion}>02</Text>
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    COMPARATIVA LEADS ACTUALES VS { this.getLastMonth() }
+                                    COMPARATIVA DE LEADS TOTALES
                                 </Text>
                             </View>
                         </View>
-                        <View style = { styles.table}  >
-                            <View style = { styles.tableRow } >
-                                <View style = { styles.cell }>
-                                    <View style = {{ marginTop: 50 }}>
-                                        <Image style = { styles.imagenDoble } src = { images[0].url }/>
-                                        <Text style = { styles.texto }>
-                                            { this.getMonth() }
-                                        </Text>
-                                    </View>
-                                </View>
-                                <View style = { styles.cell }>
-                                    <View style = {{ marginTop: 50 }}>
-                                        <Image style = { styles.imagenDoble } src = { images[1].url }/>
-                                        <Text style = { styles.texto }>
-                                            { this.getLastMonth() }
-                                        </Text>
-                                    </View>
-                                </View>
-                            </View>
-                        </View>
+                        <Image style = { styles.imagenCentrada }  src = { images[1].url }/>
                     </View>
                 </Page>
+                
                 <Page style = { styles.pagina2 } size="A4" orientation = "landscape">
                     <View style = { styles.page } >
                         <View style = {{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end'}}>
-                            <View >
+                            <View>
                                 <Text style = { styles.paginacion}>03</Text>
                             </View>
                             <View>
@@ -345,44 +358,27 @@ export default class ReporteVentasInein extends Component {
                         <Image style = { styles.imagenCentrada }  src = { images[2].url }/>
                     </View>
                 </Page>
-                <Page style = { styles.pagina } size="A4" orientation = "landscape" >
+                
+                <Page style = { styles.pagina2 } size="A4" orientation = "landscape">
                     <View style = { styles.page } >
                         <View style = {{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end'}}>
-                            <View >
+                            <View>
                                 <Text style = { styles.paginacion}>04</Text>
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    COMPARATIVA ORIGEN LEADS ACTUALES VS { this.getLastMonth() }
+                                    COMPARATIVA ORIGEN LEADS
                                 </Text>
                             </View>
                         </View>
-                        <View style = { styles.table}  >
-                            <View style = { styles.tableRow } >
-                                <View style = { styles.cell }>
-                                    <View style = {{ marginTop: 50 }}>
-                                        <Image style = { styles.imagenDoble } src = { images[2].url }/>
-                                        <Text style = { styles.texto }>
-                                            { this.getMonth() }
-                                        </Text>
-                                    </View>
-                                </View>
-                                <View style = { styles.cell }>
-                                    <View style = {{ marginTop: 50 }}>
-                                        <Image style = { styles.imagenDoble } src = { images[3].url }/>
-                                        <Text style = { styles.texto }>
-                                            { this.getLastMonth() }
-                                        </Text>
-                                    </View>
-                                </View>
-                            </View>
-                        </View>
+                        <Image style = { styles.imagenCentrada }  src = { images[3].url }/>
                     </View>
                 </Page>
+                
                 <Page style = { styles.pagina2 } size="A4" orientation = "landscape">
                     <View style = { styles.page } >
                         <View style = {{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end'}}>
-                            <View >
+                            <View>
                                 <Text style = { styles.paginacion}>05</Text>
                             </View>
                             <View>
@@ -394,44 +390,27 @@ export default class ReporteVentasInein extends Component {
                         <Image style = { styles.imagenCentrada }  src = { images[4].url }/>
                     </View>
                 </Page>
-                <Page style = { styles.pagina } size="A4" orientation = "landscape" >
+                
+                <Page style = { styles.pagina2 } size="A4" orientation = "landscape">
                     <View style = { styles.page } >
                         <View style = {{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end'}}>
-                            <View >
+                            <View>
                                 <Text style = { styles.paginacion}>06</Text>
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    COMPARATIVA SERVICIOS SOLICITADOS VS { this.getLastMonth() }
+                                    COMPARATIVA SERVICIOS SOLICITADOS
                                 </Text>
                             </View>
                         </View>
-                        <View style = { styles.table}  >
-                            <View style = { styles.tableRow } >
-                                <View style = { styles.cell }>
-                                    <View style = {{ marginTop: 50 }}>
-                                        <Image style = { styles.imagenDoble } src = { images[4].url }/>
-                                        <Text style = { styles.texto }>
-                                            { this.getMonth() }
-                                        </Text>
-                                    </View>
-                                </View>
-                                <View style = { styles.cell }>
-                                    <View style = {{ marginTop: 60 }}>
-                                        <Image style = { styles.imagenDoble } src = { images[5].url }/>
-                                        <Text style = { styles.texto }>
-                                            { this.getLastMonth() }
-                                        </Text>
-                                    </View>
-                                </View>
-                            </View>
-                        </View>
+                        <Image style = { styles.imagenCentrada }  src = { images[5].url }/>
                     </View>
                 </Page>
+                
                 <Page style = { styles.pagina2 } size="A4" orientation = "landscape">
                     <View style = { styles.page } >
                         <View style = {{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end'}}>
-                            <View >
+                            <View>
                                 <Text style = { styles.paginacion}>07</Text>
                             </View>
                             <View>
@@ -443,44 +422,27 @@ export default class ReporteVentasInein extends Component {
                         <Image style = { styles.imagenCentrada }  src = { images[6].url }/>
                     </View>
                 </Page>
-                <Page style = { styles.pagina } size="A4" orientation = "landscape" >
+                
+                <Page style = { styles.pagina2 } size="A4" orientation = "landscape">
                     <View style = { styles.page } >
                         <View style = {{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end'}}>
-                            <View >
+                            <View>
                                 <Text style = { styles.paginacion}>08</Text>
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    COMPARATIVA TIPO LEADS VS { this.getLastMonth() }
+                                    COMPARATIVA TIPO DE LEAD
                                 </Text>
                             </View>
                         </View>
-                        <View style = { styles.table}  >
-                            <View style = { styles.tableRow } >
-                                <View style = { styles.cell }>
-                                    <View style = {{ marginTop: 50 }}>
-                                        <Image style = { styles.imagenDoble } src = { images[6].url }/>
-                                        <Text style = { styles.texto }>
-                                            { this.getMonth() }
-                                        </Text>
-                                    </View>
-                                </View>
-                                <View style = { styles.cell }>
-                                    <View style = {{ marginTop: 50 }}>
-                                        <Image style = { styles.imagenDoble } src = { images[7].url }/>
-                                        <Text style = { styles.texto }>
-                                            { this.getLastMonth() }
-                                        </Text>
-                                    </View>
-                                </View>
-                            </View>
-                        </View>
+                        <Image style = { styles.imagenCentrada }  src = { images[7].url }/>
                     </View>
                 </Page>
+                
                 <Page style = { styles.pagina2 } size="A4" orientation = "landscape">
                     <View style = { styles.page } >
                         <View style = {{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end'}}>
-                            <View >
+                            <View>
                                 <Text style = { styles.paginacion}>09</Text>
                             </View>
                             <View>
@@ -492,11 +454,28 @@ export default class ReporteVentasInein extends Component {
                         <Image style = { styles.imagenCentrada }  src = { images[8].url }/>
                     </View>
                 </Page>
-                <Page style = { styles.pagina } size="A4" orientation = "landscape">
+                
+                <Page style = { styles.pagina2 } size="A4" orientation = "landscape">
                     <View style = { styles.page } >
                         <View style = {{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end'}}>
-                            <View >
+                            <View>
                                 <Text style = { styles.paginacion}>10</Text>
+                            </View>
+                            <View>
+                                <Text style = { styles.titulo }>    
+                                    COMPARATIVA TOTAL DE PROSPECTOS
+                                </Text>
+                            </View>
+                        </View>
+                        <Image style = { styles.imagenCentrada }  src = { images[9].url }/>
+                    </View>
+                </Page>
+                
+                <Page style = { styles.pagina2 } size="A4" orientation = "landscape">
+                    <View style = { styles.page } >
+                        <View style = {{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end'}}>
+                            <View>
+                                <Text style = { styles.paginacion}>11</Text>
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -504,14 +483,47 @@ export default class ReporteVentasInein extends Component {
                                 </Text>
                             </View>
                         </View>
-                        <Image style = { styles.imagenCentrada }  src = { images[9].url }/>
+                        <Image style = { styles.imagenCentrada }  src = { images[10].url }/>
                     </View>
                 </Page>
+                
+                <Page style = { styles.pagina2 } size="A4" orientation = "landscape">
+                    <View style = { styles.page } >
+                        <View style = {{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end'}}>
+                            <View>
+                                <Text style = { styles.paginacion}>12</Text>
+                            </View>
+                            <View>
+                                <Text style = { styles.titulo }>    
+                                    COMPARATIVA STATUS DE PROSPECTOS
+                                </Text>
+                            </View>
+                        </View>
+                        <Image style = { styles.imagenCentrada }  src = { images[11].url }/>
+                    </View>
+                </Page>
+                
+                <Page style = { styles.pagina2 } size="A4" orientation = "landscape">
+                    <View style = { styles.page } >
+                        <View style = {{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end'}}>
+                            <View>
+                                <Text style = { styles.paginacion}>13</Text>
+                            </View>
+                            <View>
+                                <Text style = { styles.titulo }>    
+                                    PROSPECTOS CERRADOS
+                                </Text>
+                            </View>
+                        </View>
+                        <Image style = { styles.imagenCentrada }  src = { images[12].url }/>
+                    </View>
+                </Page>
+
                 <Page style = { styles.pagina2 } size="A4" orientation = "landscape">
                     <View style = { styles.page } >
                         <View style = {{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end'}}>
                             <View >
-                                <Text style = { styles.paginacion}>11</Text>
+                                <Text style = { styles.paginacion}>14</Text>
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -527,19 +539,29 @@ export default class ReporteVentasInein extends Component {
                                             NOMBRE DEL LEAD
                                         </Text>
                                     </View>
-                                    <View style = { styles.cell20 }>
+                                    <View style = { styles.cell10 }>
                                         <Text style = { styles.headerText } >
                                             PROYECTO
                                         </Text>
                                     </View>
-                                    <View style = { styles.cell40 }>
+                                    <View style = { styles.cell30 }>
                                         <Text style = { styles.headerText } >
                                             OBSERVACIONES
                                         </Text>
                                     </View>
-                                    <View style = { styles.cell20 }>
+                                    <View style = { styles.cell10 }>
                                         <Text style = { styles.headerText } >
                                             STATUS
+                                        </Text>
+                                    </View>
+                                    <View style = { styles.cell15 }>
+                                        <Text style = { styles.headerText } >
+                                            PRIMER CONTACTO
+                                        </Text>
+                                    </View>
+                                    <View style = { styles.cell15 }>
+                                        <Text style = { styles.headerText } >
+                                            ÚLTIMO CONTACTO
                                         </Text>
                                     </View>
                                 </View>
@@ -555,28 +577,177 @@ export default class ReporteVentasInein extends Component {
                                                             }
                                                         </Text>
                                                     </View>
-                                                    <View style = { styles.cell20 }>
+                                                    <View style = { styles.cell10 }>
                                                         <Text style = { styles.bodyText } >
                                                             {
-                                                                lead.servicios.map((serv)=> {
-                                                                    return serv.servicio
-                                                                })
+                                                                lead.prospecto.tipoProyecto ?
+                                                                    lead.prospecto.tipoProyecto.tipo
+                                                                : 
+                                                                    lead.servicios.map((serv, index) => {
+                                                                        return serv.servicio
+                                                                    })
                                                             }
                                                         </Text>
                                                     </View>
-                                                    <View style = { styles.cell40 }>
+                                                    <View style = { styles.cell30 }>
                                                         <Text style = { styles.bodyText } >
                                                             {
                                                                 lead.observacion
                                                             }
                                                         </Text>
                                                     </View>
-                                                    <View style = { styles.cell20 }>
+                                                    <View style = { styles.cell10 }>
                                                         <Text style = { styles.bodyText } >
                                                             {
                                                                 lead.prospecto.estatus_prospecto ?
                                                                     lead.prospecto.estatus_prospecto.estatus
                                                                 :''
+                                                            }
+                                                        </Text>
+                                                    </View>
+                                                    <View style = { styles.cell15 }>
+                                                        <Text style = { styles.bodyText } >
+                                                            {
+                                                                lead.prospecto.contactos ?
+                                                                    lead.prospecto.contactos.length ?
+                                                                        this.getFechaText(lead.prospecto.contactos[lead.prospecto.contactos.length - 1].created_at)
+                                                                    : 'Sin contacto'
+                                                                : 'Sin contacto'
+                                                            }
+                                                        </Text>
+                                                    </View>
+                                                    <View style = { styles.cell15 }>
+                                                        <Text style = { styles.bodyText } >
+                                                            {
+                                                                lead.prospecto.contactos ?
+                                                                    lead.prospecto.contactos.length ?
+                                                                        this.getFechaText(lead.prospecto.contactos[0].created_at)
+                                                                    : 'Sin contacto'
+                                                                : 'Sin contacto'
+                                                            }
+                                                        </Text>
+                                                    </View>
+                                                </View>
+                                            )
+                                        return false
+                                    })
+                                }
+                            </View>
+                        </View>
+                        
+                    </View>
+                </Page>
+
+                <Page style = { styles.pagina2 } size="A4" orientation = "landscape">
+                    <View style = { styles.page } >
+                        <View style = {{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end'}}>
+                            <View >
+                                <Text style = { styles.paginacion}>15</Text>
+                            </View>
+                            <View>
+                                <Text style = { styles.titulo }>    
+                                    LISTADO DE PROSPECTO DE MESES ANTERIORES
+                                </Text>
+                            </View>
+                        </View>
+                        <View style = {{ marginTop: 40}}>
+                            <View style = { styles.table}  >
+                                <View style = { styles.tableRowHeader } >
+                                    <View style = { styles.cell20 }>
+                                        <Text style = { styles.headerText } >
+                                            NOMBRE DEL LEAD
+                                        </Text>
+                                    </View>
+                                    <View style = { styles.cell10 }>
+                                        <Text style = { styles.headerText } >
+                                            PROYECTO
+                                        </Text>
+                                    </View>
+                                    <View style = { styles.cell30 }>
+                                        <Text style = { styles.headerText } >
+                                            MOTIVO
+                                        </Text>
+                                    </View>
+                                    <View style = { styles.cell10 }>
+                                        <Text style = { styles.headerText } >
+                                            STATUS
+                                        </Text>
+                                    </View>
+                                    <View style = { styles.cell15 }>
+                                        <Text style = { styles.headerText } >
+                                            PRIMER CONTACTO
+                                        </Text>
+                                    </View>
+                                    <View style = { styles.cell15 }>
+                                        <Text style = { styles.headerText } >
+                                            ÚLTIMO CONTACTO
+                                        </Text>
+                                    </View>
+                                </View>
+                                {
+                                    anteriores.map( (lead, index) =>{
+                                        if(lead.prospecto)
+                                            return(
+                                                <View key = { index } style = { this.setStyleRowBody(index) } >
+                                                    <View style = { styles.cell20 }>
+                                                        <Text style = { styles.bodyText } >
+                                                            {
+                                                                lead.nombre
+                                                            }
+                                                        </Text>
+                                                    </View>
+                                                    <View style = { styles.cell10 }>
+                                                        <Text style = { styles.bodyText } >
+                                                            {
+                                                                lead.prospecto.tipoProyecto ?
+                                                                    lead.prospecto.tipoProyecto.tipo
+                                                                : 
+                                                                    lead.servicios.map((serv, index) => {
+                                                                        return serv.servicio
+                                                                    })
+                                                            }
+                                                        </Text>
+                                                    </View>
+                                                    <View style = { styles.cell30 }>
+                                                        <Text style = { styles.bodyText } >
+                                                            {
+                                                                lead.motivo ?
+                                                                    lead.motivo
+                                                                :   
+                                                                    lead.prospecto.motivo ?
+                                                                        lead.prospecto.motivo
+                                                                    : '-'
+                                                            }
+                                                        </Text>
+                                                    </View>
+                                                    <View style = { styles.cell10 }>
+                                                        <Text style = { styles.bodyText } >
+                                                            {
+                                                                lead.prospecto.estatus_prospecto ?
+                                                                    lead.prospecto.estatus_prospecto.estatus
+                                                                :''
+                                                            }
+                                                        </Text>
+                                                    </View>
+                                                    <View style = { styles.cell15 }>
+                                                        <Text style = { styles.bodyText } >
+                                                            {
+                                                                lead.prospecto.contactos ?
+                                                                    lead.prospecto.contactos.length ?
+                                                                        this.getFechaText(lead.prospecto.contactos[lead.prospecto.contactos.length - 1].created_at)
+                                                                    : 'Sin contacto'
+                                                                : 'Sin contacto'
+                                                            }
+                                                        </Text>
+                                                    </View>
+                                                    <View style = { styles.cell15 }>
+                                                        <Text style = { styles.bodyText } >
+                                                            {
+                                                                lead.prospecto.contactos ?
+                                                                    lead.prospecto.contactos.length ?
+                                                                        this.getFechaText(lead.prospecto.contactos[0].created_at)
+                                                                    : 'Sin contacto'
+                                                                : 'Sin contacto'
                                                             }
                                                         </Text>
                                                     </View>
@@ -595,7 +766,7 @@ export default class ReporteVentasInein extends Component {
                     <View style = { styles.page } >
                         <View style = {{ display: 'flex', flexDirection: 'row', alignItems: 'flex-end'}}>
                             <View >
-                                <Text style = { styles.paginacion}>12</Text>
+                                <Text style = { styles.paginacion}>16</Text>
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -629,6 +800,7 @@ export default class ReporteVentasInein extends Component {
                         </View>
                     </View>
                 </Page>
+
                 <Page style = {{ position: 'relative', height: '100%' }} size="A4" orientation = "landscape">
                     <Image src = { IM } style = { styles.logoFin } />
                     <View style = {{ width: '95%', marginRight: 'auto', marginLeft: 'auto', top: '85%'}}>

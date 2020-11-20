@@ -172,11 +172,11 @@ const styles = StyleSheet.create({
         textAlign: "left"
     },
     imagenCentrada:{
-        width: '70%',
+        width: '95%',
         textAlign: 'center',
         marginLeft: 'auto',
         marginRight: 'auto',
-        marginTop: 120
+        marginTop: 40
     },
     imagenDoble:{
         width: '90%',
