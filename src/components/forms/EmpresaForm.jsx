@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
-import { Input, Button } from '../form-components' 
+import { Input, Button, TagInput } from '../form-components' 
 import { validateAlert } from '../../functions/alert'
 import { RFC } from '../../constants'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
@@ -37,10 +37,10 @@ class EmpresaForm extends Component {
         })
         onChange({target:{value:array, name: 'tipos'}})
         onChange({target:{value:'', name: 'tipoProyecto'}})
-    }
-
+    } 
     render() {
-        const { form, onChange, onSubmit, formeditado } = this.props
+        const { form, onChange, onSubmit, formeditado,tagInputChange, ...props } = this.props
+         
         return (
             <Form id="form-empresa"
                 onSubmit={
@@ -49,7 +49,7 @@ class EmpresaForm extends Component {
                         validateAlert(onSubmit, e, 'form-empresa')
                     }
                 }
-                {...this.props}
+                {...props}
             >
                 <div className="form-group row form-group-marginless pb-1">
                     <div className="col-md-4">
@@ -96,6 +96,32 @@ class EmpresaForm extends Component {
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless pb-1">
+                    <div className="col-md-4">
+                        <Input
+                            requirevalidation={1}
+                            formeditado={formeditado}
+                            onChange={onChange}
+                            name="direccion"
+                            type="text"
+                            value={form.direccion}
+                            placeholder="UBICACIÓN DE LA EMPRESA"
+                            iconclass={"flaticon2-map"}
+                            messageinc="Incorrecto. Ingresa la ubicación de la empresa"
+                        />
+                    </div>
+                    <div className="col-md-8">
+                        <TagInput
+                        tags={form.tipos} 
+                        onChange={tagInputChange} 
+                        placeholder={"TIPOS DE PROYECTO"}/>
+                    </div>
+                </div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
+
+
+{/*  
+
+                <div className="form-group row form-group-marginless pb-1">
                     <div className="col-md-3">
                         <Input
                             requirevalidation = { 0 }
@@ -135,6 +161,7 @@ class EmpresaForm extends Component {
                         }
                     </div>
                 </div>
+                */}
                 <div className="card-footer py-3 pr-1 text-right">
                     <Button text='ENVIAR' type='submit' className="btn btn-primary mr-2" icon=''/>
                 </div>

@@ -11,7 +11,7 @@ import axios from 'axios'
 import { pdf } from '@react-pdf/renderer'
 import { Pie, Bar, Line } from 'react-chartjs-2';
 import "chartjs-plugin-datalabels";
-import { setLabelTable, setOptions } from '../../functions/setters';
+import { setLabelTable, setOptions, setDateTableLG, setTextTable } from '../../functions/setters';
 import FlujosReportesVentas from '../../components/forms/reportes/FlujosReportesVentas';
 import { Editor } from 'react-draft-wysiwyg';
 import { EditorState, convertToRaw } from 'draft-js';
@@ -29,6 +29,14 @@ class ReporteVentas extends Component {
             fechaFin: moment().endOf('month'),
             referencia: 'trimestral',
             empresa: '',
+            leads: [],
+            adjuntos:{
+                reportes:{
+                    value: '',
+                    placeholder: 'Reporte',
+                    files: []
+                }
+            }
         },
         data:{
             total: {},
@@ -55,10 +63,29 @@ class ReporteVentas extends Component {
         this.chartComparativaProspectosReference = React.createRef();
         this.chartEstatusReference = React.createRef();
         this.chartComparativaEstatusReference = React.createRef();
+        this.chartCerradosReference = React.createRef();
     }
 
     componentDidMount() {
         this.getOptionsAxios()
+    }
+
+    setReporte = ( images, lista ) => {
+        const { empresa, form, leadsAnteriores } = this.state
+        switch(empresa){
+            case 'INEIN':
+                return(
+                    <ReporteVentasInein form = { form } images = { images } anteriores = { leadsAnteriores }
+                        lista = { lista } />
+                )
+            case 'INFRAESTRUCTURA MÉDICA':
+                return(
+                    <ReporteVentasIm form = { form } images = { images } anteriores = { leadsAnteriores }
+                        lista = { lista } />
+                )
+            default:
+                break;
+        }
     }
 
     setOpacity = array =>{
@@ -77,6 +104,14 @@ class ReporteVentas extends Component {
             return false
         })
         return aux
+    }
+
+    setLabel = (estatus) => {
+        let text = {}
+        text.letra = estatus.color_texto
+        text.fondo = estatus.color_fondo
+        text.estatus = estatus.estatus
+        return setLabelTable(text)
     }
 
     getBG = tamaño => {
@@ -154,6 +189,12 @@ class ReporteVentas extends Component {
         }
     }
 
+    onEditorStateChange = (editorState) => {
+        this.setState({
+            editorState,
+        });
+    };
+
     onChangeRange = range => {
         const { startDate, endDate } = range
         const { form } = this.state
@@ -183,6 +224,16 @@ class ReporteVentas extends Component {
             ...this.state,
             form,
             empresa
+        })
+    }
+
+    onChangeObservaciones = e => {
+        const { name, value } = e.target
+        let { form } = this.state
+        form.leads[name].observacion = value
+        this.setState({
+            ...this.state,
+            form
         })
     }
 
@@ -232,13 +283,33 @@ class ReporteVentas extends Component {
         waitAlert()
         await axios.post(URL_DEV + 'reportes/ventas', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { leads, servicios, origenes, tipos, prospectos, estatus } = response.data
+                const { leads, servicios, origenes, tipos, prospectos, estatus, cerrados, observaciones, observacionesAnteriores } = response.data
                 const { data, form } = this.state
+                
+                form.leads = observaciones
+                form.leads.map((lead)=> {
+                    lead.observacion = ''
+                    return false
+                })
+                
                 swal.close()
                 data.total = {
                     labels: ['TOTAL'],
                     datasets: [{
                         data: [leads[0].leads],
+                        backgroundColor: [
+                            this.setColor()
+                        ],
+                        hoverBackgroundColor: [
+                            this.setColor()+'D9'
+                        ]
+                    }]
+                }
+
+                data.cerrados = {
+                    labels: ['CERRADOS'],
+                    datasets: [{
+                        data: [cerrados],
                         backgroundColor: [
                             this.setColor()
                         ],
@@ -606,7 +677,9 @@ class ReporteVentas extends Component {
                 this.setState({
                     ...this.state,
                     data,
-                    key: 'ten'
+                    key: 'one',
+                    form,
+                    leadsAnteriores: observacionesAnteriores
                 })
                 
             },
@@ -624,15 +697,65 @@ class ReporteVentas extends Component {
         })
     }
 
+    async generarPDF(){
+        waitAlert()
+        let aux = []
+        const { form, editorState } = this.state
+        aux.push(
+            { name: 'total', url: this.chartTotalReference.current.chartInstance.toBase64Image() },
+            { name: 'total-comparativa', url: this.chartTotalComparativaReference.current.chartInstance.toBase64Image() },
+            { name: 'origenes', url: this.chartTotalOrigenesReference.current.chartInstance.toBase64Image() },
+            { name: 'origenes-comparativa', url: this.chartComparativaOrigenesReference.current.chartInstance.toBase64Image() },
+            { name: 'servicios', url: this.chartTotalServiciosReference.current.chartInstance.toBase64Image() },
+            { name: 'servicios-comparativa', url: this.chartComparativaServiciosReference.current.chartInstance.toBase64Image() },
+            { name: 'tipos', url: this.chartTiposReference.current.chartInstance.toBase64Image() },
+            { name: 'tipos-comparativa', url: this.chartComparativaTiposReference.current.chartInstance.toBase64Image() },
+            { name: 'prospectos', url: this.chartProspectosReference.current.chartInstance.toBase64Image() },
+            { name: 'prospectos-comparativa', url: this.chartComparativaProspectosReference.current.chartInstance.toBase64Image() },
+            { name: 'estatus', url: this.chartEstatusReference.current.chartInstance.toBase64Image() },
+            { name: 'estatus-comparativa', url: this.chartComparativaEstatusReference.current.chartInstance.toBase64Image() },
+            { name: 'cerrados', url: this.chartCerradosReference.current.chartInstance.toBase64Image() }
+        )
+
+        let lista = convertToRaw(editorState.getCurrentContent())
+        
+        let _lista = []
+        
+        lista.blocks.map((element)=>{
+            _lista.push(element.text.toUpperCase())
+        })
+        
+        const blob = await pdf((
+            this.setReporte( aux, _lista )
+        )).toBlob();
+        
+        form.adjuntos.reportes.files = [
+            {
+                name: 'reporte.pdf',
+                url: URL.createObjectURL(blob)
+            }
+        ]
+        
+        if(form.adjuntos.reportes.files.length > 0)
+            window.open(form.adjuntos.reportes.files[0].url, '_blank');
+        
+        swal.close()
+        
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
+
     render() {
-        const { form, leads, data, options: opciones, key, editorState } = this.state
+        const { form, data, options: opciones, key, editorState, leadsAnteriores } = this.state
 
         const optionsPie = {
             plugins: {
                 datalabels: {
                     color: '#fff',
                     font: {
-                        size: 18,
+                        size: 25,
                         weight: 'bold'
                     }
                 }
@@ -647,7 +770,7 @@ class ReporteVentas extends Component {
                 datalabels: {
                     color: '#fff',
                     font: {
-                        size: 18,
+                        size: 22,
                         weight: 'bold'
                     }
                 }
@@ -683,7 +806,7 @@ class ReporteVentas extends Component {
                 datalabels: {
                     color: '#fff',
                     font: {
-                        size: 15,
+                        size: 18,
                         weight: 'bold'
                     }
                 }
@@ -709,7 +832,7 @@ class ReporteVentas extends Component {
                     rotation: 0,
                     color: '#000',
                     font: {
-                        size: 15,
+                        size: 18,
                         backgroundColor: '#fff'
                     },
                 }
@@ -931,6 +1054,270 @@ class ReporteVentas extends Component {
                                             <Line ref = { this.chartComparativaEstatusReference } data = { data.estatusComparativa } options = { optionsLine } />
                                         </div>
                                     </div>
+                                </Tab.Pane>
+                                <Tab.Pane eventKey = 'thirteen'>
+                                    {this.setButtons('twelve', 'fourteen', null)}
+                                    <div className = " my-3 ">
+                                        <h3 className="card-label title-reporte-ventas">
+                                            <strong>
+                                                13
+                                            </strong>
+                                            PROSPECTOS CERRADOS
+                                        </h3>
+                                    </div>
+                                    <div className = "row mx-0 mb-2 justify-content-center">
+                                        <div className = "col-md-6" >
+                                            <Pie ref = { this.chartCerradosReference } data = { data.cerrados } options = { optionsPie } />
+                                        </div>
+                                    </div>
+                                </Tab.Pane>
+                                <Tab.Pane eventKey = 'fourteen'>
+                                    {this.setButtons('thirteen', 'fifteen', null)}
+                                    <div className = "my-3">
+                                        <h3 className="card-label title-reporte-ventas">
+                                            <strong>
+                                                14
+                                            </strong>
+                                            OBSERVACIONES DE PROSPECTOS
+                                        </h3>
+                                    </div>
+                                    <table className="table table-separate table-responsive-sm">
+                                        <thead>
+                                            <tr>
+                                                <th className="border-0 center_content">
+                                                    <div className="font-size-lg font-weight-bolder text-center">
+                                                        NOMBRE DE LEAD
+                                                    </div>
+                                                </th>
+                                                <th className="clave border-0 center_content">
+                                                    <div className="font-size-lg font-weight-bolder text-center">
+                                                        PROYECTO
+                                                    </div>
+                                                </th>
+                                                <th className="border-0 center_content">
+                                                    <div className="font-size-lg font-weight-bolder text-center">
+                                                        OBSERVACIONES
+                                                    </div>
+                                                </th>
+                                                <th className="clave border-0 center_content">
+                                                    <div className="font-size-lg font-weight-bolder text-center">
+                                                        STATUS
+                                                    </div>
+                                                </th>
+                                                <th className="clave border-0 center_content">
+                                                    <div className="font-size-lg font-weight-bolder text-center">
+                                                        PRIMER CONTACTO
+                                                    </div>
+                                                </th>
+
+                                                <th className="clave border-0 center_content">
+                                                    <div className="font-size-lg font-weight-bolder text-center">
+                                                        ÚLTIMO CONTACTO
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                form.leads.map((lead, index)=>{
+                                                    if(lead.prospecto)
+                                                        return(
+                                                            <tr key = { index } >
+                                                                <td className="font-size-sm text-center">
+                                                                    {
+                                                                        lead.nombre
+                                                                    }
+                                                                </td>
+                                                                <td className="font-size-sm text-center">
+                                                                    {
+                                                                        lead.prospecto.tipoProyecto ?
+                                                                            lead.prospecto.tipoProyecto.tipo
+                                                                        : 
+                                                                            lead.servicios.map((serv, index) => {
+                                                                                return serv.servicio
+                                                                            })
+                                                                    }
+                                                                </td>
+                                                                <td>
+                                                                    {
+                                                                        form.leads.length ?
+                                                                            <InputSinText
+                                                                                name = { index}
+                                                                                as = 'textarea'
+                                                                                rows = { 1 }
+                                                                                onChange = { this.onChangeObservaciones }
+                                                                                value = { form.leads[index].observacion }
+                                                                                />
+                                                                        :''
+                                                                    }
+                                                                    
+                                                                </td>
+                                                                <td className='text-center'>
+                                                                    {
+                                                                        lead.prospecto.estatus_prospecto ?
+                                                                            this.setLabel(lead.prospecto.estatus_prospecto)
+                                                                        : ''
+                                                                    }
+                                                                </td>
+                                                                <td className = 'text-center'>
+                                                                    {
+                                                                        lead.prospecto.contactos ?
+                                                                            lead.prospecto.contactos.length ?
+                                                                                setDateTableLG(lead.prospecto.contactos[lead.prospecto.contactos.length - 1].created_at)
+                                                                            : 'Sin contacto'
+                                                                        : 'Sin contacto'
+                                                                    }
+                                                                </td>
+                                                                <td className = 'text-center'>
+                                                                    {
+                                                                        lead.prospecto.contactos ?
+                                                                            lead.prospecto.contactos.length ?
+                                                                                setDateTableLG(lead.prospecto.contactos[0].created_at)
+                                                                            : 'Sin contacto'
+                                                                        : 'Sin contacto'
+                                                                    }
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                                    return false
+                                                })
+                                            }
+                                        </tbody>
+                                    </table>
+                                </Tab.Pane>
+                                <Tab.Pane eventKey = 'fifteen'>
+                                    {this.setButtons('fourteen', 'sixteen', null)}
+                                    <div className = "my-3">
+                                        <h3 className="card-label title-reporte-ventas">
+                                            <strong>
+                                                15
+                                            </strong>
+                                            LISTADO DE PROSPECTO MESES ANTERIORES
+                                        </h3>
+                                    </div>
+                                    <table className="table table-separate table-responsive-sm">
+                                        <thead>
+                                            <tr>
+                                                <th className="border-0 center_content">
+                                                    <div className="font-size-lg font-weight-bolder text-center">
+                                                        NOMBRE DE LEAD
+                                                    </div>
+                                                </th>
+                                                <th className="clave border-0 center_content">
+                                                    <div className="font-size-lg font-weight-bolder text-center">
+                                                        PROYECTO
+                                                    </div>
+                                                </th>
+                                                <th className="clave border-0 center_content">
+                                                    <div className="font-size-lg font-weight-bolder text-center">
+                                                        STATUS
+                                                    </div>
+                                                </th>
+                                                <th className="clave border-0 center_content">
+                                                    <div className="font-size-lg font-weight-bolder text-center">
+                                                        MOTIVO
+                                                    </div>
+                                                </th>
+                                                <th className="clave border-0 center_content">
+                                                    <div className="font-size-lg font-weight-bolder text-center">
+                                                        PRIMER CONTACTO
+                                                    </div>
+                                                </th>
+
+                                                <th className="clave border-0 center_content">
+                                                    <div className="font-size-lg font-weight-bolder text-center">
+                                                        ÚLTIMO CONTACTO
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                leadsAnteriores.map((lead, index)=>{
+                                                    if(lead.prospecto)
+                                                        return(
+                                                            <tr key = { index } >
+                                                                <td className="font-size-sm text-center">
+                                                                    {
+                                                                        lead.nombre
+                                                                    }
+                                                                </td>
+                                                                <td className="font-size-sm text-center">
+                                                                    {
+                                                                        lead.prospecto.tipoProyecto ?
+                                                                            lead.prospecto.tipoProyecto.tipo
+                                                                        : 
+                                                                            lead.servicios.map((serv, index) => {
+                                                                                return serv.servicio
+                                                                            })
+                                                                    }
+                                                                </td>
+                                                                <td className='text-center'>
+                                                                    {
+                                                                        lead.prospecto.estatus_prospecto ?
+                                                                            this.setLabel(lead.prospecto.estatus_prospecto)
+                                                                        : ''
+                                                                    }
+                                                                </td>
+                                                                <td className='text-center'>
+                                                                    {
+                                                                        lead.motivo ?
+                                                                            setTextTable(lead.motivo)
+                                                                        :   lead.prospecto.motivo ?
+                                                                                setTextTable(lead.prospecto.motivo)
+                                                                            : '-'
+                                                                    }
+                                                                </td>
+                                                                <td className = 'text-center'>
+                                                                    {
+                                                                        lead.prospecto.contactos ?
+                                                                            lead.prospecto.contactos.length ?
+                                                                                setDateTableLG(lead.prospecto.contactos[lead.prospecto.contactos.length - 1].created_at)
+                                                                            : 'Sin contacto'
+                                                                        : 'Sin contacto'
+                                                                    }
+                                                                </td>
+                                                                <td className = 'text-center'>
+                                                                    {
+                                                                        lead.prospecto.contactos ?
+                                                                            lead.prospecto.contactos.length ?
+                                                                                setDateTableLG(lead.prospecto.contactos[0].created_at)
+                                                                            : 'Sin contacto'
+                                                                        : 'Sin contacto'
+                                                                    }
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                                    return false
+                                                })
+                                            }
+                                        </tbody>
+                                    </table>
+                                </Tab.Pane>
+                                <Tab.Pane eventKey = 'sixteen'>
+                                    {this.setButtons('fifteen', null, true)}
+                                    <div className = "my-3">
+                                        <h3 className="card-label title-reporte-ventas">
+                                            <strong>
+                                                16
+                                            </strong>
+                                            CONCLUSIONES
+                                        </h3>
+                                    </div>
+                                    <Editor 
+                                        editorClassName = "editor-class"
+                                        toolbar = { 
+                                            {
+                                                options: ['list'],
+                                                list: {
+                                                    inDropdown: false,
+                                                    options: ['unordered'],
+                                                },
+                                            }
+                                        }
+                                        editorState = { editorState }
+                                        onEditorStateChange={this.onEditorStateChange}
+                                        />
                                 </Tab.Pane>
                             </Tab.Content>
                         </Tab.Container>
