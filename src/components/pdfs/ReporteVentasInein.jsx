@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
         flexWrap: 'wrap',
         width: '95%',
-        fontSize: '11',
+        fontSize: '10',
         marginBottom: 5,
         textAlign: "justify",
         lineHeight: 1.2
