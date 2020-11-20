@@ -31,7 +31,7 @@ class SelectSearchForm extends Component {
                         <i className={"flaticon2-search-1 m-0 kt-font-boldest text-primary"}></i>
                     </span>
                     <input
-                        className={validado ? " form-control is-valid text-uppercase" : " form-control is-invalid text-uppercase"}
+                        className={validado ? " form-control is-valid text-uppercase sin_icono" : " form-control is-invalid text-uppercase sin_icono"}
                         {...valueProps}
                         style={customstyle}
                     />

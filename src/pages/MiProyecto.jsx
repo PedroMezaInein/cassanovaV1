@@ -1047,6 +1047,7 @@ class MiProyecto extends Component {
                                                                     value={form.tipo_trabajo}
                                                                     onChange={this.updateTrabajo}
                                                                     iconclass={"fas fa-book"}
+                                                                    messageinc="Incorrecto. Selecciona el tipo de trabajo"
                                                                 />
                                                             </div>
                                                             <div className="col-md-6">
@@ -1058,6 +1059,7 @@ class MiProyecto extends Component {
                                                                     value={form.partida}
                                                                     onChange={this.updatePartida}
                                                                     iconclass={" fas fa-book"}
+                                                                    messageinc="Incorrecto. Selecciona la partida"
                                                                 />
                                                             </div>
                                                         </div>

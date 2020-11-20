@@ -38,6 +38,7 @@ export default class PrestamosForm extends Component {
                             value={form.empleado}
                             onChange={this.updateEmpleado}
                             iconclass='fas fa-user-alt'
+                            messageinc="Incorrecto. Selecciona el empleado"
                         />
                     </div>
                     <div className="col-md-9">
@@ -89,7 +90,7 @@ export default class PrestamosForm extends Component {
                                     <i className="far fa-calendar-alt kt-font-boldest text-primary"></i>
                                 </span>
                             </span>
-                            <Form.Control className="form-control is-valid text-uppercase" value = {form.periodo} onChange={onChange} name='periodo' formeditado={formeditado} as="select">
+                            <Form.Control className="form-control is-valid text-uppercase sin_icono" value = {form.periodo} onChange={onChange} name='periodo' formeditado={formeditado} as="select">
                                 <option disabled selected value = {0}> Selecciona el periodo</option>
                                 <option value={"semanal"}>Semanal</option>
                                 <option value={"quincenal"}>Quincenal</option>

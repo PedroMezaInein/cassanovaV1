@@ -28,7 +28,9 @@ class DocumentosForm extends Component {
                                 placeholder='EMPRESA'
                                 name='empresa'
                                 value={form.empresa}
-                                onChange={this.updateEmpresa} />
+                                onChange={this.updateEmpresa}
+                                messageinc="Incorrecto. Selecciona la empresa"
+                            />
                         </div>
                         <div className="col-md-4">
                             <Input

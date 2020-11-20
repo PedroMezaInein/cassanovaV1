@@ -349,6 +349,7 @@ class EstadosCuenta extends Component {
                                     value={cuenta}
                                     onChange={this.updateCuenta}
                                     iconclass={"far fa-credit-card"}
+                                    messageinc="Incorrecto. Selecciona la cuenta"
                                 />
                             </div>
                             <div className="col-md-4">

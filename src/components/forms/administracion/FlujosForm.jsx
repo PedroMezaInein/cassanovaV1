@@ -45,6 +45,7 @@ class FlujosForm extends Component {
                             value={form.cuenta}
                             onChange={this.updateCuenta}
                             iconclass={"fas fa-credit-card"}
+                            messageinc="Incorrecto. Selecciona la cuenta"
                         />
                     </div>
                     {
