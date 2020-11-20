@@ -24,6 +24,7 @@
       "@material-ui/lab": "^4.0.0-alpha.56",
       "@material-ui/pickers": "3.2.10",
       "@material-ui/styles": "4.9.10",
+      "@pathofdev/react-tag-input": "^1.0.7",
       "@react-pdf/renderer": "^1.6.11",
       "@reduxjs/toolkit": "1.1.0",
       "@tanem/svg-injector": "8.0.35",
