@@ -110,7 +110,7 @@ class EmpresaForm extends Component {
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-3">
                         <Input
-                            requirevalidation={1}
+                            requirevalidation={0}
                             formeditado={formeditado}
                             onChange={onChange}
                             name="facebook"
@@ -123,7 +123,7 @@ class EmpresaForm extends Component {
                     </div>
                     <div className="col-md-3">
                         <Input
-                            requirevalidation={1}
+                            requirevalidation={0}
                             formeditado={formeditado}
                             onChange={onChange}
                             name="instagram"
@@ -136,7 +136,7 @@ class EmpresaForm extends Component {
                     </div>
                     <div className="col-md-3">
                         <Input
-                            requirevalidation={1}
+                            requirevalidation={0}
                             formeditado={formeditado}
                             onChange={onChange}
                             name="linkedin"
@@ -149,7 +149,7 @@ class EmpresaForm extends Component {
                     </div>
                     <div className="col-md-3">
                         <Input
-                            requirevalidation={1}
+                            requirevalidation={0}
                             formeditado={formeditado}
                             onChange={onChange}
                             name="pinterest"
