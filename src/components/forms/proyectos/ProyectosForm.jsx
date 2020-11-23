@@ -1,11 +1,12 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
-import { Input, SelectSearch, Button, RangeCalendar, InputNumber, InputPhone, SelectSearchTrue } from '../../form-components'
+import { Input, SelectSearch, Button, RangeCalendar, InputNumber, InputPhone, SelectSearchTrue, TagSelectSearch } from '../../form-components'
 import { faPlus} from '@fortawesome/free-solid-svg-icons'
 import { TEL, EMAIL } from '../../../constants'
 import { openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
 import { validateAlert } from '../../../functions/alert'
 import ItemSlider from '../../singles/ItemSlider'
+const $ = require('jquery');
 class ProyectosForm extends Component {
 
     addCorreo = () => {
@@ -44,8 +45,22 @@ class ProyectosForm extends Component {
     //     const { onChange } = this.props
     //     onChange({ target: { name: 'fechaFin', value: date } })
     // }
-
-    updateCliente = value => {
+    nuevoUpdateCliente = seleccionados =>{
+        const { onChange, options, onChangeOptions, form,deleteOption } = this.props
+        seleccionados = seleccionados?seleccionados:[];
+        if(seleccionados.length>form.clientes.length){
+            let diferencia = $(seleccionados).not(form.clientes).get();
+            let val_diferencia = diferencia[0].value
+            this.updateCliente(val_diferencia)
+        }
+        else {
+            let diferencia = $(form.clientes ).not(seleccionados).get(); 
+            diferencia.forEach(borrar=>{
+                deleteOption(borrar,"clientes")
+            })
+        }
+    }
+    updateCliente = value => { 
         const { onChange, options, onChangeOptions, form } = this.props
         options.clientes.map((cliente) => {
             if (cliente.value === value) {
@@ -82,6 +97,15 @@ class ProyectosForm extends Component {
         const { name, checked } = e.target
         const { onChange } = this.props
         onChange({ target: { name: name, value: checked } })
+    }
+
+    transformarOptions = options => {  
+        options = options?options:[]
+        options.map(value=>{
+            value.label = value.name 
+        } );
+    
+        return options
     }
 
     render() {
@@ -145,7 +169,7 @@ class ProyectosForm extends Component {
                                                                     onChange={e => this.handleToggler(e)}
                                                                     disabled = { form.fase1_relacionado === false ? false : form.fase1_relacionado }
                                                                     />
-                                                                <span class = { form.fase1_relacionado === false ? '' : 'disabled-label-span' } ></span>
+                                                                <span className = { form.fase1_relacionado === false ? '' : 'disabled-label-span' } ></span>
                                                             </label>
                                                         </div>
                                                     </Form.Group>
@@ -166,7 +190,7 @@ class ProyectosForm extends Component {
                                                                     onChange={e => this.handleToggler(e)}
                                                                     disabled = { form.fase2_relacionado === false ? false : form.fase2_relacionado }
                                                                     />
-                                                                <span class = { form.fase2_relacionado === false ? '' : 'disabled-label-span' } ></span>
+                                                                <span className = { form.fase2_relacionado === false ? '' : 'disabled-label-span' } ></span>
                                                             </label>
                                                         </div>
                                                     </Form.Group>
@@ -187,7 +211,7 @@ class ProyectosForm extends Component {
                                                                     onChange={e => this.handleToggler(e)}
                                                                     disabled = { form.fase3_relacionado === false ? false : form.fase3_relacionado }
                                                                     />
-                                                                <span class = { form.fase3_relacionado === false ? '' : 'disabled-label-span' } ></span>
+                                                                <span className = { form.fase3_relacionado === false ? '' : 'disabled-label-span' } ></span>
                                                             </label>
                                                         </div>
                                                     </Form.Group>
@@ -212,7 +236,7 @@ class ProyectosForm extends Component {
                                         <InputPhone
                                             requirevalidation={1}
                                             formeditado={formeditado}
-                                            thousandseparator={false}
+                                            //thousandseparator={false}
                                             prefix={''}
                                             name="numeroContacto"
                                             value={form.numeroContacto}
@@ -242,17 +266,26 @@ class ProyectosForm extends Component {
                                     <div className={form.clientes.length ? "col-md-4" : "col-md-6"}>
                                         {
                                             formeditado && form.clientes.length ? 
-                                                <SelectSearchTrue
-                                                    formeditado={formeditado}
-                                                    options={options.clientes}
-                                                    placeholder="SELECCIONA EL CLIENTE"
-                                                    name="cliente"
-                                                    value={form.cliente}
-                                                    onChange={this.updateCliente}
-                                                    iconclass={"far fa-user"}
+                                                <>
+                                                    {/* <SelectSearchTrue
+                                                        formeditado={formeditado}
+                                                        options={options.clientes}
+                                                        placeholder="SELECCIONA EL CLIENTE"
+                                                        name="cliente"
+                                                        value={form.cliente}
+                                                        onChange={this.updateCliente}
+                                                        iconclass={"far fa-user"}
+                                                    /> */}
+                                                    <TagSelectSearch
+                                                        placeholder="SELECCIONA EL CLIENTE"
+                                                        options={this.transformarOptions(options.clientes)}
+                                                        defaultvalue={this.transformarOptions(form.clientes)}
+                                                        onChange={this.nuevoUpdateCliente}
                                                     />
+                                                </>
                                             :   
-                                                <SelectSearch
+                                            <>
+                                                {/* <SelectSearch
                                                     formeditado={formeditado}
                                                     options={options.clientes}
                                                     placeholder="SELECCIONA EL CLIENTE"
@@ -261,11 +294,17 @@ class ProyectosForm extends Component {
                                                     onChange={this.updateCliente}
                                                     iconclass={"far fa-user"}
                                                     messageinc="Incorrecto. Selecciona el cliente"
-                                                />
+                                                /> */}
+                                                <TagSelectSearch
+                                                        placeholder="SELECCIONA EL CLIENTE"
+                                                        options={this.transformarOptions(options.clientes)}
+                                                        defaultvalue={this.transformarOptions(form.clientes)}
+                                                        onChange={this.nuevoUpdateCliente}
+                                                    />
+                                            </>
                                         }
-                                        
                                     </div>
-                                    <div className="col-md-4 row mx-0">
+                                    {/* <div className="col-md-4 row mx-0">
                                         {
                                             form.clientes.map((cliente, key) => {
                                                 return (
@@ -285,7 +324,7 @@ class ProyectosForm extends Component {
                                                 )
                                             })
                                         }
-                                    </div>
+                                    </div> */}
                                 </div>
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">
@@ -293,7 +332,7 @@ class ProyectosForm extends Component {
                                         <Input
                                             requirevalidation={0}
                                             formeditado={formeditado}
-                                            thousandseparator={false}
+                                            //thousandseparator={false}
                                             prefix={''}
                                             name="correo"
                                             value={form.correo}
