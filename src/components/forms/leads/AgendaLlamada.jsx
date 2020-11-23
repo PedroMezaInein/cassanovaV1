@@ -2,9 +2,70 @@ import React, { Component } from 'react'
 import { CalendarDay, Button } from '../../form-components'
 import { Col, Form } from 'react-bootstrap'
 class AgendaLlamada extends Component {
+
     render() {
-        const { form, onChange, onSubmit } = this.props
+        const { form, onChange, onSubmit, lead, cierre} = this.props
+        let fecha = new Date(form["fecha"])
+        let dia = fecha.getDate()
+        let numMes = fecha.getMonth()+1
+        let mes= ""
+        switch(numMes)
+        {
+            case 1:
+                mes= "Enero";
+                break;
+            case 2:
+                mes= "Febrero";
+                break;
+            case 3:
+                mes= "Marzo";
+                break;
+            case 4:
+                mes= "Abril";
+                break;
+            case 5:
+                mes= "Mayo";
+                break;
+            case 6:
+                mes= "Junio";
+                break;
+            case 7:
+                mes= "Julio";
+                break;
+            case 8:
+                mes= "Agosto";
+                break;
+            case 9:
+                mes= "Septiembre";
+                break;
+            case 10:
+                mes= "Octubre";
+                break;
+            case 11:
+                mes= "Noviembre";
+                break;
+            case 12:
+                mes= "Diciembre";
+                break;
+        }
         return (
+            <>
+                {
+                    cierre?
+                        lead.empresa.name === 'INFRAESTRUCTURA MÉDICA'?
+                            <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify my-4">Me imagino que ha estado ocupado. <span className="font-weight-boldest">¿Le parece bien si agendamos una llamada para poder hablar sobre la cotización?</span></div>
+                        :
+                        lead.empresa.name === 'INEIN'?
+                            <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify my-4">Me imagino que ha estado ocupado. <span className="font-weight-boldest">¿Te parece bien si agendamos una llamada para poder hablar sobre la cotización?</span></div>
+                        :''
+                    :
+                        lead.empresa.name === 'INFRAESTRUCTURA MÉDICA'?
+                            <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify my-4"> Perfecto me estaré comunicando contigo  <span className="font-weight-boldest">{" el día "+dia+" de "+mes+" a las "+ form["hora"]+":"+form["minuto"]} </span>, que tengas excelente día.</div>
+                        :
+                        lead.empresa.name === 'INEIN'?
+                        <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify my-4"> Perfecto me estaré comunicando contigo  <span className="font-weight-boldest">{" el día "+dia+" de "+mes+" a las "+ form["hora"]+":"+form["minuto"]} </span>, que tengas excelente día.</div>
+                        :''
+                }
             <Form>
                 <div className="row">
                     <Col md="12" className="text-center">
@@ -75,6 +136,7 @@ class AgendaLlamada extends Component {
                     </div>
                 </div>
             </Form>
+            </>
         )
     }
 }

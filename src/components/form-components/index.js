@@ -17,6 +17,7 @@ import calendarDay from './CalendarDay'
 import rangeCalendar from './RangeCalendar'
 import imageUpload from './ImageUpload'
 import tagInput from './TagInput'
+import tagSelectSearch from './TagSelectSearch'
 // Validado, pero sin texto de error
 import inputMoneySinText from './SinText/InputMoneySinText'
 import selectSearchSinText from './SinText/SelectSearchSinText'
@@ -50,6 +51,8 @@ export const CalendarDay = calendarDay
 export const RangeCalendar = rangeCalendar
 export const ImageUpload = imageUpload
 export const TagInput = tagInput
+export const TagSelectSearch = tagSelectSearch
+
 // Validado, pero sin texto de error
 export const InputMoneySinText = inputMoneySinText
 export const SelectSearchSinText = selectSearchSinText

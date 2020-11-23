@@ -50,7 +50,7 @@ class EmpresaForm extends Component {
                 {...props}
             >
                 <div className="form-group row form-group-marginless">
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <Input
                             requirevalidation={1}
                             formeditado={formeditado}
@@ -63,7 +63,7 @@ class EmpresaForm extends Component {
                             messageinc="Incorrecto. Ingresa el nombre de la empresa"
                         />
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <Input
                             requirevalidation={1}
                             formeditado={formeditado}
@@ -76,7 +76,7 @@ class EmpresaForm extends Component {
                             messageinc="Incorrecto. Ingresa la razón social"
                         />
                     </div>
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <Input
                             requirevalidation={1}
                             formeditado={formeditado}
@@ -89,6 +89,19 @@ class EmpresaForm extends Component {
                             patterns={RFC}
                             messageinc="Incorrecto. Ej. ABCD001122ABC"
                             maxLength="13"
+                        />
+                    </div>
+                    <div className="col-md-3">
+                        <Input
+                            requirevalidation={0}
+                            formeditado={formeditado}
+                            onChange={onChange}
+                            name="pagina_web"
+                            type="text"
+                            value={form.pagina_web}
+                            placeholder="PÁGINA WEB"
+                            iconclass={"flaticon2-world"}
+                            messageinc="Incorrecto. Ingresa la página web"
                         />
                     </div>
                 </div>
