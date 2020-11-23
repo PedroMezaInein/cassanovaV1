@@ -4,7 +4,7 @@ import { Col, Form } from 'react-bootstrap'
 class AgendaLlamada extends Component {
 
     render() {
-        const { form, onChange, onSubmit, lead, cierre} = this.props
+        const { form, onChange, onSubmit, lead, cierre_reviso, cita_reviso, cierre_cita, cita_contrato} = this.props
         let fecha = new Date(form["fecha"])
         let dia = fecha.getDate()
         let numMes = fecha.getMonth()+1
@@ -51,20 +51,38 @@ class AgendaLlamada extends Component {
         return (
             <>
                 {
-                    cierre?
+                    cierre_reviso?
                         lead.empresa.name === 'INFRAESTRUCTURA MÉDICA'?
-                            <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify my-4">Me imagino que ha estado ocupado. <span className="font-weight-boldest">¿Le parece bien si agendamos una llamada para poder hablar sobre la cotización?</span></div>
+                            <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify my-4"><span className="font-weight-boldest">¿Qué dia se le acomoda mejor a su agenda?</span></div>
                         :
                         lead.empresa.name === 'INEIN'?
-                            <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify my-4">Me imagino que ha estado ocupado. <span className="font-weight-boldest">¿Te parece bien si agendamos una llamada para poder hablar sobre la cotización?</span></div>
+                            <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify my-4"><span className="font-weight-boldest">¿Qué dia se te acomoda mejor a tu agenda?</span></div>
                         :''
                     :
+                    cita_reviso?
                         lead.empresa.name === 'INFRAESTRUCTURA MÉDICA'?
-                            <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify my-4"> Perfecto me estaré comunicando contigo  <span className="font-weight-boldest">{" el día "+dia+" de "+mes+" a las "+ form["hora"]+":"+form["minuto"]} </span>, que tengas excelente día.</div>
+                            <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify my-4">Perfecto mañana me estaré comunicando con usted <span className="font-weight-boldest">{" el día "+dia+" de "+mes+" a las "+ form["hora"]+":"+form["minuto"]}</span>, que tengas excelente día.</div>
                         :
                         lead.empresa.name === 'INEIN'?
-                        <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify my-4"> Perfecto me estaré comunicando contigo  <span className="font-weight-boldest">{" el día "+dia+" de "+mes+" a las "+ form["hora"]+":"+form["minuto"]} </span>, que tengas excelente día.</div>
+                        <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify my-4">Perfecto me estaré comunicando contigo <span className="font-weight-boldest">{" el día "+dia+" de "+mes+" a las "+ form["hora"]+":"+form["minuto"]}</span>, que tengas excelente día.</div>
                         :''
+                    :
+                    cierre_cita?
+                        lead.empresa.name === 'INFRAESTRUCTURA MÉDICA'?
+                            <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify my-4">¡Excelente!<span className="font-weight-boldest"><em> ¿Podemos programar la firma el día de mañana en el horario que mejor se acomode a tu agenda?</em></span></div>
+                        :
+                        lead.empresa.name === 'INEIN'?
+                            <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify my-4">¡Excelente!<span className="font-weight-boldest"><em> ¿Podemos programar la firma el día de mañana en el horario que mejor se acomode a su agenda?</em></span></div>
+                        :''
+                    :
+                    cita_contrato?
+                        lead.empresa.name === 'INFRAESTRUCTURA MÉDICA'?
+                            <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify my-4">De acuerdo, lo programaremos para <span className="font-weight-boldest">{" el día "+dia+" de "+mes+" a las "+ form["hora"]+":"+form["minuto"]}</span>. Para ir adelantado el tema del contrato le hare llegar un correo con un listado de los datos que requerimos para incluirlos en este, también le enviare un machote del contrato para que usted pueda leerlo y en caso de tener dudas o comentarios pueda asesorarlo.</div>
+                        :
+                        lead.empresa.name === 'INEIN'?
+                            <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify my-4">De acuerdo, lo programaremos para <span className="font-weight-boldest">{" el día "+dia+" de "+mes+" a las "+ form["hora"]+":"+form["minuto"]}</span>. Para ir adelantado el tema del contrato te hare llegar un correo con un listado de los datos que requerimos para incluirlos en este, también le enviare un machote del contrato para que puedas leerlo y en caso de tener dudas o comentarios pueda asesorarte.</div>
+                        :''
+                    :''
                 }
             <Form>
                 <div className="row">
