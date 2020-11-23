@@ -17,9 +17,9 @@ class LeadLlamadaCierre extends Component {
         form: {
             si_reviso_cotizacion: '',
             no_reviso_cotizacion: '',
-            fecha: new Date(),
-            hora: '08',
-            minuto: '00',
+            fecha: '',
+            hora: '',
+            minuto: '',
             con_duda_cotizacion: '',
             sin_duda_cotizacion: '',
 
@@ -43,9 +43,10 @@ class LeadLlamadaCierre extends Component {
             origenes: []
         },
         formeditado: 0,
-        modal: false
+        modal: false,
+        cierre:true
     }
-
+    
     componentDidMount() {
         const { location: { state } } = this.props
         if (state) {
@@ -70,30 +71,67 @@ class LeadLlamadaCierre extends Component {
 
     onChange = e => {
         const { name, value, checked, type } = e.target
-        const { form, } = this.state
-        form[name] = value
+        let { form,modal } = this.state
+        form[name] = value 
         if (type === 'radio')
+        {    
+            if(name==="si_reviso_cotizacion")
+            {
+                modal=false
+                form["no_reviso_cotizacion"] = false
+            }
+            else if(name==="no_reviso_cotizacion"){
+                modal=true
+                form["si_reviso_cotizacion"] = false
+            }
+
+            if(name==="sin_duda_cotizacion")
+            {
+                form["con_duda_cotizacion"] = false
+            }
+            else if(name==="con_duda_cotizacion"){
+                form["sin_duda_cotizacion"] = false
+            } 
             form[name] = checked
-        this.setState({
+        }
+        this.setState({ 
             ...this.state,
-            form,
+            form,  
+            modal,
             messages: this.updateMessages2(name, value),
             tipo: name
         })
     }
-    showModal = () => {
-        this.setState({ modal: true });
+
+    cambiarFecha = (e) => {
+        
+        let {form,cierre}=this.state  
+        let value = e.target.value 
+        let name = e.target.name
+        form[name]=value
+
+        if(form["hora"]!=""&& form["minuto"]!=""&&  form["fecha"]!="")
+        {
+            cierre=false
+        }
+        this.setState({
+            cierre,
+            form
+        })
     };
 
     hideModal = () => {
-        this.setState({ modal: false });
+        const {modal}=this.state  
+        this.setState({ 
+            modal: false,
+        });
     };
 
     updateMessages2 = (name, value) => {
-        const { form, lead } = this.state
+        const { form, lead} = this.state 
         switch (name) {
-            case 'no_reviso_cotizacion':
-                return <Modal title='Agenda una nueva llamada.' show={this.showModal} handleClose={this.hideModal}><AgendaLlamada form={form} onChange={this.onChange} lead={lead} cierre={true} /> </Modal>;
+            case 'no_reviso_cotizacion': 
+                return <></> ;
                 break;
             case 'si_reviso_cotizacion':
                 if (lead.empresa.name === 'INFRAESTRUCTURA MÉDICA') {
@@ -170,10 +208,13 @@ class LeadLlamadaCierre extends Component {
     }
 
     render() {
-        const { messages, form, options, lead } = this.state
-        console.log(lead)
+        const { messages, form, options, lead,modal,cierre } = this.state 
         return (
+            
             <Layout active='leads' {...this.props} >
+                    <Modal title='Agenda una nueva llamada.' show={modal} handleClose={this.hideModal}>
+                        <AgendaLlamada form={form} onChange={this.cambiarFecha} lead={lead} cierre={cierre} />
+                    </Modal>
                 <div className="card-custom card-stretch gutter-b py-2 card">
                     <div className="align-items-center border-0 card-header">
                         <h3 className="card-title align-items-start flex-column">
@@ -276,7 +317,7 @@ class LeadLlamadaCierre extends Component {
                                     :''
                                 }
                             </div>
-
+                           
                             {/* {
                                 form.telefono ?
                                     <div className="card-footer py-3 pr-1 text-right">
