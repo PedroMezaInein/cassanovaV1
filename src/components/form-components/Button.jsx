@@ -31,9 +31,9 @@ export default class button extends Component {
                         </OverlayTrigger>
                         :
                         <Button type={type} onClick={onClick} className={className} {...props}>
-                            {
+                            {/* {
                                 <i className={only_icon}></i>
-                            }
+                            } */}
                             {
                                 icon !== undefined && icon !== '' ?
                                     <FontAwesomeIcon icon={icon} />
