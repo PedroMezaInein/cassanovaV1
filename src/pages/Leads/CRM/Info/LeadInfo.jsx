@@ -1,7 +1,7 @@
 import { connect } from 'react-redux';
 import React, { Component } from 'react'
 import Layout from '../../../../components/layout/layout'
-import { Col, Row, Card, Tab, Nav, Dropdown, Form, OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { Col, Row, Card, Tab, Nav, Dropdown, Form } from 'react-bootstrap'
 import { Button, InputGray, InputPhoneGray } from '../../../../components/form-components';
 import { TEL, URL_DEV, EMAIL } from '../../../../constants'
 import SVG from "react-inlinesvg";
@@ -134,7 +134,7 @@ class LeadInfo extends Component {
             fase2:true,
             renders:''
         },
-        tipo: '',
+        // tipo: '',
         options: {
             empresas: [],
             tipos: [],
@@ -1022,7 +1022,7 @@ class LeadInfo extends Component {
     }
 
     render() {
-        const { lead, form, formHistorial, options, formAgenda, formDiseño, modal, tipo } = this.state
+        const { lead, form, formHistorial, options, formAgenda, formDiseño, modal } = this.state
         return (
             <Layout active={'leads'}  {...this.props} botonHeader = { this.botonHeader } >
                 <Tab.Container defaultActiveKey="1" className="p-5">

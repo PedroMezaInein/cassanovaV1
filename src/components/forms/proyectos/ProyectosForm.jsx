@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
-import { Input, SelectSearch, Button, RangeCalendar, InputNumber, InputPhone, SelectSearchTrue, TagSelectSearch } from '../../form-components'
+import { Input, SelectSearch, Button, RangeCalendar, InputNumber, InputPhone, TagSelectSearch } from '../../form-components'
 import { faPlus} from '@fortawesome/free-solid-svg-icons'
 import { TEL, EMAIL } from '../../../constants'
 import { openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
@@ -46,7 +46,7 @@ class ProyectosForm extends Component {
     //     onChange({ target: { name: 'fechaFin', value: date } })
     // }
     nuevoUpdateCliente = seleccionados =>{
-        const { onChange, options, onChangeOptions, form,deleteOption } = this.props
+        const { form,deleteOption } = this.props
         seleccionados = seleccionados?seleccionados:[];
         if(seleccionados.length>form.clientes.length){
             let diferencia = $(seleccionados).not(form.clientes).get();

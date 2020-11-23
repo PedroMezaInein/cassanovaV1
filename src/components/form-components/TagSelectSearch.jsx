@@ -1,9 +1,8 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
-
 class TagSelectSearch extends Component {
     render() {
-        const { options, placeholder, tags, onChange,iconclass,defaultvalue } = this.props
+        const { options, placeholder, onChange,defaultvalue } = this.props
         return (
             <div >
                 <label className="col-form-label">{placeholder}</label>
