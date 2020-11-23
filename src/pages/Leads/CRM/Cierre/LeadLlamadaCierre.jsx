@@ -290,6 +290,19 @@ class LeadLlamadaCierre extends Component {
         show_hora = hora + validacion_min + validacion_hora
         return show_hora;
     }
+
+    tagInputChange = (nuevoTipos) => {
+        const uppercased = nuevoTipos.map(tipo => tipo.toUpperCase()); 
+        const { form } = this.state 
+        let unico = {};
+        uppercased.forEach(function (i) {
+            if (!unico[i]) { unico[i] = true }
+        })
+        form.correos = uppercased ? Object.keys(unico) : [];
+        this.setState({
+            form
+        })
+    }
     render() {
         const { messages, form, lead, modal_reviso, modal_duda, cierre_reviso, cita_reviso, cierre_cita, cita_contrato } = this.state
         return (
@@ -310,6 +323,7 @@ class LeadLlamadaCierre extends Component {
                         lead={lead}
                         cierre_cita={cierre_cita}
                         cita_contrato={cita_contrato}
+                        tagInputChange={(e) => this.tagInputChange(e)}
                     />
                 </Modal>
                 <div className="card-custom card-stretch gutter-b py-2 card">

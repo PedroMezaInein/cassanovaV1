@@ -1,11 +1,11 @@
 import React, { Component } from 'react'
-import { CalendarDay, Button, InputGray} from '../../form-components'
+import { CalendarDay, Button, InputGray, TagInputGray} from '../../form-components'
 import { Col, Form } from 'react-bootstrap'
 import { EMAIL } from '../../../constants'
 import { faPlus } from '@fortawesome/free-solid-svg-icons'
 class AgendaLlamadaUbicacion extends Component {
     render() {
-        const { form, onChange, onSubmit, lead, cierre_cita, cita_contrato, removeCorreo} = this.props
+        const { form, onChange, onSubmit, lead, cierre_cita, cita_contrato, removeCorreo, tagInputChange} = this.props
         let fecha = new Date(form["fecha"])
         let dia = fecha.getDate()
         let numMes = fecha.getMonth()+1
@@ -139,7 +139,13 @@ class AgendaLlamadaUbicacion extends Component {
                                 />
                             </div>
                             <div className="col-md-10 text-left">
-                                <InputGray
+                                <TagInputGray
+                                    tags={form.correos} 
+                                    onChange={tagInputChange} 
+                                    placeholder="CORREOS DE ASISTENTES"
+                                    iconclass={"fas fa-envelope"}
+                                />
+                                {/* <InputGray
                                     letterCase = { false }
                                     withtaglabel = { 1 }
                                     withtextlabel = { 1 }
@@ -151,13 +157,13 @@ class AgendaLlamadaUbicacion extends Component {
                                     value = { form.correo }
                                     onChange = { onChange }
                                     patterns = { EMAIL }
-                                />
+                                /> */}
                             </div>
-                            <div className="col-md-2 mt-3 d-flex justify-content-center align-items-center">
+                            {/* <div className="col-md-2 mt-3 d-flex justify-content-center align-items-center">
                                 <Button icon={faPlus} pulse={"pulse-ring"} className={"btn btn-icon btn-light-gray pulse pulse-dark mr-5"} onClick={(e) => { e.preventDefault(); this.addCorreo() }} />
-                            </div>
+                            </div> */}
                         </div>
-                        <div>
+                        {/* <div>
                             <div className="form-group row form-group-marginless">
                                 <div className="col-md-12 row mx-0">
                                     {
@@ -181,7 +187,7 @@ class AgendaLlamadaUbicacion extends Component {
                                     }
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
                     </Col>
                 </div>
                 <div className="card-footer pt-3 pr-1 pb-0">
