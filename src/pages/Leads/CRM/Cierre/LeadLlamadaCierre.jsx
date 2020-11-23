@@ -5,13 +5,10 @@ import { Form } from 'react-bootstrap';
 import { InputGray, Button } from '../../../../components/form-components';
 import axios from 'axios'
 import { doneAlert, errorAlert, forbiddenAccessAlert, validateAlert, waitAlert } from '../../../../functions/alert';
-import swal from 'sweetalert';
-import { setOptions } from '../../../../functions/setters';
 import { URL_DEV } from '../../../../constants';
 import { Modal } from '../../../../components/singles'
-import { AgendaLlamada } from '../../../../components/forms'
+import { AgendaLlamada, AgendaLlamadaUbicacion} from '../../../../components/forms'
 class LeadLlamadaCierre extends Component {
-
     state = {
         presupuesto: {},
         messages: [],
@@ -23,46 +20,41 @@ class LeadLlamadaCierre extends Component {
             minuto: '',
             con_cita: '',
             sin_cita: '',
+            comentario: '',
+            si_agendar_llamada: '',
+            no_agendar_llamada: '',
+            correos:[],
 
             name: '',
             empresa: '',
-            comentario: '',
-            origen: '',
-            telefono: '',
-
         },
         tipo: '',
-        options: {
-            empresas: [],
-            tipos: [],
-            origenes: []
-        },
         formeditado: 0,
         modal_reviso: false,
         modal_duda: false,
         cierre_reviso: true,
-        cita_reviso:false,
+        cita_reviso: false,
         cierre_cita: true,
-        cita_contrato:false
+        cita_contrato: false
     }
 
     componentDidMount() {
         const { location: { state } } = this.props
         if (state) {
             if (state.lead) {
-                const { form, options } = this.state
+                const { form } = this.state
                 const { lead } = state
                 let pdfObject = {};
-                if(lead.presupuesto_diseño){
-                    if(lead.presupuesto_diseño.pdfs){
-                        if(lead.presupuesto_diseño.pdfs.length){
-                            lead.presupuesto_diseño.pdfs.map((pdf, key)=>{
-                                if(pdf.pivot.fecha_envio){
-                                    if(Object.keys(pdfObject).length > 0){
-                                        if(pdf.pivot.fecha_envio > pdfObject.pivot.fecha_envio){
+                if (lead.presupuesto_diseño) {
+                    if (lead.presupuesto_diseño.pdfs) {
+                        if (lead.presupuesto_diseño.pdfs.length) {
+                            lead.presupuesto_diseño.pdfs.map((pdf, key) => {
+                                if (pdf.pivot.fecha_envio) {
+                                    if (Object.keys(pdfObject).length > 0) {
+                                        if (pdf.pivot.fecha_envio > pdfObject.pivot.fecha_envio) {
                                             pdfObject = pdf
                                         }
-                                    }else{
+                                    } else {
                                         pdfObject = pdf
                                     }
                                 }
@@ -70,20 +62,15 @@ class LeadLlamadaCierre extends Component {
                         }
                     }
                 }
-                console.log(pdfObject, 'pdfObject')
-                // form.name = lead.nombre === 'SIN ESPECIFICAR' ? '' : lead.nombre.toUpperCase()
-                // form.telefono = lead.telefono
                 this.setState({
                     ...this.state,
                     lead: lead,
                     form,
                     formeditado: 1,
-                    options,
                     presupuesto: pdfObject
                 })
             }
         }
-        // this.getOptionsAxios()
     }
 
     onChange = e => {
@@ -92,13 +79,21 @@ class LeadLlamadaCierre extends Component {
         form[name] = value
         if (type === 'radio') {
             if (name === "si_reviso_cotizacion") {
-                modal_reviso = false
                 form["no_reviso_cotizacion"] = false
             }
             else if (name === "no_reviso_cotizacion") {
-                modal_reviso = true
                 form["si_reviso_cotizacion"] = false
             }
+
+            if (name === "si_agendar_llamada") {
+                modal_reviso = true
+                form["no_agendar_llamada"] = false
+            }
+            else if (name === "no_agendar_llamada") {
+                modal_reviso = false
+                form["si_agendar_llamada"] = false
+            }
+
             if (name === "sin_cita") {
                 modal_duda = false
                 form["con_cita"] = false
@@ -120,7 +115,7 @@ class LeadLlamadaCierre extends Component {
     }
 
     onChangeReviso = (e) => {
-        let { form, cierre_reviso, cita_reviso} = this.state
+        let { form, cierre_reviso, cita_reviso } = this.state
         let value = e.target.value
         let name = e.target.name
         form[name] = value
@@ -142,7 +137,7 @@ class LeadLlamadaCierre extends Component {
         form[name] = value
         if (form["hora"] !== "" && form["minuto"] !== "" && form["fecha"] !== "") {
             cierre_cita = false
-            cita_contrato =true
+            cita_contrato = true
         }
         this.setState({
             cierre_cita,
@@ -150,7 +145,7 @@ class LeadLlamadaCierre extends Component {
             form
         })
     };
-    
+
 
     hideModalReviso = () => {
         this.setState({
@@ -167,6 +162,20 @@ class LeadLlamadaCierre extends Component {
     updateMessages2 = (name, value) => {
         const { lead } = this.state
         switch (name) {
+            case 'no_reviso_cotizacion':
+                if (lead.empresa.name === 'INFRAESTRUCTURA MÉDICA') {
+                    return <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify my-4">Me imagino que ha estado ocupado. <span className="font-weight-boldest">¿Le parece bien si agendamos una llamada para poder hablar sobre la cotización?</span></div>;
+                } else if (lead.empresa.name === 'INEIN') {
+                    return <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify my-4">Me imagino que ha estado ocupado. <span className="font-weight-boldest">¿Te parece bien si agendamos una llamada para poder hablar sobre la cotización?</span></div>;
+                }
+                break;
+            case 'no_agendar_llamada':
+                if (lead.empresa.name === 'INFRAESTRUCTURA MÉDICA') {
+                    return <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify my-4">Ok <span className="font-weight-boldest">{lead.nombre.split(" ", 1)}</span>, quedo en espera de su respuesta y atenta a cualquier duda que pudiera tener con respecto a lo enviado. Que tenga excelente día. </div>;
+                } else if (lead.empresa.name === 'INEIN') {
+                    return <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify my-4">Ok <span className="font-weight-boldest">{lead.nombre.split(" ", 1)}</span>, quedo en espera de tu respuesta y atenta a cualquier duda que pudieras tener con respecto a lo enviado. Que tengas excelente día.</div>;
+                }
+                break;
             case 'si_reviso_cotizacion':
                 if (lead.empresa.name === 'INFRAESTRUCTURA MÉDICA') {
                     return <> <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Me encanta que haya tomado el tiempo de revisar la cotización, espero que haya sido de su agrado. <span className="font-weight-boldest"><em>¿Le ha surgido una duda con respecto al contenido enviado?</em></span></div><div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">...</div><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify"><span className="font-weight-boldest"><em>¿Puedo contar con su visto bueno para programar la firma de contrato y comenzar el diseño?</em></span></div></>;
@@ -174,53 +183,18 @@ class LeadLlamadaCierre extends Component {
                     return <><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Me encanta que tomaste el tiempo de revisar la cotización, espero que haya sido de tu agrado. <span className="font-weight-boldest"><em>¿Tienes alguna duda con respecto al contenido enviado?</em></span></div><div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">...</div><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify"><span className="font-weight-boldest"><em>¿Puedo contar con tu visto bueno para programar la firma de contrato y comenzar el diseño?</em></span></div></>;
                 }
                 break;
-            // case 'sin_cita':
-            //     if (lead.empresa.name === 'INFRAESTRUCTURA MÉDICA') {
-            //         return <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">¡Excelente! Ahora el siguiente paso es que nos brindes tu visto bueno y me compartas tus datos,para programar la firma del contrato y comenzar el diseño.<span className="font-weight-boldest"><em> ¿Podemos programar la firma el día de mañana en el horario que mejor se acomode a tu agenda?</em></span></div>;
-            //     } else if (lead.empresa.name === 'INEIN') {
-            //         return <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">¡Excelente! Ahora el siguiente paso es que nos brinde su visto bueno y me comparta sus datos, para programar la firma del contrato y comenzar el diseño.<span className="font-weight-boldest"><em> ¿Podemos programar la firma el día de mañana en el horario que mejor se acomode a su agenda?</em></span></div>;
-            //     }
-            //     break;
-            // case 'sin_cita':
-            //     if (lead.empresa.name === 'INFRAESTRUCTURA MÉDICA') {
-            //         return <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">¡Excelente! Ahora el siguiente paso es que nos brinde su visto bueno y me comparta sus datos, para programar la firma del contrato y comenzar el diseño.<span className="font-weight-boldest"><em> ¿Podemos programar la firma el día de mañana en el horario que mejor se acomode a su agenda?</em></span></div>;
-            //     } else if (lead.empresa.name === 'INEIN') {
-            //         return <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Me encanta que tomaste el tiempo de revisar la cotización, espero que haya sido de tu agrado. <span className="font-weight-boldest"><em>¿Tienes alguna duda con respecto al contenido enviado?</em></span></div>;
-            //     }
-            //     break;
+            case 'sin_cita':
+                if (lead.empresa.name === 'INFRAESTRUCTURA MÉDICA') {
+                    return <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify my-4">Ok <span className="font-weight-boldest">{lead.nombre.split(" ", 1)}</span>, el área de proyectos analizará sus cambios, en cuanto tenga respuesta me estaré comunicando con usted. Quedo atenta a cualquier duda que pudiera tener. Que tenga excelente día.</div>;
+                } else if (lead.empresa.name === 'INEIN') {
+                    return <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify my-4">Ok <span className="font-weight-boldest">{lead.nombre.split(" ", 1)}</span>, el área de proyectos analizará tus cambios, en cuanto tenga respuesta me estaré comunicando contigo. Quedo atenta a cualquier duda que pudieras tener. Que tengas excelente día.</div>;
+                }
+                break;
             default:
                 return <></>
                 break;
         }
     }
-
-    // async getOptionsAxios() {
-    //     waitAlert()
-    //     const { access_token } = this.props.authUser
-    //     await axios.get(URL_DEV + 'crm/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
-    //         (response) => {
-    //             swal.close()
-    //             const { empresas, origenes } = response.data
-    //             const { options } = this.state
-    //             options['empresas'] = setOptions(empresas, 'name', 'id')
-    //             options['origenes'] = setOptions(origenes, 'origen', 'id')
-    //             this.setState({
-    //                 ...this.state,
-    //                 options
-    //             })
-    //         },
-    //         (error) => {
-    //             console.log(error, 'error')
-    //             if (error.response.status === 401)
-    //                 forbiddenAccessAlert();
-    //             else
-    //                 errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-    //         }
-    //     ).catch((error) => {
-    //         errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-    //         console.log(error, 'error')
-    //     })
-    // }
 
     onSubmit = async (e) => {
         waitAlert();
@@ -232,7 +206,6 @@ class LeadLlamadaCierre extends Component {
                 const { history } = this.props
                 history.push({
                     pathname: '/leads/crm',
-                    // state: { tipo: 'lead-telefono' }
                 });
             },
             (error) => {
@@ -247,17 +220,85 @@ class LeadLlamadaCierre extends Component {
             console.log(error, 'error')
         })
     }
+    presupuesto_fecha() {
+        let { presupuesto } = this.state
+        let show_fecha = ""
+        let hoy = new Date().getDate();
+        let fecha_presupuesto = new Date(presupuesto.pivot.fecha_envio)
 
+        let dia_presupuesto = fecha_presupuesto.getDate()
+
+        let numMes = fecha_presupuesto.getMonth() + 1
+        let mes = ""
+        switch (numMes) {
+            case 1:
+                mes = "Enero";
+                break;
+            case 2:
+                mes = "Febrero";
+                break;
+            case 3:
+                mes = "Marzo";
+                break;
+            case 4:
+                mes = "Abril";
+                break;
+            case 5:
+                mes = "Mayo";
+                break;
+            case 6:
+                mes = "Junio";
+                break;
+            case 7:
+                mes = "Julio";
+                break;
+            case 8:
+                mes = "Agosto";
+                break;
+            case 9:
+                mes = "Septiembre";
+                break;
+            case 10:
+                mes = "Octubre";
+                break;
+            case 11:
+                mes = "Noviembre";
+                break;
+            case 12:
+                mes = "Diciembre";
+                break;
+        }
+        if (hoy === dia_presupuesto) {
+            show_fecha = "EL DÍA DE HOY"
+        } else if (hoy - 1 === dia_presupuesto) {
+            show_fecha = "EL DÍA DE AYER"
+        } else {
+            show_fecha = 'EL DÍA ' + dia_presupuesto + ' DE ' + mes
+        }
+        return show_fecha;
+    }
+    presupuesto_hora() {
+        let { presupuesto } = this.state
+        let show_hora = ""
+        let fecha_presupuesto = new Date(presupuesto.pivot.fecha_envio)
+        let hora = fecha_presupuesto.getHours();
+        let minuto = fecha_presupuesto.getMinutes();
+
+        let validacion_min = minuto < 10 ? ':0' + minuto : ':' + minuto
+        let validacion_hora = hora < 11 ? ' de la mañana' : ' de la tarde'
+
+        show_hora = hora + validacion_min + validacion_hora
+        return show_hora;
+    }
     render() {
         const { messages, form, lead, modal_reviso, modal_duda, cierre_reviso, cita_reviso, cierre_cita, cita_contrato } = this.state
         return (
-
             <Layout active='leads' {...this.props} >
                 <Modal title='Agenda una nueva llamada.' show={modal_reviso} handleClose={this.hideModalReviso}>
                     <AgendaLlamada form={form} onChange={this.onChangeReviso} lead={lead} cierre_reviso={cierre_reviso} cita_reviso={cita_reviso} />
                 </Modal>
-                <Modal title='Agendar firma de contrato' show={modal_duda} handleClose={this.hideModalDuda}>
-                    <AgendaLlamada form={form} onChange={this.onChangeDuda} lead={lead} cierre_cita={cierre_cita} cita_contrato={cita_contrato}/>
+                <Modal size="lg" title='Agendar firma de contrato' show={modal_duda} handleClose={this.hideModalDuda}>
+                    <AgendaLlamadaUbicacion form={form} onChange={this.onChangeDuda} lead={lead} cierre_cita={cierre_cita} cita_contrato={cita_contrato} />
                 </Modal>
                 <div className="card-custom card-stretch gutter-b py-2 card">
                     <div className="align-items-center border-0 card-header">
@@ -265,14 +306,14 @@ class LeadLlamadaCierre extends Component {
                             <span className="font-weight-bolder text-dark">Formulario de cierre de venta</span>
                         </h3>
                     </div>
-                    <div className="card-body pt-0">
+                    <div className="card-body pt-0 pb-3">
                         {
                             messages.length === 0 ?
                                 lead !== undefined ?
                                     lead.empresa.name === 'INFRAESTRUCTURA MÉDICA' ?
-                                        <><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Buen día <span className="font-weight-boldest">{lead.nombre.split(" ", 1)}</span>. <span className="font-weight-boldest"><em>¿Cómo ha estado?</em></span></div><div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Bien, gracias <span className="font-weight-boldest"><em>¿Y tu?</em></span></div><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Únicamente me comunico con usted para comentarle que el día de ayer le envié la cotización para su proyecto. <span className="font-weight-boldest"><em>¿Tuvo la oportunidad de revisarla?</em></span> La envié a su correo a las <span className="font-weight-boldest">15:30 hrs</span></div> </>
+                                        <><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Buen día <span className="font-weight-boldest">{lead.nombre.split(" ", 1)}</span>. <span className="font-weight-boldest"><em>¿Cómo ha estado?</em></span></div><div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Bien, gracias <span className="font-weight-boldest"><em>¿Y tu?</em></span></div><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Únicamente me comunico con usted para comentarle que <span className="font-weight-boldest">{this.presupuesto_fecha()}</span> le envié la cotización para su proyecto. <span className="font-weight-boldest"><em>¿Tuvo la oportunidad de revisarla?</em></span> La envié a su correo a las <span className="font-weight-boldest">{this.presupuesto_hora()}</span></div> </>
                                         : lead.empresa.name === 'INEIN' ?
-                                            <><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Buen día <span className="font-weight-boldest">{lead.nombre.split(" ", 1)}</span>. <span className="font-weight-boldest"><em>¿Cómo has estado?</em></span></div><div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Únicamente me comunico para comentarte que el día de ayer envié a tu correo la cotización para del proyecto. <span className="font-weight-boldest"><em>¿Tuviste la oportunidad de revisarla?</em></span> La envié a su correo a las <span className="font-weight-boldest">15:30 hrs</span></div> </>
+                                            <><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Buen día <span className="font-weight-boldest">{lead.nombre.split(" ", 1)}</span>. <span className="font-weight-boldest"><em>¿Cómo has estado?</em></span></div><div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Únicamente me comunico para comentarte que <span className="font-weight-boldest">{this.presupuesto_fecha()}</span> a tu correo la cotización para del proyecto. <span className="font-weight-boldest"><em>¿Tuviste la oportunidad de revisarla?</em></span> La envié a su correo a las <span className="font-weight-boldest">{this.presupuesto_hora()}</span></div> </>
                                             : ''
                                     : ''
                                 : messages
@@ -285,7 +326,7 @@ class LeadLlamadaCierre extends Component {
                                 }
                             }
                             {...this.props}>
-                            <div className="form-group row form-group-marginless mt-4 mb-0">
+                            <div className="form-group row form-group-marginless my-4">
                                 <div className="col-md-4 d-flex align-items-center">
                                     <div className="col-md-12">
                                         <div className="row">
@@ -322,12 +363,51 @@ class LeadLlamadaCierre extends Component {
                                     </div>
                                 </div>
                                 {
-                                    form.si_reviso_cotizacion || form.no_reviso_cotizacion !== '' ?
+                                    form.no_reviso_cotizacion !== '' ?
                                         <div className="col-md-4 d-flex align-items-center">
                                             <div className="col-md-12">
                                                 <div className="row">
                                                     <div className="col-md-7 px-0">
-                                                        <label className='col-form-label font-weight-bold text-dark-60'>¿Se programa firma de contrato?</label>
+                                                        <label className='col-form-label font-weight-bold text-dark-60'>¿Agendar llamada?</label>
+                                                    </div>
+                                                    <div className="col-md-5 px-0">
+                                                        <div className="radio-inline mt-2">
+                                                            <label className="radio radio-outline radio-outline-2x radio-dark-60 text-dark-50 font-weight-bold mr-3">
+                                                                <input
+                                                                    type="radio"
+                                                                    name='si_agendar_llamada'
+                                                                    value={form.si_agendar_llamada}
+                                                                    onChange={(e) => this.onChange(e)}
+                                                                    checked={form.si_agendar_llamada}
+                                                                />
+                                                                    Si
+                                                                    <span></span>
+                                                            </label>
+                                                            <label className="radio radio-outline radio-outline-2x radio-dark-60 text-dark-50 font-weight-bold">
+                                                                <input
+                                                                    type="radio"
+                                                                    name='no_agendar_llamada'
+                                                                    value={form.no_agendar_llamada}
+                                                                    onChange={(e) => this.onChange(e)}
+                                                                    checked={form.no_agendar_llamada}
+                                                                />
+                                                                    No
+                                                                    <span></span>
+                                                            </label>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        : ''
+                                }
+                                {
+                                    form.si_reviso_cotizacion !== '' ?
+                                        <div className="col-md-4 d-flex align-items-center">
+                                            <div className="col-md-12">
+                                                <div className="row">
+                                                    <div className="col-md-7 px-0">
+                                                        <label className='col-form-label font-weight-bold text-dark-60'>¿Se da visto bueno para firma de contrato?</label>
                                                     </div>
                                                     <div className="col-md-5 px-0">
                                                         <div className="radio-inline mt-2">
@@ -361,7 +441,7 @@ class LeadLlamadaCierre extends Component {
                                         : ''
                                 }
                                 {
-                                    form.sin_cita?
+                                    form.sin_cita ?
                                         <div className="col-md-12">
                                             <InputGray
                                                 withtaglabel={1}
@@ -376,12 +456,12 @@ class LeadLlamadaCierre extends Component {
                                                 as='textarea'
                                             />
                                         </div>
-                                    :''
+                                        : ''
                                 }
                             </div>
-                            {/* {
-                                form.sin_cita?
-                                    <div className="card-footer py-3 pr-1 text-right">
+                            {
+                                form.no_agendar_llamada || form.sin_cita ?
+                                    <div className="card-footer pt-3 pb-0 pr-1 text-right">
                                         <Button text='ENVIAR' type='submit' className="btn btn-primary mr-2" icon=''
                                             onClick={
                                                 (e) => {
@@ -391,7 +471,7 @@ class LeadLlamadaCierre extends Component {
                                             } />
                                     </div>
                                     : ''
-                            } */}
+                            }
                         </Form>
                     </div>
                 </div>
