@@ -1251,15 +1251,6 @@ class LeadInfo extends Component {
                                             <h3 className="card-title d-flex justify-content-between">
                                                 <span className="font-weight-bolder text-dark align-self-center">Historial de contacto</span>
                                                 <div>
-                                                    {/* <div className="btn btn-icon btn-light w-auto btn-clean d-inline-flex align-items-center btn-icon px-2 mr-2" style={{height:"30px"}}
-                                                        onClick={() => { waitAlert(); this.solicitarFechaCita() }} >
-                                                        <span className="text-dark-50 font-weight-bolder font-size-base mr-3">Solicitar cita</span>
-                                                            <span className="symbol symbol-25 bg-light-gray">
-                                                                <span className="symbol-label font-size-h5 font-weight-bold ">
-                                                                    <i className="far fa-calendar-check text-gray icon-md"></i>
-                                                                </span>
-                                                        </span>
-                                                    </div> */}
                                                     <Button
                                                         icon=''
                                                         className={"btn btn-icon btn-xs p-3 btn-light-success mr-2"}
@@ -1277,7 +1268,8 @@ class LeadInfo extends Component {
                                                     <Button
                                                         icon=''
                                                         className={"btn btn-icon btn-xs w-auto p-3 btn-light-gray"}
-                                                        onClick={() => { waitAlert(); this.solicitarFechaCita() }}
+                                                        // onClick={() => { waitAlert(); this.solicitarFechaCita() }}
+                                                        onClick={(e) => { questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.solicitarFechaCita())}}
                                                         only_icon={"far fa-calendar-check icon-15px mr-2"}
                                                         text='SOLICITAR CITA'
                                                         tooltip={{ text: 'SOLICITAR CITA' }}
