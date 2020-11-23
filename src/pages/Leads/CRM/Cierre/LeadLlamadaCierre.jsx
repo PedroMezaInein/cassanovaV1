@@ -295,10 +295,22 @@ class LeadLlamadaCierre extends Component {
         return (
             <Layout active='leads' {...this.props} >
                 <Modal title='Agenda una nueva llamada.' show={modal_reviso} handleClose={this.hideModalReviso}>
-                    <AgendaLlamada form={form} onChange={this.onChangeReviso} lead={lead} cierre_reviso={cierre_reviso} cita_reviso={cita_reviso} />
+                    <AgendaLlamada 
+                        form={form}
+                        onChange={this.onChangeReviso}
+                        lead={lead}
+                        cierre_reviso={cierre_reviso}
+                        cita_reviso={cita_reviso}
+                    />
                 </Modal>
                 <Modal size="lg" title='Agendar firma de contrato' show={modal_duda} handleClose={this.hideModalDuda}>
-                    <AgendaLlamadaUbicacion form={form} onChange={this.onChangeDuda} lead={lead} cierre_cita={cierre_cita} cita_contrato={cita_contrato} />
+                    <AgendaLlamadaUbicacion
+                        form={form}
+                        onChange={this.onChangeDuda}
+                        lead={lead}
+                        cierre_cita={cierre_cita}
+                        cita_contrato={cita_contrato}
+                    />
                 </Modal>
                 <div className="card-custom card-stretch gutter-b py-2 card">
                     <div className="align-items-center border-0 card-header">
@@ -363,7 +375,7 @@ class LeadLlamadaCierre extends Component {
                                     </div>
                                 </div>
                                 {
-                                    form.no_reviso_cotizacion !== '' ?
+                                    form.no_reviso_cotizacion ?
                                         <div className="col-md-4 d-flex align-items-center">
                                             <div className="col-md-12">
                                                 <div className="row">
@@ -402,7 +414,7 @@ class LeadLlamadaCierre extends Component {
                                         : ''
                                 }
                                 {
-                                    form.si_reviso_cotizacion !== '' ?
+                                    form.si_reviso_cotizacion ?
                                         <div className="col-md-4 d-flex align-items-center">
                                             <div className="col-md-12">
                                                 <div className="row">
@@ -441,7 +453,7 @@ class LeadLlamadaCierre extends Component {
                                         : ''
                                 }
                                 {
-                                    form.sin_cita ?
+                                    form.no_agendar_llamada || form.sin_cita ?
                                         <div className="col-md-12">
                                             <InputGray
                                                 withtaglabel={1}
