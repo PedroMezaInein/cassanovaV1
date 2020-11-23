@@ -387,7 +387,7 @@ class MiProyecto extends Component {
         await axios.get(URL_DEV + 'proyectos/mi-proyecto', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { proyectos, partidas, tiposTrabajo } = response.data
-                const { data, options, id, form } = this.state
+                const { data, options, id } = this.state
                 let { proyecto, tickets } = this.state
                 options.proyectos = setOptions(proyectos, 'nombre', 'id')
                 options.partidas = setOptions(partidas, 'nombre', 'id')
