@@ -13,6 +13,7 @@ import { AgendaLlamada } from '../../../../components/forms'
 class LeadLlamadaCierre extends Component {
 
     state = {
+        presupuesto: {},
         messages: [],
         form: {
             si_reviso_cotizacion: '',
@@ -53,6 +54,25 @@ class LeadLlamadaCierre extends Component {
             if (state.lead) {
                 const { form, options } = this.state
                 const { lead } = state
+                let pdfObject = {};
+                if(lead.presupuesto_diseño){
+                    if(lead.presupuesto_diseño.pdfs){
+                        if(lead.presupuesto_diseño.pdfs.length){
+                            lead.presupuesto_diseño.pdfs.map((pdf, key)=>{
+                                if(pdf.pivot.fecha_envio){
+                                    if(Object.keys(pdfObject).length > 0){
+                                        if(pdf.pivot.fecha_envio > pdfObject.pivot.fecha_envio){
+                                            pdfObject = pdf
+                                        }
+                                    }else{
+                                        pdfObject = pdf
+                                    }
+                                }
+                            })
+                        }
+                    }
+                }
+                console.log(pdfObject, 'pdfObject')
                 // form.name = lead.nombre === 'SIN ESPECIFICAR' ? '' : lead.nombre.toUpperCase()
                 // form.email = lead.email.toUpperCase()
                 // form.empresa_dirigida = lead.empresa.id.toString()
@@ -62,7 +82,8 @@ class LeadLlamadaCierre extends Component {
                     lead: lead,
                     form,
                     formeditado: 1,
-                    options
+                    options,
+                    presupuesto: pdfObject
                 })
             }
         }
