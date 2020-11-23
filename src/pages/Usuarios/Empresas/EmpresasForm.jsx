@@ -90,7 +90,7 @@ class EmpresasForm extends Component {
         uppercased.forEach(function (i) {
             if (!unico[i]) { unico[i] = true }
         })
-        form.telefono = uppercased ? Object.keys(unico) : [];
+        form.telefonos = uppercased ? Object.keys(unico) : [];
         this.setState({
             form
         })
