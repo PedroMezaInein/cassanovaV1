@@ -26,7 +26,8 @@ class EmpresasForm extends Component {
             facebook: '',
             instagram: '',
             linkedin: '',
-            pinterest: ''
+            pinterest: '',
+            pagina_web:''
         },
         data: {
             empresas: []
