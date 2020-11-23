@@ -191,7 +191,7 @@ class AgendarCitaForm extends Component {
                                     withtextlabel = { 1 }
                                     withplaceholder = { 1 }
                                     withicon = { 1 }
-                                    placeholder = "CORREO DE CONTACTO"
+                                    placeholder = "CORREOS DE ASISTENTES"
                                     iconclass = 'fas fa-envelope'
                                     name = 'correo'
                                     value = { formAgenda.correo }
@@ -230,20 +230,19 @@ class AgendarCitaForm extends Component {
                         </div>
                     </Col>
                 </div>
-                <div className='text-center pb-4'>
-                    <Button icon='' className="btn btn-primary mr-2"
-                        onClick={
-                            (e) => {
-                                e.preventDefault();
-                                onSubmit()
-                            }
-                        }
-                        text="AGENDAR" />
-                </div>
+                {/* <div className='text-center pb-4'> </div> */}
                 <div className="card-footer pt-3 pr-1 pb-0">
                     <div className="row">
                         <div className="col-lg-12 text-right pr-0 pb-0">
-
+                            <Button icon='' className="btn btn-primary mr-2"
+                                onClick={
+                                    (e) => {
+                                        e.preventDefault();
+                                        onSubmit()
+                                    }
+                                }
+                            text="AGENDAR" 
+                            />
                         </div>
                     </div>
                 </div>
