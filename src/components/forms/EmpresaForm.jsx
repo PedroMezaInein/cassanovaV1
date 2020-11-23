@@ -102,6 +102,7 @@ class EmpresaForm extends Component {
                             placeholder="PÁGINA WEB"
                             iconclass={"flaticon2-world"}
                             messageinc="Incorrecto. Ingresa la página web"
+                            letterCase = { false }
                         />
                     </div>
                 </div>
@@ -117,7 +118,8 @@ class EmpresaForm extends Component {
                             value={form.facebook}
                             placeholder="Facebook"
                             iconclass={"socicon-facebook"}
-                            messageinc="Incorrecto. Ingresa la red social"
+                            messageinc="Incorrecto. Ingresa la liga de facebook"
+                            letterCase = { false }
                         />
                     </div>
                     <div className="col-md-3">
@@ -130,7 +132,8 @@ class EmpresaForm extends Component {
                             value={form.instagram}
                             placeholder="Instagram"
                             iconclass={"socicon-instagram"}
-                            messageinc="Incorrecto. Ingresa la red social"
+                            messageinc="Incorrecto. Ingresa la liga de instagram"
+                            letterCase = { false }
                         />
                     </div>
                     <div className="col-md-3">
@@ -143,7 +146,8 @@ class EmpresaForm extends Component {
                             value={form.linkedin}
                             placeholder="Linkedin"
                             iconclass={"socicon-linkedin"}
-                            messageinc="Incorrecto. Ingresa la red social"
+                            messageinc="Incorrecto. Ingresa la liga de linkedin"
+                            letterCase = { false }
                         />
                     </div>
                     <div className="col-md-3">
@@ -156,7 +160,8 @@ class EmpresaForm extends Component {
                             value={form.pinterest}
                             placeholder="Pinterest"
                             iconclass={"socicon-pinterest"}
-                            messageinc="Incorrecto. Ingresa la red social"
+                            messageinc="Incorrecto. Ingresa la liga de pinterest"
+                            letterCase = { false }
                         />
                     </div>
                 </div>
