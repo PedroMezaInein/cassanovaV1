@@ -90,7 +90,7 @@ class EmpresasForm extends Component {
         uppercased.forEach(function (i) {
             if (!unico[i]) { unico[i] = true }
         })
-        form.telefono = uppercased ? Object.keys(unico) : [];
+        form.telefonos = uppercased ? Object.keys(unico) : [];
         this.setState({
             form
         })
@@ -127,6 +127,7 @@ class EmpresasForm extends Component {
                         form.instagram = empresa.instagram
                         form.linkedin = empresa.linkedin
                         form.pinterest = empresa.pinterest
+                        form.pagina_web = empresa.pagina_web
                         form.direccion = empresa.direccion
 
                         let aux = []
@@ -136,6 +137,14 @@ class EmpresasForm extends Component {
                         })
 
                         form.tipos = aux
+
+                        aux = []
+                        empresa.telefonos.map((telefono) => {
+                            aux.push(telefono.telefono)
+                            return false
+                        })
+
+                        form.telefonos = aux
 
                         this.setState({
                             ...this.state,

@@ -110,7 +110,7 @@ class LeadLlamadaCierre extends Component {
         let name = e.target.name
         form[name]=value
 
-        if(form["hora"]!=""&& form["minuto"]!=""&&  form["fecha"]!="")
+        if(form["hora"]!==""&& form["minuto"]!==""&&  form["fecha"]!=="")
         {
             cierre=false
         }
@@ -121,14 +121,14 @@ class LeadLlamadaCierre extends Component {
     };
 
     hideModal = () => {
-        const {modal}=this.state  
+        // const {modal}=this.state  
         this.setState({ 
             modal: false,
         });
     };
 
     updateMessages2 = (name, value) => {
-        const { form, lead} = this.state 
+        const { lead} = this.state 
         switch (name) {
             case 'no_reviso_cotizacion': 
                 return <></> ;
@@ -208,7 +208,7 @@ class LeadLlamadaCierre extends Component {
     }
 
     render() {
-        const { messages, form, options, lead,modal,cierre } = this.state 
+        const { messages, form, lead,modal,cierre } = this.state 
         return (
             
             <Layout active='leads' {...this.props} >
