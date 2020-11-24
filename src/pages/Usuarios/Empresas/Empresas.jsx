@@ -68,9 +68,15 @@ class Empresas extends Component {
                 value: '',
                 files: []
             },
-            {
+            /* {
                 placeholder: 'Cuestionario',
                 id: 'cuestionario',
+                value: '',
+                files: []
+            }, */
+            {
+                placeholder: 'Machote de contrato',
+                id: 'machote_contrato',
                 value: '',
                 files: []
             }

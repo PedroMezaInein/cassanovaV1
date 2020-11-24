@@ -16,6 +16,7 @@ import inputPhone from './InputPhone'
 import calendarDay from './CalendarDay'
 import rangeCalendar from './RangeCalendar'
 import imageUpload from './ImageUpload'
+import optionsCheckboxHeaders from './OptionsCheckboxHeaders'
 import tagInput from './TagInput'
 import tagSelectSearch from './TagSelectSearch'
 // Validado, pero sin texto de error
@@ -30,7 +31,12 @@ import selectSearchGray from './Gray/SelectSearchGray'
 import inputMoneyGray from './Gray/InputMoneyGray'
 import inputNumberGray from './Gray/InputNumberGray'
 import radioGroupGray from './Gray/RadioGroupGray'
-import optionsCheckboxHeaders from './OptionsCheckboxHeaders'
+import tagInputGray from './Gray/TagInputGray'
+
+//TIempos
+import selectMinutos from './SelectMinutos'
+import selectHoras from './SelectHoras'
+import selectHorario from './SelectHorario'
 
 export const Button = button
 export const Input = input
@@ -50,9 +56,9 @@ export const InputPhone = inputPhone
 export const CalendarDay = calendarDay
 export const RangeCalendar = rangeCalendar
 export const ImageUpload = imageUpload
+export const OptionsCheckboxHeaders = optionsCheckboxHeaders
 export const TagInput = tagInput
 export const TagSelectSearch = tagSelectSearch
-
 // Validado, pero sin texto de error
 export const InputMoneySinText = inputMoneySinText
 export const SelectSearchSinText = selectSearchSinText
@@ -65,4 +71,9 @@ export const SelectSearchGray = selectSearchGray
 export const InputMoneyGray = inputMoneyGray
 export const InputNumberGray = inputNumberGray
 export const RadioGroupGray = radioGroupGray
-export const OptionsCheckboxHeaders = optionsCheckboxHeaders
+export const TagInputGray = tagInputGray
+
+//Tiempos
+export const SelectMinutos = selectMinutos
+export const SelectHoras = selectHoras
+export const SelectHorario = selectHorario
