@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 import { CalendarDay, Button, InputGray, TagInputGray} from '../../form-components'
 import { Col, Form } from 'react-bootstrap'
-import { EMAIL } from '../../../constants'
-import { faPlus } from '@fortawesome/free-solid-svg-icons'
 class AgendaLlamadaUbicacion extends Component {
     render() {
         const { form, onChange, onSubmit, lead, cierre_cita, cita_contrato, removeCorreo, tagInputChange} = this.props
@@ -126,7 +124,7 @@ class AgendaLlamadaUbicacion extends Component {
                         <div className="form-group row form-group-marginless pb-0 mb-0">
                             <div className='col-md-12 text-left'>
                                 <InputGray
-                                    letterCase = { false }
+                                    // letterCase = { false }
                                     withtaglabel = { 1 }
                                     withtextlabel = { 1 }
                                     withplaceholder = { 1 }
@@ -138,7 +136,7 @@ class AgendaLlamadaUbicacion extends Component {
                                     onChange = { onChange }
                                 />
                             </div>
-                            <div className="col-md-10 text-left">
+                            <div className="col-md-12 text-left">
                                 <TagInputGray
                                     tags={form.correos} 
                                     onChange={tagInputChange} 
