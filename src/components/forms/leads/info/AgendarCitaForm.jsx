@@ -48,15 +48,15 @@ class AgendarCitaForm extends Component {
                                     <div className="col-md-4">
                                         <label className="col-form-label text-center font-weight-bolder">Hora de inicio</label>
                                         <div className="form-group row d-flex justify-content-center">
-                                            <SelectHorario onChange = { onChange } minuto = {{ value: formAgenda.hora_inicio, name: 'hora_inicio'}}
-                                                hora = {{ value: formAgenda.minuto_inicio, name: 'minuto_fin'}} />
+                                            <SelectHorario onChange = { onChange } hora = {{ value: formAgenda.hora_inicio, name: 'hora_inicio'}}
+                                                minuto = {{ value: formAgenda.minuto_inicio, name: 'minuto_inicio'}} />
                                         </div>
                                     </div>
                                     <div className="col-md-4">
                                         <label className="col-form-label text-center font-weight-bolder">Hora final</label>
                                         <div className="form-group row d-flex justify-content-center">
-                                            <SelectHorario onChange = { onChange } minuto = {{ value: formAgenda.hora_final, name: 'hora_final'}}
-                                                hora = {{ value: formAgenda.minuto_final, name: 'minuto_final'}} />
+                                            <SelectHorario onChange = { onChange } hora = {{ value: formAgenda.hora_final, name: 'hora_final'}}
+                                                minuto = {{ value: formAgenda.minuto_final, name: 'minuto_final'}} />
                                         </div>
                                     </div>
                                 </div>

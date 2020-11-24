@@ -72,11 +72,18 @@ class AgendaLlamadaUbicacion extends Component {
                 <div className="row">
                     <Col md="12" className="text-center">
                         <div className="d-flex justify-content-center">
-                            <div className="col-md-5">
-                                <label className="col-form-label text-center font-weight-bolder">Hora de la llamada</label>
+                            <div className="col-md-4">
+                                <label className="col-form-label text-center font-weight-bolder">Hora de inicio</label>
                                 <div className="form-group row d-flex justify-content-center">
-                                    <SelectHorario onChange = { onChange } minuto = { { value: form.minuto, name: 'minuto' }} 
-                                        hora = { { value: form.hora, name: 'hora' } } />
+                                    <SelectHorario onChange = { onChange } minuto = {{ value: form.minuto, name: 'minuto'}}
+                                        hora = {{ value: form.hora, name: 'hora'}} />
+                                </div>
+                            </div>
+                            <div className="col-md-4">
+                                <label className="col-form-label text-center font-weight-bolder">Hora final</label>
+                                <div className="form-group row d-flex justify-content-center">
+                                    <SelectHorario onChange = { onChange } minuto = {{ value: form.minuto_final, name: 'minuto_final'}}
+                                        hora = {{ value: form.hora_final, name: 'hora_final'}} />
                                 </div>
                             </div>
                         </div>
