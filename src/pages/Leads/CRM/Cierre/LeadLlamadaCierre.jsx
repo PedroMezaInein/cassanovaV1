@@ -225,7 +225,7 @@ class LeadLlamadaCierre extends Component {
             const { access_token } = this.props.authUser
             await axios.post(URL_DEV + `crm/update/lead/llamada-cierre/${lead.id}`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
                 (response) => {
-                    doneAlert(response.data.message !== undefined ? response.data.message : 'Actualizaste los permisos.',)
+                    doneAlert(response.data.message !== undefined ? response.data.message : 'Lead actualizado con éxito.',)
                     const { history } = this.props
                     history.push({
                         pathname: '/leads/crm',
