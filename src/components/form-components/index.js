@@ -33,6 +33,9 @@ import inputNumberGray from './Gray/InputNumberGray'
 import radioGroupGray from './Gray/RadioGroupGray'
 import tagInputGray from './Gray/TagInputGray'
 
+//TIempos
+import selectMinutos from './SelectMinutos'
+import selectHoras from './SelectHoras'
 
 export const Button = button
 export const Input = input
@@ -68,3 +71,7 @@ export const InputMoneyGray = inputMoneyGray
 export const InputNumberGray = inputNumberGray
 export const RadioGroupGray = radioGroupGray
 export const TagInputGray = tagInputGray
+
+//Tiempos
+export const SelectMinutos = selectMinutos
+export const SelectHoras = selectHoras

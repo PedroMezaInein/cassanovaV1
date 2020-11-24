@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
-import { CalendarDay, Button } from '../../form-components'
+import { CalendarDay, Button, SelectHoras } from '../../form-components'
 import { Col, Form } from 'react-bootstrap'
+import SelectMinutos from '../../form-components/SelectMinutos'
 class AgendaLlamada extends Component {
 
     render() {
@@ -76,42 +77,13 @@ class AgendaLlamada extends Component {
                                 <label className="col-form-label text-center font-weight-bolder">Hora de la llamada</label>
                                 <div className="form-group row d-flex justify-content-center">
                                     <div className="input-daterange input-group" style={{ width: "auto" }}>
-                                        <Form.Control as="select" className="px-1 py-0" style={{ height: "27px" }} value={form.hora} onChange={onChange} name='hora'>
-                                            <option disabled selected value={0}>HH</option>
-                                            <option value={"08"}>08</option>
-                                            <option value={"09"}>09</option>
-                                            <option value={"10"}>10</option>
-                                            <option value={"11"}>11</option>
-                                            <option value={"12"}>12</option>
-                                            <option value={"13"}>13</option>
-                                            <option value={"14"}>14</option>
-                                            <option value={"15"}>15</option>
-                                            <option value={"16"}>16</option>
-                                            <option value={"17"}>17</option>
-                                            <option value={"18"}>18</option>
-                                            <option value={"19"}>19</option>
-                                            <option value={"20"}>20</option>
-                                        </Form.Control>
+                                        <SelectHoras value = { form.hora } onChange = { onChange } name = 'hora' />
                                         <div className="input-group-append">
                                             <span className="input-group-text py-0 px-2">
                                                 :
                                         </span>
                                         </div>
-                                        <Form.Control as="select" className="px-1 py-0" style={{ height: "27px" }} value={form.minuto} onChange={onChange} name='minuto'>
-                                            <option disabled selected value={0}>MM</option>
-                                            <option value={"00"}>00</option>
-                                            <option value={"05"}>05</option>
-                                            <option value={"10"}>10</option>
-                                            <option value={"15"}>15</option>
-                                            <option value={"20"}>20</option>
-                                            <option value={"25"}>25</option>
-                                            <option value={"30"}>30</option>
-                                            <option value={"35"}>35</option>
-                                            <option value={"40"}>40</option>
-                                            <option value={"45"}>45</option>
-                                            <option value={"50"}>50</option>
-                                            <option value={"55"}>55</option>
-                                        </Form.Control>
+                                        <SelectMinutos value = { form.minuto } onChange = { onChange } name = 'minuto' />
                                     </div>
                                 </div>
                             </div>
