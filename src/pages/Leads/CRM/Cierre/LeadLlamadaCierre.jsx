@@ -149,13 +149,13 @@ class LeadLlamadaCierre extends Component {
 
     hideModalReviso = () => {
         this.setState({
-            modal_reviso: false,
+            modal_reviso: true,
         });
     };
 
     hideModalDuda = () => {
         this.setState({
-            modal_duda: false,
+            modal_duda: true,
         });
     };
 
@@ -178,9 +178,9 @@ class LeadLlamadaCierre extends Component {
                 break;
             case 'si_reviso_cotizacion':
                 if (lead.empresa.name === 'INFRAESTRUCTURA MÉDICA') {
-                    return <> <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Me encanta que haya tomado el tiempo de revisar la cotización, espero que haya sido de su agrado. <span className="font-weight-boldest"><em>¿Le ha surgido una duda con respecto al contenido enviado?</em></span></div><div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">...</div><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify"><span className="font-weight-boldest"><em>¿Puedo contar con su visto bueno para programar la firma de contrato y comenzar el diseño?</em></span></div></>;
+                    return <> <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Me encanta que haya tomado el tiempo de revisar la cotización, espero que haya sido de su agrado. <span className="font-weight-boldest">¿Le ha surgido una duda con respecto al contenido enviado?</span></div><div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">...</div><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify"><span className="font-weight-boldest">¿Puedo contar con su visto bueno para programar la firma de contrato y comenzar el diseño?</span></div></>;
                 } else if (lead.empresa.name === 'INEIN') {
-                    return <><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Me encanta que tomaste el tiempo de revisar la cotización, espero que haya sido de tu agrado. <span className="font-weight-boldest"><em>¿Tienes alguna duda con respecto al contenido enviado?</em></span></div><div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">...</div><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify"><span className="font-weight-boldest"><em>¿Puedo contar con tu visto bueno para programar la firma de contrato y comenzar el diseño?</em></span></div></>;
+                    return <><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Me encanta que tomaste el tiempo de revisar la cotización, espero que haya sido de tu agrado. <span className="font-weight-boldest">¿Tienes alguna duda con respecto al contenido enviado?</span></div><div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">...</div><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify"><span className="font-weight-boldest">¿Puedo contar con tu visto bueno para programar la firma de contrato y comenzar el diseño?</span></div></>;
                 }
                 break;
             case 'sin_cita':
@@ -337,9 +337,9 @@ class LeadLlamadaCierre extends Component {
                             messages.length === 0 ?
                                 lead !== undefined ?
                                     lead.empresa.name === 'INFRAESTRUCTURA MÉDICA' ?
-                                        <><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Buen día <span className="font-weight-boldest">{lead.nombre.split(" ", 1)}</span>. <span className="font-weight-boldest"><em>¿Cómo ha estado?</em></span></div><div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Bien, gracias <span className="font-weight-boldest"><em>¿Y tu?</em></span></div><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Únicamente me comunico con usted para comentarle que <span className="font-weight-boldest">{this.presupuesto_fecha()}</span> le envié la cotización para su proyecto. <span className="font-weight-boldest"><em>¿Tuvo la oportunidad de revisarla?</em></span> La envié a su correo a las <span className="font-weight-boldest">{this.presupuesto_hora()}</span></div> </>
+                                        <><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Buen día <span className="font-weight-boldest">{lead.nombre.split(" ", 1)}</span>. <span className="font-weight-boldest">¿Cómo ha estado?</span></div><div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Bien, gracias <span className="font-weight-boldest">¿Y tu?</span></div><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Únicamente me comunico con usted para comentarle que <span className="font-weight-boldest">{this.presupuesto_fecha()}</span> le envié la cotización para su proyecto. <span className="font-weight-boldest">¿Tuvo la oportunidad de revisarla?</span> La envié a su correo a las <span className="font-weight-boldest">{this.presupuesto_hora()}</span></div> </>
                                         : lead.empresa.name === 'INEIN' ?
-                                            <><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Buen día <span className="font-weight-boldest">{lead.nombre.split(" ", 1)}</span>. <span className="font-weight-boldest"><em>¿Cómo has estado?</em></span></div><div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Únicamente me comunico para comentarte que <span className="font-weight-boldest">{this.presupuesto_fecha()}</span> a tu correo la cotización para del proyecto. <span className="font-weight-boldest"><em>¿Tuviste la oportunidad de revisarla?</em></span> La envié a su correo a las <span className="font-weight-boldest">{this.presupuesto_hora()}</span></div> </>
+                                            <><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Buen día <span className="font-weight-boldest">{lead.nombre.split(" ", 1)}</span>. <span className="font-weight-boldest">¿Cómo has estado?</span></div><div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Únicamente me comunico para comentarte que <span className="font-weight-boldest">{this.presupuesto_fecha()}</span> a tu correo la cotización para del proyecto. <span className="font-weight-boldest">¿Tuviste la oportunidad de revisarla?</span> La envié a su correo a las <span className="font-weight-boldest">{this.presupuesto_hora()}</span></div> </>
                                             : ''
                                     : ''
                                 : messages
