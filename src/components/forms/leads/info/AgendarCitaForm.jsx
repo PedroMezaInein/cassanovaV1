@@ -6,6 +6,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { messageAlert } from '../../../../functions/alert'
 import RadioGroupGray from '../../../form-components/Gray/RadioGroupGray'
 import SelectMinutos from '../../../form-components/SelectMinutos'
+import SelectHorario from '../../../form-components/SelectHorario'
 
 class AgendarCitaForm extends Component {
     addCorreo = () => {
@@ -47,29 +48,15 @@ class AgendarCitaForm extends Component {
                                     <div className="col-md-4">
                                         <label className="col-form-label text-center font-weight-bolder">Hora de inicio</label>
                                         <div className="form-group row d-flex justify-content-center">
-                                            <div className="input-daterange input-group" style={{ width: "auto" }}>
-                                                <SelectHoras value = { formAgenda.hora_inicio } onChange = { onChange } name = 'hora_inicio' />
-                                                <div className="input-group-append">
-                                                    <span className="input-group-text py-0 px-2">
-                                                        :
-                                                    </span>
-                                                </div>
-                                                <SelectMinutos value = { formAgenda.minuto_inicio } onChange = { onChange } name = 'minuto_inicio' />
-                                            </div>
+                                            <SelectHorario onChange = { onChange } minuto = {{ value: formAgenda.hora_inicio, name: 'hora_inicio'}}
+                                                hora = {{ value: formAgenda.minuto_inicio, name: 'minuto_fin'}} />
                                         </div>
                                     </div>
                                     <div className="col-md-4">
                                         <label className="col-form-label text-center font-weight-bolder">Hora final</label>
                                         <div className="form-group row d-flex justify-content-center">
-                                            <div className="input-daterange input-group" style={{ width: "auto" }}>
-                                                <SelectHoras value = { formAgenda.hora_inicio } onChange = { onChange } name = 'hora_final' />
-                                                <div className="input-group-append">
-                                                    <span className="input-group-text py-0 px-2">
-                                                        :
-                                                    </span>
-                                                </div>
-                                                <SelectMinutos value = { formAgenda.minuto_final } onChange = { onChange } name = 'minuto_final' />
-                                            </div>
+                                            <SelectHorario onChange = { onChange } minuto = {{ value: formAgenda.hora_final, name: 'hora_final'}}
+                                                hora = {{ value: formAgenda.minuto_final, name: 'minuto_final'}} />
                                         </div>
                                     </div>
                                 </div>

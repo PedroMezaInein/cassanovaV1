@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { CalendarDay, Button, SelectHoras } from '../../form-components'
 import { Col, Form } from 'react-bootstrap'
 import SelectMinutos from '../../form-components/SelectMinutos'
+import SelectHorario from '../../form-components/SelectHorario'
 class AgendaLlamada extends Component {
 
     render() {
@@ -76,15 +77,8 @@ class AgendaLlamada extends Component {
                             <div className="col-md-5">
                                 <label className="col-form-label text-center font-weight-bolder">Hora de la llamada</label>
                                 <div className="form-group row d-flex justify-content-center">
-                                    <div className="input-daterange input-group" style={{ width: "auto" }}>
-                                        <SelectHoras value = { form.hora } onChange = { onChange } name = 'hora' />
-                                        <div className="input-group-append">
-                                            <span className="input-group-text py-0 px-2">
-                                                :
-                                        </span>
-                                        </div>
-                                        <SelectMinutos value = { form.minuto } onChange = { onChange } name = 'minuto' />
-                                    </div>
+                                    <SelectHorario onChange = { onChange } minuto = { { value: form.minuto, name: 'minuto' }} 
+                                        hora = { { value: form.hora, name: 'hora' } } />
                                 </div>
                             </div>
                         </div>

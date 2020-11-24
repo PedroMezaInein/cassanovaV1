@@ -36,6 +36,7 @@ import tagInputGray from './Gray/TagInputGray'
 //TIempos
 import selectMinutos from './SelectMinutos'
 import selectHoras from './SelectHoras'
+import selectHorario from './SelectHorario'
 
 export const Button = button
 export const Input = input
@@ -75,3 +76,4 @@ export const TagInputGray = tagInputGray
 //Tiempos
 export const SelectMinutos = selectMinutos
 export const SelectHoras = selectHoras
+export const SelectHorario = selectHorario
