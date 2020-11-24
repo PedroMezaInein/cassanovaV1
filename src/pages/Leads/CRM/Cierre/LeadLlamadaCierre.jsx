@@ -146,7 +146,6 @@ class LeadLlamadaCierre extends Component {
         })
     };
 
-
     hideModalReviso = () => {
         this.setState({
             modal_reviso: true,
@@ -291,8 +290,9 @@ class LeadLlamadaCierre extends Component {
         return show_hora;
     }
 
-    tagInputChange = (nuevoTipos) => {
-        const uppercased = nuevoTipos.map(tipo => tipo.toUpperCase()); 
+    tagInputChange = ( nuevoTipos ) => {
+        const uppercased = nuevoTipos
+        /* const uppercased = nuevoTipos.map(tipo => tipo.toUpperCase());  */
         const { form } = this.state 
         let unico = {};
         uppercased.forEach(function (i) {
@@ -318,12 +318,12 @@ class LeadLlamadaCierre extends Component {
                 </Modal>
                 <Modal size="lg" title='Agendar firma de contrato' show={modal_duda} handleClose={this.hideModalDuda}>
                     <AgendaLlamadaUbicacion
-                        form={form}
-                        onChange={this.onChangeDuda}
-                        lead={lead}
-                        cierre_cita={cierre_cita}
-                        cita_contrato={cita_contrato}
-                        tagInputChange={(e) => this.tagInputChange(e)}
+                        form = { form }
+                        onChange = { this.onChangeDuda }
+                        lead = { lead }
+                        cierre_cita = { cierre_cita }
+                        cita_contrato = { cita_contrato }
+                        tagInputChange = { (e) => this.tagInputChange(e) }
                     />
                 </Modal>
                 <div className="card-custom card-stretch gutter-b py-2 card">
