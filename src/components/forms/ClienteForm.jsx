@@ -5,8 +5,13 @@ import Form from 'react-bootstrap/Form'
 import { validateAlert } from '../../functions/alert'
 class ClienteForm extends Component {
 
+    updateColonia = value => {
+        const { onChange } = this.props
+        onChange({ target: { name: 'colonia', value: value } })
+    }
+
     render() {
-        const { form, onChange, changeCP, estado, municipio, colonias, updateColonia, formeditado, onSubmit, ...props } = this.props
+        const { form, onChange, changeCP, estado, municipio, colonias, formeditado, onSubmit, ...props } = this.props
         return (
             <Form id="form-cliente"
                 onSubmit={
@@ -121,12 +126,12 @@ class ClienteForm extends Component {
                             messageinc="Incorrecto. Ingresa el código postal."
                         />
                     </div>
-                    <div className="col-md-4" hidden={colonias.length <= 0 ? true : false}>
+                    <div className="col-md-4" hidden={form.colonias.length <= 0 ? true : false}>
                         <Input
                             requirevalidation={0}
                             formeditado={formeditado}
-                            readOnly={colonias.length <= 0 ? true : false}
-                            value={estado}
+                            readOnly={form.colonias.length <= 0 ? true : false}
+                            value={form.estado}
                             name="estado"
                             type="text"
                             placeholder="ESTADO"
@@ -134,12 +139,12 @@ class ClienteForm extends Component {
                             disabled
                         />
                     </div>
-                    <div className="col-md-4" hidden={colonias.length <= 0 ? true : false}>
+                    <div className="col-md-4" hidden={form.colonias.length <= 0 ? true : false}>
                         <Input
                             requirevalidation={0}
                             formeditado={formeditado}
-                            readOnly={colonias.length <= 0 ? true : false}
-                            value={municipio}
+                            readOnly={form.colonias.length <= 0 ? true : false}
+                            value={form.municipio}
                             name="municipio"
                             type="text"
                             placeholder="MUNICIPIO/DELEGACIÓN"
@@ -148,25 +153,25 @@ class ClienteForm extends Component {
                         />
                     </div>
                 </div>
-                <div className="separator separator-dashed mt-1 mb-2" hidden={colonias.length <= 0 ? true : false}></div>
+                <div className="separator separator-dashed mt-1 mb-2" hidden={form.colonias.length <= 0 ? true : false}></div>
                 <div className="form-group row form-group-marginless">
-                    <div className="col-md-5" hidden={colonias.length <= 0 ? true : false}>
+                    <div className="col-md-5" hidden={form.colonias.length <= 0 ? true : false}>
                         {
-                            colonias.length > 0 &&
+                            form.colonias.length > 0 &&
                             <SelectSearch
                                 formeditado={formeditado}
-                                options={colonias}
+                                options={form.colonias}
                                 placeholder="SELECCIONA LA COLONIA"
                                 name="colonia"
                                 value={form.colonia}
                                 defaultValue={form.colonia}
-                                onChange={updateColonia}
+                                onChange = { this.updateColonia }
                                 iconclass={"fas fa-map-pin"}
                                 messageinc="Incorrecto. Selecciona la colonia"
                             />
                         }
                         {
-                            colonias.length <= 0 &&
+                            form.colonias.length <= 0 &&
                             <Input
                                 requirevalidation={1}
                                 formeditado={formeditado}
@@ -179,7 +184,7 @@ class ClienteForm extends Component {
                             />
                         }
                     </div>
-                    <div className="col-md-7" hidden={colonias.length <= 0 ? true : false}>
+                    <div className="col-md-7" hidden={form.colonias.length <= 0 ? true : false}>
                         <Input
                             requirevalidation={1}
                             formeditado={formeditado}

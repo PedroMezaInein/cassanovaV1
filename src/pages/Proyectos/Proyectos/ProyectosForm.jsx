@@ -1103,6 +1103,18 @@ class ProyectosForm extends Component {
             form
         })
     }
+    tagInputChange = (nuevosCorreos) => {
+        const uppercased = nuevosCorreos.map(tipo => tipo.toUpperCase()); 
+        const { form } = this.state 
+        let unico = {};
+        uppercased.forEach(function (i) {
+            if (!unico[i]) { unico[i] = true }
+        })
+        form.correos = uppercased ? Object.keys(unico) : [];
+        this.setState({
+            form
+        })
+    }
     render() {
         const { title, form, options, formeditado, prospecto, action, proyecto } = this.state
         return (
@@ -1152,7 +1164,9 @@ class ProyectosForm extends Component {
                             removeCorreo={this.removeCorreo}
                             handleChange={this.handleChange}
                             onChangeRange={this.onChangeRange}
-                            className="px-3" >
+                            className="px-3"
+                            tagInputChange={(e) => this.tagInputChange(e)}
+                        >
                             <Accordion>
                                 {
                                     prospecto !== '' || proyecto !== '' ? 
