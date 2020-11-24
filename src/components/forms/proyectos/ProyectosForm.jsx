@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
-import { Input, SelectSearch, Button, RangeCalendar, InputNumber, InputPhone, TagSelectSearch } from '../../form-components'
+import { Input, SelectSearch, Button, RangeCalendar, InputNumber, InputPhone, TagSelectSearch, TagInput } from '../../form-components'
 import { faPlus} from '@fortawesome/free-solid-svg-icons'
 import { TEL, EMAIL } from '../../../constants'
 import { openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
@@ -109,7 +109,7 @@ class ProyectosForm extends Component {
     }
 
     render() {
-        const { title, children, form, onChange, onChangeCP, onChangeAdjunto, onChangeAdjuntoGrupo, clearFiles, clearFilesGrupo, options, onSubmit, removeCorreo, formeditado, deleteOption, onChangeOptions, action,handleChange, onChangeRange, ...props } = this.props
+        const { title, children, form, onChange, onChangeCP, onChangeAdjunto, onChangeAdjuntoGrupo, clearFiles, clearFilesGrupo, options, onSubmit, removeCorreo, formeditado, deleteOption, onChangeOptions, action,handleChange, onChangeRange, tagInputChange,...props } = this.props
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
@@ -250,7 +250,7 @@ class ProyectosForm extends Component {
                                 </div>
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">
-                                    <div className={form.clientes.length ? "col-md-4" : "col-md-6"}>
+                                    <div className="col-md-6">
                                         <Input
                                             requirevalidation={1}
                                             formeditado={formeditado}
@@ -263,7 +263,7 @@ class ProyectosForm extends Component {
                                             messageinc="Incorrecto. Ingresa el nombre de contacto."
                                         />
                                     </div>
-                                    <div className={form.clientes.length ? "col-md-4" : "col-md-6"}>
+                                    <div className="col-md-6">
                                         {
                                             formeditado && form.clientes.length ? 
                                                 <>
@@ -281,6 +281,7 @@ class ProyectosForm extends Component {
                                                         options={this.transformarOptions(options.clientes)}
                                                         defaultvalue={this.transformarOptions(form.clientes)}
                                                         onChange={this.nuevoUpdateCliente}
+                                                        iconclass={"far fa-folder-open"}
                                                     />
                                                 </>
                                             :   
@@ -300,6 +301,7 @@ class ProyectosForm extends Component {
                                                         options={this.transformarOptions(options.clientes)}
                                                         defaultvalue={this.transformarOptions(form.clientes)}
                                                         onChange={this.nuevoUpdateCliente}
+                                                        iconclass={"far fa-folder-open"}
                                                     />
                                             </>
                                         }
@@ -329,7 +331,7 @@ class ProyectosForm extends Component {
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-10">
-                                        <Input
+                                        {/* <Input
                                             requirevalidation={0}
                                             formeditado={formeditado}
                                             //thousandseparator={false}
@@ -342,13 +344,19 @@ class ProyectosForm extends Component {
                                             messageinc="Incorrecto. Ej. usuario@dominio.com"
                                             patterns={EMAIL}
                                             type="email"
+                                        /> */}
+                                        <TagInput
+                                            tags={form.correos} 
+                                            onChange={tagInputChange} 
+                                            placeholder={"CORREO DE CONTACTO"}
+                                            iconclass={"far fa-folder-open"}
                                         />
                                     </div>
-                                    <div className="col-md-2 mt-3 d-flex justify-content-center align-items-center">
+                                    {/* <div className="col-md-2 mt-3 d-flex justify-content-center align-items-center">
                                         <Button icon={faPlus} pulse={"pulse-ring"} className={"btn btn-icon btn-light-primary pulse pulse-primary mr-5"} onClick={(e) => { e.preventDefault(); this.addCorreo() }} />
-                                    </div>
+                                    </div> */}
                                 </div>
-                                <div className="form-group row form-group-marginless">
+                                {/* <div className="form-group row form-group-marginless">
                                     <div className="col-md-12 row mx-0">
                                         {
                                             form.correos.map((correo, key) => {
@@ -370,7 +378,7 @@ class ProyectosForm extends Component {
                                             })
                                         }
                                     </div>
-                                </div>
+                                </div> */}
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2"></div>
                                     <div>
