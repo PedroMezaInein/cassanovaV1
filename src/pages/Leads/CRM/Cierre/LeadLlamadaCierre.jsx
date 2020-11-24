@@ -15,16 +15,18 @@ class LeadLlamadaCierre extends Component {
         form: {
             si_reviso_cotizacion: '',
             no_reviso_cotizacion: '',
-            fecha: '',
-            hora: '',
-            minuto: '',
+            fecha: new Date(),
+            hora: "08",
+            minuto: "00",
+            hora_final: "08",
+            minuto_final: "00",
             con_cita: '',
             sin_cita: '',
             comentario: '',
             si_agendar_llamada: '',
             no_agendar_llamada: '',
             correos:[],
-
+            tipo: '',
             name: '',
             empresa: '',
         },
@@ -198,27 +200,51 @@ class LeadLlamadaCierre extends Component {
     onSubmit = async (e) => {
         waitAlert();
         const { form, lead } = this.state
-        const { access_token } = this.props.authUser
-        await axios.put(URL_DEV + `crm/update/lead/llamada-saliente/${lead.id}`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Actualizaste los permisos.',)
-                const { history } = this.props
-                history.push({
-                    pathname: '/leads/crm',
-                });
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401)
-                    forbiddenAccessAlert();
-                else
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+        if(form.no_reviso_cotizacion === true){
+            if(form.no_agendar_llamada === true){
+                form.tipo = 'no-agendar-llamada'
+            }else{
+                if(form.si_agendar_llamada === true){
+                    form.tipo = 'agendar-llamada'
+                }
             }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
+        }else{
+            if(form.si_reviso_cotizacion === true){
+                if(form.sin_cita === true){
+                    form.tipo = 'no-visto-bueno'
+                }else{
+                    if(form.con_cita === true){
+                        form.tipo = 'visto-bueno'
+                    }
+                }
+            }
+        }
+        if(form.tipo === '' )
+            errorAlert('Error de flujo')
+        else{
+            const { access_token } = this.props.authUser
+            await axios.post(URL_DEV + `crm/update/lead/llamada-cierre/${lead.id}`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+                (response) => {
+                    doneAlert(response.data.message !== undefined ? response.data.message : 'Actualizaste los permisos.',)
+                    const { history } = this.props
+                    history.push({
+                        pathname: '/leads/crm',
+                    });    
+                },
+                (error) => {
+                    console.log(error, 'error')
+                    if (error.response.status === 401)
+                        forbiddenAccessAlert();
+                    else
+                        errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            ).catch((error) => {
+                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+                console.log(error, 'error')
+            })
+        }
     }
+
     presupuesto_fecha() {
         let { presupuesto } = this.state
         let show_fecha = ""
@@ -307,16 +333,17 @@ class LeadLlamadaCierre extends Component {
         const { messages, form, lead, modal_reviso, modal_duda, cierre_reviso, cita_reviso, cierre_cita, cita_contrato } = this.state
         return (
             <Layout active='leads' {...this.props} >
-                <Modal title='Agenda una nueva llamada.' show={modal_reviso} handleClose={this.hideModalReviso}>
+                <Modal title = 'Agenda una nueva llamada.' show = { modal_reviso } handleClose = { this.hideModalReviso } >
                     <AgendaLlamada 
-                        form={form}
-                        onChange={this.onChangeReviso}
-                        lead={lead}
-                        cierre_reviso={cierre_reviso}
-                        cita_reviso={cita_reviso}
+                        form = { form }
+                        onChange = { this.onChangeReviso }
+                        lead = { lead }
+                        cierre_reviso = { cierre_reviso }
+                        cita_reviso = { cita_reviso }
+                        onSubmit = { this.onSubmit }
                     />
                 </Modal>
-                <Modal size="lg" title='Agendar firma de contrato' show={modal_duda} handleClose={this.hideModalDuda}>
+                <Modal size="lg" title='Agendar firma de contrato' show = { modal_duda } handleClose = { this.hideModalDuda } >
                     <AgendaLlamadaUbicacion
                         form = { form }
                         onChange = { this.onChangeDuda }
@@ -324,6 +351,7 @@ class LeadLlamadaCierre extends Component {
                         cierre_cita = { cierre_cita }
                         cita_contrato = { cita_contrato }
                         tagInputChange = { (e) => this.tagInputChange(e) }
+                        onSubmit = { this.onSubmit }
                     />
                 </Modal>
                 <div className="card-custom card-stretch gutter-b py-2 card">
