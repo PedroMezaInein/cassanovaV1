@@ -1,0 +1,82 @@
+div#react-tag-input {
+    background: #F3F6F9 !important;
+    color: #333;
+    border: 1px solid #e1e1e1;
+    border-radius: 2px!important;
+    padding-left: calc(1.5em + 1.3rem + 2px)!important;
+    border: transparent!important;
+
+    padding-top: 6px!important;
+    padding-bottom: 6px!important;
+
+    // height: calc(1.5em + 1.3rem + 2px)!important;
+
+
+.react-tag-input__input {
+    background: transparent;
+    color: #464E5F!important;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+.react-tag-input__input::placeholder,
+.react-tag-input__input:-moz-placeholder,
+.react-tag-input__input:-ms-input-placeholder,
+.react-tag-input__input::-moz-placeholder,
+.react-tag-input__input::-webkit-input-placeholder {
+    color: #babac5 !important;
+    /* Input placeholder */
+}
+
+.react-tag-input__tag__content {
+    font-size: 1rem;
+    padding-right: 0.20rem;
+    
+}
+
+.react-tag-input__tag {
+    background:#e5e5e8 !important;
+    color: #80808F;
+    border-color: transparent;
+    padding-left: 0.2rem;
+    font-weight: 500;
+    height: 2em;
+}
+
+.react-tag-input__tag__remove {
+    background: transparent !important;
+}
+
+.react-tag-input__tag__remove {
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    -webkit-box-align: center;
+    -ms-flex-align: center;
+    align-items: center;
+    -webkit-box-ordinal-group: 3;
+    -ms-flex-order: 2;
+    order: 2;
+    -webkit-transform: none;
+    transform: none;
+    border-radius: 0;
+    margin-right: 0;
+    line-height: 0;
+    justify-content: center;
+}
+.react-tag-input__tag__remove::before {
+    display: none;
+}
+.react-tag-input__tag__remove:after {
+    font-family: Ki;
+    line-height: 1;
+    content: ""!important;
+    font-size: 0.6rem;
+    color: #80808F;
+    transform: none!important;
+    background-color: transparent!important;
+    width: fit-content!important;
+    top: auto!important;
+    left: auto!important;
+}
+}
