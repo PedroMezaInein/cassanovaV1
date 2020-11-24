@@ -19,6 +19,7 @@ class ClientesForm extends Component {
         formeditado: 0,
         colonias: [],
         form: {
+            colonias: [],
             empresa: '',
             nombre: '',
             puesto: '',
@@ -169,17 +170,18 @@ class ClientesForm extends Component {
         await axios.get(CP_URL + value + '?type=simplified').then(
             (response) => {
                 const { municipio, estado, asentamiento } = response.data.response
-                const { cliente } = this.state
+                const { cliente, form } = this.state
                 let aux = [];
                 asentamiento.map((colonia, key) => {
                     aux.push({ value: colonia, name: colonia.toUpperCase() })
                     return false
                 })
+                form.municipio = municipio
+                form.estado = estado
+                form.colonias = aux
                 this.setState({
                     ...this.state,
-                    municipio,
-                    estado,
-                    colonias: aux
+                    form
                 })
                 if (cliente.colonia) {
                     aux.find(function (element, index) {
@@ -209,6 +211,7 @@ class ClientesForm extends Component {
                         </div>
                     </Card.Header>
                     <Card.Body>
+
                         <ClienteForm
                             formeditado={formeditado}
                             onChange={this.onChange}
