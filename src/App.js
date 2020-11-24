@@ -32,6 +32,7 @@ const LeadsForm = Loader(() => import('./pages/Leads/Leads/LeadsForm') )
 const Crm = Loader(() => import('./pages/Leads/CRM/Crm') )
 const LeadTelefono = Loader(() => import('./pages/Leads/CRM/Add/LeadTelefono') )
 const LeadInfo = Loader(() => import('./pages/Leads/CRM/Info/LeadInfo') )
+const LeadContratar = Loader(() => import('./pages/Leads/CRM/Contratar') )
 const LeadLlamadaSalida = Loader(() => import('./pages/Leads/CRM/Add/LeadLlamadaSalida') )
 const LeadLlamadaCierre = Loader(() => import('./pages/Leads/CRM/Cierre/LeadLlamadaCierre') )
 
@@ -316,6 +317,7 @@ class App extends Component{
                 <Route path = "/leads/crm/cierre/llamada-cierre" exact component = { LeadLlamadaCierre } />
                 
                 <Route path = "/leads/crm/info/info" exact component = { LeadInfo } />
+                <Route path = "/leads/crm/contratar" exact component = { LeadContratar } />
 
                 <Route path = "/leads/prospectos" exact component = { Prospectos } />
                 <Route path = "/leads/prospectos/:action" exact component = { ProspectosForm } />
