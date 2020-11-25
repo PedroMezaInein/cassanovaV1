@@ -1374,7 +1374,7 @@ class LeadInfo extends Component {
                                                                             className={"btn btn-icon btn-xs p-3 btn-light-primary mr-2"}
                                                                             onClick={() => { this.openModalPresupuesto() }}
                                                                             only_icon={"far fa-file-pdf icon-15px"}
-                                                                            tooltip={{ text: 'PRESUPUESTOS GENERADOS' }}
+                                                                            tooltip={{ text: 'COTIZACIONES GENERADAS' }}
                                                                         />
                                                                     </div>
                                                                 : ''
@@ -1402,13 +1402,13 @@ class LeadInfo extends Component {
                         </Col>
                     </Row >
                 </Tab.Container>
-                <Modal title="Presupuestos generados" show={modal.presupuesto} handleClose={this.handleCloseModalPresupuesto} >
+                <Modal title="Cotizaciones generadas" size={"lg"} show={modal.presupuesto} handleClose={this.handleCloseModalPresupuesto} >
                     {
                         lead ?
                             lead.presupuesto_diseño ?
                                 lead.presupuesto_diseño.pdfs ?
                                     lead.presupuesto_diseño.pdfs.length ?
-                                        <PresupuestoGenerado pdfs = { lead.presupuesto_diseño.pdfs } onClick = { this.onClickSendPresupuesto } />
+                                        <PresupuestoGenerado pdfs = { lead.presupuesto_diseño.pdfs } onClick = { this.onClickSendPresupuesto }/>
                                     : ''
                                 : ''
                             : ''
