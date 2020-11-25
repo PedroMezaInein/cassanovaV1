@@ -324,7 +324,7 @@ class LeadTelefono extends Component {
                                                     withicon={1}
                                                     name='empresa'
                                                     value={form.empresa}
-                                                    placeholder='Empresa'
+                                                    placeholder='EMPRESA'
                                                     onChange={this.onChange}
                                                     iconclass='fas fa-building'
                                                 />
@@ -358,12 +358,14 @@ class LeadTelefono extends Component {
                                             </div>
                                             <div className="col-md-4">
                                                 <SelectSearchGray
+                                                    requirevalidation={0}
                                                     options={options.origenes}
                                                     placeholder="SELECCIONA EL ORIGEN PARA EL LEAD"
                                                     name="origen"
                                                     value={form.origen}
                                                     onChange={this.updateOrigen}
                                                     iconclass="fas fa-mail-bulk"
+                                                    messageinc="Incorrecto. Selecciona el origen para el lead."
                                                 />
                                             </div>
                                         </>
