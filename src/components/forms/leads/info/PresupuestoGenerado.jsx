@@ -14,6 +14,7 @@ class PresupuestoGenerado extends Component {
                                 <span className="text-center text-muted font-size-sm">Adjunto</span>
                             </th>
                             <th className="text-center text-muted font-size-sm">IDENTIFICADOR</th>
+                            <th className="text-center text-muted font-size-sm">ESTATUS</th>
                             <th className="text-center text-muted font-size-sm">ENVIAR</th>
                         </tr>
                     </thead>
@@ -36,6 +37,17 @@ class PresupuestoGenerado extends Component {
                                         </td>
                                         <td className="text-center">
                                             <span className="text-dark-75 font-weight-bolder d-block font-size-lg">{pdf.pivot.identificador}</span>
+                                        </td>
+                                        <td className="text-center">
+                                            <span className="text-dark-75 font-weight-bolder d-block font-size-lg">
+                                                {
+                                                    pdf.pivot.fecha_envio!==null?
+                                                        <><span><span className="label label-md label-light-success label-inline font-weight-bold" style={{fontSize: '10.7px'}}>Enviada</span><span className="text-muted font-weight-bold d-block font-size-sm mt-1">{setDateTableLG(pdf.pivot.fecha_envio)}</span></span></>
+                                                        :
+                                                    ''
+                                                }
+                                                
+                                            </span>
                                         </td>
                                         <td className="text-center">
                                             <span onClick = { (e) => { e.preventDefault(); onClick(pdf); } } className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-success">
