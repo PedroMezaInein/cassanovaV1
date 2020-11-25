@@ -8,7 +8,7 @@ import { Modal } from '../../../components/singles'
 import { CP_URL, URL_DEV } from '../../../constants'
 import axios from 'axios'
 import { doneAlert, errorAlert, forbiddenAccessAlert, waitAlert } from '../../../functions/alert'
-import ProyectosForm from '../../../components/forms/proyectos/ProyectosForm'
+import ProyectosFormGray from '../../../components/forms/proyectos/ProyectosFormGray'
 import { setOptions } from '../../../functions/setters'
 import swal from 'sweetalert';
 import { faEye } from '@fortawesome/free-solid-svg-icons'
@@ -320,13 +320,39 @@ class Contratar extends Component {
             console.log('error catch', error)
         })
     }
+    tagInputChange = (nuevosCorreos) => {
+        const uppercased = nuevosCorreos.map(tipo => tipo.toUpperCase()); 
+        const { formProyecto } = this.state 
+        let unico = {};
+        uppercased.forEach(function (i) {
+            if (!unico[i]) { unico[i] = true }
+        })
+        formProyecto.correos = uppercased ? Object.keys(unico) : [];
+        this.setState({
+            formProyecto
+        })
+    }
 
     render() {
         const { modal, form, formProyecto, options, formeditado, lead } = this.state
         return (
             <Layout active = 'leads' { ... this.props }>
-                <Card className = 'card-custom card-stretch'>
-                    <Card.Header className="mt-4">
+                <Card className="card-custom card-stretch">
+                    <Card.Header className="border-0 mt-4 pt-3">
+                        <div class="card-title d-flex justify-content-between">
+                            <span class="font-weight-bolder text-dark align-self-center font-size-h3">Presupuesto de diseño</span>
+                        </div>
+                        <div className="d-flex justify-content-end">
+                            <Button
+                                icon=''
+                                className={"btn btn-icon btn-xs p-3 btn-light-success mr-2"}
+                                onClick = { this.openModal }
+                                only_icon={"flaticon2-plus icon-13px"}
+                                tooltip={{ text: 'AGREGAR NUEVO CLIENTE' }}
+                            />
+                        </div>
+                    </Card.Header>
+                    {/* <Card.Header className="mt-4">
                         <h3 className="card-title d-flex justify-content-between w-100">
                             <span className="font-weight-bolder text-dark align-self-center">
                                 CONVERTIR LEAD
@@ -342,14 +368,18 @@ class Contratar extends Component {
                                     />
                             </div>
                         </h3>
-                    </Card.Header>
-                    <Card.Body className="mt-4">
-                        <ProyectosForm form = { formProyecto } options = { options } 
+                    </Card.Header> */}
+                    <Card.Body className="pt-0">
+                        <ProyectosFormGray 
+                            form = { formProyecto }
+                            options = { options } 
                             onChange = { this.onChangeProyecto } 
                             onChangeOptions = { this.onChangeOptions } 
                             removeCorreo = { this.removeCorreo } 
                             deleteOption = { this.deleteOption } 
-                            onChangeCP = { this.onChangeCPProyecto }>
+                            onChangeCP = { this.onChangeCPProyecto }
+                            tagInputChange={(e) => this.tagInputChange(e)}
+                        >
                             <Accordion>
                                 {
                                     lead !== '' ? 
@@ -375,7 +405,7 @@ class Contratar extends Component {
                                     </div>
                                 </Accordion.Collapse>
                             </Accordion>
-                        </ProyectosForm>
+                        </ProyectosFormGray>
                     </Card.Body>
                 </Card>
                 <Modal size = 'xl' title = 'Nuevo cliente' show = { modal }
