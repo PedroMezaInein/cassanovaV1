@@ -125,6 +125,7 @@ const PartidasDiseñoForm = Loader( () => import('./pages/Catalogos/PartidasDise
 const AdjuntosEmpresa = Loader( () => import('./pages/Catalogos/AdjuntosEmpresa/AdjuntosEmpresa') )
 const AdjuntosEmpresaForm = Loader( () => import('./pages/Catalogos/AdjuntosEmpresa/AdjuntosEmpresaForm') )
 const Diseño = Loader( () => import('./pages/Catalogos/Diseño') )
+const OrigenesLeads = Loader( () => import('./pages/Catalogos/OrigenesLeads') )
 
 const Contabilidad = Loader( () => import('./pages/Reportes/Contabilidad') )
 const ReporteVentas = Loader( () => import('./pages/Reportes/ReporteVentas') )
@@ -339,6 +340,7 @@ class App extends Component{
                 <Route path = "/catalogos/adjuntos" exact component ={ AdjuntosEmpresa } />
                 <Route path = "/catalogos/adjuntos/:action" exact component ={ AdjuntosEmpresaForm } />
                 <Route path = "/catalogos/tabulador" exact component ={ Diseño } />
+                <Route path = "/catalogos/origenes-leads" exact component = { OrigenesLeads } />
 
                 <Route path = "/reportes/contabilidad" exact component ={ Contabilidad } />
                 <Route path = "/reportes/reporte-ventas" exact component ={ ReporteVentas } />
