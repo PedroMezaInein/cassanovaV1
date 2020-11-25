@@ -415,6 +415,11 @@ class Proyectos extends Component {
                     value: '',
                     placeholder: 'Imagen',
                     files: []
+                },
+                avance: {
+                    value: '',
+                    placeholder: 'Avance',
+                    files: []
                 }
             },
             avances: [
@@ -816,6 +821,11 @@ class Proyectos extends Component {
             }
         })
     }
+
+    handleChangeAvance = (files, item) => {
+        this.onChangeAdjunto({ target: { name: item, value: files, files: files } })
+    }
+    
     handleChange = (files, item) => {
 
         this.onChangeAdjuntoGrupo({ target: { name: item, value: files, files: files } })
@@ -849,6 +859,12 @@ class Proyectos extends Component {
         waitAlert();
         this.addAvanceAxios()
     }
+    onSubmitNewAvance = e => {
+        e.preventDefault()
+        waitAlert();
+        this.addAvanceFileAxios()
+    }
+
     safeDelete = (e) => () => {
         this.deleteProyectoAxios()
     }
@@ -1137,6 +1153,75 @@ class Proyectos extends Component {
                     proyectos: this.setProyectos(proyectos),
                     form: this.clearForm(),
                     data
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    async addAvanceFileAxios() {
+        const { access_token } = this.props.authUser
+        const { form, proyecto } = this.state
+        const data = new FormData();
+        let aux = Object.keys(form)
+        aux.map((element) => {
+            switch (element) {
+                case 'fechaInicio':
+                case 'fechaFin':
+                    data.append(element, (new Date(form[element])).toDateString())
+                    break
+                case 'semana':
+                    data.append(element, form[element])
+                    break;
+                default:
+                    break
+            }
+            return false
+        })
+        aux = Object.keys(form.adjuntos)
+        aux.map((element) => {
+            if (form.adjuntos[element].value !== '') {
+                for (var i = 0; i < form.adjuntos[element].files.length; i++) {
+                    data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
+                    data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
+                }
+            }
+        })
+        await axios.post(URL_DEV + 'proyectos/' + proyecto.id + '/avances/file', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { avance, proyecto } = response.data
+                const { key } = this.state
+                switch(key){
+                    case 'all':
+                        this.getProyectoAxios();
+                        break;
+                    case 'fase1':
+                        this.getProyectoFase1Axios();
+                        break;
+                    case 'fase2':
+                        this.getProyectoFase2Axios();
+                        break;
+                    case 'fase3':
+                        this.getProyectoFase3Axios();
+                        break;
+                    default: break;
+                }
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El avance fue adjuntado con éxito.')
+                var win = window.open(avance.pdf, '_blank');
+                win.focus();
+                this.setState({
+                    ...this.state,
+                    proyecto: proyecto,
+                    form: this.clearForm()
                 })
             },
             (error) => {
@@ -1471,18 +1556,41 @@ class Proyectos extends Component {
                     </div>
                 </Modal>
                 <Modal size="xl" title={title} show={modalAvances} handleClose={this.handleCloseAvances}>
-                    <AvanceForm
-                        form={form}
-                        onChangeAvance={this.onChangeAvance}
-                        onChangeAdjuntoAvance={this.onChangeAdjuntoAvance}
-                        clearFilesAvances={this.clearFilesAvances}
-                        addRowAvance={this.addRowAvance}
-                        onSubmit={this.onSubmitAvance}
-                        onChange={this.onChange}
-                        proyecto={proyecto}
-                        sendMail={this.sendMail}
-                        formeditado={formeditado}
-                    />
+                    <Tabs 
+                        defaultActiveKey = "nuevo" 
+                        className = "mt-4 nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100">
+                        <Tab eventKey = "nuevo" title = "Nuevo avance">
+                            <AvanceForm
+                                form = { form }
+                                onChangeAvance = { this.onChangeAvance }
+                                onChangeAdjuntoAvance = { this.onChangeAdjuntoAvance }
+                                clearFilesAvances = { this.clearFilesAvances }
+                                addRowAvance = { this.addRowAvance }
+                                onSubmit = { this.onSubmitAvance }
+                                onChange = { this.onChange }
+                                proyecto = { proyecto }
+                                sendMail = { this.sendMail }
+                                formeditado = { formeditado }
+                            />
+                        </Tab>
+                        <Tab eventKey = "existente" title = "Cargar avance">
+                            <AvanceForm
+                                form = { form }
+                                onChangeAvance = { this.onChangeAvance }
+                                onChangeAdjuntoAvance = { this.onChangeAdjuntoAvance }
+                                clearFilesAvances = { this.clearFilesAvances }
+                                addRowAvance = { this.addRowAvance }
+                                onSubmit = { this.onSubmitNewAvance }
+                                onChange = { this.onChange }
+                                proyecto = { proyecto }
+                                sendMail = { this.sendMail }
+                                handleChange = { this.handleChangeAvance }
+                                formeditado = { formeditado }
+                                isNew = { true }
+                            />
+                        </Tab>
+                    </Tabs>
+                    
                 </Modal>
                 <Modal size="lg" title="Proyecto" show={modalSee} handleClose={this.handleCloseSee} >
                     <ProyectosCard
