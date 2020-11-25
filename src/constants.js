@@ -820,6 +820,17 @@ export const UNIDADES_COLUMNS = [
     }
 ]
 
+export const ORIGENES_COLUMNS = [
+    {
+        Header: 'Opciones',
+        accessor: 'actions'
+    },
+    {
+        Header: 'Origen',
+        accessor: 'origen'
+    }
+]
+
 export const BANCOS_COLUMNS = [
     {
         Header: 'OPCIONES',
