@@ -329,6 +329,19 @@ class LeadInfo extends Component {
         else
             formDiseño[name] = value
 
+        switch(name){
+            case 'construccion_interiores_inf':
+            case 'construccion_interiores_sup':
+            case 'construccion_civil_inf':
+            case 'construccion_civil_sup':
+            case 'mobiliario_inf':
+            case 'mobiliario_sup':
+                formDiseño[name] = value.replace(',', '')
+                break
+            default:
+                break;
+        }
+
         if (name === 'tiempo_ejecucion_diseno') {
             let modulo = parseFloat(value) % 6
             let aux = Object.keys(
