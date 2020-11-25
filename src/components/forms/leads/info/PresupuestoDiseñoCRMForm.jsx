@@ -452,7 +452,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                             withicon={1}
                                             requirevalidation={1}
                                             formeditado={formeditado}
-                                            placeholder="TIEMPO DE EJECUCIÓN"
+                                            placeholder="TIEMPO DE EJECUCIÓN(SEMANAS)"
                                             value={formDiseño.tiempo_ejecucion_construccion}
                                             name="tiempo_ejecucion_construccion"
                                             onChange={onChange}
