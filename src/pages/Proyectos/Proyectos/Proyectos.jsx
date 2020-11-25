@@ -1074,19 +1074,28 @@ class Proyectos extends Component {
         const { proyecto } = this.state
         await axios.delete(URL_DEV + 'proyectos/' + proyecto.id + '/adjunto/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { proyecto, proyectos } = response.data
-                const { data } = this.state
-                // this.getClientesAxios()
-                data.proyectos = proyectos
-
+                const { proyecto } = response.data
+                const { key } = this.state
+                switch(key){
+                    case 'all':
+                        this.getProyectoAxios();
+                        break;
+                    case 'fase1':
+                        this.getProyectoFase1Axios();
+                        break;
+                    case 'fase2':
+                        this.getProyectoFase2Axios();
+                        break;
+                    case 'fase3':
+                        this.getProyectoFase3Axios();
+                        break;
+                    default: break;
+                }
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue registrado con éxito.')
-
                 this.setState({
                     ...this.state,
                     proyecto: proyecto,
-                    proyectos: this.setProyectos(proyectos),
-                    adjuntos: this.setAdjuntosSlider(proyecto),
-                    data
+                    adjuntos: this.setAdjuntosSlider(proyecto)
                 })
             },
             (error) => {
@@ -1140,19 +1149,30 @@ class Proyectos extends Component {
 
         await axios.post(URL_DEV + 'proyectos/' + proyecto.id + '/avances', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { proyecto, proyectos, avance } = response.data
-                const { data } = this.state
-                data.proyectos = proyectos
-
+                const { avance, proyecto } = response.data
+                const { key } = this.state
+                switch(key){
+                    case 'all':
+                        this.getProyectoAxios();
+                        break;
+                    case 'fase1':
+                        this.getProyectoFase1Axios();
+                        break;
+                    case 'fase2':
+                        this.getProyectoFase2Axios();
+                        break;
+                    case 'fase3':
+                        this.getProyectoFase3Axios();
+                        break;
+                    default: break;
+                }
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue registrado con éxito.')
                 var win = window.open(avance.pdf, '_blank');
                 win.focus();
                 this.setState({
                     ...this.state,
                     proyecto: proyecto,
-                    proyectos: this.setProyectos(proyectos),
                     form: this.clearForm(),
-                    data
                 })
             },
             (error) => {
@@ -1259,16 +1279,28 @@ class Proyectos extends Component {
         })
         await axios.post(URL_DEV + 'proyectos/' + proyecto.id + '/adjuntos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { proyecto, proyectos } = response.data
-                const { data } = this.state
-                data.proyectos = proyectos
+                const { proyecto } = response.data
+                const { key } = this.state
+                switch(key){
+                    case 'all':
+                        this.getProyectoAxios();
+                        break;
+                    case 'fase1':
+                        this.getProyectoFase1Axios();
+                        break;
+                    case 'fase2':
+                        this.getProyectoFase2Axios();
+                        break;
+                    case 'fase3':
+                        this.getProyectoFase3Axios();
+                        break;
+                    default: break;
+                }
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue registrado con éxito.')
                 this.setState({
                     ...this.state,
                     proyecto: proyecto,
-                    proyectos: this.setProyectos(proyectos),
                     adjuntos: this.setAdjuntosSlider(proyecto),
-                    data
                 })
             },
             (error) => {
