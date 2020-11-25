@@ -4,13 +4,12 @@ import { connect } from 'react-redux'
 
 class Home extends Component{
     
-
     componentDidMount(){
         const { user : { permisos } } = this.props.authUser
         const { history } = this.props
         
-        const usuarios = permisos.find(function(element, index) {
-            return element.modulo.slug === 'usuarios'
+        const crm = permisos.find(function(element, index) {
+            return element.modulo.slug === 'crm'
         });
         const tareas = permisos.find(function(element, index) {
             return element.modulo.slug === 'tareas'
@@ -19,8 +18,8 @@ class Home extends Component{
             return element.modulo.slug === 'mi-proyecto'
         });
         
-        if(usuarios){
-            history.push('/usuarios/usuarios')
+        if(crm){
+            history.push('/leads/crm')
         }
         else{
             if(tareas){
@@ -35,7 +34,6 @@ class Home extends Component{
             }
         }
     }
-
 
     render(){
         return(

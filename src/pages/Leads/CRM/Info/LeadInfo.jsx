@@ -1020,12 +1020,24 @@ class LeadInfo extends Component {
             modal
         })
     }
+    tagInputChange = (nuevosCorreos) => {
+        const uppercased = nuevosCorreos.map(tipo => tipo.toUpperCase()); 
+        const { formAgenda } = this.state 
+        let unico = {};
+        uppercased.forEach(function (i) {
+            if (!unico[i]) { unico[i] = true }
+        })
+        formAgenda.correos = uppercased ? Object.keys(unico) : [];
+        this.setState({
+            formAgenda
+        })
+    }
 
     render() {
         const { lead, form, formHistorial, options, formAgenda, formDiseño, modal } = this.state
         return (
             <Layout active={'leads'}  {...this.props} botonHeader = { this.botonHeader } >
-                <Tab.Container defaultActiveKey="1" className="p-5">
+                <Tab.Container defaultActiveKey="2" className="p-5">
                     <Row>
                         <Col md={12} className="mb-3">
                             <Card className="card-custom gutter-b">
@@ -1261,10 +1273,12 @@ class LeadInfo extends Component {
                                                 <div>
                                                     <Button
                                                         icon=''
-                                                        className={"btn btn-icon btn-xs p-3 btn-light-success mr-2"}
-                                                        onClick={() => { this.mostrarFormulario() }}
-                                                        only_icon={"flaticon2-plus icon-13px"}
-                                                        tooltip={{ text: 'AGREGAR NUEVO CONTACTO' }}
+                                                        className={"btn btn-icon btn-xs w-auto p-3 btn-light-gray mr-2"}
+                                                        // onClick={() => { waitAlert(); this.solicitarFechaCita() }}
+                                                        onClick={(e) => { questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.solicitarFechaCita())}}
+                                                        only_icon={"far fa-calendar-check icon-15px mr-2"}
+                                                        text='SOLICITAR CITA'
+                                                        tooltip={{ text: 'SOLICITAR CITA' }}
                                                     />
                                                     <Button
                                                         icon=''
@@ -1275,12 +1289,10 @@ class LeadInfo extends Component {
                                                     />
                                                     <Button
                                                         icon=''
-                                                        className={"btn btn-icon btn-xs w-auto p-3 btn-light-gray"}
-                                                        // onClick={() => { waitAlert(); this.solicitarFechaCita() }}
-                                                        onClick={(e) => { questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.solicitarFechaCita())}}
-                                                        only_icon={"far fa-calendar-check icon-15px mr-2"}
-                                                        text='SOLICITAR CITA'
-                                                        tooltip={{ text: 'SOLICITAR CITA' }}
+                                                        className={"btn btn-icon btn-xs p-3 btn-light-success mr-2"}
+                                                        onClick={() => { this.mostrarFormulario() }}
+                                                        only_icon={"flaticon2-plus icon-13px"}
+                                                        tooltip={{ text: 'AGREGAR NUEVO CONTACTO' }}
                                                     />
                                                 </div>
                                             </h3>
@@ -1300,7 +1312,9 @@ class LeadInfo extends Component {
                                                     onChange={this.onChangeAgenda}
                                                     removeCorreo={this.removeCorreo}
                                                     // solicitarFechaCita={() => { waitAlert(); this.solicitarFechaCita() }}
-                                                    onSubmit={() => { waitAlert(); this.agendarEvento() }} />
+                                                    onSubmit={() => { waitAlert(); this.agendarEvento() }}
+                                                    tagInputChange={(e) => this.tagInputChange(e)}
+                                                />
                                             </div>
                                             <div className="col-md-8">
                                                 {

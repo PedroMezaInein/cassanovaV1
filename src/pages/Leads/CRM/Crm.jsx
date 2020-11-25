@@ -30,7 +30,8 @@ class Crm extends Component {
         activeTable: 'web',
         options: {
             empresas: [],
-            servicios: []
+            servicios: [],
+            origenes: []
         },
         prospectos_sin_contactar: {
             data: [],
