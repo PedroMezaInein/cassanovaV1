@@ -39,7 +39,7 @@ class AgendarCitaForm extends Component {
                 <div className="row">
                     <Col md="6" className="text-center align-self-center">
                         <div className="form-group row form-group-marginless d-flex justify-content-center mb-0 pb-0">
-                            <div className="col-md-12 text-center" style={{ height: '14px' }}>
+                            <div className="col-md-12 text-center" style={{ height: '3px' }}>
                                 <label className="text-center font-weight-bolder">Fecha</label>
                             </div>
                             <div className="col-md-12 text-center">

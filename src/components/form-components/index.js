@@ -32,7 +32,7 @@ import inputMoneyGray from './Gray/InputMoneyGray'
 import inputNumberGray from './Gray/InputNumberGray'
 import radioGroupGray from './Gray/RadioGroupGray'
 import tagInputGray from './Gray/TagInputGray'
-
+import tagSelectSearchGray from './Gray/TagSelectSearchGray'
 //TIempos
 import selectMinutos from './SelectMinutos'
 import selectHoras from './SelectHoras'
@@ -72,7 +72,7 @@ export const InputMoneyGray = inputMoneyGray
 export const InputNumberGray = inputNumberGray
 export const RadioGroupGray = radioGroupGray
 export const TagInputGray = tagInputGray
-
+export const TagSelectSearchGray = tagSelectSearchGray
 //Tiempos
 export const SelectMinutos = selectMinutos
 export const SelectHoras = selectHoras

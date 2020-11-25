@@ -5,35 +5,22 @@ class InputGray extends Component {
         inputValido: !this.props.requirevalidation
     }
     validarInput(e) {
-        const { value } = e.target
-        const { patterns, requirevalidation } = this.props
-        if (value !== '' && value !== null && value !== undefined) {
-            if (requirevalidation) {
+        const { value } = e.target 
+        const {patterns, requirevalidation}= this.props
+        if(value !== '' && value !== null && value !== undefined){
+            if(requirevalidation){
                 var expRegular = new RegExp(patterns);
-                if (expRegular.test(value)) {
-                    this.setState({
-                        inputValido: true
-                    })
-                } else {
-                    this.setState({
-                        inputValido: false
-                    })
-                }
-            } else {
-                this.setState({
-                    inputValido: true
-                })
-            }
-        } else {
-            if (requirevalidation) {
-                this.setState({
-                    inputValido: false
-                })
-            } else {
-                this.setState({
-                    inputValido: true
-                })
-            }
+                if(expRegular.test(value))
+                    this.setState({ inputValido: true })
+                else
+                    this.setState({ inputValido: false })
+            }else
+                this.setState({ inputValido: true })
+        }else{
+            if(requirevalidation)
+                this.setState({ inputValido: false })
+            else
+                this.setState({ inputValido: true })
         }
     }
     componentDidUpdate(nextProps) {
@@ -55,17 +42,15 @@ class InputGray extends Component {
             this.validarInput({ target: { value: value } })
         }
     }
-    letterCase = (e) => {
-        const { letterCase } = this.state
-        if (letterCase === undefined)
-            e.target.value = ("" + e.target.value).toUpperCase();
-        else {
-            if (letterCase === 'Upper')
-                e.target.value = ("" + e.target.value).toUpperCase();
+    componentDidMount(){
+        const { formeditado, value } = this.props
+        if(formeditado){
+            this.validarInput({ target: { value: value } })
         }
     }
     render() {
-        const { error, onChange, placeholder, iconclass, letterCase, customlabel, customstyle, customclass, withicon, withtextlabel, withtaglabel, withplaceholder, customdiv, ...props } = this.props
+        const { messageinc,error, onChange, placeholder, iconclass, letterCase, customlabel, customstyle, customclass, withicon, withtextlabel, withtaglabel, withplaceholder, customdiv, ...props } = this.props
+        const { inputValido } =  this.state
         const toInputUppercase = e => {
             const { type, value, selectionStart, selectionEnd } = e.target
             if(letterCase !== false)
@@ -109,6 +94,7 @@ class InputGray extends Component {
                         {...props}
                     />
                 </div>
+                <span className={ inputValido ? "form-text text-danger hidden" : "form-text text-danger is-invalid" }> {messageinc} </span>
             </div>
         )
     }
