@@ -1,13 +1,9 @@
 import React, { Component } from 'react'
-import { CalendarDay, Button, InputGray, SelectHoras } from '../../../form-components'
+import { CalendarDay, Button, InputGray, TagInputGray, SelectHorario, RadioGroupGray} from '../../../form-components'
 import { Col, Form } from 'react-bootstrap'
-import { EMAIL } from '../../../../constants'
-import { faPlus } from '@fortawesome/free-solid-svg-icons'
+// import { EMAIL } from '../../../../constants'
+// import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { messageAlert } from '../../../../functions/alert'
-import RadioGroupGray from '../../../form-components/Gray/RadioGroupGray'
-import SelectMinutos from '../../../form-components/SelectMinutos'
-import SelectHorario from '../../../form-components/SelectHorario'
-
 class AgendarCitaForm extends Component {
     addCorreo = () => {
         const { onChange, formAgenda } = this.props
@@ -33,7 +29,7 @@ class AgendarCitaForm extends Component {
         }
     }
     render() {
-        const { formAgenda, onChange, onSubmit, removeCorreo } = this.props
+        const { formAgenda, onChange, onSubmit, removeCorreo, tagInputChange} = this.props
         return (
             <Form>
                 <div className="row">
@@ -115,7 +111,14 @@ class AgendarCitaForm extends Component {
                                 />
                             </div>
                             <div className="col-md-8 text-left">
-                                <InputGray
+                                <TagInputGray
+                                    tags = { formAgenda.correos }
+                                    onChange = { tagInputChange }
+                                    placeholder = "CORREOS DE ASISTENTES"
+                                    iconclass = "fas fa-envelope"
+                                    letterCase = { false }
+                                />
+                                {/* <InputGray
                                     letterCase = { false }
                                     withtaglabel = { 1 }
                                     withtextlabel = { 1 }
@@ -127,13 +130,13 @@ class AgendarCitaForm extends Component {
                                     value = { formAgenda.correo }
                                     onChange = { onChange }
                                     patterns = { EMAIL }
-                                />
+                                /> */}
                             </div>
-                            <div className="col-md-2 mt-3 d-flex justify-content-center align-items-center">
+                            {/* <div className="col-md-2 mt-3 d-flex justify-content-center align-items-center">
                                 <Button icon={faPlus} pulse={"pulse-ring"} className={"btn btn-icon btn-light-gray pulse pulse-dark mr-5"} onClick={(e) => { e.preventDefault(); this.addCorreo() }} />
-                            </div>
+                            </div> */}
                         </div>
-                        <div>
+                        {/* <div>
                             <div className="form-group row form-group-marginless">
                                 <div className="col-md-12 row mx-0">
                                     {
@@ -157,7 +160,7 @@ class AgendarCitaForm extends Component {
                                     }
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
                     </Col>
                 </div>
                 {/* <div className='text-center pb-4'> </div> */}
