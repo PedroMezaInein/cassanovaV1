@@ -445,13 +445,14 @@ class PresupuestoDiseñoCRMForm extends Component {
                                             withtextlabel={1}
                                             withplaceholder={1}
                                             withicon={1}
-                                            requirevalidation={0}
+                                            requirevalidation={1}
                                             formeditado={formeditado}
                                             placeholder="TIEMPO DE EJECUCIÓN"
                                             value={formDiseño.tiempo_ejecucion_construccion}
                                             name="tiempo_ejecucion_construccion"
                                             onChange={onChange}
                                             iconclass={"flaticon-calendar-with-a-clock-time-tools"}
+                                            messageinc="Incorrecto. Ingresa un tiempo de ejecución."
                                         />
                                     </div>
                                 </div>
