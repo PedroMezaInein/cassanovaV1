@@ -5,6 +5,7 @@ import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import SliderImages from '../../singles/SliderImages'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
+import ItemSlider from '../../singles/ItemSlider'
 class AvanceForm extends Component {
     state = {
         activeKey: ''
@@ -35,14 +36,15 @@ class AvanceForm extends Component {
         })
     }
     render() {
-        const { form, onChangeAdjuntoAvance, onChangeAvance, clearFilesAvances, addRowAvance, onChange, proyecto, sendMail, formeditado, deleteFile, handleChange, ...props } = this.props
+        const { form, onChangeAdjuntoAvance, onChangeAvance, clearFilesAvances, addRowAvance, onChange, 
+            proyecto, sendMail, formeditado, deleteFile, handleChange, isNew, onChangeAdjunto, ...props } = this.props
         const { activeKey } = this.state
         return (
             <>
                 <Form
                     {...props}
                 >
-                    <div className="form-group row form-group-marginless pt-4 border-nav m-3">
+                    <div className="form-group row form-group-marginless pt-4 m-3">
                         <div className="col-md-4">
                             <Input
                                 requirevalidation={1}
@@ -83,20 +85,37 @@ class AvanceForm extends Component {
                                 iconclass={"far fa-calendar-alt"}
                             />
                         </div>
-                    </div>
-                    <div className="mr-3">
-                        <div className="d-flex justify-content-end my-2">
-                            <Button
-                                pulse="pulse-ring"
-                                className="btn btn-icon btn-light-info pulse pulse-info"
-                                onClick={addRowAvance}
-                                icon={faPlus}
-                                tooltip={{ text: 'Agregar nuevo' }}
-                            />
-                        </div>
+                        {
+                            isNew === true ?
+                                <div className = 'mt-2 col-md-12'>
+                                    <ItemSlider
+                                        items = {form.adjuntos.avance.files}
+                                        item = 'avance'
+                                        multiple = { false }
+                                        handleChange = { handleChange }
+                                        />
+                                </div>
+                            : ''
+                        }
                     </div>
                     {
+                        isNew !== true ?
+                            <div className="mr-3">
+                                <div className="d-flex justify-content-end my-2">
+                                    <Button
+                                        pulse = "pulse-ring"
+                                        className = "btn btn-icon btn-light-info pulse pulse-info"
+                                        onClick = { addRowAvance }
+                                        icon = { faPlus }
+                                        tooltip = { { text: 'Agregar nuevo' } }
+                                        />
+                                </div>
+                            </div>
+                        : ''
+                    }
+                    {
                         form.avances.map((avance, key) => {
+                            if(isNew !== true)
                             return (
                                 <>
                                     <div className="m-4" key={key}>
