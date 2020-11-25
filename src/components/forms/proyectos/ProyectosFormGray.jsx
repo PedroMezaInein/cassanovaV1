@@ -281,11 +281,13 @@ class ProyectosForm extends Component {
                                                         iconclass={"far fa-user"}
                                                     /> */}
                                                     <TagSelectSearchGray
+                                                        requirevalidation={1}
                                                         placeholder="SELECCIONA EL CLIENTE"
                                                         options={this.transformarOptions(options.clientes)}
                                                         defaultvalue={this.transformarOptions(form.clientes)}
                                                         onChange={this.nuevoUpdateCliente}
                                                         iconclass={"far fa-folder-open"}
+                                                        messageinc="Incorrecto. Selecciona el cliente."
                                                     />
                                                 </>
                                                 :
@@ -301,11 +303,13 @@ class ProyectosForm extends Component {
                                                     messageinc="Incorrecto. Selecciona el cliente"
                                                 /> */}
                                                     <TagSelectSearchGray
+                                                        requirevalidation={1}
                                                         placeholder="SELECCIONA EL CLIENTE"
                                                         options={this.transformarOptions(options.clientes)}
                                                         defaultvalue={this.transformarOptions(form.clientes)}
                                                         onChange={this.nuevoUpdateCliente}
                                                         iconclass={"far fa-folder-open"}
+                                                        messageinc="Incorrecto. Selecciona el cliente."
                                                     />
                                                 </>
                                         }
