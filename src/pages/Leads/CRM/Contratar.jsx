@@ -340,7 +340,7 @@ class Contratar extends Component {
                 <Card className="card-custom card-stretch">
                     <Card.Header className="border-0 mt-4 pt-3">
                         <div class="card-title d-flex justify-content-between">
-                            <span class="font-weight-bolder text-dark align-self-center font-size-h3">Presupuesto de diseño</span>
+                            <span class="font-weight-bolder text-dark align-self-center font-size-h3">CONVERTIR LEAD</span>
                         </div>
                         <div className="d-flex justify-content-end">
                             <Button
