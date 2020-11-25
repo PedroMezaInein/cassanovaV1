@@ -1188,11 +1188,13 @@ class LeadInfo extends Component {
                                                             withtextlabel={1}
                                                             withplaceholder={1}
                                                             withicon={1}
+                                                            requirevalidation={1}
                                                             placeholder='NOMBRE DEL LEAD'
                                                             iconclass="far fa-user"
                                                             name='name'
                                                             value={form.name}
                                                             onChange={this.onChange}
+                                                            messageinc="Incorrecto. Ingresa el nombre del lead."
                                                         />
                                                     </div>
                                                     <div className="col-md-4">
@@ -1201,6 +1203,7 @@ class LeadInfo extends Component {
                                                             withtextlabel={1}
                                                             withplaceholder={1}
                                                             withicon={1}
+                                                            requirevalidation={1}
                                                             placeholder="CORREO ELECTRÓNICO DE CONTACTO"
                                                             iconclass="fas fa-envelope"
                                                             type="email"
@@ -1208,6 +1211,7 @@ class LeadInfo extends Component {
                                                             value={form.email}
                                                             onChange={this.onChange}
                                                             patterns={EMAIL}
+                                                            messageinc="Incorrecto. Ingresa el correo electrónico."
                                                         />
                                                     </div>
                                                     <div className="col-md-4">
@@ -1216,6 +1220,7 @@ class LeadInfo extends Component {
                                                             withtextlabel={1}
                                                             withplaceholder={1}
                                                             withicon={1}
+                                                            requirevalidation={1}
                                                             placeholder="TELÉFONO DE CONTACTO"
                                                             iconclass="fas fa-mobile-alt"
                                                             name="telefono"
@@ -1224,6 +1229,7 @@ class LeadInfo extends Component {
                                                             patterns={TEL}
                                                             thousandseparator={false}
                                                             prefix=''
+                                                            messageinc="Incorrecto. Ingresa el teléfono de contacto."
                                                         />
                                                     </div>
                                                     <div className="col-md-4">
@@ -1232,11 +1238,13 @@ class LeadInfo extends Component {
                                                             withtextlabel={1}
                                                             withplaceholder={1}
                                                             withicon={1}
+                                                            requirevalidation={1}
                                                             placeholder='NOMBRE DEL PROYECTO'
                                                             iconclass="far fa-folder-open"
                                                             name='proyecto'
                                                             value={form.proyecto}
                                                             onChange={this.onChange}
+                                                            messageinc="Incorrecto. Ingresa el nombre del proyecto."
                                                         />
                                                     </div>
                                                 </div>

@@ -91,12 +91,13 @@ class HistorialContactoForm extends Component {
                                     <div className={newTipoContacto ? 'col-md-4' : 'col-md-8'}>
                                         <SelectSearchGray
                                             formeditado={formeditado}
-                                            requirevalidation={0}
+                                            requirevalidation={1}
                                             options={options.tiposContactos}
                                             placeholder="SELECCIONA EL MEDIO DE CONTACTO"
                                             name="tipoContacto"
                                             value={formHistorial.tipoContacto}
                                             onChange={this.updateTipoContacto}
+                                            messageinc="Incorrecto. Selecciona el medio de contacto."
                                         />
                                     </div>
                                     {
@@ -108,13 +109,14 @@ class HistorialContactoForm extends Component {
                                                 withplaceholder={1}
                                                 withicon={1}
                                                 formeditado={formeditado}
-                                                requirevalidation={0}
+                                                requirevalidation={1}
                                                 onChange={onChangeHistorial}
                                                 name="newTipoContacto"
                                                 type="text"
                                                 value={formHistorial.newTipoContacto}
                                                 placeholder="NUEVO TIPO DE CONTACTO"
                                                 iconclass={"fas fa-mail-bulk"}
+                                                messageinc="Incorrecto. Ingresa el nuevo tipo de contacto."
                                             />
                                         </div>
                                     }
@@ -127,7 +129,7 @@ class HistorialContactoForm extends Component {
                                             withplaceholder={1}
                                             withicon={0}
                                             formeditado={formeditado}
-                                            requirevalidation={0}
+                                            requirevalidation={1}
                                             as='textarea'
                                             name='descripcion'
                                             placeholder='DESCRIPCIÓN DEL CONTACTO'
@@ -149,6 +151,7 @@ class HistorialContactoForm extends Component {
                                 <h5 className="mb-4 font-weight-bold text-dark">Adjunto y fecha de contacto</h5>
                                 <div className="form-group row form-group-marginless d-flex justify-content-center">
                                     <div className="col-md-6 text-center align-self-center">
+                                        <label className="col-4 font-weight-bolder align-self-center">Adjunto</label>
                                         <ItemSlider 
                                             items={formHistorial.adjuntos.adjuntos.files}
                                             item='adjuntos' 
@@ -165,10 +168,14 @@ class HistorialContactoForm extends Component {
                                             value={formHistorial.fechaContacto}
                                             patterns={DATE}
                                         /> */}
+                                        <div className="d-flex justify-content-center" style={{ height: '1px' }}>
+                                            <label className="text-center font-weight-bolder">Fecha de contacto</label>
+                                        </div>
                                         <CalendarDay
                                             value = {formHistorial.fechaContacto} 
                                             onChange = { onChangeHistorial } 
                                             name = 'fechaContacto'
+                                            requirevalidation={1}
                                         />
                                     </div>
                                 </div>
