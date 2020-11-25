@@ -7,7 +7,19 @@ class SelectSearchGray extends Component {
         requirevalidation: true
     }
     renderFontValue = (valueProps, onChange) => {
-        const { customstyle, customclass } = this.props
+        const { requirevalidation } = this.state
+        const { customstyle, customclass, messageinc} = this.props
+
+        let validado = false;
+        if (requirevalidation) {
+            if (onChange === null || onChange.value === null) {
+                validado = false;
+            } else {
+                validado = true;
+            }
+        } else {
+            validado = true
+        }
         return (
             <>
                 <div className="form-group">
@@ -23,6 +35,7 @@ class SelectSearchGray extends Component {
                             style={customstyle}
                         />
                     </div>
+                    <span className={validado ? "form-text text-danger hidden" : "form-text text-danger is-invalid"}> {messageinc} </span>
                 </div>
             </>
         );

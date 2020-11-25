@@ -56,6 +56,7 @@ class InputNumberGray extends Component {
     }
     render() {
         const { error, onChange, placeholder, iconclass, messageinc, typeformat, customlabel, customclass, customstyle, thousandseparator,...props } = this.props
+        const { inputValido } = this.state
         return (
             <div className="form-group">
                 <label className={`col-form-label font-weight-bold text-dark-60  ${customlabel}`}>{placeholder}</label>
@@ -76,6 +77,7 @@ class InputNumberGray extends Component {
                         decimalScale={2}
                     />
                 </div>
+                <span className={inputValido ? "form-text text-danger hidden" : "form-text text-danger is-invalid"}> {messageinc} </span>
             </div>
         )
     }
