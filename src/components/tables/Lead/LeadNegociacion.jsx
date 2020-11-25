@@ -189,7 +189,7 @@ class LeadNegociacion extends Component {
                                                                         <i className="flaticon2-plus icon-nm"></i>
                                                                     </span>
                                                                 </OverlayTrigger>
-                                                                <OverlayTrigger overlay={<Tooltip>CIERRE DE VENTA</Tooltip>}>
+                                                                <OverlayTrigger overlay={<Tooltip>SEGUIMIENTO DE VENTA</Tooltip>}>
                                                                     <a onClick={(e) => { changePageCierreVenta(lead) }} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-brown">
                                                                         <span className="svg-icon svg-icon-md">
                                                                             <SVG src={toAbsoluteUrl('/images/svg/File.svg')} />
