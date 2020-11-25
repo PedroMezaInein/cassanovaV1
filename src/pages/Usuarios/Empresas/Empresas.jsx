@@ -10,7 +10,7 @@ import { EMPRESA_COLUMNS } from '../../../constants'
 import { setTextTable } from '../../../functions/setters'
 import ItemSlider from '../../../components/singles/ItemSlider'
 import { Nav, Tab, Col, Row, Card } from 'react-bootstrap'
-import { waitAlert, forbiddenAccessAlert, errorAlert, doneAlert } from '../../../functions/alert'
+import { waitAlert, forbiddenAccessAlert, errorAlert, doneAlert, questionAlertY} from '../../../functions/alert'
 import { EmpresaCard } from '../../../components/cards'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 const $ = require('jquery');
@@ -19,6 +19,7 @@ class Empresas extends Component {
         modalDelete: false,
         modalAdjuntos: false,
         modalSee: false,
+        modalInhabilitadas: false,
         empresa: {},
         form: {
             name: '',
@@ -148,6 +149,13 @@ class Empresas extends Component {
                 action: 'adjuntos',
                 tooltip: { id: 'adjuntos', text: 'Eliminar', type: 'error' }
             },
+            {
+                text: 'Inhabilitar&nbsp;empresa',
+                btnclass: 'dark',
+                iconclass: 'flaticon2-lock',
+                action: 'inhabilitar',
+                tooltip: { id: 'inhabilitar', text: 'Inhabilitar empresa', type: 'info' },
+            }
         )
         return aux
     }
@@ -418,8 +426,46 @@ class Empresas extends Component {
             }
         })
     }
+    inhabilitar = (empresa) => {
+        questionAlertY('¿ESTÁS SEGURO?', '¿DESEAS INHABILITAR LA EMPRESA?', () => this.inhabilitarEmpresa(empresa))
+    }
+    async inhabilitarEmpresa(empresa) {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.put(URL_DEV + 'empresas/detener/' + empresa.id, {}, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.getEmpresas()
+                doneAlert('La empresa fue inhabilitada con éxito.')
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    openModalInhabilitadas = () => {
+        this.setState({
+            ...this.state,
+            modalInhabilitadas: true,
+            title: 'Empresas inhabilitadas',
+        })
+    }
+    handleCloseInhabilitadas = () => {
+        const { modalInhabilitadas } = this.state
+        this.setState({
+            ...this.state,
+            modalInhabilitadas: !modalInhabilitadas,
+        })
+    }
     render() {
-        const { modalDelete, empresa, modalAdjuntos, showadjuntos, defaultActiveKey, modalSee } = this.state
+        const { modalDelete, empresa, modalAdjuntos, showadjuntos, defaultActiveKey, modalSee, modalInhabilitadas} = this.state
         return (
             <Layout active={'usuarios'} {...this.props}>
                 <NewTableServerRender 
@@ -430,12 +476,15 @@ class Empresas extends Component {
                     abrir_modal = { false }
                     url = '/usuarios/empresas/add'
                     mostrar_acciones = { true }
+                    inhabilitar_empresa={true}
+                    onClickInhabilitadas={this.openModalInhabilitadas}
                     actions = {
                         {
                             'edit': { function: this.changePageEdit },
                             'delete': { function: this.openModalDeleteEmpresa },
                             'adjuntos': { function: this.openModalAdjuntos },
                             'see': { function: this.openModalSee },
+                            'inhabilitar': { function: this.inhabilitar },
                         }
                     }
                     idTable = 'kt_datatable_empresas'
@@ -503,6 +552,34 @@ class Empresas extends Component {
                     <EmpresaCard 
                         empresa={empresa} 
                     />
+                </Modal>
+                <Modal title="Habilitar por empresa" show={modalInhabilitadas} handleClose={this.handleCloseInhabilitadas} >
+                    <div className="table-responsive mt-4">
+                        <table className="table table-head-bg table-borderless table-vertical-center">
+                            <thead>
+                                <tr>
+                                    <th className="w-auto">
+                                        <div className="text-left text-muted font-size-sm d-flex justify-content-start">EMPRESA</div>
+                                    </th>
+                                    <th className="text-muted font-size-sm">
+                                        <div className=" text-muted font-size-sm d-flex justify-content-center">HABILITAR</div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <span className="text-dark-75 font-weight-bolder d-block font-size-lg">INFRAESTRUCTURA E INTERIORES SA DE CV	</span>
+                                    </td>
+                                    <td className="text-center">
+                                        <button className="btn btn-icon btn-light btn-text-primary btn-hover-text-dark font-weight-bold btn-sm mr-2">
+                                            <i className="fas fa-unlock-alt text-dark-50"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </Modal>
             </Layout>
         )
