@@ -951,9 +951,11 @@ class LeadInfo extends Component {
             <div>
                 <span className="text-dark-50 font-weight-bolder">
                     ¿Deseas mandar el
-                    <a href={url} target='_blank' className='text-hover-primary text-dark-75 mx-2'>
-                        presupuesto
-                    </a>
+                    <u>
+                        <a href={url} target='_blank' className='text-primary mx-2'>
+                            presupuesto
+                        </a>
+                    </u>
                     al cliente?
                 </span>
             </div>
