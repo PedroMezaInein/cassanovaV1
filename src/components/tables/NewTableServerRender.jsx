@@ -6,8 +6,6 @@ import { Card, Spinner } from 'react-bootstrap'
 import { renderToString } from 'react-dom/server';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
-import SVG from "react-inlinesvg";
-import { toAbsoluteUrl } from "../../functions/routers"
 const $ = require('jquery');
 $.DataTable = require('datatables.net');
 require("datatables.net-responsive-bs4");

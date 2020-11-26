@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Form } from 'react-bootstrap'
+// import { Form } from 'react-bootstrap'
 import { SelectHoras, SelectMinutos } from '.'
 
 class SelectHorario extends Component {
