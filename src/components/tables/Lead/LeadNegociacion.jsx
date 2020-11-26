@@ -175,6 +175,11 @@ class LeadNegociacion extends Component {
                                                     }
                                                 </td>
                                                 <td className="pr-0 text-center">
+                                                    <OverlayTrigger overlay={<Tooltip>Ver más</Tooltip>}>
+                                                        <span onClick={(e) => { changePageDetails(lead) }} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-brown">
+                                                            <i className="flaticon2-plus icon-nm"></i>
+                                                        </span>
+                                                    </OverlayTrigger>
                                                     {
                                                         this.actionsButton(lead) ?
                                                             <OverlayTrigger overlay={<Tooltip>Contratar</Tooltip>}>
@@ -183,20 +188,13 @@ class LeadNegociacion extends Component {
                                                                 </span>
                                                             </OverlayTrigger>
                                                         :
-                                                            <>
-                                                                <OverlayTrigger overlay={<Tooltip>Ver más</Tooltip>}>
-                                                                    <span onClick={(e) => { changePageDetails(lead) }} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-brown">
-                                                                        <i className="flaticon2-plus icon-nm"></i>
+                                                            <OverlayTrigger overlay={<Tooltip>SEGUIMIENTO DE VENTA</Tooltip>}>
+                                                                <a onClick={(e) => { changePageCierreVenta(lead) }} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-brown">
+                                                                    <span className="svg-icon svg-icon-md">
+                                                                        <SVG src={toAbsoluteUrl('/images/svg/File.svg')} />
                                                                     </span>
-                                                                </OverlayTrigger>
-                                                                <OverlayTrigger overlay={<Tooltip>SEGUIMIENTO DE VENTA</Tooltip>}>
-                                                                    <a onClick={(e) => { changePageCierreVenta(lead) }} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-brown">
-                                                                        <span className="svg-icon svg-icon-md">
-                                                                            <SVG src={toAbsoluteUrl('/images/svg/File.svg')} />
-                                                                        </span>
-                                                                    </a>
-                                                                </OverlayTrigger>
-                                                            </>
+                                                                </a>
+                                                            </OverlayTrigger>
                                                     }
                                                 </td>
                                             </tr>
