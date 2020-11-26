@@ -123,14 +123,14 @@ class LeadTelefono extends Component {
             case 'diseño':
             case 'obra':
                 if (emp.name === 'INFRAESTRUCTURA MÉDICA') {
-                    return <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">Me gustaría conocer más detalles específicos acerca su proyecto <span className="font-weight-boldest">por lo que le solicito me pueda proporcionar su correo electrónico </span>para hacerle llegar un cuestionario</div>;
+                    return <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">Me gustaría conocer más detalles específicos acerca su proyecto <span className="font-weight-boldest">por lo que le solicito me pueda proporcionar su correo electrónico </span>para hacerle llegar un cuestionario.</div>;
                 } else if (emp.name === 'INEIN') {
                     return <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">Me gustaría conocer más detalles de tu proyecto <span className="font-weight-boldest">¿Me podrías proporcionar tu correo electrónico?</span>&nbsp;Para hacerte llegar un cuestionario</div>;
                 }
                 break;
             case 'email':
                 if (emp.name === 'INFRAESTRUCTURA MÉDICA') {
-                return <><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Gracias <span className="font-weight-boldest">{form.name}</span>, en unos minutos le <span className="font-weight-boldest">estaré enviado dicho cuestionario a su correo y además le anexare un documento que será útil para usted </span>, en él se describe detalladamente cada servicio que podemos brindarle.</div><div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Una vez que me haga llegar su información, la analizare y <span className="font-weight-boldest">posteriormente me estaré comunicado con usted.</span></div><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">Gracias por contactarnos, que tenga un excelente día.</div></>;
+                return <><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">Gracias <span className="font-weight-boldest">{form.name}</span>, en unos minutos le <span className="font-weight-boldest">estaré enviado dicho cuestionario a su correo y además le anexare un documento que será útil para usted</span>, en él se describe detalladamente cada servicio que podemos brindarle. Una vez que me haga llegar su información, la analizare y <span className="font-weight-boldest">posteriormente me estaré comunicado con usted.</span></div><div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">...</div><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">Gracias por contactarnos, que tenga un excelente día.</div></>;
                 } else if (emp.name === 'INEIN') {
                 return <><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">En unos minutos hare<span className="font-weight-boldest"> llegar a tu correo un cuestionario</span>, te pido nos apoyes en constarlo, para que una vez que yo lo reciba pueda evaluar tu proyecto, ¿De acuerdo?.</div><div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">¿Existiría algo mas en lo que te pueda ayudar antes de finalizar esta llamada?</div><div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">Muy bien <span className="font-weight-boldest">{form.name}</span>, en un momento te hago el envio del cuestionario. Que tengas un excelente día.</div></>;
                 }
@@ -336,10 +336,12 @@ class LeadTelefono extends Component {
                                                     iconclass="fas fa-mobile-alt"
                                                     name="telefono"
                                                     value={form.telefono}
+                                                    requirevalidation={1}
                                                     onChange={this.onChange}
                                                     patterns={TEL}
                                                     thousandseparator={false}
                                                     prefix=''
+                                                    messageinc="Incorrecto. Ingresa el teléfono de contacto."
                                                 />
                                             </div>
                                             <div className="col-md-8">
@@ -358,7 +360,7 @@ class LeadTelefono extends Component {
                                             </div>
                                             <div className="col-md-4">
                                                 <SelectSearchGray
-                                                    requirevalidation={0}
+                                                    requirevalidation={1}
                                                     options={options.origenes}
                                                     placeholder="SELECCIONA EL ORIGEN PARA EL LEAD"
                                                     name="origen"
