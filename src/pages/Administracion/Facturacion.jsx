@@ -24,6 +24,7 @@ class Facturacion extends Component {
         modalRestante: false,
         facturas: [],
         factura: '',
+        empresas: [],
         data: {
             facturas: []
         },
@@ -490,11 +491,29 @@ class Facturacion extends Component {
         })
     }
 
-    openModalRestante = () => {
-        this.setState({
-            ...this.state,
-            modalRestante: true,
-            title: 'Restante por empresa',
+    openModalRestante = async() => {
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'facturas/ventas/restante', { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { empresas } = response.data
+                this.setState({
+                    ...this.state,
+                    modalRestante: true,
+                    title: 'Restante por empresa',
+                    empresas: empresas
+                })        
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
@@ -503,6 +522,7 @@ class Facturacion extends Component {
         this.setState({
             ...this.state,
             modalRestante: !modalRestante,
+            empresas: []
         })
     }
 
@@ -782,7 +802,7 @@ class Facturacion extends Component {
         })
     }
     render() {
-        const { factura, modalSee, modalCancelar, form, modalFacturas, key, modalRestante, data } = this.state
+        const { factura, modalSee, modalCancelar, form, modalFacturas, key, modalRestante, empresas } = this.state
         return (
             <Layout active={'administracion'}  {...this.props}>
                 <Tabs defaultActiveKey="ventas" activeKey={key} onSelect={(value) => { this.controlledTab(value) }}>
@@ -914,8 +934,8 @@ class Facturacion extends Component {
                             </thead>
                             <tbody>
                                 {
-                                    data.empresas ?
-                                        data.empresas.map((empresa, key) => {
+                                    empresas ?
+                                        empresas.map((empresa, key) => {
                                             return (
                                                 <tr key={key}>
                                                     <td>
