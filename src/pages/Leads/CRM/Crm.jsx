@@ -468,10 +468,11 @@ class Crm extends Component {
         await axios.put(URL_DEV + 'crm/table/lead-rh-proveedor/' + lead_rh_proveedores.numPage, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 swal.close()
-                const { leads, total } = response.data
+                const { leads, total, page } = response.data
                 const { lead_rh_proveedores } = this.state
                 lead_rh_proveedores.data = leads
                 lead_rh_proveedores.total = total
+                lead_rh_proveedores.numPage = page
                 let total_paginas = Math.ceil(total / 10)
                 lead_rh_proveedores.total_paginas = total_paginas
                 this.setState({
@@ -500,10 +501,11 @@ class Crm extends Component {
         await axios.put(URL_DEV + 'crm/table/lead-web/' + lead_web.numPage, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 swal.close()
-                const { leads, total } = response.data
+                const { leads, total, page } = response.data
                 const { lead_web } = this.state
                 lead_web.data = leads
                 lead_web.total = total
+                lead_web.numPage = page
                 let total_paginas = Math.ceil(total / 10)
                 lead_web.total_paginas = total_paginas
                 this.setState({
@@ -532,10 +534,11 @@ class Crm extends Component {
         await axios.put(URL_DEV + 'crm/table/lead-en-negociacion/' + leads_en_negociacion.numPage, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 swal.close()
-                const { leads, total } = response.data
+                const { leads, total, page } = response.data
                 const { leads_en_negociacion } = this.state
                 leads_en_negociacion.data = leads
                 leads_en_negociacion.total = total
+                leads_en_negociacion.numPage = page
                 let total_paginas = Math.ceil(total / 10)
                 leads_en_negociacion.total_paginas = total_paginas
                 this.setState({
@@ -564,10 +567,11 @@ class Crm extends Component {
         await axios.put(URL_DEV + 'crm/table/lead-en-contacto/' + leads_en_contacto.numPage, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 swal.close()
-                const { leads, total } = response.data
+                const { leads, total, page } = response.data
                 const { leads_en_contacto } = this.state
                 leads_en_contacto.data = leads
                 leads_en_contacto.total = total
+                leads_en_contacto.numPage = page
                 let total_paginas = Math.ceil(total / 10)
                 leads_en_contacto.total_paginas = total_paginas
                 this.setState({
@@ -596,10 +600,11 @@ class Crm extends Component {
         await axios.put(URL_DEV + 'crm/table/lead-cancelados/' + leads_cancelados.numPage, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 swal.close()
-                const { leads, total } = response.data
+                const { leads, total, page } = response.data
                 const { leads_cancelados } = this.state
                 leads_cancelados.data = leads
                 leads_cancelados.total = total
+                leads_cancelados.numPage = page
                 let total_paginas = Math.ceil(total / 10)
                 leads_cancelados.total_paginas = total_paginas
                 this.setState({
@@ -627,10 +632,11 @@ class Crm extends Component {
         await axios.put(URL_DEV + 'crm/table/lead-contratados/' + leads_contratados.numPage, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 swal.close()
-                const { leads, total } = response.data
+                const { leads, total, page } = response.data
                 const { leads_contratados } = this.state
                 leads_contratados.data = leads
                 leads_contratados.total = total
+                leads_contratados.numPage = page
                 let total_paginas = Math.ceil(total / 10)
                 leads_contratados.total_paginas = total_paginas
                 this.setState({
@@ -658,10 +664,11 @@ class Crm extends Component {
         await axios.put(URL_DEV + 'crm/table/lead-detenidos/' + leads_detenidos.numPage, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 swal.close()
-                const { leads, total } = response.data
+                const { leads, total, page } = response.data
                 const { leads_detenidos } = this.state
                 leads_detenidos.data = leads
                 leads_detenidos.total = total
+                leads_detenidos.numPage = page
                 let total_paginas = Math.ceil(total / 10)
                 leads_detenidos.total_paginas = total_paginas
                 this.setState({
@@ -1065,8 +1072,8 @@ class Crm extends Component {
                                 </div>
                             </Card.Header>
                             <div className="card-body">
-                                <div className="mb-5">
-                                    <div className="form-group row form-group-marginless d-flex justify-content-center">
+                                <div className="mb-0">
+                                    <div className="form-group row form-group-marginless d-flex justify-content-center mb-0">
                                         <div className="col-md-2">
                                             <InputGray
                                                 letterCase={true}
@@ -1082,13 +1089,6 @@ class Crm extends Component {
                                                 placeholder="BUSCAR CLIENTE"
                                                 iconclass={"flaticon2-search-1"}
                                             />
-                                            {/* <div className="input-icon">
-                                                <input value = { form.cliente } type="text" className="form-control form-control-solid" 
-                                                    placeholder="BUSCAR CLIENTE" onChange = { this.onChange } name = 'cliente' />
-                                                <span>
-                                                    <i className="flaticon2-search-1 text-muted"></i>
-                                                </span>
-                                            </div> */}
                                         </div>
                                         {
                                             activeTable !== "web" &&  activeTable !== "rh-proveedores" && activeTable !== 'cancelados' ?
@@ -1107,13 +1107,6 @@ class Crm extends Component {
                                                         placeholder="BUSCAR PROYECTO"
                                                         iconclass={"flaticon2-search-1"}
                                                     />
-                                                    {/* <div className="input-icon">
-                                                        <input value = { form.proyecto } type="text" className="form-control form-control-solid" 
-                                                            placeholder="BUCAR PROYECTO" onChange = { this.onChange } name = 'proyecto' />
-                                                        <span>
-                                                            <i className="flaticon2-search-1 text-muted"></i>
-                                                        </span>
-                                                    </div> */}
                                                 </div>
                                             : ''
                                         }

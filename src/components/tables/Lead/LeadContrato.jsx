@@ -27,6 +27,11 @@ class LeadContrato extends Component {
                 <div className="table-responsive-lg">
                     <table className="table table-borderless table-vertical-center">
                         <thead>
+                            <tr>
+                                <th colSpan="7" className = 'text-green p-2 text-center text-uppercase'>
+                                    LEADS CONTRATADOS
+                                </th>
+                            </tr>
                             <tr className="text-uppercase bg-light-green text-green">
                                 <th style={{ minWidth: "100px" }} className="pl-7">
                                     <span>Nombre del cliente y proyecto</span>
@@ -130,17 +135,27 @@ class LeadContrato extends Component {
                         </tbody>
                     </table>
                 </div>
-                <div className="d-flex justify-content-end">
+                <div className = { leads.total === 0 ? "d-flex justify-content-end" : "d-flex justify-content-between" } >
                     {
-                        this.isActiveButton('prev') ?
-                            <span className="btn btn-icon btn-xs btn-light-success mr-2 my-1" onClick={onClickPrev}><i className="ki ki-bold-arrow-back icon-xs"></i></span>
-                            : ''
+                        leads.total > 0 ?
+                            <div>
+                                Página { parseInt(leads.numPage) + 1} de { leads.total_paginas }
+                            </div>
+                        : ''
                     }
-                    {
-                        this.isActiveButton('next') ?
-                            <span className="btn btn-icon btn-xs btn-light-success mr-2 my-1" onClick={onClickNext}><i className="ki ki-bold-arrow-next icon-xs"></i></span>
-                            : ''
-                    }
+                    <div>
+                        {
+                            this.isActiveButton('prev') ?
+                                <span className="btn btn-icon btn-xs btn-light-success mr-2 my-1" onClick={onClickPrev}><i className="ki ki-bold-arrow-back icon-xs"></i></span>
+                                : ''
+                        }
+                        {
+                            this.isActiveButton('next') ?
+                                <span className="btn btn-icon btn-xs btn-light-success mr-2 my-1" onClick={onClickNext}><i className="ki ki-bold-arrow-next icon-xs"></i></span>
+                                : ''
+                        }
+                    </div>
+                    
                 </div>
             </div>
         )

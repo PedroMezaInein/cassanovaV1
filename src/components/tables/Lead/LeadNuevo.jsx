@@ -51,6 +51,11 @@ class LeadNuevo extends Component {
                     <div className="table-responsive-lg">
                         <table className="table table-borderless table-vertical-center">
                             <thead>
+                                <tr>
+                                    <th colSpan="7" className = 'text-info p-2 text-center text-uppercase'>
+                                        LEADS DE PÁGINA WEB
+                                    </th>
+                                </tr>
                                 <tr className="text-uppercase bg-info-o-30 text-info">
                                     <th style={{ minWidth: "100px" }} className="pl-7">
                                         <span>Nombre del cliente</span>
@@ -122,48 +127,44 @@ class LeadNuevo extends Component {
                                                                 {
                                                                     lead.origen ?
                                                                         <span className="text-dark-75 font-weight-bolder d-block font-size-lg">
-                                                                            {/* {lead.origen.origen} */}
                                                                             <Dropdown>
-                                                                            <Dropdown.Toggle 
-                                                                                style={
-                                                                                    { 
-                                                                                        backgroundColor:'#F3F6F9', color: '#80808F', border: 'transparent', padding: '2.8px 5.6px',
-                                                                                        width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '11.5px',
-                                                                                        fontWeight: 500 
+                                                                                <Dropdown.Toggle 
+                                                                                    style={
+                                                                                        { 
+                                                                                            backgroundColor:'#F3F6F9', color: '#80808F', border: 'transparent', padding: '2.8px 5.6px',
+                                                                                            width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '11.5px',
+                                                                                            fontWeight: 500 
+                                                                                        }
                                                                                     }
-                                                                                }
-                                                                            >
-                                                                                {lead.origen.origen.toUpperCase()}
-                                                                            </Dropdown.Toggle>
-                                                                            <Dropdown.Menu className="p-0">
-                                                                                <Dropdown.Header>
-                                                                                    <span className="font-size-sm">Elige una opción</span>
-                                                                                </Dropdown.Header>
-                                                                                {/* <Dropdown.Divider /> */}
-                                                                                {
-                                                                                    options.origenes.map((origen,key) => {
-                                                                                        return(
-                                                                                            <div key = {key}>
-                                                                                                <Dropdown.Item className="p-0" key = { key } onClick = { () => { changeOrigen( origen.value, lead.id ) } } >
-                                                                                                    <span className="navi-link w-100">
-                                                                                                        <span className="navi-text">
-                                                                                                            <span className="label label-xl label-inline  text-gray rounded-0 w-100 font-weight-bolder">
-                                                                                                                {
-                                                                                                                    origen.text
-                                                                                                                }
+                                                                                >
+                                                                                    {lead.origen.origen.toUpperCase()}
+                                                                                </Dropdown.Toggle>
+                                                                                <Dropdown.Menu className="p-0">
+                                                                                    <Dropdown.Header>
+                                                                                        <span className="font-size-sm">Elige una opción</span>
+                                                                                    </Dropdown.Header>
+                                                                                    {
+                                                                                        options.origenes.map((origen,key) => {
+                                                                                            return(
+                                                                                                <div key = {key}>
+                                                                                                    <Dropdown.Item className="p-0" key = { key } onClick = { () => { changeOrigen( origen.value, lead.id ) } } >
+                                                                                                        <span className="navi-link w-100">
+                                                                                                            <span className="navi-text">
+                                                                                                                <span className="label label-xl label-inline  text-gray rounded-0 w-100 font-weight-bolder">
+                                                                                                                    { origen.text }
+                                                                                                                </span>
                                                                                                             </span>
                                                                                                         </span>
-                                                                                                    </span>
-                                                                                                </Dropdown.Item>
-                                                                                                <Dropdown.Divider className="m-0" style={{borderTop:'1px solid #fff'}}/>
-                                                                                            </div>
-                                                                                        )
-                                                                                    })
-                                                                                }
-                                                                            </Dropdown.Menu>
-                                                                        </Dropdown>
+                                                                                                    </Dropdown.Item>
+                                                                                                    <Dropdown.Divider className="m-0" style={{borderTop:'1px solid #fff'}}/>
+                                                                                                </div>
+                                                                                            )
+                                                                                        })
+                                                                                    }
+                                                                                </Dropdown.Menu>
+                                                                            </Dropdown>
                                                                         </span>
-                                                                        : ''
+                                                                    : ''
                                                                 }
                                                             </div>
                                                         </td>
@@ -245,17 +246,26 @@ class LeadNuevo extends Component {
                             </tbody>
                         </table>
                     </div>
-                    <div className="d-flex justify-content-end">
+                    <div className = { leads.total === 0 ? "d-flex justify-content-end" : "d-flex justify-content-between" } >
                         {
-                            this.isActiveButton('prev') ?
-                                <span className="btn btn-icon btn-xs btn-light-info mr-2 my-1" onClick={onClickPrev}><i className="ki ki-bold-arrow-back icon-xs"></i></span>
-                                : ''
+                            leads.total > 0 ?
+                                <div>
+                                    Página { parseInt(leads.numPage) + 1} de { leads.total_paginas }
+                                </div>
+                            : ''
                         }
-                        {
-                            this.isActiveButton('next') ?
-                                <span className="btn btn-icon btn-xs btn-light-info mr-2 my-1" onClick={onClickNext}><i className="ki ki-bold-arrow-next icon-xs"></i></span>
-                                : ''
-                        }
+                        <div>
+                            {
+                                this.isActiveButton('prev') ?
+                                    <span className="btn btn-icon btn-xs btn-light-info mr-2 my-1" onClick={onClickPrev}><i className="ki ki-bold-arrow-back icon-xs"></i></span>
+                                    : ''
+                            }
+                            {
+                                this.isActiveButton('next') ?
+                                    <span className="btn btn-icon btn-xs btn-light-info mr-2 my-1" onClick={onClickNext}><i className="ki ki-bold-arrow-next icon-xs"></i></span>
+                                    : ''
+                            }
+                        </div>
                     </div>
                 </div >
             </>

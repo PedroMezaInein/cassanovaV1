@@ -29,6 +29,11 @@ class LeadContacto extends Component {
                 <div className="table-responsive-lg">
                     <table className="table table-borderless table-vertical-center">
                         <thead>
+                            <tr>
+                                <th colSpan="7" className = 'text-primary p-2 text-center text-uppercase'>
+                                    LEADS EN CONTACTO
+                                </th>
+                            </tr>
                             <tr className="text-uppercase bg-primary-o-20 text-primary">
                                 <th style={{ minWidth: "100px" }} className="pl-7">
                                     <span>Nombre del cliente y proyecto</span>
@@ -99,7 +104,6 @@ class LeadContacto extends Component {
                                                     {
                                                         lead.origen ?
                                                             <span className="text-dark-75 font-weight-bolder d-block font-size-lg">
-                                                                {/* {lead.origen.origen} */}
                                                                 <Dropdown>
                                                                     <Dropdown.Toggle 
                                                                         style={
@@ -116,7 +120,6 @@ class LeadContacto extends Component {
                                                                         <Dropdown.Header>
                                                                             <span className="font-size-sm">Elige una opción</span>
                                                                         </Dropdown.Header>
-                                                                        {/* <Dropdown.Divider /> */}
                                                                         {
                                                                             options.origenes.map((origen, key) => {
                                                                                 return (
@@ -140,7 +143,7 @@ class LeadContacto extends Component {
                                                                     </Dropdown.Menu>
                                                                 </Dropdown>
                                                             </span>
-                                                            : ''
+                                                        : ''
                                                     }
                                                 </td>
                                                 <td className="d-flex justify-content-center">
@@ -161,7 +164,6 @@ class LeadContacto extends Component {
                                                 <td className="text-center">
                                                     {
                                                         lead.estatus ?
-                                                            /* lead.prospecto.estatus_prospecto ? */
                                                             <Dropdown>
                                                                 <Dropdown.Toggle 
                                                                     style={
@@ -178,7 +180,6 @@ class LeadContacto extends Component {
                                                                     <Dropdown.Header>
                                                                         <span className="font-size-sm">Elige una opción</span>
                                                                     </Dropdown.Header>
-                                                                    {/* <Dropdown.Divider /> */}
                                                                     <Dropdown.Item href="#" className="p-0" onClick={(e) => { e.preventDefault(); changeEstatus('Detenido', lead.id) }} >
                                                                         <span className="navi-link w-100">
                                                                             <span className="navi-text">
@@ -202,8 +203,7 @@ class LeadContacto extends Component {
                                                                     </Dropdown.Item>
                                                                 </Dropdown.Menu>
                                                             </Dropdown>
-                                                            /* : '' */
-                                                            : ''
+                                                        : ''
                                                     }
                                                 </td>
                                                 <td className="pr-0 text-center">
@@ -220,17 +220,26 @@ class LeadContacto extends Component {
                         </tbody>
                     </table>
                 </div>
-                <div className="d-flex justify-content-end">
+                <div className = { leads.total === 0 ? "d-flex justify-content-end" : "d-flex justify-content-between" } >
                     {
-                        this.isActiveButton('prev') ?
-                            <span className="btn btn-icon btn-xs btn-light-primary mr-2 my-1" onClick={onClickPrev}><i className="ki ki-bold-arrow-back icon-xs"></i></span>
-                            : ''
+                        leads.total > 0 ?
+                            <div>
+                                Página { parseInt(leads.numPage) + 1} de { leads.total_paginas }
+                            </div>
+                        : ''
                     }
-                    {
-                        this.isActiveButton('next') ?
-                            <span className="btn btn-icon btn-xs btn-light-primary mr-2 my-1" onClick={onClickNext}><i className="ki ki-bold-arrow-next icon-xs"></i></span>
-                            : ''
-                    }
+                    <div>
+                        {
+                            this.isActiveButton('prev') ?
+                                <span className="btn btn-icon btn-xs btn-light-primary mr-2 my-1" onClick={onClickPrev}><i className="ki ki-bold-arrow-back icon-xs"></i></span>
+                                : ''
+                        }
+                        {
+                            this.isActiveButton('next') ?
+                                <span className="btn btn-icon btn-xs btn-light-primary mr-2 my-1" onClick={onClickNext}><i className="ki ki-bold-arrow-next icon-xs"></i></span>
+                                : ''
+                        }
+                    </div>
                 </div>
             </div>
         )
