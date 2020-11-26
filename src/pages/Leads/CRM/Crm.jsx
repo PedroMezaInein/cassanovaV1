@@ -17,7 +17,7 @@ import LeadNoContratado from '../../../components/tables/Lead/LeadNoContratado'
 import LeadDetenido from '../../../components/tables/Lead/LeadDetenido'
 import { Modal } from '../../../components/singles'
 import { AgendaLlamada } from '../../../components/forms'
-
+import InputGray from '../../../components/form-components/Gray/InputGray'
 class Crm extends Component {
     state = {
         ultimos_contactados: {
@@ -1068,24 +1068,52 @@ class Crm extends Component {
                                 <div className="mb-5">
                                     <div className="form-group row form-group-marginless d-flex justify-content-center">
                                         <div className="col-md-2">
-                                            <div className="input-icon">
+                                            <InputGray
+                                                letterCase={true}
+                                                withtaglabel={0}
+                                                withtextlabel={1}
+                                                withplaceholder={1}
+                                                withicon={1}
+                                                requirevalidation={0}
+                                                name="cliente"
+                                                value={form.cliente}
+                                                onChange={this.onChange}
+                                                type="text"
+                                                placeholder="BUSCAR CLIENTE"
+                                                iconclass={"flaticon2-search-1"}
+                                            />
+                                            {/* <div className="input-icon">
                                                 <input value = { form.cliente } type="text" className="form-control form-control-solid" 
                                                     placeholder="BUSCAR CLIENTE" onChange = { this.onChange } name = 'cliente' />
                                                 <span>
                                                     <i className="flaticon2-search-1 text-muted"></i>
                                                 </span>
-                                            </div>
+                                            </div> */}
                                         </div>
                                         {
-                                            activeTable !== "rh-proveedores" && activeTable !== 'cancelados' ?
+                                            activeTable !== "web" &&  activeTable !== "rh-proveedores" && activeTable !== 'cancelados' ?
                                                 <div className="col-md-2">
-                                                    <div className="input-icon">
+                                                    <InputGray
+                                                        letterCase={true}
+                                                        withtaglabel={0}
+                                                        withtextlabel={1}
+                                                        withplaceholder={1}
+                                                        withicon={1}
+                                                        requirevalidation={0}
+                                                        name="proyecto"
+                                                        value={form.proyecto}
+                                                        onChange={this.onChange}
+                                                        type="text"
+                                                        placeholder="BUSCAR PROYECTO"
+                                                        iconclass={"flaticon2-search-1"}
+                                                    />
+                                                    {/* <div className="input-icon">
                                                         <input value = { form.proyecto } type="text" className="form-control form-control-solid" 
                                                             placeholder="BUCAR PROYECTO" onChange = { this.onChange } name = 'proyecto' />
                                                         <span>
                                                             <i className="flaticon2-search-1 text-muted"></i>
                                                         </span>
-                                                    </div>
+                                                    </div> */}
                                                 </div>
                                             : ''
                                         }
