@@ -902,4 +902,9 @@ div#asideMenuScroll {
         flex: 0 0 83.33333%;
         max-width: 83.33333%;
     }
+} 
+button#solicitar_cita{
+    @media (max-width: ($xxs)){
+        min-height: 36px; 
+    }
 }
