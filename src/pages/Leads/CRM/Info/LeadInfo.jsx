@@ -343,7 +343,7 @@ class LeadInfo extends Component {
         }
 
         if (name === 'tiempo_ejecucion_diseno') {
-            let modulo = parseFloat(value) % 6
+            let modulo = parseFloat(value) % 5
             let aux = Object.keys(
                 {
                     lunes: false,
@@ -356,14 +356,14 @@ class LeadInfo extends Component {
                 }
             )
             formDiseño.semanas = [];
-            for (let i = 0; i < Math.floor(parseFloat(value) / 6); i++) {
+            for (let i = 0; i < Math.floor(parseFloat(value) / 5); i++) {
                 formDiseño.semanas.push({
                     lunes: true,
                     martes: true,
                     miercoles: true,
                     jueves: true,
                     viernes: true,
-                    sabado: true,
+                    sabado: false,
                     domingo: false
                 })
             }
