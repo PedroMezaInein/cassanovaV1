@@ -36,6 +36,7 @@
       "@typescript-eslint/eslint-plugin": "^2.34.0",
       "@typescript-eslint/parser": "^2.34.0",
       "apexcharts": "3.17.0",
+      "aws-sdk": "^2.799.0",
       "axios": "^0.19.2",
       "babel-eslint": "10.x",
       "bootstrap": "^4.5.3",
