@@ -29,7 +29,7 @@ class AgendarCitaForm extends Component {
         }
     }
     render() {
-        const { formAgenda, onChange, onSubmit, removeCorreo, tagInputChange} = this.props
+        const { formAgenda, onChange, onSubmit, tagInputChange} = this.props
         return (
             <Form>
                 <div className="row">
