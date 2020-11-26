@@ -27,6 +27,11 @@ class LeadNoContratado extends Component {
                 <div className="table-responsive-lg">
                     <table className="table table-borderless table-vertical-center">
                         <thead>
+                            <tr>
+                                <th colSpan="7" className = 'text-danger p-2 text-center text-uppercase'>
+                                    LEADS CANCELADOS/RECHAZADOS
+                                </th>
+                            </tr>
                             <tr className="text-uppercase bg-danger-o-30 text-danger">
                                 <th style={{ minWidth: "100px" }} className="pl-7">
                                     <span>Nombre del cliente y proyecto</span>
@@ -35,7 +40,6 @@ class LeadNoContratado extends Component {
                                 <th style={{ minWidth: "100px" }}>Origen</th>
                                 <th style={{ minWidth: "100px" }} className="text-center">Motivo</th>
                                 <th style={{ minWidth: "120px" }} className="text-center">Empresa</th>
-                                {/* <th style={{ minWidth: "100px" }} className="text-center">Vendedor</th> */}
                                 <th style={{ minWidth: "100px" }} className="text-center">Estatus</th>
                                 <th style={{ minWidth: "70px" }}></th>
                             </tr>
@@ -116,28 +120,11 @@ class LeadNoContratado extends Component {
                                                             : <span className="text-dark-75 font-weight-bolder">{lead.empresa.name}</span>
                                                     }
                                                 </td>
-                                                {/* <td className="d-flex justify-content-center">
-                                                <div className="symbol-group symbol-hover">
-                                                    {
-                                                        lead.prospecto.vendedores.map((vendedor, index) => {
-                                                            return (
-                                                                <OverlayTrigger key={index} overlay={<Tooltip>{vendedor.name}</Tooltip>}>
-                                                                    <div className="symbol symbol-35 symbol-circle">
-                                                                        <img alt="Pic" src={vendedor.avatar ? vendedor.avatar : "/default.jpg"} />
-                                                                    </div>
-                                                                </OverlayTrigger>
-                                                            )
-                                                        })
-                                                    }
-                                                </div>
-                                            </td> */}
                                                 <td className="text-center">
                                                     {
                                                         lead.estatus ?
-                                                            // lead.prospecto.estatus_prospecto ?
                                                             <span className="label label-md label-light-danger label-inline font-weight-bold" style={{fontSize: '10.7px'}}>{lead.estatus.estatus.toUpperCase()}</span>
                                                             : ''
-                                                        /* : '' */
                                                     }
                                                 </td>
                                                 <td className="pr-0 text-center">
@@ -179,5 +166,4 @@ class LeadNoContratado extends Component {
         )
     }
 }
-
 export default LeadNoContratado

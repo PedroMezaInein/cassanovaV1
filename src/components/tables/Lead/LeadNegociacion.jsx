@@ -42,6 +42,11 @@ class LeadNegociacion extends Component {
                 <div className="table-responsive-lg">
                     <table className="table table-borderless table-vertical-center">
                         <thead>
+                            <tr>
+                                <th colSpan="7" className = 'text-brown p-2 text-center text-uppercase'>
+                                    LEADS EN NEGOCIACIÓN
+                                </th>
+                            </tr>
                             <tr className="text-uppercase bg-light-brown text-brown">
                                 <th style={{ minWidth: "100px" }} className="pl-7">
                                     <span>Nombre del cliente y proyecto</span>

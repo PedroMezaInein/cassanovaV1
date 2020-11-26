@@ -27,6 +27,11 @@ class LeadContrato extends Component {
                 <div className="table-responsive-lg">
                     <table className="table table-borderless table-vertical-center">
                         <thead>
+                            <tr>
+                                <th colSpan="7" className = 'text-green p-2 text-center text-uppercase'>
+                                    LEADS CONTRATADOS
+                                </th>
+                            </tr>
                             <tr className="text-uppercase bg-light-green text-green">
                                 <th style={{ minWidth: "100px" }} className="pl-7">
                                     <span>Nombre del cliente y proyecto</span>

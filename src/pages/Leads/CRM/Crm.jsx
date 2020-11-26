@@ -1072,8 +1072,8 @@ class Crm extends Component {
                                 </div>
                             </Card.Header>
                             <div className="card-body">
-                                <div className="mb-5">
-                                    <div className="form-group row form-group-marginless d-flex justify-content-center">
+                                <div className="mb-0">
+                                    <div className="form-group row form-group-marginless d-flex justify-content-center mb-0">
                                         <div className="col-md-2">
                                             <InputGray
                                                 letterCase={true}

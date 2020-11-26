@@ -48,6 +48,11 @@ class LeadRhProveedor extends Component {
                     <div className="table-responsive-lg">
                         <table className="table table-borderless table-vertical-center">
                             <thead>
+                                <tr>
+                                    <th colSpan="7" className = 'text-pink p-2 text-center text-uppercase'>
+                                        RRHH Y PROVEEDORES
+                                    </th>
+                                </tr>
                                 <tr className="text-uppercase bg-light-pink text-pink">
                                     <th style={{ minWidth: "100px" }} className="pl-7">
                                         <span>Nombre</span>
