@@ -84,6 +84,7 @@ class Empresas extends Component {
         ],
         adjuntos: [],
         defaultactivekey: "",
+        detenidas: []
     }
     
     componentDidMount() {
@@ -427,15 +428,26 @@ class Empresas extends Component {
         })
     }
     inhabilitar = (empresa) => {
-        questionAlertY('¿ESTÁS SEGURO?', '¿DESEAS INHABILITAR LA EMPRESA?', () => this.inhabilitarEmpresa(empresa))
+        questionAlertY('¿ESTÁS SEGURO?', '¿DESEAS INHABILITAR LA EMPRESA?', () => this.inhabilitarEmpresa(empresa, true))
     }
-    async inhabilitarEmpresa(empresa) {
+    habilitar = (empresa) => {
+        questionAlertY('¿ESTÁS SEGURO?', '¿DESEAS HABILITAR LA EMPRESA?', () => this.inhabilitarEmpresa(empresa, false))
+    }
+    async inhabilitarEmpresa(empresa, estatus) {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.put(URL_DEV + 'empresas/detener/' + empresa.id, {}, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.put(URL_DEV + 'empresa/detener/' + empresa.id, { detenido: estatus }, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 this.getEmpresas()
-                doneAlert('La empresa fue inhabilitada con éxito.')
+                if(estatus)
+                    doneAlert('La empresa fue inhabilitada con éxito.')
+                else
+                    doneAlert('La empresa fue habilitada con éxito.')
+                this.setState({
+                    ...this.state,
+                    detenidas: [],
+                    modalInhabilitadas: false
+                })
             },
             (error) => {
                 console.log(error, 'error')
@@ -450,11 +462,31 @@ class Empresas extends Component {
             console.log(error, 'error')
         })
     }
-    openModalInhabilitadas = () => {
-        this.setState({
-            ...this.state,
-            modalInhabilitadas: true,
-            title: 'Empresas inhabilitadas',
+    openModalInhabilitadas = async() => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'empresa/detenidas', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { empresas } = response.data
+                swal.close();
+                this.setState({
+                    ...this.state,
+                    modalInhabilitadas: true,
+                    title: 'Empresas inhabilitadas',
+                    detenidas: empresas
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
     handleCloseInhabilitadas = () => {
@@ -465,7 +497,7 @@ class Empresas extends Component {
         })
     }
     render() {
-        const { modalDelete, empresa, modalAdjuntos, showadjuntos, defaultActiveKey, modalSee, modalInhabilitadas} = this.state
+        const { modalDelete, empresa, modalAdjuntos, showadjuntos, defaultActiveKey, modalSee, modalInhabilitadas, detenidas } = this.state
         return (
             <Layout active={'usuarios'} {...this.props}>
                 <NewTableServerRender 
@@ -476,8 +508,8 @@ class Empresas extends Component {
                     abrir_modal = { false }
                     url = '/usuarios/empresas/add'
                     mostrar_acciones = { true }
-                    inhabilitar_empresa={true}
-                    onClickInhabilitadas={this.openModalInhabilitadas}
+                    inhabilitar_empresa = { true }
+                    onClickInhabilitadas = { this.openModalInhabilitadas }
                     actions = {
                         {
                             'edit': { function: this.changePageEdit },
@@ -549,11 +581,9 @@ class Empresas extends Component {
                 <ModalDelete title={empresa === null ? "¿Estás seguro que deseas eliminar a " : "¿Estás seguro que deseas eliminar a " + empresa.name + " ?"} show={modalDelete} handleClose={this.handleDeleteModal} onClick={(e) => { this.safeDeleteEmpresa(e)(empresa.id) }}>
                 </ModalDelete>
                 <Modal size="lg" title="Empresa" show={modalSee} handleClose={this.handleCloseSee} >
-                    <EmpresaCard 
-                        empresa={empresa} 
-                    />
+                    <EmpresaCard empresa = { empresa }/>
                 </Modal>
-                <Modal title="Habilitar por empresa" show={modalInhabilitadas} handleClose={this.handleCloseInhabilitadas} >
+                <Modal title = "Habilitar por empresa" show = { modalInhabilitadas } handleClose = { this.handleCloseInhabilitadas } >
                     <div className="table-responsive mt-4">
                         <table className="table table-head-bg table-borderless table-vertical-center">
                             <thead>
@@ -567,16 +597,34 @@ class Empresas extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>
-                                        <span className="text-dark-75 font-weight-bolder d-block font-size-lg">INFRAESTRUCTURA E INTERIORES SA DE CV	</span>
-                                    </td>
-                                    <td className="text-center">
-                                        <button className="btn btn-icon btn-light btn-text-primary btn-hover-text-dark font-weight-bold btn-sm mr-2">
-                                            <i className="fas fa-unlock-alt text-dark-50"></i>
-                                        </button>
-                                    </td>
-                                </tr>
+                                {
+                                    detenidas.length > 0 ?
+                                        detenidas.map((detenida, key)=>{
+                                            return(
+                                                <tr key = { key } >
+                                                    <td>
+                                                        <span className="text-dark-75 font-weight-bolder d-block font-size-lg">
+                                                            { detenida.name }
+                                                        </span>
+                                                    </td>
+                                                    <td className="text-center">
+                                                        <button className="btn btn-icon btn-light btn-text-primary btn-hover-text-dark font-weight-bold btn-sm mr-2"
+                                                            onClick = { (e) => { e.preventDefault(); this.habilitar(detenida) } } >
+                                                            <i className="fas fa-unlock-alt text-dark-50"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            )
+                                        })
+                                    : 
+                                        <tr>
+                                            <td className = 'text-center' colSpan="2">
+                                                <span className="text-dark-75 font-weight-bolder d-block font-size-lg">
+                                                    NO HAY EMPRESA INHABILITADAS
+                                                </span>
+                                            </td>
+                                        </tr>
+                                }
                             </tbody>
                         </table>
                     </div>
