@@ -36,12 +36,6 @@ class InputGray extends Component {
                 }
             }
     }
-    componentDidMount() {
-        const { formeditado, value } = this.props
-        if (formeditado) {
-            this.validarInput({ target: { value: value } })
-        }
-    }
     componentDidMount(){
         const { formeditado, value } = this.props
         if(formeditado){

@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
-import { CalendarDay, Button, InputGray, TagInputGray, SelectMinutos, SelectHoras} from '../../form-components'
+import { CalendarDay, Button, InputGray, TagInputGray } from '../../form-components'
 import { Col, Form } from 'react-bootstrap'
 import SelectHorario from '../../form-components/SelectHorario'
 class AgendaLlamadaUbicacion extends Component {
     render() {
-        const { form, onChange, onSubmit, lead, cierre_cita, cita_contrato, removeCorreo, tagInputChange } = this.props
+        const { form, onChange, onSubmit, lead, cierre_cita, cita_contrato, tagInputChange } = this.props
         let fecha = new Date(form["fecha"])
         let dia = fecha.getDate()
         let numMes = fecha.getMonth()+1

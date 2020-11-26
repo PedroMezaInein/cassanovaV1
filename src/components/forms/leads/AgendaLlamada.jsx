@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import { CalendarDay, Button, SelectHoras } from '../../form-components'
+import { CalendarDay, Button } from '../../form-components'
 import { Col, Form } from 'react-bootstrap'
-import SelectMinutos from '../../form-components/SelectMinutos'
+// import SelectMinutos from '../../form-components/SelectMinutos'
 import SelectHorario from '../../form-components/SelectHorario'
 class AgendaLlamada extends Component {
 
