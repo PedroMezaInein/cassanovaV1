@@ -8,13 +8,13 @@ import { Tooltip } from 'react-bootstrap'
 export default class button extends Component {
 
     render() {
-        const { children, color, text, icon, onClick, className, type, tooltip, pulse, only_icon, ...props } = this.props
+        const { children, color, text, icon, onClick, className, type, tooltip, pulse, only_icon, id, ...props } = this.props
         return (
             <>
                 {
                     tooltip ?
                         <OverlayTrigger overlay={<Tooltip>{tooltip.text}</Tooltip>}>
-                            <Button type={type} onClick={onClick} className={className} {...props}>
+                            <Button id={id}type={type} onClick={onClick} className={className} {...props}>
                                 {
                                     <i className={only_icon}></i>
                                 }
@@ -30,14 +30,17 @@ export default class button extends Component {
                             </Button>
                         </OverlayTrigger>
                         :
-                        <Button type={type} onClick={onClick} className={className} {...props}>
+                        <Button id={id} type={type} onClick={onClick} className={className} {...props}>
                             {/* {
                                 <i className={only_icon}></i>
                             } */}
                             {
                                 icon !== undefined && icon !== '' ?
                                     <FontAwesomeIcon icon={icon} />
-                                : ''
+                                :
+                                only_icon ?
+                                <i className={only_icon}></i>
+                                :''
                             }<span className={pulse}></span>
 
                             {text}
