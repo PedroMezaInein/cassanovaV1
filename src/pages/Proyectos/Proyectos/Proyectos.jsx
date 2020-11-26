@@ -15,6 +15,8 @@ import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert } from '../../..
 import ItemSlider from '../../../components/singles/ItemSlider'
 import { Nav, Tab, Col, Row } from 'react-bootstrap'
 import { ProyectosCard } from '../../../components/cards'
+/* import AWS from 'aws-sdk' */
+
 const $ = require('jquery');
 class Proyectos extends Component {
     state = {
@@ -438,8 +440,11 @@ class Proyectos extends Component {
             clientes: [],
             empresas: [],
             colonias: []
-        }
+        },
+        myBucket: ''
     }
+
+    myBucket = ''
 
     seleccionaradj(adjuntos) {
         const { proyecto } = this.state;
@@ -469,6 +474,19 @@ class Proyectos extends Component {
         })
         if (!proyectos)
             history.push('/')
+        
+        /* AWS.config.update({
+            accessKeyId: 'AKIARX3IEKM76VEW5MCV',
+            secretAccessKey: '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'
+        })
+        let myBucket = new AWS.S3({
+            params: { Bucket: 'admin-proyectos-bucket'},
+            region: 'us-east-2',
+        })
+        this.setState({
+            ...this.state,
+            myBucket: myBucket
+        }) */
         // this.getProyectosAxios()
     }
     updateActiveTabContainer = active => {
@@ -1258,6 +1276,7 @@ class Proyectos extends Component {
         })
     }
     async addProyectoAdjuntoAxios(name) {
+
         const { access_token } = this.props.authUser
         const { form, proyecto } = this.state
         const data = new FormData();
@@ -1275,9 +1294,33 @@ class Proyectos extends Component {
         form.adjuntos_grupo[grupo].adjuntos[adjunto].files.map((file) => {
             data.append(`files_name_${form.adjuntos_grupo[grupo].adjuntos[adjunto].id}[]`, file.name)
             data.append(`files_${form.adjuntos_grupo[grupo].adjuntos[adjunto].id}[]`, file.file)
+            console.log(file.file.size, 'FILE')
+            console.log(data.getAll(`files_${form.adjuntos_grupo[grupo].adjuntos[adjunto].id}[]`), 'FORM DARTA')
             return false
         })
-        await axios.post(URL_DEV + 'proyectos/' + proyecto.id + '/adjuntos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        
+        /* console.log(form.adjuntos_grupo[grupo].adjuntos[adjunto], 'files')
+        form.adjuntos_grupo[grupo].adjuntos[adjunto].files.map((file)=>{
+            const params = {
+                ACL: 'public-read',
+                Key: file.file.name,
+                ContentType: file.file.type,
+                Body: file.file,
+                CrossOrigin: '*'
+            }
+            myBucket.putObject(params)
+                .on('httpUploadProgress', (evt) => {
+                    console.log(Math.round((evt.loaded / evt.total) *100), 'progress')
+                })
+                .send((err)=>{
+                    if(err)
+                        console.log(err, 'error')
+                })
+        }) */
+        await axios.post(URL_DEV + 'proyectos/' + proyecto.id + '/adjuntos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}`}, 
+                maxContentLength: 100000000,
+                maxBodyLength: 1000000000
+            } ).then(
             (response) => {
                 const { proyecto } = response.data
                 const { key } = this.state
@@ -1293,7 +1336,7 @@ class Proyectos extends Component {
                         break;
                     case 'fase3':
                         this.getProyectoFase3Axios();
-                        break;
+                       break;
                     default: break;
                 }
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue registrado con éxito.')
@@ -1306,11 +1349,11 @@ class Proyectos extends Component {
             (error) => {
                 console.log(error, 'error')
                 if (error.response.status === 401) {
-                    forbiddenAccessAlert()
+                   forbiddenAccessAlert()
                 } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
-            }
+           }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
