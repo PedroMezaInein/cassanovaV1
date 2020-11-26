@@ -27,6 +27,11 @@ class LeadDetenido extends Component {
                 <div className="table-responsive-lg">
                     <table className="table table-borderless table-vertical-center">
                         <thead>
+                            <tr>
+                                <th colSpan="7" className = 'text-gray p-2 text-center text-uppercase'>
+                                    LEADS DETENIDOS
+                                </th>
+                            </tr>
                             <tr className="text-uppercase bg-light-gray text-gray">
                                 <th style={{ minWidth: "100px" }} className="pl-7">
                                     <span>Nombre del cliente y proyecto</span>
@@ -97,7 +102,7 @@ class LeadDetenido extends Component {
                                                                     </OverlayTrigger>
                                                                 )
                                                             })
-                                                            : <span className="text-dark-75 font-weight-bolder">{lead.empresa.name}</span>
+                                                        : <span className="text-dark-75 font-weight-bolder">{lead.empresa.name}</span>
                                                     }
                                                 </td>
                                                 <td className="d-flex justify-content-center">
@@ -118,7 +123,6 @@ class LeadDetenido extends Component {
                                                 <td className="text-center">
                                                     {
                                                         lead.estatus ?
-                                                            /* lead.prospecto.estatus_prospecto ? */
                                                             <Dropdown>
                                                                 <Dropdown.Toggle 
                                                                     style={
@@ -158,8 +162,7 @@ class LeadDetenido extends Component {
                                                                     </Dropdown.Item>
                                                                 </Dropdown.Menu>
                                                             </Dropdown>
-                                                            : ''
-                                                        /* : '' */
+                                                        : ''
                                                     }
                                                 </td>
                                                 <td className="pr-0 text-center">
