@@ -1047,7 +1047,6 @@ class LeadInfo extends Component {
             formAgenda
         })
     }
-
     render() {
         const { lead, form, formHistorial, options, formAgenda, formDiseño, modal } = this.state
         return (
@@ -1063,59 +1062,63 @@ class LeadInfo extends Component {
                                                 <>
                                                     <div className="d-flex align-items-center flex-wrap justify-content-between col-md-12">
                                                         <div className="font-weight-bold text-dark-50 py-1">
-                                                            <div className="d-flex align-items-center">
-                                                                <div className="symbol symbol-75 symbol-xxl-85">
-                                                                    <span className="symbol-label font-weight-bolder">{lead.nombre.split(" ", 1)}</span>
+                                                            <div className="d-flex align-items-center ">
+                                                                <div className="symbol symbol-75">
+                                                                    <span className="symbol-label font-weight-bolder font-size-h2">{lead.nombre.charAt(0)}</span>
                                                                 </div>
                                                                 <div className="d-flex flex-column font-weight-bold ml-2">
                                                                     <div>
-                                                                        <div className="d-flex align-items-center text-dark font-size-h5 font-weight-bold mr-3 text-center">{lead.nombre}
-                                                                            <span className="ml-3">
-                                                                                <Button
-                                                                                    icon=''
-                                                                                    className="btn btn-light-success p-1"
-                                                                                    only_icon="fab fa-whatsapp pr-0"
-                                                                                    tooltip={{ text: 'CONTACTAR POR WHATSAPP' }}
-                                                                                /> 
-                                                                            </span>
-                                                                            <span className="ml-3">
-                                                                                {
-                                                                                    lead ?
-                                                                                        lead.prospecto.estatus_prospecto ?
-                                                                                            <Dropdown>
-                                                                                                <Dropdown.Toggle
-                                                                                                    style={
-                                                                                                        {
-                                                                                                            backgroundColor: lead.prospecto.estatus_prospecto.color_fondo, color: lead.prospecto.estatus_prospecto.color_texto, border: 'transparent', padding: '0.15rem 0.75rem',
-                                                                                                            width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '0.8rem',
-                                                                                                            fontWeight: 600
-                                                                                                        }}>
-                                                                                                    {lead.prospecto.estatus_prospecto.estatus.toUpperCase()}
-                                                                                                </Dropdown.Toggle>
-                                                                                                <Dropdown.Menu className="p-0" >
-                                                                                                    <Dropdown.Header>
-                                                                                                        <span className="font-size-sm">Elige una opción</span>
-                                                                                                    </Dropdown.Header>
-                                                                                                    <Dropdown.Item href="#" className="p-0" onClick={(e) => { e.preventDefault(); this.changeEstatus('Detenido', lead.id) }} >
-                                                                                                        <span className="navi-link w-100">
-                                                                                                            <span className="navi-text">
-                                                                                                                <span className="label label-xl label-inline bg-light-gray text-gray rounded-0 w-100">DETENIDO</span>
-                                                                                                            </span>
-                                                                                                        </span>
-                                                                                                    </Dropdown.Item>
-                                                                                                    <Dropdown.Item className="p-0" onClick={(e) => { e.preventDefault(); this.openModalWithInput('Rechazado', lead.id) }} >
-                                                                                                        <span className="navi-link w-100">
-                                                                                                            <span className="navi-text">
-                                                                                                                <span className="label label-xl label-inline label-light-danger rounded-0 w-100">Rechazado</span>
-                                                                                                            </span>
-                                                                                                        </span>
-                                                                                                    </Dropdown.Item>
-                                                                                                </Dropdown.Menu>
-                                                                                            </Dropdown>
-                                                                                            : ''
-                                                                                        : ''
-                                                                                }
-                                                                            </span>
+                                                                        <div className="table-responsive">
+                                                                            <div className="list min-w-230px">
+                                                                                <div className="d-flex align-items-center text-dark font-size-h5 font-weight-bold mr-3 text-center ">{lead.nombre}
+                                                                                    <span className="ml-3">
+                                                                                        <Button
+                                                                                            icon=''
+                                                                                            className="btn btn-light-success p-1"
+                                                                                            only_icon="fab fa-whatsapp pr-0"
+                                                                                            tooltip={{ text: 'CONTACTAR POR WHATSAPP' }}
+                                                                                        />
+                                                                                    </span>
+                                                                                    <span className="ml-3">
+                                                                                        {
+                                                                                            lead ?
+                                                                                                lead.prospecto.estatus_prospecto ?
+                                                                                                    <Dropdown>
+                                                                                                        <Dropdown.Toggle
+                                                                                                            style={
+                                                                                                                {
+                                                                                                                    backgroundColor: lead.prospecto.estatus_prospecto.color_fondo, color: lead.prospecto.estatus_prospecto.color_texto, border: 'transparent', padding: '0.15rem 0.75rem',
+                                                                                                                    width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '0.8rem',
+                                                                                                                    fontWeight: 600
+                                                                                                                }}>
+                                                                                                            {lead.prospecto.estatus_prospecto.estatus.toUpperCase()}
+                                                                                                        </Dropdown.Toggle>
+                                                                                                        <Dropdown.Menu className="p-0" >
+                                                                                                            <Dropdown.Header>
+                                                                                                                <span className="font-size-sm">Elige una opción</span>
+                                                                                                            </Dropdown.Header>
+                                                                                                            <Dropdown.Item href="#" className="p-0" onClick={(e) => { e.preventDefault(); this.changeEstatus('Detenido', lead.id) }} >
+                                                                                                                <span className="navi-link w-100">
+                                                                                                                    <span className="navi-text">
+                                                                                                                        <span className="label label-xl label-inline bg-light-gray text-gray rounded-0 w-100">DETENIDO</span>
+                                                                                                                    </span>
+                                                                                                                </span>
+                                                                                                            </Dropdown.Item>
+                                                                                                            <Dropdown.Item className="p-0" onClick={(e) => { e.preventDefault(); this.openModalWithInput('Rechazado', lead.id) }} >
+                                                                                                                <span className="navi-link w-100">
+                                                                                                                    <span className="navi-text">
+                                                                                                                        <span className="label label-xl label-inline label-light-danger rounded-0 w-100">Rechazado</span>
+                                                                                                                    </span>
+                                                                                                                </span>
+                                                                                                            </Dropdown.Item>
+                                                                                                        </Dropdown.Menu>
+                                                                                                    </Dropdown>
+                                                                                                    : ''
+                                                                                                : ''
+                                                                                        }
+                                                                                    </span>
+                                                                                </div>
+                                                                            </div>
                                                                         </div>
                                                                     </div>
                                                                     <div className="d-flex flex-wrap mt-2 mb-1">
@@ -1285,26 +1288,26 @@ class LeadInfo extends Component {
                                         <Card.Header className="border-0 mt-4 pt-3">
                                             <h3 className="card-title d-flex justify-content-between">
                                                 <span className="font-weight-bolder text-dark align-self-center">Historial de contacto</span>
-                                                <div>
+                                                <div className="text-center">
                                                     <Button
+                                                        id={"solicitar_cita"}
                                                         icon=''
-                                                        className={"btn btn-icon btn-xs w-auto p-3 btn-light-gray mr-2"}
+                                                        className={"btn btn-icon btn-xs w-auto p-3 btn-light-gray mr-2 mt-2"}
                                                         // onClick={() => { waitAlert(); this.solicitarFechaCita() }}
                                                         onClick={(e) => { questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.solicitarFechaCita())}}
                                                         only_icon={"far fa-calendar-check icon-15px mr-2"}
                                                         text='SOLICITAR CITA'
-                                                        tooltip={{ text: 'SOLICITAR CITA' }}
                                                     />
                                                     <Button
                                                         icon=''
-                                                        className={"btn btn-icon btn-xs p-3 btn-light-primary mr-2"}
+                                                        className={"btn btn-icon btn-xs p-3 btn-light-primary mr-2 mt-2"}
                                                         onClick={() => { this.mostrarAgenda() }}
                                                         only_icon={"flaticon2-calendar-2 icon-md"}
                                                         tooltip={{ text: 'AGENDAR CITA' }}
                                                     />
                                                     <Button
                                                         icon=''
-                                                        className={"btn btn-icon btn-xs p-3 btn-light-success mr-2"}
+                                                        className={"btn btn-icon btn-xs p-3 btn-light-success mr-2 mt-2"}
                                                         onClick={() => { this.mostrarFormulario() }}
                                                         only_icon={"flaticon2-plus icon-13px"}
                                                         tooltip={{ text: 'AGREGAR NUEVO CONTACTO' }}

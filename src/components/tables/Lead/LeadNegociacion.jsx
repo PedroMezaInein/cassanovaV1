@@ -77,7 +77,7 @@ class LeadNegociacion extends Component {
                                                             </span>
                                                         </div>
                                                         <div>
-                                                            <a href={`mailto:+${lead.email}`} className="text-dark-75 font-weight-bolder text-hover-primary mb-1 font-size-lg">
+                                                            <a href={`mailto:+${lead.email}`} className="text-dark-75 font-weight-bolder text-hover-brown mb-1 font-size-lg">
                                                                 {lead.nombre}
                                                             </a>
                                                             <span className="text-muted font-weight-bold d-block">

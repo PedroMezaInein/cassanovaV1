@@ -198,7 +198,7 @@ class AgregarConcepto extends Component {
                             form.partida ?
                                 <>
                                     <div className="table-responsive">
-                                        <div className="list  min-w-500px" data-inbox="list">
+                                        <div className="list min-w-230px" data-inbox="list">
                                             {
                                                 form.subpartida ?
                                                     <div className="list min-w-500px" data-inbox="list">
