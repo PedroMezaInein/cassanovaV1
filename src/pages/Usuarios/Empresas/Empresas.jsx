@@ -334,30 +334,6 @@ class Empresas extends Component {
                 this.addAdjuntoAxios(item)
             }
         })
-        // swal({
-        //     title: '¿CONFIRMAS EL ENVIÓ DE ADJUNTOS?',
-        //     buttons: {
-        //         cancel: {
-        //             text: "Cancelar",
-        //             value: null,
-        //             visible: true,
-        //             className: "button__red btn-primary cancel",
-        //             closeModal: true,
-        //         },
-        //         confirm: {
-        //             text: "Aceptar",
-        //             value: true,
-        //             visible: true,
-        //             className: "button__green btn-primary",
-        //             closeModal: true
-        //         }
-        //     }
-        // }).then((result) => {
-        //     if (result) {
-        //         waitAlert()
-        //         this.addAdjuntoAxios(item)
-        //     }
-        // })
     }
 
     async addAdjuntoAxios(name) {

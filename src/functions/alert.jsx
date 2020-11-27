@@ -27,7 +27,7 @@ export async function waitAlert() {
 
 export async function doneAlert(texto) {
     swal({
-        title: 'FELICIDADES 🥳!',
+        title: '¡FELICIDADES!',
         text: texto,
         buttons: false,
         timer: 2500,
@@ -36,10 +36,13 @@ export async function doneAlert(texto) {
 }
 
 export function errorAlert(text) {
-    swal({
-        title: 'UPS 😕!',
+    Swal.fire({
+        title: '¡UPS!',
         text: text,
         icon: 'error',
+        customClass: {
+            actions: 'd-none'
+        }
     })
 }
 

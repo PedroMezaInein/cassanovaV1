@@ -8,6 +8,9 @@ import { deleteAlert, doneAlert, errorAlert, forbiddenAccessAlert, waitAlert } f
 import axios from 'axios'
 import { setOptions } from '../../../functions/setters';
 import { TraspasoForm as TraspasosFormulario } from '../../../components/forms'
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
+const MySwal = withReactContent(Swal)
 class TraspasosForm extends Component {
     state = {
         title: 'Traspaso nuevo',
@@ -121,11 +124,11 @@ class TraspasosForm extends Component {
         const { origen, destino } = this.state.form
         const { title } = this.state
         if (origen === destino) {
-            swal({
-                title: '¡Error!',
-                text: 'La cuenta destino y origen son la misma',
-                icon: 'error'
-            })
+            Swal.fire(
+                '¡ERROR!',
+                'LA CUENTA DESTINO Y ORIGEN SON LA MISMA',
+                'error'
+            )
         } else {
             if (title === 'Editar traspaso')
                 this.editTraspasosAxios()
