@@ -280,33 +280,6 @@ class EmpresasForm extends Component {
     //         img: ''
     //     })
     // }
-
-    deleteFile = element => {
-        swal({
-            title: '¿Deseas eliminar el archivo?',
-            buttons: {
-                cancel: {
-                    text: "Cancelar",
-                    value: null,
-                    visible: true,
-                    className: "button__green btn-primary cancel",
-                    closeModal: true,
-                },
-                confirm: {
-                    text: "Aceptar",
-                    value: true,
-                    visible: true,
-                    className: "button__red btn-primary",
-                    closeModal: true
-                }
-            }
-        }).then((result) => {
-            if (result) {
-                this.deleteAdjuntoAxios(element.id)
-            }
-        })
-    }
-
     render() {
         const { form, title, formeditado } = this.state
         return (

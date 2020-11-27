@@ -908,3 +908,24 @@ button#solicitar_cita{
         min-height: 36px; 
     }
 }
+
+.btn-light-danger-sweetalert2{
+    color: #F64E60!important;
+    background-color: #FFE2E5!important;
+    border-color: transparent!important;
+}
+button.swal2-confirm.btn-light-danger-sweetalert2.swal2-styled:hover{
+    color: #ffffff!important;
+    background-color: #F64E60!important;
+    border-color: transparent!important;
+}
+.btn-light-gray-sweetalert2{
+    color: #464E5F!important;
+    background-color: #E5EAEE!important;
+    border-color: #E5EAEE!important;
+}
+button.swal2-cancel.btn-light-gray-sweetalert2.swal2-styled:hover{
+    color: #464E5F;
+    background-color: #D6D6E0;
+    border-color: #D6D6E0;
+}
