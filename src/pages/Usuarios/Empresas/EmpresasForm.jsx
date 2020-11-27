@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV } from '../../../constants'
 import { EmpresaForm } from '../../../components/forms'
-import swal from 'sweetalert'
 import { Card } from 'react-bootstrap'
 import { waitAlert, doneAlert, errorAlert, forbiddenAccessAlert } from '../../../functions/alert'
 
