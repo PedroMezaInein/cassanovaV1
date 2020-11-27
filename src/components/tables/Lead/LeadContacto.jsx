@@ -223,7 +223,7 @@ class LeadContacto extends Component {
                 <div className = { leads.total === 0 ? "d-flex justify-content-end" : "d-flex justify-content-between" } >
                     {
                         leads.total > 0 ?
-                            <div>
+                            <div className="text-body font-weight-bolder font-size-sm">
                                 Página { parseInt(leads.numPage) + 1} de { leads.total_paginas }
                             </div>
                         : ''

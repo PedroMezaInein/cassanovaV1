@@ -76,7 +76,7 @@ class AgendarCitaForm extends Component {
                             </div>
                         </div>
                         <div className="form-group row form-group-marginless pb-0 mb-0">
-                            <div className='col-md-8 text-left'>
+                            <div className={formAgenda.lugar === 'presencial' ?'col-md-4 text-left':'col-md-8 text-left'}>
                                 <RadioGroupGray
                                     placeholder = "¿Cita presencial o remota?"
                                     name = 'lugar'
@@ -96,20 +96,48 @@ class AgendarCitaForm extends Component {
                                     value = { formAgenda.lugar }
                                     />
                             </div>
-                            <div className='col-md-8 text-left'>
-                                <InputGray
-                                    letterCase = { formAgenda.lugar === 'presencial' ? true : false }
-                                    withtaglabel = { 1 }
-                                    withtextlabel = { 1 }
-                                    withplaceholder = { 1 }
-                                    withicon = { 1 }
-                                    placeholder = { formAgenda.lugar === 'presencial' ? 'UBICACIÓN' : 'URL' }
-                                    iconclass = { formAgenda.lugar === 'presencial' ? 'fas fa-map-marker-alt' : ' fas fa-link' }
-                                    name = { formAgenda.lugar === 'presencial' ? 'ubicacion' : 'url' }
-                                    value = { formAgenda.lugar === 'presencial' ? formAgenda.ubicacion : formAgenda.url }
-                                    onChange = { onChange }
-                                />
-                            </div>
+                            {
+                                formAgenda.lugar === 'presencial' ?
+                                    <div className='col-md-4 text-left'>
+                                        <RadioGroupGray
+                                            placeholder = "¿La cita es en la empresa?"
+                                            name = 'cita_empresa'
+                                            onChange = { onChange }
+                                            options = {
+                                                [
+                                                    {
+                                                        label: 'Si',
+                                                        value: 'si_empresa'
+                                                    },
+                                                    {
+                                                        label: 'No',
+                                                        value: 'no_empresa'
+                                                    }
+                                                ]
+                                            }
+                                            value = { formAgenda.cita_empresa }
+                                        />
+                                    </div>
+                                :''
+                            }
+                            {
+                                formAgenda.lugar === 'remota' ||  formAgenda.cita_empresa === 'no_empresa'?
+                                    <div className='col-md-8 text-left'>
+                                        <InputGray
+                                            letterCase = { formAgenda.lugar === 'presencial' ? true : false }
+                                            withtaglabel = { 1 }
+                                            withtextlabel = { 1 }
+                                            withplaceholder = { 1 }
+                                            withicon = { 1 }
+                                            placeholder = { formAgenda.lugar === 'presencial' ? 'UBICACIÓN' : 'URL' }
+                                            iconclass = { formAgenda.lugar === 'presencial' ? 'fas fa-map-marker-alt' : ' fas fa-link' }
+                                            name = { formAgenda.lugar === 'presencial' ? 'ubicacion' : 'url' }
+                                            value = { formAgenda.lugar === 'presencial' ? formAgenda.ubicacion : formAgenda.url }
+                                            onChange = { onChange }
+                                        />
+                                    </div>
+                                :''
+                            }
                             <div className="col-md-8 text-left">
                                 <TagInputGray
                                     tags = { formAgenda.correos }
