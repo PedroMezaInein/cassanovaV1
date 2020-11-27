@@ -222,8 +222,8 @@ export function validateAlert(success, e, name) {
         success(e)
     } else {
         swal({
-            title: '¡Lo sentimos!',
-            text: 'Llena todos los campos requeridos',
+            title: '¡LO SENTIMOS!',
+            text: 'LLENA TODOS LOS CAMPOS REQUERIDOS',
             icon: 'warning',
             timer: 1500,
             buttons: false
