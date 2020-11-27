@@ -221,7 +221,13 @@ export function validateAlert(success, e, name) {
     if (elementsInvalid.length === 0) {
         success(e)
     } else {
-        alert("RELLENA TODOS LOS CAMPOS")
+        swal({
+            title: '¡Lo sentimos!',
+            text: 'Llena todos los campos requeridos',
+            icon: 'warning',
+            timer: 1500,
+            buttons: false
+        })
     }
 }
 
