@@ -404,32 +404,6 @@ class Cuenta extends Component {
             console.log(error, 'error')
         })
     }
-    getExcelFacturasCompras = async() => {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'exportar/facturas/compras', { responseType:'blob', headers: {Authorization:`Bearer ${access_token}`}}).then(
-            (response) => {
-                const url = window.URL.createObjectURL(new Blob([response.data]));
-                const link = document.createElement('a');
-                link.href = url;
-                link.setAttribute('download', 'compras.xlsx');
-                document.body.appendChild(link);
-                link.click();
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-            },
-            (error) => {
-                console.log(error, 'error')
-                if(error.response.status === 401){
-                    forbiddenAccessAlert()
-                }else{
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
     getExcelBancos = async() => {
         waitAlert()
         const { access_token } = this.props.authUser
