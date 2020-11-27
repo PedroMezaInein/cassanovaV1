@@ -135,7 +135,6 @@ class Crm extends Component {
                 const { empresas, origenes } = response.data
                 const { options } = this.state
                 options.empresas = setOptions(empresas, 'name', 'id')
-                // console.log(options.empresas, 'empresas')
                 let aux = []
                 origenes.map((origen)=>{
                     aux.push({

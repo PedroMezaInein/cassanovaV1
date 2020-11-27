@@ -183,7 +183,6 @@ class EgresosForm extends Component {
                         if (auxEmpresa && auxProveedor) {
                             swal.close()
                         }
-                        console.log(obj, 'OBJ')
                         form.facturaObject = obj
                         form.rfc = obj.rfc_emisor
                         this.setState({
