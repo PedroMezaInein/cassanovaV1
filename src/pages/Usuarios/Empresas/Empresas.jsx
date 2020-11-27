@@ -10,9 +10,12 @@ import { EMPRESA_COLUMNS } from '../../../constants'
 import { setTextTable } from '../../../functions/setters'
 import ItemSlider from '../../../components/singles/ItemSlider'
 import { Nav, Tab, Col, Row, Card } from 'react-bootstrap'
-import { waitAlert, forbiddenAccessAlert, errorAlert, doneAlert, questionAlertY} from '../../../functions/alert'
+import { waitAlert, forbiddenAccessAlert, errorAlert, doneAlert, questionAlertY } from '../../../functions/alert'
 import { EmpresaCard } from '../../../components/cards'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
+const MySwal = withReactContent(Swal)
 const $ = require('jquery');
 class Empresas extends Component {
     state = {
@@ -86,7 +89,7 @@ class Empresas extends Component {
         defaultactivekey: "",
         detenidas: []
     }
-    
+
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
@@ -98,11 +101,11 @@ class Empresas extends Component {
         if (!empresas)
             history.push('/')
     }
-    
+
     async getEmpresas() {
         $('#kt_datatable_empresas').DataTable().ajax.reload();
     }
-    
+
     setEmpresas = empresas => {
         let aux = []
         empresas.map((empresa) => {
@@ -160,7 +163,7 @@ class Empresas extends Component {
         )
         return aux
     }
-    
+
     openModalDeleteEmpresa = emp => {
         this.setState({
             ...this.state,
@@ -169,7 +172,7 @@ class Empresas extends Component {
             formAction: 'Delete'
         })
     }
-    
+
     changePageEdit = empresa => {
         const { history } = this.props
         history.push({
@@ -177,7 +180,7 @@ class Empresas extends Component {
             state: { empresa: empresa }
         });
     }
-    
+
     openModalAdjuntos = empresa => {
         this.setState({
             ...this.state,
@@ -189,7 +192,7 @@ class Empresas extends Component {
             defaultActiveKey: 'logos'
         })
     }
-    
+
     openModalSee = empresa => {
         this.setState({
             ...this.state,
@@ -197,7 +200,7 @@ class Empresas extends Component {
             empresa: empresa
         })
     }
-    
+
     handleCloseSee = () => {
         this.setState({
             ...this.state,
@@ -205,7 +208,7 @@ class Empresas extends Component {
             empresa: ''
         })
     }
-    
+
     setAdjuntosSlider = empresa => {
         let auxheaders = []
         let aux = []
@@ -221,7 +224,7 @@ class Empresas extends Component {
         })
         return aux
     }
-    
+
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
@@ -237,14 +240,14 @@ class Empresas extends Component {
         })
         return form
     }
-    
+
     updateActiveTabContainer = active => {
         this.setState({
             ...this.state,
             subActiveKey: active
         })
     }
-    
+
     handleDeleteModal = () => {
         const { modalDelete } = this.state
         this.setState({
@@ -254,7 +257,7 @@ class Empresas extends Component {
             formAction: ''
         })
     }
-    
+
     safeDeleteEmpresa = e => (empresa) => {
         this.deleteEmpresaAxios(empresa);
         this.setState({
@@ -264,12 +267,12 @@ class Empresas extends Component {
             formAction: ''
         })
     }
-    
+
     async deleteEmpresaAxios(empresa) {
         const { access_token } = this.props.authUser
         await axios.delete(URL_DEV + 'empresa/' + empresa, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
-                
+
                 this.getEmpresas();
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito la empresa.')
             },
@@ -315,30 +318,46 @@ class Empresas extends Component {
     }
     handleChangeImages = (files, item) => {
         this.onChangeAdjuntoGrupo({ target: { name: item, value: files, files: files } })
-        swal({
-            title: '¿Confirmas el envio de adjuntos?',
-            buttons: {
-                cancel: {
-                    text: "Cancelar",
-                    value: null,
-                    visible: true,
-                    className: "button__red btn-primary cancel",
-                    closeModal: true,
-                },
-                confirm: {
-                    text: "Aceptar",
-                    value: true,
-                    visible: true,
-                    className: "button__green btn-primary",
-                    closeModal: true
-                }
+        MySwal.fire({
+            title: '¿CONFIRMAS EL ENVIÓ DE ADJUNTOS?',
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "ACEPTAR",
+            cancelButtonText: "CANCELAR",
+            reverseButtons: true,
+            customClass: {
+                content: 'd-none',
             }
         }).then((result) => {
-            if (result) {
+            if (result.value) {
                 waitAlert()
                 this.addAdjuntoAxios(item)
             }
         })
+        // swal({
+        //     title: '¿CONFIRMAS EL ENVIÓ DE ADJUNTOS?',
+        //     buttons: {
+        //         cancel: {
+        //             text: "Cancelar",
+        //             value: null,
+        //             visible: true,
+        //             className: "button__red btn-primary cancel",
+        //             closeModal: true,
+        //         },
+        //         confirm: {
+        //             text: "Aceptar",
+        //             value: true,
+        //             visible: true,
+        //             className: "button__green btn-primary",
+        //             closeModal: true
+        //         }
+        //     }
+        // }).then((result) => {
+        //     if (result) {
+        //         waitAlert()
+        //         this.addAdjuntoAxios(item)
+        //     }
+        // })
     }
 
     async addAdjuntoAxios(name) {
@@ -439,7 +458,7 @@ class Empresas extends Component {
         await axios.put(URL_DEV + 'empresa/detener/' + empresa.id, { detenido: estatus }, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 this.getEmpresas()
-                if(estatus)
+                if (estatus)
                     doneAlert('La empresa fue inhabilitada con éxito.')
                 else
                     doneAlert('La empresa fue habilitada con éxito.')
@@ -462,7 +481,7 @@ class Empresas extends Component {
             console.log(error, 'error')
         })
     }
-    openModalInhabilitadas = async() => {
+    openModalInhabilitadas = async () => {
         waitAlert()
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'empresa/detenidas', { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -500,17 +519,17 @@ class Empresas extends Component {
         const { modalDelete, empresa, modalAdjuntos, showadjuntos, defaultActiveKey, modalSee, modalInhabilitadas, detenidas } = this.state
         return (
             <Layout active={'usuarios'} {...this.props}>
-                <NewTableServerRender 
-                    columns = { EMPRESA_COLUMNS }
-                    title = 'Empresas' 
-                    subtitle = 'Listado de empresas'
-                    mostrar_boton = { true }
-                    abrir_modal = { false }
-                    url = '/usuarios/empresas/add'
-                    mostrar_acciones = { true }
-                    inhabilitar_empresa = { true }
-                    onClickInhabilitadas = { this.openModalInhabilitadas }
-                    actions = {
+                <NewTableServerRender
+                    columns={EMPRESA_COLUMNS}
+                    title='Empresas'
+                    subtitle='Listado de empresas'
+                    mostrar_boton={true}
+                    abrir_modal={false}
+                    url='/usuarios/empresas/add'
+                    mostrar_acciones={true}
+                    inhabilitar_empresa={true}
+                    onClickInhabilitadas={this.openModalInhabilitadas}
+                    actions={
                         {
                             'edit': { function: this.changePageEdit },
                             'delete': { function: this.openModalDeleteEmpresa },
@@ -519,13 +538,13 @@ class Empresas extends Component {
                             'inhabilitar': { function: this.inhabilitar },
                         }
                     }
-                    idTable = 'kt_datatable_empresas'
-                    cardTable = 'cardTable'
-                    cardTableHeader = 'cardTableHeader'
-                    cardBody = 'cardBody'
-                    accessToken = { this.props.authUser.access_token }
-                    setter = {this.setEmpresas }
-                    urlRender = { URL_DEV + 'empresa'}
+                    idTable='kt_datatable_empresas'
+                    cardTable='cardTable'
+                    cardTableHeader='cardTableHeader'
+                    cardBody='cardBody'
+                    accessToken={this.props.authUser.access_token}
+                    setter={this.setEmpresas}
+                    urlRender={URL_DEV + 'empresa'}
                 />
                 <Modal>
                 </Modal>
@@ -581,9 +600,9 @@ class Empresas extends Component {
                 <ModalDelete title={empresa === null ? "¿Estás seguro que deseas eliminar a " : "¿Estás seguro que deseas eliminar a " + empresa.name + " ?"} show={modalDelete} handleClose={this.handleDeleteModal} onClick={(e) => { this.safeDeleteEmpresa(e)(empresa.id) }}>
                 </ModalDelete>
                 <Modal size="lg" title="Empresa" show={modalSee} handleClose={this.handleCloseSee} >
-                    <EmpresaCard empresa = { empresa }/>
+                    <EmpresaCard empresa={empresa} />
                 </Modal>
-                <Modal title = "Habilitar por empresa" show = { modalInhabilitadas } handleClose = { this.handleCloseInhabilitadas } >
+                <Modal title="Habilitar por empresa" show={modalInhabilitadas} handleClose={this.handleCloseInhabilitadas} >
                     <div className="table-responsive mt-4">
                         <table className="table table-head-bg table-borderless table-vertical-center">
                             <thead>
@@ -599,26 +618,26 @@ class Empresas extends Component {
                             <tbody>
                                 {
                                     detenidas.length > 0 ?
-                                        detenidas.map((detenida, key)=>{
-                                            return(
-                                                <tr key = { key } >
+                                        detenidas.map((detenida, key) => {
+                                            return (
+                                                <tr key={key} >
                                                     <td>
                                                         <span className="text-dark-75 font-weight-bolder d-block font-size-lg">
-                                                            { detenida.name }
+                                                            {detenida.name}
                                                         </span>
                                                     </td>
                                                     <td className="text-center">
                                                         <button className="btn btn-icon btn-light btn-text-primary btn-hover-text-dark font-weight-bold btn-sm mr-2"
-                                                            onClick = { (e) => { e.preventDefault(); this.habilitar(detenida) } } >
+                                                            onClick={(e) => { e.preventDefault(); this.habilitar(detenida) }} >
                                                             <i className="fas fa-unlock-alt text-dark-50"></i>
                                                         </button>
                                                     </td>
                                                 </tr>
                                             )
                                         })
-                                    : 
+                                        :
                                         <tr>
-                                            <td className = 'text-center' colSpan="2">
+                                            <td className='text-center' colSpan="2">
                                                 <span className="text-dark-75 font-weight-bolder d-block font-size-lg">
                                                     NO HAY EMPRESA INHABILITADAS
                                                 </span>

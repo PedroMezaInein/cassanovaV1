@@ -16,7 +16,9 @@ import ItemSlider from '../../../components/singles/ItemSlider'
 import { Nav, Tab, Col, Row } from 'react-bootstrap'
 import { ProyectosCard } from '../../../components/cards'
 /* import AWS from 'aws-sdk' */
-
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
+const MySwal = withReactContent(Swal)
 const $ = require('jquery');
 class Proyectos extends Component {
     state = {
@@ -845,32 +847,47 @@ class Proyectos extends Component {
     }
     
     handleChange = (files, item) => {
-
         this.onChangeAdjuntoGrupo({ target: { name: item, value: files, files: files } })
-        swal({
-            title: '¿Confirmas el envio de adjuntos?',
-            buttons: {
-                cancel: {
-                    text: "Cancelar",
-                    value: null,
-                    visible: true,
-                    className: "button__red btn-primary cancel",
-                    closeModal: true,
-                },
-                confirm: {
-                    text: "Aceptar",
-                    value: true,
-                    visible: true,
-                    className: "button__green btn-primary",
-                    closeModal: true
-                }
+        MySwal.fire({
+            title: '¿CONFIRMAS EL ENVIÓ DE ADJUNTOS?',
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "ACEPTAR",
+            cancelButtonText: "CANCELAR",
+            reverseButtons: true,
+            customClass: {
+                content: 'd-none',
             }
         }).then((result) => {
-            if (result) {
+            if (result.value) {
                 waitAlert()
                 this.addProyectoAdjuntoAxios(item)
             }
         })
+        // swal({
+        //     title: '¿CONFIRMAS EL ENVIÓ DE ADJUNTOS?',
+        //     buttons: {
+        //         cancel: {
+        //             text: "Cancelar",
+        //             value: null,
+        //             visible: true,
+        //             className: "button__red btn-primary cancel",
+        //             closeModal: true,
+        //         },
+        //         confirm: {
+        //             text: "Aceptar",
+        //             value: true,
+        //             visible: true,
+        //             className: "button__green btn-primary",
+        //             closeModal: true
+        //         }
+        //     }
+        // }).then((result) => {
+        //     if (result) {
+        //         waitAlert()
+        //         this.addProyectoAdjuntoAxios(item)
+        //     }
+        // })
     }
     onSubmitAvance = e => {
         e.preventDefault()
