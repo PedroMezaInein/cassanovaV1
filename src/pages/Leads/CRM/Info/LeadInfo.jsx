@@ -63,7 +63,10 @@ class LeadInfo extends Component {
             correo: '',
             lugar: 'presencial',
             url: '',
-            ubicacion: ''
+            ubicacion: '',
+            si_empresa:'',
+            no_empresa:'',
+            cita_empresa:'si_empresa'
         },
         formDiseño: {
             m2: '',
@@ -76,7 +79,7 @@ class LeadInfo extends Component {
             conceptos: [
                 {
                     value: '',
-                    text: 'REUNIÓN DE AMBOS EQUIPOS',
+                    text: 'VISITA A INSTALACIONES Y REUNIÓN DE AMBOS EQUIPOS',
                     name: 'concepto1'
                 },
                 {
@@ -86,7 +89,7 @@ class LeadInfo extends Component {
                 },
                 {
                     value: '',
-                    text: 'JUNTA PRESENCIAL PARA PRIMERA REVISIÓN DE LA PROPUESTA DE DISEÑO',
+                    text: 'JUNTA PRESENCIAL/REMOTA PARA PRIMERA REVISIÓN DE LA PROPUESTA DE DISEÑO Y MODELO 3D',
                     name: 'concepto3'
                 },
                 {
@@ -96,17 +99,17 @@ class LeadInfo extends Component {
                 },
                 {
                     value: '',
-                    text: 'JUNTA PRESENCIAL PARA SEGUNDA REVISIÓN DE LA PROPUESTA DE DISEÑO',
+                    text: 'JUNTA PRESENCIAL/REMOTA PARA SEGUNDA REVISIÓN DE LA PROPUESTA DE DISEÑO ,MODELO 3D Y V.º B.º DE DISEÑO ',
                     name: 'concepto5'
                 },
                 {
                     value: '',
-                    text: 'DESARROLLO DEL PROYECTO EJECUTIVO',
+                    text: 'DESARROLLO DEL PROYECTO',
                     name: 'concepto6'
                 },
                 {
                     value: '',
-                    text: 'ENTREGA FINAL DEL PROYECTO EN DIGITAL',
+                    text: 'ENTREGA FINAL DEL PROYECTO DIGITAL',
                     name: 'concepto7'
                 },
             ],
@@ -323,7 +326,30 @@ class LeadInfo extends Component {
     onChangePresupuesto = e => {
         const { name, value, type, checked } = e.target
         const { formDiseño, data } = this.state
-        
+        formDiseño[name] = value
+        if (name === 'esquema') {
+            formDiseño.conceptos.map((concepto) => {
+                if (concepto.name === 'concepto4') {
+                    if (value === 'esquema_1' || value === 'esquema_2')
+                        concepto.text = 'DESARROLLO DEL PROYECTO'
+                    if (value === 'esquema_3')
+                        concepto.text = 'DESARROLLO DEL PROYECTO EJECUTIVO'
+                }
+                if (concepto.name === 'concepto6') {
+                    if (value === 'esquema_1' || value === 'esquema_2')
+                        concepto.text = 'DESARROLLO DEL PROYECTO'
+                    if (value === 'esquema_3')
+                        concepto.text = 'DESARROLLO DEL PROYECTO EJECUTIVO'
+                }
+                if (concepto.name === 'concepto7') {
+                    if (value === 'esquema_1' || value === 'esquema_2')
+                        concepto.text = 'ENTREGA FINAL DEL PROYECTO DIGITAL'
+                    if (value === 'esquema_3')
+                        concepto.text = 'ENTREGA FINAL DEL PROYECTO EJECUTIVO EN DIGITAL'
+                }
+                return false
+            })
+        }
         if(type === 'checkbox')
             formDiseño[name] = checked
         else
@@ -728,16 +754,16 @@ class LeadInfo extends Component {
                     formDiseño.renders = lead.presupuesto_diseño.renders
 
                     let aux = JSON.parse(lead.presupuesto_diseño.actividades)
-                    if (aux) {
-                        aux = aux.actividades
-                        formDiseño.conceptos = aux
-                    }
+                    // if (aux) {
+                    //     aux = aux.actividades
+                    //     formDiseño.conceptos = aux
+                    // }
 
                     aux = JSON.parse(lead.presupuesto_diseño.semanas)
-                    if (aux) {
-                        aux = aux.semanas
-                        formDiseño.semanas = aux
-                    }
+                    // if (aux) {
+                    //     aux = aux.semanas
+                    //     formDiseño.semanas = aux
+                    // }
 
                     let planos = []
                     if (data.empresa)
