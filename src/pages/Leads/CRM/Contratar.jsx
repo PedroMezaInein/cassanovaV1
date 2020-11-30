@@ -208,7 +208,7 @@ class Contratar extends Component {
 
     async getOneLead() {
         waitAlert()
-        const { access_token } = this.props.authUser
+        // const { access_token } = this.props.authUser
         const { location: { state: historyState } } = this.props
     }
 

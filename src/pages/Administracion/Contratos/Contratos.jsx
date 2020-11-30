@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import swal from 'sweetalert'
 import { renderToString } from 'react-dom/server'
 import { waitAlert, errorAlert, forbiddenAccessAlert, validateAlert, doneAlert } from '../../../functions/alert'
 import { setTextTable, setDateTable, setMoneyTable, setArrayTable } from '../../../functions/setters'
@@ -14,6 +13,9 @@ import FileInput from '../../../components/form-components/FileInput'
 import TableForModals from '../../../components/tables/TableForModals'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { ContratoCard } from '../../../components/cards'
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
+const MySwal = withReactContent(Swal)
 const $ = require('jquery');
 class Contratos extends Component {
     state = {
@@ -135,27 +137,20 @@ class Contratos extends Component {
         })
     }
     openModalDeleteAdjunto = (adjunto) => {
-        swal({
-            title: '¿Estás seguro?',
-            icon: 'warning',
-            buttons: {
-                cancel: {
-                    text: "Cancelar",
-                    value: null,
-                    visible: true,
-                    className: "button__green btn-primary cancel",
-                    closeModal: true,
-                },
-                confirm: {
-                    text: "Aceptar",
-                    value: true,
-                    visible: true,
-                    className: "button__red btn-primary",
-                    closeModal: true
-                }
+        MySwal.fire({
+            title: '¿DESEAS ELIMINAR EL ARCHIVO?',
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: 'ACEPTAR',
+            cancelButtonText: 'CANCELAR',
+            reverseButtons: true,
+            customClass: {
+                content: 'd-none',
+                confirmButton: 'btn-light-danger-sweetalert2',
+                cancelButton:'btn-light-gray-sweetalert2'
             }
         }).then((result) => {
-            if (result) {
+            if (result.value) {
                 this.deleteAdjuntoContratoAxios(adjunto.id)
             }
         })

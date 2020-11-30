@@ -14,7 +14,9 @@ import {Input, Button}from '../../components/form-components'
 import moment from 'moment'
 import { Badge, Card, Nav, Tab } from 'react-bootstrap'
 import { errorAlert, forbiddenAccessAlert } from '../../functions/alert'
-
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
+const MySwal = withReactContent(Swal)
 class Tareas extends Component{
 
     state = {
@@ -356,10 +358,14 @@ class Tareas extends Component{
 
     addComentario = () => {
         const { comentario } = this.state
-        swal({
-            title: '¡Un momento!',
-            text: 'Se está enviando tu mensaje.',
-            buttons: false
+        MySwal.fire({
+            title:'¡UN MOMENTO!',
+            text:'SE ESTÁ ENVIANDO TU MENSAJE.',
+            icon:'info',
+            customClass: {
+                actions: 'd-none',
+                icon: 'text-lowercase',
+            }
         })
         if(comentario !== '')
             this.addComentarioAxios()

@@ -23,7 +23,7 @@ export function openWizard2() {
         document.getElementById("wizard-3-content").removeAttribute("data-wizard-state");
     } else {
         swal({
-            title: '¡Lo sentimos!',
+            title: '¡LO SENTIMOS!',
             text: 'Llena todos los campos requeridos',
             icon: 'warning',
             timer: 1500,
@@ -45,7 +45,7 @@ export function openWizard3() {
         document.getElementById("wizard-2-content").removeAttribute("data-wizard-state");
     } else {
         swal({
-            title: '¡Lo sentimos!',
+            title: '¡LO SENTIMOS!',
             text: 'Llena todos los campos requeridos',
             icon: 'warning',
             timer: 1500,
@@ -76,7 +76,7 @@ export function openWizard2_for2_wizard() {
         document.getElementById("for2-wizard-1-content").removeAttribute("data-wizard-state");
     } else {
         swal({
-            title: '¡Lo sentimos!',
+            title: '¡LO SENTIMOS!',
             text: 'Llena todos los campos requeridos',
             icon: 'warning',
             timer: 1500,
