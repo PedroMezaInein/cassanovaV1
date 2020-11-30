@@ -64,9 +64,9 @@ class LeadInfo extends Component {
             lugar: 'presencial',
             url: '',
             ubicacion: '',
-            si_empresa:'',
-            no_empresa:'',
-            cita_empresa:'si_empresa'
+            si_empresa: '',
+            no_empresa: '',
+            cita_empresa: 'si_empresa'
         },
         formDiseño: {
             m2: '',
@@ -133,9 +133,9 @@ class LeadInfo extends Component {
             partidas: [],
             planos: [],
             subtotal: 0.0,
-            fase1:true,
-            fase2:true,
-            renders:''
+            fase1: true,
+            fase2: true,
+            renders: ''
         },
         // tipo: '',
         options: {
@@ -350,12 +350,12 @@ class LeadInfo extends Component {
                 return false
             })
         }
-        if(type === 'checkbox')
+        if (type === 'checkbox')
             formDiseño[name] = checked
         else
             formDiseño[name] = value
 
-        switch(name){
+        switch (name) {
             case 'construccion_interiores_inf':
             case 'construccion_interiores_sup':
             case 'construccion_civil_inf':
@@ -726,17 +726,17 @@ class LeadInfo extends Component {
 
         let { tipo } = this.state
         const { access_token } = this.props.authUser
-        
-        if(tipo === '' )
+
+        if (tipo === '')
             tipo = lead.estatus.estatus
 
         let api = ''
-        
-        if(lead.estatus.estatus === 'En proceso')
+
+        if (lead.estatus.estatus === 'En proceso')
             api = 'crm/table/lead-en-contacto/';
         else
             api = 'crm/table/lead-en-negociacion/';
-        
+
         await axios.get(URL_DEV + api + lead.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { lead } = response.data
@@ -924,11 +924,11 @@ class LeadInfo extends Component {
         })
     }
 
-    sendCorreoPresupuesto = async(identificador) => {
+    sendCorreoPresupuesto = async (identificador) => {
         waitAlert()
         const { access_token } = this.props.authUser
         const { lead } = this.state
-        await axios.put(URL_DEV + 'crm/email/envio-cotizacion/' + lead.id, {identificador: identificador}, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.put(URL_DEV + 'crm/email/envio-cotizacion/' + lead.id, { identificador: identificador }, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { history } = this.props
                 doneAlert('Correo enviado con éxito')
@@ -1002,8 +1002,8 @@ class LeadInfo extends Component {
     }
 
     onClickSendPresupuesto = pdf => {
-        questionAlert2('¡NO PODRÁS REVERTIR ESTO!', '', 
-            () => this.sendCorreoPresupuesto(pdf.pivot.identificador), 
+        questionAlert2('¡NO PODRÁS REVERTIR ESTO!', '',
+            () => this.sendCorreoPresupuesto(pdf.pivot.identificador),
             this.getTextAlert(pdf.url)
         )
     }
@@ -1015,15 +1015,15 @@ class LeadInfo extends Component {
         formDiseño.pdf = pdf
         await axios.post(URL_DEV + 'crm/add/presupuesto-diseño/' + lead.id, formDiseño, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                if(formDiseño.pdf){
+                if (formDiseño.pdf) {
                     const { presupuesto } = response.data
-                    if(presupuesto)
-                        if(presupuesto.pdfs)
-                            if(presupuesto.pdfs[0])
-                                if(presupuesto.pdfs[0].pivot){
+                    if (presupuesto)
+                        if (presupuesto.pdfs)
+                            if (presupuesto.pdfs[0])
+                                if (presupuesto.pdfs[0].pivot) {
                                     swal.close()
-                                    questionAlert2('¡NO PODRÁS REVERTIR ESTO!', '', 
-                                        () => this.sendCorreoPresupuesto(presupuesto.pdfs[0].pivot.identificador), 
+                                    questionAlert2('¡NO PODRÁS REVERTIR ESTO!', '',
+                                        () => this.sendCorreoPresupuesto(presupuesto.pdfs[0].pivot.identificador),
                                         this.getTextAlert(presupuesto.pdfs[0].url)
                                     )
                                 }
@@ -1062,8 +1062,8 @@ class LeadInfo extends Component {
         })
     }
     tagInputChange = (nuevosCorreos) => {
-        const uppercased = nuevosCorreos.map(tipo => tipo.toUpperCase()); 
-        const { formAgenda } = this.state 
+        const uppercased = nuevosCorreos.map(tipo => tipo.toUpperCase());
+        const { formAgenda } = this.state
         let unico = {};
         uppercased.forEach(function (i) {
             if (!unico[i]) { unico[i] = true }
@@ -1076,7 +1076,7 @@ class LeadInfo extends Component {
     render() {
         const { lead, form, formHistorial, options, formAgenda, formDiseño, modal } = this.state
         return (
-            <Layout active={'leads'}  {...this.props} botonHeader = { this.botonHeader } >
+            <Layout active={'leads'}  {...this.props} botonHeader={this.botonHeader} >
                 <Tab.Container defaultActiveKey="2" className="p-5">
                     <Row>
                         <Col md={12} className="mb-3">
@@ -1094,57 +1094,53 @@ class LeadInfo extends Component {
                                                                 </div>
                                                                 <div className="d-flex flex-column font-weight-bold ml-2">
                                                                     <div>
-                                                                        <div className="table-responsive">
-                                                                            <div className="list min-w-230px">
-                                                                                <div className="d-flex align-items-center text-dark font-size-h5 font-weight-bold mr-3 text-center ">{lead.nombre}
-                                                                                    <span className="ml-3">
-                                                                                        <Button
-                                                                                            icon=''
-                                                                                            className="btn btn-light-success p-1"
-                                                                                            only_icon="fab fa-whatsapp pr-0"
-                                                                                            tooltip={{ text: 'CONTACTAR POR WHATSAPP' }}
-                                                                                        />
-                                                                                    </span>
-                                                                                    <span className="ml-3">
-                                                                                        {
-                                                                                            lead ?
-                                                                                                lead.prospecto.estatus_prospecto ?
-                                                                                                    <Dropdown>
-                                                                                                        <Dropdown.Toggle
-                                                                                                            style={
-                                                                                                                {
-                                                                                                                    backgroundColor: lead.prospecto.estatus_prospecto.color_fondo, color: lead.prospecto.estatus_prospecto.color_texto, border: 'transparent', padding: '0.15rem 0.75rem',
-                                                                                                                    width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '0.8rem',
-                                                                                                                    fontWeight: 600
-                                                                                                                }}>
-                                                                                                            {lead.prospecto.estatus_prospecto.estatus.toUpperCase()}
-                                                                                                        </Dropdown.Toggle>
-                                                                                                        <Dropdown.Menu className="p-0" >
-                                                                                                            <Dropdown.Header>
-                                                                                                                <span className="font-size-sm">Elige una opción</span>
-                                                                                                            </Dropdown.Header>
-                                                                                                            <Dropdown.Item href="#" className="p-0" onClick={(e) => { e.preventDefault(); this.changeEstatus('Detenido', lead.id) }} >
-                                                                                                                <span className="navi-link w-100">
-                                                                                                                    <span className="navi-text">
-                                                                                                                        <span className="label label-xl label-inline bg-light-gray text-gray rounded-0 w-100">DETENIDO</span>
-                                                                                                                    </span>
-                                                                                                                </span>
-                                                                                                            </Dropdown.Item>
-                                                                                                            <Dropdown.Item className="p-0" onClick={(e) => { e.preventDefault(); this.openModalWithInput('Rechazado', lead.id) }} >
-                                                                                                                <span className="navi-link w-100">
-                                                                                                                    <span className="navi-text">
-                                                                                                                        <span className="label label-xl label-inline label-light-danger rounded-0 w-100">Rechazado</span>
-                                                                                                                    </span>
-                                                                                                                </span>
-                                                                                                            </Dropdown.Item>
-                                                                                                        </Dropdown.Menu>
-                                                                                                    </Dropdown>
-                                                                                                    : ''
-                                                                                                : ''
-                                                                                        }
-                                                                                    </span>
-                                                                                </div>
-                                                                            </div>
+                                                                        <div className="d-flex align-items-center text-dark font-size-h5 font-weight-bold mr-3 text-center ">{lead.nombre}
+                                                                            <span className="ml-3">
+                                                                                <Button
+                                                                                    icon=''
+                                                                                    className="btn btn-light-success p-1"
+                                                                                    only_icon="fab fa-whatsapp pr-0"
+                                                                                    tooltip={{ text: 'CONTACTAR POR WHATSAPP' }}
+                                                                                />
+                                                                            </span>
+                                                                            <span className="ml-3">
+                                                                                {
+                                                                                    lead ?
+                                                                                        lead.prospecto.estatus_prospecto ?
+                                                                                            <Dropdown>
+                                                                                                <Dropdown.Toggle
+                                                                                                    style={
+                                                                                                        {
+                                                                                                            backgroundColor: lead.prospecto.estatus_prospecto.color_fondo, color: lead.prospecto.estatus_prospecto.color_texto, border: 'transparent', padding: '0.15rem 0.75rem',
+                                                                                                            width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '0.8rem',
+                                                                                                            fontWeight: 600
+                                                                                                        }}>
+                                                                                                    {lead.prospecto.estatus_prospecto.estatus.toUpperCase()}
+                                                                                                </Dropdown.Toggle>
+                                                                                                <Dropdown.Menu className="p-0" >
+                                                                                                    <Dropdown.Header>
+                                                                                                        <span className="font-size-sm">Elige una opción</span>
+                                                                                                    </Dropdown.Header>
+                                                                                                    <Dropdown.Item href="#" className="p-0" onClick={(e) => { e.preventDefault(); this.changeEstatus('Detenido', lead.id) }} >
+                                                                                                        <span className="navi-link w-100">
+                                                                                                            <span className="navi-text">
+                                                                                                                <span className="label label-xl label-inline bg-light-gray text-gray rounded-0 w-100">DETENIDO</span>
+                                                                                                            </span>
+                                                                                                        </span>
+                                                                                                    </Dropdown.Item>
+                                                                                                    <Dropdown.Item className="p-0" onClick={(e) => { e.preventDefault(); this.openModalWithInput('Rechazado', lead.id) }} >
+                                                                                                        <span className="navi-link w-100">
+                                                                                                            <span className="navi-text">
+                                                                                                                <span className="label label-xl label-inline label-light-danger rounded-0 w-100">Rechazado</span>
+                                                                                                            </span>
+                                                                                                        </span>
+                                                                                                    </Dropdown.Item>
+                                                                                                </Dropdown.Menu>
+                                                                                            </Dropdown>
+                                                                                            : ''
+                                                                                        : ''
+                                                                                }
+                                                                            </span>
                                                                         </div>
                                                                     </div>
                                                                     <div className="d-flex flex-wrap mt-2 mb-1">
@@ -1320,7 +1316,7 @@ class LeadInfo extends Component {
                                                         icon=''
                                                         className={"btn btn-icon btn-xs w-auto p-3 btn-light-gray mr-2 mt-2"}
                                                         // onClick={() => { waitAlert(); this.solicitarFechaCita() }}
-                                                        onClick={(e) => { questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.solicitarFechaCita())}}
+                                                        onClick={(e) => { questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.solicitarFechaCita()) }}
                                                         only_icon={"far fa-calendar-check icon-15px mr-2"}
                                                         text='SOLICITAR CITA'
                                                     />
@@ -1421,7 +1417,7 @@ class LeadInfo extends Component {
                                         <Card.Header className="border-0 mt-4 pt-3">
                                             <h3 className="card-title d-flex justify-content-between">
                                                 <span className="font-weight-bolder text-dark align-self-center">Presupuesto de diseño</span>
-                                                { 
+                                                {
                                                     lead ?
                                                         lead.presupuesto_diseño ?
                                                             lead.presupuesto_diseño.pdfs ?
@@ -1435,10 +1431,10 @@ class LeadInfo extends Component {
                                                                             tooltip={{ text: 'COTIZACIONES GENERADAS' }}
                                                                         />
                                                                     </div>
+                                                                    : ''
                                                                 : ''
                                                             : ''
                                                         : ''
-                                                    : ''
                                                 }
                                             </h3>
                                         </Card.Header>
@@ -1466,13 +1462,13 @@ class LeadInfo extends Component {
                             lead.presupuesto_diseño ?
                                 lead.presupuesto_diseño.pdfs ?
                                     lead.presupuesto_diseño.pdfs.length ?
-                                        <PresupuestoGenerado pdfs = { lead.presupuesto_diseño.pdfs } onClick = { this.onClickSendPresupuesto }/>
+                                        <PresupuestoGenerado pdfs={lead.presupuesto_diseño.pdfs} onClick={this.onClickSendPresupuesto} />
+                                        : ''
                                     : ''
                                 : ''
                             : ''
-                        : ''
                     }
-                    
+
                 </Modal>
             </Layout >
         )
