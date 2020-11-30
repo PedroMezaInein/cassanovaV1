@@ -47,6 +47,8 @@ class AgendaLlamadaUbicacion extends Component {
             case 12:
                 mes= "Diciembre";
                 break;
+            default:
+                return ''
         }
         return (
             <>

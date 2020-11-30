@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV } from '../../../constants'
 import { EmpresaForm } from '../../../components/forms'
-import swal from 'sweetalert'
 import { Card } from 'react-bootstrap'
 import { waitAlert, doneAlert, errorAlert, forbiddenAccessAlert } from '../../../functions/alert'
 
@@ -280,33 +279,6 @@ class EmpresasForm extends Component {
     //         img: ''
     //     })
     // }
-
-    deleteFile = element => {
-        swal({
-            title: '¿Deseas eliminar el archivo?',
-            buttons: {
-                cancel: {
-                    text: "Cancelar",
-                    value: null,
-                    visible: true,
-                    className: "button__green btn-primary cancel",
-                    closeModal: true,
-                },
-                confirm: {
-                    text: "Aceptar",
-                    value: true,
-                    visible: true,
-                    className: "button__red btn-primary",
-                    closeModal: true
-                }
-            }
-        }).then((result) => {
-            if (result) {
-                this.deleteAdjuntoAxios(element.id)
-            }
-        })
-    }
-
     render() {
         const { form, title, formeditado } = this.state
         return (

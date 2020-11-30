@@ -576,7 +576,7 @@ class ReporteVentas extends Component {
                 })
                 let contador = 0
                 let contadorArray = []
-                console.log(arrayDataSets, 'arraydatasets')
+                // console.log(arrayDataSets, 'arraydatasets')
                 if(arrayDataSets.length){
                     arrayDataSets[0].data.map((element, index)=>{
                         contador = 0
