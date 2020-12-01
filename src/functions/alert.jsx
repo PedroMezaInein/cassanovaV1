@@ -36,6 +36,7 @@ export async function doneAlert(texto) {
 }
 
 export function errorAlert(text) {
+    swal.close();
     Swal.fire({
         title: '¡UPS!',
         text: text,
@@ -71,7 +72,6 @@ export function deleteAlert(text, action) {
         }
     })
 }
-
 
 export function createAlert(title, text, action) {
     swal({
@@ -208,7 +208,6 @@ export function errorAdjuntos(title, text, html) {
         timer: 5000
     });
 }
-
 
 export function forbiddenAccessAlert() {
     swal({
