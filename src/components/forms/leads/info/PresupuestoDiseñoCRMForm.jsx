@@ -157,6 +157,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                             </div>
                                             <div className="col-md-4">
                                                 <InputNumberGray
+                                                    formeditado={formeditado}
                                                     requirevalidation={0}
                                                     placeholder="TOTAL"
                                                     value={formDiseño.total}
@@ -168,6 +169,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                             </div>
                                             <div className="col-md-4">
                                                 <InputNumberGray
+                                                    formeditado={formeditado}
                                                     requirevalidation={1}
                                                     placeholder="NÚMERO DE RENDERS"
                                                     value={formDiseño.renders}
