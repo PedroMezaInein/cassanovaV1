@@ -60,7 +60,6 @@ class LeadRhProveedor extends Component {
                                     <th style={{ minWidth: "140px" }}>Fecha</th>
                                     <th style={{ minWidth: "100px" }}>Tipo</th>
                                     <th style={{ minWidth: "100px" }} className="text-center">Empresa</th>
-                                    <th style={{ minWidth: "92px" }}></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -109,20 +108,6 @@ class LeadRhProveedor extends Component {
                                                                     )
                                                                 })
                                                                 : <span className="text-dark-75 font-weight-bolder">{lead.empresa.name}</span>
-                                                        }
-                                                    </td>
-                                                    <td className="pr-0 text-center">
-                                                        {
-                                                            this.canSendFirstEmail(lead) ?
-                                                                <OverlayTrigger overlay={<Tooltip>ENVIAR CORREO</Tooltip>}>
-                                                                    <span onClick={(e) => { questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => sendEmail(lead)) }}
-                                                                        className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-pink">
-                                                                        <span className="svg-icon svg-icon-md">
-                                                                            <SVG src={toAbsoluteUrl('/images/svg/Outgoing-mail.svg')} />
-                                                                        </span>
-                                                                    </span>
-                                                                </OverlayTrigger>
-                                                                : ''
                                                         }
                                                     </td>
                                                 </tr>

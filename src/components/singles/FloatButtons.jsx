@@ -8,7 +8,7 @@ class FloatButtons extends Component {
 
         return (
             <ul className="sticky-toolbar nav flex-column pl-2 pr-2 pt-3 pb-2 mt-4">
-                <OverlayTrigger overlay={<Tooltip>Guardar</Tooltip>}>
+                <OverlayTrigger overlay={<Tooltip>GUARDAR</Tooltip>}>
                     <li className="nav-item mb-2" data-placement="right">
                         <span className="btn btn-sm btn-icon btn-bg-light btn-text-success btn-hover-success" onClick={save}>
                             <i className="far fa-save"></i>
@@ -18,7 +18,7 @@ class FloatButtons extends Component {
                 {
                     url === formulario.page ?
                         Object.keys(formulario.form).length > 0 ?
-                            <OverlayTrigger overlay={<Tooltip>Recuperar formulario</Tooltip>}>
+                            <OverlayTrigger overlay={<Tooltip>RECUPERAR FORMULARIO</Tooltip>}>
                                 <li className="nav-item mb-2" title="" data-placement="left">
                                     <span className="btn btn-sm btn-icon btn-bg-light btn-text-primary btn-hover-primary" onClick={recover}>
                                         <i className="flaticon2-list-3"></i>
@@ -31,7 +31,7 @@ class FloatButtons extends Component {
                 }
                 {
                     exportar ? 
-                        <OverlayTrigger overlay={<Tooltip>Descargar</Tooltip>}>
+                        <OverlayTrigger overlay={<Tooltip>DESCARGAR</Tooltip>}>
                             <li className="nav-item mb-2" data-placement="left">
                                 <span className="btn btn-sm btn-icon btn-bg-light btn-text-info btn-hover-info" onClick={descargar}>
                                     <i className="flaticon-download"></i>

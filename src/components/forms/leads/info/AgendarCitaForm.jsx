@@ -67,7 +67,7 @@ class AgendarCitaForm extends Component {
                                     withtextlabel={1}
                                     withplaceholder={1}
                                     withicon={1}
-                                    placeholder='Titulo'
+                                    placeholder='NOMBRE DE LA REUNIÓN'
                                     iconclass="fas fa-users"
                                     name='titulo'
                                     value={formAgenda.titulo}

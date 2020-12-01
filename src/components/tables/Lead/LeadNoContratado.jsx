@@ -128,7 +128,7 @@ class LeadNoContratado extends Component {
                                                     }
                                                 </td>
                                                 <td className="pr-0 text-center">
-                                                    <OverlayTrigger overlay={<Tooltip>Ver más</Tooltip>}>
+                                                    <OverlayTrigger overlay={<Tooltip>VER MÁS</Tooltip>}>
                                                         <a href='/leads/crm/info/info' className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-danger">
                                                             <i className="flaticon2-plus icon-nm"></i>
                                                         </a>
