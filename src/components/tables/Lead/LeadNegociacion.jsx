@@ -180,14 +180,14 @@ class LeadNegociacion extends Component {
                                                     }
                                                 </td>
                                                 <td className="pr-0 text-center">
-                                                    <OverlayTrigger overlay={<Tooltip>Ver más</Tooltip>}>
+                                                    <OverlayTrigger overlay={<Tooltip>VER MÁS</Tooltip>}>
                                                         <span onClick={(e) => { changePageDetails(lead) }} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-brown">
                                                             <i className="flaticon2-plus icon-nm"></i>
                                                         </span>
                                                     </OverlayTrigger>
                                                     {
                                                         this.actionsButton(lead) ?
-                                                            <OverlayTrigger overlay={<Tooltip>Contratar</Tooltip>}>
+                                                            <OverlayTrigger overlay={<Tooltip>CONTRATAR</Tooltip>}>
                                                                 <span onClick={(e) => { changePageContratar(lead) }} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-brown">
                                                                     <i className="fas fa-file-signature icon-nm"></i>
                                                                 </span>
