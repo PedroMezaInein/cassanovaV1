@@ -162,7 +162,7 @@ class Proveedor extends Component {
     render() {
         const { modalDelete, modalSee, proveedor } = this.state
         return (
-            <Layout active={'administracion'}  {...this.props}>
+            <Layout active={'leads'}  {...this.props}>
                 <NewTableServerRender
                     columns={PROVEEDORES_COLUMNS}
                     title='Proveedores'
