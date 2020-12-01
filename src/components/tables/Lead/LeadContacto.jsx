@@ -207,7 +207,7 @@ class LeadContacto extends Component {
                                                     }
                                                 </td>
                                                 <td className="pr-0 text-center">
-                                                    <OverlayTrigger overlay={<Tooltip>Ver más</Tooltip>}>
+                                                    <OverlayTrigger overlay={<Tooltip>VER MÁS</Tooltip>}>
                                                         <a onClick={(e) => { changePageDetails(lead) }} className="btn btn-default btn-icon btn-sm mr-2">
                                                             <i className="flaticon2-plus icon-nm"></i>
                                                         </a>
