@@ -2,15 +2,15 @@ import { connect } from 'react-redux';
 import React, { Component } from 'react'
 import Layout from '../../../../components/layout/layout'
 import { Col, Row, Card, Tab, Nav, Dropdown, Form } from 'react-bootstrap'
-import { Button, InputGray, InputPhoneGray } from '../../../../components/form-components';
-import { TEL, URL_DEV, EMAIL } from '../../../../constants'
+import { Button } from '../../../../components/form-components';
+import { URL_DEV } from '../../../../constants'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../../functions/routers"
 import { setOptions, setDateTableLG } from '../../../../functions/setters';
 import axios from 'axios'
 import { doneAlert, errorAlert, forbiddenAccessAlert, waitAlert, questionAlert2, questionAlert } from '../../../../functions/alert';
 import swal from 'sweetalert';
-import { HistorialContactoForm, AgendarCitaForm, PresupuestoDiseñoCRMForm, PresupuestoGenerado } from '../../../../components/forms'
+import { HistorialContactoForm, AgendarCitaForm, PresupuestoDiseñoCRMForm, PresupuestoGenerado,InformacionGeneral} from '../../../../components/forms'
 import { Modal } from '../../../../components/singles'
 class LeadInfo extends Component {
     state = {
@@ -31,7 +31,8 @@ class LeadInfo extends Component {
             tipoProyectoNombre: '',
             origen: '',
             telefono: '',
-            proyecto: ''
+            proyecto: '',
+            fecha: '',
         },
         formHistorial: {
             comentario: '',
@@ -179,10 +180,12 @@ class LeadInfo extends Component {
             if (state.lead) {
                 const { form, options } = this.state
                 const { lead, tipo } = state
+                console.log(lead)
                 form.name = lead.nombre === 'SIN ESPECIFICAR' ? '' : lead.nombre.toUpperCase()
                 form.email = lead.email.toUpperCase()
                 form.telefono = lead.telefono
                 form.proyecto = lead.prospecto.nombre_proyecto
+                form.fecha = lead.created_at
                 this.setState({
                     ...this.state,
                     lead: lead,
@@ -746,6 +749,7 @@ class LeadInfo extends Component {
                 form.email = lead.email
                 form.telefono = lead.telefono
                 form.proyecto = lead.prospecto.nombre_proyecto
+                form.fecha = lead.created_at
 
                 if (lead.presupuesto_diseño) {
 
@@ -754,16 +758,16 @@ class LeadInfo extends Component {
                     formDiseño.renders = lead.presupuesto_diseño.renders
 
                     let aux = JSON.parse(lead.presupuesto_diseño.actividades)
-                    // if (aux) {
-                    //     aux = aux.actividades
-                    //     formDiseño.conceptos = aux
-                    // }
+                    if (aux) {
+                        aux = aux.actividades
+                        formDiseño.conceptos = aux
+                    }
 
                     aux = JSON.parse(lead.presupuesto_diseño.semanas)
-                    // if (aux) {
-                    //     aux = aux.semanas
-                    //     formDiseño.semanas = aux
-                    // }
+                    if (aux) {
+                        aux = aux.semanas
+                        formDiseño.semanas = aux
+                    }
 
                     let planos = []
                     if (data.empresa)
@@ -951,7 +955,6 @@ class LeadInfo extends Component {
     }
 
     submitForm = e => {
-        e.preventDefault();
         this.addLeadInfoAxios()
     }
 
@@ -1231,80 +1234,15 @@ class LeadInfo extends Component {
                                                 </h3>
                                             </Card.Title>
                                         </Card.Header>
-                                        <Form onSubmit={this.submitForm}>
-                                            <Card.Body className="py-0">
-                                                <div className="form-group row form-group-marginless mb-0">
-                                                    <div className="col-md-4">
-                                                        <InputGray
-                                                            withtaglabel={1}
-                                                            withtextlabel={1}
-                                                            withplaceholder={1}
-                                                            withicon={1}
-                                                            requirevalidation={1}
-                                                            placeholder='NOMBRE DEL LEAD'
-                                                            iconclass="far fa-user"
-                                                            name='name'
-                                                            value={form.name}
-                                                            onChange={this.onChange}
-                                                            messageinc="Incorrecto. Ingresa el nombre del lead."
-                                                        />
-                                                    </div>
-                                                    <div className="col-md-4">
-                                                        <InputGray
-                                                            withtaglabel={1}
-                                                            withtextlabel={1}
-                                                            withplaceholder={1}
-                                                            withicon={1}
-                                                            requirevalidation={1}
-                                                            placeholder="CORREO ELECTRÓNICO DE CONTACTO"
-                                                            iconclass="fas fa-envelope"
-                                                            type="email"
-                                                            name="email"
-                                                            value={form.email}
-                                                            onChange={this.onChange}
-                                                            patterns={EMAIL}
-                                                            messageinc="Incorrecto. Ingresa el correo electrónico."
-                                                        />
-                                                    </div>
-                                                    <div className="col-md-4">
-                                                        <InputPhoneGray
-                                                            withtaglabel={1}
-                                                            withtextlabel={1}
-                                                            withplaceholder={1}
-                                                            withicon={1}
-                                                            requirevalidation={1}
-                                                            placeholder="TELÉFONO DE CONTACTO"
-                                                            iconclass="fas fa-mobile-alt"
-                                                            name="telefono"
-                                                            value={form.telefono}
-                                                            onChange={this.onChange}
-                                                            patterns={TEL}
-                                                            thousandseparator={false}
-                                                            prefix=''
-                                                            messageinc="Incorrecto. Ingresa el teléfono de contacto."
-                                                        />
-                                                    </div>
-                                                    <div className="col-md-4">
-                                                        <InputGray
-                                                            withtaglabel={1}
-                                                            withtextlabel={1}
-                                                            withplaceholder={1}
-                                                            withicon={1}
-                                                            requirevalidation={1}
-                                                            placeholder='NOMBRE DEL PROYECTO'
-                                                            iconclass="far fa-folder-open"
-                                                            name='proyecto'
-                                                            value={form.proyecto}
-                                                            onChange={this.onChange}
-                                                            messageinc="Incorrecto. Ingresa el nombre del proyecto."
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </Card.Body>
-                                            <Card.Footer className="text-right">
-                                                <Button icon='' className="btn btn-primary" type="submit" text="ENVIAR" />
-                                            </Card.Footer>
-                                        </Form>
+                                        <Card.Body className="py-0">
+                                            <InformacionGeneral
+                                                form={form}
+                                                onChange={this.onChange}
+                                                onSubmit={this.submitForm}
+                                                user={this.props.authUser.user}
+                                                lead={lead}
+                                            />
+                                        </Card.Body>
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="2">
                                         <Card.Header className="border-0 mt-4 pt-3">
