@@ -129,6 +129,7 @@ class EmpresasForm extends Component {
                         form.pinterest = empresa.pinterest
                         form.pagina_web = empresa.pagina_web
                         form.direccion = empresa.direccion
+                        form.telefono = empresa.telefono
 
                         let aux = []
                         empresa.tipos.map((tipo) => {
@@ -139,12 +140,12 @@ class EmpresasForm extends Component {
                         form.tipos = aux
 
                         aux = []
-                        empresa.telefonos.map((telefono) => {
+                        /* empresa.telefonos.map((telefono) => {
                             aux.push(telefono.telefono)
                             return false
                         })
 
-                        form.telefonos = aux
+                        form.telefonos = aux */
 
                         this.setState({
                             ...this.state,
