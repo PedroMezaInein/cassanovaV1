@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
-import { Input, Button, TagInput } from '../form-components' 
+import { Input, Button, TagInput, InputPhone} from '../form-components' 
 import { validateAlert } from '../../functions/alert'
-import { RFC } from '../../constants'
+import { RFC, TEL } from '../../constants'
 
 class EmpresaForm extends Component {
 
@@ -167,7 +167,7 @@ class EmpresaForm extends Component {
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
-                    <div className="col-md-6">
+                    <div className="col-md-9">
                         <TagInput
                             tags={form.tipos} 
                             onChange={tagInputChange} 
@@ -175,12 +175,25 @@ class EmpresaForm extends Component {
                             iconclass={"far fa-folder-open"}
                         />
                     </div>
-                    <div className="col-md-6">
-                        <TagInput
+                    <div className="col-md-3">
+                        {/* <TagInput
                             tags={form.telefonos} 
                             onChange={tagInputChangeTelefono} 
                             placeholder={"NÚMEROS TELEFÓNICOS"}
                             iconclass={"fas fa-phone-alt"}
+                        /> */}
+                        <InputPhone
+                            requirevalidation={0}
+                            formeditado={formeditado}
+                            placeholder="TELÉFONO"
+                            name="telefono"
+                            value={form.telefono}
+                            onChange={onChange}
+                            iconclass={"fas fa-mobile-alt"}
+                            patterns={TEL}
+                            messageinc="Incorrecto. Ingresa el número de teléfono."
+                            thousandseparator={false}
+                            prefix={''}
                         />
                     </div>
                 </div>
@@ -200,48 +213,6 @@ class EmpresaForm extends Component {
                         />
                     </div>
                 </div>
-{/*  
-                <div className="form-group row form-group-marginless pb-1">
-                    <div className="col-md-3">
-                        <Input
-                            requirevalidation = { 0 }
-                            formeditado = { formeditado }
-                            prefix = ''
-                            name = "tipoProyecto"
-                            value = { form.tipoProyecto }
-                            onChange = { onChange }
-                            placeholder = "Tipos de proyectos"
-                            iconclass = "fas fa-asterisk"
-                            type="text"
-                            />
-                    </div>
-                    <div className="col-md-1 mt-3 d-flex justify-content-center align-items-center">
-                        <Button icon = { faPlus } pulse = "pulse-ring" 
-                            className = "btn btn-icon btn-light-primary pulse pulse-primary mr-5" 
-                            onClick = { this.addTipo } />
-                    </div>
-                    <div className="col-md-8 row mx-0">
-                        {
-                            form.tipos.map((tipo, key) => {
-                                return (
-                                    <div className = "tagify form-control p-1 col-md-2 px-2 d-flex justify-content-center align-items-center white-space" 
-                                        tabIndex = "-1" style = { { borderWidth: "0px" } } key = { key }>
-                                        <div className=" image-upload d-flex px-3 align-items-center tagify__tag tagify__tag--info tagify--noAnim white-space"  >
-                                            <div title="Borrar archivo" className="tagify__tag__removeBtn" role="button" aria-label="remove tag"
-                                                onClick={(e) => { e.preventDefault(); this.removeTipo(tipo) }}></div>
-                                            <div>
-                                                <span className="tagify__tag-text p-1 white-space">
-                                                    {tipo}
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                )
-                            })
-                        }
-                    </div>
-                </div>
-                */}
                 <div className="card-footer py-3 pr-1 text-right">
                     <Button text='ENVIAR' type='submit' className="btn btn-primary mr-2" icon=''/>
                 </div>
