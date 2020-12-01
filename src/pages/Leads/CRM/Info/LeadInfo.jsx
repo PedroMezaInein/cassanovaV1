@@ -180,7 +180,6 @@ class LeadInfo extends Component {
             if (state.lead) {
                 const { form, options } = this.state
                 const { lead, tipo } = state
-                console.log(lead)
                 form.name = lead.nombre === 'SIN ESPECIFICAR' ? '' : lead.nombre.toUpperCase()
                 form.email = lead.email.toUpperCase()
                 form.telefono = lead.telefono
