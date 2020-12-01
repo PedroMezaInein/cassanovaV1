@@ -31,13 +31,7 @@ class ChangePasswordFrom extends Component {
 										<div className="row mx-0 px-0 col-md-12">
 											<div className="col-md-4 d-flex justify-content-center pb-2">
 												<span className="symbol symbol-circle symbol-xxl-100">
-													{
-														user ?
-															<img className="symbol-label p-1 font-size-h5 font-weight-bold bg-transparent" src={user.avatar} alt="profile" />
-															:
-															<span className="symbol-label font-size-h5 font-weight-bolder">{user ? user.name.charAt(0) : ''}
-															</span>
-													}
+													<img className="symbol-label p-1 font-size-h5 font-weight-bold bg-transparent" src={user.avatar ? user.avatar : "/default.jpg"} />
 												</span>
 											</div>
 											<div className="col d-flex justify-content-center align-items-center">
