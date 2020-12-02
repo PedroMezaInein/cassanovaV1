@@ -44,7 +44,7 @@ class LeadNuevo extends Component {
     }
     
     render() {
-        const { leads, onClickPrev, onClickNext, sendEmail, openModal, openModalWithInput, changePageLlamadaSalida, options, changeOrigen } = this.props
+        const { leads, onClickPrev, onClickNext, sendEmail, openModal, openModalWithInput, openModalEditar, changePageLlamadaSalida, options, changeOrigen } = this.props
         return (
             <>
                 <div className="tab-content">
@@ -207,6 +207,14 @@ class LeadNuevo extends Component {
                                                             }
                                                         </td>
                                                         <td className="pr-0 text-center">
+                                                            <OverlayTrigger overlay={<Tooltip>EDITAR INFORMACIÓN GENERAL</Tooltip>}>
+                                                                <span onClick={(e) => { openModalEditar(lead) }}
+                                                                    className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-info">
+                                                                    <span className="svg-icon svg-icon-md">
+                                                                        <SVG src={toAbsoluteUrl('/images/svg/Edit.svg')} />
+                                                                    </span>
+                                                                </span>
+                                                            </OverlayTrigger>
                                                             {
                                                                 this.canSendFirstEmail(lead) ?
                                                                     <OverlayTrigger overlay={<Tooltip>ENVIAR CORREO</Tooltip>}>
