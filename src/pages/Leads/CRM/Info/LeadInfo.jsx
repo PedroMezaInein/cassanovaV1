@@ -154,7 +154,8 @@ class LeadInfo extends Component {
             empresa: null,
             tipoProyecto: null,
             partidas: null
-        }
+        },
+        lead: ''
     }
 
     mostrarFormulario() {

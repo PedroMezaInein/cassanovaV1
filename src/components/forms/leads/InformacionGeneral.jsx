@@ -4,18 +4,18 @@ import { Form } from 'react-bootstrap'
 import { TEL, EMAIL } from '../../../constants'
 class InformacionGeneral extends Component {
     render() {
-        const { form, onChange, onSubmit } = this.props
+        const { form, onChange, onSubmit, lead, formeditado } = this.props
         return (
             <>
                 <Form>
-                    <div className="form-group row form-group-marginless mb-0">
+                    <div className="form-group row form-group-marginless mb-0 justify-content-center">
                         <div className="col-md-3">
                             <InputGray
                                 withtaglabel={1}
                                 withtextlabel={1}
                                 withplaceholder={1}
                                 withicon={1}
-                                requirevalidation={1}
+                                requirevalidation = { formeditado === false ? 0 : 1 }
                                 placeholder='NOMBRE DEL LEAD'
                                 iconclass="far fa-user"
                                 name='name'
@@ -30,7 +30,7 @@ class InformacionGeneral extends Component {
                                 withtextlabel={1}
                                 withplaceholder={1}
                                 withicon={1}
-                                requirevalidation={1}
+                                requirevalidation = { formeditado === false ? 0 : 1 }
                                 placeholder="CORREO ELECTRÓNICO DE CONTACTO"
                                 iconclass="fas fa-envelope"
                                 type="email"
@@ -47,7 +47,7 @@ class InformacionGeneral extends Component {
                                 withtextlabel={1}
                                 withplaceholder={1}
                                 withicon={1}
-                                requirevalidation={1}
+                                requirevalidation = { formeditado === false ? 0 : 1 }
                                 placeholder="TELÉFONO DE CONTACTO"
                                 iconclass="fas fa-mobile-alt"
                                 name="telefono"
@@ -59,21 +59,26 @@ class InformacionGeneral extends Component {
                                 messageinc="Incorrecto. Ingresa el teléfono de contacto."
                             />
                         </div>
-                        <div className="col-md-3">
-                            <InputGray
-                                withtaglabel={1}
-                                withtextlabel={1}
-                                withplaceholder={1}
-                                withicon={1}
-                                requirevalidation={1}
-                                placeholder='NOMBRE DEL PROYECTO'
-                                iconclass="far fa-folder-open"
-                                name='proyecto'
-                                value={form.proyecto}
-                                onChange={onChange}
-                                messageinc="Incorrecto. Ingresa el nombre del proyecto."
-                            />
-                        </div>
+                        {
+                            lead.prospecto ?
+                                <div className="col-md-3">
+                                    <InputGray
+                                        withtaglabel={1}
+                                        withtextlabel={1}
+                                        withplaceholder={1}
+                                        withicon={1}
+                                        requirevalidation={1}
+                                        placeholder='NOMBRE DEL PROYECTO'
+                                        iconclass="far fa-folder-open"
+                                        name='proyecto'
+                                        value={form.proyecto}
+                                        onChange={onChange}
+                                        messageinc="Incorrecto. Ingresa el nombre del proyecto."
+                                    />
+                                </div>
+                            : ''
+                        }
+                        
                     </div>
                     <div className="separator separator-dashed mt-1 mb-2"></div>
                     <div className="form-group row form-group-marginless mt-4">
@@ -83,6 +88,7 @@ class InformacionGeneral extends Component {
                             </div>
                             <CalendarDay
                                 value={form.fecha}
+                                date = { form.fecha }
                                 onChange={onChange}
                                 name='fecha'
                             />
