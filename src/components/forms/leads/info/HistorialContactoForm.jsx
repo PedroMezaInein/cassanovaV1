@@ -59,7 +59,7 @@ class HistorialContactoForm extends Component {
                             onSubmit={
                                 (e) => {
                                     e.preventDefault();
-                                    validateAlert(onSubmit, e, 'wizard-2-content')
+                                    validateAlert(onSubmit, e, 'for2-wizardP')
                                 }
                             }
                             {...props}
@@ -190,7 +190,7 @@ class HistorialContactoForm extends Component {
                                                     onClick={
                                                         (e) => {
                                                             e.preventDefault();
-                                                            validateAlert(onSubmit, e, 'wizard-2-content')
+                                                            validateAlert(onSubmit, e, 'for2-wizardP')
                                                         }
                                                     }
                                                     text="Enviar" />

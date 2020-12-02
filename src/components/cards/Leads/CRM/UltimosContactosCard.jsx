@@ -6,6 +6,12 @@ export default class UltimosContactosCard extends Component {
     diffCommentDate = (contacto) => {
         var now = new Date();
         var then = new Date(contacto.created_at);
+        /* console.log(contacto)
+        if(contacto.prospecto)
+            if(contacto.prospecto.contactos)
+                if(contacto.prospecto.contactos.length)
+                    then = new Date(contacto.prospecto.contactos[0].created_at) */
+
         var diff = moment.duration(moment(now).diff(moment(then)));
         var months = parseInt(moment(now).diff(moment(then), 'month'))
         var days = parseInt(diff.asDays());
@@ -18,21 +24,22 @@ export default class UltimosContactosCard extends Component {
                 return `${months} meses`
         }
         else {
-            if (days) {
+            if (days > 0) {
                 if (days === 1)
                     return '1 día'
                 else
                     return `${days} días`
             }
             else {
-                if (hours) {
+                return 'Hoy'
+                /* if (hours > 0) {
                     if (hours === 1)
                         return '1 hora'
                     else
                         return `${hours} horas`
                 }
                 else {
-                    if (minutes) {
+                    if (minutes > 0) {
                         if (minutes === 1)
                             return '1 minuto'
                         else
@@ -41,7 +48,7 @@ export default class UltimosContactosCard extends Component {
                     else {
                         return 'Hace un momento'
                     }
-                }
+                } */
             }
         }
     }

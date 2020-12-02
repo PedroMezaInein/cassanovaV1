@@ -7,7 +7,7 @@ import swal from 'sweetalert'
 import { Col, Row, Card, Form, Tab, Nav, DropdownButton, Dropdown } from 'react-bootstrap'
 import { setOptions } from '../../../functions/setters'
 import { UltimosContactosCard, SinContacto, UltimosIngresosCard } from '../../../components/cards'
-import { forbiddenAccessAlert, errorAlert, waitAlert, doneAlert,questionAlert, questionAlert2} from '../../../functions/alert'
+import { forbiddenAccessAlert, errorAlert, waitAlert, doneAlert, questionAlert, questionAlert2 } from '../../../functions/alert'
 import LeadRhProveedor from '../../../components/tables/Lead/LeadRhProveedor'
 import LeadNuevo from '../../../components/tables/Lead/LeadNuevo'
 import LeadContacto from '../../../components/tables/Lead/LeadContacto'
@@ -16,7 +16,7 @@ import LeadContrato from '../../../components/tables/Lead/LeadContrato'
 import LeadNoContratado from '../../../components/tables/Lead/LeadNoContratado'
 import LeadDetenido from '../../../components/tables/Lead/LeadDetenido'
 import { Modal } from '../../../components/singles'
-import { AgendaLlamada } from '../../../components/forms'
+import { AgendaLlamada, InformacionGeneral} from '../../../components/forms'
 import InputGray from '../../../components/form-components/Gray/InputGray'
 class Crm extends Component {
     state = {
@@ -68,7 +68,7 @@ class Crm extends Component {
             total_paginas: 0,
             value: "en_contacto"
         },
-        leads_en_negociacion:{
+        leads_en_negociacion: {
             data: [],
             numPage: 0,
             total: 0,
@@ -108,7 +108,23 @@ class Crm extends Component {
             empresa: 0,
             estatus: 0
         },
-        modal: false
+        formEditar: {
+            name: '',
+            empresa: '',
+            empresa_dirigida: '',
+            tipoProyecto: '',
+            comentario: '',
+            diseño: '',
+            obra: '',
+            email: '',
+            tipoProyectoNombre: '',
+            origen: '',
+            telefono: '',
+            proyecto: '',
+            fecha: '',
+        },
+        modal_agendar: false,
+        modal_editar: false
     }
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
@@ -136,7 +152,7 @@ class Crm extends Component {
                 const { options } = this.state
                 options.empresas = setOptions(empresas, 'name', 'id')
                 let aux = []
-                origenes.map((origen)=>{
+                origenes.map((origen) => {
                     aux.push({
                         value: origen.id.toString(),
                         text: origen.origen
@@ -526,7 +542,7 @@ class Crm extends Component {
         })
     }
 
-    async getLeadsEnNegociacion(){
+    async getLeadsEnNegociacion() {
         waitAlert()
         const { access_token } = this.props.authUser
         const { leads_en_negociacion, form } = this.state
@@ -697,7 +713,15 @@ class Crm extends Component {
             form
         })
     }
-
+    onChangeEditar = e => {
+        const { name, value } = e.target
+        const { formEditar } = this.state
+        formEditar[name] = value
+        this.setState({
+            ...this.state,
+            formEditar
+        })
+    }
     sendEmailNewWebLead = async lead => {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -720,7 +744,7 @@ class Crm extends Component {
         })
     }
 
-    agendarLlamada = async() => {
+    agendarLlamada = async () => {
         const { lead, form } = this.state
         waitAlert()
         const { access_token } = this.props.authUser
@@ -733,7 +757,7 @@ class Crm extends Component {
                 this.setState({
                     ...this.state,
                     form,
-                    modal: false
+                    modal_agendar: false
                 })
                 doneAlert('Evento generado con éxito');
                 this.getLeadsWeb()
@@ -754,7 +778,7 @@ class Crm extends Component {
 
     changeActiveTable = key => {
         const { form, activeTable } = this.state
-        if( key !== activeTable ){
+        if (key !== activeTable) {
             form.cliente = ''
             form.tipo = 0
             form.proyecto = ''
@@ -834,14 +858,28 @@ class Crm extends Component {
     openModal = lead => {
         this.setState({
             ...this.state,
-            modal: true,
+            modal_agendar: true,
             lead: lead
         })
     }
     handleCloseModal = () => {
         this.setState({
             ...this.state,
-            modal: false,
+            modal_agendar: false,
+            lead: ''
+        })
+    }
+    openModalEditar = lead => {
+        this.setState({
+            ...this.state,
+            modal_editar: true,
+            lead: lead
+        })
+    }
+    handleCloseModalEditar = () => {
+        this.setState({
+            ...this.state,
+            modal_editar: false,
             lead: ''
         })
     }
@@ -851,7 +889,7 @@ class Crm extends Component {
         await axios.put(URL_DEV + 'crm/lead/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { activeTable } = this.state
-                this.changeActiveTable( activeTable )
+                this.changeActiveTable(activeTable)
                 doneAlert('El estatus fue actualizado con éxito.')
             },
             (error) => {
@@ -873,14 +911,14 @@ class Crm extends Component {
         waitAlert()
 
         const { access_token } = this.props.authUser
-        
+
         await axios.put(URL_DEV + 'crm/lead/origen/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                
-                const {activeTable}=this.state
-                this.changeActiveTable(activeTable)            
+
+                const { activeTable } = this.state
+                this.changeActiveTable(activeTable)
                 doneAlert('El origen fue actualizado con éxito.')
-                
+
             },
             (error) => {
                 console.log(error, 'error')
@@ -903,7 +941,7 @@ class Crm extends Component {
         await axios.put(URL_DEV + 'crm/lead/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { activeTable } = this.state
-                this.changeActiveTable( activeTable )
+                this.changeActiveTable(activeTable)
                 doneAlert('El estatus fue actualizado con éxito.')
             },
             (error) => {
@@ -924,7 +962,7 @@ class Crm extends Component {
         questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios({ id: id, estatus: estatus }))
     }
 
-    changeOrigen = ( origen, id ) => {
+    changeOrigen = (origen, id) => {
         questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.changeOrigenAxios({ id: id, origen: origen }))
     }
 
@@ -932,25 +970,25 @@ class Crm extends Component {
         questionAlert2(
             estatus === 'Cancelado' ?
                 'ESCRIBE EL MOTIVO DE CANCELACIÓN' :
-                'ESCRIBE EL MOTIVO DE RECHAZO', 
-            '', 
+                'ESCRIBE EL MOTIVO DE RECHAZO',
+            '',
             () => this.changeEstatusCanceladoRechazadoAxios({ id: id, estatus: estatus }),
             <div>
                 <Form.Control
-                    placeholder = { 
+                    placeholder={
                         estatus === 'Cancelado' ?
                             'MOTIVO DE CANCELACIÓN' :
                             'MOTIVO DE RECHAZO'
                     }
-                    className = "form-control form-control-solid h-auto py-7 px-6"
-                    id = 'motivo'
-                    as = "textarea"
-                    rows = "3"
+                    className="form-control form-control-solid h-auto py-7 px-6"
+                    id='motivo'
+                    as="textarea"
+                    rows="3"
                 />
             </div>
         )
-    }    
-    
+    }
+
     changePageLlamadaSalida = (lead) => {
         const { history } = this.props
         history.push({
@@ -991,9 +1029,33 @@ class Crm extends Component {
         })
     }
 
+    submitForm = e => {
+        this.addLeadInfoAxios()
+    }
+
+    async addLeadInfoAxios() {
+        const { access_token } = this.props.authUser
+        const { form, lead } = this.state
+        await axios.put(URL_DEV + 'crm/update/lead-en-contacto/' + lead.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito el lead.')
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     render() {
         const { ultimos_contactados, prospectos_sin_contactar, ultimos_ingresados, lead_web, activeTable, leads_en_contacto, leads_en_negociacion,
-            leads_contratados, leads_cancelados, leads_detenidos, modal, form, lead, lead_rh_proveedores, options} = this.state
+            leads_contratados, leads_cancelados, leads_detenidos, modal_agendar, form, lead, lead_rh_proveedores, options, modal_editar, formEditar} = this.state
         return (
             <Layout active='leads' {...this.props} >
                 <Row>
@@ -1090,7 +1152,7 @@ class Crm extends Component {
                                             />
                                         </div>
                                         {
-                                            activeTable !== "web" &&  activeTable !== "rh-proveedores" && activeTable !== 'cancelados' ?
+                                            activeTable !== "web" && activeTable !== "rh-proveedores" && activeTable !== 'cancelados' ?
                                                 <div className="col-md-2">
                                                     <InputGray
                                                         letterCase={true}
@@ -1107,37 +1169,37 @@ class Crm extends Component {
                                                         iconclass={"flaticon2-search-1"}
                                                     />
                                                 </div>
-                                            : ''
+                                                : ''
                                         }
                                         {
                                             activeTable !== 'web' && activeTable !== 'rh-proveedores' ?
                                                 <div className="col-md-2">
                                                     <Form.Control
                                                         className="form-control text-uppercase form-control-solid"
-                                                        value = { form.origen }
-                                                        onChange = { this.onChange }
-                                                        name = 'origen'
-                                                        as = "select">
-                                                        <option  value={0}>Selecciona el origen</option>
+                                                        value={form.origen}
+                                                        onChange={this.onChange}
+                                                        name='origen'
+                                                        as="select">
+                                                        <option value={0}>Selecciona el origen</option>
                                                         {
-                                                            options.origenes.map((origen, key)=>{
-                                                                return(
-                                                                    <option key = { key } value = { origen.value } className="bg-white" >{origen.text}</option>
+                                                            options.origenes.map((origen, key) => {
+                                                                return (
+                                                                    <option key={key} value={origen.value} className="bg-white" >{origen.text}</option>
                                                                 )
                                                             })
                                                         }
                                                     </Form.Control>
                                                 </div>
-                                            : ''
+                                                : ''
                                         }
                                         <div className="col-md-2">
                                             <Form.Control className="form-control text-uppercase form-control-solid"
-                                                value = { form.empresa } onChange = { this.onChange } name = 'empresa' as = "select">
-                                                <option  value={0}>Selecciona la empresa</option>
+                                                value={form.empresa} onChange={this.onChange} name='empresa' as="select">
+                                                <option value={0}>Selecciona la empresa</option>
                                                 {
-                                                    options.empresas.map((empresa, key)=>{
-                                                        return(
-                                                            <option key = { key } value = { empresa.value } className="bg-white" >{empresa.name}</option>
+                                                    options.empresas.map((empresa, key) => {
+                                                        return (
+                                                            <option key={key} value={empresa.value} className="bg-white" >{empresa.name}</option>
                                                         )
                                                     })
                                                 }
@@ -1147,10 +1209,10 @@ class Crm extends Component {
                                             activeTable === 'cancelados' ?
                                                 <div className="col-md-2">
                                                     <Form.Control className="form-control text-uppercase form-control-solid"
-                                                        value = { form.estatus } onChange = { this.onChange } name = 'estatus' as="select">
-                                                        <option value = { 0 } > Selecciona el estatus </option>
-                                                        <option value = "cancelado" className = "bg-white" >CANCELADO</option>
-                                                        <option value = "rechazado" className = "bg-white" >RECHAZADO</option>
+                                                        value={form.estatus} onChange={this.onChange} name='estatus' as="select">
+                                                        <option value={0} > Selecciona el estatus </option>
+                                                        <option value="cancelado" className="bg-white" >CANCELADO</option>
+                                                        <option value="rechazado" className="bg-white" >RECHAZADO</option>
                                                     </Form.Control>
                                                 </div>
                                                 : ''
@@ -1159,18 +1221,18 @@ class Crm extends Component {
                                             activeTable === 'rh-proveedores' ?
                                                 <div className="col-md-2">
                                                     <Form.Control className="form-control text-uppercase form-control-solid"
-                                                        value = {form.tipo} onChange = { this.onChange }  name = 'tipo' as="select">
-                                                        <option value = { 0 } >Tipo</option>
-                                                        <option value = "proveedor" className="bg-white">PROVEEDOR</option>
-                                                        <option value = "bolsa_trabajo" className="bg-white">BOLSA DE TRABAJO</option>
+                                                        value={form.tipo} onChange={this.onChange} name='tipo' as="select">
+                                                        <option value={0} >Tipo</option>
+                                                        <option value="proveedor" className="bg-white">PROVEEDOR</option>
+                                                        <option value="bolsa_trabajo" className="bg-white">BOLSA DE TRABAJO</option>
                                                     </Form.Control>
                                                 </div>
                                                 : ''
                                         }
-                                        <div className="col-md-1 text-center" onClick = { (e) => { e.preventDefault(); this.changeActiveTable(activeTable) } } >
+                                        <div className="col-md-1 text-center" onClick={(e) => { e.preventDefault(); this.changeActiveTable(activeTable) }} >
                                             <span className="btn btn-light-primary px-6 font-weight-bold">Buscar</span>
                                         </div>
-                                        <div className="col-md-1 text-center" onClick = { this.cleanForm } >
+                                        <div className="col-md-1 text-center" onClick={this.cleanForm} >
                                             <span className="btn btn-light-danger px-6 font-weight-bold">Limpiar</span>
                                         </div>
                                     </div>
@@ -1193,33 +1255,34 @@ class Crm extends Component {
                                             openModal={this.openModal}
                                             openModalWithInput={this.openModalWithInput}
                                             changePageLlamadaSalida={this.changePageLlamadaSalida}
-                                            options = { options }
-                                            changeOrigen = { this.changeOrigen }
+                                            options={options}
+                                            changeOrigen={this.changeOrigen}
+                                            openModalEditar={this.openModalEditar}
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="contacto">
                                         <LeadContacto
-                                            leads = { leads_en_contacto }
-                                            onClickNext = { this.nextPageLeadEnContacto }
-                                            onClickPrev = { this.prevPageLeadEnContacto }
-                                            changeEstatus = { this.changeEstatus }
-                                            openModalWithInput = { this.openModalWithInput }
-                                            changePageDetails = { this.changePageDetailsContacto }
-                                            options = { options }
-                                            changeOrigen = { this.changeOrigen }
+                                            leads={leads_en_contacto}
+                                            onClickNext={this.nextPageLeadEnContacto}
+                                            onClickPrev={this.prevPageLeadEnContacto}
+                                            changeEstatus={this.changeEstatus}
+                                            openModalWithInput={this.openModalWithInput}
+                                            changePageDetails={this.changePageDetailsContacto}
+                                            options={options}
+                                            changeOrigen={this.changeOrigen}
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="negociacion">
                                         <LeadNegociacion
-                                            leads = { leads_en_negociacion }
-                                            onClickNext = { this.nextPageLeadEnNegociacion }
-                                            onClickPrev = { this.prevPageLeadEnNegociacion }
-                                            changeEstatus = { this.changeEstatus }
-                                            openModalWithInput = { this.openModalWithInput }
-                                            changePageDetails = { this.changePageDetailsNegociacion }
-                                            changePageContratar = { this.changePageContratar }
-                                            changePageCierreVenta = { this.changePageCierreVenta }
-                                            options = { options }
+                                            leads={leads_en_negociacion}
+                                            onClickNext={this.nextPageLeadEnNegociacion}
+                                            onClickPrev={this.prevPageLeadEnNegociacion}
+                                            changeEstatus={this.changeEstatus}
+                                            openModalWithInput={this.openModalWithInput}
+                                            changePageDetails={this.changePageDetailsNegociacion}
+                                            changePageContratar={this.changePageContratar}
+                                            changePageCierreVenta={this.changePageCierreVenta}
+                                            options={options}
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="contratados">
@@ -1250,11 +1313,20 @@ class Crm extends Component {
                         </Card>
                     </Tab.Container>
                 </Col>
-                <Modal title='Agenda una nueva llamada.' show={modal} handleClose={this.handleCloseModal}>
+                <Modal title='Agenda una nueva llamada.' show={modal_agendar} handleClose={this.handleCloseModal}>
                     <AgendaLlamada
                         form={form}
                         onChange={this.onChange}
                         onSubmit={this.agendarLlamada}
+                        user={this.props.authUser.user}
+                        lead={lead}
+                    />
+                </Modal>
+                <Modal size="xl" title='Editar información general' show={modal_editar} handleClose={this.handleCloseModalEditar}>
+                    <InformacionGeneral
+                        form={formEditar}
+                        onChange={this.onChangeEditar}
+                        onSubmit={this.submitForm}
                         user={this.props.authUser.user}
                         lead={lead}
                     />

@@ -37,8 +37,8 @@ class Login extends Component{
                                 <div className="login-form text-center text-white p-7 position-relative overflow-hidden pt-4">
                                     <div className="login-signin">
                                         <div className="mb-20">
-                                            <h3 className="font-weight-normal pt-5 pb-2">Iniciar sesión</h3>
-                                            <p className="pb-2 pt-1">Escribe tu correo y contraseña</p>
+                                            <h3 className="font-weight-normal pt-5 pb-2">INICIAR SESIÓN</h3>
+                                            <p className="pb-2 pt-1">ESCRIBE TU CORREO Y CONTRASEÑA</p>
                                         </div>
                                             <div className=" align-items-center justify-content-center">
                                                 <LoginForm { ...this.props} />
