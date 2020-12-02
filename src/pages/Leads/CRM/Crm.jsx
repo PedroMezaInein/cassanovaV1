@@ -870,10 +870,18 @@ class Crm extends Component {
         })
     }
     openModalEditar = lead => {
+        const { formEditar } = this.state
+        formEditar.name = lead.nombre
+        formEditar.email = lead.email
+        formEditar.telefono = lead.telefono
+        formEditar.fecha = new Date(lead.created_at)
+        console.log(lead, 'lead')
+        /* formEditar.tipoProyecto = lead.tipo.tipo */
         this.setState({
             ...this.state,
             modal_editar: true,
-            lead: lead
+            lead: lead,
+            formEditar
         })
     }
     handleCloseModalEditar = () => {
@@ -1035,10 +1043,43 @@ class Crm extends Component {
 
     async addLeadInfoAxios() {
         const { access_token } = this.props.authUser
-        const { form, lead } = this.state
-        await axios.put(URL_DEV + 'crm/update/lead-en-contacto/' + lead.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        const { formEditar, lead } = this.state
+        await axios.put(URL_DEV + 'crm/update/lead-en-contacto/' + lead.id, formEditar, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito el lead.')
+                const { formEditar, activeTable } = this.state
+                formEditar.name = ''
+                formEditar.telefono = ''
+                formEditar.email = ''
+                switch (activeTable) {
+                    case 'rh-proveedores':
+                        this.getLeadsRhProveedores();
+                        break;
+                    case 'web':
+                        this.getLeadsWeb();
+                        break;
+                    case 'contacto':
+                        this.getLeadsEnContacto();
+                        break;
+                    case 'contratados':
+                        this.getLeadsContratados();
+                        break;
+                    case 'cancelados':
+                        this.getLeadsCancelados();
+                        break;
+                    case 'detenidos':
+                        this.getLeadsDetenidos();
+                        break;
+                    case 'negociacion':
+                        this.getLeadsEnNegociacion();
+                        break;
+                    default: break;
+                }
+                this.setState({
+                    ...this.state,
+                    modal_editar: false,
+                    formEditar
+                })
             },
             (error) => {
                 console.log(error, 'error')
@@ -1329,6 +1370,7 @@ class Crm extends Component {
                         onSubmit={this.submitForm}
                         user={this.props.authUser.user}
                         lead={lead}
+                        formeditado = { false }
                     />
                 </Modal>
             </Layout>
