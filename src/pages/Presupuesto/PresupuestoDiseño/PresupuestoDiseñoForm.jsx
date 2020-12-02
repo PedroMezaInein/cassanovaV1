@@ -17,17 +17,17 @@ class PresupuestoDiseñoForm extends Component {
         },
         title: 'Presupuesto de diseño',
         form: {
-            empresa: '',
             m2: '',
             tipo_partida: '',
             esquema: 'esquema_1',
             fecha: new Date(),
             tiempo_ejecucion_diseno: '',
+            tiempo_ejecucion_construccion: 0,
             descuento: 0.0,
             conceptos: [
                 {
                     value: '',
-                    text: 'REUNIÓN DE AMBOS EQUIPOS',
+                    text: 'VISITA A INSTALACIONES Y REUNIÓN DE AMBOS EQUIPOS',
                     name: 'concepto1'
                 },
                 {
@@ -37,7 +37,7 @@ class PresupuestoDiseñoForm extends Component {
                 },
                 {
                     value: '',
-                    text: 'JUNTA PRESENCIAL PARA PRIMERA REVISIÓN DE LA PROPUESTA DE DISEÑO',
+                    text: 'JUNTA PRESENCIAL/REMOTA PARA PRIMERA REVISIÓN DE LA PROPUESTA DE DISEÑO Y MODELO 3D',
                     name: 'concepto3'
                 },
                 {
@@ -47,25 +47,26 @@ class PresupuestoDiseñoForm extends Component {
                 },
                 {
                     value: '',
-                    text: 'JUNTA PRESENCIAL PARA SEGUNDA REVISIÓN DE LA PROPUESTA DE DISEÑO',
+                    text: 'JUNTA PRESENCIAL/REMOTA PARA SEGUNDA REVISIÓN DE LA PROPUESTA DE DISEÑO ,MODELO 3D Y V.º B.º DE DISEÑO ',
                     name: 'concepto5'
                 },
                 {
                     value: '',
-                    text: 'DESARROLLO DEL PROYECTO EJECUTIVO',
+                    text: 'DESARROLLO DEL PROYECTO',
                     name: 'concepto6'
                 },
                 {
                     value: '',
-                    text: 'ENTREGA FINAL DEL PROYECTO EN DIGITAL',
+                    text: 'ENTREGA FINAL DEL PROYECTO DIGITAL',
                     name: 'concepto7'
                 },
             ],
-            precio_inferior_construccion: '',
-            precio_superior_construccion: '',
-            tiempo_ejecucion_construccion: '',
-            precio_inferior_mobiliario: '',
-            precio_superior_mobiliario: '',
+            construccion_interiores_inf: '',
+            construccion_interiores_sup: '',
+            mobiliario_inf: '',
+            mobiliario_sup: '',
+            construccion_civil_inf: '',
+            construccion_civil_sup: '',
             semanas: [
                 {
                     lunes: false,
@@ -77,9 +78,15 @@ class PresupuestoDiseñoForm extends Component {
                     domingo: false
                 }
             ],
-            partidasInein: [],
-            partidasIm: [],
-            proyecto: ''
+            partidas: [],
+            planos: [],
+            subtotal: 0.0,
+            fase1: true,
+            fase2: true,
+            renders: '',
+            empresa: '',
+            tipoProyecto: '',
+            proyecto: '',
         },
         options: {
             empresas: [],
@@ -419,8 +426,17 @@ class PresupuestoDiseñoForm extends Component {
             form
         })
     }
+    // onChangeConceptos = (e, key) => {
+    //     const { value, form } = e.target
+    //     form.conceptos[key].value = value
+    //     this.setState({
+    //         ...this.state,
+    //         form
+    //     })
+    // }
     onChangeConceptos = (e, key) => {
-        const { value, form } = e.target
+        const { value } = e.target
+        const { form } = this.state
         form.conceptos[key].value = value
         this.setState({
             ...this.state,
@@ -549,9 +565,18 @@ class PresupuestoDiseñoForm extends Component {
         else
             this.addPresupuestoDiseñoAxios(true)
     }
-    handleChangeCheckbox = (array) => {
-        const { form } = this.state
-        form[form.tipo_partida] = array
+    // handleChangeCheckbox = (array) => {
+    //     const { form } = this.state
+    //     form[form.tipo_partida] = array
+    //     this.setState({
+    //         ...this.state,
+    //         form: form
+    //     })
+    // }
+
+    handleChangeCheckbox = (array, type) => {
+        const { form} = this.state
+        form[type] = array
         this.setState({
             ...this.state,
             form: form
