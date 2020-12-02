@@ -4,7 +4,7 @@ import moment from 'moment'
 export default class SinContacto extends Component {
     diffCommentDate = (contacto) => {
         var now = new Date();
-        var then = new Date(contacto.created_at);
+        var then = new Date(contacto.ultimo_contacto);
         var diff = moment.duration(moment(now).diff(moment(then)));
         var months = parseInt(moment(now).diff(moment(then), 'month'))
         var days = parseInt(diff.asDays());

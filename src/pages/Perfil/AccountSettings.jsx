@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Layout from '../../components/layout/layout'
-import { Card } from 'react-bootstrap'
+// import { Card } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV } from '../../constants'
@@ -221,7 +221,7 @@ class AccountSettings extends Component {
 
         await axios.post(URL_DEV + 'user/users/firma', data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { activeKey } = this.state
+                // const { activeKey } = this.state
                 doneAlert('Firma actualizada con éxito.')
             },
             (error) => {

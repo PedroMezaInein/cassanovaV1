@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV } from '../../../constants'
 import { EmpresaForm } from '../../../components/forms'
-import swal from 'sweetalert'
 import { Card } from 'react-bootstrap'
 import { waitAlert, doneAlert, errorAlert, forbiddenAccessAlert } from '../../../functions/alert'
 
@@ -27,7 +26,8 @@ class EmpresasForm extends Component {
             instagram: '',
             linkedin: '',
             pinterest: '',
-            pagina_web:''
+            pagina_web:'',
+            telefono:''
         },
         data: {
             empresas: []
@@ -90,7 +90,7 @@ class EmpresasForm extends Component {
         uppercased.forEach(function (i) {
             if (!unico[i]) { unico[i] = true }
         })
-        form.telefono = uppercased ? Object.keys(unico) : [];
+        form.telefonos = uppercased ? Object.keys(unico) : [];
         this.setState({
             form
         })
@@ -127,7 +127,9 @@ class EmpresasForm extends Component {
                         form.instagram = empresa.instagram
                         form.linkedin = empresa.linkedin
                         form.pinterest = empresa.pinterest
+                        form.pagina_web = empresa.pagina_web
                         form.direccion = empresa.direccion
+                        form.telefono = empresa.telefono
 
                         let aux = []
                         empresa.tipos.map((tipo) => {
@@ -136,6 +138,14 @@ class EmpresasForm extends Component {
                         })
 
                         form.tipos = aux
+
+                        aux = []
+                        /* empresa.telefonos.map((telefono) => {
+                            aux.push(telefono.telefono)
+                            return false
+                        })
+
+                        form.telefonos = aux */
 
                         this.setState({
                             ...this.state,
@@ -166,6 +176,7 @@ class EmpresasForm extends Component {
             this.updateEmpresaAxios()
         } else
             this.addEmpresaAxios();
+            
     }
 
     async updateEmpresaAxios() {
@@ -270,33 +281,6 @@ class EmpresasForm extends Component {
     //         img: ''
     //     })
     // }
-
-    deleteFile = element => {
-        swal({
-            title: '¿Deseas eliminar el archivo?',
-            buttons: {
-                cancel: {
-                    text: "Cancelar",
-                    value: null,
-                    visible: true,
-                    className: "button__green btn-primary cancel",
-                    closeModal: true,
-                },
-                confirm: {
-                    text: "Aceptar",
-                    value: true,
-                    visible: true,
-                    className: "button__red btn-primary",
-                    closeModal: true
-                }
-            }
-        }).then((result) => {
-            if (result) {
-                this.deleteAdjuntoAxios(element.id)
-            }
-        })
-    }
-
     render() {
         const { form, title, formeditado } = this.state
         return (

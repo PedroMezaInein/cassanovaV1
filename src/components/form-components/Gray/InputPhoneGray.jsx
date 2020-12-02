@@ -61,7 +61,8 @@ class InputPhoneGray extends Component {
         onChange({ target: { value: values.value, name: name } })
     }
     render() {
-        const { error, onChange, placeholder, iconclass, value, thousandseparator, customlabel, customstyle, customclass, ...props } = this.props
+        const { error, onChange, messageinc, placeholder, iconclass, value, thousandseparator, customlabel, customstyle, customclass, ...props } = this.props
+        const { inputPhone } = this.state
         return (
             <div className="form-group">
                 <label className={`col-form-label font-weight-bold text-dark-60  ${customlabel}`}>{placeholder}</label>
@@ -86,6 +87,7 @@ class InputPhoneGray extends Component {
                         {...props}
                     />
                 </div>
+                <span className={inputPhone ? "form-text text-danger hidden" : "form-text text-danger is-invalid"}> {messageinc} </span>
             </div>
         )
     }

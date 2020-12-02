@@ -1,11 +1,9 @@
 import React, { Component } from 'react'
-import { CalendarDay, Button, InputGray } from '../../../form-components'
+import { CalendarDay, Button, InputGray, TagInputGray, SelectHorario, RadioGroupGray} from '../../../form-components'
 import { Col, Form } from 'react-bootstrap'
-import { EMAIL } from '../../../../constants'
-import { faPlus } from '@fortawesome/free-solid-svg-icons'
+// import { EMAIL } from '../../../../constants'
+// import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { messageAlert } from '../../../../functions/alert'
-import RadioGroupGray from '../../../form-components/Gray/RadioGroupGray'
-
 class AgendarCitaForm extends Component {
     addCorreo = () => {
         const { onChange, formAgenda } = this.props
@@ -31,13 +29,13 @@ class AgendarCitaForm extends Component {
         }
     }
     render() {
-        const { formAgenda, onChange, onSubmit, removeCorreo } = this.props
+        const { formAgenda, onChange, onSubmit, tagInputChange} = this.props
         return (
             <Form>
                 <div className="row">
                     <Col md="6" className="text-center align-self-center">
                         <div className="form-group row form-group-marginless d-flex justify-content-center mb-0 pb-0">
-                            <div className="col-md-12 text-center" style={{ height: '14px' }}>
+                            <div className="col-md-12 text-center" style={{ height: '3px' }}>
                                 <label className="text-center font-weight-bolder">Fecha</label>
                             </div>
                             <div className="col-md-12 text-center">
@@ -46,87 +44,15 @@ class AgendarCitaForm extends Component {
                                     <div className="col-md-4">
                                         <label className="col-form-label text-center font-weight-bolder">Hora de inicio</label>
                                         <div className="form-group row d-flex justify-content-center">
-                                            <div className="input-daterange input-group" style={{ width: "auto" }}>
-                                                <Form.Control as="select" className="px-1 py-0" style={{ height: "27px" }} value={formAgenda.hora_inicio} onChange={onChange} name='hora_inicio'>
-                                                    <option disabled selected value={0}>HH</option>
-                                                    <option value={"08"}>08</option>
-                                                    <option value={"09"}>09</option>
-                                                    <option value={"10"}>10</option>
-                                                    <option value={"11"}>11</option>
-                                                    <option value={"12"}>12</option>
-                                                    <option value={"13"}>13</option>
-                                                    <option value={"14"}>14</option>
-                                                    <option value={"15"}>15</option>
-                                                    <option value={"16"}>16</option>
-                                                    <option value={"17"}>17</option>
-                                                    <option value={"18"}>18</option>
-                                                    <option value={"19"}>19</option>
-                                                    <option value={"20"}>20</option>
-                                                </Form.Control>
-                                                <div className="input-group-append">
-                                                    <span className="input-group-text py-0 px-2">
-                                                        :
-                                                    </span>
-                                                </div>
-                                                <Form.Control as="select" className="px-1 py-0" style={{ height: "27px" }} value={formAgenda.minuto_inicio} onChange={onChange} name='minuto_inicio'>
-                                                    <option disabled selected value={0}>MM</option>
-                                                    <option value={"00"}>00</option>
-                                                    <option value={"05"}>05</option>
-                                                    <option value={"10"}>10</option>
-                                                    <option value={"15"}>15</option>
-                                                    <option value={"20"}>20</option>
-                                                    <option value={"25"}>25</option>
-                                                    <option value={"30"}>30</option>
-                                                    <option value={"35"}>35</option>
-                                                    <option value={"40"}>40</option>
-                                                    <option value={"45"}>45</option>
-                                                    <option value={"50"}>50</option>
-                                                    <option value={"55"}>55</option>
-                                                </Form.Control>
-                                            </div>
+                                            <SelectHorario onChange = { onChange } hora = {{ value: formAgenda.hora_inicio, name: 'hora_inicio'}}
+                                                minuto = {{ value: formAgenda.minuto_inicio, name: 'minuto_inicio'}} />
                                         </div>
                                     </div>
                                     <div className="col-md-4">
                                         <label className="col-form-label text-center font-weight-bolder">Hora final</label>
                                         <div className="form-group row d-flex justify-content-center">
-                                            <div className="input-daterange input-group" style={{ width: "auto" }}>
-                                                <Form.Control as="select" className="px-1 py-0" style={{ height: "27px" }} value={formAgenda.hora_final} onChange={onChange} name='hora_final'>
-                                                    <option disabled selected value={0}>HH</option>
-                                                    <option value={"08"}>08</option>
-                                                    <option value={"09"}>09</option>
-                                                    <option value={"10"}>10</option>
-                                                    <option value={"11"}>11</option>
-                                                    <option value={"12"}>12</option>
-                                                    <option value={"13"}>13</option>
-                                                    <option value={"14"}>14</option>
-                                                    <option value={"15"}>15</option>
-                                                    <option value={"16"}>16</option>
-                                                    <option value={"17"}>17</option>
-                                                    <option value={"18"}>18</option>
-                                                    <option value={"19"}>19</option>
-                                                    <option value={"20"}>20</option>
-                                                </Form.Control>
-                                                <div className="input-group-append">
-                                                    <span className="input-group-text py-0 px-2">
-                                                        :
-                                                    </span>
-                                                </div>
-                                                <Form.Control as="select" className="px-1 py-0" style={{ height: "27px" }} value={formAgenda.minuto_final} onChange={onChange} name='minuto_final'>
-                                                    <option disabled selected value={0}>MM</option>
-                                                    <option value={"00"}>00</option>
-                                                    <option value={"05"}>05</option>
-                                                    <option value={"10"}>10</option>
-                                                    <option value={"15"}>15</option>
-                                                    <option value={"20"}>20</option>
-                                                    <option value={"25"}>25</option>
-                                                    <option value={"30"}>30</option>
-                                                    <option value={"35"}>35</option>
-                                                    <option value={"40"}>40</option>
-                                                    <option value={"45"}>45</option>
-                                                    <option value={"50"}>50</option>
-                                                    <option value={"55"}>55</option>
-                                                </Form.Control>
-                                            </div>
+                                            <SelectHorario onChange = { onChange } hora = {{ value: formAgenda.hora_final, name: 'hora_final'}}
+                                                minuto = {{ value: formAgenda.minuto_final, name: 'minuto_final'}} />
                                         </div>
                                     </div>
                                 </div>
@@ -141,7 +67,7 @@ class AgendarCitaForm extends Component {
                                     withtextlabel={1}
                                     withplaceholder={1}
                                     withicon={1}
-                                    placeholder='Titulo'
+                                    placeholder='NOMBRE DE LA REUNIÓN'
                                     iconclass="fas fa-users"
                                     name='titulo'
                                     value={formAgenda.titulo}
@@ -150,7 +76,7 @@ class AgendarCitaForm extends Component {
                             </div>
                         </div>
                         <div className="form-group row form-group-marginless pb-0 mb-0">
-                            <div className='col-md-8 text-left'>
+                            <div className={formAgenda.lugar === 'presencial' ?'col-md-4 text-left':'col-md-8 text-left'}>
                                 <RadioGroupGray
                                     placeholder = "¿Cita presencial o remota?"
                                     name = 'lugar'
@@ -170,40 +96,75 @@ class AgendarCitaForm extends Component {
                                     value = { formAgenda.lugar }
                                     />
                             </div>
-                            <div className='col-md-8 text-left'>
-                                <InputGray
-                                    letterCase = { formAgenda.lugar === 'presencial' ? true : false }
-                                    withtaglabel = { 1 }
-                                    withtextlabel = { 1 }
-                                    withplaceholder = { 1 }
-                                    withicon = { 1 }
-                                    placeholder = { formAgenda.lugar === 'presencial' ? 'UBICACIÓN' : 'URL' }
-                                    iconclass = { formAgenda.lugar === 'presencial' ? 'fas fa-map-marker-alt' : ' fas fa-link' }
-                                    name = { formAgenda.lugar === 'presencial' ? 'ubicacion' : 'url' }
-                                    value = { formAgenda.lugar === 'presencial' ? formAgenda.ubicacion : formAgenda.url }
-                                    onChange = { onChange }
-                                />
-                            </div>
+                            {
+                                formAgenda.lugar === 'presencial' ?
+                                    <div className='col-md-4 text-left'>
+                                        <RadioGroupGray
+                                            placeholder = "¿La cita es en la empresa?"
+                                            name = 'cita_empresa'
+                                            onChange = { onChange }
+                                            options = {
+                                                [
+                                                    {
+                                                        label: 'Si',
+                                                        value: 'si_empresa'
+                                                    },
+                                                    {
+                                                        label: 'No',
+                                                        value: 'no_empresa'
+                                                    }
+                                                ]
+                                            }
+                                            value = { formAgenda.cita_empresa }
+                                        />
+                                    </div>
+                                :''
+                            }
+                            {
+                                formAgenda.lugar === 'remota' ||  formAgenda.cita_empresa === 'no_empresa'?
+                                    <div className='col-md-8 text-left'>
+                                        <InputGray
+                                            letterCase = { formAgenda.lugar === 'presencial' ? true : false }
+                                            withtaglabel = { 1 }
+                                            withtextlabel = { 1 }
+                                            withplaceholder = { 1 }
+                                            withicon = { 1 }
+                                            placeholder = { formAgenda.lugar === 'presencial' ? 'UBICACIÓN' : 'URL' }
+                                            iconclass = { formAgenda.lugar === 'presencial' ? 'fas fa-map-marker-alt' : ' fas fa-link' }
+                                            name = { formAgenda.lugar === 'presencial' ? 'ubicacion' : 'url' }
+                                            value = { formAgenda.lugar === 'presencial' ? formAgenda.ubicacion : formAgenda.url }
+                                            onChange = { onChange }
+                                        />
+                                    </div>
+                                :''
+                            }
                             <div className="col-md-8 text-left">
-                                <InputGray
+                                <TagInputGray
+                                    tags = { formAgenda.correos }
+                                    onChange = { tagInputChange }
+                                    placeholder = "CORREOS DE ASISTENTES"
+                                    iconclass = "fas fa-envelope"
+                                    letterCase = { false }
+                                />
+                                {/* <InputGray
                                     letterCase = { false }
                                     withtaglabel = { 1 }
                                     withtextlabel = { 1 }
                                     withplaceholder = { 1 }
                                     withicon = { 1 }
-                                    placeholder = "CORREO DE CONTACTO"
+                                    placeholder = "CORREOS DE ASISTENTES"
                                     iconclass = 'fas fa-envelope'
                                     name = 'correo'
                                     value = { formAgenda.correo }
                                     onChange = { onChange }
                                     patterns = { EMAIL }
-                                />
+                                /> */}
                             </div>
-                            <div className="col-md-2 mt-3 d-flex justify-content-center align-items-center">
+                            {/* <div className="col-md-2 mt-3 d-flex justify-content-center align-items-center">
                                 <Button icon={faPlus} pulse={"pulse-ring"} className={"btn btn-icon btn-light-gray pulse pulse-dark mr-5"} onClick={(e) => { e.preventDefault(); this.addCorreo() }} />
-                            </div>
+                            </div> */}
                         </div>
-                        <div>
+                        {/* <div>
                             <div className="form-group row form-group-marginless">
                                 <div className="col-md-12 row mx-0">
                                     {
@@ -227,23 +188,22 @@ class AgendarCitaForm extends Component {
                                     }
                                 </div>
                             </div>
-                        </div>
+                        </div> */}
                     </Col>
                 </div>
-                <div className='text-center pb-4'>
-                    <Button icon='' className="btn btn-primary mr-2"
-                        onClick={
-                            (e) => {
-                                e.preventDefault();
-                                onSubmit()
-                            }
-                        }
-                        text="AGENDAR" />
-                </div>
+                {/* <div className='text-center pb-4'> </div> */}
                 <div className="card-footer pt-3 pr-1 pb-0">
                     <div className="row">
                         <div className="col-lg-12 text-right pr-0 pb-0">
-
+                            <Button icon='' className="btn btn-primary mr-2"
+                                onClick={
+                                    (e) => {
+                                        e.preventDefault();
+                                        onSubmit()
+                                    }
+                                }
+                            text="AGENDAR" 
+                            />
                         </div>
                     </div>
                 </div>

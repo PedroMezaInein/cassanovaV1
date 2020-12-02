@@ -404,27 +404,20 @@ class Contratos extends Component {
         return aux
     }
     openModalDeleteAdjunto = (adjunto) => {
-        swal({
-            title: '¿Estás seguro?',
-            icon: 'warning',
-            buttons: {
-                cancel: {
-                    text: "Cancelar",
-                    value: null,
-                    visible: true,
-                    className: "button__green btn-primary cancel",
-                    closeModal: true,
-                },
-                confirm: {
-                    text: "Aceptar",
-                    value: true,
-                    visible: true,
-                    className: "button__red btn-primary",
-                    closeModal: true
-                }
+        MySwal.fire({
+            title: '¿DESEAS ELIMINAR EL ARCHIVO?',
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: 'ACEPTAR',
+            cancelButtonText: 'CANCELAR',
+            reverseButtons: true,
+            customClass: {
+                content: 'd-none',
+                confirmButton: 'btn-light-danger-sweetalert2',
+                cancelButton:'btn-light-gray-sweetalert2'
             }
         }).then((result) => {
-            if (result) {
+            if (result.value) {
                 this.deleteAdjuntoContratoAxios(adjunto.id)
             }
         })

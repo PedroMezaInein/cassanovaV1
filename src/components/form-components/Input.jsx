@@ -70,7 +70,7 @@ class Input extends Component {
                         </span>                 
                         <Form.Control 
                             placeholder={placeholder} 
-                            className={ inputValido ? " form-control is-valid text-uppercase sin_icono" : " form-control is-invalid text-uppercase sin_icono" }
+                            className={ inputValido ? " form-control is-valid sin_icono" : " form-control is-invalid sin_icono" }
                             onChange={(e) => { e.preventDefault(); this.validarInput(e); onChange(toInputUppercase(e)) }}  
                             // onInput={toInputUppercase}
                             {...props} 

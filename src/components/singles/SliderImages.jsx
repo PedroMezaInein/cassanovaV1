@@ -32,6 +32,7 @@ class SliderImages extends Component {
     render() {
         const { active } = this.state
         const { elements } = this.props
+        if(elements.length > 0)
         return (
             <>
                 <div className="d-flex justify-content-center align-items-center">
@@ -67,6 +68,9 @@ class SliderImages extends Component {
                     </div>
                 </div>
             </>
+        )
+        else return(
+            <></>
         )
     }
 }

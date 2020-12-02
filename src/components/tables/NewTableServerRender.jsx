@@ -6,8 +6,6 @@ import { Card, Spinner } from 'react-bootstrap'
 import { renderToString } from 'react-dom/server';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
-import SVG from "react-inlinesvg";
-import { toAbsoluteUrl } from "../../functions/routers"
 const $ = require('jquery');
 $.DataTable = require('datatables.net');
 require("datatables.net-responsive-bs4");
@@ -353,9 +351,14 @@ class NewTableServerRender extends Component {
             this.props.onClickRestante();
         }
     }
+    clickHandlerInhabilitadas = (e) => {
+        if (typeof this.props.onClickInhabilitadas === 'function') {
+            this.props.onClickInhabilitadas();
+        }
+    }
     render() {
 
-        const { title, subtitle, url, mostrar_boton, abrir_modal, exportar_boton, cardTable, cardTableHeader, cardBody, restante_empresa } = this.props
+        const { title, subtitle, url, mostrar_boton, abrir_modal, exportar_boton, cardTable, cardTableHeader, cardBody, restante_empresa, inhabilitar_empresa } = this.props
         return (
             <>
                 <Card id={cardTable} className="card-custom card-sticky">
@@ -375,11 +378,18 @@ class NewTableServerRender extends Component {
                         <div className="card-toolbar">
                             {(restante_empresa === true) ?
                                 <OverlayTrigger overlay={<Tooltip>RESTANTE POR EMPRESA</Tooltip>}>
-                                    <span className="btn btn-icon btn-light-primary mr-2" onClick={() => this.clickHandlerRestante()}>
-                                        <span className="svg-icon svg-icon-md">
-                                            <SVG src={toAbsoluteUrl('/images/svg/Dollar.svg')} />
-                                        </span>
-                                    </span>
+                                    <button onClick={() => this.clickHandlerRestante()} className="btn btn-icon btn-light btn-text-primary btn-hover-text-dark font-weight-bold btn-sm mr-2">
+                                        <i className="fas fa-dollar-sign text-dark-50"></i>
+                                    </button>
+                                </OverlayTrigger>
+                                :
+                                ""
+                            }
+                            {(inhabilitar_empresa === true) ?
+                                <OverlayTrigger overlay={<Tooltip>HABILITAR EMPRESA</Tooltip>}>
+                                    <button onClick={() => this.clickHandlerInhabilitadas()} className="btn btn-icon btn-light btn-text-primary btn-hover-text-dark font-weight-bold btn-sm mr-2">
+                                        <i className="fas fa-unlock-alt text-dark-50"></i>
+                                    </button>
                                 </OverlayTrigger>
                                 :
                                 ""
@@ -387,7 +397,7 @@ class NewTableServerRender extends Component {
                             {(exportar_boton === true) ?
                                 <button onClick={() => this.clickHandlerExport()} className="btn btn-primary font-weight-bold mr-2">
                                     <i className="far fa-file-excel"></i> Exportar
-                                    </button>
+                                </button>
                                 :
                                 ""
                             }

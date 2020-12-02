@@ -23,13 +23,30 @@ class LeadNegociacion extends Component {
         return false;
     }
 
+    actionsButton = lead => {
+        let aux = false
+        if(lead.prospecto)
+            if(lead.prospecto.contactos)
+                if(lead.prospecto.contactos.length)
+                    lead.prospecto.contactos.map((contacto, index)=>{
+                        if(contacto.comentario === 'CORREO DE SOLICITUD DE DATOS Y MACHOTE DE CONTRATO ENVIADO.')
+                            aux = true
+                    })
+        return aux
+    }
+
     render() {
-        const { leads, onClickNext, onClickPrev, openModalWithInput, changeEstatus, changePageDetails, changePageCierreVenta} = this.props
+        const { leads, onClickNext, onClickPrev, openModalWithInput, changeEstatus, changePageDetails, changePageCierreVenta, changePageContratar } = this.props
         return (
             <div className="tab-content">
                 <div className="table-responsive-lg">
                     <table className="table table-borderless table-vertical-center">
                         <thead>
+                            <tr>
+                                <th colSpan="7" className = 'text-brown p-2 text-center text-uppercase'>
+                                    LEADS EN NEGOCIACIÓN
+                                </th>
+                            </tr>
                             <tr className="text-uppercase bg-light-brown text-brown">
                                 <th style={{ minWidth: "100px" }} className="pl-7">
                                     <span>Nombre del cliente y proyecto</span>
@@ -60,7 +77,7 @@ class LeadNegociacion extends Component {
                                                             </span>
                                                         </div>
                                                         <div>
-                                                            <a href={`mailto:+${lead.email}`} className="text-dark-75 font-weight-bolder text-hover-primary mb-1 font-size-lg">
+                                                            <a href={`mailto:+${lead.email}`} className="text-dark-75 font-weight-bolder text-hover-brown mb-1 font-size-lg">
                                                                 {lead.nombre}
                                                             </a>
                                                             <span className="text-muted font-weight-bold d-block">
@@ -163,18 +180,27 @@ class LeadNegociacion extends Component {
                                                     }
                                                 </td>
                                                 <td className="pr-0 text-center">
-                                                    <OverlayTrigger overlay={<Tooltip>Ver más</Tooltip>}>
+                                                    <OverlayTrigger overlay={<Tooltip>VER MÁS</Tooltip>}>
                                                         <span onClick={(e) => { changePageDetails(lead) }} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-brown">
                                                             <i className="flaticon2-plus icon-nm"></i>
                                                         </span>
                                                     </OverlayTrigger>
-                                                    <OverlayTrigger overlay={<Tooltip>CIERRE DE VENTA</Tooltip>}>
-                                                        <a onClick={(e) => { changePageCierreVenta(lead) }} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-brown">
-                                                            <span className="svg-icon svg-icon-md">
-                                                                <SVG src={toAbsoluteUrl('/images/svg/File.svg')} />
-                                                            </span>
-                                                        </a>
-                                                    </OverlayTrigger>
+                                                    {
+                                                        this.actionsButton(lead) ?
+                                                            <OverlayTrigger overlay={<Tooltip>CONTRATAR</Tooltip>}>
+                                                                <span onClick={(e) => { changePageContratar(lead) }} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-brown">
+                                                                    <i className="fas fa-file-signature icon-nm"></i>
+                                                                </span>
+                                                            </OverlayTrigger>
+                                                        :
+                                                            <OverlayTrigger overlay={<Tooltip>SEGUIMIENTO DE VENTA</Tooltip>}>
+                                                                <a onClick={(e) => { changePageCierreVenta(lead) }} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-brown">
+                                                                    <span className="svg-icon svg-icon-md">
+                                                                        <SVG src={toAbsoluteUrl('/images/svg/File.svg')} />
+                                                                    </span>
+                                                                </a>
+                                                            </OverlayTrigger>
+                                                    }
                                                 </td>
                                             </tr>
                                         )
@@ -183,17 +209,26 @@ class LeadNegociacion extends Component {
                         </tbody>
                     </table>
                 </div>
-                <div className="d-flex justify-content-end">
+                <div className = { leads.total === 0 ? "d-flex justify-content-end" : "d-flex justify-content-between" } >
                     {
-                        this.isActiveButton('prev') ?
-                            <span className="btn btn-icon btn-xs btn-light-brown mr-2 my-1" onClick={onClickPrev}><i className="ki ki-bold-arrow-back icon-xs"></i></span>
-                            : ''
+                        leads.total > 0 ?
+                            <div className="text-body font-weight-bolder font-size-sm">
+                                Página { parseInt(leads.numPage) + 1} de { leads.total_paginas }
+                            </div>
+                        : ''
                     }
-                    {
-                        this.isActiveButton('next') ?
-                            <span className="btn btn-icon btn-xs btn-light-brown mr-2 my-1" onClick={onClickNext}><i className="ki ki-bold-arrow-next icon-xs"></i></span>
-                            : ''
-                    }
+                    <div>
+                        {
+                            this.isActiveButton('prev') ?
+                                <span className="btn btn-icon btn-xs btn-light-brown mr-2 my-1" onClick={onClickPrev}><i className="ki ki-bold-arrow-back icon-xs"></i></span>
+                                : ''
+                        }
+                        {
+                            this.isActiveButton('next') ?
+                                <span className="btn btn-icon btn-xs btn-light-brown mr-2 my-1" onClick={onClickNext}><i className="ki ki-bold-arrow-next icon-xs"></i></span>
+                                : ''
+                        }
+                    </div>
                 </div>
             </div>
         )

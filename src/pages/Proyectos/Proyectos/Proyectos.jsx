@@ -15,6 +15,10 @@ import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert } from '../../..
 import ItemSlider from '../../../components/singles/ItemSlider'
 import { Nav, Tab, Col, Row } from 'react-bootstrap'
 import { ProyectosCard } from '../../../components/cards'
+/* import AWS from 'aws-sdk' */
+import Swal from 'sweetalert2'
+import withReactContent from 'sweetalert2-react-content'
+const MySwal = withReactContent(Swal)
 const $ = require('jquery');
 class Proyectos extends Component {
     state = {
@@ -415,6 +419,11 @@ class Proyectos extends Component {
                     value: '',
                     placeholder: 'Imagen',
                     files: []
+                },
+                avance: {
+                    value: '',
+                    placeholder: 'Avance',
+                    files: []
                 }
             },
             avances: [
@@ -433,8 +442,11 @@ class Proyectos extends Component {
             clientes: [],
             empresas: [],
             colonias: []
-        }
+        },
+        myBucket: ''
     }
+
+    myBucket = ''
 
     seleccionaradj(adjuntos) {
         const { proyecto } = this.state;
@@ -464,6 +476,19 @@ class Proyectos extends Component {
         })
         if (!proyectos)
             history.push('/')
+        
+        /* AWS.config.update({
+            accessKeyId: 'AKIARX3IEKM76VEW5MCV',
+            secretAccessKey: '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'
+        })
+        let myBucket = new AWS.S3({
+            params: { Bucket: 'admin-proyectos-bucket'},
+            region: 'us-east-2',
+        })
+        this.setState({
+            ...this.state,
+            myBucket: myBucket
+        }) */
         // this.getProyectosAxios()
     }
     updateActiveTabContainer = active => {
@@ -792,53 +817,43 @@ class Proyectos extends Component {
         return form
     }
     deleteFile = element => {
-        swal({
-            title: '¿Deseas eliminar el archivo?',
-            buttons: {
-                cancel: {
-                    text: "Cancelar",
-                    value: null,
-                    visible: true,
-                    className: "button__green btn-primary cancel",
-                    closeModal: true,
-                },
-                confirm: {
-                    text: "Aceptar",
-                    value: true,
-                    visible: true,
-                    className: "button__red btn-primary",
-                    closeModal: true
-                }
+        MySwal.fire({
+            title: '¿DESEAS ELIMINAR EL ARCHIVO?',
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: 'ACEPTAR',
+            cancelButtonText: 'CANCELAR',
+            reverseButtons: true,
+            customClass: {
+                content: 'd-none',
+                confirmButton: 'btn-light-danger-sweetalert2',
+                cancelButton:'btn-light-gray-sweetalert2'
             }
         }).then((result) => {
-            if (result) {
+            if (result.value) {
                 this.deleteAdjuntoAxios(element.id)
             }
         })
     }
-    handleChange = (files, item) => {
 
+    handleChangeAvance = (files, item) => {
+        this.onChangeAdjunto({ target: { name: item, value: files, files: files } })
+    }
+    
+    handleChange = (files, item) => {
         this.onChangeAdjuntoGrupo({ target: { name: item, value: files, files: files } })
-        swal({
-            title: '¿Confirmas el envio de adjuntos?',
-            buttons: {
-                cancel: {
-                    text: "Cancelar",
-                    value: null,
-                    visible: true,
-                    className: "button__red btn-primary cancel",
-                    closeModal: true,
-                },
-                confirm: {
-                    text: "Aceptar",
-                    value: true,
-                    visible: true,
-                    className: "button__green btn-primary",
-                    closeModal: true
-                }
+        MySwal.fire({
+            title: '¿CONFIRMAS EL ENVIÓ DE ADJUNTOS?',
+            icon: "question",
+            showCancelButton: true,
+            confirmButtonText: "ACEPTAR",
+            cancelButtonText: "CANCELAR",
+            reverseButtons: true,
+            customClass: {
+                content: 'd-none',
             }
         }).then((result) => {
-            if (result) {
+            if (result.value) {
                 waitAlert()
                 this.addProyectoAdjuntoAxios(item)
             }
@@ -849,6 +864,12 @@ class Proyectos extends Component {
         waitAlert();
         this.addAvanceAxios()
     }
+    onSubmitNewAvance = e => {
+        e.preventDefault()
+        waitAlert();
+        this.addAvanceFileAxios()
+    }
+
     safeDelete = (e) => () => {
         this.deleteProyectoAxios()
     }
@@ -1058,19 +1079,28 @@ class Proyectos extends Component {
         const { proyecto } = this.state
         await axios.delete(URL_DEV + 'proyectos/' + proyecto.id + '/adjunto/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { proyecto, proyectos } = response.data
-                const { data } = this.state
-                // this.getClientesAxios()
-                data.proyectos = proyectos
-
+                const { proyecto } = response.data
+                const { key } = this.state
+                switch(key){
+                    case 'all':
+                        this.getProyectoAxios();
+                        break;
+                    case 'fase1':
+                        this.getProyectoFase1Axios();
+                        break;
+                    case 'fase2':
+                        this.getProyectoFase2Axios();
+                        break;
+                    case 'fase3':
+                        this.getProyectoFase3Axios();
+                        break;
+                    default: break;
+                }
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue registrado con éxito.')
-
                 this.setState({
                     ...this.state,
                     proyecto: proyecto,
-                    proyectos: this.setProyectos(proyectos),
-                    adjuntos: this.setAdjuntosSlider(proyecto),
-                    data
+                    adjuntos: this.setAdjuntosSlider(proyecto)
                 })
             },
             (error) => {
@@ -1124,19 +1154,99 @@ class Proyectos extends Component {
 
         await axios.post(URL_DEV + 'proyectos/' + proyecto.id + '/avances', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { proyecto, proyectos, avance } = response.data
-                const { data } = this.state
-                data.proyectos = proyectos
-
+                const { avance, proyecto } = response.data
+                const { key } = this.state
+                switch(key){
+                    case 'all':
+                        this.getProyectoAxios();
+                        break;
+                    case 'fase1':
+                        this.getProyectoFase1Axios();
+                        break;
+                    case 'fase2':
+                        this.getProyectoFase2Axios();
+                        break;
+                    case 'fase3':
+                        this.getProyectoFase3Axios();
+                        break;
+                    default: break;
+                }
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue registrado con éxito.')
                 var win = window.open(avance.pdf, '_blank');
                 win.focus();
                 this.setState({
                     ...this.state,
                     proyecto: proyecto,
-                    proyectos: this.setProyectos(proyectos),
                     form: this.clearForm(),
-                    data
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    async addAvanceFileAxios() {
+        const { access_token } = this.props.authUser
+        const { form, proyecto } = this.state
+        const data = new FormData();
+        let aux = Object.keys(form)
+        aux.map((element) => {
+            switch (element) {
+                case 'fechaInicio':
+                case 'fechaFin':
+                    data.append(element, (new Date(form[element])).toDateString())
+                    break
+                case 'semana':
+                    data.append(element, form[element])
+                    break;
+                default:
+                    break
+            }
+            return false
+        })
+        aux = Object.keys(form.adjuntos)
+        aux.map((element) => {
+            if (form.adjuntos[element].value !== '') {
+                for (var i = 0; i < form.adjuntos[element].files.length; i++) {
+                    data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
+                    data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
+                }
+            }
+        })
+        await axios.post(URL_DEV + 'proyectos/' + proyecto.id + '/avances/file', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { avance, proyecto } = response.data
+                const { key } = this.state
+                switch(key){
+                    case 'all':
+                        this.getProyectoAxios();
+                        break;
+                    case 'fase1':
+                        this.getProyectoFase1Axios();
+                        break;
+                    case 'fase2':
+                        this.getProyectoFase2Axios();
+                        break;
+                    case 'fase3':
+                        this.getProyectoFase3Axios();
+                        break;
+                    default: break;
+                }
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El avance fue adjuntado con éxito.')
+                var win = window.open(avance.pdf, '_blank');
+                win.focus();
+                this.setState({
+                    ...this.state,
+                    proyecto: proyecto,
+                    form: this.clearForm()
                 })
             },
             (error) => {
@@ -1153,6 +1263,7 @@ class Proyectos extends Component {
         })
     }
     async addProyectoAdjuntoAxios(name) {
+
         const { access_token } = this.props.authUser
         const { form, proyecto } = this.state
         const data = new FormData();
@@ -1170,30 +1281,66 @@ class Proyectos extends Component {
         form.adjuntos_grupo[grupo].adjuntos[adjunto].files.map((file) => {
             data.append(`files_name_${form.adjuntos_grupo[grupo].adjuntos[adjunto].id}[]`, file.name)
             data.append(`files_${form.adjuntos_grupo[grupo].adjuntos[adjunto].id}[]`, file.file)
+            console.log(file.file.size, 'FILE')
+            console.log(data.getAll(`files_${form.adjuntos_grupo[grupo].adjuntos[adjunto].id}[]`), 'FORM DARTA')
             return false
         })
-        await axios.post(URL_DEV + 'proyectos/' + proyecto.id + '/adjuntos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        
+        /* console.log(form.adjuntos_grupo[grupo].adjuntos[adjunto], 'files')
+        form.adjuntos_grupo[grupo].adjuntos[adjunto].files.map((file)=>{
+            const params = {
+                ACL: 'public-read',
+                Key: file.file.name,
+                ContentType: file.file.type,
+                Body: file.file,
+                CrossOrigin: '*'
+            }
+            myBucket.putObject(params)
+                .on('httpUploadProgress', (evt) => {
+                    console.log(Math.round((evt.loaded / evt.total) *100), 'progress')
+                })
+                .send((err)=>{
+                    if(err)
+                        console.log(err, 'error')
+                })
+        }) */
+        await axios.post(URL_DEV + 'proyectos/' + proyecto.id + '/adjuntos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}`}, 
+                maxContentLength: 100000000,
+                maxBodyLength: 1000000000
+            } ).then(
             (response) => {
-                const { proyecto, proyectos } = response.data
-                const { data } = this.state
-                data.proyectos = proyectos
+                const { proyecto } = response.data
+                const { key } = this.state
+                switch(key){
+                    case 'all':
+                        this.getProyectoAxios();
+                        break;
+                    case 'fase1':
+                        this.getProyectoFase1Axios();
+                        break;
+                    case 'fase2':
+                        this.getProyectoFase2Axios();
+                        break;
+                    case 'fase3':
+                        this.getProyectoFase3Axios();
+                       break;
+                    default: break;
+                }
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue registrado con éxito.')
                 this.setState({
                     ...this.state,
                     proyecto: proyecto,
-                    proyectos: this.setProyectos(proyectos),
                     adjuntos: this.setAdjuntosSlider(proyecto),
-                    data
                 })
             },
             (error) => {
                 console.log(error, 'error')
                 if (error.response.status === 401) {
-                    forbiddenAccessAlert()
+                   forbiddenAccessAlert()
                 } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
-            }
+           }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -1471,18 +1618,41 @@ class Proyectos extends Component {
                     </div>
                 </Modal>
                 <Modal size="xl" title={title} show={modalAvances} handleClose={this.handleCloseAvances}>
-                    <AvanceForm
-                        form={form}
-                        onChangeAvance={this.onChangeAvance}
-                        onChangeAdjuntoAvance={this.onChangeAdjuntoAvance}
-                        clearFilesAvances={this.clearFilesAvances}
-                        addRowAvance={this.addRowAvance}
-                        onSubmit={this.onSubmitAvance}
-                        onChange={this.onChange}
-                        proyecto={proyecto}
-                        sendMail={this.sendMail}
-                        formeditado={formeditado}
-                    />
+                    <Tabs 
+                        defaultActiveKey = "nuevo" 
+                        className = "mt-4 nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100">
+                        <Tab eventKey = "nuevo" title = "Nuevo avance">
+                            <AvanceForm
+                                form = { form }
+                                onChangeAvance = { this.onChangeAvance }
+                                onChangeAdjuntoAvance = { this.onChangeAdjuntoAvance }
+                                clearFilesAvances = { this.clearFilesAvances }
+                                addRowAvance = { this.addRowAvance }
+                                onSubmit = { this.onSubmitAvance }
+                                onChange = { this.onChange }
+                                proyecto = { proyecto }
+                                sendMail = { this.sendMail }
+                                formeditado = { formeditado }
+                            />
+                        </Tab>
+                        <Tab eventKey = "existente" title = "Cargar avance">
+                            <AvanceForm
+                                form = { form }
+                                onChangeAvance = { this.onChangeAvance }
+                                onChangeAdjuntoAvance = { this.onChangeAdjuntoAvance }
+                                clearFilesAvances = { this.clearFilesAvances }
+                                addRowAvance = { this.addRowAvance }
+                                onSubmit = { this.onSubmitNewAvance }
+                                onChange = { this.onChange }
+                                proyecto = { proyecto }
+                                sendMail = { this.sendMail }
+                                handleChange = { this.handleChangeAvance }
+                                formeditado = { formeditado }
+                                isNew = { true }
+                            />
+                        </Tab>
+                    </Tabs>
+                    
                 </Modal>
                 <Modal size="lg" title="Proyecto" show={modalSee} handleClose={this.handleCloseSee} >
                     <ProyectosCard

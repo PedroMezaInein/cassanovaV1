@@ -106,22 +106,25 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                 <InputNumberGray
                                                     requirevalidation={1}
                                                     formeditado={formeditado}
-                                                    placeholder="M2"
+                                                    placeholder="M²"
                                                     value={formDiseño.m2}
                                                     name="m2"
                                                     onChange={onChange}
                                                     iconclass={"fas fa-ruler-combined"}
+                                                    messageinc="Incorrecto. Ingresa los m²."
                                                 />
                                             </div>
                                             <div className="col-md-4">
                                                 <SelectSearchGray
                                                     formeditado = { formeditado }
+                                                    requirevalidation={1}
                                                     options = { options.esquemas }
                                                     placeholder = "ESQUEMA"
                                                     name = "esquema"
                                                     value = { formDiseño.esquema }
                                                     onChange = { this.updateEsquema }
                                                     iconclass = "flaticon2-sheet"
+                                                    messageinc="Incorrecto. Ingresa selecciona el esquema."
                                                 />
                                             </div>
                                             <div className="col-md-4">
@@ -134,7 +137,6 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                     thousandseparator={true}
                                                     onChange={onChange}
                                                     prefix={'%'}
-                                                    messageinc="Incorrecto. Ingresa el porcentaje."
                                                     formeditado={formeditado}
                                                     name="descuento"
                                                 />
@@ -150,10 +152,12 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                     name="tiempo_ejecucion_diseno"
                                                     onChange={onChange}
                                                     iconclass={"flaticon-calendar-with-a-clock-time-tools"}
+                                                    messageinc="Incorrecto. Ingresa los días de ejecución."
                                                 />
                                             </div>
                                             <div className="col-md-4">
                                                 <InputNumberGray
+                                                    formeditado={formeditado}
                                                     requirevalidation={0}
                                                     placeholder="TOTAL"
                                                     value={formDiseño.total}
@@ -165,13 +169,15 @@ class PresupuestoDiseñoCRMForm extends Component {
                                             </div>
                                             <div className="col-md-4">
                                                 <InputNumberGray
-                                                    requirevalidation={0}
+                                                    formeditado={formeditado}
+                                                    requirevalidation={1}
                                                     placeholder="NÚMERO DE RENDERS"
                                                     value={formDiseño.renders}
                                                     iconclass={"fas fa-photo-video"}
                                                     thousandseparator={true}
                                                     onChange={onChange}
                                                     name="renders"
+                                                    messageinc="Incorrecto. Ingresa los números de renders."
                                                 />
                                             </div>
                                         </div>
@@ -247,10 +253,11 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                                         withplaceholder={0}
                                                                         withicon={0}
                                                                         placeholder='DÍA'
-                                                                        requirevalidation={0}
+                                                                        requirevalidation={1}
                                                                         formeditado={formeditado}
                                                                         name='concepto1'
                                                                         value={concepto.value}
+                                                                        messageinc="R."
                                                                         onChange={(e) => { onChangeConceptos(e, key) }}
                                                                     />
                                                                 </td>
@@ -360,7 +367,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-3">
                                         <InputNumberGray
-                                            requirevalidation={0}
+                                            requirevalidation={1}
                                             formeditado={formeditado}
                                             placeholder="CONSTR. INTERIOR INF."
                                             value={formDiseño.construccion_interiores_inf}
@@ -373,7 +380,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                     </div>
                                     <div className="col-md-3">
                                         <InputNumberGray
-                                            requirevalidation={0}
+                                            requirevalidation={1}
                                             formeditado={formeditado}
                                             placeholder="CONSTR. INTERIOR SUP."
                                             value={formDiseño.construccion_interiores_sup}
@@ -386,7 +393,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                     </div>
                                     <div className="col-md-3">
                                         <InputNumberGray
-                                            requirevalidation={0}
+                                            requirevalidation={1}
                                             formeditado={formeditado}
                                             placeholder="MOBILIARIO INF."
                                             value={formDiseño.mobiliario_inf}
@@ -399,7 +406,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                     </div>
                                     <div className="col-md-3">
                                         <InputNumberGray
-                                            requirevalidation={0}
+                                            requirevalidation={1}
                                             formeditado={formeditado}
                                             placeholder="MOBILIARIO SUP."
                                             value={formDiseño.mobiliario_sup}
@@ -415,7 +422,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-3">
                                         <InputNumberGray
-                                            requirevalidation={0}
+                                            requirevalidation={1}
                                             formeditado={formeditado}
                                             placeholder="CONST. CIVIL INF."
                                             value={formDiseño.construccion_civil_inf}
@@ -428,7 +435,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                     </div>
                                     <div className="col-md-3">
                                         <InputNumberGray
-                                            requirevalidation={0}
+                                            requirevalidation={1}
                                             formeditado={formeditado}
                                             placeholder="CONST. CIVIL SUP."
                                             value={formDiseño.construccion_civil_sup}
@@ -445,13 +452,14 @@ class PresupuestoDiseñoCRMForm extends Component {
                                             withtextlabel={1}
                                             withplaceholder={1}
                                             withicon={1}
-                                            requirevalidation={0}
+                                            requirevalidation={1}
                                             formeditado={formeditado}
-                                            placeholder="TIEMPO DE EJECUCIÓN"
+                                            placeholder="TIEMPO DE EJECUCIÓN(SEMANAS)"
                                             value={formDiseño.tiempo_ejecucion_construccion}
                                             name="tiempo_ejecucion_construccion"
                                             onChange={onChange}
                                             iconclass={"flaticon-calendar-with-a-clock-time-tools"}
+                                            messageinc="Incorrecto. Ingresa un tiempo de ejecución."
                                         />
                                     </div>
                                 </div>

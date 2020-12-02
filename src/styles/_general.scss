@@ -63,6 +63,13 @@ $l-black-gold: #423b28;
     }
 }
 
+.text-no-transform{
+    input{
+        text-transform: none!important;    
+    }
+    text-transform: none!important;
+}
+
 //@import url('https://fonts.googleapis.com/css2?family=Inter:wght@100;200;300;400;500;531;600;700;800;900&family=Oswald:wght@200;300;400;469;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700');
 
@@ -222,7 +229,6 @@ a.text-hover-danger2:hover,
     background-image: none !important;
     padding-right: 0 !important;
 }
-
 
 .modal-dialog {
     &.modal-xl {
@@ -468,7 +474,6 @@ a#rh-proveedores.text-hover-primary.dropdown-item.active {
 
 //Final: Dropdown para: CALENDARIO para: CALENDARIO
 
-
 .img-calidad {
     @include down-screen($md) {
         width: 100%;
@@ -494,7 +499,6 @@ div#fecha_calidad {
     }
 }
 
-
 a.dropdown-toggle.nav-link {
     @include down-screen($md) {
         margin-left: 0px !important;
@@ -510,7 +514,6 @@ a.nav-link {
 .pt-65px {
     padding-top: 65px !important;
 }
-
 
 #form-flujo-proyectos {
     @include down-screen($lg) {
@@ -899,4 +902,30 @@ div#asideMenuScroll {
         flex: 0 0 83.33333%;
         max-width: 83.33333%;
     }
+} 
+button#solicitar_cita{
+    @media (max-width: ($xxs)){
+        min-height: 36px; 
+    }
+}
+
+.btn-light-danger-sweetalert2{
+    color: #F64E60!important;
+    background-color: #FFE2E5!important;
+    border-color: transparent!important;
+}
+button.swal2-confirm.btn-light-danger-sweetalert2.swal2-styled:hover{
+    color: #ffffff!important;
+    background-color: #F64E60!important;
+    border-color: transparent!important;
+}
+.btn-light-gray-sweetalert2{
+    color: #464E5F!important;
+    background-color: #E5EAEE!important;
+    border-color: #E5EAEE!important;
+}
+button.swal2-cancel.btn-light-gray-sweetalert2.swal2-styled:hover{
+    color: #464E5F;
+    background-color: #D6D6E0;
+    border-color: #D6D6E0;
 }

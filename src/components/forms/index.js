@@ -16,6 +16,7 @@ import contratoForm from './administracion/ContratoForm'
 import areasForm from './catalogos/AreaForm'
 import partidaForm from './catalogos/PartidaForm'
 import unidadForm from './catalogos/UnidadForm'
+import origenLeadForm from './catalogos/OrigenLeadForm'
 import bancoForm from './catalogos/BancoForm'
 import tipoForm from './catalogos/TipoForm'
 import proyectosForm from './proyectos/ProyectosForm'
@@ -65,10 +66,12 @@ import prestamosForm from './recursoshumanos/PrestamosForm'
 import abonoPrestamosForm from './recursoshumanos/AbonoPrestamosForm'
 import adjuntosEmpresaForm from './catalogos/AdjuntosEmpresaForm'
 import agendaLlamada from './leads/AgendaLlamada'
+import agendaLlamadaUbicacion from './leads/AgendaLlamadaUbicacion'
 import historialContactoForm from './leads/info/HistorialContactoForm'
 import agendarCitaForm from './leads/info/AgendarCitaForm'
 import presupuestoDiseñoCRMForm from './leads/info/PresupuestoDiseñoCRMForm'
 import presupuestoGenerado from './leads/info/PresupuestoGenerado'
+import informacionGeneral from './leads/InformacionGeneral'
 
 export const RegisterUserForm = registerUserForm
 export const EmpresaForm = empresaForm
@@ -88,6 +91,7 @@ export const ContratoForm = contratoForm
 export const AreasForm = areasForm
 export const PartidaForm = partidaForm
 export const UnidadForm = unidadForm
+export const OrigenLeadForm = origenLeadForm
 export const BancoForm = bancoForm
 export const TipoForm = tipoForm
 export const ProyectosForm = proyectosForm
@@ -137,7 +141,9 @@ export const PrestamosForm = prestamosForm
 export const AbonoPrestamosForm = abonoPrestamosForm
 export const AdjuntosEmpresaForm = adjuntosEmpresaForm
 export const AgendaLlamada = agendaLlamada
+export const AgendaLlamadaUbicacion = agendaLlamadaUbicacion
 export const HistorialContactoForm = historialContactoForm
 export const AgendarCitaForm = agendarCitaForm
 export const PresupuestoDiseñoCRMForm = presupuestoDiseñoCRMForm
 export const PresupuestoGenerado = presupuestoGenerado
+export const InformacionGeneral = informacionGeneral

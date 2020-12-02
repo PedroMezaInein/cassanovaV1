@@ -576,7 +576,7 @@ class ReporteVentas extends Component {
                 })
                 let contador = 0
                 let contadorArray = []
-                console.log(arrayDataSets, 'arraydatasets')
+                // console.log(arrayDataSets, 'arraydatasets')
                 if(arrayDataSets.length){
                     arrayDataSets[0].data.map((element, index)=>{
                         contador = 0
@@ -702,33 +702,36 @@ class ReporteVentas extends Component {
                 
                 keys = Object.keys(estatus)
 
-                colors = this.getBG(keys.length);
-                colors2 = this.setOpacity2(colors)
-                
-                estatus[keys[0]].map((tipo) => {
-                    arrayLabels.push(tipo.label.toUpperCase())
-                    arrayData.push(tipo.leads)
-                })
+                if(keys.length > 0){
 
-                keys.map((element, index)=>{
-                    if(index > 0){
-                        arrayData = []
-                        estatus[element].map((tipo) => {
-                            arrayData.push(tipo.leads)
-                        })
-                    }
-                    arrayDataSets.push(
-                        {
-                            label: element.toUpperCase(),
-                            data: arrayData,
-                            backgroundColor: colors[index],
-                            borderColor: colors2[index],
-                            fill: false,
-                            yAxisID: 'y-axis-1',
+                    colors = this.getBG(keys.length);
+                    colors2 = this.setOpacity2(colors)
+                    
+                    estatus[keys[0]].map((tipo) => {
+                        arrayLabels.push(tipo.label.toUpperCase())
+                        arrayData.push(tipo.leads)
+                    })
+
+                    keys.map((element, index)=>{
+                        if(index > 0){
+                            arrayData = []
+                            estatus[element].map((tipo) => {
+                                arrayData.push(tipo.leads)
+                            })
                         }
-                    );
-                })
-
+                        arrayDataSets.push(
+                            {
+                                label: element.toUpperCase(),
+                                data: arrayData,
+                                backgroundColor: colors[index],
+                                borderColor: colors2[index],
+                                fill: false,
+                                yAxisID: 'y-axis-1',
+                            }
+                        );
+                    })
+                }
+                
                 data.estatusComparativa = {
                     labels: arrayLabels,
                     datasets: arrayDataSets

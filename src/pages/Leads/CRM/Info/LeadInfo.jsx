@@ -1,16 +1,16 @@
 import { connect } from 'react-redux';
 import React, { Component } from 'react'
 import Layout from '../../../../components/layout/layout'
-import { Col, Row, Card, Tab, Nav, Dropdown, Form, OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { Button, InputGray, InputPhoneGray } from '../../../../components/form-components';
-import { TEL, URL_DEV, EMAIL } from '../../../../constants'
+import { Col, Row, Card, Tab, Nav, Dropdown, Form } from 'react-bootstrap'
+import { Button } from '../../../../components/form-components';
+import { URL_DEV } from '../../../../constants'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../../functions/routers"
 import { setOptions, setDateTableLG } from '../../../../functions/setters';
 import axios from 'axios'
 import { doneAlert, errorAlert, forbiddenAccessAlert, waitAlert, questionAlert2, questionAlert } from '../../../../functions/alert';
 import swal from 'sweetalert';
-import { HistorialContactoForm, AgendarCitaForm, PresupuestoDiseñoCRMForm, PresupuestoGenerado } from '../../../../components/forms'
+import { HistorialContactoForm, AgendarCitaForm, PresupuestoDiseñoCRMForm, PresupuestoGenerado,InformacionGeneral} from '../../../../components/forms'
 import { Modal } from '../../../../components/singles'
 class LeadInfo extends Component {
     state = {
@@ -31,7 +31,8 @@ class LeadInfo extends Component {
             tipoProyectoNombre: '',
             origen: '',
             telefono: '',
-            proyecto: ''
+            proyecto: '',
+            fecha: '',
         },
         formHistorial: {
             comentario: '',
@@ -63,7 +64,10 @@ class LeadInfo extends Component {
             correo: '',
             lugar: 'presencial',
             url: '',
-            ubicacion: ''
+            ubicacion: '',
+            si_empresa: '',
+            no_empresa: '',
+            cita_empresa: 'si_empresa'
         },
         formDiseño: {
             m2: '',
@@ -76,7 +80,7 @@ class LeadInfo extends Component {
             conceptos: [
                 {
                     value: '',
-                    text: 'REUNIÓN DE AMBOS EQUIPOS',
+                    text: 'VISITA A INSTALACIONES Y REUNIÓN DE AMBOS EQUIPOS',
                     name: 'concepto1'
                 },
                 {
@@ -86,7 +90,7 @@ class LeadInfo extends Component {
                 },
                 {
                     value: '',
-                    text: 'JUNTA PRESENCIAL PARA PRIMERA REVISIÓN DE LA PROPUESTA DE DISEÑO',
+                    text: 'JUNTA PRESENCIAL/REMOTA PARA PRIMERA REVISIÓN DE LA PROPUESTA DE DISEÑO Y MODELO 3D',
                     name: 'concepto3'
                 },
                 {
@@ -96,17 +100,17 @@ class LeadInfo extends Component {
                 },
                 {
                     value: '',
-                    text: 'JUNTA PRESENCIAL PARA SEGUNDA REVISIÓN DE LA PROPUESTA DE DISEÑO',
+                    text: 'JUNTA PRESENCIAL/REMOTA PARA SEGUNDA REVISIÓN DE LA PROPUESTA DE DISEÑO ,MODELO 3D Y V.º B.º DE DISEÑO ',
                     name: 'concepto5'
                 },
                 {
                     value: '',
-                    text: 'DESARROLLO DEL PROYECTO EJECUTIVO',
+                    text: 'DESARROLLO DEL PROYECTO',
                     name: 'concepto6'
                 },
                 {
                     value: '',
-                    text: 'ENTREGA FINAL DEL PROYECTO EN DIGITAL',
+                    text: 'ENTREGA FINAL DEL PROYECTO DIGITAL',
                     name: 'concepto7'
                 },
             ],
@@ -130,11 +134,11 @@ class LeadInfo extends Component {
             partidas: [],
             planos: [],
             subtotal: 0.0,
-            fase1:true,
-            fase2:true,
-            renders:''
+            fase1: true,
+            fase2: true,
+            renders: ''
         },
-        tipo: '',
+        // tipo: '',
         options: {
             empresas: [],
             tipos: [],
@@ -180,6 +184,7 @@ class LeadInfo extends Component {
                 form.email = lead.email.toUpperCase()
                 form.telefono = lead.telefono
                 form.proyecto = lead.prospecto.nombre_proyecto
+                form.fecha = lead.created_at
                 this.setState({
                     ...this.state,
                     lead: lead,
@@ -323,14 +328,50 @@ class LeadInfo extends Component {
     onChangePresupuesto = e => {
         const { name, value, type, checked } = e.target
         const { formDiseño, data } = this.state
-        
-        if(type === 'checkbox')
+        formDiseño[name] = value
+        if (name === 'esquema') {
+            formDiseño.conceptos.map((concepto) => {
+                if (concepto.name === 'concepto4') {
+                    if (value === 'esquema_1' || value === 'esquema_2')
+                        concepto.text = 'DESARROLLO DEL PROYECTO'
+                    if (value === 'esquema_3')
+                        concepto.text = 'DESARROLLO DEL PROYECTO EJECUTIVO'
+                }
+                if (concepto.name === 'concepto6') {
+                    if (value === 'esquema_1' || value === 'esquema_2')
+                        concepto.text = 'DESARROLLO DEL PROYECTO'
+                    if (value === 'esquema_3')
+                        concepto.text = 'DESARROLLO DEL PROYECTO EJECUTIVO'
+                }
+                if (concepto.name === 'concepto7') {
+                    if (value === 'esquema_1' || value === 'esquema_2')
+                        concepto.text = 'ENTREGA FINAL DEL PROYECTO DIGITAL'
+                    if (value === 'esquema_3')
+                        concepto.text = 'ENTREGA FINAL DEL PROYECTO EJECUTIVO EN DIGITAL'
+                }
+                return false
+            })
+        }
+        if (type === 'checkbox')
             formDiseño[name] = checked
         else
             formDiseño[name] = value
 
+        switch (name) {
+            case 'construccion_interiores_inf':
+            case 'construccion_interiores_sup':
+            case 'construccion_civil_inf':
+            case 'construccion_civil_sup':
+            case 'mobiliario_inf':
+            case 'mobiliario_sup':
+                formDiseño[name] = value.replace(',', '')
+                break
+            default:
+                break;
+        }
+
         if (name === 'tiempo_ejecucion_diseno') {
-            let modulo = parseFloat(value) % 6
+            let modulo = parseFloat(value) % 5
             let aux = Object.keys(
                 {
                     lunes: false,
@@ -343,14 +384,14 @@ class LeadInfo extends Component {
                 }
             )
             formDiseño.semanas = [];
-            for (let i = 0; i < Math.floor(parseFloat(value) / 6); i++) {
+            for (let i = 0; i < Math.floor(parseFloat(value) / 5); i++) {
                 formDiseño.semanas.push({
                     lunes: true,
                     martes: true,
                     miercoles: true,
                     jueves: true,
                     viernes: true,
-                    sabado: true,
+                    sabado: false,
                     domingo: false
                 })
             }
@@ -687,17 +728,17 @@ class LeadInfo extends Component {
 
         let { tipo } = this.state
         const { access_token } = this.props.authUser
-        
-        if(tipo === '' )
+
+        if (tipo === '')
             tipo = lead.estatus.estatus
 
         let api = ''
-        
-        if(lead.estatus.estatus === 'En proceso')
+
+        if (lead.estatus.estatus === 'En proceso')
             api = 'crm/table/lead-en-contacto/';
         else
             api = 'crm/table/lead-en-negociacion/';
-        
+
         await axios.get(URL_DEV + api + lead.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { lead } = response.data
@@ -707,6 +748,7 @@ class LeadInfo extends Component {
                 form.email = lead.email
                 form.telefono = lead.telefono
                 form.proyecto = lead.prospecto.nombre_proyecto
+                form.fecha = lead.created_at
 
                 if (lead.presupuesto_diseño) {
 
@@ -885,11 +927,11 @@ class LeadInfo extends Component {
         })
     }
 
-    sendCorreoPresupuesto = async(identificador) => {
+    sendCorreoPresupuesto = async (identificador) => {
         waitAlert()
         const { access_token } = this.props.authUser
         const { lead } = this.state
-        await axios.put(URL_DEV + 'crm/email/envio-cotizacion/' + lead.id, {identificador: identificador}, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.put(URL_DEV + 'crm/email/envio-cotizacion/' + lead.id, { identificador: identificador }, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { history } = this.props
                 doneAlert('Correo enviado con éxito')
@@ -912,7 +954,6 @@ class LeadInfo extends Component {
     }
 
     submitForm = e => {
-        e.preventDefault();
         this.addLeadInfoAxios()
     }
 
@@ -951,9 +992,11 @@ class LeadInfo extends Component {
             <div>
                 <span className="text-dark-50 font-weight-bolder">
                     ¿Deseas mandar el
-                    <a href={url} target='_blank' className='text-hover-primary text-dark-75 mx-2'>
-                        presupuesto
-                    </a>
+                    <u>
+                        <a href={url} target='_blank' className='text-primary mx-2'>
+                            presupuesto
+                        </a>
+                    </u>
                     al cliente?
                 </span>
             </div>
@@ -961,8 +1004,8 @@ class LeadInfo extends Component {
     }
 
     onClickSendPresupuesto = pdf => {
-        questionAlert2('¡NO PODRÁS REVERTIR ESTO!', '', 
-            () => this.sendCorreoPresupuesto(pdf.pivot.identificador), 
+        questionAlert2('¡NO PODRÁS REVERTIR ESTO!', '',
+            () => this.sendCorreoPresupuesto(pdf.pivot.identificador),
             this.getTextAlert(pdf.url)
         )
     }
@@ -974,15 +1017,15 @@ class LeadInfo extends Component {
         formDiseño.pdf = pdf
         await axios.post(URL_DEV + 'crm/add/presupuesto-diseño/' + lead.id, formDiseño, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                if(formDiseño.pdf){
+                if (formDiseño.pdf) {
                     const { presupuesto } = response.data
-                    if(presupuesto)
-                        if(presupuesto.pdfs)
-                            if(presupuesto.pdfs[0])
-                                if(presupuesto.pdfs[0].pivot){
+                    if (presupuesto)
+                        if (presupuesto.pdfs)
+                            if (presupuesto.pdfs[0])
+                                if (presupuesto.pdfs[0].pivot) {
                                     swal.close()
-                                    questionAlert2('¡NO PODRÁS REVERTIR ESTO!', '', 
-                                        () => this.sendCorreoPresupuesto(presupuesto.pdfs[0].pivot.identificador), 
+                                    questionAlert2('¡NO PODRÁS REVERTIR ESTO!', '',
+                                        () => this.sendCorreoPresupuesto(presupuesto.pdfs[0].pivot.identificador),
                                         this.getTextAlert(presupuesto.pdfs[0].url)
                                     )
                                 }
@@ -1020,12 +1063,23 @@ class LeadInfo extends Component {
             modal
         })
     }
-
+    tagInputChange = (nuevosCorreos) => {
+        const uppercased = nuevosCorreos.map(tipo => tipo.toUpperCase());
+        const { formAgenda } = this.state
+        let unico = {};
+        uppercased.forEach(function (i) {
+            if (!unico[i]) { unico[i] = true }
+        })
+        formAgenda.correos = uppercased ? Object.keys(unico) : [];
+        this.setState({
+            formAgenda
+        })
+    }
     render() {
-        const { lead, form, formHistorial, options, formAgenda, formDiseño, modal, tipo } = this.state
+        const { lead, form, formHistorial, options, formAgenda, formDiseño, modal } = this.state
         return (
-            <Layout active={'leads'}  {...this.props} botonHeader = { this.botonHeader } >
-                <Tab.Container defaultActiveKey="1" className="p-5">
+            <Layout active={'leads'}  {...this.props} botonHeader={this.botonHeader} >
+                <Tab.Container defaultActiveKey="2" className="p-5">
                     <Row>
                         <Col md={12} className="mb-3">
                             <Card className="card-custom gutter-b">
@@ -1036,20 +1090,20 @@ class LeadInfo extends Component {
                                                 <>
                                                     <div className="d-flex align-items-center flex-wrap justify-content-between col-md-12">
                                                         <div className="font-weight-bold text-dark-50 py-1">
-                                                            <div className="d-flex align-items-center">
-                                                                <div className="symbol symbol-75 symbol-xxl-85">
-                                                                    <span className="symbol-label font-weight-bolder">{lead.nombre.split(" ", 1)}</span>
+                                                            <div className="d-flex align-items-center ">
+                                                                <div className="symbol symbol-75">
+                                                                    <span className="symbol-label font-weight-bolder font-size-h2">{lead.nombre.charAt(0)}</span>
                                                                 </div>
                                                                 <div className="d-flex flex-column font-weight-bold ml-2">
                                                                     <div>
-                                                                        <div className="d-flex align-items-center text-dark font-size-h5 font-weight-bold mr-3 text-center">{lead.nombre}
+                                                                        <div className="d-flex align-items-center text-dark font-size-h5 font-weight-bold mr-3 text-center ">{lead.nombre}
                                                                             <span className="ml-3">
                                                                                 <Button
                                                                                     icon=''
                                                                                     className="btn btn-light-success p-1"
                                                                                     only_icon="fab fa-whatsapp pr-0"
                                                                                     tooltip={{ text: 'CONTACTAR POR WHATSAPP' }}
-                                                                                /> 
+                                                                                />
                                                                             </span>
                                                                             <span className="ml-3">
                                                                                 {
@@ -1179,108 +1233,43 @@ class LeadInfo extends Component {
                                                 </h3>
                                             </Card.Title>
                                         </Card.Header>
-                                        <Form onSubmit={this.submitForm}>
-                                            <Card.Body className="py-0">
-                                                <div className="form-group row form-group-marginless mb-0">
-                                                    <div className="col-md-4">
-                                                        <InputGray
-                                                            withtaglabel={1}
-                                                            withtextlabel={1}
-                                                            withplaceholder={1}
-                                                            withicon={1}
-                                                            placeholder='NOMBRE DEL LEAD'
-                                                            iconclass="far fa-user"
-                                                            name='name'
-                                                            value={form.name}
-                                                            onChange={this.onChange}
-                                                        />
-                                                    </div>
-                                                    <div className="col-md-4">
-                                                        <InputGray
-                                                            withtaglabel={1}
-                                                            withtextlabel={1}
-                                                            withplaceholder={1}
-                                                            withicon={1}
-                                                            placeholder="CORREO ELECTRÓNICO DE CONTACTO"
-                                                            iconclass="fas fa-envelope"
-                                                            type="email"
-                                                            name="email"
-                                                            value={form.email}
-                                                            onChange={this.onChange}
-                                                            patterns={EMAIL}
-                                                        />
-                                                    </div>
-                                                    <div className="col-md-4">
-                                                        <InputPhoneGray
-                                                            withtaglabel={1}
-                                                            withtextlabel={1}
-                                                            withplaceholder={1}
-                                                            withicon={1}
-                                                            placeholder="TELÉFONO DE CONTACTO"
-                                                            iconclass="fas fa-mobile-alt"
-                                                            name="telefono"
-                                                            value={form.telefono}
-                                                            onChange={this.onChange}
-                                                            patterns={TEL}
-                                                            thousandseparator={false}
-                                                            prefix=''
-                                                        />
-                                                    </div>
-                                                    <div className="col-md-4">
-                                                        <InputGray
-                                                            withtaglabel={1}
-                                                            withtextlabel={1}
-                                                            withplaceholder={1}
-                                                            withicon={1}
-                                                            placeholder='NOMBRE DEL PROYECTO'
-                                                            iconclass="far fa-folder-open"
-                                                            name='proyecto'
-                                                            value={form.proyecto}
-                                                            onChange={this.onChange}
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </Card.Body>
-                                            <Card.Footer className="text-right">
-                                                <Button icon='' className="btn btn-primary" type="submit" text="ENVIAR" />
-                                            </Card.Footer>
-                                        </Form>
+                                        <Card.Body className="py-0">
+                                            <InformacionGeneral
+                                                form={form}
+                                                onChange={this.onChange}
+                                                onSubmit={this.submitForm}
+                                                user={this.props.authUser.user}
+                                                lead={lead}
+                                            />
+                                        </Card.Body>
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="2">
                                         <Card.Header className="border-0 mt-4 pt-3">
                                             <h3 className="card-title d-flex justify-content-between">
                                                 <span className="font-weight-bolder text-dark align-self-center">Historial de contacto</span>
-                                                <div>
-                                                    {/* <div className="btn btn-icon btn-light w-auto btn-clean d-inline-flex align-items-center btn-icon px-2 mr-2" style={{height:"30px"}}
-                                                        onClick={() => { waitAlert(); this.solicitarFechaCita() }} >
-                                                        <span className="text-dark-50 font-weight-bolder font-size-base mr-3">Solicitar cita</span>
-                                                            <span className="symbol symbol-25 bg-light-gray">
-                                                                <span className="symbol-label font-size-h5 font-weight-bold ">
-                                                                    <i className="far fa-calendar-check text-gray icon-md"></i>
-                                                                </span>
-                                                        </span>
-                                                    </div> */}
+                                                <div className="text-center">
                                                     <Button
+                                                        id={"solicitar_cita"}
                                                         icon=''
-                                                        className={"btn btn-icon btn-xs p-3 btn-light-success mr-2"}
-                                                        onClick={() => { this.mostrarFormulario() }}
-                                                        only_icon={"flaticon2-plus icon-13px"}
-                                                        tooltip={{ text: 'AGREGAR NUEVO CONTACTO' }}
+                                                        className={"btn btn-icon btn-xs w-auto p-3 btn-light-gray mr-2 mt-2"}
+                                                        // onClick={() => { waitAlert(); this.solicitarFechaCita() }}
+                                                        onClick={(e) => { questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.solicitarFechaCita()) }}
+                                                        only_icon={"far fa-calendar-check icon-15px mr-2"}
+                                                        text='SOLICITAR CITA'
                                                     />
                                                     <Button
                                                         icon=''
-                                                        className={"btn btn-icon btn-xs p-3 btn-light-primary mr-2"}
+                                                        className={"btn btn-icon btn-xs p-3 btn-light-primary mr-2 mt-2"}
                                                         onClick={() => { this.mostrarAgenda() }}
                                                         only_icon={"flaticon2-calendar-2 icon-md"}
                                                         tooltip={{ text: 'AGENDAR CITA' }}
                                                     />
                                                     <Button
                                                         icon=''
-                                                        className={"btn btn-icon btn-xs w-auto p-3 btn-light-gray"}
-                                                        onClick={() => { waitAlert(); this.solicitarFechaCita() }}
-                                                        only_icon={"far fa-calendar-check icon-15px mr-2"}
-                                                        text='SOLICITAR CITA'
-                                                        tooltip={{ text: 'SOLICITAR CITA' }}
+                                                        className={"btn btn-icon btn-xs p-3 btn-light-success mr-2 mt-2"}
+                                                        onClick={() => { this.mostrarFormulario() }}
+                                                        only_icon={"flaticon2-plus icon-13px"}
+                                                        tooltip={{ text: 'AGREGAR NUEVO CONTACTO' }}
                                                     />
                                                 </div>
                                             </h3>
@@ -1300,7 +1289,9 @@ class LeadInfo extends Component {
                                                     onChange={this.onChangeAgenda}
                                                     removeCorreo={this.removeCorreo}
                                                     // solicitarFechaCita={() => { waitAlert(); this.solicitarFechaCita() }}
-                                                    onSubmit={() => { waitAlert(); this.agendarEvento() }} />
+                                                    onSubmit={() => { waitAlert(); this.agendarEvento() }}
+                                                    tagInputChange={(e) => this.tagInputChange(e)}
+                                                />
                                             </div>
                                             <div className="col-md-8">
                                                 {
@@ -1363,7 +1354,7 @@ class LeadInfo extends Component {
                                         <Card.Header className="border-0 mt-4 pt-3">
                                             <h3 className="card-title d-flex justify-content-between">
                                                 <span className="font-weight-bolder text-dark align-self-center">Presupuesto de diseño</span>
-                                                { 
+                                                {
                                                     lead ?
                                                         lead.presupuesto_diseño ?
                                                             lead.presupuesto_diseño.pdfs ?
@@ -1374,13 +1365,13 @@ class LeadInfo extends Component {
                                                                             className={"btn btn-icon btn-xs p-3 btn-light-primary mr-2"}
                                                                             onClick={() => { this.openModalPresupuesto() }}
                                                                             only_icon={"far fa-file-pdf icon-15px"}
-                                                                            tooltip={{ text: 'PRESUPUESTOS GENERADOS' }}
+                                                                            tooltip={{ text: 'COTIZACIONES GENERADAS' }}
                                                                         />
                                                                     </div>
+                                                                    : ''
                                                                 : ''
                                                             : ''
                                                         : ''
-                                                    : ''
                                                 }
                                             </h3>
                                         </Card.Header>
@@ -1402,19 +1393,19 @@ class LeadInfo extends Component {
                         </Col>
                     </Row >
                 </Tab.Container>
-                <Modal title="Presupuestos generados" show={modal.presupuesto} handleClose={this.handleCloseModalPresupuesto} >
+                <Modal title="Cotizaciones generadas" size={"lg"} show={modal.presupuesto} handleClose={this.handleCloseModalPresupuesto} >
                     {
                         lead ?
                             lead.presupuesto_diseño ?
                                 lead.presupuesto_diseño.pdfs ?
                                     lead.presupuesto_diseño.pdfs.length ?
-                                        <PresupuestoGenerado pdfs = { lead.presupuesto_diseño.pdfs } onClick = { this.onClickSendPresupuesto } />
+                                        <PresupuestoGenerado pdfs={lead.presupuesto_diseño.pdfs} onClick={this.onClickSendPresupuesto} />
+                                        : ''
                                     : ''
                                 : ''
                             : ''
-                        : ''
                     }
-                    
+
                 </Modal>
             </Layout >
         )

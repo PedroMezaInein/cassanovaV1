@@ -24,6 +24,7 @@ class Facturacion extends Component {
         modalRestante: false,
         facturas: [],
         factura: '',
+        empresas: [],
         data: {
             facturas: []
         },
@@ -490,11 +491,29 @@ class Facturacion extends Component {
         })
     }
 
-    openModalRestante = () => {
-        this.setState({
-            ...this.state,
-            modalRestante: true,
-            title: 'Restante por empresa',
+    openModalRestante = async() => {
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'facturas/ventas/restante', { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { empresas } = response.data
+                this.setState({
+                    ...this.state,
+                    modalRestante: true,
+                    title: 'Restante por empresa',
+                    empresas: empresas
+                })        
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
@@ -503,6 +522,7 @@ class Facturacion extends Component {
         this.setState({
             ...this.state,
             modalRestante: !modalRestante,
+            empresas: []
         })
     }
 
@@ -781,71 +801,129 @@ class Facturacion extends Component {
             console.log(error, 'error')
         })
     }
+
+    getExcelFacturasVentas = async() => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'exportar/facturas/ventas', { responseType:'blob', headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'ventas.xlsx');
+                document.body.appendChild(link);
+                link.click();
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    getExcelFacturasCompras = async() => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'exportar/facturas/compras', { responseType:'blob', headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'compras.xlsx');
+                document.body.appendChild(link);
+                link.click();
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     render() {
-        const { factura, modalSee, modalCancelar, form, modalFacturas, key, modalRestante, data } = this.state
+        const { factura, modalSee, modalCancelar, form, modalFacturas, key, modalRestante, empresas } = this.state
         return (
-            <Layout active={'administracion'}  {...this.props}>
-                <Tabs defaultActiveKey="ventas" activeKey={key} onSelect={(value) => { this.controlledTab(value) }}>
-                    <Tab eventKey="ventas" title="Ventas">
+            <Layout active = 'administracion'  {...this.props} >
+                <Tabs defaultActiveKey = "ventas" activeKey = { key } onSelect = { (value) => { this.controlledTab(value) } } >
+                    <Tab eventKey = "ventas" title = "Ventas">
                         <NewTableServerRender
-                            columns={FACTURAS_COLUMNS}
-                            title='Facturas'
-                            subtitle='Listado de facturas'
-                            mostrar_boton={true}
-                            abrir_modal={true}
-                            mostrar_acciones={true}
-                            onClick={this.openModal}
-                            restante_empresa={true}
-                            onClickRestante={this.openModalRestante}
-                            actions={{
-                                'see': { function: this.openModalSee },
-                                'cancelarFactura': { function: this.cancelarFactura },
-                                'inhabilitar': { function: this.inhabilitar },
-                            }}
-                            idTable='kt_datatable_ventas'
-                            accessToken={this.props.authUser.access_token}
-                            setter={this.setFactura}
-                            urlRender={URL_DEV + 'facturas/ventas'}
-                            cardTable='cardTable_ventas'
-                            cardTableHeader='cardTableHeader_ventas'
-                            cardBody='cardBody_ventas'
-                            isTab={true}
-                            tipo_validacion='facturas'
+                            columns = { FACTURAS_COLUMNS }
+                            title = 'Facturas'
+                            subtitle = 'Listado de facturas'
+                            mostrar_boton = { true }
+                            abrir_modal = { true }
+                            mostrar_acciones = { true }
+                            onClick = { this.openModal }
+                            restante_empresa = { true }
+                            onClickRestante = { this.openModalRestante }
+                            actions = {
+                                {
+                                    'see': { function: this.openModalSee },
+                                    'cancelarFactura': { function: this.cancelarFactura },
+                                    'inhabilitar': { function: this.inhabilitar },
+                                }
+                            }
+                            idTable = 'kt_datatable_ventas'
+                            accessToken = { this.props.authUser.access_token }
+                            setter = { this.setFactura }
+                            urlRender ={ URL_DEV + 'facturas/ventas' }
+                            cardTable = 'cardTable_ventas'
+                            cardTableHeader = 'cardTableHeader_ventas'
+                            cardBody = 'cardBody_ventas'
+                            isTab = { true }
+                            tipo_validacion = 'facturas'
+                            exportar_boton = { true }
+                            onClickExport = { () => this.getExcelFacturasVentas() }
                         />
                     </Tab>
-                    <Tab eventKey="compras" title="Compras">
+                    <Tab eventKey = "compras" title = "Compras">
                         <NewTableServerRender
-                            columns={FACTURAS_COLUMNS}
-                            title='Facturas'
-                            subtitle='Listado de facturas'
-                            mostrar_boton={true}
-                            abrir_modal={true}
-                            mostrar_acciones={true}
-                            onClick={this.openModal}
-                            restante_empresa={true}
-                            onClickRestante={this.openModalRestante}
-                            actions={{
-                                'see': { function: this.openModalSee },
-                                'cancelarFactura': { function: this.cancelarFactura },
-                                'inhabilitar': { function: this.inhabilitar },
-                            }}
-                            idTable='kt_datatable_compras'
-                            accessToken={this.props.authUser.access_token}
-                            setter={this.setFactura}
-                            urlRender={URL_DEV + 'facturas/compras'}
-                            cardTable='cardTable_compras'
-                            cardTableHeader='cardTableHeader_compras'
-                            cardBody='cardBody_compras'
-                            isTab={true}
-                            tipo_validacion='facturas'
+                            columns = { FACTURAS_COLUMNS }
+                            title = 'Facturas'
+                            subtitle = 'Listado de facturas'
+                            mostrar_boton = { true }
+                            abrir_modal = { true }
+                            mostrar_acciones = { true }
+                            onClick = { this.openModal }
+                            restante_empresa = { true }
+                            onClickRestante = { this.openModalRestante }
+                            actions = {
+                                {
+                                    'see': { function: this.openModalSee },
+                                    'cancelarFactura': { function: this.cancelarFactura },
+                                    'inhabilitar': { function: this.inhabilitar },
+                                }
+                            }
+                            idTable = 'kt_datatable_compras'
+                            accessToken = { this.props.authUser.access_token }
+                            setter = { this.setFactura }
+                            urlRender = { URL_DEV + 'facturas/compras' }
+                            cardTable = 'cardTable_compras'
+                            cardTableHeader = 'cardTableHeader_compras'
+                            cardBody = 'cardBody_compras'
+                            isTab = { true }
+                            tipo_validacion = 'facturas'
+                            exportar_boton = { true }
+                            onClickExport = { () => this.getExcelFacturasCompras() }
                         />
                     </Tab>
                 </Tabs>
-
-                {/* <NewTable
-                    data={facturas}
-                    elements={data.facturas}
-                /> */}
                 <Modal size="lg" title={"Agregar adjuntos"} show={modalCancelar} handleClose={this.handleClose} >
                     <div className="mt-4 mb-4">
                         <ItemSlider
@@ -914,8 +992,8 @@ class Facturacion extends Component {
                             </thead>
                             <tbody>
                                 {
-                                    data.empresas ?
-                                        data.empresas.map((empresa, key) => {
+                                    empresas ?
+                                        empresas.map((empresa, key) => {
                                             return (
                                                 <tr key={key}>
                                                     <td>
