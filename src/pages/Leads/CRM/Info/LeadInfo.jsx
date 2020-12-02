@@ -178,20 +178,59 @@ class LeadInfo extends Component {
         const { history } = this.props
         if (state) {
             if (state.lead) {
-                const { form, options } = this.state
+                const { form, options, formDiseño } = this.state
                 const { lead, tipo } = state
                 form.name = lead.nombre === 'SIN ESPECIFICAR' ? '' : lead.nombre.toUpperCase()
                 form.email = lead.email.toUpperCase()
                 form.telefono = lead.telefono
                 form.proyecto = lead.prospecto.nombre_proyecto
                 form.fecha = lead.created_at
+                if(formDiseño.esquema === 'esquema_1')
+                    formDiseño.conceptos = [
+                        {
+                            value: '1',
+                            text: 'VISITA A INSTALACIONES Y REUNIÓN DE AMBOS EQUIPOS',
+                            name: 'concepto1'
+                        },
+                        {
+                            value: '1 AL 2',
+                            text: 'DESARROLLO DEL MATERIAL PARA LA PRIMERA REVISIÓN PRESENCIAL',
+                            name: 'concepto2'
+                        },
+                        {
+                            value: '3',
+                            text: 'JUNTA PRESENCIAL/REMOTA PARA PRIMERA REVISIÓN DE LA PROPUESTA DE DISEÑO Y MODELO 3D',
+                            name: 'concepto3'
+                        },
+                        {
+                            value: '3 AL 4',
+                            text: 'DESARROLLO DEL PROYECTO',
+                            name: 'concepto4'
+                        },
+                        {
+                            value: '5',
+                            text: 'JUNTA PRESENCIAL/REMOTA PARA SEGUNDA REVISIÓN DE LA PROPUESTA DE DISEÑO ,MODELO 3D Y V.º B.º DE DISEÑO ',
+                            name: 'concepto5'
+                        },
+                        {
+                            value: '5 AL 6',
+                            text: 'DESARROLLO DEL PROYECTO',
+                            name: 'concepto6'
+                        },
+                        {
+                            value: '7',
+                            text: 'ENTREGA FINAL DEL PROYECTO DIGITAL',
+                            name: 'concepto7'
+                        },
+                    ]
                 this.setState({
                     ...this.state,
                     lead: lead,
                     form,
                     formeditado: 1,
                     options,
-                    tipo: tipo
+                    tipo: tipo,
+                    formDiseño
                 })
                 this.getPresupuestoDiseñoOptionsAxios(lead.id)
                 this.getOneLead(lead)
@@ -331,23 +370,98 @@ class LeadInfo extends Component {
         formDiseño[name] = value
         if (name === 'esquema') {
             formDiseño.conceptos.map((concepto) => {
-                if (concepto.name === 'concepto4') {
-                    if (value === 'esquema_1' || value === 'esquema_2')
-                        concepto.text = 'DESARROLLO DEL PROYECTO'
-                    if (value === 'esquema_3')
-                        concepto.text = 'DESARROLLO DEL PROYECTO EJECUTIVO'
-                }
-                if (concepto.name === 'concepto6') {
-                    if (value === 'esquema_1' || value === 'esquema_2')
-                        concepto.text = 'DESARROLLO DEL PROYECTO'
-                    if (value === 'esquema_3')
-                        concepto.text = 'DESARROLLO DEL PROYECTO EJECUTIVO'
-                }
-                if (concepto.name === 'concepto7') {
-                    if (value === 'esquema_1' || value === 'esquema_2')
-                        concepto.text = 'ENTREGA FINAL DEL PROYECTO DIGITAL'
-                    if (value === 'esquema_3')
-                        concepto.text = 'ENTREGA FINAL DEL PROYECTO EJECUTIVO EN DIGITAL'
+                switch(concepto.name){
+                    case 'concepto1':
+                        concepto.value = "1";
+                        break;
+                    case 'concepto2':
+                        switch(value){
+                            case 'esquema_1':
+                                concepto.value = "1 al 2"
+                                break;
+                            case 'esquema_2':
+                                concepto.value = "2 al 3"
+                                break;
+                            case 'esquema_3':
+                                concepto.value = "2 al 4"
+                                break;
+                        }
+                        break;
+                    case 'concepto3':
+                        switch(value){
+                            case 'esquema_1':
+                                concepto.value = "3"
+                                break;
+                            case 'esquema_2':
+                                concepto.value = "4"
+                                break;
+                            case 'esquema_3':
+                                concepto.value = "5"
+                                break;
+                        }
+                        break;
+                    case 'concepto4':
+                        switch(value){
+                            case 'esquema_1':
+                                concepto.value = "3 al 4"
+                                concepto.text = 'DESARROLLO DEL PROYECTO'
+                                break;
+                            case 'esquema_2':
+                                concepto.value = "5 al 6"
+                                concepto.text = 'DESARROLLO DEL PROYECTO'
+                                break;
+                            case 'esquema_3':
+                                concepto.value = "6 al 9"
+                                concepto.text = 'DESARROLLO DEL PROYECTO EJECUTIVO'
+                                break;
+                        }
+                        break;
+                    case 'concepto5':
+                        switch(value){
+                            case 'esquema_1':
+                                concepto.value = "5"
+                                break;
+                            case 'esquema_2':
+                                concepto.value = "7"
+                                break;
+                            case 'esquema_3':
+                                concepto.value = "10"
+                                break;
+                        }
+                        break;
+                    case 'concepto6':
+                        switch(value){
+                            case 'esquema_1':
+                                concepto.value = "5 al 6"
+                                concepto.text = 'DESARROLLO DEL PROYECTO'
+                                break;
+                            case 'esquema_2':
+                                concepto.value = "8 al 9"
+                                concepto.text = 'DESARROLLO DEL PROYECTO'
+                                break;
+                            case 'esquema_3':
+                                concepto.value = "11 al 14"
+                                concepto.text = 'DESARROLLO DEL PROYECTO EJECUTIVO'
+                                break;
+                        }
+                        break;
+                    case 'concepto7':
+                        switch(value){
+                            case 'esquema_1':
+                                concepto.value = "7"
+                                concepto.text = 'ENTREGA FINAL DEL PROYECTO DIGITAL'
+                                break;
+                            case 'esquema_2':
+                                concepto.value = "10"
+                                concepto.text = 'ENTREGA FINAL DEL PROYECTO DIGITAL'
+                                break;
+                            case 'esquema_3':
+                                concepto.value = "15"
+                                concepto.text = 'ENTREGA FINAL DEL PROYECTO EJECUTIVO EN DIGITAL'
+                                break;
+                        }
+                        break;
+                    default: break;
                 }
                 return false
             })
