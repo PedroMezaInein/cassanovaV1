@@ -116,7 +116,7 @@ class EmpresaForm extends Component {
                             name="facebook"
                             type="text"
                             value={form.facebook}
-                            placeholder="Facebook"
+                            placeholder="FACEBOOK"
                             iconclass={"socicon-facebook"}
                             messageinc="Incorrecto. Ingresa la liga de facebook"
                             letterCase = { false }
@@ -130,7 +130,7 @@ class EmpresaForm extends Component {
                             name="instagram"
                             type="text"
                             value={form.instagram}
-                            placeholder="Instagram"
+                            placeholder="INSTAGRAM"
                             iconclass={"socicon-instagram"}
                             messageinc="Incorrecto. Ingresa la liga de instagram"
                             letterCase = { false }
@@ -144,7 +144,7 @@ class EmpresaForm extends Component {
                             name="linkedin"
                             type="text"
                             value={form.linkedin}
-                            placeholder="Linkedin"
+                            placeholder="LINKEDIN"
                             iconclass={"socicon-linkedin"}
                             messageinc="Incorrecto. Ingresa la liga de linkedin"
                             letterCase = { false }
@@ -158,7 +158,7 @@ class EmpresaForm extends Component {
                             name="pinterest"
                             type="text"
                             value={form.pinterest}
-                            placeholder="Pinterest"
+                            placeholder="PINTEREST"
                             iconclass={"socicon-pinterest"}
                             messageinc="Incorrecto. Ingresa la liga de pinterest"
                             letterCase = { false }
