@@ -118,7 +118,6 @@ class PresupuestoDiseñoForm extends Component {
                     if (state.presupuesto) {
                         const { presupuesto } = state
                         const { form, options } = this.state
-
                         form.empresa = presupuesto.empresa ? presupuesto.empresa.id.toString() : ''
                         form.m2 = presupuesto.precio ? presupuesto.precio.id.toString() : ''
                         form.esquema = presupuesto.esquema
@@ -164,47 +163,50 @@ class PresupuestoDiseñoForm extends Component {
                         if (aux.length === 0) {
                             aux = [
                                 {
-                                    value: '',
-                                    text: 'REUNIÓN DE AMBOS EQUIPOS',
+                                    value: '1',
+                                    text: 'VISITA A INSTALACIONES Y REUNIÓN DE AMBOS EQUIPOS',
                                     name: 'concepto1'
                                 },
                                 {
-                                    value: '',
+                                    value: '1 AL 2',
                                     text: 'DESARROLLO DEL MATERIAL PARA LA PRIMERA REVISIÓN PRESENCIAL',
                                     name: 'concepto2'
                                 },
                                 {
-                                    value: '',
-                                    text: 'JUNTA PRESENCIAL PARA PRIMERA REVISIÓN DE LA PROPUESTA DE DISEÑO',
+                                    value: '3',
+                                    text: 'JUNTA PRESENCIAL/REMOTA PARA PRIMERA REVISIÓN DE LA PROPUESTA DE DISEÑO Y MODELO 3D',
                                     name: 'concepto3'
                                 },
                                 {
-                                    value: '',
+                                    value: '3 AL 4',
                                     text: 'DESARROLLO DEL PROYECTO',
                                     name: 'concepto4'
                                 },
                                 {
-                                    value: '',
-                                    text: 'JUNTA PRESENCIAL PARA SEGUNDA REVISIÓN DE LA PROPUESTA DE DISEÑO',
+                                    value: '5',
+                                    text: 'JUNTA PRESENCIAL/REMOTA PARA SEGUNDA REVISIÓN DE LA PROPUESTA DE DISEÑO ,MODELO 3D Y V.º B.º DE DISEÑO ',
                                     name: 'concepto5'
                                 },
                                 {
-                                    value: '',
-                                    text: 'DESARROLLO DEL PROYECTO EJECUTIVO',
+                                    value: '5 AL 6',
+                                    text: 'DESARROLLO DEL PROYECTO',
                                     name: 'concepto6'
                                 },
                                 {
-                                    value: '',
-                                    text: 'ENTREGA FINAL DEL PROYECTO EN DIGITAL',
+                                    value: '7',
+                                    text: 'ENTREGA FINAL DEL PROYECTO DIGITAL',
                                     name: 'concepto7'
                                 },
                             ]
                         }
                         form.conceptos = aux
-                        form.precio_inferior_construccion = presupuesto.precio_inferior_construccion
-                        form.precio_superior_construccion = presupuesto.precio_superior_construccion
-                        form.precio_inferior_mobiliario = presupuesto.precio_inferior_mobiliario
-                        form.precio_superior_mobiliario = presupuesto.precio_superior_mobiliario
+                        form.construccion_interiores_inf = presupuesto.construccion_interiores_inf
+                        form.construccion_interiores_sup = presupuesto.construccion_interiores_sup
+                        form.mobiliario_inf = presupuesto.mobiliario_inf
+                        form.mobiliario_sup = presupuesto.mobiliario_sup
+                        form.construccion_civil_inf = presupuesto.construccion_civil_inf
+                        form.construccion_civil_sup = presupuesto.construccion_civil_sup
+
                         form.tiempo_ejecucion_construccion = presupuesto.tiempo_ejecucion_construccion
                         if (presupuesto.precio) {
                             form.total = presupuesto.precio[presupuesto.esquema] * (1 - (presupuesto.descuento / 100))
@@ -443,33 +445,234 @@ class PresupuestoDiseñoForm extends Component {
             form
         })
     }
+    // onChange = e => {
+    //     const { name, value } = e.target
+    //     const { form, data } = this.state
+    //     form[name] = value
+    //     if (name === 'esquema') {
+    //         form.conceptos.map((concepto) => {
+    //             if (concepto.name === 'concepto3') {
+    //                 if (value === 'esquema_1')
+    //                     concepto.text = 'JUNTA PRESENCIAL PARA PRIMERA REVISIÓN DE LA PROPUESTA DE DISEÑO'
+    //                 if (value === 'esquema_2')
+    //                     concepto.text = 'JUNTA PRESENCIAL PARA PRIMERA REVISIÓN DE LA PROPUESTA DE DISEÑO Y MODELO 3D'
+    //                 if (value === 'esquema_3')
+    //                     concepto.text = 'JUNTA PRESENCIAL PARA PRIMERA REVISIÓN DE LA PROPUESTA DE DISEÑO, MODELO 3D Y RENDERS'
+    //             }
+    //             if (concepto.name === 'concepto5') {
+    //                 if (value === 'esquema_1')
+    //                     concepto.text = 'JUNTA PRESENCIAL PARA SEGUNDA REVISIÓN DE LA PROPUESTA DE DISEÑO'
+    //                 if (value === 'esquema_2')
+    //                     concepto.text = 'JUNTA PRESENCIAL PARA SEGUNDA REVISIÓN DE LA PROPUESTA DE DISEÑO Y MODELO 3D'
+    //                 if (value === 'esquema_3')
+    //                     concepto.text = 'JUNTA PRESENCIAL PARA SEGUNDA REVISIÓN DE LA PROPUESTA DE DISEÑO, MODELO 3D Y RENDERS'
+    //             }
+    //             return false
+    //         })
+    //     }
+    //     if (name === 'tiempo_ejecucion_diseno') {
+    //         let modulo = parseFloat(value) % 6
+    //         let aux = Object.keys(
+    //             {
+    //                 lunes: false,
+    //                 martes: false,
+    //                 miercoles: false,
+    //                 jueves: false,
+    //                 viernes: false,
+    //                 sabado: false,
+    //                 domingo: false
+    //             }
+    //         )
+    //         form.semanas = [];
+    //         for (let i = 0; i < Math.floor(parseFloat(value) / 6); i++) {
+    //             form.semanas.push({
+    //                 lunes: true,
+    //                 martes: true,
+    //                 miercoles: true,
+    //                 jueves: true,
+    //                 viernes: true,
+    //                 sabado: true,
+    //                 domingo: false
+    //             })
+    //         }
+    //         form.semanas.push({
+    //             lunes: false,
+    //             martes: false,
+    //             miercoles: false,
+    //             jueves: false,
+    //             viernes: false,
+    //             sabado: false,
+    //             domingo: false
+    //         })
+    //         aux.map((element, key) => {
+    //             if (key < modulo) {
+    //                 form.semanas[form.semanas.length - 1][element] = true
+    //             } else {
+    //                 form.semanas[form.semanas.length - 1][element] = false
+    //             }
+    //             return false
+    //         })
+    //         if (modulo > 2) {
+    //             form.semanas.push({
+    //                 lunes: false,
+    //                 martes: false,
+    //                 miercoles: false,
+    //                 jueves: false,
+    //                 viernes: false,
+    //                 sabado: false,
+    //                 domingo: false
+    //             })
+    //         }
+    //     }
+    //     if (name === 'esquema' || name === 'm2' || name === 'descuento') {
+    //         data.precios.map((precio) => {
+    //             if (precio.id.toString() === form.m2)
+    //                 if (form.esquema)
+    //                     if (form.descuento) {
+    //                         form.total = precio[form.esquema] * (1 - (form.descuento / 100))
+    //                     } else
+    //                         form.total = precio[form.esquema]
+    //             return false
+    //         })
+    //     }
+    //     if (name === "empresa") {
+    //         data.empresas.map((empresa) => {
+    //             if (empresa.id.toString() === value && empresa.name === 'INEIN') {
+    //                 form.tipo_partida = 'partidasInein'
+    //             }
+    //             if (empresa.id.toString() === value && empresa.name === 'INFRAESTRUCTURA MÉDICA') {
+    //                 form.tipo_partida = 'partidasIm'
+    //             }
+    //             return false
+    //         })
+    //     }
+    //     this.setState({
+    //         ...this.state,
+    //         form
+    //     })
+    // }
     onChange = e => {
-        const { name, value } = e.target
+        const { name, value, type, checked } = e.target
         const { form, data } = this.state
         form[name] = value
         if (name === 'esquema') {
             form.conceptos.map((concepto) => {
-                if (concepto.name === 'concepto3') {
-                    if (value === 'esquema_1')
-                        concepto.text = 'JUNTA PRESENCIAL PARA PRIMERA REVISIÓN DE LA PROPUESTA DE DISEÑO'
-                    if (value === 'esquema_2')
-                        concepto.text = 'JUNTA PRESENCIAL PARA PRIMERA REVISIÓN DE LA PROPUESTA DE DISEÑO Y MODELO 3D'
-                    if (value === 'esquema_3')
-                        concepto.text = 'JUNTA PRESENCIAL PARA PRIMERA REVISIÓN DE LA PROPUESTA DE DISEÑO, MODELO 3D Y RENDERS'
-                }
-                if (concepto.name === 'concepto5') {
-                    if (value === 'esquema_1')
-                        concepto.text = 'JUNTA PRESENCIAL PARA SEGUNDA REVISIÓN DE LA PROPUESTA DE DISEÑO'
-                    if (value === 'esquema_2')
-                        concepto.text = 'JUNTA PRESENCIAL PARA SEGUNDA REVISIÓN DE LA PROPUESTA DE DISEÑO Y MODELO 3D'
-                    if (value === 'esquema_3')
-                        concepto.text = 'JUNTA PRESENCIAL PARA SEGUNDA REVISIÓN DE LA PROPUESTA DE DISEÑO, MODELO 3D Y RENDERS'
+                switch(concepto.name){
+                    case 'concepto1':
+                        concepto.value = "1";
+                        break;
+                    case 'concepto2':
+                        switch(value){
+                            case 'esquema_1':
+                                concepto.value = "1 al 2"
+                                break;
+                            case 'esquema_2':
+                                concepto.value = "2 al 3"
+                                break;
+                            case 'esquema_3':
+                                concepto.value = "2 al 4"
+                                break;
+                        }
+                        break;
+                    case 'concepto3':
+                        switch(value){
+                            case 'esquema_1':
+                                concepto.value = "3"
+                                break;
+                            case 'esquema_2':
+                                concepto.value = "4"
+                                break;
+                            case 'esquema_3':
+                                concepto.value = "5"
+                                break;
+                        }
+                        break;
+                    case 'concepto4':
+                        switch(value){
+                            case 'esquema_1':
+                                concepto.value = "3 al 4"
+                                concepto.text = 'DESARROLLO DEL PROYECTO'
+                                break;
+                            case 'esquema_2':
+                                concepto.value = "5 al 6"
+                                concepto.text = 'DESARROLLO DEL PROYECTO'
+                                break;
+                            case 'esquema_3':
+                                concepto.value = "6 al 9"
+                                concepto.text = 'DESARROLLO DEL PROYECTO EJECUTIVO'
+                                break;
+                        }
+                        break;
+                    case 'concepto5':
+                        switch(value){
+                            case 'esquema_1':
+                                concepto.value = "5"
+                                break;
+                            case 'esquema_2':
+                                concepto.value = "7"
+                                break;
+                            case 'esquema_3':
+                                concepto.value = "10"
+                                break;
+                        }
+                        break;
+                    case 'concepto6':
+                        switch(value){
+                            case 'esquema_1':
+                                concepto.value = "5 al 6"
+                                concepto.text = 'DESARROLLO DEL PROYECTO'
+                                break;
+                            case 'esquema_2':
+                                concepto.value = "8 al 9"
+                                concepto.text = 'DESARROLLO DEL PROYECTO'
+                                break;
+                            case 'esquema_3':
+                                concepto.value = "11 al 14"
+                                concepto.text = 'DESARROLLO DEL PROYECTO EJECUTIVO'
+                                break;
+                        }
+                        break;
+                    case 'concepto7':
+                        switch(value){
+                            case 'esquema_1':
+                                concepto.value = "7"
+                                concepto.text = 'ENTREGA FINAL DEL PROYECTO DIGITAL'
+                                break;
+                            case 'esquema_2':
+                                concepto.value = "10"
+                                concepto.text = 'ENTREGA FINAL DEL PROYECTO DIGITAL'
+                                break;
+                            case 'esquema_3':
+                                concepto.value = "15"
+                                concepto.text = 'ENTREGA FINAL DEL PROYECTO EJECUTIVO EN DIGITAL'
+                                break;
+                        }
+                        break;
+                    default: break;
                 }
                 return false
             })
         }
+        if (type === 'checkbox')
+            form[name] = checked
+        else
+            form[name] = value
+
+        switch (name) {
+            case 'construccion_interiores_inf':
+            case 'construccion_interiores_sup':
+            case 'construccion_civil_inf':
+            case 'construccion_civil_sup':
+            case 'mobiliario_inf':
+            case 'mobiliario_sup':
+                form[name] = value.replace(',', '')
+                break
+            default:
+                break;
+        }
+
         if (name === 'tiempo_ejecucion_diseno') {
-            let modulo = parseFloat(value) % 6
+            let modulo = parseFloat(value) % 5
             let aux = Object.keys(
                 {
                     lunes: false,
@@ -482,14 +685,14 @@ class PresupuestoDiseñoForm extends Component {
                 }
             )
             form.semanas = [];
-            for (let i = 0; i < Math.floor(parseFloat(value) / 6); i++) {
+            for (let i = 0; i < Math.floor(parseFloat(value) / 5); i++) {
                 form.semanas.push({
                     lunes: true,
                     martes: true,
                     miercoles: true,
                     jueves: true,
                     viernes: true,
-                    sabado: true,
+                    sabado: false,
                     domingo: false
                 })
             }
@@ -522,32 +725,114 @@ class PresupuestoDiseñoForm extends Component {
                 })
             }
         }
-        if (name === 'esquema' || name === 'm2' || name === 'descuento') {
-            data.precios.map((precio) => {
-                if (precio.id.toString() === form.m2)
-                    if (form.esquema)
-                        if (form.descuento) {
-                            form.total = precio[form.esquema] * (1 - (form.descuento / 100))
-                        } else
-                            form.total = precio[form.esquema]
-                return false
-            })
+
+        if (name === 'm2' || name === 'esquema')
+            if (form.m2 && form.esquema) {
+                form.subtotal = this.getSubtotal(form.m2, form.esquema)
+
+            }
+        if (form.subtotal > 0) {
+            form.total = form.subtotal * (1 - (form.descuento / 100))
         }
-        if (name === "empresa") {
-            data.empresas.map((empresa) => {
-                if (empresa.id.toString() === value && empresa.name === 'INEIN') {
-                    form.tipo_partida = 'partidasInein'
-                }
-                if (empresa.id.toString() === value && empresa.name === 'INFRAESTRUCTURA MÉDICA') {
-                    form.tipo_partida = 'partidasIm'
-                }
-                return false
-            })
+
+        if (name === 'esquema') {
+            let planos = []
+            if (data.empresa)
+                data.empresa.planos.map((plano) => {
+                    if (plano[form.esquema])
+                        planos.push(plano)
+                })
+            form.planos = this.setOptionsCheckboxes(planos, true)
         }
+
         this.setState({
             ...this.state,
             form
         })
+    }
+
+    getSubtotal = (m2, esquema) => {
+
+        if (m2 === '')
+            return 0.0
+
+        const { data } = this.state
+
+        let precio_inicial = 0
+        let incremento = 0
+        let aux = false
+        let limiteInf = 0.0
+        let limiteSup = 0.0
+        let m2Aux = parseInt(m2)
+        let acumulado = 0
+        let total = 0
+
+        if (data.empresa)
+            precio_inicial = data.empresa.precio_inicial_diseño
+        else {
+            errorAlert('No fue posible calcular el total')
+            return 0.0
+        }
+
+        if (data.empresa.variaciones.length === 0) {
+            errorAlert('No fue posible calcular el total')
+            return 0.0
+        }
+
+        switch (esquema) {
+            case 'esquema_2':
+                incremento = data.empresa.incremento_esquema_2 / 100;
+                break
+            case 'esquema_3':
+                incremento = data.empresa.incremento_esquema_3 / 100;
+                break
+            default:
+                incremento = 0
+                break
+        }
+
+        data.empresa.variaciones.sort(function (a, b) {
+            return parseInt(a.inferior) - parseInt(b.inferior)
+        })
+
+        limiteInf = parseInt(data.empresa.variaciones[0].inferior)
+        limiteSup = parseInt(data.empresa.variaciones[data.empresa.variaciones.length - 1].superior)
+
+        if (limiteInf <= m2Aux && limiteSup >= m2Aux) {
+            data.empresa.variaciones.map((variacion, index) => {
+                if (index === 0) {
+                    acumulado = parseFloat(precio_inicial) - ((parseInt(m2) - parseInt(variacion.inferior)) * parseFloat(variacion.cambio))
+                    if (m2Aux >= parseInt(variacion.superior))
+                        acumulado = parseFloat(precio_inicial) - ((parseInt(variacion.superior) - parseInt(variacion.inferior)) * parseFloat(variacion.cambio))
+                    if (m2Aux >= parseInt(variacion.inferior) && m2Aux <= parseInt(variacion.superior))
+                        total = parseFloat(acumulado) * parseFloat(m2)
+                } else {
+                    if (m2Aux >= parseInt(variacion.superior))
+                        acumulado = parseFloat(acumulado) - ((parseInt(variacion.superior) - parseInt(variacion.inferior) + 1) * parseFloat(variacion.cambio))
+                    else {
+                        acumulado = parseFloat(acumulado) - ((parseInt(m2) - parseInt(variacion.inferior) + 1) * parseFloat(variacion.cambio))
+                    }
+                    if (m2Aux >= parseInt(variacion.inferior) && m2Aux <= parseInt(variacion.superior))
+                        total = parseFloat(acumulado) * parseFloat(m2)
+                }
+            })
+
+            return total = total * (1 + incremento)
+        }
+
+        if (limiteSup < m2Aux) {
+            errorAlert('Los m2 no están considerados en los límites')
+            return 0.0
+        }
+
+    }
+    setOptionsCheckboxes = (partidas, value) => {
+        let checkBoxPartida = []
+        partidas.map((partida, key) => {
+            checkBoxPartida.push({ checked: value, text: partida.nombre, id: partida.id, tipo: partida.tipo })
+            return false
+        })
+        return checkBoxPartida
     }
     onSubmit = e => {
         e.preventDefault()

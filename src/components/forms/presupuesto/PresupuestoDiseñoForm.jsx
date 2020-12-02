@@ -87,13 +87,17 @@ class PresupuestoDiseñoForm extends Component {
                                 <div className="wizard-bar"></div>
                             </div>
                         </div>
-                        <div id="wizard-3" className="wizard-step" data-wizard-type="step" onClick={() => { openWizard3() }}>
-                            <div className="wizard-label pt-0">
-                                <h3 className="wizard-title">
-                                    <span>3.</span> Fase 2: Construcción</h3>
-                                <div className="wizard-bar"></div>
-                            </div>
-                        </div>
+                        {
+                            form.fase2 ?
+                                <div id="wizard-3" className="wizard-step" data-wizard-type="step" onClick={() => { openWizard3() }}>
+                                    <div className="wizard-label pt-0">
+                                        <h3 className="wizard-title">
+                                            <span>3.</span> Fase 2: Construcción</h3>
+                                        <div className="wizard-bar"></div>
+                                    </div>
+                                </div>
+                            : ''
+                        }
                     </div>
                 </div>
                 <div className="row justify-content-center">
@@ -150,7 +154,7 @@ class PresupuestoDiseñoForm extends Component {
                                             </div>
                                             <div className="col-md-4">
                                                 <Input
-                                                    requirevalidation={0}
+                                                    requirevalidation={1}
                                                     formeditado={formeditado}
                                                     placeholder="NOMBRE DEL PROYECTO"
                                                     value={form.proyecto}
@@ -519,7 +523,7 @@ class PresupuestoDiseñoForm extends Component {
                                     </div>
                                     <div className="col-md-3">
                                         <Input
-                                            requirevalidation={0}
+                                            requirevalidation={1}
                                             formeditado={formeditado}
                                             placeholder="TIEMPO DE EJECUCIÓN"
                                             value={form.tiempo_ejecucion_construccion}
