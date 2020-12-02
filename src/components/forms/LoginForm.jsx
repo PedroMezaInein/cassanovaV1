@@ -179,7 +179,7 @@ class LoginForm extends React.Component {
                             this.state.error.email !== '' ||
                             this.state.error.password !== ''
                         }>
-                        Iniciar sesión
+                        INICIAR SESIÓN
                     </button>
                 </div>
             </form>

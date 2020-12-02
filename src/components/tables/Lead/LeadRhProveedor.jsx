@@ -1,9 +1,6 @@
 import React, { Component } from 'react'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
-import SVG from "react-inlinesvg";
-import { toAbsoluteUrl } from "../../../functions/routers"
 import { setDateTableLG } from '../../../functions/setters'
-import { questionAlert } from '../../../functions/alert'
 class LeadRhProveedor extends Component {
     isActiveButton(direction) {
         const { leads } = this.props
@@ -41,7 +38,7 @@ class LeadRhProveedor extends Component {
         return true
     }
     render() {
-        const { leads, onClickPrev, onClickNext, sendEmail } = this.props
+        const { leads, onClickPrev, onClickNext } = this.props
         return (
             <>
                 <div className="tab-content">
