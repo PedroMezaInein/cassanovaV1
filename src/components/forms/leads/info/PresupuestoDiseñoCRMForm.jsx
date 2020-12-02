@@ -65,13 +65,18 @@ class PresupuestoDiseñoCRMForm extends Component {
                                 <div className="wizard-bar"></div>
                             </div>
                         </div>
-                        <div id="wizard-3" className="wizard-step" data-wizard-type="step" onClick={() => { openWizard3() }}>
-                            <div className="wizard-label pt-0">
-                                <h3 className="wizard-title">
-                                    <span>3.</span> Fase 2: Construcción</h3>
-                                <div className="wizard-bar"></div>
-                            </div>
-                        </div>
+                        {
+                            formDiseño.fase2 ?
+                                <div id="wizard-3" className="wizard-step" data-wizard-type="step" onClick={() => { openWizard3() }}>
+                                    <div className="wizard-label pt-0">
+                                        <h3 className="wizard-title">
+                                            <span>3.</span> Fase 2: Construcción</h3>
+                                        <div className="wizard-bar"></div>
+                                    </div>
+                                </div>
+                            : ''
+                        }
+                        
                     </div>
                 </div>
                 <div className="row justify-content-center">
@@ -357,9 +362,23 @@ class PresupuestoDiseñoCRMForm extends Component {
                                     <div className="mr-2">
                                         <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase" onClick={() => { openWizard1() }} data-wizard-type="action-prev">Anterior</button>
                                     </div>
-                                    <div>
-                                        <button type="button" className="btn btn-primary font-weight-bold text-uppercase" onClick={() => { openWizard3() }} data-wizard-type="action-next">Siguiente</button>
-                                    </div>
+                                    {
+                                        formDiseño.fase2 ?
+                                            <div>
+                                                <button type="button" className="btn btn-primary font-weight-bold text-uppercase" onClick={() => { openWizard3() }} data-wizard-type="action-next">Siguiente</button>
+                                            </div>
+                                        :
+                                            <Button  icon = '' className = "btn btn-light-success btn-sm mr-2"
+                                            only_icon = "far fa-file-pdf pr-0" tooltip = { { text: 'GENERAR PDF' } }
+                                            onClick =   {
+                                                (e) => {
+                                                        e.preventDefault();
+                                                        validateAlert(submitPDF, e, 'wizard-2-content')
+                                                    }
+                                                }                                            
+                                            />
+                                    }
+                                    
                                 </div>
                             </div>
                             <div id="wizard-3-content" className="pb-3" data-wizard-type="step-content">
