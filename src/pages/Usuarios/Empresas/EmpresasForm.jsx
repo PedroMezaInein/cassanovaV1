@@ -27,7 +27,8 @@ class EmpresasForm extends Component {
             linkedin: '',
             pinterest: '',
             pagina_web:'',
-            telefono:''
+            telefono:'',
+            blog:''
         },
         data: {
             empresas: []
@@ -130,7 +131,7 @@ class EmpresasForm extends Component {
                         form.pagina_web = empresa.pagina_web
                         form.direccion = empresa.direccion
                         form.telefono = empresa.telefono
-
+                        form.blog = empresa.blog
                         let aux = []
                         empresa.tipos.map((tipo) => {
                             aux.push(tipo.tipo)
