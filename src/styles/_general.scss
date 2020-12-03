@@ -802,6 +802,9 @@ div#asideMenuScroll {
 .timeline.timeline-6 .timeline-items .timeline-item .timeline-desc.timeline-desc-light-danger::before {
     background-color: #FFE2E5;
 }
+.timeline.timeline-6 .timeline-items .timeline-item .timeline-desc.timeline-desc-bg-gray-200::before {
+    background-color: #ECF0F3;
+}
 
 .timeline.timeline-6 .timeline-items .timeline-item .timeline-desc.timeline-desc-light::before {
     background-color: #F3F6F9;
@@ -934,4 +937,72 @@ span#info-general, span#env-correo ,span#ag-llamada, a#seg-script{
     @media (max-width: 1280px) {
         margin-bottom: .5rem!important;
     }
+}
+div#nuevo{
+    &.timeline.timeline-4.timeline-justified .timeline-items .timeline-item:after{
+        border-right: none ;
+        margin-right: 0px ;
+        border-left: none;
+    }
+    &.timeline.timeline-4 .timeline-items .timeline-item .timeline-badge{
+        top: 0.5rem;
+    }
+    &.timeline.timeline-4 .timeline-items .timeline-item .timeline-badge > div{
+        width: 8px;
+        height: 8px;
+    }
+}
+
+.icon-1rem {
+    font-size: 1.05rem  !important;
+}
+
+div#timeline-departamentos{
+    &.timeline.timeline-6 .timeline-items .timeline-item .timeline-media{
+        width: 30px;
+        height: 30px;
+    }
+    &.timeline.timeline-6 .timeline-items .timeline-item .timeline-desc::before{
+        top: 35px;
+        left: 13px;
+    }
+    &.timeline.timeline-6 .timeline-items .timeline-item .timeline-desc::before{
+        height: calc(100% - 34px);
+    }
+}
+
+div#amarrillo{
+    &.timeline.timeline-4.timeline-justified .timeline-items .timeline-item:after{
+        border-right: none ;
+        margin-right: 0px ;
+        border-left: none;
+    }
+    &.timeline.timeline-4 .timeline-items .timeline-item .timeline-badge{
+        top: 0.5rem;
+        width: 40px;
+        height: 40px;
+    }
+    &.timeline.timeline-4 .timeline-items .timeline-item .timeline-badge > div{
+        width: 8px;
+        height: 8px;
+    }
+    &.timeline.timeline-4.timeline-justified .timeline-items .timeline-item .timeline-badge{
+        left: -15px;
+    }
+    &.timeline.timeline-4:after{
+        bottom: 20px;
+        top: 20px;
+    }
+    @media (max-width: 991.98px) {
+        &.timeline.timeline-4:after{
+            left: 14px !important;
+        }
+    }
+}
+.pl-30px{
+    padding-left: 30px;
+}
+span#border-hover:hover{
+    border-top-left-radius: 0px;
+    border-top-right-radius: 0px;
 }
