@@ -929,3 +929,9 @@ button.swal2-cancel.btn-light-gray-sweetalert2.swal2-styled:hover{
     background-color: #D6D6E0;
     border-color: #D6D6E0;
 }
+
+span#info-general, span#env-correo ,span#ag-llamada, a#seg-script{
+    @media (max-width: 1280px) {
+        margin-bottom: .5rem!important;
+    }
+}
