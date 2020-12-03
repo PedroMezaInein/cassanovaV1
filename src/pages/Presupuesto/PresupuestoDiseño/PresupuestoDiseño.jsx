@@ -166,7 +166,7 @@ class PresupuestoDiseño extends Component {
                         actions: this.setActions(presupuesto),
                         empresa: renderToString(setTextTable(presupuesto.empresa ? presupuesto.empresa.name : '')),
                         fecha: renderToString(setDateTable(presupuesto.fecha)),
-                        m2: renderToString(setTextTable(presupuesto.precio ? presupuesto.precio.m2 : '')),
+                        m2: renderToString(setTextTable(presupuesto.m2)),
                         esquema: renderToString(setTextTable(presupuesto.esquema ? presupuesto.esquema.replace('_', ' ') : '')),
                         total: renderToString(setMoneyTable(presupuesto.total)),
                         id: presupuesto.id,
