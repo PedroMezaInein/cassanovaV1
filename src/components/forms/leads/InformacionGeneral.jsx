@@ -91,7 +91,7 @@ class InformacionGeneral extends Component {
                             </div>
                             <CalendarDay
                                 value={form.fecha}
-                                date = { form.fecha }
+                                // date = { form.fecha }
                                 onChange={onChange}
                                 name='fecha'
                             />
