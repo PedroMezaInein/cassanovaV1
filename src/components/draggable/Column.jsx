@@ -28,7 +28,7 @@ class Column extends Component {
                 <div className="kanban-board" data-id="_inprocess" style={{ width: "90%", minWidth: "250px", marginLeft: "0px", marginRight: "0px" }}>
 
                     <div className="position-relative">
-                        <header className="kanban-board-header light-primary">
+                        <header className="kanban-board-header light-info">
                             <div className="kanban-title-board p-3">
                                 {column.titulo}
                             </div>
@@ -94,7 +94,7 @@ class Column extends Component {
                     }
                     <Accordion activeKey={activeKey} >
                         <div onClick={(e) => { e.preventDefault(); handleAccordion(column.id); }} id="acordion">
-                            <span className="btn btn-light btn-text-primary btn-hover-text-primary font-weight-bold btn-lg btn-block py-1" >
+                            <span className="btn btn-light btn-text-info btn-hover-text-info font-weight-bold btn-lg btn-block py-1" id="border-hover">
                                 <FontAwesomeIcon className="mr-1" icon={faPlus} />
                             Añadir otra tarea
                         </span>
