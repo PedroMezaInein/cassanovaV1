@@ -100,6 +100,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                         <div className="col-md-12 text-center px-0">
                                             <CalendarDay
                                                 value={formDiseño.fecha}
+                                                date = { formDiseño.fecha }
                                                 onChange={onChange}
                                                 name='fecha'
                                             />
@@ -368,15 +369,32 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                 <button type="button" className="btn btn-primary font-weight-bold text-uppercase" onClick={() => { openWizard3() }} data-wizard-type="action-next">Siguiente</button>
                                             </div>
                                         :
-                                            <Button  icon = '' className = "btn btn-light-success btn-sm mr-2"
-                                            only_icon = "far fa-file-pdf pr-0" tooltip = { { text: 'GENERAR PDF' } }
-                                            onClick =   {
-                                                (e) => {
-                                                        e.preventDefault();
-                                                        validateAlert(submitPDF, e, 'wizard-2-content')
+                                            <div>
+                                                <Button 
+                                                    icon=''
+                                                    className="btn btn-light-primary btn-sm mr-2"
+                                                    only_icon="far fa-save pr-0"
+                                                    tooltip={{ text: 'GUARDAR' }}
+                                                    onClick={
+                                                        (e) => {
+                                                            e.preventDefault();
+                                                            validateAlert(onSubmit, e, 'wizard-2-content')
+                                                        }
                                                     }
-                                                }                                            
-                                            />
+                                                />
+                                                <Button 
+                                                    icon=''
+                                                    className="btn btn-light-success btn-sm mr-2"
+                                                    only_icon="far fa-file-pdf pr-0"
+                                                    tooltip={{ text: 'GENERAR PDF' }}
+                                                    onClick={
+                                                        (e) => {
+                                                            e.preventDefault();
+                                                            validateAlert(submitPDF, e, 'wizard-2-content')
+                                                        }
+                                                    }                                            
+                                                />
+                                            </div>
                                     }
                                     
                                 </div>

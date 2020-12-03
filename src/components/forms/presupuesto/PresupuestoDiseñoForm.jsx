@@ -37,7 +37,8 @@ class PresupuestoDiseñoForm extends Component {
     // }
     
     updateTipoProyecto = value => {
-        
+        const { onChange } = this.props
+        onChange({ target: { value: value, name: 'tipoProyecto' } })
     }
 
     handleChangeCheckboxPlanos = e => {
@@ -120,9 +121,10 @@ class PresupuestoDiseñoForm extends Component {
                                         </div>
                                         <div className="col-md-12 text-center px-0">
                                             <CalendarDay
-                                                value={form.fecha}
-                                                onChange={onChange}
-                                                name='fecha'
+                                                value = { form.fecha }
+                                                date = { form.fecha }
+                                                onChange = { onChange }
+                                                name = 'fecha'
                                             />
                                         </div>
                                     </Col>
@@ -142,14 +144,14 @@ class PresupuestoDiseñoForm extends Component {
                                             </div>
                                             <div className="col-md-4">
                                                 <SelectSearch
-                                                    formeditado={formeditado}
-                                                    options={options.empresas}
-                                                    placeholder="SELECCIONA EL TIPO DE PROYECTO"
-                                                    name="tipoProyecto"
-                                                    value={form.tipoProyecto}
-                                                    onChange={this.updateTipoProyecto}
-                                                    iconclass={"far fa-building"}
-                                                    messageinc="Incorrecto. Selecciona el tipo de proyecto"
+                                                    formeditado = { formeditado }
+                                                    options = { options.tipos }
+                                                    placeholder = "SELECCIONA EL TIPO DE PROYECTO"
+                                                    name = "tipoProyecto"
+                                                    value = { form.tipoProyecto }
+                                                    onChange = { this.updateTipoProyecto }
+                                                    iconclass = "far fa-building"
+                                                    messageinc = "Incorrecto. Selecciona el tipo de proyecto"
                                                 />
                                             </div>
                                             <div className="col-md-4">
@@ -253,7 +255,7 @@ class PresupuestoDiseñoForm extends Component {
                                         <OptionsCheckboxHeaders
                                             requirevalidation = { 0 }
                                             formeditado = { formeditado }
-                                            placeholder = "SELECCIONA LAS PLANOS"
+                                            placeholder = "SELECCIONA LOS PLANOS"
                                             options = { form.planos }
                                             name = 'planos' 
                                             value = { form.planos }
@@ -422,18 +424,32 @@ class PresupuestoDiseñoForm extends Component {
                                                 <button type="button" className="btn btn-primary font-weight-bold text-uppercase" onClick={() => { openWizard3() }} data-wizard-type="action-next">Siguiente</button>
                                             </div>
                                         :
-                                            <Button  
-                                                icon = ''
-                                                className = "btn btn-light-success btn-sm mr-2"
-                                                only_icon = "far fa-file-pdf pr-0"
-                                                tooltip = { { text: 'GENERAR PDF' } }
-                                                onClick =   {
+                                        <div>
+                                            <Button 
+                                                icon=''
+                                                className="btn btn-light-primary btn-sm mr-2"
+                                                only_icon="far fa-save pr-0"
+                                                tooltip={{ text: 'GUARDAR' }}
+                                                onClick={
+                                                    (e) => {
+                                                        e.preventDefault();
+                                                        validateAlert(onSubmit, e, 'wizard-2-content')
+                                                    }
+                                                }
+                                            />
+                                            <Button 
+                                                icon=''
+                                                className="btn btn-light-success btn-sm mr-2"
+                                                only_icon="far fa-file-pdf pr-0"
+                                                tooltip={{ text: 'GENERAR PDF' }}
+                                                onClick={
                                                     (e) => {
                                                         e.preventDefault();
                                                         validateAlert(submitPDF, e, 'wizard-2-content')
                                                     }
                                                 }                                            
                                             />
+                                        </div>
                                     }
                                 </div>
                             </div>
@@ -525,7 +541,7 @@ class PresupuestoDiseñoForm extends Component {
                                         <Input
                                             requirevalidation={1}
                                             formeditado={formeditado}
-                                            placeholder="TIEMPO DE EJECUCIÓN"
+                                            placeholder="TIEMPO DE EJECUCIÓN (SEMANAS)"
                                             value={form.tiempo_ejecucion_construccion}
                                             name="tiempo_ejecucion_construccion"
                                             onChange={onChange}
@@ -565,30 +581,30 @@ class PresupuestoDiseñoForm extends Component {
                                         <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase" onClick={() => { openWizard2() }} data-wizard-type="action-prev">Anterior</button>
                                     </div>
                                     <div>
-                                        <Button
+                                        <Button 
                                             icon=''
                                             className="btn btn-light-primary btn-sm mr-2"
-                                            only_icon="far fa-save pr-0 mr-2"
+                                            only_icon="far fa-save pr-0"
+                                            tooltip={{ text: 'GUARDAR' }}
                                             onClick={
                                                 (e) => {
                                                     e.preventDefault();
                                                     validateAlert(onSubmit, e, 'wizard-3-content')
                                                 }
                                             }
-                                            text="ENVIAR"
-                                        />
+                                            />
                                         <Button 
                                             icon=''
                                             className="btn btn-light-success btn-sm mr-2"
-                                            only_icon="far fa-file-pdf pr-0 mr-2"
+                                            only_icon="far fa-file-pdf pr-0"
+                                            tooltip={{ text: 'GENERAR PDF' }}
                                             onClick={
                                                 (e) => {
                                                     e.preventDefault();
                                                     validateAlert(submitPDF, e, 'wizard-3-content')
                                                 }
-                                            }
-                                            text="GENERAR PDF"
-                                        />
+                                            }                                            
+                                            />
                                     </div>
                                 </div>
                             </div>

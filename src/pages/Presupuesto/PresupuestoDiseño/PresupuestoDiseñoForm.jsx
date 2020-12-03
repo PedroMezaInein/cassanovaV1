@@ -6,17 +6,26 @@ import Layout from '../../../components/layout/layout'
 import { URL_DEV } from '../../../constants'
 import { setOptions } from '../../../functions/setters'
 import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
-import { PresupuestoDiseñoForm as PresupuestoDisenoFormulario } from '../../../components/forms'
+import { PresupuestoDiseñoForm as PresupuestoDisenoFormulario, PresupuestoGeneradoNoCrm } from '../../../components/forms'
+import { Button } from '../../../components/form-components'
 import { Card } from 'react-bootstrap'
+import { Modal } from '../../../components/singles'
 class PresupuestoDiseñoForm extends Component {
     state = {
+        modalPdfs: false,
+        presupuesto: '',
         formeditado: 0,
         data: {
             precios: [],
-            empresas: []
+            empresas: [],
+            planos: [],
+            tipos: [],
+            empresa: '',
+            partidas: []
         },
         title: 'Presupuesto de diseño',
         form: {
+            presupuesto: '',
             m2: '',
             tipo_partida: '',
             esquema: 'esquema_1',
@@ -91,7 +100,8 @@ class PresupuestoDiseñoForm extends Component {
         options: {
             empresas: [],
             precios: [],
-            esquemas: []
+            esquemas: [],
+            tipos: []
         }
     }
 
@@ -105,127 +115,61 @@ class PresupuestoDiseñoForm extends Component {
             const { modulo: { url } } = element
             return pathname === url + '/' + action
         });
+        const { form } = this.state
         switch (action) {
             case 'add':
+                if(form.esquema === 'esquema_1')
+                    form.tiempo_ejecucion_diseno = 7
+                    form.semanas = this.calculateSemanas(form.tiempo_ejecucion_diseno)
+                    form.conceptos = [
+                        {
+                            value: '1',
+                            text: 'VISITA A INSTALACIONES Y REUNIÓN DE AMBOS EQUIPOS',
+                            name: 'concepto1'
+                        },
+                        {
+                            value: '1 AL 2',
+                            text: 'DESARROLLO DEL MATERIAL PARA LA PRIMERA REVISIÓN PRESENCIAL',
+                            name: 'concepto2'
+                        },
+                        {
+                            value: '3',
+                            text: 'JUNTA PRESENCIAL/REMOTA PARA PRIMERA REVISIÓN DE LA PROPUESTA DE DISEÑO Y MODELO 3D',
+                            name: 'concepto3'
+                        },
+                        {
+                            value: '3 AL 4',
+                            text: 'DESARROLLO DEL PROYECTO',
+                            name: 'concepto4'
+                        },
+                        {
+                            value: '5',
+                            text: 'JUNTA PRESENCIAL/REMOTA PARA SEGUNDA REVISIÓN DE LA PROPUESTA DE DISEÑO ,MODELO 3D Y V.º B.º DE DISEÑO ',
+                            name: 'concepto5'
+                        },
+                        {
+                            value: '5 AL 6',
+                            text: 'DESARROLLO DEL PROYECTO',
+                            name: 'concepto6'
+                        },
+                        {
+                            value: '7',
+                            text: 'ENTREGA FINAL DEL PROYECTO DIGITAL',
+                            name: 'concepto7'
+                        },
+                    ]
                 this.setState({
                     ...this.state,
                     title: 'Agregar presupuesto de diseño',
-                    formeditado: 0
+                    formeditado: 0,
+                    form
                 })
                 break;
             case 'edit':
                 if (state) {
                     if (state.presupuesto) {
                         const { presupuesto } = state
-                        const { form, options } = this.state
-                        form.empresa = presupuesto.empresa ? presupuesto.empresa.id.toString() : ''
-                        form.m2 = presupuesto.precio ? presupuesto.precio.id.toString() : ''
-                        form.esquema = presupuesto.esquema
-                        form.proyecto = presupuesto.proyecto
-                        form.fecha = new Date(presupuesto.fecha)
-                        form.tiempo_ejecucion_diseno = presupuesto.tiempo_ejecucion_diseno
-                        form.descuento = presupuesto.descuento
-                        form.proyecto = presupuesto.nombre_proyecto
-                        let aux = []
-                        presupuesto.semanas.map((semana, key) => {
-                            aux.push({
-                                lunes: semana.lunes,
-                                martes: semana.martes,
-                                miercoles: semana.miercoles,
-                                jueves: semana.jueves,
-                                viernes: semana.viernes,
-                                sabado: semana.sabado,
-                                domingo: semana.domingo
-                            })
-                            return false
-                        })
-                        if (aux.length === 0) {
-                            aux.push({
-                                lunes: false,
-                                martes: false,
-                                miercoles: false,
-                                jueves: false,
-                                viernes: false,
-                                sabado: false,
-                                domingo: false
-                            })
-                        }
-                        form.semanas = aux
-                        aux = []
-                        presupuesto.conceptos.map((concepto, key) => {
-                            aux.push({
-                                name: 'concepto' + (key + 1),
-                                value: concepto.dias,
-                                text: concepto.texto
-                            })
-                            return false
-                        })
-                        if (aux.length === 0) {
-                            aux = [
-                                {
-                                    value: '1',
-                                    text: 'VISITA A INSTALACIONES Y REUNIÓN DE AMBOS EQUIPOS',
-                                    name: 'concepto1'
-                                },
-                                {
-                                    value: '1 AL 2',
-                                    text: 'DESARROLLO DEL MATERIAL PARA LA PRIMERA REVISIÓN PRESENCIAL',
-                                    name: 'concepto2'
-                                },
-                                {
-                                    value: '3',
-                                    text: 'JUNTA PRESENCIAL/REMOTA PARA PRIMERA REVISIÓN DE LA PROPUESTA DE DISEÑO Y MODELO 3D',
-                                    name: 'concepto3'
-                                },
-                                {
-                                    value: '3 AL 4',
-                                    text: 'DESARROLLO DEL PROYECTO',
-                                    name: 'concepto4'
-                                },
-                                {
-                                    value: '5',
-                                    text: 'JUNTA PRESENCIAL/REMOTA PARA SEGUNDA REVISIÓN DE LA PROPUESTA DE DISEÑO ,MODELO 3D Y V.º B.º DE DISEÑO ',
-                                    name: 'concepto5'
-                                },
-                                {
-                                    value: '5 AL 6',
-                                    text: 'DESARROLLO DEL PROYECTO',
-                                    name: 'concepto6'
-                                },
-                                {
-                                    value: '7',
-                                    text: 'ENTREGA FINAL DEL PROYECTO DIGITAL',
-                                    name: 'concepto7'
-                                },
-                            ]
-                        }
-                        form.conceptos = aux
-                        form.construccion_interiores_inf = presupuesto.construccion_interiores_inf
-                        form.construccion_interiores_sup = presupuesto.construccion_interiores_sup
-                        form.mobiliario_inf = presupuesto.mobiliario_inf
-                        form.mobiliario_sup = presupuesto.mobiliario_sup
-                        form.construccion_civil_inf = presupuesto.construccion_civil_inf
-                        form.construccion_civil_sup = presupuesto.construccion_civil_sup
-
-                        form.tiempo_ejecucion_construccion = presupuesto.tiempo_ejecucion_construccion
-                        if (presupuesto.precio) {
-                            form.total = presupuesto.precio[presupuesto.esquema] * (1 - (presupuesto.descuento / 100))
-                        }
-                        if (presupuesto.empresa) {
-                            if (presupuesto.empresa.name === 'INEIN') {
-                                form.tipo_partida = 'partidasInein'
-                            }
-                            if (presupuesto.empresa.name === 'INFRAESTRUCTURA MÉDICA')
-                                form.tipo_partida = 'partidasIm'
-                        }
-                        this.setState({
-                            ...this.state,
-                            title: 'Editar presupuesto de diseño',
-                            presupuesto: presupuesto,
-                            form,
-                            options,
-                            formeditado: 1
-                        })
+                        this.getOnePresupuesto(presupuesto)
                     }
                     else
                         history.push('/presupuesto/presupuesto-diseño')
@@ -239,6 +183,7 @@ class PresupuestoDiseñoForm extends Component {
             history.push('/')
         this.getOptionsAxios()
     }
+
     setOptions = (name, array) => {
         const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
@@ -247,6 +192,7 @@ class PresupuestoDiseñoForm extends Component {
             options
         })
     }
+    
     setPartidas = (partidas, value) => {
         let checkBoxPartida = []
         partidas.map((partida, key) => {
@@ -255,55 +201,181 @@ class PresupuestoDiseñoForm extends Component {
         })
         return checkBoxPartida
     }
+
+    openModalPresupuesto = () => {
+        this.setState({
+            ...this.state,
+            modalPdfs: true
+        })
+    }
+
+    handleCloseModalPresupuesto = () => {
+        this.setState({
+            ...this.state,
+            modalPdfs: false
+        })
+    }
+
+    async getOnePresupuesto(presupuesto){
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'presupuestos-diseño/'+presupuesto.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { presupuesto, partidas } = response.data
+                const { form, data, options } = this.state
+
+                data.partidas = partidas
+                
+                form.presupuesto = presupuesto
+                form.construccion_civil_inf = presupuesto.construccion_civil_inf
+                form.construccion_civil_sup = presupuesto.construccion_civil_sup
+                form.construccion_interiores_inf = presupuesto.construccion_civil_inf
+                form.construccion_interiores_sup = presupuesto.construccion_civil_sup
+                form.mobiliario_inf = presupuesto.mobiliario_inf
+                form.mobiliario_sup = presupuesto.mobiliario_sup
+                form.m2 = presupuesto.m2;
+                form.subtotal = presupuesto.subtotal
+                form.total = presupuesto.total
+                form.descuento = presupuesto.descuento
+                form.fase1 = presupuesto.fase1 === 1 ? true : false
+                form.fase2 = presupuesto.fase2 === 1 ? true : false
+                form.esquema = presupuesto.esquema
+                form.renders = presupuesto.renders
+                form.tiempo_ejecucion_diseno = presupuesto.tiempo_ejecucion_diseño
+                form.fecha = new Date(presupuesto.fecha);
+                form.tiempo_ejecucion_construccion = presupuesto.tiempo_ejecucion_construccion
+
+                if(presupuesto.empresa){
+                    data.empresa = presupuesto.empresa
+                    form.empresa = presupuesto.empresa.id.toString()
+                    data.tipos = presupuesto.empresa.tipos
+                    options.tipos = setOptions(presupuesto.empresa.tipos, 'tipo', 'id')
+                    let cadena = ''
+                    switch(presupuesto.empresa.name){
+                        case 'INEIN':
+                            cadena = 'inein'
+                            break;
+                        case 'INFRAESTRUCTURA MÉDICA':
+                            cadena = 'im'
+                            break;
+                    }
+                    let partidas = [];
+                    data.partidas.map((partida)=>{
+                        if(partida.empresa === cadena)                    
+                            partidas.push(partida)
+                    })
+                    form.partidas = this.setOptionsCheckboxes(partidas, true)
+                }
+
+                let aux = JSON.parse(presupuesto.actividades)
+                if (aux) {
+                    aux = aux.actividades
+                    form.conceptos = aux
+                }
+                aux = JSON.parse(presupuesto.semanas)
+                if (aux) {
+                    aux = aux.semanas
+                    form.semanas = aux
+                }
+                let planos = []
+                if (data.empresa)
+                    data.empresa.planos.map((plano) => {
+                        if (plano[presupuesto.esquema])
+                            planos.push(plano)
+                    })
+                form.planos = this.setOptionsCheckboxes(planos, true)
+                aux = JSON.parse(presupuesto.planos)
+                if (aux) {
+                    aux = aux.planos
+                    aux.map((element) => {
+                        form.planos.map((plano) => {
+                            if (plano.id.toString() === element.toString())
+                                plano.checked = true
+                            else
+                                plano.checked = false
+                        })
+                    })
+                }
+                aux = JSON.parse(presupuesto.planos)
+                if (aux) {
+                    aux = aux.planos
+                    form.planos.map((plano) => {
+                        let bandera = false
+                        aux.map((element) => {
+                            if (plano.id.toString() === element.toString())
+                                bandera = true
+                        })
+                        plano.checked = bandera
+                    })
+                }
+                aux = JSON.parse(presupuesto.partidas)
+                if (aux) {
+                    aux = aux.partidas
+                    form.partidas.map((partida) => {
+                        let bandera = false
+                        aux.map((element) => {
+                            if (partida.id.toString() === element.toString())
+                                bandera = true
+                        })
+                        partida.checked = bandera
+                    })
+                }
+
+                if(presupuesto.lead){
+                    if(presupuesto.lead.prospecto){
+                        console.log(presupuesto.lead.prospecto, 'pros')
+                        form.proyecto = presupuesto.lead.prospecto.nombre_proyecto
+                        if(presupuesto.lead.prospecto.tipo_proyecto)
+                            form.tipoProyecto = presupuesto.lead.prospecto.tipo_proyecto.id.toString()
+                    }
+                }
+
+                if( form.tipoProyecto === '' )
+                    if(presupuesto.tipo_proyecto_id)
+                        form.tipoProyecto = presupuesto.tipo_proyecto_id.toString()
+
+                if( form.proyecto === '' )
+                    form.proyecto = presupuesto.nombre_proyecto
+
+                this.setState({
+                    ...this.state,
+                    form,
+                    data,
+                    options,
+                    presupuesto: presupuesto
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     async getOptionsAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'presupuestos-diseño/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 swal.close()
-                const { esquemas, empresas, precios, partidasInein, partidasIm } = response.data
-                const { options, data, form, presupuesto } = this.state
-                data.precios = precios
+                const { empresas, partidas } = response.data
+                const { options, data, form } = this.state
                 data.empresas = empresas
-                data.partidasInein = partidasInein
-                data.partidasIm = partidasIm
+                data.partidas = partidas
+                data.partidas = partidas
                 options['empresas'] = setOptions(empresas, 'name', 'id')
-                options['esquemas'] = setOptions(esquemas, 'nombre', 'id')
-                options['precios'] = setOptions(precios, 'm2', 'id')
-                form.partidasInein = this.setPartidas(partidasInein, 'partidasInein', true)
-                form.partidasIm = this.setPartidas(partidasIm, 'partidasIm', true)
-                if (presupuesto) {
-                    form.partidasInein = this.setPartidas(partidasInein, 'partidasInein', false)
-                    form.partidasIm = this.setPartidas(partidasIm, 'partidasIm', false)
-                    if (presupuesto.empresa) {
-                        if (presupuesto.empresa.name === 'INEIN') {
-                            form.tipo_partida = 'partidasInein'
-                            presupuesto.partidas_inein.map((partida_inein, key) => {
-                                if (partida_inein.partida)
-                                    form.partidasInein.map((element) => {
-                                        if (element.id === partida_inein.partida.id) {
-                                            element.checked = true
-                                        }
-                                        return false
-                                    })
-                                return false
-                            })
-                        }
-                        if (presupuesto.empresa.name === 'INFRAESTRUCTURA MÉDICA') {
-                            form.tipo_partida = 'partidasIm'
-                            presupuesto.partidas_im.map((partida_im, key) => {
-                                if (partida_im.partida)
-                                    form.partidasIm.map((element) => {
-                                        if (element.id === partida_im.partida.id) {
-                                            element.checked = true
-                                        }
-                                        return false
-                                    })
-                                return false
-                            })
-                        }
-                    }
-                }
+                options.esquemas = setOptions([
+                    { name: 'Esquema 1', value: 'esquema_1' },
+                    { name: 'Esquema 2', value: 'esquema_2' },
+                    { name: 'Esquema 3', value: 'esquema_3' },
+                ], 'name', 'value')
                 this.setState({
                     ...this.state,
                     options,
@@ -336,17 +408,32 @@ class PresupuestoDiseñoForm extends Component {
             (response) => {
 
                 const { presupuesto } = response.data
-
+                const { form } = this.state
+                form.presupuesto = presupuesto
                 if (pdf)
                     if (presupuesto.pdfs) {
                         var win = window.open(presupuesto.pdfs[0].url, '_blank');
-                        win.focus();
+                        if(win)
+                            win.focus();
+                        else{
+                            const link = document.createElement('a');
+                            link.href = presupuesto.pdfs[0].url;
+                            /* link.setAttribute('target', '_blank'); */
+                            document.body.appendChild(link);
+                            link.click();
+                            document.body.removeChild(link);
+                        }
                     }
                 const { history } = this.props
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La presupuesto fue eliminada con éxito.',)
-                history.push({
+                /* history.push({
                     pathname: '/presupuesto/presupuesto-diseño'
-                });
+                }); */
+                this.setState({
+                    ...this.state,
+                    presupuesto: presupuesto,
+                    form
+                })
             },
             (error) => {
                 console.log(error, 'error')
@@ -428,14 +515,7 @@ class PresupuestoDiseñoForm extends Component {
             form
         })
     }
-    // onChangeConceptos = (e, key) => {
-    //     const { value, form } = e.target
-    //     form.conceptos[key].value = value
-    //     this.setState({
-    //         ...this.state,
-    //         form
-    //     })
-    // }
+    
     onChangeConceptos = (e, key) => {
         const { value } = e.target
         const { form } = this.state
@@ -445,219 +525,13 @@ class PresupuestoDiseñoForm extends Component {
             form
         })
     }
-    // onChange = e => {
-    //     const { name, value } = e.target
-    //     const { form, data } = this.state
-    //     form[name] = value
-    //     if (name === 'esquema') {
-    //         form.conceptos.map((concepto) => {
-    //             if (concepto.name === 'concepto3') {
-    //                 if (value === 'esquema_1')
-    //                     concepto.text = 'JUNTA PRESENCIAL PARA PRIMERA REVISIÓN DE LA PROPUESTA DE DISEÑO'
-    //                 if (value === 'esquema_2')
-    //                     concepto.text = 'JUNTA PRESENCIAL PARA PRIMERA REVISIÓN DE LA PROPUESTA DE DISEÑO Y MODELO 3D'
-    //                 if (value === 'esquema_3')
-    //                     concepto.text = 'JUNTA PRESENCIAL PARA PRIMERA REVISIÓN DE LA PROPUESTA DE DISEÑO, MODELO 3D Y RENDERS'
-    //             }
-    //             if (concepto.name === 'concepto5') {
-    //                 if (value === 'esquema_1')
-    //                     concepto.text = 'JUNTA PRESENCIAL PARA SEGUNDA REVISIÓN DE LA PROPUESTA DE DISEÑO'
-    //                 if (value === 'esquema_2')
-    //                     concepto.text = 'JUNTA PRESENCIAL PARA SEGUNDA REVISIÓN DE LA PROPUESTA DE DISEÑO Y MODELO 3D'
-    //                 if (value === 'esquema_3')
-    //                     concepto.text = 'JUNTA PRESENCIAL PARA SEGUNDA REVISIÓN DE LA PROPUESTA DE DISEÑO, MODELO 3D Y RENDERS'
-    //             }
-    //             return false
-    //         })
-    //     }
-    //     if (name === 'tiempo_ejecucion_diseno') {
-    //         let modulo = parseFloat(value) % 6
-    //         let aux = Object.keys(
-    //             {
-    //                 lunes: false,
-    //                 martes: false,
-    //                 miercoles: false,
-    //                 jueves: false,
-    //                 viernes: false,
-    //                 sabado: false,
-    //                 domingo: false
-    //             }
-    //         )
-    //         form.semanas = [];
-    //         for (let i = 0; i < Math.floor(parseFloat(value) / 6); i++) {
-    //             form.semanas.push({
-    //                 lunes: true,
-    //                 martes: true,
-    //                 miercoles: true,
-    //                 jueves: true,
-    //                 viernes: true,
-    //                 sabado: true,
-    //                 domingo: false
-    //             })
-    //         }
-    //         form.semanas.push({
-    //             lunes: false,
-    //             martes: false,
-    //             miercoles: false,
-    //             jueves: false,
-    //             viernes: false,
-    //             sabado: false,
-    //             domingo: false
-    //         })
-    //         aux.map((element, key) => {
-    //             if (key < modulo) {
-    //                 form.semanas[form.semanas.length - 1][element] = true
-    //             } else {
-    //                 form.semanas[form.semanas.length - 1][element] = false
-    //             }
-    //             return false
-    //         })
-    //         if (modulo > 2) {
-    //             form.semanas.push({
-    //                 lunes: false,
-    //                 martes: false,
-    //                 miercoles: false,
-    //                 jueves: false,
-    //                 viernes: false,
-    //                 sabado: false,
-    //                 domingo: false
-    //             })
-    //         }
-    //     }
-    //     if (name === 'esquema' || name === 'm2' || name === 'descuento') {
-    //         data.precios.map((precio) => {
-    //             if (precio.id.toString() === form.m2)
-    //                 if (form.esquema)
-    //                     if (form.descuento) {
-    //                         form.total = precio[form.esquema] * (1 - (form.descuento / 100))
-    //                     } else
-    //                         form.total = precio[form.esquema]
-    //             return false
-    //         })
-    //     }
-    //     if (name === "empresa") {
-    //         data.empresas.map((empresa) => {
-    //             if (empresa.id.toString() === value && empresa.name === 'INEIN') {
-    //                 form.tipo_partida = 'partidasInein'
-    //             }
-    //             if (empresa.id.toString() === value && empresa.name === 'INFRAESTRUCTURA MÉDICA') {
-    //                 form.tipo_partida = 'partidasIm'
-    //             }
-    //             return false
-    //         })
-    //     }
-    //     this.setState({
-    //         ...this.state,
-    //         form
-    //     })
-    // }
+    
     onChange = e => {
         const { name, value, type, checked } = e.target
-        const { form, data } = this.state
+        const { form, data, options } = this.state
         form[name] = value
-        if (name === 'esquema') {
-            form.conceptos.map((concepto) => {
-                switch(concepto.name){
-                    case 'concepto1':
-                        concepto.value = "1";
-                        break;
-                    case 'concepto2':
-                        switch(value){
-                            case 'esquema_1':
-                                concepto.value = "1 al 2"
-                                break;
-                            case 'esquema_2':
-                                concepto.value = "2 al 3"
-                                break;
-                            case 'esquema_3':
-                                concepto.value = "2 al 4"
-                                break;
-                        }
-                        break;
-                    case 'concepto3':
-                        switch(value){
-                            case 'esquema_1':
-                                concepto.value = "3"
-                                break;
-                            case 'esquema_2':
-                                concepto.value = "4"
-                                break;
-                            case 'esquema_3':
-                                concepto.value = "5"
-                                break;
-                        }
-                        break;
-                    case 'concepto4':
-                        switch(value){
-                            case 'esquema_1':
-                                concepto.value = "3 al 4"
-                                concepto.text = 'DESARROLLO DEL PROYECTO'
-                                break;
-                            case 'esquema_2':
-                                concepto.value = "5 al 6"
-                                concepto.text = 'DESARROLLO DEL PROYECTO'
-                                break;
-                            case 'esquema_3':
-                                concepto.value = "6 al 9"
-                                concepto.text = 'DESARROLLO DEL PROYECTO EJECUTIVO'
-                                break;
-                        }
-                        break;
-                    case 'concepto5':
-                        switch(value){
-                            case 'esquema_1':
-                                concepto.value = "5"
-                                break;
-                            case 'esquema_2':
-                                concepto.value = "7"
-                                break;
-                            case 'esquema_3':
-                                concepto.value = "10"
-                                break;
-                        }
-                        break;
-                    case 'concepto6':
-                        switch(value){
-                            case 'esquema_1':
-                                concepto.value = "5 al 6"
-                                concepto.text = 'DESARROLLO DEL PROYECTO'
-                                break;
-                            case 'esquema_2':
-                                concepto.value = "8 al 9"
-                                concepto.text = 'DESARROLLO DEL PROYECTO'
-                                break;
-                            case 'esquema_3':
-                                concepto.value = "11 al 14"
-                                concepto.text = 'DESARROLLO DEL PROYECTO EJECUTIVO'
-                                break;
-                        }
-                        break;
-                    case 'concepto7':
-                        switch(value){
-                            case 'esquema_1':
-                                concepto.value = "7"
-                                concepto.text = 'ENTREGA FINAL DEL PROYECTO DIGITAL'
-                                break;
-                            case 'esquema_2':
-                                concepto.value = "10"
-                                concepto.text = 'ENTREGA FINAL DEL PROYECTO DIGITAL'
-                                break;
-                            case 'esquema_3':
-                                concepto.value = "15"
-                                concepto.text = 'ENTREGA FINAL DEL PROYECTO EJECUTIVO EN DIGITAL'
-                                break;
-                        }
-                        break;
-                    default: break;
-                }
-                return false
-            })
-        }
-        if (type === 'checkbox')
-            form[name] = checked
-        else
-            form[name] = value
-
+        let planos = []
+        let partidas = [];
         switch (name) {
             case 'construccion_interiores_inf':
             case 'construccion_interiores_sup':
@@ -666,37 +540,237 @@ class PresupuestoDiseñoForm extends Component {
             case 'mobiliario_inf':
             case 'mobiliario_sup':
                 form[name] = value.replace(',', '')
-                break
+                break;
+            case 'empresa':
+                data.empresas.map((empresa)=>{
+                    if(empresa.id.toString() === value){
+                        options.tipos = setOptions(empresa.tipos, 'tipo', 'id')
+                        data.tipos = empresa.tipos
+                        form.tipoProyecto = ''
+                        form.construccion_civil_inf = 0
+                        form.construccion_civil_sup = 0
+                        form.construccion_interiores_inf = 0
+                        form.construccion_interiores_sup = 0
+                        form.mobiliario_inf = 0
+                        form.mobiliario_sup = 0
+                        data.planos = empresa.planos
+                        empresa.planos.map((plano)=>{
+                            if(plano[form.esquema])
+                                planos.push(plano)
+                        })
+                        form.planos = this.setOptionsCheckboxes(planos, true)
+                        data.empresa = empresa
+                        let cadena = ''
+                        switch(empresa.name){
+                            case 'INEIN':
+                                cadena = 'inein'
+                                break;
+                            case 'INFRAESTRUCTURA MÉDICA':
+                                cadena = 'im'
+                                break;
+                        }
+                        data.partidas.map((partida)=>{
+                            if(partida.empresa === cadena)                    
+                                partidas.push(partida)
+                        })
+                        form.partidas = this.setOptionsCheckboxes(partidas, true)
+                    }
+                })
+                break;
+            case 'esquema':
+                switch(value){
+                    case 'esquema_1':
+                        form.tiempo_ejecucion_diseno = 7
+                        break;
+                    case 'esquema_2':
+                        form.tiempo_ejecucion_diseno = 10
+                        break;
+                    case 'esquema_3':
+                        form.tiempo_ejecucion_diseno = 15
+                        break;
+                }
+                data.planos.map((plano)=>{
+                    if(plano[form.esquema])
+                        planos.push(plano)
+                })
+                form.planos = this.setOptionsCheckboxes(planos, true)
+                form.conceptos.map((concepto) => {
+                    switch(concepto.name){
+                        case 'concepto1':
+                            concepto.value = "1";
+                            break;
+                        case 'concepto2':
+                            switch(value){
+                                case 'esquema_1':
+                                    concepto.value = "1 al 2"
+                                    break;
+                                case 'esquema_2':
+                                    concepto.value = "2 al 3"
+                                    break;
+                                case 'esquema_3':
+                                    concepto.value = "2 al 4"
+                                    break;
+                            }
+                            break;
+                        case 'concepto3':
+                            switch(value){
+                                case 'esquema_1':
+                                    concepto.value = "3"
+                                    break;
+                                case 'esquema_2':
+                                    concepto.value = "4"
+                                    break;
+                                case 'esquema_3':
+                                    concepto.value = "5"
+                                    break;
+                            }
+                            break;
+                        case 'concepto4':
+                            switch(value){
+                                case 'esquema_1':
+                                    concepto.value = "3 al 4"
+                                    concepto.text = 'DESARROLLO DEL PROYECTO'
+                                    break;
+                                case 'esquema_2':
+                                    concepto.value = "5 al 6"
+                                    concepto.text = 'DESARROLLO DEL PROYECTO'
+                                    break;
+                                case 'esquema_3':
+                                    concepto.value = "6 al 9"
+                                    concepto.text = 'DESARROLLO DEL PROYECTO EJECUTIVO'
+                                    break;
+                            }
+                            break;
+                        case 'concepto5':
+                            switch(value){
+                                case 'esquema_1':
+                                    concepto.value = "5"
+                                    break;
+                                case 'esquema_2':
+                                    concepto.value = "7"
+                                    break;
+                                case 'esquema_3':
+                                    concepto.value = "10"
+                                    break;
+                            }
+                            break;
+                        case 'concepto6':
+                            switch(value){
+                                case 'esquema_1':
+                                    concepto.value = "5 al 6"
+                                    concepto.text = 'DESARROLLO DEL PROYECTO'
+                                    break;
+                                case 'esquema_2':
+                                    concepto.value = "8 al 9"
+                                    concepto.text = 'DESARROLLO DEL PROYECTO'
+                                    break;
+                                case 'esquema_3':
+                                    concepto.value = "11 al 14"
+                                    concepto.text = 'DESARROLLO DEL PROYECTO EJECUTIVO'
+                                    break;
+                            }
+                            break;
+                        case 'concepto7':
+                            switch(value){
+                                case 'esquema_1':
+                                    concepto.value = "7"
+                                    concepto.text = 'ENTREGA FINAL DEL PROYECTO DIGITAL'
+                                    break;
+                                case 'esquema_2':
+                                    concepto.value = "10"
+                                    concepto.text = 'ENTREGA FINAL DEL PROYECTO DIGITAL'
+                                    break;
+                                case 'esquema_3':
+                                    concepto.value = "15"
+                                    concepto.text = 'ENTREGA FINAL DEL PROYECTO EJECUTIVO EN DIGITAL'
+                                    break;
+                            }
+                            break;
+                        default: break;
+                    }
+                    return false
+                })
+                break;
+            case 'tiempo_ejecucion_diseno':
+                form.semanas = this.calculateSemanas(value)
+                break;
+            case 'tipoProyecto':
+                data.tipos.map((tipo)=>{
+                    if(tipo.id.toString() === value){
+                        form.construccion_civil_inf = tipo.construccion_civil_inf
+                        form.construccion_civil_sup = tipo.construccion_civil_sup
+                        form.construccion_interiores_inf = tipo.construccion_interiores_inf
+                        form.construccion_interiores_sup = tipo.construccion_interiores_sup
+                        form.mobiliario_inf = tipo.mobiliario_inf
+                        form.mobiliario_sup = tipo.mobiliario_sup
+                    }
+                })
+                break;
             default:
                 break;
         }
+        if (name === 'm2' || name === 'esquema')
+            if (form.m2 && form.esquema)
+                form.subtotal = this.getSubtotal(form.m2, form.esquema)
+        if (form.subtotal > 0)
+            form.total = form.subtotal * (1 - (form.descuento / 100))
 
-        if (name === 'tiempo_ejecucion_diseno') {
-            let modulo = parseFloat(value) % 5
-            let aux = Object.keys(
-                {
-                    lunes: false,
-                    martes: false,
-                    miercoles: false,
-                    jueves: false,
-                    viernes: false,
-                    sabado: false,
-                    domingo: false
-                }
-            )
-            form.semanas = [];
-            for (let i = 0; i < Math.floor(parseFloat(value) / 5); i++) {
-                form.semanas.push({
-                    lunes: true,
-                    martes: true,
-                    miercoles: true,
-                    jueves: true,
-                    viernes: true,
-                    sabado: false,
-                    domingo: false
-                })
+        if (type === 'checkbox')
+            form[name] = checked
+        else
+            form[name] = value
+        this.setState({
+            ...this.state,
+            form,
+            options,
+            data
+        })
+    }
+
+    calculateSemanas = tiempo => {
+        let modulo = parseFloat(tiempo) % 5
+        let aux = Object.keys(
+            {
+                lunes: false,
+                martes: false,
+                miercoles: false,
+                jueves: false,
+                viernes: false,
+                sabado: false,
+                domingo: false
             }
-            form.semanas.push({
+        )
+        let semanas = []
+        for (let i = 0; i < Math.floor(parseFloat(tiempo) / 5); i++) {
+            semanas.push({
+                lunes: true,
+                martes: true,
+                miercoles: true,
+                jueves: true,
+                viernes: true,
+                sabado: false,
+                domingo: false
+            })
+        }
+        semanas.push({
+            lunes: false,
+            martes: false,
+            miercoles: false,
+            jueves: false,
+            viernes: false,
+            sabado: false,
+            domingo: false
+        })
+        aux.map((element, key) => {
+            if (key < modulo) {
+                semanas[semanas.length - 1][element] = true
+            } else {
+                semanas[semanas.length - 1][element] = false
+            }
+            return false
+        })
+        if (modulo > 2) {
+            semanas.push({
                 lunes: false,
                 martes: false,
                 miercoles: false,
@@ -705,50 +779,9 @@ class PresupuestoDiseñoForm extends Component {
                 sabado: false,
                 domingo: false
             })
-            aux.map((element, key) => {
-                if (key < modulo) {
-                    form.semanas[form.semanas.length - 1][element] = true
-                } else {
-                    form.semanas[form.semanas.length - 1][element] = false
-                }
-                return false
-            })
-            if (modulo > 2) {
-                form.semanas.push({
-                    lunes: false,
-                    martes: false,
-                    miercoles: false,
-                    jueves: false,
-                    viernes: false,
-                    sabado: false,
-                    domingo: false
-                })
-            }
         }
 
-        if (name === 'm2' || name === 'esquema')
-            if (form.m2 && form.esquema) {
-                form.subtotal = this.getSubtotal(form.m2, form.esquema)
-
-            }
-        if (form.subtotal > 0) {
-            form.total = form.subtotal * (1 - (form.descuento / 100))
-        }
-
-        if (name === 'esquema') {
-            let planos = []
-            if (data.empresa)
-                data.empresa.planos.map((plano) => {
-                    if (plano[form.esquema])
-                        planos.push(plano)
-                })
-            form.planos = this.setOptionsCheckboxes(planos, true)
-        }
-
-        this.setState({
-            ...this.state,
-            form
-        })
+        return semanas
     }
 
     getSubtotal = (m2, esquema) => {
@@ -868,43 +901,65 @@ class PresupuestoDiseñoForm extends Component {
         })
     }
     render() {
-        const { options, title, form, formeditado } = this.state
+        const { options, title, form, formeditado, presupuesto, modalPdfs } = this.state
         return (
             <Layout active={'presupuesto'} {...this.props}>
                 <Card className="card-custom">
                     <Card.Header>
-                        <div className="card-title">
+                        <div className="card-title w-100 d-flex justify-content-between">
                             <h3 className="card-label">{title}</h3>
+                            {
+                                presupuesto ?
+                                    presupuesto.pdfs ?
+                                        presupuesto.pdfs.length ?
+                                            <div>
+                                                <Button icon =''
+                                                    className = "btn btn-icon btn-xs p-3 btn-light-primary mr-2"
+                                                    onClick = { () => { this.openModalPresupuesto() } }
+                                                    only_icon = "far fa-file-pdf icon-15px"
+                                                    tooltip = { { text: 'COTIZACIONES GENERADAS' } }/>
+                                            </div>
+                                        : ''
+                                    : ''
+                                : ''
+                            }
                         </div>
                     </Card.Header>
                     <Card.Body>
                         <PresupuestoDisenoFormulario
-                            title={title}
-                            formeditado={formeditado}
-                            className=" px-3 "
-                            options={options}
-                            form={form}
-                            onChange={this.onChange}
-                            onSubmit={this.onSubmit}
-                            submitPDF={this.submitPDF}
-                            onChangeConceptos={this.onChangeConceptos}
-                            checkButtonSemanas={this.checkButtonSemanas}
-                            onChangeCheckboxes={this.handleChangeCheckbox}
+                            title = { title }
+                            formeditado = { formeditado }
+                            className = "px-3"
+                            options = { options }
+                            form = { form }
+                            onChange = { this.onChange }
+                            onSubmit = { this.onSubmit }
+                            submitPDF = { this.submitPDF }
+                            onChangeConceptos = { this.onChangeConceptos }
+                            checkButtonSemanas = { this.checkButtonSemanas }
+                            onChangeCheckboxes = { this.handleChangeCheckbox }
                         />
                     </Card.Body>
                 </Card>
+                <Modal title = "Cotizaciones generadas" size = "lg" 
+                    show = { modalPdfs } handleClose = { this.handleCloseModalPresupuesto } >
+                    {
+                        presupuesto ?
+                            presupuesto.pdfs ?
+                                presupuesto.pdfs.length ?
+                                    <PresupuestoGeneradoNoCrm 
+                                        pdfs = { presupuesto.pdfs } />
+                                : ''
+                            : ''
+                        : ''
+                    }
+                </Modal>
             </Layout>
         )
     }
 
 }
-const mapStateToProps = state => {
-    return {
-        authUser: state.authUser
-    }
-}
 
-const mapDispatchToProps = dispatch => ({
-})
-
+const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapDispatchToProps = () => ({})
 export default connect(mapStateToProps, mapDispatchToProps)(PresupuestoDiseñoForm);

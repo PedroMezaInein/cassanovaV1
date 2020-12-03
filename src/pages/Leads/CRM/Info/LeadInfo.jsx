@@ -186,7 +186,9 @@ class LeadInfo extends Component {
                 form.telefono = lead.telefono
                 form.proyecto = lead.prospecto.nombre_proyecto
                 form.fecha = new Date(lead.created_at)
-                if(formDiseño.esquema === 'esquema_1')
+                
+                if(formDiseño.esquema === 'esquema_1'){
+                    formDiseño.tiempo_ejecucion_diseno = 7
                     formDiseño.conceptos = [
                         {
                             value: '1',
@@ -224,6 +226,7 @@ class LeadInfo extends Component {
                             name: 'concepto7'
                         },
                     ]
+                }
                 this.setState({
                     ...this.state,
                     lead: lead,
@@ -859,11 +862,13 @@ class LeadInfo extends Component {
                 const { lead } = response.data
                 const { history } = this.props
                 const { form, formDiseño, data } = this.state
+
                 form.name = lead.nombre
                 form.email = lead.email
                 form.telefono = lead.telefono
                 form.proyecto = lead.prospecto.nombre_proyecto
                 form.fecha = new Date(lead.created_at)
+                
                 if (lead.presupuesto_diseño) {
 
                     formDiseño.fase1 = lead.presupuesto_diseño.fase1
@@ -946,14 +951,15 @@ class LeadInfo extends Component {
 
                 }
 
-                history.push({
-                    state: { lead: lead }
-                })
                 this.setState({
                     ...this.state,
                     lead: lead,
                     form,
                     formDiseño
+                })
+
+                history.push({
+                    state: { lead: lead }
                 })
             },
             (error) => {
