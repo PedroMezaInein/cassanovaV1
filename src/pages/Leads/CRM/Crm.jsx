@@ -875,8 +875,6 @@ class Crm extends Component {
         formEditar.email = lead.email
         formEditar.telefono = lead.telefono
         formEditar.fecha = new Date(lead.created_at)
-        console.log(lead, 'lead')
-        /* formEditar.tipoProyecto = lead.tipo.tipo */
         this.setState({
             ...this.state,
             modal_editar: true,
