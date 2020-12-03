@@ -9,7 +9,7 @@ class InformacionGeneral extends Component {
             <>
                 <Form>
                     <div className="form-group row form-group-marginless mb-0 justify-content-center">
-                        <div className="col-md-3">
+                        <div className={lead.estatus? lead.estatus.estatus!=="En espera" ?"col-md-3":"col-md-4":"col-md-4"}>
                             <InputGray
                                 withtaglabel={1}
                                 withtextlabel={1}
@@ -24,14 +24,14 @@ class InformacionGeneral extends Component {
                                 messageinc="Incorrecto. Ingresa el nombre del lead."
                             />
                         </div>
-                        <div className="col-md-3">
+                        <div className={lead.estatus? lead.estatus.estatus!=="En espera" ?"col-md-3":"col-md-4":"col-md-4"}>
                             <InputGray
                                 withtaglabel={1}
                                 withtextlabel={1}
                                 withplaceholder={1}
                                 withicon={1}
                                 requirevalidation = { formeditado === false ? 0 : 1 }
-                                placeholder="CORREO ELECTRÓNICO DE CONTACTO"
+                                placeholder="CORREO ELECTRÓNICO"
                                 iconclass="fas fa-envelope"
                                 type="email"
                                 name="email"
@@ -41,7 +41,7 @@ class InformacionGeneral extends Component {
                                 messageinc="Incorrecto. Ingresa el correo electrónico."
                             />
                         </div>
-                        <div className="col-md-3">
+                        <div className={lead.estatus? lead.estatus.estatus!=="En espera" ?"col-md-3":"col-md-4":"col-md-4"}>
                             <InputPhoneGray
                                 withtaglabel={1}
                                 withtextlabel={1}
@@ -60,22 +60,25 @@ class InformacionGeneral extends Component {
                             />
                         </div>
                         {
-                            lead.prospecto ?
-                                <div className="col-md-3">
-                                    <InputGray
-                                        withtaglabel={1}
-                                        withtextlabel={1}
-                                        withplaceholder={1}
-                                        withicon={1}
-                                        requirevalidation={1}
-                                        placeholder='NOMBRE DEL PROYECTO'
-                                        iconclass="far fa-folder-open"
-                                        name='proyecto'
-                                        value={form.proyecto}
-                                        onChange={onChange}
-                                        messageinc="Incorrecto. Ingresa el nombre del proyecto."
-                                    />
-                                </div>
+                            lead.estatus?
+                                lead.estatus.estatus!=="En espera"  ?
+                                    <div className="col-md-3">
+                                        <InputGray
+                                            withtaglabel={1}
+                                            withtextlabel={1}
+                                            withplaceholder={1}
+                                            withicon={1}
+                                            requirevalidation={1}
+                                            formeditado={formeditado}
+                                            placeholder='NOMBRE DEL PROYECTO'
+                                            iconclass="far fa-folder-open"
+                                            name='proyecto'
+                                            value={form.proyecto}
+                                            onChange={onChange}
+                                            messageinc="Incorrecto. Ingresa el nombre del proyecto."
+                                        />
+                                    </div>
+                                : ''
                             : ''
                         }
                         
@@ -88,7 +91,7 @@ class InformacionGeneral extends Component {
                             </div>
                             <CalendarDay
                                 value={form.fecha}
-                                date = { form.fecha }
+                                // date = { form.fecha }
                                 onChange={onChange}
                                 name='fecha'
                             />

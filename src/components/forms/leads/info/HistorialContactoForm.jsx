@@ -175,7 +175,6 @@ class HistorialContactoForm extends Component {
                                             value = {formHistorial.fechaContacto} 
                                             onChange = { onChangeHistorial } 
                                             name = 'fechaContacto'
-                                            requirevalidation={1}
                                         />
                                     </div>
                                 </div>

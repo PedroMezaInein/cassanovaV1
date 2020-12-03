@@ -185,7 +185,7 @@ class LeadInfo extends Component {
                 form.email = lead.email.toUpperCase()
                 form.telefono = lead.telefono
                 form.proyecto = lead.prospecto.nombre_proyecto
-                form.fecha = lead.created_at
+                form.fecha = new Date(lead.created_at)
                 if(formDiseño.esquema === 'esquema_1')
                     formDiseño.conceptos = [
                         {
@@ -863,8 +863,7 @@ class LeadInfo extends Component {
                 form.email = lead.email
                 form.telefono = lead.telefono
                 form.proyecto = lead.prospecto.nombre_proyecto
-                form.fecha = lead.created_at
-
+                form.fecha = new Date(lead.created_at)
                 if (lead.presupuesto_diseño) {
 
                     formDiseño.fase1 = lead.presupuesto_diseño.fase1
@@ -1191,7 +1190,7 @@ class LeadInfo extends Component {
         })
     }
     render() {
-        const { lead, form, formHistorial, options, formAgenda, formDiseño, modal } = this.state
+        const { lead, form, formHistorial, options, formAgenda, formDiseño, modal, formeditado } = this.state
         return (
             <Layout active={'leads'}  {...this.props} botonHeader={this.botonHeader} >
                 <Tab.Container defaultActiveKey="2" className="p-5">
@@ -1355,6 +1354,7 @@ class LeadInfo extends Component {
                                                 onSubmit={this.submitForm}
                                                 user={this.props.authUser.user}
                                                 lead={lead}
+                                                formeditado={formeditado}
                                             />
                                         </Card.Body>
                                     </Tab.Pane>
