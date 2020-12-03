@@ -100,16 +100,27 @@ class Column extends Component {
                         </span>
                         </div>
                         <Accordion.Collapse eventKey={column.id} >
-                            <div className="background__white-bone tarea px-1 py-2 my-3 column__task d-flex justify-content-around align-items-center">
-                                <Input
-                                    className="border-0 mb-0 ml-1"
-                                    placeholder="Título de la tarea"
-                                    value={form.titulo}
-                                    name='titulo'
-                                    onChange={onChange}
-                                    style={{ paddingLeft: "10px" }}
-                                />
-                                <Button icon={faCheck} text='' onClick={this.submit} color="transparent" />
+                            <div className="background__white-bone tarea px-1 py-2 my-2 column__task d-flex justify-content-around align-items-center">
+                                <div className="col-md-10">
+                                    <Input
+                                        className="border-0 mb-0 ml-1"
+                                        placeholder="TÍTULO DE LA TAREA"
+                                        value={form.titulo}
+                                        name='titulo'
+                                        onChange={onChange}
+                                        style={{ paddingLeft: "10px" }}
+                                    />
+                                </div>
+                                <div className="col-md-2 px-0 text-center">
+                                    {/* <Button icon={faCheck} text='' onClick={this.submit} color="transparent" /> */}
+                                    <Button
+                                        icon=''
+                                        className={"btn btn-icon btn-xs p-3 btn-light-info"}
+                                        onClick={this.submit}
+                                        only_icon={"flaticon2-plus icon-13px"}
+                                        tooltip={{ text: 'AGREGAR' }}
+                                    />
+                                </div>
                             </div>
                         </Accordion.Collapse>
                     </Accordion>
