@@ -3,6 +3,12 @@ import { Button, InputGray, InputPhoneGray, CalendarDay } from '../../form-compo
 import { Form } from 'react-bootstrap'
 import { TEL, EMAIL } from '../../../constants'
 class InformacionGeneral extends Component {
+
+    componentDidMount(){
+        const { form, onChange } = this.props
+        onChange({ target: { name: 'fecha', value: form.fecha } })
+    }
+
     render() {
         const { form, onChange, onSubmit, lead, formeditado } = this.props
         return (
@@ -91,7 +97,7 @@ class InformacionGeneral extends Component {
                             </div>
                             <CalendarDay
                                 value={form.fecha}
-                                // date = { form.fecha }
+                                date = { form.fecha }
                                 onChange={onChange}
                                 name='fecha'
                             />
