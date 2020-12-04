@@ -188,17 +188,26 @@ export default class CaducadasCard extends Component {
                     </div> */}
                     <div className="timeline timeline-justified timeline-4 text-dark-75" id="amarrillo">
                         <div className="timeline-items py-0">
-                            <div className="timeline-item mb-4 pl-30px">
-                                <div className="timeline-badge border border-5 border-white bg-light-danger">
-                                    <i className="fas fa-laptop-code text-danger icon-1rem"></i>
-                                </div>
-                                <div className="px-2 mb-0">
-                                    <span className="font-size-xs text-dark font-weight-bolder">03/12/2020 - <span className="text-danger">28/12/2020</span></span>
-                                </div>
-                                <div className="timeline-content text-justify bg-white px-2 py-2 font-weight-light">
-                                    <span className="text-dark-75 font-weight-bolder">TI</span> - Desarrollo de back end para primera pantalla de presupuestos
-                                </div>
-                            </div>
+                            {
+                                caducadas.data.map((element, key)=>{
+                                    return(
+                                        <div className="timeline-item mb-4 pl-30px" key = { key }>
+                                            <div className="timeline-badge border border-5 border-white bg-light-danger">
+                                                <i className="fas fa-laptop-code text-danger icon-1rem"></i>
+                                            </div>
+                                            <div className="px-2 mb-0">
+                                                <span className="font-size-xs text-dark font-weight-bolder">03/12/2020 - <span className="text-danger">28/12/2020</span></span>
+                                            </div>
+                                            <div className="timeline-content text-justify bg-white px-2 py-2 font-weight-light">
+                                                <span className="text-dark-75 font-weight-bolder">
+                                                    { element.departamento.nombre }
+                                                </span> - { element.titulo }
+                                            </div>
+                                        </div>
+                                    )        
+                                })
+                            }
+                            
                         </div>
                     </div>
                     </Card.Body>
