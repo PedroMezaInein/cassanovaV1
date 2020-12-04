@@ -89,7 +89,7 @@ class ChangePasswordFrom extends Component {
 														</span>
 													</span>
 													<div className="navi-text">
-														<span className="d-block font-weight-bold">Firma electrónica</span>
+														<span className="d-block font-weight-bold">Firma electrónica y correo electrónico</span>
 													</div>
 												</Nav.Link>
 											</Nav.Item>
@@ -226,7 +226,7 @@ class ChangePasswordFrom extends Component {
 									<Card.Header className="align-items-center border-0 mt-4 pt-3 pb-0">
 										<Card.Title className="mb-0">
 											<h3 className="card-title align-items-start flex-column mb-0">
-												<span className="font-weight-bolder text-dark">Firma electrónica</span>
+												<span className="font-weight-bolder text-dark">Firma electrónica y correo electrónico</span>
 											</h3>
 										</Card.Title>
 									</Card.Header>
