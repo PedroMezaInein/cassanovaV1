@@ -78,6 +78,7 @@ class Tareas extends Component{
         this.getTareasAxios()
         this.getEnProceso()
         this.getCaducadas()
+        this.getProximasCaducar()
     }
 
     diffCommentDate = ( comentario ) => {
@@ -661,11 +662,11 @@ class Tareas extends Component{
     async getProximasCaducar() {
         const { access_token } = this.props.authUser
         const { proximas_caducar } = this.state
-        await axios.get(URL_DEV + 'crm/timeline/ultimos-prospectos-sin-contactar/' + proximas_caducar.numPage, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(URL_DEV + 'tareas/timeline/proximas-caducar/' + proximas_caducar.numPage, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { contactos, total } = response.data
+                const { tareas, total } = response.data
                 const { proximas_caducar } = this.state
-                proximas_caducar.data = contactos
+                proximas_caducar.data = tareas
                 proximas_caducar.total = total
                 let total_paginas = Math.ceil(total / 5)
                 proximas_caducar.total_paginas = total_paginas

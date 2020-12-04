@@ -36,7 +36,6 @@ export async function doneAlert(texto) {
 }
 
 export function errorAlert(text) {
-    swal.close();
     Swal.fire({
         title: '¡UPS!',
         text: text,
