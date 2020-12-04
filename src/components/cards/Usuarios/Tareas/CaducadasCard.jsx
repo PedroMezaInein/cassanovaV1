@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Card } from 'react-bootstrap'
+import { setDateTableLG } from '../../../../functions/setters'
 export default class CaducadasCard extends Component {
     isActiveButton(direction){
         const { caducadas} = this.props
@@ -193,10 +194,29 @@ export default class CaducadasCard extends Component {
                                     return(
                                         <div className="timeline-item mb-4 pl-30px" key = { key }>
                                             <div className="timeline-badge border border-5 border-white bg-light-danger">
-                                                <i className="fas fa-laptop-code text-danger icon-1rem"></i>
+                                                {
+                                                    element.departamento.nombre==='TI'?<i className="fas fa-laptop-code text-danger pt-1px icon-1-26rem"></i>:
+                                                        element.departamento.nombre==='ADMINISTRACION'?<i className="fas fa-user-cog text-danger pl-2px pt-1px icon-1-2rem"></i>:
+                                                            element.departamento.nombre==='CALIDAD'?<i className="fas fa-award text-danger icon-lg"></i>:
+                                                                element.departamento.nombre==='COMPRAS'?<i className="flaticon2-shopping-cart text-danger pt-1px pr-2px icon-lg"></i>:
+                                                                    element.departamento.nombre==='CONTABILIDAD'?<i className="fas fa-calculator text-danger icon-1-26rem"></i>:
+                                                                        element.departamento.nombre==='FISCAL'?<i className="flaticon2-list text-danger pt-3px pl-2px icon-1-7rem"></i>:
+                                                                            element.departamento.nombre==='MERCADOTECNIA'?<i className="fas fa-mail-bulk text-danger"></i>:
+                                                                                element.departamento.nombre==='PERSONAL'?<i className="fas fa-user text-danger icon-lg pr-1px"></i>:
+                                                                                    element.departamento.nombre==='PROYECTOS'?<i className="flaticon2-sheet text-danger pt-2px pl-4px icon-1-39rem"></i>:
+                                                                                        element.departamento.nombre==='RECURSOS HUMANOS'?<i className="fas fa-users text-danger icon-md"></i>:
+                                                                                            element.departamento.nombre==='VENTAS'?<i className="flaticon-price-tag text-danger icon-lg"></i>:
+                                                                        ''
+                                                }
                                             </div>
                                             <div className="px-2 mb-0">
-                                                <span className="font-size-xs text-dark font-weight-bolder">03/12/2020 - <span className="text-danger">28/12/2020</span></span>
+                                                <span className="font-size-xs text-dark font-weight-bolder">{setDateTableLG(element.created_at)}
+                                                    {
+                                                        element.fecha_limite?
+                                                        <span className="text-danger">- {setDateTableLG(element.fecha_limite)}</span>
+                                                        :''
+                                                    }
+                                                </span>
                                             </div>
                                             <div className="timeline-content text-justify bg-white px-2 py-2 font-weight-light">
                                                 <span className="text-dark-75 font-weight-bolder">
