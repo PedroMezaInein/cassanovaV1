@@ -77,6 +77,7 @@ class Tareas extends Component{
             history.push('/')
         this.getTareasAxios()
         this.getEnProceso()
+        this.getCaducadas()
     }
 
     diffCommentDate = ( comentario ) => {
@@ -689,12 +690,12 @@ class Tareas extends Component{
     async getCaducadas() {
         const { access_token } = this.props.authUser
         const { caducadas } = this.state
-        await axios.get(URL_DEV + 'crm/timeline/ultimos-contactos/' + caducadas.numPage, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(URL_DEV + 'tareas/timeline/caducadas/' + caducadas.numPage, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { contactos, total } = response.data
+                const { tareas, total } = response.data
                 const { caducadas } = this.state
                 let total_paginas = Math.ceil(total / 5)
-                caducadas.data = contactos
+                caducadas.data = tareas
                 caducadas.total = total
                 caducadas.total_paginas = total_paginas
                 this.setState({
