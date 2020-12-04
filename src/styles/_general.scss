@@ -1006,3 +1006,12 @@ span#border-hover:hover{
     border-top-left-radius: 0px;
     border-top-right-radius: 0px;
 }
+
+.no-list{
+    list-style-type: none!important;
+    margin-block-start: 0!important;
+    margin-block-end: 0!important;
+    margin-inline-start: 0!important;
+    margin-inline-end: 0!important;
+    padding-inline-start: 0!important;
+}

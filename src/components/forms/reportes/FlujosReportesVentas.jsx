@@ -10,17 +10,52 @@ class FlujosReportesForm extends Component {
         onChange({ target: { value: value, name: 'empresa' } })
     }
 
-    updateReferencia = value => {
+    updateMes = value => {
         const { onChange } = this.props
-        onChange({ target: { value: value, name: 'referencia' } })
+        onChange({ target: { value: value, name: 'mes' } })
+    }
+
+    updateAño = value => {
+        const { onChange } = this.props
+        onChange({ target: { value: value, name: 'año' } })
+    }
+
+    getMeses = () => {
+        return [
+            { name: 'Enero', value: '01' },
+            { name: 'Febrero', value: '02' },
+            { name: 'Marzo', value: '03' },
+            { name: 'Abril', value: '04' },
+            { name: 'Mayo', value: '05' },
+            { name: 'Junio', value: '06' },
+            { name: 'Julio', value: '07' },
+            { name: 'Agosto', value: '08' },
+            { name: 'Septiembre', value: '09' },
+            { name: 'Octubre', value: '10' },
+            { name: 'Noviembre', value: '11' },
+            { name: 'Diciembre', value: '12' }
+        ]
+    }
+
+    getAños = ()  => {
+        var fecha = new Date().getFullYear()
+        var arreglo = [];
+        for(let i = 0; i < 10; i++)
+            arreglo.push(
+                {
+                    name: fecha - i,
+                    value: fecha - i
+                }
+            );
+        return arreglo
     }
 
     render() {
-        const { form, onChangeRange, options, onSubmit } = this.props
+        const { form, options, onSubmit } = this.props
+        console.log(form, 'form')
         return (
             <Form onSubmit = { onSubmit } >
-                <div className="row mx-0 justify-content-center mb-2">
-                    <div className="col-md-1"></div>
+                <div className="row mx-0 justify-content-center mb-3">
                     <div className="col-md-4">
                         <SelectSearch
                             name = 'empresa'
@@ -32,36 +67,27 @@ class FlujosReportesForm extends Component {
                             messageinc = "Incorrecto. Selecciona la empresa."
                             />
                     </div>
-                    <div className="col-md-2"></div>
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <SelectSearch
-                            name = 'referencia'
-                            options = { [
-                                { name: 'Mensual', value: 'mensual' },
-                                { name: 'Bimestral', value: 'bimestral' },
-                                { name: 'Trimestral', value: 'trimestral' },
-                                { name: 'Cuatrimestral', value: 'cuatrimestral' },
-                                { name: 'Semestral', value: 'semestral' },
-                                { name: 'Anual', value: 'anual' },
-                            ] }
-                            placeholder = 'SELECCIONA LA TIEMPO DE REFERENCIA'
-                            value = { form.referencia }
-                            onChange = { this.updateReferencia }
+                            name = 'mes'
+                            options = { this.getMeses() }
+                            placeholder = 'SELECCIONA EL MES'
+                            value = { form.mes }
+                            onChange = { this.updateMes }
                             iconclass = "fas fa-calendar-day"
-                            messageinc = "Incorrecto. Selecciona el rango de referencia."
+                            messageinc = "Incorrecto. Selecciona el mes."
                             />
                     </div>
-                    <div className="col-md-1"></div>
-                    <div className="col-md-8 text-center my-4">
-                        <div>
-                            <label className="col-form-label text-center">Fecha del reporte</label>
-                        </div>
-                        <RangeCalendar
-                            onChange = { onChangeRange }
-                            start = { form.fechaInicio }
-                            end = { form.fechaFin }
-                            key = 'selection-range'
-                        />
+                    <div className="col-md-3">
+                        <SelectSearch
+                            name = 'año'
+                            options = { this.getAños() }
+                            placeholder = 'SELECCIONA EL AÑO'
+                            value = { form.año }
+                            onChange = { this.updateAño }
+                            iconclass = "fas fa-calendar-day"
+                            messageinc = "Incorrecto. Selecciona el año."
+                            />
                     </div>
                 </div>
                 <div className='text-center'>
