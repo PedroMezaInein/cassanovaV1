@@ -76,6 +76,7 @@ class Tareas extends Component{
         if(!tareas)
             history.push('/')
         this.getTareasAxios()
+        this.getEnProceso()
     }
 
     diffCommentDate = ( comentario ) => {
@@ -217,7 +218,6 @@ class Tareas extends Component{
         this.reordeingTasksAxios(_source, _destination, task)
 
     }
-
 
     handleAccordion = activeKey => {
         const { form } = this.state
@@ -631,11 +631,11 @@ class Tareas extends Component{
     async getEnProceso() {
         const { access_token } = this.props.authUser
         const { en_proceso } = this.state
-        await axios.get(URL_DEV + 'crm/timeline/ultimos-leads-ingresados/' + en_proceso.numPage, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(URL_DEV + 'tareas/timeline/en-proceso/' + en_proceso.numPage, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { leads, total } = response.data
+                const { tareas, total } = response.data
                 const { en_proceso } = this.state
-                en_proceso.data = leads
+                en_proceso.data = tareas
                 en_proceso.total = total
                 let total_paginas = Math.ceil(total / 5)
                 en_proceso.total_paginas = total_paginas
