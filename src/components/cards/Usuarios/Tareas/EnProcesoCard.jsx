@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { Card } from 'react-bootstrap'
+import { setDateTableLG } from '../../../../functions/setters'
 export default class EnProcesoCard extends Component {
     isActiveButton(direction){
         const { en_proceso} = this.props
@@ -20,7 +21,6 @@ export default class EnProcesoCard extends Component {
     }
     render() {
         const { en_proceso, onClick, onClickPrev} = this.props
-        console.log(en_proceso, 'en proceso')
         return (
             <Card className="card-custom card-stretch gutter-b py-2">
                 <Card.Header className="align-items-center border-0">
@@ -43,14 +43,32 @@ export default class EnProcesoCard extends Component {
                         <div className="timeline-items py-0">
                             {
                                 en_proceso.data.map((element, index) => {
-                                    console.log(element, 'element')
                                     return(
                                         <div className="timeline-item mb-4 pl-30px" key = { index } >
                                             <div className="timeline-badge border border-5 border-white bg-light-primary">
-                                                <i className="fas fa-laptop-code text-primary icon-1rem"></i>
+                                                {
+                                                    element.departamento.nombre==='TI'?<i className="fas fa-laptop-code text-primary pt-1px icon-1-26rem"></i>:
+                                                        element.departamento.nombre==='ADMINISTRACION'?<i className="fas fa-user-cog text-primary pl-2px pt-1px icon-1-2rem"></i>:
+                                                            element.departamento.nombre==='CALIDAD'?<i className="fas fa-award text-primary icon-lg"></i>:
+                                                                element.departamento.nombre==='COMPRAS'?<i className="flaticon2-shopping-cart text-primary pt-1px pr-2px icon-lg"></i>:
+                                                                    element.departamento.nombre==='CONTABILIDAD'?<i className="fas fa-calculator text-primary icon-1-26rem"></i>:
+                                                                        element.departamento.nombre==='FISCAL'?<i className="flaticon2-list text-primary pt-3px pl-2px icon-1-7rem"></i>:
+                                                                            element.departamento.nombre==='MERCADOTECNIA'?<i className="fas fa-mail-bulk text-primary"></i>:
+                                                                                element.departamento.nombre==='PERSONAL'?<i className="fas fa-user text-primary icon-lg pr-1px"></i>:
+                                                                                    element.departamento.nombre==='PROYECTOS'?<i className="flaticon2-sheet text-primary pt-2px pl-4px icon-1-39rem"></i>:
+                                                                                        element.departamento.nombre==='RECURSOS HUMANOS'?<i className="fas fa-users text-primary icon-md"></i>:
+                                                                                            element.departamento.nombre==='VENTAS'?<i className="flaticon-price-tag text-primary icon-lg"></i>:
+                                                                        ''
+                                                }
                                             </div>
                                             <div className="px-2 mb-0">
-                                                <span className="font-size-xs text-dark font-weight-bolder">03/12/2020 - <span className="text-primary">28/12/2020</span></span>
+                                            <span className="font-size-xs text-dark font-weight-bolder">{setDateTableLG(element.created_at)}
+                                                {
+                                                    element.fecha_limite?
+                                                    <span className="text-primary">- {setDateTableLG(element.fecha_limite)}</span>
+                                                    :''
+                                                }
+                                            </span>
                                             </div>
                                             <div className="timeline-content text-justify bg-white px-2 py-2 font-weight-light">
                                                 <span className="text-dark-75 font-weight-bolder">
