@@ -13,7 +13,7 @@ import { faTimes} from '@fortawesome/free-solid-svg-icons'
 import {Input, Button}from '../../components/form-components'
 import moment from 'moment'
 import { Badge, Card, Nav, Tab, Row, Col} from 'react-bootstrap'
-import { errorAlert, forbiddenAccessAlert } from '../../functions/alert'
+import { errorAlert, forbiddenAccessAlert,waitAlert } from '../../functions/alert'
 import {CaducadasCard, EnProcesoCard, ProximasCaducarCard} from '../../components/cards'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
@@ -342,9 +342,11 @@ class Tareas extends Component{
     async addTaskAxios(){
         const { access_token } = this.props.authUser
         const { form, subActiveKey} = this.state
+        waitAlert()
         form.departamento = subActiveKey
         await axios.post(URL_DEV + 'user/tareas', form, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
             (response) => {
+                swal.close()
                 const { data : { user } } = response
                 const { form } = this.state
                 const { tableros } = response.data
