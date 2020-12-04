@@ -12,8 +12,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes} from '@fortawesome/free-solid-svg-icons'
 import {Input, Button}from '../../components/form-components'
 import moment from 'moment'
-import { Badge, Card, Nav, Tab } from 'react-bootstrap'
+import { Badge, Card, Nav, Tab, Row, Col} from 'react-bootstrap'
 import { errorAlert, forbiddenAccessAlert } from '../../functions/alert'
+import {CaducadasCard, EnProcesoCard, ProximasCaducarCard} from '../../components/cards'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
@@ -40,6 +41,28 @@ class Tareas extends Component{
         adjuntoFile: '',
         adjuntoName: '',
         defaultactivekey:"",
+
+        en_proceso: {
+            data: [],
+            numPage: 0,
+            total: 0,
+            total_paginas: 0,
+            value: "en_proceso"
+        },
+        proximas_caducar: {
+            data: [],
+            numPage: 0,
+            total: 0,
+            total_paginas: 0,
+            value: "proximas_caducar"
+        },
+        caducadas: {
+            data: [],
+            numPage: 0,
+            total: 0,
+            total_paginas: 0,
+            value: "caducadas"
+        },
     }
 
     componentDidMount(){
@@ -53,6 +76,9 @@ class Tareas extends Component{
         if(!tareas)
             history.push('/')
         this.getTareasAxios()
+        this.getEnProceso()
+        this.getCaducadas()
+        this.getProximasCaducar()
     }
 
     diffCommentDate = ( comentario ) => {
@@ -194,7 +220,6 @@ class Tareas extends Component{
         this.reordeingTasksAxios(_source, _destination, task)
 
     }
-
 
     handleAccordion = activeKey => {
         const { form } = this.state
@@ -543,12 +568,185 @@ class Tareas extends Component{
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
-    } 
+    }
+
+    nextPageEnProceso = (e) => {
+        e.preventDefault()
+        const { en_proceso } = this.state
+        if (en_proceso.numPage < en_proceso.total_paginas - 1) {
+            this.setState({
+                numPage: en_proceso.numPage++
+            })
+        }
+        this.getEnProceso()
+    }
+    prevPageEnProceso = (e) => {
+        e.preventDefault()
+        const { en_proceso } = this.state
+        if (en_proceso.numPage > 0) {
+            this.setState({
+                numPage: en_proceso.numPage--
+            })
+            this.getEnProceso()
+        }
+    }
+    nextPageProximasCaducar = (e) => {
+        e.preventDefault()
+        const { proximas_caducar } = this.state
+        if (proximas_caducar.numPage < proximas_caducar.total_paginas - 1) {
+            this.setState({
+                numPage: proximas_caducar.numPage++
+            })
+            this.getProximasCaducar()
+        }
+    }
+    prevPageProximasCaducar = (e) => {
+        e.preventDefault()
+        const { proximas_caducar } = this.state
+        if (proximas_caducar.numPage > 0) {
+            this.setState({
+                numPage: proximas_caducar.numPage--
+            })
+            this.getProximasCaducar()
+        }
+    }
+    nextPageCaducadas = (e) => {
+        e.preventDefault()
+        const { caducadas } = this.state
+        if (caducadas.numPage < caducadas.total_paginas - 1) {
+            this.setState({
+                numPage: caducadas.numPage++
+            })
+            this.getCaducadas()
+        }
+    }
+    prevPageCaducadas = (e) => {
+        e.preventDefault()
+        const { caducadas } = this.state
+        if (caducadas.numPage > 0) {
+            this.setState({
+                numPage: caducadas.numPage--
+            })
+            this.getCaducadas()
+        }
+    }
+    async getEnProceso() {
+        const { access_token } = this.props.authUser
+        const { en_proceso } = this.state
+        await axios.get(URL_DEV + 'tareas/timeline/en-proceso/' + en_proceso.numPage, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { tareas, total } = response.data
+                const { en_proceso } = this.state
+                en_proceso.data = tareas
+                en_proceso.total = total
+                let total_paginas = Math.ceil(total / 5)
+                en_proceso.total_paginas = total_paginas
+                this.setState({
+                    ...this.state,
+                    en_proceso
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    async getProximasCaducar() {
+        const { access_token } = this.props.authUser
+        const { proximas_caducar } = this.state
+        await axios.get(URL_DEV + 'tareas/timeline/proximas-caducar/' + proximas_caducar.numPage, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { tareas, total } = response.data
+                const { proximas_caducar } = this.state
+                proximas_caducar.data = tareas
+                proximas_caducar.total = total
+                let total_paginas = Math.ceil(total / 5)
+                proximas_caducar.total_paginas = total_paginas
+                this.setState({
+                    ...this.state,
+                    proximas_caducar
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    async getCaducadas() {
+        const { access_token } = this.props.authUser
+        const { caducadas } = this.state
+        await axios.get(URL_DEV + 'tareas/timeline/caducadas/' + caducadas.numPage, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { tareas, total } = response.data
+                const { caducadas } = this.state
+                let total_paginas = Math.ceil(total / 5)
+                caducadas.data = tareas
+                caducadas.total = total
+                caducadas.total_paginas = total_paginas
+                this.setState({
+                    ...this.state,
+                    caducadas
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     render(){
         
-        const { columns, user, form, activeKey, modal, tarea, comentario, adjunto,adjuntoName, participantesTask, participantes, formeditado, tableros, defaultactivekey, subActiveKey} = this.state
+        const { columns, user, form, activeKey, modal, tarea, comentario, adjunto,adjuntoName, participantesTask, participantes, formeditado, tableros, defaultactivekey, subActiveKey,
+                en_proceso, proximas_caducar, caducadas} = this.state
         return(
-            <Layout active={'usuarios'} { ...this.props}> 
+            <Layout active={'usuarios'} { ...this.props}>
+                <Row>
+                    <Col lg={4}>
+                        <EnProcesoCard
+                            en_proceso={en_proceso}
+                            onClick={this.nextPageEnProceso}
+                            onClickPrev={this.prevPageEnProceso}
+                        />
+                    </Col>
+                    <Col lg={4}>
+                        <ProximasCaducarCard
+                            proximas_caducar={proximas_caducar}
+                            onClick={this.nextPageProximasCaducar}
+                            onClickPrev={this.prevPageProximasCaducar}
+                        />
+                    </Col>
+                    <Col lg={4}>
+                        <CaducadasCard
+                            caducadas={caducadas}
+                            onClick={this.nextPageCaducadas}
+                            onClickPrev={this.prevPageCaducadas}
+                        />
+                    </Col>
+                </Row>
                 <div className="d-flex flex-row">
 					<div className="flex-row-fluid">
 						<div className="d-flex flex-column flex-grow-1">
@@ -558,7 +756,7 @@ class Tareas extends Component{
                             defaultActiveKey={defaultactivekey}
                             onSelect = { (select) => { this.updateActiveTabContainer(select) } }
                             >
-							<Card className="card-custom gutter-b">
+							{/* <Card className="card-custom gutter-b">
 								<Card.Body className="d-flex align-items-center justify-content-between flex-wrap py-3">
 									<div className="d-flex align-items-center mr-2 py-2">
 										<h3 className="font-weight-bold mb-0 mr-5">Tableros</h3>
@@ -579,8 +777,28 @@ class Tareas extends Component{
                                         </Nav>
 									</div>
 								</Card.Body>
-							</Card> 
-                            <Card className="card-custom card-stretch">
+							</Card>  */}
+                            <Card className="card-custom card-stretch gutter-b py-2">
+                                <Card.Header className="align-items-center border-0 pt-3">
+                                    <h3 className="card-title align-items-start flex-column">
+                                        <span className="font-weight-bolder text-dark">TABLEROS</span>
+                                    </h3>
+                                    <div className="card-toolbar">
+                                        <Nav className="nav-tabs nav-bold nav-tabs-line nav-tabs-line-3x border-0 nav-tabs-line-info d-flex justify-content-center">
+                                            {	
+                                                tableros.map( (tablero, key) => {
+                                                    return( 
+                                                        <Nav.Item className="navi-item" key={key}>
+                                                            <Nav.Link style={{margin:"0 0.9rem"}} eventKey = {tablero.nombre }>
+                                                                <span className="navi-text">{tablero.nombre}</span>
+                                                            </Nav.Link>
+                                                        </Nav.Item>
+                                                    )
+                                                })
+                                            }
+                                        </Nav>
+                                    </div>
+                                </Card.Header>
                                 <Card.Body className="p-0"> 
                                     <div className="card-spacer-x pt-5 pb-4 toggle-off-item">
                                         <div className="mb-1">
