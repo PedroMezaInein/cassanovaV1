@@ -28,7 +28,7 @@ class Column extends Component {
                 <div className="kanban-board" data-id="_inprocess" style={{ width: "90%", minWidth: "250px", marginLeft: "0px", marginRight: "0px" }}>
 
                     <div className="position-relative">
-                        <header className="kanban-board-header light-primary">
+                        <header className="kanban-board-header light-info">
                             <div className="kanban-title-board p-3">
                                 {column.titulo}
                             </div>
@@ -94,22 +94,33 @@ class Column extends Component {
                     }
                     <Accordion activeKey={activeKey} >
                         <div onClick={(e) => { e.preventDefault(); handleAccordion(column.id); }} id="acordion">
-                            <span className="btn btn-light btn-text-primary btn-hover-text-primary font-weight-bold btn-lg btn-block py-1" >
+                            <span className="btn btn-light btn-text-info btn-hover-text-info font-weight-bold btn-lg btn-block py-1" id="border-hover">
                                 <FontAwesomeIcon className="mr-1" icon={faPlus} />
                             Añadir otra tarea
                         </span>
                         </div>
                         <Accordion.Collapse eventKey={column.id} >
-                            <div className="background__white-bone tarea px-1 py-2 my-3 column__task d-flex justify-content-around align-items-center">
-                                <Input
-                                    className="border-0 mb-0 ml-1"
-                                    placeholder="Título de la tarea"
-                                    value={form.titulo}
-                                    name='titulo'
-                                    onChange={onChange}
-                                    style={{ paddingLeft: "10px" }}
-                                />
-                                <Button icon={faCheck} text='' onClick={this.submit} color="transparent" />
+                            <div className="background__white-bone tarea px-1 py-2 my-2 column__task d-flex justify-content-around align-items-center">
+                                <div className="col-md-10">
+                                    <Input
+                                        className="border-0 mb-0 ml-1"
+                                        placeholder="TÍTULO DE LA TAREA"
+                                        value={form.titulo}
+                                        name='titulo'
+                                        onChange={onChange}
+                                        style={{ paddingLeft: "10px" }}
+                                    />
+                                </div>
+                                <div className="col-md-2 px-0 text-center">
+                                    {/* <Button icon={faCheck} text='' onClick={this.submit} color="transparent" /> */}
+                                    <Button
+                                        icon=''
+                                        className={"btn btn-icon btn-xs p-3 btn-light-info"}
+                                        onClick={this.submit}
+                                        only_icon={"flaticon2-plus icon-13px"}
+                                        tooltip={{ text: 'AGREGAR' }}
+                                    />
+                                </div>
                             </div>
                         </Accordion.Collapse>
                     </Accordion>

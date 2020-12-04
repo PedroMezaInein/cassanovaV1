@@ -23,7 +23,8 @@ class AccountSettings extends Component {
                     placeholder: 'Ingresa la firma electrónica',
                     files: []
                 }
-            }
+            },
+            correo_empresa:''
         },
         empresas: [],
         user: '',
