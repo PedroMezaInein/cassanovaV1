@@ -6,6 +6,7 @@ import { ItemSlider } from '../../../components/singles'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
 import { setDateTableLG } from '../../../functions/setters'
+import { EMAIL } from '../../../constants'
 class ChangePasswordFrom extends Component {
 
 	getName = () => {
@@ -252,39 +253,57 @@ class ChangePasswordFrom extends Component {
 														}
 													</Nav>
 												</div>
-												<div className='row mx-0'>
+												{/* <div className=''> */}
 													{
 														activeKey !== '' ?
-															<div className='col-md-12 text-center mt-5'>
-																<div>
-																	<label className="col-form-label my-2 font-weight-bolder">{form.adjuntos.firma.placeholder}
-																		{this.getName()}
-																	</label>
-																</div>
-																<div className=' d-flex align-items-center justify-content-center'>
-																	<div>
-																		<ItemSlider
-																			items={form.adjuntos.firma.files}
-																			item='firma'
-																			handleChange={handleChange}
-																			multiple={false}
+															<>
+																<div className="form-group row form-group-marginless justify-content-center">
+																	<div className="col-md-4">
+																		<Input
+																			requirevalidation={0}
+																			placeholder={`CORREO ELECTRÓNICO${this.getName()}`}
+																			type="email"
+																			name="correo_empresa"
+																			value={form.correo_empresa}
+																			onChange={onChange}
+																			iconclass="fas fa-envelope"
+																			messageinc="Incorrecto. Ej. usuario@dominio.com"
+																			letterCase={false}
+																			patterns={EMAIL}
 																		/>
 																	</div>
 																</div>
-																<div className="mt-4 text-center">
-																	<Button icon='' className="btn btn-light-primary font-weight-bold"
-																		onClick={
-																			(e) => {
-																				e.preventDefault();
-																				validateAlert(sendFirma, e, 'form-firma')
+																<div className='col-md-12 text-center mt-5'>
+																	<div>
+																		<label className="col-form-label my-2 font-weight-bolder">{form.adjuntos.firma.placeholder}
+																			
+																		</label>
+																	</div>
+																	<div className='d-flex align-items-center justify-content-center'>
+																		<div>
+																			<ItemSlider
+																				items={form.adjuntos.firma.files}
+																				item='firma'
+																				handleChange={handleChange}
+																				multiple={false}
+																			/>
+																		</div>
+																	</div>
+																	<div className="mt-4 text-center">
+																		<Button icon='' className="btn btn-light-primary font-weight-bold"
+																			onClick={
+																				(e) => {
+																					e.preventDefault();
+																					validateAlert(sendFirma, e, 'form-firma')
+																				}
 																			}
-																		}
-																		text="SUBIR FIRMA" />
+																			text="SUBIR FIRMA" />
+																	</div>
 																</div>
-															</div>
+															</>
 															: ''
 													}
-												</div>
+												{/* </div> */}
 											</Tab.Container>
 										</Form>
 									</Card.Body>
