@@ -11,7 +11,7 @@ import axios from 'axios'
 import { pdf } from '@react-pdf/renderer'
 import { Pie, Bar, Line } from 'react-chartjs-2';
 import "chartjs-plugin-datalabels";
-import { setLabelTable, setOptions, setDateTableLG, setTextTable } from '../../functions/setters';
+import { setLabelTable, setOptions, setDateTableLG, setTextTable, setMoneyTable, setMoneyTableSinSmall } from '../../functions/setters';
 import FlujosReportesVentas from '../../components/forms/reportes/FlujosReportesVentas';
 import { Editor } from 'react-draft-wysiwyg';
 import { EditorState, convertToRaw } from 'draft-js';
@@ -23,12 +23,12 @@ class ReporteVentas extends Component {
 
     state = {
         editorState: EditorState.createEmpty(),
+        mes: '',
         empresa : '',
         form:{
-            fechaInicio: moment().startOf('month'),
-            fechaFin: moment().endOf('month'),
-            referencia: 'trimestral',
             empresa: '',
+            mes: '',
+            año: new Date().getFullYear(),
             leads: [],
             adjuntos:{
                 reportes:{
@@ -50,7 +50,8 @@ class ReporteVentas extends Component {
             serviciosComparativa: {},
             tiposComparativa: {},
             prospectosComparativa: {},
-            estatusComparativa: {}
+            estatusComparativa: {},
+            cerrados: []
         },
         leads: [],
         leadsAnteriores: [],
@@ -73,7 +74,7 @@ class ReporteVentas extends Component {
         this.chartComparativaProspectosReference = React.createRef();
         this.chartEstatusReference = React.createRef();
         this.chartComparativaEstatusReference = React.createRef();
-        this.chartCerradosReference = React.createRef();
+        /* this.chartCerradosReference = React.createRef(); */
     }
 
     componentDidMount() {
@@ -81,17 +82,17 @@ class ReporteVentas extends Component {
     }
 
     setReporte = ( images, lista ) => {
-        const { empresa, form, leadsAnteriores } = this.state
+        const { empresa, form, leadsAnteriores, mes, data } = this.state
         switch(empresa){
             case 'INEIN':
                 return(
                     <ReporteVentasInein form = { form } images = { images } anteriores = { leadsAnteriores }
-                        lista = { lista } />
+                        lista = { lista } mes = { mes.toUpperCase() } data = { data } />
                 )
             case 'INFRAESTRUCTURA MÉDICA':
                 return(
                     <ReporteVentasIm form = { form } images = { images } anteriores = { leadsAnteriores }
-                        lista = { lista } />
+                        lista = { lista } mes = { mes.toUpperCase() } data = { data } />
                 )
             default:
                 break;
@@ -204,18 +205,6 @@ class ReporteVentas extends Component {
             editorState,
         });
     };
-
-    onChangeRange = range => {
-        const { startDate, endDate } = range
-        const { form } = this.state
-        form.fechaInicio = startDate
-        form.fechaFin = endDate
-        this.setState({
-            ...this.state,
-            form
-        })
-    }
-
     onChange = e => {
         const { name, value } = e.target
         const { form, options } = this.state
@@ -293,7 +282,7 @@ class ReporteVentas extends Component {
         waitAlert()
         await axios.post(URL_DEV + 'reportes/ventas', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { leads, servicios, origenes, tipos, prospectos, estatus, cerrados, observaciones, observacionesAnteriores } = response.data
+                const { leads, servicios, origenes, tipos, prospectos, estatus, cerrados, observaciones, observacionesAnteriores, mes } = response.data
                 const { data, form } = this.state
                 
                 form.leads = observaciones
@@ -316,7 +305,8 @@ class ReporteVentas extends Component {
                     }]
                 }
 
-                data.cerrados = {
+                data.cerrados = cerrados
+                /* {
                     labels: ['CERRADOS'],
                     datasets: [{
                         data: [cerrados],
@@ -327,7 +317,7 @@ class ReporteVentas extends Component {
                             this.setColor()+'D9'
                         ]
                     }]
-                }
+                } */
 
                 let arrayLabels = []
                 let arrayData = []
@@ -476,12 +466,14 @@ class ReporteVentas extends Component {
                 arrayData = []
                 colors = []
 
-                keys.map((element)=>{
-                    if(prospectos[element][0].leads > 0){
-                        arrayLabels.push(element.toUpperCase())
-                        arrayData.push(prospectos[element][0].leads)
-                    }
-                })
+                if(prospectos['Convertido'][0].leads > 0){
+                    arrayLabels.push('CONVERTIDO')
+                    arrayData.push(prospectos['Convertido'][0].leads)
+                }
+                if(tipos['Potencial'][0].leads > 0){
+                    arrayLabels.push('POTENCIAL')
+                    arrayData.push(tipos['Potencial'][0].leads)
+                }
 
                 colors = this.getBG(arrayData.length)
                 let colors2 = this.setOpacity2(colors)
@@ -503,10 +495,14 @@ class ReporteVentas extends Component {
                 arrayData = []
                 arrayDataSets = []
 
-                prospectos['Convertido'].map((prospecto) => {
+                /* prospectos['Convertido'].map((prospecto) => {
                     arrayLabels.push(prospecto.label.toUpperCase())
                     arrayData.push(prospecto.leads)
-                })
+                }) */
+
+                for(let i = prospectos['Convertido'].length - 1; i >= 0; i--){
+                    arrayData.push(prospectos['Convertido'][i].leads)
+                }
 
                 arrayDataSets.push(
                     {
@@ -520,13 +516,17 @@ class ReporteVentas extends Component {
                 );
 
                 arrayData = []
-                prospectos['Sin convertir'].map((element)=>{
+                /* tipos['Potencial'].map((element)=>{
                     arrayData.push(element.leads)
-                })
+                }) */
+                for(let i = tipos['Potencial'].length - 1; i >= 0; i--){
+                    arrayLabels.push(tipos['Potencial'][i].label.toUpperCase())
+                    arrayData.push(tipos['Potencial'][i].leads)
+                }
 
                 arrayDataSets.push(
                     {
-                        label: 'SIN CONVERTIR',
+                        label: 'POTENCIAL',
                         data: arrayData,
                         backgroundColor: colors[1],
                         borderColor: colors2[1],
@@ -594,35 +594,6 @@ class ReporteVentas extends Component {
                     })
                     arrayLabels.splice(element, 1)
                 })
-
-                // Stacked origenes 
-                /* keys = Object.keys(origenes)
-
-                keys.map((element, key)=>{
-                    if(key === 0){
-                        origenes[element].map((dataSet, index)=>{
-                            arrayLabels.push(dataSet.label)
-                        })
-                    }
-                    arrayDataSets.push(
-                        {
-                            label: element,
-                            data: [],
-                            backgroundColor: '',
-                        }
-                    )
-                })
-
-                colors = this.getBG(arrayDataSets.length);
-
-                arrayDataSets.map((element,key)=>{
-                    arrayData = []
-                    origenes[element.label].map((origen)=>{
-                        arrayData.push(origen.leads)
-                    })
-                    element.data = arrayData
-                    element.backgroundColor = colors[key]
-                }) */
 
                 data.origenesComparativa = {
                     labels: arrayLabels,
@@ -696,53 +667,70 @@ class ReporteVentas extends Component {
                 }
 
                 //Comparativa status prospectos
+                keys = Object.keys(estatus)
                 arrayLabels = []
                 arrayData = []
+                colors = []
                 arrayDataSets = []
+                keys.map((element, key)=>{
+                    arrayLabels.push(element.toUpperCase())
+                    if(key === 0){
+                        estatus[element].map((dataSet, index)=>{
+                            if( index <= 2 )
+                                arrayDataSets.push(
+                                    {
+                                        label: dataSet.label.toUpperCase(),
+                                        data: [],
+                                        backgroundColor: '',
+                                    }
+                                )
+                        })
+                    }
+                })
+
+                colors = this.getBG(arrayDataSets.length);
                 
-                keys = Object.keys(estatus)
-
-                if(keys.length > 0){
-
-                    colors = this.getBG(keys.length);
-                    colors2 = this.setOpacity2(colors)
-                    
-                    estatus[keys[0]].map((tipo) => {
-                        arrayLabels.push(tipo.label.toUpperCase())
-                        arrayData.push(tipo.leads)
+                arrayDataSets.map((element, key)=>{
+                    arrayData = []
+                    keys.map((origen) => {
+                        arrayData.push(estatus[origen][key].leads)
                     })
-
-                    keys.map((element, index)=>{
-                        if(index > 0){
-                            arrayData = []
-                            estatus[element].map((tipo) => {
-                                arrayData.push(tipo.leads)
-                            })
-                        }
-                        arrayDataSets.push(
-                            {
-                                label: element.toUpperCase(),
-                                data: arrayData,
-                                backgroundColor: colors[index],
-                                borderColor: colors2[index],
-                                fill: false,
-                                yAxisID: 'y-axis-1',
-                            }
-                        );
+                    element.data = arrayData
+                    element.backgroundColor = colors[key]
+                })
+                contador = 0
+                contadorArray = []
+                // console.log(arrayDataSets, 'arraydatasets')
+                if(arrayDataSets.length){
+                    arrayDataSets[0].data.map((element, index)=>{
+                        contador = 0
+                        arrayDataSets.map((newElement, key)=>{
+                            contador += newElement.data[index]
+                        })
+                        if(contador === 0 )
+                            contadorArray.push(index)
                     })
                 }
-                
+
+                contadorArray.map((element)=>{
+                    arrayDataSets.map((newElement)=>{
+                        newElement.data.splice(element, 1)
+                    })
+                    arrayLabels.splice(element, 1)
+                })
+
                 data.estatusComparativa = {
                     labels: arrayLabels,
                     datasets: arrayDataSets
                 }
-
+                
                 this.setState({
                     ...this.state,
                     data,
                     key: 'one',
                     form,
-                    leadsAnteriores: observacionesAnteriores
+                    leadsAnteriores: observacionesAnteriores,
+                    mes: mes
                 })
                 
             },
@@ -777,7 +765,7 @@ class ReporteVentas extends Component {
             { name: 'prospectos-comparativa', url: this.chartComparativaProspectosReference.current.chartInstance.toBase64Image() },
             { name: 'estatus', url: this.chartEstatusReference.current.chartInstance.toBase64Image() },
             { name: 'estatus-comparativa', url: this.chartComparativaEstatusReference.current.chartInstance.toBase64Image() },
-            { name: 'cerrados', url: this.chartCerradosReference.current.chartInstance.toBase64Image() }
+            /* { name: 'cerrados', url: this.chartCerradosReference.current.chartInstance.toBase64Image() } */
         )
 
         let lista = convertToRaw(editorState.getCurrentContent())
@@ -810,8 +798,45 @@ class ReporteVentas extends Component {
         })
     }
 
+    setComentario = lead => {
+        let aux = '-'
+        if(lead){
+            if(lead.prospecto){
+                if(lead.prospecto.estatus_prospecto){
+                    switch(lead.prospecto.estatus_prospecto.estatus){
+                        case 'Cancelado':
+                        case 'Rechazado':
+                            aux = lead.prospecto.estatus_prospecto.estatus
+                            break;
+                    }
+                }else{
+                    if(lead.estatus){
+                        switch(lead.estatus.estatus){
+                            case 'Cancelado':
+                            case 'Rechazado':
+                                aux = lead.motivo
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+        if( aux  === '-' ){
+            if(lead){
+                if(lead.prospecto){
+                    if(lead.prospecto.contactos){
+                        if(lead.prospecto.contactos.length){
+                            aux = lead.prospecto.contactos[0].comentario
+                        }
+                    }
+                }
+            }
+        }
+        return aux
+    }
+
     render() {
-        const { form, data, options: opciones, key, editorState, leadsAnteriores } = this.state
+        const { form, data, options: opciones, key, editorState, leadsAnteriores, mes } = this.state
 
         const optionsPie = {
             plugins: {
@@ -851,13 +876,45 @@ class ReporteVentas extends Component {
                     {
                         ticks: {
                             beginAtZero: true,
-                            fontSize: 25,
+                            fontSize: 20,
                             fontColor: '#000',
                             lineWidth: 10,
                             padding: 15,
                             position: 'bottom',
                             autoSkip: false,
                             callback: function(value, index, values) {
+                                let auxiliar = ''
+                                switch(value){
+                                    case 'AÚN NO LO SE':
+                                        auxiliar = ['AÚN NO','LO SE']
+                                        break;
+                                    case 'ORGÁNICO THANK YOU':
+                                        auxiliar = ['ORGÁNICO','THANK YOU']
+                                        break;
+                                    case 'ADS THANK YOU':
+                                        auxiliar = ['ADS THANK', 'YOU']
+                                        break;
+                                    case 'REMODELACIÓN DE OFICINAS':
+                                        auxiliar = ['REMODELACIÓN', 'DE OFICINAS']
+                                        break;
+                                    case 'CONSTRUCCIÓN DE OFICINAS':
+                                        auxiliar = ['CONSTRUCCIÓN', 'DE OFICINAS']
+                                        break;   
+                                    case 'DISEÑO DE OFICINAS':
+                                        auxiliar = ['DISEÑO', 'DE OFICINAS']
+                                        break;
+                                    case 'QUIERO SER PROVEEDOR':
+                                        auxiliar = ['QUIERO SER', 'PROVEEDOR']
+                                        break;
+                                    case 'BOLSA DE TRABAJO':
+                                        auxiliar = ['BOLSA DE', 'TRABAJO']
+                                        break;
+                                    case 'SERVICIO DE INTERÉS':
+                                        auxiliar = ['SERVICIO DE', 'INTERÉS']
+                                        break;
+                                }
+                                if(auxiliar !== '')
+                                    return auxiliar
                                 let aux = value.split(' ')
                                 return aux
                             }
@@ -897,6 +954,38 @@ class ReporteVentas extends Component {
                             autoSkip: false,
                             maxRotation: 0,
                             callback: function(value, index, values) {
+                                let auxiliar = ''
+                                switch(value){
+                                    case 'AÚN NO LO SE':
+                                        auxiliar = ['AÚN NO','LO SE']
+                                        break;
+                                    case 'ORGÁNICO THANK YOU':
+                                        auxiliar = ['ORGÁNICO','THANK YOU']
+                                        break;
+                                    case 'ADS THANK YOU':
+                                        auxiliar = ['ADS THANK', 'YOU']
+                                        break;
+                                    case 'REMODELACIÓN DE OFICINAS':
+                                        auxiliar = ['REMODELACIÓN', 'DE OFICINAS']
+                                        break;
+                                    case 'CONSTRUCCIÓN DE OFICINAS':
+                                        auxiliar = ['CONSTRUCCIÓN', 'DE OFICINAS']
+                                        break;   
+                                    case 'DISEÑO DE OFICINAS':
+                                        auxiliar = ['DISEÑO', 'DE OFICINAS']
+                                        break;
+                                    case 'QUIERO SER PROVEEDOR':
+                                        auxiliar = ['QUIERO SER', 'PROVEEDOR']
+                                        break;
+                                    case 'BOLSA DE TRABAJO':
+                                        auxiliar = ['BOLSA DE', 'TRABAJO']
+                                        break;
+                                    case 'SERVICIO DE INTERÉS':
+                                        auxiliar = ['SERVICIO DE', 'INTERÉS']
+                                        break;
+                                }
+                                if(auxiliar !== '')
+                                    return auxiliar
                                 let aux = value.split(' ')
                                 return aux
                             }
@@ -1035,8 +1124,6 @@ class ReporteVentas extends Component {
                                 <FlujosReportesVentas
                                     form = { form }
                                     options = { opciones }
-                                    onChangeRange = { this.onChangeRange }
-                                    onChangeRangeRef = { this.onChangeRangeRef }
                                     onChange = { this.onChange }
                                     className = "mb-3"
                                     onSubmit = { this.onSubmit }
@@ -1052,7 +1139,7 @@ class ReporteVentas extends Component {
                                             <strong>
                                                 01 
                                             </strong>
-                                            ENTRADA TOTAL DE LEADS
+                                            ENTRADA TOTAL DE LEADS ({mes})
                                         </h3>
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
@@ -1068,7 +1155,7 @@ class ReporteVentas extends Component {
                                             <strong>
                                                 02
                                             </strong>
-                                            COMPARATIVA DE LEADS TOTALES
+                                            COMPARATIVA DE LEADS TOTALES (MESES ANTERIORES)
                                         </h3>
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
@@ -1084,7 +1171,7 @@ class ReporteVentas extends Component {
                                             <strong>
                                                 03
                                             </strong>
-                                            ORIGEN DE LEADSS
+                                            ORIGEN DE LEADS ({mes})
                                         </h3>
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
@@ -1100,7 +1187,7 @@ class ReporteVentas extends Component {
                                             <strong>
                                                 04
                                             </strong>
-                                            COMPARATIVA ORIGEN LEADS
+                                            COMPARATIVA ORIGEN LEADS (MESES ANTERIORES)
                                         </h3>
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
@@ -1116,7 +1203,7 @@ class ReporteVentas extends Component {
                                             <strong>
                                                 05
                                             </strong>
-                                            SERVICIOS SOLICITADOS
+                                            SERVICIOS SOLICITADOS ({mes})
                                         </h3>
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
@@ -1132,7 +1219,7 @@ class ReporteVentas extends Component {
                                             <strong>
                                                 06
                                             </strong>
-                                            COMPARATIVA SERVICIOS SOLICITADOS
+                                            COMPARATIVA SERVICIOS SOLICITADOS (MESES ANTERIORES)
                                         </h3>
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
@@ -1148,7 +1235,7 @@ class ReporteVentas extends Component {
                                             <strong>
                                                 07
                                             </strong>
-                                            TIPO DE LEAD
+                                            TIPO DE LEAD ({mes})
                                         </h3>
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
@@ -1164,7 +1251,7 @@ class ReporteVentas extends Component {
                                             <strong>
                                                 08
                                             </strong>
-                                            COMPARATIVA TIPO DE LEAD
+                                            COMPARATIVA TIPO DE LEAD (MESES ANTERIORES)
                                         </h3>
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
@@ -1180,7 +1267,7 @@ class ReporteVentas extends Component {
                                             <strong>
                                                 09
                                             </strong>
-                                            TOTAL DE PROSPECTOS
+                                            TOTAL DE PROSPECTOS ({mes})
                                         </h3>
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
@@ -1196,7 +1283,7 @@ class ReporteVentas extends Component {
                                             <strong>
                                                 10
                                             </strong>
-                                            COMPARATIVA TOTAL DE PROSPECTOS
+                                            COMPARATIVA TOTAL DE PROSPECTOS (MESES ANTERIORES)
                                         </h3>
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
@@ -1212,7 +1299,7 @@ class ReporteVentas extends Component {
                                             <strong>
                                                 11
                                             </strong>
-                                            STATUS DE PROSPECTOS
+                                            STATUS DE PROSPECTOS ({mes})
                                         </h3>
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
@@ -1228,12 +1315,12 @@ class ReporteVentas extends Component {
                                             <strong>
                                                 12
                                             </strong>
-                                            COMPARATIVA STATUS DE PROSPECTOS
+                                            COMPARATIVA STATUS DE PROSPECTOS (MESES ANTERIORES)
                                         </h3>
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
                                         <div className = "col-md-6" >
-                                            <Line ref = { this.chartComparativaEstatusReference } data = { data.estatusComparativa } options = { optionsLine } />
+                                            <Bar ref = { this.chartComparativaEstatusReference } data = { data.estatusComparativa } options = { optionsBarGroup } />
                                         </div>
                                     </div>
                                 </Tab.Pane>
@@ -1244,14 +1331,119 @@ class ReporteVentas extends Component {
                                             <strong>
                                                 13
                                             </strong>
-                                            PROSPECTOS CERRADOS
+                                            PROSPECTOS CONTRATADOS ({mes})
                                         </h3>
                                     </div>
-                                    <div className = "row mx-0 mb-2 justify-content-center">
+                                    {/* <div className = "row mx-0 mb-2 justify-content-center">
                                         <div className = "col-md-6" >
                                             <Pie ref = { this.chartCerradosReference } data = { data.cerrados } options = { optionsPie } />
                                         </div>
-                                    </div>
+                                    </div> */}
+                                    <table className="table table-separate table-responsive-sm">
+                                        <thead>
+                                            <tr className = 'border-bottom'>
+                                                <th className="border-0 center_content">
+                                                    <div className="font-size-lg font-weight-bolder text-center">
+                                                        NOMBRE DE LEAD
+                                                    </div>
+                                                </th>
+                                                <th className="clave border-0 center_content">
+                                                    <div className="font-size-lg font-weight-bolder text-center">
+                                                        COSTO
+                                                    </div>
+                                                </th>
+                                                <th className="border-0 center_content">
+                                                    <div className="font-size-lg font-weight-bolder text-center">
+                                                        VENDEDOR
+                                                    </div>
+                                                </th>
+                                                <th className="clave border-0 center_content">
+                                                    <div className="font-size-lg font-weight-bolder text-center">
+                                                        FECHA DE CONTRATACION
+                                                    </div>
+                                                </th>
+                                                <th className="clave border-0 center_content">
+                                                    <div className="font-size-lg font-weight-bolder text-center">
+                                                        ORIGEN
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                data.cerrados.map((element, index)=>{
+                                                    return(
+                                                        <tr key = { index } >
+                                                            <td className="font-size-sm text-center">
+                                                                {
+                                                                    element.prospecto ?
+                                                                        element.prospecto.lead ?
+                                                                            element.prospecto.lead.nombre
+                                                                        : '-'
+                                                                    : '-'
+                                                                }
+                                                            </td>
+                                                            <td className="font-size-sm text-center">
+                                                                {
+                                                                    element.prospecto ?
+                                                                        element.prospecto.lead ?
+                                                                            element.prospecto.lead.presupuesto_diseño ?
+                                                                                setMoneyTableSinSmall(element.prospecto.lead.presupuesto_diseño.total)
+                                                                            : '-'
+                                                                        : '-'
+                                                                    : '-'
+                                                                }        
+                                                            </td>
+                                                            <td className="font-size-sm text-center">
+                                                                {
+                                                                    element.prospecto ?
+                                                                        element.prospecto.vendedores ?
+                                                                            element.prospecto.vendedores.length > 0 ?
+                                                                                <ul className = 'no-list'>
+                                                                                    {
+                                                                                        element.prospecto.vendedores.map((vendedor, index)=>{
+                                                                                            return(
+                                                                                                <li key = { index }>
+                                                                                                    {vendedor.name}
+                                                                                                </li>
+                                                                                            )
+                                                                                        })
+                                                                                    }
+                                                                                </ul>
+                                                                            : '-'
+                                                                        : '-'
+                                                                    : '-'
+                                                                }
+                                                            </td>
+                                                            <td className="font-size-sm text-center">
+                                                                { setDateTableLG(element.created_at) }
+                                                            </td>
+                                                            <td className="font-size-sm text-center">
+                                                                {
+                                                                    element.prospecto ?
+                                                                        element.prospecto.lead ?
+                                                                            element.prospecto.lead.origen ?
+                                                                                element.prospecto.lead.origen.origen
+                                                                            : ''
+                                                                        : ''
+                                                                    : ''
+                                                                }
+                                                            </td>
+                                                        </tr>
+                                                    )
+                                                })
+                                            }
+                                            {
+                                                data.cerrados.length === 0 ?
+                                                    <tr>
+                                                        <td className = 'font-size-sm text-center' colSpan = "5">
+                                                            No hubo prospectos cerrados
+                                                        </td>
+                                                    </tr>
+                                                : ''
+                                            }
+                                        </tbody>
+                                    </table>
                                 </Tab.Pane>
                                 <Tab.Pane eventKey = 'fourteen'>
                                     {this.setButtons('thirteen', 'fifteen', null)}
@@ -1260,7 +1452,7 @@ class ReporteVentas extends Component {
                                             <strong>
                                                 14
                                             </strong>
-                                            OBSERVACIONES DE PROSPECTOS
+                                            OBSERVACIONES DE PROSPECTOS ({mes})
                                         </h3>
                                     </div>
                                     <table className="table table-separate table-responsive-sm">
@@ -1320,19 +1512,10 @@ class ReporteVentas extends Component {
                                                                             })
                                                                     }
                                                                 </td>
-                                                                <td>
+                                                                <td className="font-size-sm text-center">
                                                                     {
-                                                                        form.leads.length ?
-                                                                            <InputSinText
-                                                                                name = { index}
-                                                                                as = 'textarea'
-                                                                                rows = { 1 }
-                                                                                onChange = { this.onChangeObservaciones }
-                                                                                value = { form.leads[index].observacion }
-                                                                                />
-                                                                        :''
+                                                                        this.setComentario(lead)
                                                                     }
-                                                                    
                                                                 </td>
                                                                 <td className='text-center'>
                                                                     {
@@ -1374,7 +1557,7 @@ class ReporteVentas extends Component {
                                             <strong>
                                                 15
                                             </strong>
-                                            LISTADO DE PROSPECTO MESES ANTERIORES
+                                            LISTADO DE PROSPECTO (MESE ANTERIORES)
                                         </h3>
                                     </div>
                                     <table className="table table-separate table-responsive-sm">
@@ -1441,13 +1624,9 @@ class ReporteVentas extends Component {
                                                                         : ''
                                                                     }
                                                                 </td>
-                                                                <td className='text-center'>
+                                                                <td className="font-size-sm text-center">
                                                                     {
-                                                                        lead.motivo ?
-                                                                            setTextTable(lead.motivo)
-                                                                        :   lead.prospecto.motivo ?
-                                                                                setTextTable(lead.prospecto.motivo)
-                                                                            : '-'
+                                                                        this.setComentario(lead)
                                                                     }
                                                                 </td>
                                                                 <td className = 'text-center'>
