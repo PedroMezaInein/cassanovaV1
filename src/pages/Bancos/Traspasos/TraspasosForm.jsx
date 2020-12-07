@@ -9,7 +9,6 @@ import axios from 'axios'
 import { setOptions } from '../../../functions/setters';
 import { TraspasoForm as TraspasosFormulario } from '../../../components/forms'
 import Swal from 'sweetalert2'
-import withReactContent from 'sweetalert2-react-content'
 class TraspasosForm extends Component {
     state = {
         title: 'Traspaso nuevo',

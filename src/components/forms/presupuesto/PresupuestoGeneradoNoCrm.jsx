@@ -1,10 +1,8 @@
 import React, { Component } from 'react'
-import SVG from "react-inlinesvg";
-import { toAbsoluteUrl } from "../../../functions/routers"
 import { setDateTableLG } from '../../../functions/setters';
 class PresupuestoGenerado extends Component {
     render() {
-        const { pdfs, onClick } = this.props
+        const { pdfs } = this.props
         return (
             <div className="table-responsive mt-4">
                 <table className="table  table-head-bg table-borderless table-vertical-center">
