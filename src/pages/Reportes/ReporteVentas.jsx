@@ -1833,10 +1833,10 @@ class ReporteVentas extends Component {
                         </Tab.Container>
                     </Card.Body>
                 </Card>
-                <Modal size="lg" title = "Reportes de ventas" show = { modal } handleClose = { this.handleCloseModal } >
+                <Modal title = "Reportes de ventas" show = { modal } handleClose = { this.handleCloseModal } >
                     <Tab.Container activeKey = { empresaActive } 
                         onSelect = { (select) => this.onClickEmpresa(select) }>
-                        <div className="d-flex justify-content-end">
+                        <div className="d-flex justify-content-end mt-2">
                             <Nav className="nav-tabs nav-bold nav-tabs-line nav-tabs-line-3x border-0">
                                 {
                                     empresas.map((empresa, key) => {
@@ -1855,47 +1855,52 @@ class ReporteVentas extends Component {
                                 console.log(empresa.id, 'id')
                                 if(empresaActive.toString() === empresa.id.toString())
                                     return(
-                                        <table className="table table-responsive-lg table-vertical-center text-center mt-3" id="esquemas">
-                                            <thead>
-                                                <tr className="bg-gray-200">
-                                                    <th>
-                                                        Año
-                                                    </th>
-                                                    <th>
-                                                        Mes
-                                                    </th>
-                                                    <th>
-                                                        Archivo
-                                                    </th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                {
-                                                    empresa.reportes.map((reporte, key) => {
-                                                        return(
-                                                            <tr key = { key }>
-                                                                <td> { reporte.año } </td>
-                                                                <td> { mesesEspañol[reporte.mes] } </td>
-                                                                <td>
-                                                                    < a href = { reporte.adjunto.url}>
-                                                                        <i className="far fa-file-pdf icon-15px"></i>
-                                                                    </a>
+                                        <div className="d-flex justify-content-center mt-2">
+                                            <table className="table table-responsive-lg table-vertical-center text-center mt-3" id="esquemas">
+                                                <thead>
+                                                    <tr className="bg-gray-200">
+                                                        <th>
+                                                            Año
+                                                        </th>
+                                                        <th>
+                                                            Mes
+                                                        </th>
+                                                        <th>
+                                                            Archivo
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {
+                                                        empresa.reportes.map((reporte, key) => {
+                                                            return(
+                                                                <tr key = { key }>
+                                                                    <td> { reporte.año } </td>
+                                                                    <td> { mesesEspañol[reporte.mes] } </td>
+                                                                    <td>
+                                                                        <a href = { reporte.adjunto.url}className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-primary">
+                                                                            <span className="svg-icon svg-icon-md">
+                                                                                <i className="far fa-file-pdf icon-15px"></i>
+                                                                            </span>
+                                                                        </a>
+                                                                    </td>
+                                                                </tr>
+                                                            )
+                                                        })
+                                                    }
+                                                    {
+                                                        empresa.reportes.length === 0 ?
+                                                            <tr>
+                                                                <td colSpan = "3">
+                                                                    No hay reportes generados
                                                                 </td>
                                                             </tr>
-                                                        )
-                                                    })
-                                                }
-                                                {
-                                                    empresa.reportes.length === 0 ?
-                                                        <tr>
-                                                            <td colSpan = "3">
-                                                                No hay reportes generados
-                                                            </td>
-                                                        </tr>
-                                                    : ''
-                                                }
-                                            </tbody>
-                                        </table>
+                                                        : ''
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        
                                     )
                             })
                         }
