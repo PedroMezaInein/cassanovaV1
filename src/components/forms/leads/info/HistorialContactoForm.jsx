@@ -172,6 +172,7 @@ class HistorialContactoForm extends Component {
                                             <label className="text-center font-weight-bolder">Fecha de contacto</label>
                                         </div>
                                         <CalendarDay
+                                            date = { formHistorial.fechaContacto }
                                             value = {formHistorial.fechaContacto} 
                                             onChange = { onChangeHistorial } 
                                             name = 'fechaContacto'
