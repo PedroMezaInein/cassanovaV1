@@ -4,7 +4,7 @@ import { Droppable } from 'react-beautiful-dnd'
 import Accordion from 'react-bootstrap/Accordion'
 import { Small } from '../texts'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus, faCheck } from '@fortawesome/free-solid-svg-icons'
+import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { Input, Button } from '../form-components'
 import { isMobile } from "react-device-detect"
 class Column extends Component {
