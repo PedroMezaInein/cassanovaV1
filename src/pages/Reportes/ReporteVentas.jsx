@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Layout from '../../components/layout/layout'
-import { Card, Tab } from 'react-bootstrap'
+import { Card, Nav, Tab } from 'react-bootstrap'
 import { Button, InputSinText } from '../../components/form-components';
 import moment from 'moment'
-import { waitAlert, errorAlert, forbiddenAccessAlert } from '../../functions/alert'
+import { waitAlert, errorAlert, forbiddenAccessAlert, questionAlert2 } from '../../functions/alert'
 import swal from 'sweetalert'
 import { COLORES_GRAFICAS_3, IM_AZUL, INEIN_RED, URL_DEV } from '../../constants'
 import axios from 'axios'
@@ -18,11 +18,14 @@ import { EditorState, convertToRaw } from 'draft-js';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import ReporteVentasInein from '../../components/pdfs/ReporteVentasInein'
 import ReporteVentasIm from '../../components/pdfs/ReporteVentasIm'
+import { Modal } from '../../components/singles'
 
 class ReporteVentas extends Component {
 
     state = {
         editorState: EditorState.createEmpty(),
+        empresas: [],
+        modal: false,
         mes: '',
         empresa : '',
         form:{
@@ -57,7 +60,8 @@ class ReporteVentas extends Component {
         leadsAnteriores: [],
         options: {
             empresas: []
-        }
+        },
+        empresaActive: ''
     }
 
     constructor(props) {
@@ -79,6 +83,20 @@ class ReporteVentas extends Component {
 
     componentDidMount() {
         this.getOptionsAxios()
+    }
+
+    handleCloseModal =  () => {
+        this.setState({
+            ...this.state,
+            modal: false
+        })
+    }
+
+    onClickEmpresa = select => {
+        this.setState({
+            ...this.state,
+            empresaActive: select
+        })
     }
 
     setReporte = ( images, lista ) => {
@@ -243,6 +261,35 @@ class ReporteVentas extends Component {
             this.getReporteVentasAxios()
         else
             errorAlert('No completaste todos los campos.')
+    }
+
+    async saveReporteAxios(){
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        const data = new FormData();
+        
+        data.append('empresa', form.empresa)
+        data.append('mes', form.mes)
+        data.append('año', form.año)
+
+        for (var i = 0; i < form.adjuntos.reportes.files.length; i++) 
+            data.append(`adjuntos[]`, form.adjuntos.reportes.files[i].file)
+
+        await axios.post( URL_DEV + 'reportes/ventas/save', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                swal.close()
+                
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) forbiddenAccessAlert()
+                else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
     }
 
     async getOptionsAxios() {
@@ -748,10 +795,39 @@ class ReporteVentas extends Component {
         })
     }
 
+    async getReporteAxios(){
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'reportes/ventas/guardados', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { empresas } = response.data
+                swal.close()
+                this.setState({
+                    ...this.state,
+                    modal: true,
+                    empresas: empresas
+                })
+            },
+            (error) => {
+                swal.close()
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            swal.close()
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     async generarPDF(){
         waitAlert()
         let aux = []
-        const { form, editorState } = this.state
+        const { form, editorState, empresa } = this.state
         aux.push(
             { name: 'total', url: this.chartTotalReference.current.chartInstance.toBase64Image() },
             { name: 'total-comparativa', url: this.chartTotalComparativaReference.current.chartInstance.toBase64Image() },
@@ -783,19 +859,26 @@ class ReporteVentas extends Component {
         form.adjuntos.reportes.files = [
             {
                 name: 'reporte.pdf',
+                file: new File([blob], "reporte.pdf"),
                 url: URL.createObjectURL(blob)
             }
         ]
-        
-        if(form.adjuntos.reportes.files.length > 0)
-            window.open(form.adjuntos.reportes.files[0].url, '_blank');
-        
-        swal.close()
         
         this.setState({
             ...this.state,
             form
         })
+
+        let meses = [ '', 'ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
+
+        swal.close()
+        
+        questionAlert2(
+            '¿ESTÁS SEGURO?', '',
+            () => this.saveReporteAxios(),
+            '¿DESEAS GUARDAR EL REPORTE DE VENTAS ' + empresa + ' ' + meses[parseInt(form.mes)] + ' ' + form.año + '?'
+        )
+        
     }
 
     setComentario = lead => {
@@ -836,7 +919,7 @@ class ReporteVentas extends Component {
     }
 
     render() {
-        const { form, data, options: opciones, key, editorState, leadsAnteriores, mes } = this.state
+        const { form, data, options: opciones, key, editorState, leadsAnteriores, mes, modal, empresas, empresaActive } = this.state
 
         const optionsPie = {
             plugins: {
@@ -1109,13 +1192,22 @@ class ReporteVentas extends Component {
                 }
             },
         }
+
+        const mesesEspañol = [ '', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
         
         return (
             <Layout active = 'reportes'  {...this.props}>
                 <Card className="card-custom">
                     <Card.Header>
-                        <div className="card-title">
+                        <div className="card-title w-100 d-flex justify-content-between">
                             <h3 className="card-label">Reporte de ventas</h3>
+                            <div>
+                                <Button icon =''
+                                    className = "btn btn-icon btn-xs p-3 btn-light-primary mr-2"
+                                    onClick = { () => { this.getReporteAxios() } }
+                                    only_icon = "far fa-file-pdf icon-15px"
+                                    tooltip = { { text: 'REPORTES DE VENTAS GENERADOS' } }/>
+                            </div>
                         </div>
                     </Card.Header>
                     <Card.Body>
@@ -1684,6 +1776,65 @@ class ReporteVentas extends Component {
                         </Tab.Container>
                     </Card.Body>
                 </Card>
+                <Modal size="lg" title = "Reportes de ventas" show = { modal } handleClose = { this.handleCloseModal } >
+                    <Tab.Container activeKey = { empresaActive } 
+                        onSelect = { (select) => this.onClickEmpresa(select) }>
+                        <div className="d-flex justify-content-end">
+                            <Nav className="nav-tabs nav-bold nav-tabs-line nav-tabs-line-3x border-0">
+                                {
+                                    empresas.map((empresa, key) => {
+                                        return (
+                                            <Nav.Item className="navi-item" key={key}>
+												<Nav.Link eventKey={empresa.id}>{empresa.name}</Nav.Link>
+											</Nav.Item>
+                                        )
+                                    })
+                                }
+                            </Nav>
+                        </div>
+                        {
+                            empresas.map((empresa)=>{
+                                console.log(empresaActive, 'active')
+                                console.log(empresa.id, 'id')
+                                if(empresaActive.toString() === empresa.id.toString())
+                                    return(
+                                        <table className="table table-responsive-lg table-vertical-center text-center" id="esquemas">
+                                            <thead>
+                                                <tr className="bg-gray-200">
+                                                    <th>
+                                                        Año
+                                                    </th>
+                                                    <th>
+                                                        Mes
+                                                    </th>
+                                                    <th>
+                                                        Archivo
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                {
+                                                    empresa.reportes.map((reporte, key) => {
+                                                        return(
+                                                            <tr key = { key }>
+                                                                <td> { reporte.año } </td>
+                                                                <td> { mesesEspañol[reporte.mes] } </td>
+                                                                <td>
+                                                                    < a href = { reporte.adjunto.url}>
+                                                                        <i className="far fa-file-pdf icon-15px"></i>
+                                                                    </a>
+                                                                </td>
+                                                            </tr>
+                                                        )
+                                                    })
+                                                }
+                                            </tbody>
+                                        </table>
+                                    )
+                            })
+                        }
+                    </Tab.Container>
+                </Modal>
             </Layout>
         );
     }
