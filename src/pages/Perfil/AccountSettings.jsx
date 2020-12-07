@@ -74,6 +74,18 @@ class AccountSettings extends Component {
         else
             form.adjuntos.firma.files = []
 
+        aux = ''
+
+        user.empleado.correos.map((element) => {
+            if (element.empresa_id.toString() === empresa.toString())
+                aux = element
+        })
+
+        if (aux !== '')
+            form.correo_empresa = aux.correo
+        else
+            form.correo_empresa = ''
+
         this.setState({
             ...this.state,
             activeKey: empresa,
@@ -235,8 +247,30 @@ class AccountSettings extends Component {
             console.log(error, 'error')
         })
     }
-    sendCorreo(){
-        
+
+    sendCorreo = async (e) => {
+        // e.preventDefault();
+        waitAlert();
+        const { access_token } = this.props.authUser
+        const { form, activeKey } = this.state
+        const data = new FormData();
+        data.append('correo', form.correo_empresa)
+        data.append('empresa', activeKey)
+        await axios.post(URL_DEV + 'user/users/correo', data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert('Correo actualizado con éxito.')
+            },
+            (error) => {
+                swal.close()
+                console.log(error, 'error')
+                if (error.response.status === 401) forbiddenAccessAlert()
+                else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+            }
+        ).catch((error) => {
+            swal.close()
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
     }
     render() {
         const { form, empresas, activeKey,user } = this.state
