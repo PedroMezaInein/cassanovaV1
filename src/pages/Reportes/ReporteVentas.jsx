@@ -108,6 +108,24 @@ class ReporteVentas extends Component {
         return aux
     }
 
+    setOpacity75 = array =>{
+        let aux = [];
+        array.map( (element) => {
+            aux.push(element+'BF')
+            return false
+        })
+        return aux
+    }
+
+    setOpacity65 = array =>{
+        let aux = [];
+        array.map( (element) => {
+            aux.push(element+'A6')
+            return false
+        })
+        return aux
+    }
+
     setOpacity2 = array =>{
         let aux = [];
         array.map( (element) => {
@@ -297,11 +315,13 @@ class ReporteVentas extends Component {
                     datasets: [{
                         data: [leads[0].leads],
                         backgroundColor: [
-                            this.setColor()
+                            this.setColor()+'BF'
                         ],
                         hoverBackgroundColor: [
                             this.setColor()+'D9'
-                        ]
+                        ],
+                        borderWidth:3,
+                        borderColor:this.setColor()
                     }]
                 }
 
@@ -336,8 +356,10 @@ class ReporteVentas extends Component {
                         {
                             label: 'TOTAL DE LEADS',
                             data: arrayData,
-                            backgroundColor: colors,
-                            hoverBackgroundColor: this.setOpacity(colors)
+                            backgroundColor: this.setOpacity65(colors),
+                            hoverBackgroundColor: this.setOpacity75(colors),
+                            borderColor:colors,
+                            borderWidth:3
                         }
                     ]
                 }
@@ -363,8 +385,9 @@ class ReporteVentas extends Component {
                         {
                             label: 'ORIGEN DE LEADS',
                             data: arrayData,
-                            backgroundColor: colors,
-                            hoverBackgroundColor: this.setOpacity(colors)
+                            backgroundColor: this.setOpacity65(colors),
+                            hoverBackgroundColor: this.setOpacity75(colors),
+                            borderWidth:3
                         }
                     ]
                 }
@@ -390,8 +413,9 @@ class ReporteVentas extends Component {
                         {
                             label: 'SERVICIOS SOLICITADOS',
                             data: arrayData,
-                            backgroundColor: colors,
-                            hoverBackgroundColor: this.setOpacity(colors)
+                            backgroundColor: this.setOpacity65(colors),
+                            hoverBackgroundColor: this.setOpacity75(colors),
+                            borderWidth:3
                         }
                     ]
                 }
@@ -417,8 +441,9 @@ class ReporteVentas extends Component {
                         {
                             label: 'TIPO DE LEADS',
                             data: arrayData,
-                            backgroundColor: colors,
-                            hoverBackgroundColor: this.setOpacity(colors)
+                            backgroundColor: this.setOpacity65(colors),
+                            hoverBackgroundColor: this.setOpacity75(colors),
+                            borderWidth:3
                         }
                     ]
                 }
@@ -437,7 +462,9 @@ class ReporteVentas extends Component {
                     {
                         label: 'BASURA',
                         data: arrayData,
-                        backgroundColor: colors[0]
+                        backgroundColor: colors[0]+'A6',
+                        hoverBackgroundColor: colors[0]+'BF',
+                        borderWidth:3
                     }
                 );
 
@@ -450,7 +477,9 @@ class ReporteVentas extends Component {
                     {
                         label: 'POTENCIAL',
                         data: arrayData,
-                        backgroundColor: colors[1]
+                        backgroundColor: colors[1]+'A6',
+                        hoverBackgroundColor: colors[1]+'BF',
+                        borderWidth:3
                     }
                 );
 
@@ -484,8 +513,9 @@ class ReporteVentas extends Component {
                         {
                             label: 'TOTAL DE PROSPECTOS',
                             data: arrayData,
-                            backgroundColor: colors,
-                            hoverBackgroundColor: this.setOpacity(colors)
+                            backgroundColor: this.setOpacity65(colors),
+                            hoverBackgroundColor: this.setOpacity75(colors),
+                            borderWidth:3
                         }
                     ]
                 }
@@ -572,7 +602,9 @@ class ReporteVentas extends Component {
                         arrayData.push(origenes[origen][key].leads)
                     })
                     element.data = arrayData
-                    element.backgroundColor = colors[key]
+                    element.backgroundColor = colors[key]+'B3'
+                    element.hoverBackgroundColor = colors[key]+'BF'
+                    element.borderWidth=3
                 })
                 let contador = 0
                 let contadorArray = []
@@ -631,7 +663,9 @@ class ReporteVentas extends Component {
                         arrayData.push(servicios[servicio][key].leads)
                     })
                     element.data = arrayData
-                    element.backgroundColor = colors[key]
+                    element.backgroundColor = colors[key]+'B3'
+                    element.hoverBackgroundColor = colors[key]+'BF'
+                    element.borderWidth=3
                 })
 
                 data.serviciosComparativa = {
@@ -660,8 +694,9 @@ class ReporteVentas extends Component {
                         {
                             label: 'ESTATUS DE PROSPECTOS',
                             data: arrayData,
-                            backgroundColor: colors,
-                            hoverBackgroundColor: this.setOpacity(colors)
+                            backgroundColor: this.setOpacity65(colors),
+                            hoverBackgroundColor: this.setOpacity75(colors),
+                            borderWidth:3
                         }
                     ]
                 }
@@ -696,7 +731,9 @@ class ReporteVentas extends Component {
                         arrayData.push(estatus[origen][key].leads)
                     })
                     element.data = arrayData
-                    element.backgroundColor = colors[key]
+                    element.backgroundColor = colors[key]+'B3'
+                    element.hoverBackgroundColor = colors[key]+'BF'
+                    element.borderWidth=3
                 })
                 contador = 0
                 contadorArray = []
