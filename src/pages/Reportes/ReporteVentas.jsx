@@ -801,11 +801,15 @@ class ReporteVentas extends Component {
         await axios.get(URL_DEV + 'reportes/ventas/guardados', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { empresas } = response.data
+                let { empresaActive } = this.state
                 swal.close()
+                if(empresas.length)
+                    empresaActive = empresas[0].id
                 this.setState({
                     ...this.state,
                     modal: true,
-                    empresas: empresas
+                    empresas: empresas,
+                    empresaActive
                 })
             },
             (error) => {
@@ -1843,6 +1847,15 @@ class ReporteVentas extends Component {
                                                             </tr>
                                                         )
                                                     })
+                                                }
+                                                {
+                                                    empresa.reportes.length === 0 ?
+                                                        <tr>
+                                                            <td colSpan = "3">
+                                                                No hay reportes generados
+                                                            </td>
+                                                        </tr>
+                                                    : ''
                                                 }
                                             </tbody>
                                         </table>
