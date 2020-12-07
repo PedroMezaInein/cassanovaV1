@@ -41,21 +41,21 @@ export const COLORES_GRAFICAS_2 = [
 ]
 
 export const COLORES_GRAFICAS_3 = [
-    '#40464B',
-    '#D64C92',
-    '#648FB5',
-    '#65B1A2',
-    '#AB4BDE',
-    '#1E91ED',
-    '#89BC25',
-    '#FF3816',
-    '#009ECE',
-    '#2956B2',
-    '#F3E0EC',
-    '#CAEBE2',
-    '#142B3B',
-    '#EC7C7B',
-    '#160812'
+    '#1BC5BF',
+    '#2E61CE',
+    '#FF8523',
+    '#FFB423',
+    '#9C1EC0',
+    '#DF1E97',
+    '#B7F622',
+    '#F44436',
+    '#B47747',
+    '#388E3E',
+    // '#F3E0EC',
+    // '#CAEBE2',
+    // '#142B3B',
+    // '#EC7C7B',
+    // '#160812'
 ]
 
 export const INEIN_RED = '#D8005A'
