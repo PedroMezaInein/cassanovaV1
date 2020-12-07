@@ -282,6 +282,8 @@ class ProyectosForm extends Component {
                                                         defaultvalue={this.transformarOptions(form.clientes)}
                                                         onChange={this.nuevoUpdateCliente}
                                                         iconclass={"far fa-folder-open"}
+                                                        requirevalidation={1}
+                                                        messageinc="Incorrecto. Selecciona el cliente"
                                                     />
                                                 </>
                                             :   
@@ -302,6 +304,8 @@ class ProyectosForm extends Component {
                                                         defaultvalue={this.transformarOptions(form.clientes)}
                                                         onChange={this.nuevoUpdateCliente}
                                                         iconclass={"far fa-folder-open"}
+                                                        requirevalidation={1}
+                                                        messageinc="Incorrecto. Selecciona el cliente"
                                                     />
                                             </>
                                         }
