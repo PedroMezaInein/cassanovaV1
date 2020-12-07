@@ -869,16 +869,32 @@ class ReporteVentas extends Component {
             form
         })
 
-        let meses = [ '', 'ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
-
         swal.close()
         
         questionAlert2(
             '¿ESTÁS SEGURO?', '',
             () => this.saveReporteAxios(),
-            '¿DESEAS GUARDAR EL REPORTE DE VENTAS ' + empresa + ' ' + meses[parseInt(form.mes)] + ' ' + form.año + '?'
+            this.getTextAlert()
         )
         
+    }
+
+    getTextAlert = () => {
+        const { empresa, form  } = this.state
+        let meses = [ '', 'ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
+        return (
+            <div>
+                <span className="text-dark-50 font-weight-bolder">
+                    ¿DESEAS GUARDAR EL 
+                        <u>
+                            <a href = { form.adjuntos.reportes.files[0].url } target='_blank' className='text-primary mx-2'>
+                                REPORTE DE VENTAS
+                            </a>
+                        </u>
+                    { ' ' + empresa + ' ' + meses[parseInt(form.mes)] + ' ' + form.año + '?' }
+                </span>
+            </div>
+        )
     }
 
     setComentario = lead => {
@@ -1798,7 +1814,7 @@ class ReporteVentas extends Component {
                                 console.log(empresa.id, 'id')
                                 if(empresaActive.toString() === empresa.id.toString())
                                     return(
-                                        <table className="table table-responsive-lg table-vertical-center text-center" id="esquemas">
+                                        <table className="table table-responsive-lg table-vertical-center text-center mt-3" id="esquemas">
                                             <thead>
                                                 <tr className="bg-gray-200">
                                                     <th>
