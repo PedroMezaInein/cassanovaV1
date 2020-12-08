@@ -408,13 +408,13 @@ class LeadInfo extends Component {
                         case 'concepto2':
                             switch(value){
                                 case 'esquema_1':
-                                    concepto.value = "1 al 2"
+                                    concepto.value = "1 AL 2"
                                     break;
                                 case 'esquema_2':
-                                    concepto.value = "2 al 3"
+                                    concepto.value = "2 AL 3"
                                     break;
                                 case 'esquema_3':
-                                    concepto.value = "2 al 4"
+                                    concepto.value = "2 AL 4"
                                     break;
                                 default:
                                     break;
@@ -438,15 +438,15 @@ class LeadInfo extends Component {
                         case 'concepto4':
                             switch(value){
                                 case 'esquema_1':
-                                    concepto.value = "3 al 4"
+                                    concepto.value = "3 AL 4"
                                     concepto.text = 'DESARROLLO DEL PROYECTO'
                                     break;
                                 case 'esquema_2':
-                                    concepto.value = "5 al 6"
+                                    concepto.value = "5 AL 6"
                                     concepto.text = 'DESARROLLO DEL PROYECTO'
                                     break;
                                 case 'esquema_3':
-                                    concepto.value = "6 al 9"
+                                    concepto.value = "6 AL 9"
                                     concepto.text = 'DESARROLLO DEL PROYECTO EJECUTIVO'
                                     break;
                                 default:
@@ -471,15 +471,15 @@ class LeadInfo extends Component {
                         case 'concepto6':
                             switch(value){
                                 case 'esquema_1':
-                                    concepto.value = "5 al 6"
+                                    concepto.value = "5 AL 6"
                                     concepto.text = 'DESARROLLO DEL PROYECTO'
                                     break;
                                 case 'esquema_2':
-                                    concepto.value = "8 al 9"
+                                    concepto.value = "8 AL 9"
                                     concepto.text = 'DESARROLLO DEL PROYECTO'
                                     break;
                                 case 'esquema_3':
-                                    concepto.value = "11 al 14"
+                                    concepto.value = "11 AL 14"
                                     concepto.text = 'DESARROLLO DEL PROYECTO EJECUTIVO'
                                     break;
                                 default:
