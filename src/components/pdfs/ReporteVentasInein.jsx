@@ -262,34 +262,16 @@ export default class ReporteVentasInein extends Component {
 
     getFecha = () => {
         const { form } = this.props
-        let fecha = moment(form.fechaInicio)
-        let fecha2 = moment(form.fechaFin)
+        let fecha = moment(form.mes+'/01/'+form.año)
+        let fecha2 = moment(form.mes+'/01/'+form.año).endOf('month')
         let meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
         let aux = meses[fecha.month()] + ' ' + fecha.date() + ' - ' + meses[fecha2.month()] + ' ' + fecha2.date()
         return aux
     }
 
-    getMonth = () => {
-        const { form } = this.props
-        let fecha = moment(form.fechaInicio)
-        let mes = fecha.month()
-        let meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
-        return meses[mes]
-    }
-
-    getLastMonth = () => {
-        const { form } = this.props
-        let fecha = moment(form.fechaInicioRef)
-        let mes = fecha.month()
-        let meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
-        return meses[mes]
-    }
-
     getYear = () => {
         const { form } = this.props
-        let fecha = moment(form.fechaInicio)
-        let año = fecha.year()
-        return año
+        return moment(form.mes+'/01/'+form.año).year()
     }
 
     getFechaText = (date) => {
