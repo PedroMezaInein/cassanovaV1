@@ -379,12 +379,15 @@ class LeadInfo extends Component {
                 switch(value){
                     case 'esquema_1':
                         formDiseño.tiempo_ejecucion_diseno = 7
+                        formDiseño.semanas = this.calculateSemanas(7)
                         break;
                     case 'esquema_2':
                         formDiseño.tiempo_ejecucion_diseno = 10
+                        formDiseño.semanas = this.calculateSemanas(10)
                         break;
                     case 'esquema_3':
                         formDiseño.tiempo_ejecucion_diseno = 15
+                        formDiseño.semanas = this.calculateSemanas(15)
                         break;
                     default:
                         break;

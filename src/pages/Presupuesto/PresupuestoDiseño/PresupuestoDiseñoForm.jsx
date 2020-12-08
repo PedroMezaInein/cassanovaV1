@@ -575,12 +575,15 @@ class PresupuestoDiseñoForm extends Component {
                 switch(value){
                     case 'esquema_1':
                         form.tiempo_ejecucion_diseno = 7
+                        form.semanas = this.calculateSemanas(7)
                         break;
                     case 'esquema_2':
                         form.tiempo_ejecucion_diseno = 10
+                        form.semanas = this.calculateSemanas(10)
                         break;
                     case 'esquema_3':
                         form.tiempo_ejecucion_diseno = 15
+                        form.semanas = this.calculateSemanas(15)
                         break;
                     default:
                         break;
