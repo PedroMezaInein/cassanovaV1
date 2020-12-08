@@ -896,7 +896,6 @@ class LeadInfo extends Component {
             api = 'crm/table/lead-detenido/';
         }
 
-
         await axios.get(URL_DEV + api + lead.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { lead } = response.data
