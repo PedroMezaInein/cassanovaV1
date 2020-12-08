@@ -20,6 +20,11 @@ class FlujosReportesForm extends Component {
         onChange({ target: { value: value, name: 'año' } })
     }
 
+    updateRango = value => {
+        const { onChange } = this.props
+        onChange({ target: { value: value, name: 'rango' } })
+    }
+
     getMeses = () => {
         return [
             { name: 'Enero', value: '01' },
@@ -49,6 +54,14 @@ class FlujosReportesForm extends Component {
             );
         return arreglo
     }
+    
+    getRangos = () => {
+        return [
+            { name: 'Bimestral', value: '2'},
+            { name: 'Semestral', value: '5'},
+            { name: 'Anual', value: '11'},
+        ]
+    }
 
     render() {
         const { form, options, onSubmit } = this.props
@@ -56,7 +69,7 @@ class FlujosReportesForm extends Component {
         return (
             <Form onSubmit = { onSubmit } >
                 <div className="row mx-0 justify-content-center mb-3">
-                    <div className="col-md-4">
+                    <div className="col-md-3">
                         <SelectSearch
                             name = 'empresa'
                             options = { options.empresas }
@@ -78,7 +91,7 @@ class FlujosReportesForm extends Component {
                             messageinc = "Incorrecto. Selecciona el mes."
                             />
                     </div>
-                    <div className="col-md-3">
+                    <div className="col-md-2">
                         <SelectSearch
                             name = 'año'
                             options = { this.getAños() }
@@ -87,6 +100,17 @@ class FlujosReportesForm extends Component {
                             onChange = { this.updateAño }
                             iconclass = "fas fa-calendar-day"
                             messageinc = "Incorrecto. Selecciona el año."
+                            />
+                    </div>
+                    <div className="col-md-2">
+                        <SelectSearch
+                            name = 'año'
+                            options = { this.getRangos() }
+                            placeholder = 'SELECCIONA EL RANGO'
+                            value = { form.rango }
+                            onChange = { this.updateRango }
+                            iconclass = "fas fa-calendar-day"
+                            messageinc = "Incorrecto. Selecciona el rango."
                             />
                     </div>
                 </div>
