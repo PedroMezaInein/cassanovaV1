@@ -29,6 +29,7 @@ class ReporteVentas extends Component {
         mes: '',
         empresa : '',
         form:{
+            rango: '2',
             empresa: '',
             mes: '',
             año: new Date().getFullYear(),
@@ -1016,10 +1017,10 @@ class ReporteVentas extends Component {
                     {
                         ticks: {
                             beginAtZero: true,
-                            fontSize: 20,
+                            fontSize: 14,
                             fontColor: '#000',
                             lineWidth: 10,
-                            padding: 15,
+                            padding: 10,
                             position: 'bottom',
                             autoSkip: false,
                             callback: function(value, index, values) {
@@ -1063,11 +1064,12 @@ class ReporteVentas extends Component {
                 ]
             },
             legend:{
+                display: false,
                 fullWidth: true,
                 labels: {
                     boxWidth: 20,
                     padding: 5,
-                    fontSize: 20,
+                    fontSize: 12,
                     fontColor: '#000'
                 }
             },
@@ -1087,12 +1089,11 @@ class ReporteVentas extends Component {
                     {
                         ticks: {
                             beginAtZero: true,
-                            fontSize: 20,
+                            fontSize: 14,
                             fontColor: '#000',
-                            padding: 15,
+                            padding: 10,
                             position: 'bottom',
                             autoSkip: false,
-                            maxRotation: 0,
                             callback: function(value, index, values) {
                                 let auxiliar = ''
                                 switch(value){
@@ -1137,7 +1138,7 @@ class ReporteVentas extends Component {
                 datalabels: {
                     color: '#fff',
                     font: {
-                        size: 18,
+                        size: 13,
                         weight: 'bold'
                     }
                 }
@@ -1147,7 +1148,7 @@ class ReporteVentas extends Component {
                 labels: {
                     boxWidth: 20,
                     padding: 5,
-                    fontSize: 20,
+                    fontSize: 12,
                 }
             },
         }
@@ -1213,9 +1214,9 @@ class ReporteVentas extends Component {
                     {
                         ticks: {
                             beginAtZero: true,
-                            fontSize: 20,
+                            fontSize: 15,
                             fontColor: '#000',
-                            padding: 15,
+                            padding: 10,
                             position: 'bottom',
                             autoSkip: false,
                             maxRotation: 0,
@@ -1436,7 +1437,7 @@ class ReporteVentas extends Component {
                                         </h3>
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
-                                        <div className = "col-md-6" >
+                                        <div className = "col-md-9" >
                                             <Line ref = { this.chartComparativaProspectosReference } data = { data.prospectosComparativa } options = { optionsLine } />
                                         </div>
                                     </div>
