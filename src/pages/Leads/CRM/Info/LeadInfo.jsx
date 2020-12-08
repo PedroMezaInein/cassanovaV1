@@ -852,10 +852,13 @@ class LeadInfo extends Component {
 
         let api = ''
 
-        if (lead.estatus.estatus === 'En proceso')
+        if (lead.estatus.estatus === 'En proceso'){
             api = 'crm/table/lead-en-contacto/';
-        else
+        }else if(lead.estatus.estatus === 'En negociación'){
             api = 'crm/table/lead-en-negociacion/';
+        }else if(lead.estatus.estatus === 'Detenido'){
+            api = 'crm/table/lead-detenido/';
+        }
 
         await axios.get(URL_DEV + api + lead.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
