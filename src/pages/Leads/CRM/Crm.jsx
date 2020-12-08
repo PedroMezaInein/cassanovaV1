@@ -1018,6 +1018,34 @@ class Crm extends Component {
             state: { lead: lead, tipo: 'En negociación' }
         });
     }
+    changePageDetailsContratado = (lead) => {
+        const { history } = this.props
+        history.push({
+            pathname: '/leads/crm/info/info',
+            state: { lead: lead, tipo: 'Contratado' }
+        });
+    }
+    changePageDetailsCR= (lead) => {
+        const { history } = this.props
+        let status = ''
+        if(lead.estatus.estatus==='Cancelado'){
+            status='Cancelado'
+        }
+        else{
+            status='Rechazado'
+        }
+        history.push({
+            pathname: '/leads/crm/info/info',
+            state: { lead: lead, tipo:status}
+        });
+    }    
+    changePageDetailsDetenido = (lead) => {
+        const { history } = this.props
+        history.push({
+            pathname: '/leads/crm/info/info',
+            state: { lead: lead, tipo: 'Detenido' }
+        });
+    }
 
     changePageCierreVenta = (lead) => {
         const { history } = this.props
@@ -1329,6 +1357,7 @@ class Crm extends Component {
                                             leads={leads_contratados}
                                             onClickNext={this.nextPageLeadContratados}
                                             onClickPrev={this.prevPageLeadContratados}
+                                            changePageDetails={this.changePageDetailsContratado}
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="detenidos">
@@ -1338,6 +1367,7 @@ class Crm extends Component {
                                             onClickPrev={this.prevPageLeadDetenidos}
                                             changeEstatus={this.changeEstatus}
                                             openModalWithInput={this.openModalWithInput}
+                                            changePageDetails={this.changePageDetailsDetenido}
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="cancelados">
@@ -1345,6 +1375,7 @@ class Crm extends Component {
                                             leads={leads_cancelados}
                                             onClickNext={this.nextPageLeadCancelados}
                                             onClickPrev={this.prevPageLeadCancelados}
+                                            changePageDetails={this.changePageDetailsCR}
                                         />
                                     </Tab.Pane>
                                 </Tab.Content>
