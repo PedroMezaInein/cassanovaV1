@@ -21,7 +21,7 @@ class LeadNoContratado extends Component {
         return false;
     }
     render() {
-        const { leads, onClickNext, onClickPrev } = this.props
+        const { leads, onClickNext, onClickPrev, changePageDetails } = this.props
         return (
             <div className="tab-content">
                 <div className="table-responsive-lg">
@@ -129,7 +129,7 @@ class LeadNoContratado extends Component {
                                                 </td>
                                                 <td className="pr-0 text-center">
                                                     <OverlayTrigger overlay={<Tooltip>VER MÁS</Tooltip>}>
-                                                        <a href='/leads/crm/info/info' className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-danger">
+                                                        <a  onClick={(e) => { changePageDetails(lead) }} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-danger">
                                                             <i className="flaticon2-plus icon-nm"></i>
                                                         </a>
                                                     </OverlayTrigger>

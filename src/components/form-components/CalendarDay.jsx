@@ -14,7 +14,6 @@ export default class CalendarDay extends Component {
         
         let newDate = new Date(date)
         let aux = Date.parse(newDate)
-        console.log(newDate, 'new', isNaN(aux) ? 'INVALID' : 'VALID')
         this.setState({
             ...this.state,
             date: isNaN(aux) ? null : newDate

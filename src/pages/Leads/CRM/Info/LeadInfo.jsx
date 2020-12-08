@@ -852,10 +852,13 @@ class LeadInfo extends Component {
 
         let api = ''
 
-        if (lead.estatus.estatus === 'En proceso')
+        if (lead.estatus.estatus === 'En proceso'){
             api = 'crm/table/lead-en-contacto/';
-        else
+        }else if(lead.estatus.estatus === 'En negociación'){
             api = 'crm/table/lead-en-negociacion/';
+        }else if(lead.estatus.estatus === 'Detenido'){
+            api = 'crm/table/lead-detenido/';
+        }
 
         await axios.get(URL_DEV + api + lead.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -1425,28 +1428,30 @@ class LeadInfo extends Component {
                                                                             <div className={contacto.success ? "timeline-media bg-light-success" : "timeline-media bg-light-danger"}>
                                                                                 <span className={contacto.success ? "svg-icon svg-icon-success svg-icon-md" : "svg-icon svg-icon-danger  svg-icon-md"}>
                                                                                     {
-                                                                                        contacto.tipo_contacto.tipo === 'Llamada' ?
-                                                                                            <SVG src={toAbsoluteUrl('/images/svg/Outgoing-call.svg')} />
-                                                                                            : contacto.tipo_contacto.tipo === 'Correo' ?
-                                                                                                <SVG src={toAbsoluteUrl('/images/svg/Outgoing-mail.svg')} />
-                                                                                                : contacto.tipo_contacto.tipo === 'VIDEO LLAMADA' ?
-                                                                                                    <SVG src={toAbsoluteUrl('/images/svg/Video-camera.svg')} />
-                                                                                                    : contacto.tipo_contacto.tipo === 'Whatsapp' ?
-                                                                                                        <i className={contacto.success ? "socicon-whatsapp text-success icon-16px" : "socicon-whatsapp text-danger icon-16px"}></i>
-                                                                                                        : contacto.tipo_contacto.tipo === 'TAWK TO ADS' ?
-                                                                                                            <i className={contacto.success ? "fas fa-dove text-success icon-16px" : "fas fa-dove text-danger icon-16px"}></i>
-                                                                                                            : contacto.tipo_contacto.tipo === 'REUNIÓN PRESENCIAL' ?
-                                                                                                                <i className={contacto.success ? "fas fa-users text-success icon-16px" : "fas fa-users text-danger icon-16px"}></i>
-                                                                                                                : contacto.tipo_contacto.tipo === 'Visita' ?
-                                                                                                                    <i className={contacto.success ? "fas fa-house-user text-success icon-16px" : "fas fa-house-user text-danger icon-16px"}></i>
-                                                                                                                    : <i className={contacto.success ? "fas fa-mail-bulk text-success icon-16px" : "fas fa-mail-bulk text-danger icon-16px"}></i>
+                                                                                        contacto.tipo_contacto?
+                                                                                            contacto.tipo_contacto.tipo === 'Llamada' ?
+                                                                                                <SVG src={toAbsoluteUrl('/images/svg/Outgoing-call.svg')} />
+                                                                                                : contacto.tipo_contacto.tipo === 'Correo' ?
+                                                                                                    <SVG src={toAbsoluteUrl('/images/svg/Outgoing-mail.svg')} />
+                                                                                                    : contacto.tipo_contacto.tipo === 'VIDEO LLAMADA' ?
+                                                                                                        <SVG src={toAbsoluteUrl('/images/svg/Video-camera.svg')} />
+                                                                                                        : contacto.tipo_contacto.tipo === 'Whatsapp' ?
+                                                                                                            <i className={contacto.success ? "socicon-whatsapp text-success icon-16px" : "socicon-whatsapp text-danger icon-16px"}></i>
+                                                                                                            : contacto.tipo_contacto.tipo === 'TAWK TO ADS' ?
+                                                                                                                <i className={contacto.success ? "fas fa-dove text-success icon-16px" : "fas fa-dove text-danger icon-16px"}></i>
+                                                                                                                : contacto.tipo_contacto.tipo === 'REUNIÓN PRESENCIAL' ?
+                                                                                                                    <i className={contacto.success ? "fas fa-users text-success icon-16px" : "fas fa-users text-danger icon-16px"}></i>
+                                                                                                                    : contacto.tipo_contacto.tipo === 'Visita' ?
+                                                                                                                        <i className={contacto.success ? "fas fa-house-user text-success icon-16px" : "fas fa-house-user text-danger icon-16px"}></i>
+                                                                                                                        : <i className={contacto.success ? "fas fa-mail-bulk text-success icon-16px" : "fas fa-mail-bulk text-danger icon-16px"}></i>
+                                                                                        :''
                                                                                     }
                                                                                 </span>
                                                                             </div>
                                                                             <div className={contacto.success ? "timeline-desc timeline-desc-light-success" : "timeline-desc timeline-desc-light-danger"}>
                                                                                 <span className={contacto.success ? "font-weight-bolder text-success" : "font-weight-bolder text-danger"}>{setDateTableLG(contacto.created_at)}</span>
                                                                                 <div className="font-weight-light pb-2 text-justify position-relative mt-2" style={{ borderRadius: '0.42rem', padding: '1rem 1.5rem', backgroundColor: '#F3F6F9' }}>
-                                                                                    <div className="text-dark-75 font-weight-bold mb-2">{contacto.tipo_contacto.tipo}</div>
+                                                                                    <div className="text-dark-75 font-weight-bold mb-2">{contacto.tipo_contacto?contacto.tipo_contacto.tipo:''}</div>
                                                                                     {contacto.comentario}
                                                                                     {
                                                                                         contacto.adjunto ?
