@@ -947,7 +947,15 @@ class ReporteVentas extends Component {
                     switch(lead.prospecto.estatus_prospecto.estatus){
                         case 'Cancelado':
                         case 'Rechazado':
-                            aux = lead.prospecto.estatus_prospecto.estatus
+                            aux = lead.prospecto.motivo
+                            if(aux === '')
+                                aux = lead.motivo
+                            if(aux === ''){
+                                if(lead.rh)
+                                    aux = 'RRHH'
+                                if(lead.proveedor)
+                                    aux = 'PROVEEDOR'
+                            }
                             break;
                     }
                 }else{
@@ -956,6 +964,12 @@ class ReporteVentas extends Component {
                             case 'Cancelado':
                             case 'Rechazado':
                                 aux = lead.motivo
+                                if(aux === ''){
+                                    if(lead.rh)
+                                        aux = 'RRHH'
+                                    if(lead.proveedor)
+                                        aux = 'PROVEEDOR'
+                                }
                                 break;
                         }
                     }
