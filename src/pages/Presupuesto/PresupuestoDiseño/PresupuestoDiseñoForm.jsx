@@ -533,14 +533,6 @@ class PresupuestoDiseñoForm extends Component {
         let planos = []
         let partidas = [];
         switch (name) {
-            case 'construccion_interiores_inf':
-            case 'construccion_interiores_sup':
-            case 'construccion_civil_inf':
-            case 'construccion_civil_sup':
-            case 'mobiliario_inf':
-            case 'mobiliario_sup':
-                form[name] = value.replace(',', '')
-                break;
             case 'empresa':
                 data.empresas.map((empresa)=>{
                     if(empresa.id.toString() === value){
@@ -568,6 +560,8 @@ class PresupuestoDiseñoForm extends Component {
                             case 'INFRAESTRUCTURA MÉDICA':
                                 cadena = 'im'
                                 break;
+                            default:
+                                break;
                         }
                         data.partidas.map((partida)=>{
                             if(partida.empresa === cadena)                    
@@ -587,6 +581,8 @@ class PresupuestoDiseñoForm extends Component {
                         break;
                     case 'esquema_3':
                         form.tiempo_ejecucion_diseno = 15
+                        break;
+                    default:
                         break;
                 }
                 data.planos.map((plano)=>{
@@ -610,6 +606,8 @@ class PresupuestoDiseñoForm extends Component {
                                 case 'esquema_3':
                                     concepto.value = "2 al 4"
                                     break;
+                                default:
+                                    break;
                             }
                             break;
                         case 'concepto3':
@@ -622,6 +620,8 @@ class PresupuestoDiseñoForm extends Component {
                                     break;
                                 case 'esquema_3':
                                     concepto.value = "5"
+                                    break;
+                                default:
                                     break;
                             }
                             break;
@@ -639,6 +639,8 @@ class PresupuestoDiseñoForm extends Component {
                                     concepto.value = "6 al 9"
                                     concepto.text = 'DESARROLLO DEL PROYECTO EJECUTIVO'
                                     break;
+                                default:
+                                    break;
                             }
                             break;
                         case 'concepto5':
@@ -651,6 +653,8 @@ class PresupuestoDiseñoForm extends Component {
                                     break;
                                 case 'esquema_3':
                                     concepto.value = "10"
+                                    break;
+                                default:
                                     break;
                             }
                             break;
@@ -668,6 +672,8 @@ class PresupuestoDiseñoForm extends Component {
                                     concepto.value = "11 al 14"
                                     concepto.text = 'DESARROLLO DEL PROYECTO EJECUTIVO'
                                     break;
+                                default:
+                                    break;
                             }
                             break;
                         case 'concepto7':
@@ -684,9 +690,12 @@ class PresupuestoDiseñoForm extends Component {
                                     concepto.value = "15"
                                     concepto.text = 'ENTREGA FINAL DEL PROYECTO EJECUTIVO EN DIGITAL'
                                     break;
+                                default:
+                                    break;
                             }
                             break;
-                        default: break;
+                        default:
+                            break;
                     }
                     return false
                 })
@@ -719,6 +728,19 @@ class PresupuestoDiseñoForm extends Component {
             form[name] = checked
         else
             form[name] = value
+            
+        switch (name) {
+            case 'construccion_interiores_inf':
+            case 'construccion_interiores_sup':
+            case 'construccion_civil_inf':
+            case 'construccion_civil_sup':
+            case 'mobiliario_inf':
+            case 'mobiliario_sup':
+                form[name] = value.replace(/[,]/gi, '')
+                break
+            default:
+                break;
+        }
         this.setState({
             ...this.state,
             form,
@@ -780,7 +802,6 @@ class PresupuestoDiseñoForm extends Component {
                 domingo: false
             })
         }
-
         return semanas
     }
 

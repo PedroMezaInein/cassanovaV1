@@ -300,17 +300,31 @@ export default class ReporteVentasInein extends Component {
             if(lead.prospecto){
                 if(lead.prospecto.estatus_prospecto){
                     switch(lead.prospecto.estatus_prospecto.estatus){
-                        case 'CANCELADO':
-                        case 'RECHAZADO':
-                            aux = lead.prospecto.estatus_prospecto.estatus
+                        case 'Cancelado':
+                        case 'Rechazado':
+                            aux = lead.prospecto.motivo
+                            if(aux === '')
+                                aux = lead.motivo
+                            if(aux === ''){
+                                if(lead.rh)
+                                    aux = 'RRHH'
+                                if(lead.proveedor)
+                                    aux = 'PROVEEDOR'
+                            }
                             break;
                     }
                 }else{
                     if(lead.estatus){
                         switch(lead.estatus.estatus){
-                            case 'CANCELADO':
-                            case 'RECHAZADO':
+                            case 'Cancelado':
+                            case 'Rechazado':
                                 aux = lead.motivo
+                                if(aux === ''){
+                                    if(lead.rh)
+                                        aux = 'RRHH'
+                                    if(lead.proveedor)
+                                        aux = 'PROVEEDOR'
+                                }
                                 break;
                         }
                     }
@@ -332,17 +346,11 @@ export default class ReporteVentasInein extends Component {
     }
 
     setMoney = value => {
-        // Create our number formatter.
         var formatter = new Intl.NumberFormat('en-US', {
             style: 'currency',
             currency: 'USD',
-        
-            // These options are needed to round to whole numbers if that's what you want.
-            //minimumFractionDigits: 0, // (this suffices for whole numbers, but will print 2500.10 as $2,500.1)
-            //maximumFractionDigits: 0, // (causes 2500.99 to be printed as $2,501)
         });
-        
-        return formatter.format(value); /* $2,500.00 */
+        return formatter.format(value);
     }
 
     render() {
