@@ -189,6 +189,7 @@ class LeadInfo extends Component {
                 
                 if(formDiseño.esquema === 'esquema_1'){
                     formDiseño.tiempo_ejecucion_diseno = 7
+                    formDiseño.semanas = this.calculateSemanas(formDiseño.tiempo_ejecucion_diseno)
                     formDiseño.conceptos = [
                         {
                             value: '1',
@@ -372,103 +373,155 @@ class LeadInfo extends Component {
         const { name, value, type, checked } = e.target
         const { formDiseño, data } = this.state
         formDiseño[name] = value
-        if (name === 'esquema') {
-            formDiseño.conceptos.map((concepto) => {
-                switch(concepto.name){
-                    case 'concepto1':
-                        concepto.value = "1";
+        switch (name) {
+            case 'esquema':
+                // Tiempo de ejecución
+                switch(value){
+                    case 'esquema_1':
+                        formDiseño.tiempo_ejecucion_diseno = 7
                         break;
-                    case 'concepto2':
-                        switch(value){
-                            case 'esquema_1':
-                                concepto.value = "1 al 2"
-                                break;
-                            case 'esquema_2':
-                                concepto.value = "2 al 3"
-                                break;
-                            case 'esquema_3':
-                                concepto.value = "2 al 4"
-                                break;
-                        }
+                    case 'esquema_2':
+                        formDiseño.tiempo_ejecucion_diseno = 10
                         break;
-                    case 'concepto3':
-                        switch(value){
-                            case 'esquema_1':
-                                concepto.value = "3"
-                                break;
-                            case 'esquema_2':
-                                concepto.value = "4"
-                                break;
-                            case 'esquema_3':
-                                concepto.value = "5"
-                                break;
-                        }
+                    case 'esquema_3':
+                        formDiseño.tiempo_ejecucion_diseno = 15
                         break;
-                    case 'concepto4':
-                        switch(value){
-                            case 'esquema_1':
-                                concepto.value = "3 al 4"
-                                concepto.text = 'DESARROLLO DEL PROYECTO'
-                                break;
-                            case 'esquema_2':
-                                concepto.value = "5 al 6"
-                                concepto.text = 'DESARROLLO DEL PROYECTO'
-                                break;
-                            case 'esquema_3':
-                                concepto.value = "6 al 9"
-                                concepto.text = 'DESARROLLO DEL PROYECTO EJECUTIVO'
-                                break;
-                        }
+                    default:
                         break;
-                    case 'concepto5':
-                        switch(value){
-                            case 'esquema_1':
-                                concepto.value = "5"
-                                break;
-                            case 'esquema_2':
-                                concepto.value = "7"
-                                break;
-                            case 'esquema_3':
-                                concepto.value = "10"
-                                break;
-                        }
-                        break;
-                    case 'concepto6':
-                        switch(value){
-                            case 'esquema_1':
-                                concepto.value = "5 al 6"
-                                concepto.text = 'DESARROLLO DEL PROYECTO'
-                                break;
-                            case 'esquema_2':
-                                concepto.value = "8 al 9"
-                                concepto.text = 'DESARROLLO DEL PROYECTO'
-                                break;
-                            case 'esquema_3':
-                                concepto.value = "11 al 14"
-                                concepto.text = 'DESARROLLO DEL PROYECTO EJECUTIVO'
-                                break;
-                        }
-                        break;
-                    case 'concepto7':
-                        switch(value){
-                            case 'esquema_1':
-                                concepto.value = "7"
-                                concepto.text = 'ENTREGA FINAL DEL PROYECTO DIGITAL'
-                                break;
-                            case 'esquema_2':
-                                concepto.value = "10"
-                                concepto.text = 'ENTREGA FINAL DEL PROYECTO DIGITAL'
-                                break;
-                            case 'esquema_3':
-                                concepto.value = "15"
-                                concepto.text = 'ENTREGA FINAL DEL PROYECTO EJECUTIVO EN DIGITAL'
-                                break;
-                        }
-                        break;
-                    default: break;
                 }
-                return false
-            })
+                
+                // Planos
+                let planos = []
+                if (data.empresa)
+                    data.empresa.planos.map((plano) => {
+                        if (plano[formDiseño.esquema])
+                            planos.push(plano)
+                    })
+                formDiseño.planos = this.setOptionsCheckboxes(planos, true)
+
+                // Conceptos
+                formDiseño.conceptos.map((concepto) => {
+                    switch(concepto.name){
+                        case 'concepto1':
+                            concepto.value = "1";
+                            break;
+                        case 'concepto2':
+                            switch(value){
+                                case 'esquema_1':
+                                    concepto.value = "1 al 2"
+                                    break;
+                                case 'esquema_2':
+                                    concepto.value = "2 al 3"
+                                    break;
+                                case 'esquema_3':
+                                    concepto.value = "2 al 4"
+                                    break;
+                                default:
+                                    break;
+                            }
+                            break;
+                        case 'concepto3':
+                            switch(value){
+                                case 'esquema_1':
+                                    concepto.value = "3"
+                                    break;
+                                case 'esquema_2':
+                                    concepto.value = "4"
+                                    break;
+                                case 'esquema_3':
+                                    concepto.value = "5"
+                                    break;
+                                default:
+                                    break;
+                            }
+                            break;
+                        case 'concepto4':
+                            switch(value){
+                                case 'esquema_1':
+                                    concepto.value = "3 al 4"
+                                    concepto.text = 'DESARROLLO DEL PROYECTO'
+                                    break;
+                                case 'esquema_2':
+                                    concepto.value = "5 al 6"
+                                    concepto.text = 'DESARROLLO DEL PROYECTO'
+                                    break;
+                                case 'esquema_3':
+                                    concepto.value = "6 al 9"
+                                    concepto.text = 'DESARROLLO DEL PROYECTO EJECUTIVO'
+                                    break;
+                                default:
+                                    break;
+                            }
+                            break;
+                        case 'concepto5':
+                            switch(value){
+                                case 'esquema_1':
+                                    concepto.value = "5"
+                                    break;
+                                case 'esquema_2':
+                                    concepto.value = "7"
+                                    break;
+                                case 'esquema_3':
+                                    concepto.value = "10"
+                                    break;
+                                default:
+                                    break;
+                            }
+                            break;
+                        case 'concepto6':
+                            switch(value){
+                                case 'esquema_1':
+                                    concepto.value = "5 al 6"
+                                    concepto.text = 'DESARROLLO DEL PROYECTO'
+                                    break;
+                                case 'esquema_2':
+                                    concepto.value = "8 al 9"
+                                    concepto.text = 'DESARROLLO DEL PROYECTO'
+                                    break;
+                                case 'esquema_3':
+                                    concepto.value = "11 al 14"
+                                    concepto.text = 'DESARROLLO DEL PROYECTO EJECUTIVO'
+                                    break;
+                                default:
+                                    break;
+                            }
+                            break;
+                        case 'concepto7':
+                            switch(value){
+                                case 'esquema_1':
+                                    concepto.value = "7"
+                                    concepto.text = 'ENTREGA FINAL DEL PROYECTO DIGITAL'
+                                    break;
+                                case 'esquema_2':
+                                    concepto.value = "10"
+                                    concepto.text = 'ENTREGA FINAL DEL PROYECTO DIGITAL'
+                                    break;
+                                case 'esquema_3':
+                                    concepto.value = "15"
+                                    concepto.text = 'ENTREGA FINAL DEL PROYECTO EJECUTIVO EN DIGITAL'
+                                    break;
+                                default:
+                                    break;
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                    return false
+                })
+                break;
+            case 'tiempo_ejecucion_diseno':
+                formDiseño.semanas = this.calculateSemanas(value)
+                break;
+            default:
+                break;
+        }
+        if (name === 'm2' || name === 'esquema')
+            if (formDiseño.m2 && formDiseño.esquema) {
+                formDiseño.subtotal = this.getSubtotal(formDiseño.m2, formDiseño.esquema)
+            }
+        if (formDiseño.subtotal > 0) {
+            formDiseño.total = formDiseño.subtotal * (1 - (formDiseño.descuento / 100))
         }
         if (type === 'checkbox')
             formDiseño[name] = checked
@@ -482,38 +535,60 @@ class LeadInfo extends Component {
             case 'construccion_civil_sup':
             case 'mobiliario_inf':
             case 'mobiliario_sup':
-                formDiseño[name] = value.replace(',', '')
+                formDiseño[name] = value.replace(/[,]/gi, '')
                 break
             default:
                 break;
         }
-
-        if (name === 'tiempo_ejecucion_diseno') {
-            let modulo = parseFloat(value) % 5
-            let aux = Object.keys(
-                {
-                    lunes: false,
-                    martes: false,
-                    miercoles: false,
-                    jueves: false,
-                    viernes: false,
-                    sabado: false,
-                    domingo: false
-                }
-            )
-            formDiseño.semanas = [];
-            for (let i = 0; i < Math.floor(parseFloat(value) / 5); i++) {
-                formDiseño.semanas.push({
-                    lunes: true,
-                    martes: true,
-                    miercoles: true,
-                    jueves: true,
-                    viernes: true,
-                    sabado: false,
-                    domingo: false
-                })
+        this.setState({
+            ...this.state,
+            formDiseño
+        })
+    }
+    calculateSemanas = tiempo => {
+        let modulo = parseFloat(tiempo) % 5
+        let aux = Object.keys(
+            {
+                lunes: false,
+                martes: false,
+                miercoles: false,
+                jueves: false,
+                viernes: false,
+                sabado: false,
+                domingo: false
             }
-            formDiseño.semanas.push({
+        )
+        let semanas = []
+        for (let i = 0; i < Math.floor(parseFloat(tiempo) / 5); i++) {
+            semanas.push({
+                lunes: true,
+                martes: true,
+                miercoles: true,
+                jueves: true,
+                viernes: true,
+                sabado: false,
+                domingo: false
+            })
+        }
+        semanas.push({
+            lunes: false,
+            martes: false,
+            miercoles: false,
+            jueves: false,
+            viernes: false,
+            sabado: false,
+            domingo: false
+        })
+        aux.map((element, key) => {
+            if (key < modulo) {
+                semanas[semanas.length - 1][element] = true
+            } else {
+                semanas[semanas.length - 1][element] = false
+            }
+            return false
+        })
+        if (modulo > 2) {
+            semanas.push({
                 lunes: false,
                 martes: false,
                 miercoles: false,
@@ -522,50 +597,8 @@ class LeadInfo extends Component {
                 sabado: false,
                 domingo: false
             })
-            aux.map((element, key) => {
-                if (key < modulo) {
-                    formDiseño.semanas[formDiseño.semanas.length - 1][element] = true
-                } else {
-                    formDiseño.semanas[formDiseño.semanas.length - 1][element] = false
-                }
-                return false
-            })
-            if (modulo > 2) {
-                formDiseño.semanas.push({
-                    lunes: false,
-                    martes: false,
-                    miercoles: false,
-                    jueves: false,
-                    viernes: false,
-                    sabado: false,
-                    domingo: false
-                })
-            }
         }
-
-        if (name === 'm2' || name === 'esquema')
-            if (formDiseño.m2 && formDiseño.esquema) {
-                formDiseño.subtotal = this.getSubtotal(formDiseño.m2, formDiseño.esquema)
-
-            }
-        if (formDiseño.subtotal > 0) {
-            formDiseño.total = formDiseño.subtotal * (1 - (formDiseño.descuento / 100))
-        }
-
-        if (name === 'esquema') {
-            let planos = []
-            if (data.empresa)
-                data.empresa.planos.map((plano) => {
-                    if (plano[formDiseño.esquema])
-                        planos.push(plano)
-                })
-            formDiseño.planos = this.setOptionsCheckboxes(planos, true)
-        }
-
-        this.setState({
-            ...this.state,
-            formDiseño
-        })
+        return semanas
     }
     handleChange = (files, item) => {
         const { formHistorial } = this.state
@@ -856,9 +889,10 @@ class LeadInfo extends Component {
             api = 'crm/table/lead-en-contacto/';
         }else if(lead.estatus.estatus === 'En negociación'){
             api = 'crm/table/lead-en-negociacion/';
-        }else if(lead.estatus.estatus === 'Detenido'){
+        }else{
             api = 'crm/table/lead-detenido/';
         }
+
 
         await axios.get(URL_DEV + api + lead.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -1511,6 +1545,7 @@ class LeadInfo extends Component {
                                                 onChangeCheckboxes={this.handleChangeCheckbox}
                                                 onSubmit={this.onSubmitPresupuestoDiseño}
                                                 submitPDF={this.onSubmitPDF}
+                                                formeditado={formeditado}
                                             />
                                         </Card.Body>
                                     </Tab.Pane>
