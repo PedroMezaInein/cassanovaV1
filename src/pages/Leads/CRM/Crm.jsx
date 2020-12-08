@@ -986,7 +986,7 @@ class Crm extends Component {
                             'MOTIVO DE CANCELACIÓN' :
                             'MOTIVO DE RECHAZO'
                     }
-                    className="form-control form-control-solid h-auto py-7 px-6"
+                    className="form-control form-control-solid h-auto py-7 px-6 text-uppercase"
                     id='motivo'
                     as="textarea"
                     rows="3"
