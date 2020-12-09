@@ -65,7 +65,6 @@ class FlujosReportesForm extends Component {
 
     render() {
         const { form, options, onSubmit } = this.props
-        console.log(form, 'form')
         return (
             <Form onSubmit = { onSubmit } >
                 <div className="row mx-0 justify-content-center mb-3">
@@ -80,7 +79,7 @@ class FlujosReportesForm extends Component {
                             messageinc = "Incorrecto. Selecciona la empresa."
                             />
                     </div>
-                    <div className="col-md-3">
+                    <div className="col-md-2">
                         <SelectSearch
                             name = 'mes'
                             options = { this.getMeses() }
@@ -115,7 +114,7 @@ class FlujosReportesForm extends Component {
                     </div>
                 </div>
                 <div className='text-center'>
-                    <Button icon='' className="mx-auto" type="submit" text="Buscar" />
+                    <Button icon='' className="mx-auto" type="submit" text="BUSCAR" />
                 </div>
             </Form>
         )

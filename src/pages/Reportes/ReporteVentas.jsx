@@ -6,12 +6,12 @@ import { Button, InputSinText } from '../../components/form-components';
 import moment from 'moment'
 import { waitAlert, errorAlert, forbiddenAccessAlert, questionAlert2 } from '../../functions/alert'
 import swal from 'sweetalert'
-import { COLORES_GRAFICAS_3, IM_AZUL, INEIN_RED, URL_DEV } from '../../constants'
+import { COLORES_GRAFICAS_IM, COLORES_GRAFICAS_INEIN, IM_AZUL, INEIN_RED, URL_DEV } from '../../constants'
 import axios from 'axios'
 import { pdf } from '@react-pdf/renderer'
 import { Pie, Bar, Line } from 'react-chartjs-2';
 import "chartjs-plugin-datalabels";
-import { setLabelTable, setOptions, setDateTableLG, setTextTable, setMoneyTable, setMoneyTableSinSmall } from '../../functions/setters';
+import { setLabelVentas, setOptions, setDateTableLG, setTextTable, setMoneyTable, setMoneyTableSinSmall } from '../../functions/setters';
 import FlujosReportesVentas from '../../components/forms/reportes/FlujosReportesVentas';
 import { Editor } from 'react-draft-wysiwyg';
 import { EditorState, convertToRaw } from 'draft-js';
@@ -159,15 +159,27 @@ class ReporteVentas extends Component {
         text.letra = estatus.color_texto
         text.fondo = estatus.color_fondo
         text.estatus = estatus.estatus
-        return setLabelTable(text)
+        return setLabelVentas(text)
     }
 
     getBG = tamaño => {
+        const { empresa} = this.state
         let aux = []
-        for(let i = 0; i < tamaño; i++){
-            aux.push(
-                COLORES_GRAFICAS_3[i]
-            )
+        switch(empresa){
+            case 'INEIN':
+                for(let i = 0; i < tamaño; i++){
+                    aux.push(
+                        COLORES_GRAFICAS_INEIN[i]
+                    )
+                }
+            case 'INFRAESTRUCTURA MÉDICA':
+                for(let i = 0; i < tamaño; i++){
+                    aux.push(
+                        COLORES_GRAFICAS_IM[i]
+                    )
+                }
+            default:
+                break;
         }
         return aux
     }
@@ -183,7 +195,7 @@ class ReporteVentas extends Component {
                                 onClick={() => { this.changeTabe(left) }}
                                 className = "btn btn-icon btn-primary-info btn-sm mr-2 ml-auto"
                                 only_icon={"fas fa-chevron-circle-left icon-md"}
-                                tooltip={{ text: 'SIGUIENTE' }}
+                                tooltip={{ text: 'ANTERIOR' }}
                                 />
                         </div>
                     : ''
@@ -1267,6 +1279,7 @@ class ReporteVentas extends Component {
 
         const mesesEspañol = [ '', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
         
+        const { empresa } = this.state
         return (
             <Layout active = 'reportes'  {...this.props}>
                 <Card className="card-custom">
@@ -1274,11 +1287,13 @@ class ReporteVentas extends Component {
                         <div className="card-title w-100 d-flex justify-content-between">
                             <h3 className="card-label">Reporte de ventas</h3>
                             <div>
-                                <Button icon =''
-                                    className = "btn btn-icon btn-xs p-3 btn-light-primary mr-2"
+                                <Button 
+                                    icon =''
+                                    className = "btn btn-light mr-2 text-hover-primary"
                                     onClick = { () => { this.getReporteAxios() } }
-                                    only_icon = "far fa-file-pdf icon-15px"
-                                    tooltip = { { text: 'REPORTES DE VENTAS GENERADOS' } }/>
+                                    only_icon = "far fa-file-pdf mr-1"
+                                    text= 'REPORTES GENERADOS'
+                                />
                             </div>
                         </div>
                     </Card.Header>
@@ -1298,12 +1313,12 @@ class ReporteVentas extends Component {
                             <Tab.Content>
                                 <Tab.Pane eventKey = 'one'>
                                     {this.setButtons(null, 'two', null)}
-                                    <div className = " my-3 ">
-                                        <h3 className="card-label title-reporte-ventas">
-                                            <strong>
+                                    <div className = " mt-4 mb-5 ">
+                                        <h3 className="card-label title-reporte-ventas" >
+                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
                                                 01 
                                             </strong>
-                                            ENTRADA TOTAL DE LEADS ({mes})
+                                            ENTRADA TOTAL DE LEADS ({mes} {form.año}) 
                                         </h3>
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
@@ -1314,9 +1329,9 @@ class ReporteVentas extends Component {
                                 </Tab.Pane>
                                 <Tab.Pane eventKey = 'two'>
                                     {this.setButtons('one', 'three', null)}
-                                    <div className = " my-3 ">
+                                    <div className = " mt-4 mb-5 ">
                                         <h3 className="card-label title-reporte-ventas">
-                                            <strong>
+                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
                                                 02
                                             </strong>
                                             COMPARATIVA DE LEADS TOTALES (MESES ANTERIORES)
@@ -1330,12 +1345,12 @@ class ReporteVentas extends Component {
                                 </Tab.Pane>
                                 <Tab.Pane eventKey = 'three'>
                                     {this.setButtons('two', 'four', null)}
-                                    <div className = " my-3 ">
+                                    <div className = " mt-4 mb-5 ">
                                         <h3 className="card-label title-reporte-ventas">
-                                            <strong>
+                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
                                                 03
                                             </strong>
-                                            ORIGEN DE LEADS ({mes})
+                                            ORIGEN DE LEADS ({mes} {form.año})
                                         </h3>
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
@@ -1346,9 +1361,9 @@ class ReporteVentas extends Component {
                                 </Tab.Pane>
                                 <Tab.Pane eventKey = 'four'>
                                     {this.setButtons('three', 'five', null)}
-                                    <div className = " my-3 ">
+                                    <div className = " mt-4 mb-5 ">
                                         <h3 className="card-label title-reporte-ventas">
-                                            <strong>
+                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
                                                 04
                                             </strong>
                                             COMPARATIVA ORIGEN LEADS (MESES ANTERIORES)
@@ -1362,12 +1377,12 @@ class ReporteVentas extends Component {
                                 </Tab.Pane>
                                 <Tab.Pane eventKey = 'five'>
                                     {this.setButtons('four', 'six', null)}
-                                    <div className = " my-3 ">
+                                    <div className = " mt-4 mb-5 ">
                                         <h3 className="card-label title-reporte-ventas">
-                                            <strong>
+                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
                                                 05
                                             </strong>
-                                            SERVICIOS SOLICITADOS ({mes})
+                                            SERVICIOS SOLICITADOS ({mes} {form.año})
                                         </h3>
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
@@ -1378,9 +1393,9 @@ class ReporteVentas extends Component {
                                 </Tab.Pane>
                                 <Tab.Pane eventKey = 'six'>
                                     {this.setButtons('five', 'seven', null)}
-                                    <div className = " my-3 ">
+                                    <div className = " mt-4 mb-5 ">
                                         <h3 className="card-label title-reporte-ventas">
-                                            <strong>
+                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
                                                 06
                                             </strong>
                                             COMPARATIVA SERVICIOS SOLICITADOS (MESES ANTERIORES)
@@ -1394,12 +1409,12 @@ class ReporteVentas extends Component {
                                 </Tab.Pane>
                                 <Tab.Pane eventKey = 'seven'>
                                     {this.setButtons('six', 'eight', null)}
-                                    <div className = " my-3 ">
+                                    <div className = " mt-4 mb-5 ">
                                         <h3 className="card-label title-reporte-ventas">
-                                            <strong>
+                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
                                                 07
                                             </strong>
-                                            TIPO DE LEAD ({mes})
+                                            TIPO DE LEAD ({mes} {form.año})
                                         </h3>
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
@@ -1410,9 +1425,9 @@ class ReporteVentas extends Component {
                                 </Tab.Pane>
                                 <Tab.Pane eventKey = 'eight'>
                                     {this.setButtons('seven', 'nine', null)}
-                                    <div className = " my-3 ">
+                                    <div className = " mt-4 mb-5 ">
                                         <h3 className="card-label title-reporte-ventas">
-                                            <strong>
+                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
                                                 08
                                             </strong>
                                             COMPARATIVA TIPO DE LEAD (MESES ANTERIORES)
@@ -1426,12 +1441,12 @@ class ReporteVentas extends Component {
                                 </Tab.Pane>
                                 <Tab.Pane eventKey = 'nine'>
                                     {this.setButtons('eight', 'ten', null)}
-                                    <div className = " my-3 ">
+                                    <div className = " mt-4 mb-5 ">
                                         <h3 className="card-label title-reporte-ventas">
-                                            <strong>
+                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
                                                 09
                                             </strong>
-                                            TOTAL DE PROSPECTOS ({mes})
+                                            TOTAL DE PROSPECTOS ({mes} {form.año})
                                         </h3>
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
@@ -1442,9 +1457,9 @@ class ReporteVentas extends Component {
                                 </Tab.Pane>
                                 <Tab.Pane eventKey = 'ten'>
                                     {this.setButtons('nine', 'eleven', null)}
-                                    <div className = " my-3 ">
+                                    <div className = " mt-4 mb-5 ">
                                         <h3 className="card-label title-reporte-ventas">
-                                            <strong>
+                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
                                                 10
                                             </strong>
                                             COMPARATIVA TOTAL DE PROSPECTOS (MESES ANTERIORES)
@@ -1458,12 +1473,12 @@ class ReporteVentas extends Component {
                                 </Tab.Pane>
                                 <Tab.Pane eventKey = 'eleven'>
                                     {this.setButtons('ten', 'twelve', null)}
-                                    <div className = " my-3 ">
+                                    <div className = " mt-4 mb-5 ">
                                         <h3 className="card-label title-reporte-ventas">
-                                            <strong>
+                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
                                                 11
                                             </strong>
-                                            STATUS DE PROSPECTOS ({mes})
+                                            ESTATUS DE PROSPECTOS ({mes} {form.año})
                                         </h3>
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
@@ -1474,12 +1489,12 @@ class ReporteVentas extends Component {
                                 </Tab.Pane>
                                 <Tab.Pane eventKey = 'twelve'>
                                     {this.setButtons('eleven', 'thirteen', null)}
-                                    <div className = " my-3 ">
+                                    <div className = " mt-4 mb-5 ">
                                         <h3 className="card-label title-reporte-ventas">
-                                            <strong>
+                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
                                                 12
                                             </strong>
-                                            COMPARATIVA STATUS DE PROSPECTOS (MESES ANTERIORES)
+                                            COMPARATIVA ESTATUS DE PROSPECTOS (MESES ANTERIORES)
                                         </h3>
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
@@ -1490,12 +1505,12 @@ class ReporteVentas extends Component {
                                 </Tab.Pane>
                                 <Tab.Pane eventKey = 'thirteen'>
                                     {this.setButtons('twelve', 'fourteen', null)}
-                                    <div className = " my-3 ">
+                                    <div className = " mt-4 mb-5 ">
                                         <h3 className="card-label title-reporte-ventas">
-                                            <strong>
+                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
                                                 13
                                             </strong>
-                                            PROSPECTOS CONTRATADOS ({mes})
+                                            PROSPECTOS CONTRATADOS ({mes} {form.año})
                                         </h3>
                                     </div>
                                     {/* <div className = "row mx-0 mb-2 justify-content-center">
@@ -1503,12 +1518,22 @@ class ReporteVentas extends Component {
                                             <Pie ref = { this.chartCerradosReference } data = { data.cerrados } options = { optionsPie } />
                                         </div>
                                     </div> */}
-                                    <table className="table table-separate table-responsive-sm">
+                                    <table className="table table-separate table-responsive-sm table-borderless table-vertical-center">
                                         <thead>
-                                            <tr className = 'border-bottom'>
+                                            <tr className="bg-light-gray text-dark-75">
                                                 <th className="border-0 center_content">
-                                                    <div className="font-size-lg font-weight-bolder text-center">
+                                                    <div className="font-size-lg font-weight-bolder text-justify">
                                                         NOMBRE DE LEAD
+                                                    </div>
+                                                </th>
+                                                <th className="border-0 center_content">
+                                                    <div className="font-size-lg font-weight-bolder text-justify">
+                                                        VENDEDOR
+                                                    </div>
+                                                </th>
+                                                <th className="clave border-0 center_content">
+                                                    <div className="font-size-lg font-weight-bolder text-justify">
+                                                        ORIGEN
                                                     </div>
                                                 </th>
                                                 <th className="clave border-0 center_content">
@@ -1516,19 +1541,9 @@ class ReporteVentas extends Component {
                                                         COSTO
                                                     </div>
                                                 </th>
-                                                <th className="border-0 center_content">
-                                                    <div className="font-size-lg font-weight-bolder text-center">
-                                                        VENDEDOR
-                                                    </div>
-                                                </th>
-                                                <th className="clave border-0 center_content">
+                                                <th className="clave border-0 center_content"style={{ minWidth: "100px" }}>
                                                     <div className="font-size-lg font-weight-bolder text-center">
                                                         FECHA DE CONTRATACION
-                                                    </div>
-                                                </th>
-                                                <th className="clave border-0 center_content">
-                                                    <div className="font-size-lg font-weight-bolder text-center">
-                                                        ORIGEN
                                                     </div>
                                                 </th>
                                             </tr>
@@ -1538,7 +1553,7 @@ class ReporteVentas extends Component {
                                                 data.cerrados.map((element, index)=>{
                                                     return(
                                                         <tr key = { index } >
-                                                            <td className="font-size-sm text-center">
+                                                            <td className="font-size-sm text-justify">
                                                                 {
                                                                     element.prospecto ?
                                                                         element.prospecto.lead ?
@@ -1547,18 +1562,7 @@ class ReporteVentas extends Component {
                                                                     : '-'
                                                                 }
                                                             </td>
-                                                            <td className="font-size-sm text-center">
-                                                                {
-                                                                    element.prospecto ?
-                                                                        element.prospecto.lead ?
-                                                                            element.prospecto.lead.presupuesto_diseño ?
-                                                                                setMoneyTableSinSmall(element.prospecto.lead.presupuesto_diseño.total)
-                                                                            : '-'
-                                                                        : '-'
-                                                                    : '-'
-                                                                }        
-                                                            </td>
-                                                            <td className="font-size-sm text-center">
+                                                            <td className="font-size-sm text-justify">
                                                                 {
                                                                     element.prospecto ?
                                                                         element.prospecto.vendedores ?
@@ -1579,10 +1583,7 @@ class ReporteVentas extends Component {
                                                                     : '-'
                                                                 }
                                                             </td>
-                                                            <td className="font-size-sm text-center">
-                                                                { setDateTableLG(element.created_at) }
-                                                            </td>
-                                                            <td className="font-size-sm text-center">
+                                                            <td className="font-size-sm text-justify">
                                                                 {
                                                                     element.prospecto ?
                                                                         element.prospecto.lead ?
@@ -1592,6 +1593,20 @@ class ReporteVentas extends Component {
                                                                         : ''
                                                                     : ''
                                                                 }
+                                                            </td>
+                                                            <td className="font-size-sm text-center">
+                                                                {
+                                                                    element.prospecto ?
+                                                                        element.prospecto.lead ?
+                                                                            element.prospecto.lead.presupuesto_diseño ?
+                                                                                setMoneyTableSinSmall(element.prospecto.lead.presupuesto_diseño.total)
+                                                                            : '-'
+                                                                        : '-'
+                                                                    : '-'
+                                                                }        
+                                                            </td>
+                                                            <td className="font-size-sm text-center">
+                                                                { setDateTableLG(element.created_at) }
                                                             </td>
                                                         </tr>
                                                     )
@@ -1611,35 +1626,30 @@ class ReporteVentas extends Component {
                                 </Tab.Pane>
                                 <Tab.Pane eventKey = 'fourteen'>
                                     {this.setButtons('thirteen', 'fifteen', null)}
-                                    <div className = "my-3">
+                                    <div className = "mt-4 mb-5">
                                         <h3 className="card-label title-reporte-ventas">
-                                            <strong>
+                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
                                                 14
                                             </strong>
-                                            OBSERVACIONES DE PROSPECTOS ({mes})
+                                            OBSERVACIONES DE PROSPECTOS ({mes} {form.año})
                                         </h3>
                                     </div>
-                                    <table className="table table-separate table-responsive-sm">
+                                    <table className="table table-separate table-responsive-sm table-borderless table-vertical-center">
                                         <thead>
-                                            <tr>
+                                            <tr className="bg-light-gray text-dark-75">
                                                 <th className="border-0 center_content">
-                                                    <div className="font-size-lg font-weight-bolder text-center">
+                                                    <div className="font-size-lg font-weight-bolder text-justify">
                                                         NOMBRE DE LEAD
                                                     </div>
                                                 </th>
-                                                <th className="clave border-0 center_content">
-                                                    <div className="font-size-lg font-weight-bolder text-center">
+                                                <th className="clave border-0 center_content" style={{ minWidth: "121px" }}>
+                                                    <div className="font-size-lg font-weight-bolder text-justify">
                                                         PROYECTO
                                                     </div>
                                                 </th>
-                                                <th className="border-0 center_content">
-                                                    <div className="font-size-lg font-weight-bolder text-center">
-                                                        OBSERVACIONES
-                                                    </div>
-                                                </th>
                                                 <th className="clave border-0 center_content">
                                                     <div className="font-size-lg font-weight-bolder text-center">
-                                                        STATUS
+                                                        ESTATUS
                                                     </div>
                                                 </th>
                                                 <th className="clave border-0 center_content">
@@ -1647,10 +1657,14 @@ class ReporteVentas extends Component {
                                                         PRIMER CONTACTO
                                                     </div>
                                                 </th>
-
                                                 <th className="clave border-0 center_content">
                                                     <div className="font-size-lg font-weight-bolder text-center">
                                                         ÚLTIMO CONTACTO
+                                                    </div>
+                                                </th>
+                                                <th className="border-0 center_content">
+                                                    <div className="font-size-lg font-weight-bolder text-center">
+                                                        OBSERVACIONES
                                                     </div>
                                                 </th>
                                             </tr>
@@ -1661,12 +1675,12 @@ class ReporteVentas extends Component {
                                                     if(lead.prospecto)
                                                         return(
                                                             <tr key = { index } >
-                                                                <td className="font-size-sm text-center">
+                                                                <td className="font-size-sm text-justify">
                                                                     {
                                                                         lead.nombre
                                                                     }
                                                                 </td>
-                                                                <td className="font-size-sm text-center">
+                                                                <td className="font-size-sm text-justify">
                                                                     {
                                                                         lead.prospecto.tipoProyecto ?
                                                                             lead.prospecto.tipoProyecto.tipo
@@ -1674,11 +1688,6 @@ class ReporteVentas extends Component {
                                                                             lead.servicios.map((serv, index) => {
                                                                                 return serv.servicio
                                                                             })
-                                                                    }
-                                                                </td>
-                                                                <td className="font-size-sm text-center">
-                                                                    {
-                                                                        this.setComentario(lead)
                                                                     }
                                                                 </td>
                                                                 <td className='text-center'>
@@ -1693,8 +1702,8 @@ class ReporteVentas extends Component {
                                                                         lead.prospecto.contactos ?
                                                                             lead.prospecto.contactos.length ?
                                                                                 setDateTableLG(lead.prospecto.contactos[lead.prospecto.contactos.length - 1].created_at)
-                                                                            : 'Sin contacto'
-                                                                        : 'Sin contacto'
+                                                                            : 'SIN CONTACTO'
+                                                                        : 'SIN CONTACTO'
                                                                     }
                                                                 </td>
                                                                 <td className = 'text-center'>
@@ -1702,8 +1711,13 @@ class ReporteVentas extends Component {
                                                                         lead.prospecto.contactos ?
                                                                             lead.prospecto.contactos.length ?
                                                                                 setDateTableLG(lead.prospecto.contactos[0].created_at)
-                                                                            : 'Sin contacto'
-                                                                        : 'Sin contacto'
+                                                                            : 'SIN CONTACTO'
+                                                                        : 'SIN CONTACTO'
+                                                                    }
+                                                                </td>
+                                                                <td className="font-size-sm text-justify">
+                                                                    {
+                                                                        this.setComentario(lead)
                                                                     }
                                                                 </td>
                                                             </tr>
@@ -1716,35 +1730,30 @@ class ReporteVentas extends Component {
                                 </Tab.Pane>
                                 <Tab.Pane eventKey = 'fifteen'>
                                     {this.setButtons('fourteen', 'sixteen', null)}
-                                    <div className = "my-3">
+                                    <div className = "mt-4 mb-5">
                                         <h3 className="card-label title-reporte-ventas">
-                                            <strong>
+                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
                                                 15
                                             </strong>
                                             LISTADO DE PROSPECTO (MESE ANTERIORES)
                                         </h3>
                                     </div>
-                                    <table className="table table-separate table-responsive-sm">
+                                    <table className="table table-separate table-responsive-sm table-borderless table-vertical-center">
                                         <thead>
-                                            <tr>
-                                                <th className="border-0 center_content">
-                                                    <div className="font-size-lg font-weight-bolder text-center">
+                                            <tr className="bg-light-gray text-dark-75">
+                                                <th className="border-0 center_content" style={{ minWidth: "133px" }}>
+                                                    <div className="font-size-lg font-weight-bolder text-justify">
                                                         NOMBRE DE LEAD
                                                     </div>
                                                 </th>
                                                 <th className="clave border-0 center_content">
-                                                    <div className="font-size-lg font-weight-bolder text-center">
+                                                    <div className="font-size-lg font-weight-bolder text-justify">
                                                         PROYECTO
                                                     </div>
                                                 </th>
                                                 <th className="clave border-0 center_content">
                                                     <div className="font-size-lg font-weight-bolder text-center">
-                                                        STATUS
-                                                    </div>
-                                                </th>
-                                                <th className="clave border-0 center_content">
-                                                    <div className="font-size-lg font-weight-bolder text-center">
-                                                        MOTIVO
+                                                        ESTATUS
                                                     </div>
                                                 </th>
                                                 <th className="clave border-0 center_content">
@@ -1752,10 +1761,14 @@ class ReporteVentas extends Component {
                                                         PRIMER CONTACTO
                                                     </div>
                                                 </th>
-
                                                 <th className="clave border-0 center_content">
                                                     <div className="font-size-lg font-weight-bolder text-center">
                                                         ÚLTIMO CONTACTO
+                                                    </div>
+                                                </th>
+                                                <th className="clave border-0 center_content">
+                                                    <div className="font-size-lg font-weight-bolder text-center">
+                                                        MOTIVO
                                                     </div>
                                                 </th>
                                             </tr>
@@ -1766,12 +1779,12 @@ class ReporteVentas extends Component {
                                                     if(lead.prospecto)
                                                         return(
                                                             <tr key = { index } >
-                                                                <td className="font-size-sm text-center">
+                                                                <td className="font-size-sm text-justify">
                                                                     {
                                                                         lead.nombre
                                                                     }
                                                                 </td>
-                                                                <td className="font-size-sm text-center">
+                                                                <td className="font-size-sm text-justify">
                                                                     {
                                                                         lead.prospecto.tipoProyecto ?
                                                                             lead.prospecto.tipoProyecto.tipo
@@ -1788,18 +1801,13 @@ class ReporteVentas extends Component {
                                                                         : ''
                                                                     }
                                                                 </td>
-                                                                <td className="font-size-sm text-center">
-                                                                    {
-                                                                        this.setComentario(lead)
-                                                                    }
-                                                                </td>
                                                                 <td className = 'text-center'>
                                                                     {
                                                                         lead.prospecto.contactos ?
                                                                             lead.prospecto.contactos.length ?
                                                                                 setDateTableLG(lead.prospecto.contactos[lead.prospecto.contactos.length - 1].created_at)
-                                                                            : 'Sin contacto'
-                                                                        : 'Sin contacto'
+                                                                            : 'SIN CONTACTO'
+                                                                        : 'SIN CONTACTO'
                                                                     }
                                                                 </td>
                                                                 <td className = 'text-center'>
@@ -1807,8 +1815,13 @@ class ReporteVentas extends Component {
                                                                         lead.prospecto.contactos ?
                                                                             lead.prospecto.contactos.length ?
                                                                                 setDateTableLG(lead.prospecto.contactos[0].created_at)
-                                                                            : 'Sin contacto'
-                                                                        : 'Sin contacto'
+                                                                            : 'SIN CONTACTO'
+                                                                        : 'SIN CONTACTO'
+                                                                    }
+                                                                </td>
+                                                                <td className="font-size-sm text-justify">
+                                                                    {
+                                                                        this.setComentario(lead)
                                                                     }
                                                                 </td>
                                                             </tr>
@@ -1821,9 +1834,9 @@ class ReporteVentas extends Component {
                                 </Tab.Pane>
                                 <Tab.Pane eventKey = 'sixteen'>
                                     {this.setButtons('fifteen', null, true)}
-                                    <div className = "my-3">
+                                    <div className = "mt-4 mb-5">
                                         <h3 className="card-label title-reporte-ventas">
-                                            <strong>
+                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
                                                 16
                                             </strong>
                                             CONCLUSIONES
