@@ -65,7 +65,6 @@ class FlujosReportesForm extends Component {
 
     render() {
         const { form, options, onSubmit } = this.props
-        console.log(form, 'form')
         return (
             <Form onSubmit = { onSubmit } >
                 <div className="row mx-0 justify-content-center mb-3">
