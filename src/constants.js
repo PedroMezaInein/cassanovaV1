@@ -1925,6 +1925,10 @@ export const PRESUPUESTO_DISEÑO_COLUMNS = [
     {
         Header: 'Total',
         accessor: 'total',
+    },
+    {
+        Header: '# Cotización',
+        accessor: 'cotizacion',
     }
 ]
 
