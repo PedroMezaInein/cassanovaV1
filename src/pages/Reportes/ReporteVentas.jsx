@@ -6,7 +6,7 @@ import { Button, InputSinText } from '../../components/form-components';
 import moment from 'moment'
 import { waitAlert, errorAlert, forbiddenAccessAlert, questionAlert2 } from '../../functions/alert'
 import swal from 'sweetalert'
-import { COLORES_GRAFICAS_3, IM_AZUL, INEIN_RED, URL_DEV } from '../../constants'
+import { COLORES_GRAFICAS_IM, COLORES_GRAFICAS_INEIN, IM_AZUL, INEIN_RED, URL_DEV } from '../../constants'
 import axios from 'axios'
 import { pdf } from '@react-pdf/renderer'
 import { Pie, Bar, Line } from 'react-chartjs-2';
@@ -163,11 +163,23 @@ class ReporteVentas extends Component {
     }
 
     getBG = tamaño => {
+        const { empresa} = this.state
         let aux = []
-        for(let i = 0; i < tamaño; i++){
-            aux.push(
-                COLORES_GRAFICAS_3[i]
-            )
+        switch(empresa){
+            case 'INEIN':
+                for(let i = 0; i < tamaño; i++){
+                    aux.push(
+                        COLORES_GRAFICAS_INEIN[i]
+                    )
+                }
+            case 'INFRAESTRUCTURA MÉDICA':
+                for(let i = 0; i < tamaño; i++){
+                    aux.push(
+                        COLORES_GRAFICAS_IM[i]
+                    )
+                }
+            default:
+                break;
         }
         return aux
     }
@@ -1303,7 +1315,7 @@ class ReporteVentas extends Component {
                                             <strong>
                                                 01 
                                             </strong>
-                                            ENTRADA TOTAL DE LEADS ({mes})
+                                            ENTRADA TOTAL DE LEADS ({mes} {form.año}) 
                                         </h3>
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
@@ -1335,7 +1347,7 @@ class ReporteVentas extends Component {
                                             <strong>
                                                 03
                                             </strong>
-                                            ORIGEN DE LEADS ({mes})
+                                            ORIGEN DE LEADS ({mes} {form.año})
                                         </h3>
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
@@ -1367,7 +1379,7 @@ class ReporteVentas extends Component {
                                             <strong>
                                                 05
                                             </strong>
-                                            SERVICIOS SOLICITADOS ({mes})
+                                            SERVICIOS SOLICITADOS ({mes} {form.año})
                                         </h3>
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
@@ -1399,7 +1411,7 @@ class ReporteVentas extends Component {
                                             <strong>
                                                 07
                                             </strong>
-                                            TIPO DE LEAD ({mes})
+                                            TIPO DE LEAD ({mes} {form.año})
                                         </h3>
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
@@ -1431,7 +1443,7 @@ class ReporteVentas extends Component {
                                             <strong>
                                                 09
                                             </strong>
-                                            TOTAL DE PROSPECTOS ({mes})
+                                            TOTAL DE PROSPECTOS ({mes} {form.año})
                                         </h3>
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
@@ -1463,7 +1475,7 @@ class ReporteVentas extends Component {
                                             <strong>
                                                 11
                                             </strong>
-                                            STATUS DE PROSPECTOS ({mes})
+                                            ESTATUS DE PROSPECTOS ({mes} {form.año})
                                         </h3>
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
@@ -1479,7 +1491,7 @@ class ReporteVentas extends Component {
                                             <strong>
                                                 12
                                             </strong>
-                                            COMPARATIVA STATUS DE PROSPECTOS (MESES ANTERIORES)
+                                            COMPARATIVA ESTATUS DE PROSPECTOS (MESES ANTERIORES)
                                         </h3>
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
@@ -1495,7 +1507,7 @@ class ReporteVentas extends Component {
                                             <strong>
                                                 13
                                             </strong>
-                                            PROSPECTOS CONTRATADOS ({mes})
+                                            PROSPECTOS CONTRATADOS ({mes} {form.año})
                                         </h3>
                                     </div>
                                     {/* <div className = "row mx-0 mb-2 justify-content-center">
@@ -1616,7 +1628,7 @@ class ReporteVentas extends Component {
                                             <strong>
                                                 14
                                             </strong>
-                                            OBSERVACIONES DE PROSPECTOS ({mes})
+                                            OBSERVACIONES DE PROSPECTOS ({mes} {form.año})
                                         </h3>
                                     </div>
                                     <table className="table table-separate table-responsive-sm">
