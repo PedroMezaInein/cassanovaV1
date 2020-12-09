@@ -1637,13 +1637,13 @@ class ReporteVentas extends Component {
                                     <table className="table table-separate table-responsive-sm table-borderless table-vertical-center">
                                         <thead>
                                             <tr className="bg-light-gray text-dark-75">
-                                                <th className="border-0 center_content">
-                                                    <div className="font-size-lg font-weight-bolder text-justify">
+                                                <th className="border-0 center_content text-justify">
+                                                    <div className="font-size-lg font-weight-bolder">
                                                         NOMBRE DE LEAD
                                                     </div>
                                                 </th>
-                                                <th className="clave border-0 center_content" style={{ minWidth: "121px" }}>
-                                                    <div className="font-size-lg font-weight-bolder text-justify">
+                                                <th className="clave border-0 center_content text-justify" style={{ minWidth: "121px" }}>
+                                                    <div className="font-size-lg font-weight-bolder">
                                                         PROYECTO
                                                     </div>
                                                 </th>
