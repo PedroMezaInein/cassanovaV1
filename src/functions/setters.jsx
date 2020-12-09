@@ -103,7 +103,22 @@ export function setLabelTable(text) {
         </>
     )
 }
-
+export function setLabelVentas(text) {
+    return (
+        <>
+            <div className="d-none">
+                {text.estatus}
+            </div>
+            <span className="label label-md label-light-success label-inline font-weight-bold" style={{
+                color: `${text.letra}`,
+                backgroundColor: `${text.fondo}`,
+                fontSize: '10.7px'
+            }} >
+                {text.estatus}
+            </span>
+        </>
+    )
+}
 export function setDateTable(date) {
     let seconds = new Date(date);
     seconds = seconds.getTime() / 1000;
