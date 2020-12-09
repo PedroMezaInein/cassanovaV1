@@ -79,7 +79,7 @@ class FlujosReportesForm extends Component {
                             messageinc = "Incorrecto. Selecciona la empresa."
                             />
                     </div>
-                    <div className="col-md-2">
+                    <div className="col-md-3">
                         <SelectSearch
                             name = 'mes'
                             options = { this.getMeses() }
@@ -113,8 +113,12 @@ class FlujosReportesForm extends Component {
                             />
                     </div>
                 </div>
-                <div className='text-center'>
-                    <Button icon='' className="mx-auto" type="submit" text="BUSCAR" />
+                <div className="card-footer pt-3 pb-0 pr-1 mt-5">
+                    <div className="row">
+                        <div className="col-lg-12 text-center pr-0 pb-0">
+                            <Button icon='' className="mx-auto" type="submit" text="BUSCAR" />
+                        </div>
+                    </div>
                 </div>
             </Form>
         )
