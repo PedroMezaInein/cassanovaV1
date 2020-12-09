@@ -1735,7 +1735,7 @@ class ReporteVentas extends Component {
                                             <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
                                                 15
                                             </strong>
-                                            LISTADO DE PROSPECTO (MESE ANTERIORES)
+                                            LISTADO DE PROSPECTO (MESES ANTERIORES)
                                         </h3>
                                     </div>
                                     <table className="table table-separate table-responsive-sm table-borderless table-vertical-center">
