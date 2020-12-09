@@ -4,7 +4,7 @@ import axios from 'axios'
 import Layout from '../../../components/layout/layout'
 import { ModalDelete, Modal } from '../../../components/singles'
 import { PRESUPUESTO_DISEÑO_COLUMNS, URL_DEV, ADJUNTOS_PRESUPUESTOS_COLUMNS } from '../../../constants'
-import { setDateTable, setTextTable, setMoneyTable, setAdjuntosList } from '../../../functions/setters'
+import { setDateTable, setTextTable, setMoneyTable, setAdjuntosList, setListTable } from '../../../functions/setters'
 import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { renderToString } from 'react-dom/server'
@@ -169,12 +169,24 @@ class PresupuestoDiseño extends Component {
                         m2: renderToString(setTextTable(presupuesto.m2)),
                         esquema: renderToString(setTextTable(presupuesto.esquema ? presupuesto.esquema.replace('_', ' ') : '')),
                         total: renderToString(setMoneyTable(presupuesto.total)),
+                        cotizacion: renderToString(this.setCotizacion(presupuesto.identificador)),
                         id: presupuesto.id,
                     }
                 )
                 return false
             })
         return aux
+    }
+
+    setCotizacion = cotizaciones => {
+        if(cotizaciones.length === 0)
+            return setTextTable('Sin pdfs generados')
+        let aux = []
+        cotizaciones.map((cotizacion) => {
+            aux.push({ numero: cotizacion })
+        })
+        return setListTable(aux, 'numero')
+        
     }
 
     setActions = presupuesto => {
