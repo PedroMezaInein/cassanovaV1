@@ -40,7 +40,7 @@ export const COLORES_GRAFICAS_2 = [
     '#6D045A'
 ]
 
-export const COLORES_GRAFICAS_3 = [
+export const COLORES_GRAFICAS_INEIN = [
     '#1BC5BF',
     '#2E61CE',
     '#FF8523',
@@ -51,11 +51,18 @@ export const COLORES_GRAFICAS_3 = [
     '#F44436',
     '#B47747',
     '#388E3E',
-    // '#F3E0EC',
-    // '#CAEBE2',
-    // '#142B3B',
-    // '#EC7C7B',
-    // '#160812'
+]
+export const COLORES_GRAFICAS_IM = [
+    '#28517B',
+    '#A61F2F',
+    '#8D8133',
+    '#037D7D',
+    '#5B287F',
+    '#78AD2F',
+    '#A02B5E',
+    '#d06004',
+    '#497A6F',
+    '#BDBA33',
 ]
 
 export const INEIN_RED = '#D8005A'
