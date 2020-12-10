@@ -36,6 +36,7 @@ class Contratar extends Component {
         formProyecto:{
             fechaInicio: new Date(),
             fechaFin: new Date(),
+            fechaReunion: new Date(),
             estatus:'',
             fase: '',
             fases: [],

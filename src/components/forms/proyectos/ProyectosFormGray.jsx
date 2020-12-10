@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
-import { Button, RangeCalendar, TagInputGray, TagSelectSearchGray, InputPhoneGray, InputGray, InputNumberGray, SelectSearchGray } from '../../form-components'
+import { Button, RangeCalendar, TagInputGray, TagSelectSearchGray, InputPhoneGray, InputGray, InputNumberGray, SelectSearchGray, CalendarDay } from '../../form-components'
 // import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { TEL } from '../../../constants'
 import { openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
@@ -403,13 +403,17 @@ class ProyectosForm extends Component {
                                 </div>
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless justify-content-center mt-3">
-                                    <div className="col-md-12 text-center">
+                                    <div className="col-md-6 text-center">
                                         <label className="col-form-label my-2 font-weight-bolder">Fecha de inicio - Fecha final</label><br />
                                         <RangeCalendar
                                             onChange = { onChangeRange }
                                             start = { form.fechaInicio }
                                             end = { form.fechaFin }
                                         />
+                                    </div>
+                                    <div className="col-md-6 text-center">
+                                        <label className="col-form-label my-2 font-weight-bolder">Fecha de Reunión</label><br />
+                                        <CalendarDay value = { form.fechaReunion } name = 'fechaReunion' onChange = { onChange } date = { form.fechaReunion } />
                                     </div>
                                 </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
