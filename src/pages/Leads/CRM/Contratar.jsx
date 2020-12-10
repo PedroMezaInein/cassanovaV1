@@ -37,12 +37,8 @@ class Contratar extends Component {
             fechaInicio: new Date(),
             fechaFin: new Date(),
             estatus:'',
-            fase1: false,
-            fase2: false,
-            fase3: false,
-            fase1_relacionado: false,
-            fase2_relacionado: false,
-            fase3_relacionado: false,
+            fase: '',
+            fases: [],
             proyecto: '',
             semana: '',
             nombre: '',
@@ -73,6 +69,7 @@ class Contratar extends Component {
             clientes: [],
             colonias: [],
             estatus: [],
+            fases: []
         },
         lead: ''
     }
@@ -200,16 +197,24 @@ class Contratar extends Component {
         return form
     }
 
-    onSubmit = e => {
+    onSubmitCliente = e => {
         e.preventDefault();
         waitAlert()
         this.addClienteAxios();
     }
 
-    async getOneLead() {
+    onSubmit = e => {
+        e.preventDefault();
         waitAlert()
-        // const { access_token } = this.props.authUser
+        this.convertLeadAxios();
+    }
+
+    async getOneLead() {
         const { location: { state: historyState } } = this.props
+        this.setState({
+            ...this.state,
+            lead: historyState.lead
+        })
     }
 
     async getOptionsAxios() {
@@ -223,10 +228,37 @@ class Contratar extends Component {
                 options['clientes'] = setOptions(clientes, 'empresa', 'id')
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['estatus'] = setOptions(estatus, 'estatus', 'id')
+                options['fases'] = setOptions([
+                    {id: 'fase1', name : 'Fase 1'},
+                    {id: 'fase2', name : 'Fase 2'},
+                    {id: 'fase3', name : 'Fase 3'}], 'name', 'id')
                 this.setState({
                     ...this.state,
                     options
                 })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async convertLeadAxios(){
+        const { access_token } = this.props.authUser
+        let { formProyecto, lead } = this.state
+        await axios.post(URL_DEV + 'crm/convert/' + lead.id, formProyecto, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { history } = this.props
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Lead convertido con éxito.')
+                history.push({pathname: '/leads/crm'})
             },
             (error) => {
                 console.log(error, 'error')
@@ -247,10 +279,18 @@ class Contratar extends Component {
         let { form } = this.state
         await axios.post(URL_DEV + 'cliente', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                const { cliente, clientes } = response.data
+                const { formProyecto, options } = this.state
+                options.clientes = setOptions(clientes, 'empresa', 'id')
+                formProyecto.clientes.push({
+                    name: cliente.empresa, value: cliente.id.toString(), label: cliente.empresa
+                })
                 this.setState({
                     ...this.state,
                     modal: false,
-                    form: this.clearForm()
+                    form: this.clearForm(),
+                    formProyecto,
+                    options
                 })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Cliente agregado con éxito.')
             },
@@ -333,6 +373,17 @@ class Contratar extends Component {
         })
     }
 
+    onChangeRange = range => {
+        const { startDate, endDate } = range
+        const { formProyecto } = this.state
+        formProyecto.fechaInicio = startDate
+        formProyecto.fechaFin = endDate
+        this.setState({
+            ...this.state,
+            formProyecto
+        })
+    }
+
     render() {
         const { modal, form, formProyecto, options, formeditado, lead } = this.state
         return (
@@ -352,23 +403,6 @@ class Contratar extends Component {
                             />
                         </div>
                     </Card.Header>
-                    {/* <Card.Header className="mt-4">
-                        <h3 className="card-title d-flex justify-content-between w-100">
-                            <span className="font-weight-bolder text-dark align-self-center">
-                                CONVERTIR LEAD
-                            </span>
-                            <div>
-                                <Button
-                                    icon =''
-                                    className = "btn btn-icon btn-xs w-auto p-3 btn-success"
-                                    onClick = { this.openModal }
-                                    only_icon = "flaticon-price-tag icon-15px mr-2"
-                                    text = 'NUEVO CLIENTE'
-                                    tooltip = { { text: 'NUEVO CLIENTE' } }
-                                    />
-                            </div>
-                        </h3>
-                    </Card.Header> */}
                     <Card.Body className="pt-0">
                         <ProyectosFormGray 
                             form = { formProyecto }
@@ -379,6 +413,8 @@ class Contratar extends Component {
                             deleteOption = { this.deleteOption } 
                             onChangeCP = { this.onChangeCPProyecto }
                             tagInputChange={(e) => this.tagInputChange(e)}
+                            onChangeRange = { this.onChangeRange }
+                            onSubmit = { this.onSubmit }
                         >
                             <Accordion>
                                 {
@@ -415,7 +451,7 @@ class Contratar extends Component {
                             form = { form }
                             onChange = { this.onChange }
                             changeCP = { this.changeCP }
-                            onSubmit = { this.onSubmit }
+                            onSubmit = { this.onSubmitCliente }
                             />
                 </Modal>
             </Layout>
