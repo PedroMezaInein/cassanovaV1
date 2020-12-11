@@ -10,6 +10,7 @@ import { setOptions, setDateTableLG } from '../../../../functions/setters';
 import axios from 'axios'
 import { doneAlert, errorAlert, forbiddenAccessAlert, waitAlert, questionAlert2, questionAlert } from '../../../../functions/alert';
 import swal from 'sweetalert';
+import Swal from 'sweetalert2'
 import { HistorialContactoForm, AgendarCitaForm, PresupuestoDiseñoCRMForm, PresupuestoGenerado,InformacionGeneral} from '../../../../components/forms'
 import { Modal } from '../../../../components/singles'
 class LeadInfo extends Component {
@@ -253,7 +254,7 @@ class LeadInfo extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'crm/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close()
+                Swal.close()
                 const { empresas, medios } = response.data
                 const { options } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
@@ -1184,7 +1185,7 @@ class LeadInfo extends Component {
                         if (presupuesto.pdfs)
                             if (presupuesto.pdfs[0])
                                 if (presupuesto.pdfs[0].pivot) {
-                                    swal.close()
+                                    Swal.close()
                                     questionAlert2('¡NO PODRÁS REVERTIR ESTO!', '',
                                         () => this.sendCorreoPresupuesto(presupuesto.pdfs[0].pivot.identificador),
                                         this.getTextAlert(presupuesto.pdfs[0].url)

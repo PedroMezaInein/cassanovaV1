@@ -8,6 +8,7 @@ import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert, questionAlert} 
 import { update } from '../../redux/reducers/auth_user'
 import { ChangePasswordForm } from '../../components/forms'
 import swal from 'sweetalert';
+import Swal from 'sweetalert2'
 
 class AccountSettings extends Component {
 
@@ -140,7 +141,7 @@ class AccountSettings extends Component {
 
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La contraseña fue actualizada con éxito.')
                 setTimeout(() => {
-                    swal.close()
+                    Swal.close()
                     history.push({
                         pathname: '/login'
                     });
@@ -261,13 +262,13 @@ class AccountSettings extends Component {
                 doneAlert('Correo actualizado con éxito.')
             },
             (error) => {
-                swal.close()
+                Swal.close()
                 console.log(error, 'error')
                 if (error.response.status === 401) forbiddenAccessAlert()
                 else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
             }
         ).catch((error) => {
-            swal.close()
+            Swal.close()
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })

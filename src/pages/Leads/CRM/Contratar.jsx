@@ -11,6 +11,7 @@ import { doneAlert, errorAlert, forbiddenAccessAlert, waitAlert } from '../../..
 import ProyectosFormGray from '../../../components/forms/proyectos/ProyectosFormGray'
 import { setOptions } from '../../../functions/setters'
 import swal from 'sweetalert';
+import Swal from 'sweetalert2'
 import { faEye } from '@fortawesome/free-solid-svg-icons'
 import { ProyectoCard } from '../../../components/cards'
 
@@ -223,7 +224,7 @@ class Contratar extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'proyectos/opciones', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close()
+                Swal.close()
                 const { clientes, empresas, estatus } = response.data
                 const { options } = this.state
                 options['clientes'] = setOptions(clientes, 'empresa', 'id')
@@ -391,8 +392,8 @@ class Contratar extends Component {
             <Layout active = 'leads' { ... this.props }>
                 <Card className="card-custom card-stretch">
                     <Card.Header className="border-0 mt-4 pt-3">
-                        <div class="card-title d-flex justify-content-between">
-                            <span class="font-weight-bolder text-dark align-self-center font-size-h3">CONVERTIR LEAD</span>
+                        <div className="card-title d-flex justify-content-between">
+                            <span className="font-weight-bolder text-dark align-self-center font-size-h3">CONVERTIR LEAD</span>
                         </div>
                         <div className="d-flex justify-content-end">
                             <Button

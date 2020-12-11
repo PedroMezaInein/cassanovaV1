@@ -10,6 +10,7 @@ import axios from 'axios'
 import { URL_DEV, CP_URL, PROYECTOS_COLUMNS, URL_ASSETS } from '../../constants'
 import { Small, B, P } from '../../components/texts'
 import Moment from 'react-moment'
+import Swal from 'sweetalert2'
 import swal from 'sweetalert'
 import { Accordion , Card} from 'react-bootstrap'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -18,7 +19,6 @@ import NewTable from '../../components/tables/NewTable'
 import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert} from '../../functions/alert'
 import ItemSlider from '../../components/singles/ItemSlider'
 import {Nav, Tab, Col, Row} from 'react-bootstrap'
-import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
 class Proyectos extends Component {
@@ -1145,7 +1145,7 @@ class Proyectos extends Component {
         waitAlert()
         await axios.post(URL_DEV + 'proyectos/' + proyecto.id + '/adjuntos/zip', aux, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close()
+                Swal.close()
                 const url =  URL_ASSETS+'/storage/adjuntos.zip'
                 const link = document.createElement('a');
                 link.href = url;
@@ -1932,7 +1932,6 @@ class Proyectos extends Component {
         )
     }
 }
-
 
 const mapStateToProps = state => {
     return {

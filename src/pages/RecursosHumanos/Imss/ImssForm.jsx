@@ -3,6 +3,7 @@ import { Card } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import Layout from '../../../components/layout/layout'
 import { ImssForm as ImssFormulario } from '../../../components/forms'
+import Swal from 'sweetalert2'
 import swal from 'sweetalert';
 import { setOptions } from '../../../functions/setters';
 import { URL_DEV } from '../../../constants';
@@ -262,7 +263,7 @@ class ImssForm extends Component {
         const { access_token } = this.props.authUser
         await axios.get( URL_DEV + 'imss/options', { headers: { Authorization: `Bearer ${access_token}` } } ).then(
             ( response ) => {
-                swal.close()
+                Swal.close()
                 const { empresas } = response.data
                 const { options } = this.state
 

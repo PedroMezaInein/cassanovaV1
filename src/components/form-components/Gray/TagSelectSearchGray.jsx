@@ -1,13 +1,71 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
 const $ = require('jquery');
-
 class TagSelectSearchGray extends Component {
     componentDidMount() {
         $('.css-2b097c-container').attr('id','css-2b097c-container-gray')
     }
     render() {
-        const { options, placeholder, onChange, defaultvalue, iconclass } = this.props
+        const { options, placeholder, onChange, defaultvalue, iconclass, requirevalidation, messageinc } = this.props
+        const customStyles = {
+            indicatorSeparator: () => ({ 
+                backgroundColor:'transparent !important'
+            }),
+            multiValueLabel: () => ({ 
+                color: '#80808F!important',
+                padding:'2px .46875em!important',
+                fontSize:'13px!important',
+                fontWeight: 500
+            }),
+            multiValue: () => ({ 
+                backgroundColor: '#e5e5e8 !important',
+                borderRadius:'2px!important',
+                color: '#80808F!important',
+                margin: '2px 3px!important',
+                display:'flex', 
+                minWidth:'0',
+                boxSizing:'border-box'
+            }),
+            control: () => ({
+                alignItems:'center',
+                backgroundColor:'#F3F6F9',
+                borderStyle:'solid',
+                borderWidth:'1px',
+                cursor:'default',
+                borderRadius:'2px!important',
+                display:'flex',
+                flexWrap:'wrap',
+                justifyContent:'space-between',
+                minHeight:'38px',
+                outline:'0 !important',
+                position:'relative',
+                transition:'all 100ms',
+                boxSizing:'border-box',
+                borderColor:'#F3F6F9',
+                paddingLeft:'calc(1.5em + 1.3rem + 2px) !important'
+            }),
+            dropdownIndicator: () => ({ 
+                color:'#686871',
+                display: 'flex',
+                padding: '8px',
+                boxSizing:'border-box',
+            }),
+            clearIndicator: () => ({ 
+                color:'#686871',
+                display: 'flex',
+                padding: '8px',
+                boxSizing:'border-box'
+            }),
+            placeholder: () => ({
+                color: '#B5B5C3 !important',
+                marginLeft: '2px',
+                marginRight: '2px',
+                position:'absolute',
+                boxSizing:'border-box'
+            }),
+            // option: () => ({
+            // }),
+        }
         return (
             <div>
                 <label className="col-form-label">{placeholder}</label>
@@ -22,8 +80,12 @@ class TagSelectSearchGray extends Component {
                         noOptionsMessage={placeholder}
                         placeholder={placeholder}
                         onChange={onChange}
+                        styles={customStyles}
                     />
                 </div>
+                {
+                    requirevalidation?(defaultvalue.length>0?'':<span className={"form-text text-danger"}> {messageinc} </span>):''
+                }
             </div>
         )
     }

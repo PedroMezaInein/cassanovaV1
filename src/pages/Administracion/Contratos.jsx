@@ -15,6 +15,8 @@ import FileInput from '../../components/form-components/FileInput'
 import TableForModals from '../../components/tables/TableForModals'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
 import { ContratoCard } from '../../components/cards'
+import Swal from 'sweetalert2'
+
 const $ = require('jquery');
 class Contratos extends Component {
     state = {
@@ -519,7 +521,7 @@ class Contratos extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'contratos/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close()
+                Swal.close()
                 const { empresas, clientes, proveedores, tiposContratos } = response.data
                 const { options } = this.state
                 options.empresas = setOptions(empresas, 'name', 'id')
