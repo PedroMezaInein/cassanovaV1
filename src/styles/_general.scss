@@ -1054,3 +1054,31 @@ span#border-hover:hover{
 .icon-1-39rem{
     font-size: 1.39rem;
 }
+#accordion-material{
+    .card-title.text-dark-50.rounded-0:hover {
+        color: #2171c1!important;
+        background-color: #F3F6F9!important;
+        i.text-dark-50{
+            color:#2171c1!important;
+        }
+    }
+    .card-title.text-primary.collapsed.rounded-0 {
+        color: #2171c1!important;
+        background-color: #F3F6F9!important;
+        i.text-primary{
+            color:#2171c1!important;
+        }
+    }
+    .card-label {
+        font-size: 13px;
+    }
+    .card-title{
+        padding: 7.75px 6.5px;
+    }
+    .card-body{
+        padding: 7.75px 6.5px; 
+    }
+    .svg-icon{
+        margin-left: 5px;
+    }
+}
