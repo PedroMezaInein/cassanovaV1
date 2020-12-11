@@ -6,7 +6,6 @@ import axios from 'axios'
 import { URL_DEV } from '../../../constants';
 import { Card } from 'react-bootstrap';
 import { CuentaForm as CuentaFormulario } from '../../../components/forms'
-import swal from 'sweetalert';
 import Swal from 'sweetalert2'
 import { setOptions, setSelectOptions } from '../../../functions/setters';
 class CuentaForm extends Component {

@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import { Card, Accordion } from 'react-bootstrap';
 import axios from 'axios';
 import Swal from 'sweetalert2'
-import swal from 'sweetalert';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
 import Layout from '../../../components/layout/layout'
 import { ProyectosForm as ProyectoFormulario } from '../../../components/forms'

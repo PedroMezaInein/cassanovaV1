@@ -10,7 +10,6 @@ import axios from 'axios'
 import { doneAlert, errorAlert, forbiddenAccessAlert, waitAlert } from '../../../functions/alert'
 import ProyectosFormGray from '../../../components/forms/proyectos/ProyectosFormGray'
 import { setOptions } from '../../../functions/setters'
-import swal from 'sweetalert';
 import Swal from 'sweetalert2'
 import { faEye } from '@fortawesome/free-solid-svg-icons'
 import { ProyectoCard } from '../../../components/cards'

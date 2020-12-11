@@ -4,7 +4,6 @@ import Layout from '../../../components/layout/layout'
 import { deleteAlert, doneAlert, errorAlert, forbiddenAccessAlert, waitAlert } from '../../../functions/alert';
 import axios from 'axios'
 import { URL_DEV } from '../../../constants';
-import swal from 'sweetalert';
 import Swal from 'sweetalert2'
 import { setOptions } from '../../../functions/setters';
 import { Card } from 'react-bootstrap';

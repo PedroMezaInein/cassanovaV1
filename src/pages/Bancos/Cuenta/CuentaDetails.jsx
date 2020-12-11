@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import swal from 'sweetalert'
 import Layout from '../../../components/layout/layout'
 import NewTable from '../../../components/tables/NewTable';
 import { DETAILS_CUENTAS, URL_DEV } from '../../../constants';

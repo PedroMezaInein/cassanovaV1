@@ -7,7 +7,6 @@ import { URL_DEV } from '../../constants'
 import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert, questionAlert} from '../../functions/alert'
 import { update } from '../../redux/reducers/auth_user'
 import { ChangePasswordForm } from '../../components/forms'
-import swal from 'sweetalert';
 import Swal from 'sweetalert2'
 
 class AccountSettings extends Component {
