@@ -18,6 +18,9 @@ import LeadDetenido from '../../../components/tables/Lead/LeadDetenido'
 import { Modal } from '../../../components/singles'
 import { AgendaLlamada, InformacionGeneral} from '../../../components/forms'
 import InputGray from '../../../components/form-components/Gray/InputGray'
+
+import Swal from 'sweetalert2'
+
 class Crm extends Component {
     state = {
         ultimos_contactados: {
@@ -147,7 +150,7 @@ class Crm extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'crm/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close()
+                Swal.close()
                 const { empresas, origenes } = response.data
                 const { options } = this.state
                 options.empresas = setOptions(empresas, 'name', 'id')
@@ -482,7 +485,7 @@ class Crm extends Component {
         const { lead_rh_proveedores, form } = this.state
         await axios.put(URL_DEV + 'crm/table/lead-rh-proveedor/' + lead_rh_proveedores.numPage, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close()
+                Swal.close()
                 const { leads, total, page } = response.data
                 const { lead_rh_proveedores } = this.state
                 lead_rh_proveedores.data = leads
@@ -515,7 +518,7 @@ class Crm extends Component {
         const { lead_web, form } = this.state
         await axios.put(URL_DEV + 'crm/table/lead-web/' + lead_web.numPage, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close()
+                Swal.close()
                 const { leads, total, page } = response.data
                 const { lead_web } = this.state
                 lead_web.data = leads
@@ -548,7 +551,7 @@ class Crm extends Component {
         const { leads_en_negociacion, form } = this.state
         await axios.put(URL_DEV + 'crm/table/lead-en-negociacion/' + leads_en_negociacion.numPage, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close()
+                Swal.close()
                 const { leads, total, page } = response.data
                 const { leads_en_negociacion } = this.state
                 leads_en_negociacion.data = leads
@@ -581,7 +584,7 @@ class Crm extends Component {
         const { leads_en_contacto, form } = this.state
         await axios.put(URL_DEV + 'crm/table/lead-en-contacto/' + leads_en_contacto.numPage, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close()
+                Swal.close()
                 const { leads, total, page } = response.data
                 const { leads_en_contacto } = this.state
                 leads_en_contacto.data = leads
@@ -614,7 +617,7 @@ class Crm extends Component {
         const { leads_cancelados, form } = this.state
         await axios.put(URL_DEV + 'crm/table/lead-cancelados/' + leads_cancelados.numPage, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close()
+                Swal.close()
                 const { leads, total, page } = response.data
                 const { leads_cancelados } = this.state
                 leads_cancelados.data = leads
@@ -646,7 +649,7 @@ class Crm extends Component {
         const { leads_contratados, form } = this.state
         await axios.put(URL_DEV + 'crm/table/lead-contratados/' + leads_contratados.numPage, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close()
+                Swal.close()
                 const { leads, total, page } = response.data
                 const { leads_contratados } = this.state
                 leads_contratados.data = leads
@@ -678,7 +681,7 @@ class Crm extends Component {
         const { leads_detenidos, form } = this.state
         await axios.put(URL_DEV + 'crm/table/lead-detenidos/' + leads_detenidos.numPage, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close()
+                Swal.close()
                 const { leads, total, page } = response.data
                 const { leads_detenidos } = this.state
                 leads_detenidos.data = leads

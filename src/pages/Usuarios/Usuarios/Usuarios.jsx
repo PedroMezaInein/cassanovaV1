@@ -5,6 +5,7 @@ import axios from 'axios'
 import { URL_DEV } from '../../../constants'
 import { Modal, ModalDelete } from '../../../components/singles'
 import { RegisterUserForm, PermisosForm } from '../../../components/forms'
+import Swal from 'sweetalert2'
 import swal from 'sweetalert'
 import { setOptions, setSelectOptions } from '../../../functions/setters'
 import { forbiddenAccessAlert, errorAlert, waitAlert, doneAlert } from '../../../functions/alert'
@@ -128,7 +129,7 @@ class Usuarios extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'user/users/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close() 
+                Swal.close() 
                 const { tipos, departamentos, proyectos } = response.data
                 const { options } = this.state
 
@@ -293,7 +294,6 @@ class Usuarios extends Component {
             console.log(error, 'error')
         })
     }
-
 
     handleClose = () => {
         const { modal } = this.state

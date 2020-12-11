@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV } from '../../../constants'
 import { RegisterUserForm } from '../../../components/forms'
+import Swal from 'sweetalert2'
 import swal from 'sweetalert'
 import { setOptions, setSelectOptions } from '../../../functions/setters'
 import { forbiddenAccessAlert, errorAlert, waitAlert, doneAlert } from '../../../functions/alert'
@@ -141,7 +142,7 @@ class UsuariosForm extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'user/users/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close() 
+                Swal.close() 
                 const { tipos, departamentos, proyectos, empleados } = response.data
                 const { options } = this.state
 

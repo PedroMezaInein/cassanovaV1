@@ -5,6 +5,7 @@ import { Card, Nav, Tab } from 'react-bootstrap'
 import { Button, InputSinText } from '../../components/form-components';
 import moment from 'moment'
 import { waitAlert, errorAlert, forbiddenAccessAlert, questionAlert2 } from '../../functions/alert'
+import Swal from 'sweetalert2'
 import swal from 'sweetalert'
 import { COLORES_GRAFICAS_IM, COLORES_GRAFICAS_INEIN, IM_AZUL, INEIN_RED, URL_DEV } from '../../constants'
 import axios from 'axios'
@@ -309,8 +310,7 @@ class ReporteVentas extends Component {
 
         await axios.post( URL_DEV + 'reportes/ventas/save', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close()
-                
+                Swal.close()
             },
             (error) => {
                 console.log(error, 'error')
@@ -328,7 +328,7 @@ class ReporteVentas extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'reportes/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close()
+                Swal.close()
                 const { empresas } = response.data
                 const { options } = this.state
 
@@ -369,7 +369,7 @@ class ReporteVentas extends Component {
                     return false
                 })
                 
-                swal.close()
+                Swal.close()
                 data.total = {
                     labels: ['TOTAL'],
                     datasets: [{
@@ -852,7 +852,7 @@ class ReporteVentas extends Component {
             (response) => {
                 const { empresas } = response.data
                 let { empresaActive } = this.state
-                swal.close()
+                Swal.close()
                 if(empresas.length)
                     empresaActive = empresas[0].id
                 this.setState({
@@ -863,7 +863,7 @@ class ReporteVentas extends Component {
                 })
             },
             (error) => {
-                swal.close()
+                Swal.close()
                 console.log(error, 'error')
                 if (error.response.status === 401) {
                     forbiddenAccessAlert()
@@ -872,7 +872,7 @@ class ReporteVentas extends Component {
                 }
             }
         ).catch((error) => {
-            swal.close()
+            Swal.close()
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
@@ -923,7 +923,7 @@ class ReporteVentas extends Component {
             form
         })
 
-        swal.close()
+        Swal.close()
         
         questionAlert2(
             '¿ESTÁS SEGURO?', '',

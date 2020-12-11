@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import { Card, Accordion } from 'react-bootstrap';
 import axios from 'axios';
+import Swal from 'sweetalert2'
 import swal from 'sweetalert';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
 import Layout from '../../../components/layout/layout'
@@ -755,7 +756,7 @@ class ProyectosForm extends Component {
         const { access_token } = this.props.authUser
         await axios.put(`${URL_DEV}proyectos/${proyecto.id}/estatus`,{estatus: estatus}, { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close()
+                Swal.close()
                 doneAlert('Estado actualizado con éxito')
                 const { history } = this.props
                 history.push({
@@ -781,7 +782,7 @@ class ProyectosForm extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'proyectos/opciones', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close()
+                Swal.close()
                 const { clientes, empresas, estatus } = response.data
                 const { options } = this.state
                 options['clientes'] = setOptions(clientes, 'empresa', 'id')

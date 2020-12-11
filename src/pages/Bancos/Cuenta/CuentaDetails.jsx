@@ -10,7 +10,7 @@ import { setMoneyTable, setDateTable } from '../../../functions/setters'
 import { Tab, Tabs } from 'react-bootstrap';
 import { errorAlert, waitAlert, forbiddenAccessAlert } from '../../../functions/alert'
 import { Small } from '../../../components/texts'
-
+import Swal from 'sweetalert2'
 class CuentaDetails extends Component {
     state = {
         key: 'traspasos_destino',
@@ -58,7 +58,7 @@ class CuentaDetails extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'cuentas/single/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close()
+                Swal.close()
                 const { cuenta } = response.data
                 const { data } = this.state
                 data.compras = this.setCompras(cuenta.compras)
