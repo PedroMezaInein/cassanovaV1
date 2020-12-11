@@ -161,6 +161,8 @@ const Calidad = Loader(() => import('./pages/Calidad/Calidad') )
 const CalidadForm = Loader(() => import('./pages/Calidad/CalidadForm') )
 
 const MaterialEmpresa = Loader( () => import('./pages/Mercadotecnia/MaterialEmpresa/MaterialEmpresa') )
+const MaterialCliente = Loader( () => import('./pages/Mercadotecnia/MaterialCliente/MaterialCliente') )
+
 class App extends Component{
     async componentDidMount(){
         const { access_token } = this.props.authUser
@@ -374,6 +376,7 @@ class App extends Component{
                 <Route path = "/calidad/calidad" exact component ={ Calidad } />
                 <Route path = "/calidad/calidad/:action" exact component = { CalidadForm } />
                 <Route path = "/mercadotecnia/material-empresas" exact component ={ MaterialEmpresa } />
+                <Route path = "/mercadotecnia/material-clientes" exact component ={ MaterialCliente} />
                 
             </>
         )

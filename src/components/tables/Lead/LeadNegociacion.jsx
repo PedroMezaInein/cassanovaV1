@@ -189,7 +189,7 @@ class LeadNegociacion extends Component {
                                                         this.actionsButton(lead) ?
                                                             <OverlayTrigger overlay={<Tooltip>CONTRATAR</Tooltip>}>
                                                                 <span onClick={(e) => { changePageContratar(lead) }} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-brown">
-                                                                    <i className="fas fa-file-signature icon-nm"></i>
+                                                                    <i className="fas fa-file-signature icon-14px"></i>
                                                                 </span>
                                                             </OverlayTrigger>
                                                         :
