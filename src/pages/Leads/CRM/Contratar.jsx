@@ -11,6 +11,7 @@ import { doneAlert, errorAlert, forbiddenAccessAlert, waitAlert } from '../../..
 import ProyectosFormGray from '../../../components/forms/proyectos/ProyectosFormGray'
 import { setOptions } from '../../../functions/setters'
 import swal from 'sweetalert';
+import Swal from 'sweetalert2'
 import { faEye } from '@fortawesome/free-solid-svg-icons'
 import { ProyectoCard } from '../../../components/cards'
 
@@ -223,7 +224,7 @@ class Contratar extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'proyectos/opciones', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close()
+                Swal.close()
                 const { clientes, empresas, estatus } = response.data
                 const { options } = this.state
                 options['clientes'] = setOptions(clientes, 'empresa', 'id')

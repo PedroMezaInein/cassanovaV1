@@ -14,6 +14,8 @@ import { Tabs, Tab, Form } from 'react-bootstrap'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
 import { FacturacionCard } from '../../components/cards'
 import NumberFormat from 'react-number-format'
+import Swal from 'sweetalert2'
+
 const $ = require('jquery');
 class Facturacion extends Component {
     state = {
@@ -80,7 +82,7 @@ class Facturacion extends Component {
                 const { data } = this.state
                 data.clientes = clientes
                 data.empresas = empresas
-                swal.close()
+                Swal.close()
                 this.setState({
                     ...this.state,
                     data
@@ -634,7 +636,7 @@ class Facturacion extends Component {
                             createAlert('No existe el cliente', '¿Lo quieres crear?', () => this.addClienteAxios(obj))
                         }
                         if (auxEmpresa && auxCliente) {
-                            swal.close()
+                            Swal.close()
                         }
                         form.facturaObject = obj
                         this.setState({

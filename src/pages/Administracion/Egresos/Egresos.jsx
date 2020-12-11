@@ -16,6 +16,7 @@ import Select from '../../../components/form-components/Select'
 import TableForModals from '../../../components/tables/TableForModals'
 import AdjuntosForm from '../../../components/forms/AdjuntosForm'
 import { EgresosCard } from '../../../components/cards'
+import Swal from 'sweetalert2'
 const $ = require('jquery');
 class egresos extends Component {
     state = {
@@ -245,7 +246,7 @@ class egresos extends Component {
                             createAlert('No existe el proveedor', '¿Lo quieres crear?', () => this.addProveedorAxios(obj))
                         }
                         if (auxEmpresa && auxProveedor) {
-                            swal.close()
+                            Swal.close()
                         }
                         form.facturaObject = obj
                         form.rfc = obj.rfc_emisor
@@ -578,7 +579,7 @@ class egresos extends Component {
                 data.proveedores = proveedores
                 data.empresas = empresas
                 options['estatusCompras'] = setSelectOptions(estatusCompras, 'estatus')
-                swal.close()
+                Swal.close()
                 this.setState({
                     ...this.state,
                     data, options

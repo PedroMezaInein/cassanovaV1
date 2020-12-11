@@ -17,22 +17,49 @@ ReactDOM.render(<Done />, wrapperDone);
 let done = wrapperDone.firstChild;
 
 export async function waitAlert() {
-    swal({
+    /* swal({
         title: '¡UN MOMENTO!',
         text: 'LA INFORMACIÓN ESTÁ SIENDO PROCESADA.',
         buttons: false,
         content: sending
+    }) */
+    MySwal.fire({
+        title: '¡UN MOMENTO!',
+        html:
+            <div>
+                <p>
+                    LA INFORMACIÓN ESTÁ SIENDO PROCESADA
+                </p>
+                <Sending />
+            </div>,
+        customClass: {
+            actions: 'd-none'
+        }
     })
 }
 
 export async function doneAlert(texto) {
-    swal({
+    MySwal.fire({
+        title: '¡FELICIDADES!',
+        html:
+            <div>
+                <p>
+                    {texto}
+                </p>
+                <Done />
+            </div>,
+        customClass: {
+            actions: 'd-none'
+        },
+        timer: 2500,
+    })
+    /* swal({
         title: '¡FELICIDADES!',
         text: texto,
         buttons: false,
         timer: 2500,
         content: done
-    })
+    }) */
 }
 
 export function errorAlert(text) {
@@ -47,7 +74,7 @@ export function errorAlert(text) {
 }
 
 export function deleteAlert(text, action) {
-    swal({
+    /* swal({
         title: text,
         buttons: {
             cancel: {
@@ -66,6 +93,23 @@ export function deleteAlert(text, action) {
             }
         }
     }).then((result) => {
+        if (result) {
+            action()
+        }
+    }) */
+    Swal.fire({
+        title: text,
+        showConfirmButton: true,
+        showCancelButton: true,
+        confirmButtonText: 'ACEPTAR',
+        cancelButtonText: 'CANCELAR',
+        customClass: {
+            confirmButton: 'btn btn-light-primary',
+            cancelButton: 'btn btn-light-danger',
+            closeButton: 'd-none'
+        }
+    }).then((result) => {
+        console.log(result, 'result')
         if (result) {
             action()
         }

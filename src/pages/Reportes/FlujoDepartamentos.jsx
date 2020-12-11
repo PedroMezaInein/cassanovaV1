@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios'
 import swal from 'sweetalert'
+import Swal from 'sweetalert2'
 import { connect } from 'react-redux';
 import Layout from '../../components/layout/layout';
 import { Card } from 'react-bootstrap';
@@ -43,7 +44,7 @@ class FlujoDepartamentos extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'reportes/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close()
+                Swal.close()
                 const { empresas } = response.data
                 const { options } = this.state
 

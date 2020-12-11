@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import swal from 'sweetalert'
+import Swal from 'sweetalert2'
 import { URL_DEV, URL_ASSETS } from '../../constants'
 import { setSelectOptions} from '../../functions/setters'
 import { waitAlert, errorAlert, forbiddenAccessAlert } from '../../functions/alert'
@@ -463,13 +464,11 @@ class Contabilidad extends Component {
                         return false
                     })
                     zip.generateAsync({type:"blob"})
-                        .then((blob) => {saveAs(blob, 'contabilidad.zip'); swal.close()})
+                        .then((blob) => {saveAs(blob, 'contabilidad.zip'); Swal.close()})
                         .catch(e => console.log(e));
                     
                 }
                 
-                
-
             },
             (error) => {
                 console.log(error, 'error')
@@ -521,7 +520,6 @@ class Contabilidad extends Component {
         )
     }
 }
-
 
 const mapStateToProps = state => {
     return {

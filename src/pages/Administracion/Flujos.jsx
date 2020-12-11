@@ -10,6 +10,7 @@ import Layout from '../../components/layout/layout'
 import { Card } from 'react-bootstrap'
 import { FlujosForm } from '../../components/forms'
 import TableForModals from '../../components/tables/TableForModals'
+import Swal from 'sweetalert2'
 class Flujos extends Component {
     state = {
         form: {
@@ -203,7 +204,7 @@ class Flujos extends Component {
                 const { data } = this.state
                 const { flujos } = response.data
                 data.flujos = flujos
-                swal.close()
+                Swal.close()
                 this.setState({
                     ...this.state,
                     data,

@@ -1012,7 +1012,7 @@ class Proyectos extends Component {
         waitAlert()
         await axios.post(URL_DEV + 'proyectos/' + proyecto.id + '/adjuntos/zip', aux, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close()
+                Swal.close()
                 const url = URL_ASSETS + '/storage/adjuntos.zip'
                 const link = document.createElement('a');
                 link.href = url;
