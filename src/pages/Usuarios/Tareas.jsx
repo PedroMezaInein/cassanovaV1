@@ -346,7 +346,7 @@ class Tareas extends Component{
         form.departamento = subActiveKey
         await axios.post(URL_DEV + 'user/tareas', form, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
             (response) => {
-                swal.close()
+                Swal.close()
                 const { data : { user } } = response
                 const { form } = this.state
                 const { tableros } = response.data
@@ -424,7 +424,7 @@ class Tareas extends Component{
                     adjuntoName: '',
                     tableros:tableros
                 })
-                swal.close()
+                Swal.close()
             },
             (error) => {
                 console.log(error, 'error')

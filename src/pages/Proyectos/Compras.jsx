@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
+import Swal from 'sweetalert2'
 import swal from 'sweetalert'
 import { URL_DEV, COMPRAS_COLUMNS, ADJUNTOS_COLUMNS } from '../../constants'
 import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setAdjuntosList } from '../../functions/setters'
@@ -294,8 +295,6 @@ class Compras extends Component {
             options['subareas'] = setOptions(compra.subarea.area.subareas, 'nombre', 'id')
             form.subarea = compra.subarea.id.toString()
         }
-
-
 
         form.tipoPago = compra.tipo_pago ? compra.tipo_pago.id : 0
         form.tipoImpuesto = compra.tipo_impuesto ? compra.tipo_impuesto.id : 0
@@ -603,7 +602,7 @@ class Compras extends Component {
                             createAlert('No existe el proveedor', '¿Lo quieres crear?', () => this.addProveedorAxios(obj))
                         }
                         if (auxEmpresa && auxProveedor) {
-                            swal.close()
+                            Swal.close()
                         }
                         form.facturaObject = obj
                         form.rfc = obj.rfc_emisor
@@ -669,7 +668,7 @@ class Compras extends Component {
         waitAlert()
         await axios.get(URL_DEV + 'compras/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close()
+                Swal.close()
                 const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, proyectos,
                     proveedores, formasPago, metodosPago, estatusFacturas } = response.data
                 const { options, data } = this.state

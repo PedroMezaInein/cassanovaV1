@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { Card } from 'react-bootstrap';
 import { connect } from 'react-redux';
+import Swal from 'sweetalert2'
 import swal from 'sweetalert';
 import Layout from '../../../components/layout/layout';
 import { URL_DEV } from '../../../constants';
@@ -156,7 +157,7 @@ class HerramientaForm extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'herramientas/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close()
+                Swal.close()
                 const { empresas, proyectos } = response.data
                 const { options, herramienta, form } = this.state
                 options.empresas = setOptions(empresas, 'name', 'id')

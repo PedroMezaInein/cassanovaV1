@@ -457,7 +457,7 @@ class Empresas extends Component {
         await axios.get(URL_DEV + 'empresa/detenidas', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { empresas } = response.data
-                swal.close();
+                Swal.close();
                 this.setState({
                     ...this.state,
                     modalInhabilitadas: true,
