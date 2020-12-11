@@ -6,7 +6,6 @@ import { Button, InputSinText } from '../../components/form-components';
 import moment from 'moment'
 import { waitAlert, errorAlert, forbiddenAccessAlert, questionAlert2 } from '../../functions/alert'
 import Swal from 'sweetalert2'
-import swal from 'sweetalert'
 import { COLORES_GRAFICAS_IM, COLORES_GRAFICAS_INEIN, IM_AZUL, INEIN_RED, URL_DEV } from '../../constants'
 import axios from 'axios'
 import { pdf } from '@react-pdf/renderer'

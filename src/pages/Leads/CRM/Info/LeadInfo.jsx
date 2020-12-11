@@ -9,7 +9,6 @@ import { toAbsoluteUrl } from "../../../../functions/routers"
 import { setOptions, setDateTableLG } from '../../../../functions/setters';
 import axios from 'axios'
 import { doneAlert, errorAlert, forbiddenAccessAlert, waitAlert, questionAlert2, questionAlert } from '../../../../functions/alert';
-import swal from 'sweetalert';
 import Swal from 'sweetalert2'
 import { HistorialContactoForm, AgendarCitaForm, PresupuestoDiseñoCRMForm, PresupuestoGenerado,InformacionGeneral} from '../../../../components/forms'
 import { Modal } from '../../../../components/singles'

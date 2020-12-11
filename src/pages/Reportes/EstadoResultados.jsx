@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios'
 import Swal from 'sweetalert2'
-import swal from 'sweetalert'
 import { connect } from 'react-redux';
 import Layout from '../../components/layout/layout';
 import { Card } from 'react-bootstrap';

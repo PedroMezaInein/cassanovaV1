@@ -6,7 +6,6 @@ import { URL_DEV } from '../../../constants'
 import { waitAlert, doneAlert, errorAlert, forbiddenAccessAlert, deleteAlert } from '../../../functions/alert'
 import { Card } from 'react-bootstrap'
 import { EstadosCuentaForm as EstadosCuentaFormulario } from '../../../components/forms'
-import swal from 'sweetalert'
 import Swal from 'sweetalert2'
 import { setOptions } from '../../../functions/setters'
 class EstadosCuentaForm extends Component {

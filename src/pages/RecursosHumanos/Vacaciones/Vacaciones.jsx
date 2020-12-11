@@ -496,7 +496,7 @@ class Vacaciones extends Component {
                             onClick = { () => { this.downloadPlantilla() } }
                             className = "btn btn-icon btn-light-primary btn-sm mr-2 ml-auto"
                             only_icon = "fas fa-file-excel icon-md"
-                            tooltip = { { text: 'Descargar plantilla' } }
+                            tooltip = { { text: 'DESCARGAR PLANTILLA' } }
                             />
                     </div>
                     <div>

@@ -9,7 +9,6 @@ import { setTextTable, setMoneyTable, setDateTable, setOptions, setLabelTable } 
 import { errorAlert, forbiddenAccessAlert, doneAlert, waitAlert, createAlert, questionAlertY } from '../../functions/alert'
 import { Modal, ItemSlider } from '../../components/singles'
 import { Button, FileInput } from '../../components/form-components'
-import swal from 'sweetalert'
 import { Tabs, Tab, Form } from 'react-bootstrap'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
 import { FacturacionCard } from '../../components/cards'

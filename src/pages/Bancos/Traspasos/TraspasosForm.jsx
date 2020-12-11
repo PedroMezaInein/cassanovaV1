@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Card } from 'react-bootstrap';
 import { connect } from 'react-redux'
-import swal from 'sweetalert';
 import Swal from 'sweetalert2'
 import Layout from '../../../components/layout/layout'
 import { URL_DEV } from '../../../constants';

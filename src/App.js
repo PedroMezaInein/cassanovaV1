@@ -6,7 +6,8 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import { URL_DEV } from './constants';
 import { logout, login } from './redux/reducers/auth_user'
-import swal from 'sweetalert'
+import Swal from 'sweetalert2'
+import { errorAlert } from './functions/alert';
 
 const Loader = x => Loadable({
     loading: Loading,
@@ -171,29 +172,18 @@ class App extends Component{
                 const { data } = response
                 login(data)
             },
+
             (error) => {
-                if(error.response.status === 401){
-                    this.logoutUser()    
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    this.logoutUser()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
-                else{
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
-                        icon: 'error',
-                        
-                    })
-                }
-                console.log(error.response, 'response')
-                /* this.logoutUser() */
             }
         ).catch((error) => {
-            /* this.logoutUser() */
-            swal({
-                title: '¡Ups 😕!',
-                text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
-                icon: 'error',
-                
-            })
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 

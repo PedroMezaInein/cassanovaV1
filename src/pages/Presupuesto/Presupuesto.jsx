@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import swal from 'sweetalert'
 import Swal from 'sweetalert2'
 import { URL_DEV, PRESUPUESTO_COLUMNS, ADJUNTOS_PRESUPUESTOS_COLUMNS } from '../../constants'
 import { setOptions, setTextTable, setDateTable, setAdjuntosList } from '../../functions/setters'
