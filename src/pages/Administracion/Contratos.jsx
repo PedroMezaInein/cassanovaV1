@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import swal from 'sweetalert'
 import { renderToString } from 'react-dom/server'
 import { waitAlert, errorAlert, forbiddenAccessAlert, validateAlert, doneAlert } from '../../functions/alert'
 import { setOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable } from '../../functions/setters'

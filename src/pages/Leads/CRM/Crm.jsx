@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import axios from 'axios'
 import { URL_DEV } from '../../../constants'
 import Layout from '../../../components/layout/layout';
-import swal from 'sweetalert'
 import { Col, Row, Card, Form, Tab, Nav, DropdownButton, Dropdown } from 'react-bootstrap'
 import { setOptions } from '../../../functions/setters'
 import { UltimosContactosCard, SinContacto, UltimosIngresosCard } from '../../../components/cards'

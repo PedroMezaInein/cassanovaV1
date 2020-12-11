@@ -7,7 +7,6 @@ import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert } from '../../..
 import Layout from '../../../components/layout/layout'
 import { ProveedorForm as ProveedorFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
-import swal from 'sweetalert';
 import Swal from 'sweetalert2'
 class ProveedorForm extends Component {
     state = {

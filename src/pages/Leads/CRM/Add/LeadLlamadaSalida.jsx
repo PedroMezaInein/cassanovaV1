@@ -5,7 +5,6 @@ import { Form } from 'react-bootstrap';
 import { InputGray, SelectSearchGray, InputPhoneGray, Button } from '../../../../components/form-components';
 import axios from 'axios'
 import { doneAlert, errorAlert, forbiddenAccessAlert, validateAlert, waitAlert } from '../../../../functions/alert';
-import swal from 'sweetalert';
 import Swal from 'sweetalert2'
 import { setOptions } from '../../../../functions/setters';
 import { TEL, URL_DEV, EMAIL } from '../../../../constants';

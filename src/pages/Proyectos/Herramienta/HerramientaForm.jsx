@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { Card } from 'react-bootstrap';
 import { connect } from 'react-redux';
 import Swal from 'sweetalert2'
-import swal from 'sweetalert';
 import Layout from '../../../components/layout/layout';
 import { URL_DEV } from '../../../constants';
 import { deleteAlert, doneAlert, errorAlert, forbiddenAccessAlert, waitAlert } from '../../../functions/alert';
