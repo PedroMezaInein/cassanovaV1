@@ -253,12 +253,20 @@ export function errorAdjuntos(title, text, html) {
 }
 
 export function forbiddenAccessAlert() {
-    swal({
+    
+    Swal.fire({
         title: '¡Ups 😕!',
         text: 'PARECE QUE NO HAS INICIADO SESIÓN',
         icon: 'warning',
-        confirmButtonText: 'INICIA SESIÓN'
-    });
+        showConfirmButton: false,
+        showCancelButton: true,
+        confirmButtonText: 'ACEPTAR',
+        cancelButtonText: 'INICIAR SESIÓN',
+        customClass: {
+            cancelButton: 'btn btn-light-danger',
+            closeButton: 'd-none'
+        }
+    })
 }
 
 export function validateAlert(success, e, name) {
@@ -266,12 +274,14 @@ export function validateAlert(success, e, name) {
     if (elementsInvalid.length === 0) {
         success(e)
     } else {
-        swal({
+        Swal.fire({
             title: '¡LO SENTIMOS!',
-            text: 'LLENA TODOS LOS CAMPOS REQUERIDOS',
+            text: 'Llena todos los campos requeridos',
             icon: 'warning',
-            timer: 1500,
-            buttons: false
+            customClass: {
+                actions: 'd-none'
+            },
+            timer: 2500,
         })
     }
 }
