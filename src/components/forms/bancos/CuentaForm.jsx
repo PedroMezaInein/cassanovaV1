@@ -5,7 +5,7 @@ import { SelectSearch, Input, InputNumber, Select, Button, SelectSearchTrue, Tag
 const $ = require('jquery');
 export default class CuentaForm extends Component {
 
-    nuevoUpdateCliente = seleccionados =>{
+    nuevoUpdateEmpresa = seleccionados =>{
         const { form,removeEmpresa } = this.props
         seleccionados = seleccionados?seleccionados:[];
         if(seleccionados.length>form.empresas.length){
@@ -133,7 +133,7 @@ export default class CuentaForm extends Component {
                             placeholder="SELECCIONA LA EMPRESA"
                             options={this.transformarOptions(options.empresas)}
                             defaultvalue={this.transformarOptions(form.empresas)}
-                            onChange={this.nuevoUpdateCliente}
+                            onChange={this.nuevoUpdateEmpresa}
                             iconclass={"far fa-building"}
                             requirevalidation={0}
                             messageinc="Incorrecto. Selecciona la(s) empresas."
