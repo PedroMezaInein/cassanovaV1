@@ -113,20 +113,18 @@ class Contabilidad extends Component {
         })
     }
 
-    onChangeEmpresa = e => {
-        const { value } = e.target
+    onChangeEmpresa = empresa => {
         const { options, form } = this.state
         let auxEmpresa = form.empresas
         let aux = []
         options.empresas.find(function (_aux) {
-            if (_aux.value.toString() === value.toString()) {
+            if (_aux.value.toString() === empresa.toString()) {
                 auxEmpresa.push(_aux)
             } else {
                 aux.push(_aux)
             }
             return false
         })
-
         options.empresas = aux
         form['empresas'] = auxEmpresa
         this.setState({

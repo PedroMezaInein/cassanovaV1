@@ -81,6 +81,7 @@ class TagSelectSearchGray extends Component {
                         placeholder={placeholder}
                         onChange={onChange}
                         styles={customStyles}
+                        noOptionsMessage={() => "NO HAY MÁS OPCIONES"}
                     />
                 </div>
                 {

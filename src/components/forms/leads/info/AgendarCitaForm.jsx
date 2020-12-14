@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 import { CalendarDay, Button, InputGray, TagInputGray, SelectHorario, RadioGroupGray} from '../../../form-components'
 import { Col, Form } from 'react-bootstrap'
-// import { EMAIL } from '../../../../constants'
-// import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { messageAlert } from '../../../../functions/alert'
 class AgendarCitaForm extends Component {
     addCorreo = () => {
@@ -146,52 +144,10 @@ class AgendarCitaForm extends Component {
                                     iconclass = "fas fa-envelope"
                                     letterCase = { false }
                                 />
-                                {/* <InputGray
-                                    letterCase = { false }
-                                    withtaglabel = { 1 }
-                                    withtextlabel = { 1 }
-                                    withplaceholder = { 1 }
-                                    withicon = { 1 }
-                                    placeholder = "CORREOS DE ASISTENTES"
-                                    iconclass = 'fas fa-envelope'
-                                    name = 'correo'
-                                    value = { formAgenda.correo }
-                                    onChange = { onChange }
-                                    patterns = { EMAIL }
-                                /> */}
                             </div>
-                            {/* <div className="col-md-2 mt-3 d-flex justify-content-center align-items-center">
-                                <Button icon={faPlus} pulse={"pulse-ring"} className={"btn btn-icon btn-light-gray pulse pulse-dark mr-5"} onClick={(e) => { e.preventDefault(); this.addCorreo() }} />
-                            </div> */}
                         </div>
-                        {/* <div>
-                            <div className="form-group row form-group-marginless">
-                                <div className="col-md-12 row mx-0">
-                                    {
-                                        formAgenda.correos.map((correo, key) => {
-                                            return (
-                                                <div className="tagify form-control p-1 col-md-4 px-2 d-flex justify-content-center align-items-center white-space" tabIndex="-1" style={{ borderWidth: "0px" }} key={key}>
-                                                    <div className=" image-upload d-flex px-3 align-items-center tagify__tag tagify__tag--primary tagify--noAnim white-space"  >
-                                                        <div
-                                                            title="Borrar archivo"
-                                                            className="tagify__tag__removeBtn"
-                                                            role="button"
-                                                            aria-label="remove tag"
-                                                            onClick={(e) => { e.preventDefault(); removeCorreo(correo) }}
-                                                        >
-                                                        </div>
-                                                        <div><span className="tagify__tag-text p-1 white-space">{correo}</span></div>
-                                                    </div>
-                                                </div>
-                                            )
-                                        })
-                                    }
-                                </div>
-                            </div>
-                        </div> */}
                     </Col>
                 </div>
-                {/* <div className='text-center pb-4'> </div> */}
                 <div className="card-footer pt-3 pr-1 pb-0">
                     <div className="row">
                         <div className="col-lg-12 text-right pr-0 pb-0">

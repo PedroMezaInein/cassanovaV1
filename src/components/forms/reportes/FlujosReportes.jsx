@@ -15,11 +15,11 @@ class FlujosReportes extends Component {
                     <SelectSearch
                         name='empresa'
                         options={options.empresas}
-                        placeholder='SELECCIONA LA(S) EMPRESA(S)'
+                        placeholder='SELECCIONA LA EMPRESA'
                         value={form.empresa}
                         onChange={this.updateEmpresa}
                         iconclass={"far fa-building"}
-                        messageinc="Incorrecto. Selecciona la(s) empresa(s)."
+                        messageinc="Incorrecto. Selecciona la empresa."
                     />
                 </div>
                 <div className="mt-4 text-center">
