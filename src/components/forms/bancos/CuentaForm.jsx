@@ -1,13 +1,38 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
 import { validateAlert } from '../../../functions/alert'
-import { SelectSearch, Input, InputNumber, Select, Button, SelectSearchTrue } from '../../form-components'
-
+import { SelectSearch, Input, InputNumber, Select, Button, SelectSearchTrue, TagSelectSearch } from '../../form-components'
+const $ = require('jquery');
 export default class CuentaForm extends Component {
+
+    nuevoUpdateCliente = seleccionados =>{
+        const { form,removeEmpresa } = this.props
+        seleccionados = seleccionados?seleccionados:[];
+        if(seleccionados.length>form.empresas.length){
+            let diferencia = $(seleccionados).not(form.empresas).get();
+            let val_diferencia = diferencia[0].value.toString()
+            this.updateSelect(val_diferencia,'empresa')
+        }
+        else {
+            let diferencia = $(form.empresas).not(seleccionados).get(); 
+            diferencia.forEach(borrar=>{
+                removeEmpresa(borrar,"empresas")
+            })
+        }
+    }
 
     updateSelect = (value, name) => {
         const { onChange } = this.props
         onChange({ target: { value: value, name: name } })
+    }
+
+    transformarOptions = options => {
+        options = options?options:[]
+        options.map(value=>{
+            value.label = value.name?value.name:value.text
+            value.value = value.value ?value.value.toString():value.id.toString()
+        } );
+        return options
     }
 
     render() {
@@ -50,7 +75,6 @@ export default class CuentaForm extends Component {
                             </div>
                             : ''
                     }
-
                     <div className={tipo === 'cajas' ? 'col-md-6' : "col-md-4"}>
                         <Select requirevalidation={1}
                             formeditado={formeditado}
@@ -74,7 +98,7 @@ export default class CuentaForm extends Component {
                             value={form.tipo}
                             onChange={(value) => { this.updateSelect(value, 'tipo') }}
                             iconclass='far fa-address-card'
-                            messageinc='Incorrecto. Selecciona el tipo de cuenta.' 
+                            messageinc='Incorrecto. Selecciona el tipo de cuenta.'
                         />
                     </div>
                     <div className="col-md-4">
@@ -105,42 +129,16 @@ export default class CuentaForm extends Component {
                 <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
-                        <SelectSearch requirevalidation={0}
-                            formeditado={formeditado}
-                            name='empresa'
-                            options={options.empresas}
-                            placeholder='SELECCIONA LA(S) EMPRESA(S)'
-                            value={form.empresa}
-                            onChange={(value) => { this.updateSelect(value, 'empresa') }}
-                            iconclass="far fa-building"
+                        <TagSelectSearch
+                            placeholder="SELECCIONA LA EMPRESA"
+                            options={this.transformarOptions(options.empresas)}
+                            defaultvalue={this.transformarOptions(form.empresas)}
+                            onChange={this.nuevoUpdateCliente}
+                            iconclass={"far fa-building"}
+                            requirevalidation={0}
                             messageinc="Incorrecto. Selecciona la(s) empresas."
                         />
                     </div>
-                    {
-                        form.empresas.length > 0 ?
-                            <div className="col-md-8 row mx-0 align-items-center image-upload">
-                                {
-                                    form.empresas.map((empresa, key) => {
-                                        return (
-                                            <div className="tagify form-control p-1 col-md-4 px-2 d-flex justify-content-center align-items-center" tabIndex="-1" style={{ borderWidth: "0px" }} key={key}>
-                                                <div className="tagify__tag tagify__tag--primary tagify--noAnim" key={key}>
-                                                    <div
-                                                        title="Borrar archivo"
-                                                        className="tagify__tag__removeBtn"
-                                                        role="button"
-                                                        aria-label="remove tag"
-                                                        onClick={(e) => { e.preventDefault(); removeEmpresa(empresa) }}
-                                                    >
-                                                    </div>
-                                                    <div><span className="tagify__tag-text p-1 white-space">{empresa.text}</span></div>
-                                                </div>
-                                            </div>
-                                        )
-                                    })
-                                }
-                            </div>
-                            : ''
-                    }
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
