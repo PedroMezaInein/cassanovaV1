@@ -15,8 +15,8 @@ export default class UltimosContactosCard extends Component {
         var diff = moment.duration(moment(now).diff(moment(then)));
         var months = parseInt(moment(now).diff(moment(then), 'month'))
         var days = parseInt(diff.asDays());
-        var hours = parseInt(diff.asHours());
-        var minutes = parseInt(diff.asMinutes());
+        // var hours = parseInt(diff.asHours());
+        // var minutes = parseInt(diff.asMinutes());
         if (months) {
             if (months === 1)
                 return '1 mes'

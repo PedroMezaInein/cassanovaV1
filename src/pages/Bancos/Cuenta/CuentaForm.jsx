@@ -294,7 +294,8 @@ class CuentaForm extends Component {
                         <CuentaFormulario
                             options={options}
                             formeditado={formeditado}
-                            form={form} onChange={this.onChange}
+                            form={form}
+                            onChange={this.onChange}
                             removeEmpresa={this.removeEmpresa}
                             onSubmit={this.onSubmit}
                             tipo={tipo} 

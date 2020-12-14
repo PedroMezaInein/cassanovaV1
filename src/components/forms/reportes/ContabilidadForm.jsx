@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form' 
-import { Button, Select, RangeCalendar, OptionsCheckbox } from '../../form-components' 
+import { Button, RangeCalendar, OptionsCheckbox, TagSelectSearch} from '../../form-components' 
 import { validateAlert } from '../../../functions/alert'
-
+const $ = require('jquery');
 class ContabilidadForm extends Component {
 
     // handleChangeDateInicio = date => {
@@ -27,6 +27,29 @@ class ContabilidadForm extends Component {
         onChange({ target: { value: optionesChecked, name: aux } })
     }
 
+    nuevoUpdateEmpresa = seleccionados =>{
+        const { form,updateEmpresa, onChangeEmpresa } = this.props
+        seleccionados = seleccionados?seleccionados:[];
+        if(seleccionados.length>form.empresas.length){
+            let diferencia = $(seleccionados).not(form.empresas).get();
+            let val_diferencia = diferencia[0].value
+            onChangeEmpresa(val_diferencia)
+        }
+        else {
+            let diferencia = $(form.empresas).not(seleccionados).get(); 
+            diferencia.forEach(borrar=>{
+                updateEmpresa(borrar,"empresas")
+            })
+        }
+    }
+    transformarOptions = options => {
+        options = options?options:[]
+        options.map(value=>{
+            value.label = value.text 
+        } );
+    
+        return options
+    }
     render() {
         const { form, onChange, options, onChangeEmpresa, updateEmpresa, formeditado, onSubmit, onChangeRange, ...props } = this.props
         return (
@@ -40,51 +63,27 @@ class ContabilidadForm extends Component {
                 {...props}
             >
                 <div className="form-group row form-group-marginless">
-                    <div className="col text-center">
-                        <label className="col-form-label my-2 font-weight-bolder">Fecha de inicio - Fecha final</label><br/>
+                    <div className="col-md-12 d-flex justify-content-center mb-2">
+                        <div className="col-md-6">
+                            <TagSelectSearch
+                                requirevalidation={1}
+                                placeholder="SELECCIONA LA(S) EMPRESA(S)"
+                                options={this.transformarOptions(options.empresas)}
+                                defaultvalue={this.transformarOptions(form.empresas)}
+                                // onChange={onChangeEmpresa}
+                                onChange={this.nuevoUpdateEmpresa}
+                                iconclass={"far fa-building"}
+                                messageinc="Incorrecto. Selecciona la(s) empresa(s)."
+                            />
+                        </div>
+                    </div>
+                    <div className="col-md-12 text-center">
+                    <label className="col-form-label my-2 font-weight-bolder">Fecha de inicio - Fecha final</label><br/>
                         <RangeCalendar
                             onChange={onChangeRange}
                             start={form.fechaInicio}
                             end={form.fechaFin}
                         />
-                    </div>
-                    <div className="col">
-                        <Select
-                            requirevalidation={1}
-                            formeditado={formeditado}
-                            name='empresa'
-                            options={options.empresas}
-                            placeholder='SELECCIONA LA(S) EMPRESA(S)'
-                            value={form.empresa}
-                            onChange={onChangeEmpresa}
-                            iconclass={"far fa-building"}
-                            messageinc="Incorrecto. Selecciona la(s) empresa(s)."
-                        />
-                        {
-                            form.empresas.length > 0 ?
-                                <div className="col-md-12 row mx-0 align-items-center image-upload mt-5">
-                                    {
-                                        form.empresas.map((empresa, key) => {
-                                            return (
-                                                <div className="tagify form-control p-1 col-md-12 px-2 d-flex justify-content-center align-items-center mb-3" tabIndex="-1" style={{ borderWidth: "0px" }} key={key}>
-                                                    <div className="tagify__tag tagify__tag--primary tagify--noAnim" >
-                                                        <div
-                                                            title="Borrar archivo"
-                                                            className="tagify__tag__removeBtn"
-                                                            role="button"
-                                                            aria-label="remove tag"
-                                                            onClick={(e) => { e.preventDefault(); updateEmpresa(empresa) }}
-                                                        >
-                                                        </div>
-                                                        <div><span className="tagify__tag-text p-1 white-space">{empresa.text}</span></div>
-                                                    </div>
-                                                </div>
-                                            )
-                                        })
-                                    }
-                                </div>
-                                : ''
-                        }
                     </div>
                 </div>
                 <div className="form-group row form-group-marginless d-flex justify-content-center">
@@ -127,7 +126,6 @@ class ContabilidadForm extends Component {
                             onChange={(e) => { this.handleChangeCheckbox(e, 'modulos') }}
                         />
                     </div>
-
                     <div className="col-md-4  d-flex justify-content-around align-items-top">
                         <OptionsCheckbox
                             placeholder="SELECCIONA LOS ARCHIVOS A INCLUIR"

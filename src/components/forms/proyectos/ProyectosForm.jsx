@@ -267,15 +267,6 @@ class ProyectosForm extends Component {
                                         {
                                             formeditado && form.clientes.length ? 
                                                 <>
-                                                    {/* <SelectSearchTrue
-                                                        formeditado={formeditado}
-                                                        options={options.clientes}
-                                                        placeholder="SELECCIONA EL CLIENTE"
-                                                        name="cliente"
-                                                        value={form.cliente}
-                                                        onChange={this.updateCliente}
-                                                        iconclass={"far fa-user"}
-                                                    /> */}
                                                     <TagSelectSearch
                                                         placeholder="SELECCIONA EL CLIENTE"
                                                         options={this.transformarOptions(options.clientes)}
@@ -288,16 +279,6 @@ class ProyectosForm extends Component {
                                                 </>
                                             :   
                                             <>
-                                                {/* <SelectSearch
-                                                    formeditado={formeditado}
-                                                    options={options.clientes}
-                                                    placeholder="SELECCIONA EL CLIENTE"
-                                                    name="cliente"
-                                                    value={form.cliente}
-                                                    onChange={this.updateCliente}
-                                                    iconclass={"far fa-user"}
-                                                    messageinc="Incorrecto. Selecciona el cliente"
-                                                /> */}
                                                 <TagSelectSearch
                                                         placeholder="SELECCIONA EL CLIENTE"
                                                         options={this.transformarOptions(options.clientes)}
@@ -310,45 +291,10 @@ class ProyectosForm extends Component {
                                             </>
                                         }
                                     </div>
-                                    {/* <div className="col-md-4 row mx-0">
-                                        {
-                                            form.clientes.map((cliente, key) => {
-                                                return (
-                                                    <div className="tagify form-control p-1 col-md-6 px-2 d-flex justify-content-center align-items-center white-space" tabIndex="-1" style={{ borderWidth: "0px" }} key={key}>
-                                                        <div className=" image-upload d-flex px-3 align-items-center tagify__tag tagify__tag--primary tagify--noAnim white-space"  >
-                                                            <div
-                                                                title="Borrar archivo"
-                                                                className="tagify__tag__removeBtn"
-                                                                role="button"
-                                                                aria-label="remove tag"
-                                                                onClick={(e) => { e.preventDefault(); deleteOption(cliente, 'clientes') }}
-                                                            >
-                                                            </div>
-                                                            <div><span className="tagify__tag-text p-1 white-space">{cliente.name}</span></div>
-                                                        </div>
-                                                    </div>
-                                                )
-                                            })
-                                        }
-                                    </div> */}
                                 </div>
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-10">
-                                        {/* <Input
-                                            requirevalidation={0}
-                                            formeditado={formeditado}
-                                            //thousandseparator={false}
-                                            prefix={''}
-                                            name="correo"
-                                            value={form.correo}
-                                            onChange={onChange}
-                                            placeholder="CORREO DE CONTACTO"
-                                            iconclass={"fas fa-envelope"}
-                                            messageinc="Incorrecto. Ej. usuario@dominio.com"
-                                            patterns={EMAIL}
-                                            type="email"
-                                        /> */}
                                         <TagInput
                                             tags={form.correos} 
                                             onChange={tagInputChange} 
@@ -356,33 +302,7 @@ class ProyectosForm extends Component {
                                             iconclass={"far fa-folder-open"}
                                         />
                                     </div>
-                                    {/* <div className="col-md-2 mt-3 d-flex justify-content-center align-items-center">
-                                        <Button icon={faPlus} pulse={"pulse-ring"} className={"btn btn-icon btn-light-primary pulse pulse-primary mr-5"} onClick={(e) => { e.preventDefault(); this.addCorreo() }} />
-                                    </div> */}
                                 </div>
-                                {/* <div className="form-group row form-group-marginless">
-                                    <div className="col-md-12 row mx-0">
-                                        {
-                                            form.correos.map((correo, key) => {
-                                                return (
-                                                    <div className="tagify form-control p-1 col-md-4 px-2 d-flex justify-content-center align-items-center white-space" tabIndex="-1" style={{ borderWidth: "0px" }} key={key}>
-                                                        <div className=" image-upload d-flex px-3 align-items-center tagify__tag tagify__tag--primary tagify--noAnim white-space"  >
-                                                            <div
-                                                                title="Borrar archivo"
-                                                                className="tagify__tag__removeBtn"
-                                                                role="button"
-                                                                aria-label="remove tag"
-                                                                onClick={(e) => { e.preventDefault(); removeCorreo(correo) }}
-                                                            >
-                                                            </div>
-                                                            <div><span className="tagify__tag-text p-1 white-space">{correo}</span></div>
-                                                        </div>
-                                                    </div>
-                                                )
-                                            })
-                                        }
-                                    </div>
-                                </div> */}
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2"></div>
                                     <div>
