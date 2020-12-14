@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
 import { SelectSearch, Button } from '../../form-components'
-import RangeCalendar from '../../form-components/RangeCalendar';
 
 class FlujosReportesForm extends Component {
 

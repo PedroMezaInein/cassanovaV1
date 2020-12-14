@@ -6,7 +6,6 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import { URL_DEV } from './constants';
 import { logout, login } from './redux/reducers/auth_user'
-import Swal from 'sweetalert2'
 import { errorAlert } from './functions/alert';
 
 const Loader = x => Loadable({

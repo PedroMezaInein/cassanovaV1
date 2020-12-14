@@ -2,8 +2,8 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Layout from '../../components/layout/layout'
 import { Card, Nav, Tab } from 'react-bootstrap'
-import { Button, InputSinText } from '../../components/form-components';
-import moment from 'moment'
+import { Button } from '../../components/form-components';
+// import moment from 'moment'
 import { waitAlert, errorAlert, forbiddenAccessAlert, questionAlert2 } from '../../functions/alert'
 import Swal from 'sweetalert2'
 import { COLORES_GRAFICAS_IM, COLORES_GRAFICAS_INEIN, IM_AZUL, INEIN_RED, URL_DEV } from '../../constants'
@@ -11,7 +11,7 @@ import axios from 'axios'
 import { pdf } from '@react-pdf/renderer'
 import { Pie, Bar, Line } from 'react-chartjs-2';
 import "chartjs-plugin-datalabels";
-import { setLabelVentas, setOptions, setDateTableLG, setTextTable, setMoneyTable, setMoneyTableSinSmall } from '../../functions/setters';
+import { setLabelVentas, setOptions, setDateTableLG,setMoneyTableSinSmall } from '../../functions/setters';
 import FlujosReportesVentas from '../../components/forms/reportes/FlujosReportesVentas';
 import { Editor } from 'react-draft-wysiwyg';
 import { EditorState, convertToRaw } from 'draft-js';
@@ -880,7 +880,7 @@ class ReporteVentas extends Component {
     async generarPDF(){
         waitAlert()
         let aux = []
-        const { form, editorState, empresa } = this.state
+        const { form, editorState } = this.state
         aux.push(
             { name: 'total', url: this.chartTotalReference.current.chartInstance.toBase64Image() },
             { name: 'total-comparativa', url: this.chartTotalComparativaReference.current.chartInstance.toBase64Image() },
