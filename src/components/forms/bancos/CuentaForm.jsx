@@ -128,7 +128,7 @@ export default class CuentaForm extends Component {
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
-                    <div className="col-md-4">
+                    <div className="col-md-12">
                         <TagSelectSearch
                             placeholder="SELECCIONA LA EMPRESA"
                             options={this.transformarOptions(options.empresas)}
