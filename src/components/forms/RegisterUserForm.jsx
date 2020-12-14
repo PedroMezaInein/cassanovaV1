@@ -1,8 +1,24 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
-import { Input, Button, Select, SelectSearchTrue, RadioGroup } from '../form-components'
+import { Input, Button, Select, SelectSearchTrue, RadioGroup, TagSelectSearch } from '../form-components'
 import { EMAIL } from '../../constants'
+const $ = require('jquery');
 class RegisterUserForm extends Component {
+    nuevoUpdateDepartamento = seleccionados =>{
+        const { form,deleteOption } = this.props
+        seleccionados = seleccionados?seleccionados:[];
+        if(seleccionados.length>form.departamentos.length){
+            let diferencia = $(seleccionados).not(form.departamentos).get();
+            let val_diferencia = diferencia[0].value
+            this.updateDepartamento(val_diferencia)
+        }
+        else {
+            let diferencia = $(form.departamentos ).not(seleccionados).get(); 
+            diferencia.forEach(borrar=>{
+                deleteOption(borrar,"departamentos")
+            })
+        }
+    }
     updateDepartamento = value => {
         const { onChange, onChangeAndAdd, options } = this.props
         options.departamentos.map((departamento) => {
@@ -11,6 +27,21 @@ class RegisterUserForm extends Component {
             return false
         })
         onChange({ target: { value: value, name: 'departamento' } })
+    }
+    nuevoUpdateProyecto= seleccionados =>{
+        const { form,deleteOption } = this.props
+        seleccionados = seleccionados?seleccionados:[];
+        if(seleccionados.length>form.proyectos.length){
+            let diferencia = $(seleccionados).not(form.proyectos).get();
+            let val_diferencia = diferencia[0].value
+            this.updateProyecto(val_diferencia)
+        }
+        else {
+            let diferencia = $(form.proyectos ).not(seleccionados).get(); 
+            diferencia.forEach(borrar=>{
+                deleteOption(borrar,"proyectos")
+            })
+        }
     }
     updateProyecto = value => {
         const { onChange, onChangeAndAdd, options } = this.props
@@ -24,6 +55,13 @@ class RegisterUserForm extends Component {
     updateEmpleado = value => {
         const { onChange } = this.props
         onChange({ target: { value: value, name: 'empleado' } })
+    }
+    transformarOptions = options => {  
+        options = options?options:[]
+        options.map(value=>{
+            value.label = value.name 
+        } );
+        return options
     }
     render() {
         const { options, form, onChange, deleteOption, onChangeOptions, formeditado, departamentos_disponibles, proyectos_disponibles, ...props } = this.props
@@ -55,21 +93,6 @@ class RegisterUserForm extends Component {
                             value = { form.sexo }
                         />
                     </div>
-                    {/* <div className="col-md-3">
-                        <Form.Label className="col-form-label">Selecciona el tipo de sexo</Form.Label>
-                        <div className="input-icon">
-                            <span className="input-icon input-icon-right">
-                                <span>
-                                    <i className="fas fa-venus-mars kt-font-boldest text-primary"></i>
-                                </span>
-                            </span>
-                            <Form.Control className="form-control is-valid text-uppercase sin_icono" value = {form.sexo} onChange={onChange} name='sexo' formeditado={formeditado} as="select">
-                                <option disabled selected value = {0}> Selecciona el sexo</option>
-                                <option value={"femenino"}>Femenino</option>
-                                <option value={"masculino"}>Masculino</option>
-                            </Form.Control>
-                        </div>
-                    </div> */}
                     <div className="col-md-3">
                         <Input
                             onChange={onChange}
@@ -78,9 +101,9 @@ class RegisterUserForm extends Component {
                             name="name"
                             type="text"
                             value={form.name}
-                            placeholder="NOMBRE"
+                            placeholder="NOMBRE DE USUARIO"
                             iconclass={"fas fa-user"}
-                            messageinc="Incorrecto. Ingresa el nombre."
+                            messageinc="Incorrecto. Ingresa el nombre de usuario."
                         />
                     </div>
                     <div className="col-md-3">
@@ -128,90 +151,35 @@ class RegisterUserForm extends Component {
                                         messageinc="Incorrecto. Selecciona el empleado"
                                     />
                                 </div>
-                                <div className="col-md-3">
-                                    <SelectSearchTrue
-                                        options={departamentos_disponibles}
+                                <div className="col-md-9">
+                                    <TagSelectSearch
                                         placeholder="SELECCIONA EL(LOS) DEPARTAMENTO(S)"
-                                        name="departamento"
-                                        value={"No hay más departamentos"}
-                                        onChange={this.updateDepartamento}
+                                        options={this.transformarOptions(options.departamentos)}
+                                        defaultvalue={this.transformarOptions(form.departamentos)}
+                                        onChange={this.nuevoUpdateDepartamento}
                                         iconclass={"fas fa-layer-group"}
-                                        formeditado={formeditado}
+                                        requirevalidation={1}
                                         messageinc="Incorrecto. Selecciona el(los) departamento(s)"
                                     />
-                                </div>
-                                <div className="col-md-6">
-                                    {
-                                        form.departamentos.length > 0 ?
-                                            <div className="col-md-12 row mx-0 align-items-center image-upload">
-                                                {
-                                                    form.departamentos.map((departamento, key) => {
-                                                        return (
-                                                            <div key={key} className="tagify form-control p-1 col-md-4 px-2 d-flex justify-content-center align-items-center" tabIndex="-1" style={{ borderWidth: "0px" }}>
-                                                                <div className="tagify__tag tagify__tag--primary tagify--noAnim">
-                                                                    <div
-                                                                        title="Borrar archivo"
-                                                                        className="tagify__tag__removeBtn"
-                                                                        role="button"
-                                                                        aria-label="remove tag"
-                                                                        onClick={(e) => { e.preventDefault(); deleteOption(departamento, 'departamentos') }}
-                                                                    >
-                                                                    </div>
-                                                                    <div><span className="tagify__tag-text p-1 white-space">{departamento.name}</span></div>
-                                                                </div>
-                                                            </div>
-                                                        )
-                                                    })
-                                                }
-                                            </div>
-                                            : ''
-                                    }
                                 </div>
                             </div>
                         </> : ''
                 }
                 {
-                    form.tipo === '3' ?
+                    form.tipo === 3 ?
                         <>
                             <div className="separator separator-dashed mt-1 mb-2"></div>
                             <div className="form-group row form-group-marginless">
-                                <div className="col-md-3">
-                                    <SelectSearchTrue
-                                        options={proyectos_disponibles}
+                                <div className="col-md-12">
+                                    <TagSelectSearch
                                         placeholder="SELECCIONA EL(LOS) PROYECTO(S)"
-                                        name="proyecto"
-                                        value={form.proyecto}
-                                        onChange={this.updateProyecto}
+                                        options={this.transformarOptions(options.proyectos)}
+                                        defaultvalue={this.transformarOptions(form.proyectos)}
+                                        onChange={this.nuevoUpdateProyecto}
                                         iconclass={"fas fa-layer-group"}
+                                        requirevalidation={1}
                                         messageinc="Incorrecto. Selecciona el(los) proyecto(s)"
                                     />
-                                </div>
-                                <div className="col-md-9">
-                                    {
-                                        form.proyectos.length > 0 ?
-                                            <div className="col-md-12 row mx-0 align-items-center image-upload">
-                                                {
-                                                    form.proyectos.map((proyecto, key) => {
-                                                        return (
-                                                            <div key={key} className="tagify form-control p-1 col-md-4 px-2 d-flex justify-content-center align-items-center" tabIndex="-1" style={{ borderWidth: "0px" }}>
-                                                                <div className="tagify__tag tagify__tag--primary tagify--noAnim">
-                                                                    <div
-                                                                        title="Borrar archivo"
-                                                                        className="tagify__tag__removeBtn"
-                                                                        role="button"
-                                                                        aria-label="remove tag"
-                                                                        onClick={(e) => { e.preventDefault(); deleteOption(proyecto, 'proyectos') }}
-                                                                    >
-                                                                    </div>
-                                                                    <div><span className="tagify__tag-text p-1 white-space">{proyecto.name}</span></div>
-                                                                </div>
-                                                            </div>
-                                                        )
-                                                    })
-                                                }
-                                            </div>
-                                            : ''
-                                    }
                                 </div>
                             </div>
                         </>
