@@ -74,70 +74,39 @@ export function errorAlert(text) {
 }
 
 export function deleteAlert(text, action) {
-    /* swal({
-        title: text,
-        buttons: {
-            cancel: {
-                text: "CANCELAR",
-                value: null,
-                visible: true,
-                className: "button__green btn-primary cancel",
-                closeModal: true,
-            },
-            confirm: {
-                text: "ACEPTAR",
-                value: true,
-                visible: true,
-                className: "button__red btn-primary",
-                closeModal: true
-            }
-        }
-    }).then((result) => {
-        if (result) {
-            action()
-        }
-    }) */
-    Swal.fire({
+    MySwal.fire({
         title: text,
         showConfirmButton: true,
         showCancelButton: true,
         confirmButtonText: 'ACEPTAR',
         cancelButtonText: 'CANCELAR',
         customClass: {
-            confirmButton: 'btn btn-light-primary',
-            cancelButton: 'btn btn-light-danger',
-            closeButton: 'd-none'
+            content: 'd-none',
+            confirmButton: 'btn-light-danger-sweetalert2',
+            cancelButton:'btn-light-gray-sweetalert2'
         }
     }).then((result) => {
-        console.log(result, 'result')
-        if (result) {
+        if (result.value) {
             action()
         }
     })
 }
 
 export function createAlert(title, text, action) {
-    swal({
+    MySwal.fire({
         title: title,
         text: text,
-        buttons: {
-            cancel: {
-                text: "CANCELAR",
-                value: null,
-                visible: true,
-                className: "btn btn-light-danger",
-                closeModal: true,
-            },
-            confirm: {
-                text: "ACEPTAR",
-                value: true,
-                visible: true,
-                className: "btn btn-light-primary",
-                closeModal: true
-            }
+        showCancelButton: true,
+        confirmButtonText: 'ACEPTAR',
+        cancelButtonText: 'CANCELAR',
+        reverseButtons: true,
+        customClass: {
+            content: text?text:'d-none',
+            confirmButton: 'btn-light-success-sweetalert2',
+            cancelButton:'btn-light-gray-sweetalert2'
         }
     }).then((result) => {
-        if (result) {
+        if (result.value) {
             action()
         }
     })
@@ -253,9 +222,8 @@ export function errorAdjuntos(title, text, html) {
 }
 
 export function forbiddenAccessAlert() {
-    
     Swal.fire({
-        title: '¡Ups 😕!',
+        title: '¡UPS 😕!',
         text: 'PARECE QUE NO HAS INICIADO SESIÓN',
         icon: 'warning',
         showConfirmButton: false,
