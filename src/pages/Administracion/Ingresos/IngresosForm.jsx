@@ -258,7 +258,7 @@ class IngresosForm extends Component {
                         if (auxCliente) {
                             form.cliente = auxCliente.empresa
                         } else {
-                            createAlert('No existe el cliente', '¿Lo quieres crear?', () => this.addClienteAxios(obj))
+                            createAlert('NO EXISTE EL CLIENTE', '¿LO QUIERES CREAR?', () => this.addClienteAxios(obj))
                         }
                         if (auxEmpresa && auxCliente) {
                             Swal.close()

@@ -242,7 +242,7 @@ class egresos extends Component {
                         if (auxProveedor) {
                             form.proveedor = auxProveedor.id.toString()
                         } else {
-                            createAlert('No existe el proveedor', '¿Lo quieres crear?', () => this.addProveedorAxios(obj))
+                            createAlert('NO EXISTE EL PROVEEDOR', '¿LO QUIERES CREAR?', () => this.addProveedorAxios(obj))
                         }
                         if (auxEmpresa && auxProveedor) {
                             Swal.close()

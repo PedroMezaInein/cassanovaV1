@@ -286,7 +286,7 @@ class Ventas extends Component {
                                 options['contratos'] = setOptions(auxCliente.contratos, 'nombre', 'id')
                             }
                         } else {
-                            createAlert('No existe el cliente', '¿Lo quieres crear?', () => this.addClienteAxios(obj))
+                            createAlert('NO EXISTE EL CLIENTE', '¿LO QUIERES CREAR?', () => this.addClienteAxios(obj))
                         }
                         if (auxEmpresa && auxCliente) {
                             Swal.close()
