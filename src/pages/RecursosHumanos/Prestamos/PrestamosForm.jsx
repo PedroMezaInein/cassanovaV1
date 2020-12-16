@@ -128,7 +128,7 @@ class PrestamosForm extends Component {
     }
 
     deleteFile = element => {
-        deleteAlert('¿Deseas eliminar el archivo?', () => this.deleteAdjuntoAxios(element.id))
+        deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', () => this.deleteAdjuntoAxios(element.id))
     }
 
     onSubmit = e => {

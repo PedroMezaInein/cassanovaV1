@@ -350,7 +350,7 @@ class Compras extends Component {
     }
 
     openModalDeleteAdjuntos = adjunto => {
-        deleteAlert('¿Seguro deseas borrar el adjunto?', () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
+        deleteAlert('¿SEGURO DESEAS BORRAR EL ADJUNTO?', () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
     }
 
     handleCloseDelete = () => {
