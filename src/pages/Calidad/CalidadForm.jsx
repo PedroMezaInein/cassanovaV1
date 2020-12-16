@@ -391,7 +391,7 @@ class CalidadForm extends Component {
     render() {
         const { ticket, form, options } = this.state
         return (
-            <Layout active={'proyectos'}  {...this.props}>
+            <Layout active={'calidad'}  {...this.props}>
                 <CalidadView
                     data={ticket}
                     form={form}
