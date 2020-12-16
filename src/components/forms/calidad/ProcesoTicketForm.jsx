@@ -46,7 +46,7 @@ class ProcesoTicketForm extends Component {
                             onSubmit={
                                 (e) => {
                                     e.preventDefault();
-                                    validateAlert(onSubmit, e, 'wizard-2-content')
+                                    validateAlert(onSubmit, e, 'for2-wizard-2-content')
                                 }
                             }
                             {...props}
@@ -160,7 +160,7 @@ class ProcesoTicketForm extends Component {
                                                                 onClick={
                                                                     (e) => {
                                                                         e.preventDefault();
-                                                                        validateAlert(onSubmit, e, 'wizard-2-content')
+                                                                        validateAlert(onSubmit, e, 'for2-wizard-2-content')
                                                                     }
                                                                 }
                                                                 text="GUARDAR" />
