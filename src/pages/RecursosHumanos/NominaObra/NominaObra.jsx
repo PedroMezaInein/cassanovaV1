@@ -458,7 +458,7 @@ class NominaObra extends Component {
                     adjuntos: this.setAdjuntosTable(data.adjuntos),
                     data
                 })
-
+                doneAlert('Adjunto eliminado con éxito')
             },
             (error) => {
                 console.log(error, 'error')
