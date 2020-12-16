@@ -74,43 +74,19 @@ export function errorAlert(text) {
 }
 
 export function deleteAlert(text, action) {
-    /* swal({
-        title: text,
-        buttons: {
-            cancel: {
-                text: "CANCELAR",
-                value: null,
-                visible: true,
-                className: "button__green btn-primary cancel",
-                closeModal: true,
-            },
-            confirm: {
-                text: "ACEPTAR",
-                value: true,
-                visible: true,
-                className: "button__red btn-primary",
-                closeModal: true
-            }
-        }
-    }).then((result) => {
-        if (result) {
-            action()
-        }
-    }) */
-    Swal.fire({
+    MySwal.fire({
         title: text,
         showConfirmButton: true,
         showCancelButton: true,
         confirmButtonText: 'ACEPTAR',
         cancelButtonText: 'CANCELAR',
         customClass: {
-            confirmButton: 'btn btn-light-primary',
-            cancelButton: 'btn btn-light-danger',
-            closeButton: 'd-none'
+            content: 'd-none',
+            confirmButton: 'btn-light-danger-sweetalert2',
+            cancelButton:'btn-light-gray-sweetalert2'
         }
     }).then((result) => {
-        console.log(result, 'result')
-        if (result) {
+        if (result.value) {
             action()
         }
     })
