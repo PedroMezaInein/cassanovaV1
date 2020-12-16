@@ -286,7 +286,7 @@ class Ventas extends Component {
                                 options['contratos'] = setOptions(auxCliente.contratos, 'nombre', 'id')
                             }
                         } else {
-                            createAlert('No existe el cliente', '¿Lo quieres crear?', () => this.addClienteAxios(obj))
+                            createAlert('NO EXISTE EL CLIENTE', '¿LO QUIERES CREAR?', () => this.addClienteAxios(obj))
                         }
                         if (auxEmpresa && auxCliente) {
                             Swal.close()
@@ -532,7 +532,7 @@ class Ventas extends Component {
         })
     }
     openModalDeleteAdjuntos = adjunto => {
-        deleteAlert('¿Seguro deseas borrar el adjunto?', () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
+        deleteAlert('¿SEGURO DESEAS BORRAR EL ADJUNTO?', () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
     }
     openModalSee = venta => {
         this.setState({

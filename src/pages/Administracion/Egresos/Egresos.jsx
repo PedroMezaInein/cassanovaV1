@@ -242,7 +242,7 @@ class egresos extends Component {
                         if (auxProveedor) {
                             form.proveedor = auxProveedor.id.toString()
                         } else {
-                            createAlert('No existe el proveedor', '¿Lo quieres crear?', () => this.addProveedorAxios(obj))
+                            createAlert('NO EXISTE EL PROVEEDOR', '¿LO QUIERES CREAR?', () => this.addProveedorAxios(obj))
                         }
                         if (auxEmpresa && auxProveedor) {
                             Swal.close()
@@ -472,7 +472,7 @@ class egresos extends Component {
         })
     }
     openModalDeleteAdjuntos = adjunto => {
-        deleteAlert('¿Seguro deseas borrar el adjunto?', () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
+        deleteAlert('¿SEGURO DESEAS BORRAR EL ADJUNTO?', () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
     }
     openModalSee = egreso => {
         this.setState({

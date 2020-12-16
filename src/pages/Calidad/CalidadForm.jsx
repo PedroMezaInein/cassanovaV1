@@ -153,7 +153,7 @@ class CalidadForm extends Component {
             this.onChangeAdjunto({ target: { name: item, value: files, files: files } })
     }
     deleteFile = element => {
-        deleteAlert('¿Deseas eliminar el archivo?', () => this.deleteAdjuntoAxios(element.id))
+        deleteAlert('DESEAS ELIMINAR EL ARCHIVO', () => this.deleteAdjuntoAxios(element.id))
     }
     changeEstatus = estatus => {
         const { ticket } = this.state
@@ -391,7 +391,7 @@ class CalidadForm extends Component {
     render() {
         const { ticket, form, options } = this.state
         return (
-            <Layout active={'proyectos'}  {...this.props}>
+            <Layout active={'calidad'}  {...this.props}>
                 <CalidadView
                     data={ticket}
                     form={form}
