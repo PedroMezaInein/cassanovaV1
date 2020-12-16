@@ -14,7 +14,7 @@ import { toAbsoluteUrl } from "../../functions/routers"
 import ItemSlider from '../../components/singles/ItemSlider'
 import InputSinText from '../../components/form-components/SinText/InputSinText'
 
-class Contabilidad extends Component {
+class Diseño extends Component {
 
     state = {
         
@@ -844,6 +844,7 @@ class Contabilidad extends Component {
 
     render() {
         const { form, empresa, data, grafica, activeTipo } = this.state
+            // {console.log(empresa)}
         return (
             <Layout active={'catalogos'}  {...this.props}>
                 <Tab.Container activeKey={empresa !== '' ? empresa.id : ''} >
@@ -1229,4 +1230,4 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Contabilidad);
+export default connect(mapStateToProps, mapDispatchToProps)(Diseño);
