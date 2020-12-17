@@ -128,6 +128,25 @@ export function createAlertSA2(title, text, action) {
     })
 }
 
+export function createAlertSA2WithClose(title, text, action, history, ruta) {
+    MySwal.fire({
+        title: title,
+        text: text,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'ACEPTAR',
+        cancelButtonText: 'CANCELAR',
+        reverseButtons: true,
+    }).then((result) => {
+        if(result.dismiss)
+            history.push({pathname: ruta})
+        else
+            if (result.value) {
+                action()
+            }
+    })
+}
+
 export function createAlertSA2Parametro(title, text, action, parametro) {
     MySwal.fire({
         title: title,
