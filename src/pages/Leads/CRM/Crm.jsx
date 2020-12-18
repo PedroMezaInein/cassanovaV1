@@ -1501,7 +1501,6 @@ class Crm extends Component {
                     </div>
                 </Modal>
                 <Modal size="xl" title='HISTORIAL DE CONTACTO' show={modal_historial} handleClose={this.handleCloseModalHistorial}>
-                    {console.log(lead.prospecto)}
                     <div className="d-flex justify-content-end mt-4">
                         <Button
                             icon=''
