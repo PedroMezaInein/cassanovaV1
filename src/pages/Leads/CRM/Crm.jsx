@@ -1216,6 +1216,65 @@ class Crm extends Component {
             showForm: !showForm
         })
     }
+    async agregarContacto() {
+        waitAlert()
+        const { lead, formHistorial } = this.state
+        const { access_token } = this.props.authUser
+        const data = new FormData();
+        let aux = Object.keys(formHistorial)
+        aux.map((element) => {
+            switch (element) {
+                case 'fechaContacto':
+                    data.append(element, (new Date(formHistorial[element])).toDateString())
+                    break
+                case 'adjuntos':
+                    break;
+                default:
+                    data.append(element, formHistorial[element]);
+                    break
+            }
+            return false
+        })
+        aux = Object.keys(formHistorial.adjuntos)
+        aux.map((element) => {
+            if (formHistorial.adjuntos[element].value !== '') {
+                for (var i = 0; i < formHistorial.adjuntos[element].files.length; i++) {
+                    data.append(`files_name_${element}[]`, formHistorial.adjuntos[element].files[i].name)
+                    data.append(`files_${element}[]`, formHistorial.adjuntos[element].files[i].file)
+                }
+                data.append('adjuntos[]', element)
+            }
+            return false
+        })
+        await axios.post(URL_DEV + 'crm/contacto/lead/' + lead.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { lead } = response.data
+                const { formHistorial } = this.state
+                this.setState({
+                    ...this.state,
+                    formHistorial,
+                    lead: lead
+                })
+                doneAlert('Historial actualizado con éxito');
+                const { history } = this.props
+                history.push({
+                    pathname: '/leads/crm',
+                    state: { lead: lead }
+                });
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     render() {
         const { ultimos_contactados, prospectos_sin_contactar, ultimos_ingresados, lead_web, activeTable, leads_en_contacto, leads_en_negociacion,
             leads_contratados, leads_cancelados, leads_detenidos, modal_agendar, form, lead, lead_rh_proveedores, options, modal_editar, formEditar, modal_historial, formHistorial} = this.state
