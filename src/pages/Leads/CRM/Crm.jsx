@@ -960,7 +960,7 @@ class Crm extends Component {
             switch (element) {
                 case 'adjuntos':
                     formHistorial[element] = {
-                        adjunto: {
+                        adjuntos: {
                             files: [],
                             value: '',
                             placeholder: 'Adjuntos'
@@ -1636,7 +1636,6 @@ class Crm extends Component {
                                 : ''
                         }
                     </div>
-
 
                     {/* <HistorialContactoForm
                         options={options}
