@@ -44,7 +44,7 @@ class LeadNuevo extends Component {
     }
     
     render() {
-        const { leads, onClickPrev, onClickNext, sendEmail, openModal, openModalWithInput, openModalEditar, changePageLlamadaSalida, options, changeOrigen } = this.props
+        const { leads, onClickPrev, onClickNext, sendEmail, openModal, openModalWithInput, openModalEditar, changePageLlamadaSalida, options, changeOrigen, openModalHistorial } = this.props
         return (
             <>
                 <div className="tab-content">
@@ -241,6 +241,14 @@ class LeadNuevo extends Component {
                                                                         <SVG src={toAbsoluteUrl('/images/svg/File.svg')} />
                                                                     </span>
                                                                 </a>
+                                                            </OverlayTrigger>
+                                                            <OverlayTrigger overlay={<Tooltip>HISTORIAL DE CONTACTO</Tooltip>}>
+                                                                <span onClick={(e) => { openModalHistorial(lead) }}
+                                                                    className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-info" id="historial">
+                                                                    <span className="svg-icon svg-icon-md">
+                                                                        <SVG src={toAbsoluteUrl('/images/svg/Clipboard-list.svg')} />
+                                                                    </span>
+                                                                </span>
                                                             </OverlayTrigger>
                                                         </td>
                                                     </tr>
