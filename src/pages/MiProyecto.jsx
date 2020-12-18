@@ -766,7 +766,7 @@ class MiProyecto extends Component {
                                                                 value={form.proyecto}
                                                                 onChange={this.updateProyecto}
                                                                 requirevalidation={1}
-                                                                messageinc="Incorrecto. Selecciona el medio de contacto."
+                                                                messageinc="Incorrecto. Seleccione el proyecto."
                                                                 customdiv="mb-0"
                                                                 withtaglabel={0}
                                                                 withtextlabel={0}
