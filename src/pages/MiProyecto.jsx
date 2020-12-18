@@ -18,7 +18,7 @@ import { toAbsoluteUrl } from "../functions/routers"
 import { Modal, ItemSlider } from '../components/singles'
 import Swal from 'sweetalert2'
 import WOW from 'wowjs';
-
+import ModalVideo from 'react-modal-video'
 class MiProyecto extends Component {
 
     state = {
@@ -276,7 +276,9 @@ class MiProyecto extends Component {
                     }
                 ]
             }
-        ]
+        ],
+        isOpen: false,
+        openModalVideo:false,
     }
 
     seleccionaradj(adjuntos) {
@@ -736,8 +738,7 @@ class MiProyecto extends Component {
     }
 
     render() {
-        const { options, proyecto, form, adjuntos, showadjuntos, primeravista, defaultactivekey, subActiveKey, formeditado, tickets, data, modal, ticket, modalDetalles } = this.state
-
+        const { options, proyecto, form, adjuntos, showadjuntos, primeravista, defaultactivekey, subActiveKey, formeditado, tickets, data, modal, ticket, modalDetalles, openModalVideo} = this.state
         return (
 
             <Layout {...this.props}>
@@ -749,15 +750,15 @@ class MiProyecto extends Component {
                             <div className="row d-flex justify-content-center">
                                 <div className="w-auto pb-25rem">
                                     <div className="znav-container znav-white znav-freya znav-fixed" id="znav-container">
-                                        <div className="container">
+                                        <div className="container wow fadeIn" data-wow-delay="1.7s" data-wow-duration="1.5s">
                                             <Navbar expand="lg">
-                                                <Navbar.Brand href="https://inein.mx/" className="overflow-hidden pr-3">
-                                                    <img src="/Logo_para_fondo_blanco.png" width="120" />
+                                                <Navbar.Brand href={proyecto.empresa?proyecto.empresa.pagina_web:''} className="overflow-hidden pr-3">
+                                                    <img src={proyecto.empresa?proyecto.empresa.logos[0].url:''} width="120" />
                                                 </Navbar.Brand>
                                                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                                                <Navbar.Collapse className="text-center">
-                                                    <Nav className="mr-auto">
-                                                        <div className="w-400px">
+                                                <Navbar.Collapse className="text-center mt-3">
+                                                    <Nav className="">
+                                                        <div className="widthSelect">
                                                             <SelectSearchGray
                                                                 options={options.proyectos}
                                                                 placeholder="SELECCIONE UN PROYECTO"
@@ -772,27 +773,30 @@ class MiProyecto extends Component {
                                                             />
                                                         </div>
                                                     </Nav>
-                                                    <Nav.Link href="https://www.facebook.com/Inein-330002284441563/" className="py-0 pt-2">
+                                                    <Nav.Link href={proyecto.empresa?proyecto.empresa.facebook:''} className="py-0 pt-2">
                                                         <i className="socicon-facebook icon-lg text-hover-dark"></i>
                                                     </Nav.Link>
-                                                    <Nav.Link href="https://www.linkedin.com/company/ineininfraestructuraeinteriores/" className="py-0 pt-2">
+                                                    <Nav.Link href={proyecto.empresa?proyecto.empresa.linkedin:''}  className="py-0 pt-2">
                                                         <i className="socicon-linkedin icon-lg text-hover-dark"></i>
                                                     </Nav.Link>
-                                                    <Nav.Link href="https://www.instagram.com/inein_interiorismo/?hl=es-la" className="py-0 pt-2">
-                                                        <i className="socicon-instagram icon-lg text-hover-dark"></i>
+                                                    <Nav.Link href={proyecto.empresa?proyecto.empresa.pinterest:''}  className="py-0 pt-2">
+                                                        <i className="socicon-pinterest icon-lg text-hover-dark"></i>
                                                     </Nav.Link>
                                                 </Navbar.Collapse>
                                             </Navbar>
                                         </div>
                                     </div>
                                 </div>
-                                <div className="col-md-12 wow bounceInUp" data-wow-delay="1.3s">
+                                <div className="col-md-12 wow fadeIn" data-wow-delay="1.7s" data-wow-duration="1.5s">
                                     <div className="overflow-hidden px-5">
                                         <h1 className="text-white mb-3 letter-spacing-1">{proyecto.nombre}</h1>
                                     </div>
                                     <div className="overflow-hidden">
                                         <div className="mt-3">
-                                            <a className="btn btn-outline-white font-weight-bolder rounded-0 font-size-lg letter-spacing-1">Ver video</a>
+                                            <React.Fragment>
+                                                <ModalVideo channel='custom' isOpen={openModalVideo} url='https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4' autoplay={1} onClose={() => this.setState({openModalVideo: false})} />
+                                                    <a className="btn btn-outline-white font-weight-bolder rounded-0 font-size-lg letter-spacing-1" onClick={() => this.setState({openModalVideo: true})}>Ver video</a>
+                                            </React.Fragment>
                                         </div>
                                     </div>
                                 </div>
