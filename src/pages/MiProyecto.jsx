@@ -5,9 +5,9 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV, URL_ASSETS, TICKETS_ESTATUS } from '../constants'
 import { forbiddenAccessAlert, errorAlert, waitAlert, doneAlert, questionAlert } from '../functions/alert'
-import { SelectSearch, SelectSearchSinText, Input } from '../components/form-components'
+import { SelectSearch, SelectSearchGray, Input } from '../components/form-components'
 import { setOptions, setLabelTable } from '../functions/setters'
-import { Card, Nav, Tab, Col, Row, NavDropdown } from 'react-bootstrap'
+import { Card, Nav, Tab, Col, Row, NavDropdown, Navbar } from 'react-bootstrap'
 import { Button } from '../components/form-components'
 import Moment from 'react-moment'
 import { Form } from 'react-bootstrap'
@@ -17,17 +17,18 @@ import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../functions/routers"
 import { Modal, ItemSlider } from '../components/singles'
 import Swal from 'sweetalert2'
+import WOW from 'wowjs';
 
 class MiProyecto extends Component {
 
     state = {
         id: '',
-        ticket:{
-            estatus_ticket:{
-                estatus:''
+        ticket: {
+            estatus_ticket: {
+                estatus: ''
             },
-            tecnico:{
-                nombre:''
+            tecnico: {
+                nombre: ''
             }
         },
         tickets: [],
@@ -297,6 +298,10 @@ class MiProyecto extends Component {
         })
     }
     componentDidMount() {
+        new WOW.WOW({
+            live: false
+        }).init();
+
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
         const { history } = this.props
@@ -307,10 +312,10 @@ class MiProyecto extends Component {
             history.push('/')
         this.getMiProyectoAxios()
         let queryString = this.props.history.location.search
-        if(queryString){
+        if (queryString) {
             let params = new URLSearchParams(queryString)
             let id = parseInt(params.get("id"))
-            if(id){
+            if (id) {
                 this.setState({
                     ...this.state,
                     id: id
@@ -393,34 +398,34 @@ class MiProyecto extends Component {
                 options.partidas = setOptions(partidas, 'nombre', 'id')
                 options.tiposTrabajo = setOptions(tiposTrabajo, 'tipo', 'id')
                 data.proyectos = proyectos
-                
-                if(id !== ''){
-                    proyectos.map( (proy) => {
-                        if(proy.id === id){
+
+                if (id !== '') {
+                    proyectos.map((proy) => {
+                        if (proy.id === id) {
                             proyecto = proy
                         }
                         return false
                     })
                 }
 
-                if(id === ''){
-                    if( user.tipo.tipo === 'Cliente' ){
-                        if(proyectos.length > 0){
+                if (id === '') {
+                    if (user.tipo.tipo === 'Cliente') {
+                        if (proyectos.length > 0) {
                             proyecto = proyectos[0]
                         }
                     }
                 }
-                
-                if(proyecto !== ''){
-                    proyectos.map( (element) => {
-                        if(element.id === proyecto.id){
+
+                if (proyecto !== '') {
+                    proyectos.map((element) => {
+                        if (element.id === proyecto.id) {
                             proyecto = element
                             tickets = this.setTickets(element.tickets)
                         }
                         return false
-                    } )
+                    })
                 }
-                
+
                 this.setState({
                     ...this.state,
                     data,
@@ -429,7 +434,7 @@ class MiProyecto extends Component {
                     tickets,
                     form: this.clearForm()
                 })
-                
+
             },
             (error) => {
                 console.log(error, 'error')
@@ -631,7 +636,7 @@ class MiProyecto extends Component {
             ...this.state,
             modal: true,
             formeditado: 0,
-            ticket:ticket
+            ticket: ticket
         })
     }
 
@@ -649,7 +654,7 @@ class MiProyecto extends Component {
             ...this.state,
             modalDetalles: true,
             formeditado: 0,
-            ticket:ticket
+            ticket: ticket
         })
     }
 
@@ -674,7 +679,7 @@ class MiProyecto extends Component {
 
     setActions = (ticket) => {
         let aux = []
-        if (ticket.presupuesto.length){
+        if (ticket.presupuesto.length) {
             aux.push(
                 {
                     text: 'Ver&nbsp;presupuesto',
@@ -685,43 +690,42 @@ class MiProyecto extends Component {
                 }
             )
         }
-        if( ticket.estatus_ticket.estatus==="Terminado")
-            {
-                aux.push({
-                    text: 'Ticket&nbsp;final',
-                    btnclass: 'info',
-                    iconclass: 'flaticon-list-2',
-                    action: 'details',
-                    tooltip: { id: 'details', text: 'Ticket final' }
+        if (ticket.estatus_ticket.estatus === "Terminado") {
+            aux.push({
+                text: 'Ticket&nbsp;final',
+                btnclass: 'info',
+                iconclass: 'flaticon-list-2',
+                action: 'details',
+                tooltip: { id: 'details', text: 'Ticket final' }
             })
         }
         return aux
     }
 
-    changeEstatus = estatus =>  {
+    changeEstatus = estatus => {
         const { ticket } = this.state
         // this.changeEstatusAxios({id: ticket.id, estatus: estatus})
-        questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios({id: ticket.id, estatus: estatus}))
+        questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
     }
 
-    async changeEstatusAxios(data){
+    async changeEstatusAxios(data) {
         const { access_token } = this.props.authUser
-        await axios.put(URL_DEV + 'calidad/estatus/' + data.id, data, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.put(URL_DEV + 'calidad/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 this.setState({
                     ...this.state,
                     modal: false
                 })
-                if(data.estatus){
+                if (data.estatus) {
                     doneAlert('El ticket fue actualizado con éxito.')
                     this.getMiProyectoAxios()
                 }
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -732,33 +736,72 @@ class MiProyecto extends Component {
     }
 
     render() {
-        const { options, proyecto, form, adjuntos, showadjuntos, primeravista, defaultactivekey, subActiveKey, formeditado, tickets, data, modal,ticket, modalDetalles } = this.state
+        const { options, proyecto, form, adjuntos, showadjuntos, primeravista, defaultactivekey, subActiveKey, formeditado, tickets, data, modal, ticket, modalDetalles } = this.state
 
         return (
-            <Layout {...this.props}>
-                <div className="content pt-0 d-flex flex-column flex-column-fluid" style={{ paddingBottom: "11px" }}>
-                    <div className="d-flex flex-row-fluid bgi-size-cover bgi-position-center min-h-350px mb-4 d-flex justify-content-center align-items-center" style={{ backgroundImage: "url('/proyecto.jpg')", margin: "-25px" }}>
-                        <div className="container">
-                            <div className="d-flex align-items-stretch text-center flex-column py-40">
 
-                                <div className="form-group row form-group-marginless d-flex justify-content-center align-items-center mb-5">
-                                    <div className="col-md-5">
-                                        <SelectSearchSinText
-                                            options={options.proyectos}
-                                            placeholder="Seleccione un proyecto"
-                                            name="proyecto"
-                                            value={form.proyecto}
-                                            onChange={this.updateProyecto}
-                                            requirevalidation={1}
-                                        />
+            <Layout {...this.props}>
+                <section className="py-10 overflow-hidden text-center section-proyecto">
+                    <div className="background-holder overlay overlay-1 parallax" style={{ backgroundImage: "url('/header_1.jpg')"}}>
+                    </div>
+                    <div className="container">
+                        <div className="row d-flex justify-content-center">
+                            <div className="row d-flex justify-content-center">
+                                <div className="w-auto pb-25rem">
+                                    <div className="znav-container znav-white znav-freya znav-fixed" id="znav-container">
+                                        <div className="container">
+                                            <Navbar expand="lg">
+                                                <Navbar.Brand href="https://inein.mx/" className="overflow-hidden pr-3">
+                                                    <img src="/Logo_para_fondo_blanco.png" width="120" />
+                                                </Navbar.Brand>
+                                                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                                                <Navbar.Collapse className="text-center">
+                                                    <Nav className="mr-auto">
+                                                        <div className="w-400px">
+                                                            <SelectSearchGray
+                                                                options={options.proyectos}
+                                                                placeholder="SELECCIONE UN PROYECTO"
+                                                                name="proyecto"
+                                                                value={form.proyecto}
+                                                                onChange={this.updateProyecto}
+                                                                requirevalidation={1}
+                                                                messageinc="Incorrecto. Selecciona el medio de contacto."
+                                                                customdiv="mb-0"
+                                                            />
+                                                        </div>
+                                                    </Nav>
+                                                    <Nav.Link href="https://www.facebook.com/Inein-330002284441563/" className="py-0 pt-2">
+                                                        <i className="socicon-facebook icon-lg text-hover-dark"></i>
+                                                    </Nav.Link>
+                                                    <Nav.Link href="https://www.linkedin.com/company/ineininfraestructuraeinteriores/" className="py-0 pt-2">
+                                                        <i className="socicon-linkedin icon-lg text-hover-dark"></i>
+                                                    </Nav.Link>
+                                                    <Nav.Link href="https://www.instagram.com/inein_interiorismo/?hl=es-la" className="py-0 pt-2">
+                                                        <i className="socicon-instagram icon-lg text-hover-dark"></i>
+                                                    </Nav.Link>
+                                                </Navbar.Collapse>
+                                            </Navbar>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="col-md-12 wow bounceInUp" data-wow-delay="1.3s">
+                                    <div className="overflow-hidden px-5">
+                                        <h1 className="text-white mb-3 letter-spacing-1">{proyecto.nombre}</h1>
+                                    </div>
+                                    <div className="overflow-hidden">
+                                        <div className="mt-3">
+                                            <a className="btn btn-outline-white font-weight-bolder rounded-0 font-size-lg letter-spacing-1">Ver video</a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
+                </section>
+                <div className="content pt-4 d-flex flex-column flex-column-fluid " style={{ paddingBottom: "11px" }}>
                     <div className="col-md-12">
-                        <div className="row">
-                            <div className="col-lg-4 mb-3">
+                        <div className="row ">
+                            <div className="col-lg-4 mb-3 ">
                                 <div className="card card-custom wave wave-animate-slow wave-primary mb-8 mb-lg-0 h-100">
                                     <div className="card-body">
                                         <div className="d-flex align-items-center ">
@@ -775,7 +818,7 @@ class MiProyecto extends Component {
                                     </div>
                                 </div>
                             </div>
-                            <div className="col-lg-4 mb-3">
+                            <div className="col-lg-4 mb-3 ">
                                 <div className="card card-custom wave wave-animate-slow wave-danger mb-8 mb-lg-0 h-100">
                                     <div className="card-body">
                                         <div className="d-flex align-items-center">
@@ -1092,7 +1135,7 @@ class MiProyecto extends Component {
                                                         <div className="card-footer py-3 pr-1">
                                                             <div className="row">
                                                                 <div className="col-lg-12 text-right pr-0 pb-0">
-                                                                    <Button text='SOLICITAR' type='submit' className="btn btn-primary mr-2" icon=''/>
+                                                                    <Button text='SOLICITAR' type='submit' className="btn btn-primary mr-2" icon='' />
                                                                 </div>
                                                             </div>
                                                         </div>
@@ -1127,68 +1170,68 @@ class MiProyecto extends Component {
                 <Modal size="lg" title="Presupuesto" show={modal} handleClose={this.handleClose} >
                     <div className="mt-4">
                         {
-                            ticket ? 
-                                <ItemSlider 
-                                    items={ticket.presupuesto} 
-                                    item={'presupuesto'} 
+                            ticket ?
+                                <ItemSlider
+                                    items={ticket.presupuesto}
+                                    item={'presupuesto'}
                                 />
-                            :   ''
+                                : ''
                         }
                     </div>
                     <div className="d-flex justify-content-center mt-5">
                         {
-                            ticket ? 
+                            ticket ?
                                 ticket.estatus_ticket ?
-                                    ticket.estatus_ticket.estatus === "Respuesta pendiente"  ? 
+                                    ticket.estatus_ticket.estatus === "Respuesta pendiente" ?
                                         <>
                                             <Button
-                                                onClick={() => { this.changeEstatus('En proceso') }} 
+                                                onClick={() => { this.changeEstatus('En proceso') }}
                                                 className={"btn btn-icon btn-light-success btn-sm mr-2"}
                                                 only_icon={"flaticon2-check-mark icon-sm"}
-                                                tooltip={{text:'ACEPTAR'}}
+                                                tooltip={{ text: 'ACEPTAR' }}
                                                 icon=''
                                             />
-                                            <Button 
-                                                onClick={() => { this.changeEstatus('En espera') }} 
+                                            <Button
+                                                onClick={() => { this.changeEstatus('En espera') }}
                                                 className="btn btn-icon  btn-light-danger btn-sm pulse pulse-danger"
                                                 only_icon={"flaticon2-cross icon-sm"}
-                                                tooltip={{text:'RECHAZAR'}}
+                                                tooltip={{ text: 'RECHAZAR' }}
                                                 icon=''
-                                            />  
+                                            />
                                         </>
+                                        : ''
                                     : ''
                                 : ''
-                            : ''
                         }
                     </div>
                 </Modal>
                 <Modal size="lg" title="Detalles del levantamiento" show={modalDetalles} handleClose={this.handleCloseDetalles} >
-                <Tab.Container defaultActiveKey="first">
-                        <Nav  className="nav nav-tabs nav-tabs-space-lg nav-tabs-line nav-tabs-bold nav-tabs-line-2x mt-2">
+                    <Tab.Container defaultActiveKey="first">
+                        <Nav className="nav nav-tabs nav-tabs-space-lg nav-tabs-line nav-tabs-bold nav-tabs-line-2x mt-2">
                             <Nav.Item>
                                 <Nav.Link eventKey="first"> <span className="nav-text font-weight-bold">Información general</span></Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
                                 <NavDropdown title={
-                                            <>
-                                                <span className="nav-text font-weight-bold ml-0">REPORTES FOTOGRÁFICOS</span>
-                                            </>}>
-                                            <NavDropdown.Item className="ml-0" eventKey="second">PROBLEMA REPORTADO</NavDropdown.Item>
-                                            <NavDropdown.Item className="ml-0" eventKey="third">PROBLEMA SOLUCIONADO</NavDropdown.Item>
+                                    <>
+                                        <span className="nav-text font-weight-bold ml-0">REPORTES FOTOGRÁFICOS</span>
+                                    </>}>
+                                    <NavDropdown.Item className="ml-0" eventKey="second">PROBLEMA REPORTADO</NavDropdown.Item>
+                                    <NavDropdown.Item className="ml-0" eventKey="third">PROBLEMA SOLUCIONADO</NavDropdown.Item>
                                 </NavDropdown>
                             </Nav.Item>
                         </Nav>
                         <Tab.Content>
                             {
-                                ticket ? 
+                                ticket ?
                                     <>
                                         <Tab.Pane eventKey="first">
-                                            <p className="my-5 lead font-weight-bold text-justify">{ticket.descripcion_solucion !== "null" ? ticket.descripcion_solucion :''}</p>
+                                            <p className="my-5 lead font-weight-bold text-justify">{ticket.descripcion_solucion !== "null" ? ticket.descripcion_solucion : ''}</p>
                                             <div className="table-responsive">
                                                 <div className="list min-w-500px" data-inbox="list">
                                                     <div className="d-flex justify-content-center align-items-center list-item ">
 
-                                                    <div className={ticket.recibe !== "null"? "col-md-4 d-flex align-items-center justify-content-center px-0": "col-md-6 d-flex align-items-center justify-content-center px-0"}>
+                                                        <div className={ticket.recibe !== "null" ? "col-md-4 d-flex align-items-center justify-content-center px-0" : "col-md-6 d-flex align-items-center justify-content-center px-0"}>
                                                             <div className="symbol symbol-35 symbol-light-primary mr-3 flex-shrink-0">
                                                                 <div className="symbol-label">
                                                                     <span className="svg-icon svg-icon-primary svg-icon-lg">
@@ -1197,17 +1240,17 @@ class MiProyecto extends Component {
                                                                 </div>
                                                             </div>
                                                             {
-                                                                ticket ? 
+                                                                ticket ?
                                                                     ticket.tecnico ?
                                                                         <div className="d-flex flex-column font-weight-bold">
                                                                             <div className="text-dark mb-1 ">{ticket.tecnico.nombre}</div>
                                                                             <span className="text-muted ">TÉCNICO QUE ASISTE</span>
                                                                         </div>
-                                                                    :''
-                                                                :''
+                                                                        : ''
+                                                                    : ''
                                                             }
                                                         </div>
-                                                        <div className={ticket.recibe !== "null"? "col-md-4 d-flex align-items-center justify-content-center px-0": "col-md-6 d-flex align-items-center justify-content-center px-0"}>
+                                                        <div className={ticket.recibe !== "null" ? "col-md-4 d-flex align-items-center justify-content-center px-0" : "col-md-6 d-flex align-items-center justify-content-center px-0"}>
                                                             <div className="symbol symbol-35 symbol-light-primary mr-3 flex-shrink-0">
                                                                 <div className="symbol-label">
                                                                     <span className="svg-icon svg-icon-primary svg-icon-lg">
@@ -1217,62 +1260,62 @@ class MiProyecto extends Component {
                                                             </div>
                                                             <div className="d-flex flex-column font-weight-bold">
                                                                 <div className="text-dark mb-1 ">
-                                                                        <Moment format="DD/MM/YYYY">
-                                                                            {ticket.fecha_programada}
-                                                                        </Moment></div>
+                                                                    <Moment format="DD/MM/YYYY">
+                                                                        {ticket.fecha_programada}
+                                                                    </Moment></div>
                                                                 <span className="text-muted ">FECHA PROGRAMADA</span>
                                                             </div>
                                                         </div>
                                                         {
                                                             ticket.recibe !== "null" ?
-                                                            <div className={ticket.recibe !== "null"? "col-md-4 d-flex align-items-center justify-content-center px-0": "col-md-6 d-flex align-items-center justify-content-center px-0"}>
-                                                                <div className="symbol symbol-35 symbol-light-primary mr-3 flex-shrink-0">
-                                                                    <div className="symbol-label">
-                                                                        <span className="svg-icon svg-icon-primary svg-icon-lg">
-                                                                            <SVG src={toAbsoluteUrl('/images/svg/Menu.svg')} />
-                                                                        </span>
+                                                                <div className={ticket.recibe !== "null" ? "col-md-4 d-flex align-items-center justify-content-center px-0" : "col-md-6 d-flex align-items-center justify-content-center px-0"}>
+                                                                    <div className="symbol symbol-35 symbol-light-primary mr-3 flex-shrink-0">
+                                                                        <div className="symbol-label">
+                                                                            <span className="svg-icon svg-icon-primary svg-icon-lg">
+                                                                                <SVG src={toAbsoluteUrl('/images/svg/Menu.svg')} />
+                                                                            </span>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div className="d-flex flex-column font-weight-bold">
+                                                                        <div className="text-dark mb-1 ">
+                                                                            {ticket.recibe !== "null" ? ticket.recibe : ''}
+                                                                        </div>
+                                                                        <span className="text-muted ">¿QUIÉN RECIBE?</span>
                                                                     </div>
                                                                 </div>
-                                                                <div className="d-flex flex-column font-weight-bold">
-                                                                    <div className="text-dark mb-1 ">
-                                                                        {ticket.recibe !== "null" ? ticket.recibe :''}
-                                                                    </div>
-                                                                    <span className="text-muted ">¿QUIÉN RECIBE?</span>
-                                                                </div>
-                                                            </div>
-                                                            :''
+                                                                : ''
                                                         }
-                                                        
+
                                                     </div>
                                                 </div>
                                             </div>
                                         </Tab.Pane>
                                         <Tab.Pane eventKey="second">
-                                        {
-                                            ticket ? 
-                                                <div className="my-3">
-                                                    <ItemSlider 
-                                                        items={ticket.reporte_problema_reportado} 
-                                                        item={'presupuesto'} 
-                                                    />
-                                                </div>
-                                            :''
-                                        }
+                                            {
+                                                ticket ?
+                                                    <div className="my-3">
+                                                        <ItemSlider
+                                                            items={ticket.reporte_problema_reportado}
+                                                            item={'presupuesto'}
+                                                        />
+                                                    </div>
+                                                    : ''
+                                            }
                                         </Tab.Pane>
                                         <Tab.Pane eventKey="third">
-                                        {
-                                            ticket ? 
-                                                <div className="my-3">
-                                                    <ItemSlider 
-                                                        items={ticket.reporte_problema_solucionado} 
-                                                        item={'presupuesto'} 
-                                                    />
-                                                </div>
-                                            :''
-                                        }
+                                            {
+                                                ticket ?
+                                                    <div className="my-3">
+                                                        <ItemSlider
+                                                            items={ticket.reporte_problema_solucionado}
+                                                            item={'presupuesto'}
+                                                        />
+                                                    </div>
+                                                    : ''
+                                            }
                                         </Tab.Pane>
                                     </>
-                                :''
+                                    : ''
                             }
                         </Tab.Content>
                     </Tab.Container>
