@@ -282,6 +282,8 @@ class LeadLlamadaSalida extends Component {
                                         onChange={this.updateTipoProyecto}
                                         name="tipoProyecto"
                                         value={form.tipoProyecto}
+                                        withtaglabel={1}
+                                        withtextlabel={1}
                                     />
                                 </div>
                                 {

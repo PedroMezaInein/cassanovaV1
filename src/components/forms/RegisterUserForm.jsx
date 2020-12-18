@@ -166,7 +166,7 @@ class RegisterUserForm extends Component {
                         </> : ''
                 }
                 {
-                    form.tipo === 3 ?
+                    form.tipo === '3' ?
                         <>
                             <div className="separator separator-dashed mt-1 mb-2"></div>
                             <div className="form-group row form-group-marginless">

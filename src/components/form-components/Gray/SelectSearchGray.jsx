@@ -8,7 +8,7 @@ class SelectSearchGray extends Component {
     }
     renderFontValue = (valueProps, onChange) => {
         const { requirevalidation } = this.state
-        const { customstyle, customclass, messageinc} = this.props
+        const { customstyle, customclass, messageinc, customdiv} = this.props
 
         let validado = false;
         if (requirevalidation) {
@@ -22,7 +22,7 @@ class SelectSearchGray extends Component {
         }
         return (
             <>
-                <div className="form-group">
+                <div className={`form-group ${customdiv}`}>
                     <div className="input-group input-group-solid rounded-0">
                         <div className="input-group-prepend">
                             <span className="input-group-text">
@@ -35,7 +35,7 @@ class SelectSearchGray extends Component {
                             style={customstyle}
                         />
                     </div>
-                    <span className={validado ? "form-text text-danger hidden" : "form-text text-danger is-invalid"}> {messageinc} </span>
+                    <span className={validado ? "form-text text-danger hidden" : "form-text text-danger is-invalid text-left"}> {messageinc} </span>
                 </div>
             </>
         );
@@ -43,13 +43,17 @@ class SelectSearchGray extends Component {
     componentDidMount() {
     }
     render() {
-        const { options, placeholder, iconclass, customlabel } = this.props
+        const { options, placeholder, iconclass, customlabel, withtaglabel, withtextlabel} = this.props
         return (
             <>
                 {
                     options.length > 0 ?
                         <>
-                            <label className={`col-form-label font-weight-bold text-dark-60  ${customlabel}`}>{placeholder}</label>
+                            {
+                            withtaglabel?
+                            <label className={`col-form-label font-weight-bold text-dark-60  ${customlabel}`}>{withtextlabel?placeholder:''}</label>
+                            :''
+                        }
                             <SelectSearch
                                 renderValue={this.renderFontValue}
                                 search

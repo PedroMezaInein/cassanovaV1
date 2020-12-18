@@ -98,6 +98,8 @@ class HistorialContactoForm extends Component {
                                             value={formHistorial.tipoContacto}
                                             onChange={this.updateTipoContacto}
                                             messageinc="Incorrecto. Selecciona el medio de contacto."
+                                            withtaglabel={1}
+                                            withtextlabel={1}
                                         />
                                     </div>
                                     {
