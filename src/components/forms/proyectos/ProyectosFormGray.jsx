@@ -330,6 +330,8 @@ class ProyectosForm extends Component {
                                                 defaultValue={form.colonia}
                                                 onChange={this.updateColonia}
                                                 messageinc="Incorrecto. Selecciona la colonia"
+                                                withtaglabel={1}
+                                                withtextlabel={1}
                                             />
                                         }
                                         {

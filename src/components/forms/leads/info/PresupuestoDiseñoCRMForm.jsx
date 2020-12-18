@@ -131,6 +131,8 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                     onChange = { this.updateEsquema }
                                                     iconclass = "flaticon2-sheet"
                                                     messageinc="Incorrecto. Ingresa selecciona el esquema."
+                                                    withtaglabel={1}
+                                                    withtextlabel={1}
                                                 />
                                             </div>
                                             <div className="col-md-4">

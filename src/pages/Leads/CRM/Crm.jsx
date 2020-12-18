@@ -4,7 +4,7 @@ import axios from 'axios'
 import { URL_DEV } from '../../../constants'
 import Layout from '../../../components/layout/layout';
 import { Col, Row, Card, Form, Tab, Nav, DropdownButton, Dropdown } from 'react-bootstrap'
-import { setOptions } from '../../../functions/setters'
+import { setOptions, setDateTableLG } from '../../../functions/setters'
 import { UltimosContactosCard, SinContacto, UltimosIngresosCard } from '../../../components/cards'
 import { forbiddenAccessAlert, errorAlert, waitAlert, doneAlert, questionAlert, questionAlert2 } from '../../../functions/alert'
 import LeadRhProveedor from '../../../components/tables/Lead/LeadRhProveedor'
@@ -14,12 +14,13 @@ import LeadNegociacion from '../../../components/tables/Lead/LeadNegociacion'
 import LeadContrato from '../../../components/tables/Lead/LeadContrato'
 import LeadNoContratado from '../../../components/tables/Lead/LeadNoContratado'
 import LeadDetenido from '../../../components/tables/Lead/LeadDetenido'
-import { Modal } from '../../../components/singles'
-import { AgendaLlamada, InformacionGeneral} from '../../../components/forms'
+import { Modal, } from '../../../components/singles'
+import { AgendaLlamada, InformacionGeneral, HistorialContactoForm } from '../../../components/forms'
 import InputGray from '../../../components/form-components/Gray/InputGray'
-
+import SVG from "react-inlinesvg";
+import { toAbsoluteUrl } from "../../../functions/routers"
 import Swal from 'sweetalert2'
-
+import { Button } from '../../../components/form-components';
 class Crm extends Component {
     state = {
         ultimos_contactados: {
@@ -125,8 +126,24 @@ class Crm extends Component {
             proyecto: '',
             fecha: '',
         },
+        formHistorial: {
+            comentario: '',
+            fechaContacto: '',
+            success: 'Contactado',
+            tipoContacto: '',
+            newTipoContacto: '',
+            adjuntos: {
+                adjuntos: {
+                    files: [],
+                    value: '',
+                    placeholder: 'Adjuntos'
+                }
+            }
+        },
         modal_agendar: false,
-        modal_editar: false
+        modal_editar: false,
+        modal_historial: false,
+        showForm: false
     }
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
@@ -150,8 +167,9 @@ class Crm extends Component {
         await axios.get(URL_DEV + 'crm/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 Swal.close()
-                const { empresas, origenes } = response.data
+                const { empresas, origenes, medios } = response.data
                 const { options } = this.state
+                options['tiposContactos'] = setOptions(medios, 'tipo', 'id')
                 options.empresas = setOptions(empresas, 'name', 'id')
                 let aux = []
                 origenes.map((origen) => {
@@ -724,6 +742,15 @@ class Crm extends Component {
             formEditar
         })
     }
+    onChangeHistorial = e => {
+        const { formHistorial } = this.state
+        const { name, value } = e.target
+        formHistorial[name] = value
+        this.setState({
+            ...this.state,
+            formHistorial
+        })
+    }
     sendEmailNewWebLead = async lead => {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -891,6 +918,66 @@ class Crm extends Component {
             lead: ''
         })
     }
+    handleChange = (files, item) => {
+        const { formHistorial } = this.state
+        let aux = []
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        formHistorial['adjuntos'][item].value = files
+        formHistorial['adjuntos'][item].files = aux
+        this.setState({
+            ...this.state,
+            formHistorial
+        })
+    }
+    openModalHistorial = lead => {
+        this.setState({
+            ...this.state,
+            modal_historial: true,
+            lead: lead,
+        })
+    }
+    handleCloseModalHistorial = () => {
+        this.setState({
+            ...this.state,
+            modal_historial: false,
+            lead: '',
+            formHistorial: this.clearForm(),
+        })
+    }
+    clearForm = () => {
+        const { formHistorial } = this.state
+        let aux = Object.keys(formHistorial)
+        aux.map((element) => {
+            switch (element) {
+                case 'adjuntos':
+                    formHistorial[element] = {
+                        adjuntos: {
+                            files: [],
+                            value: '',
+                            placeholder: 'Adjuntos'
+                        }
+                    }
+                    break;
+                case 'success':
+                    formHistorial[element] = 'Contactado'
+                    break;
+                default:
+                    formHistorial[element] = ''
+                    break;
+            }
+            return false
+        })
+        return formHistorial;
+    }
     async changeEstatusAxios(data) {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -1027,20 +1114,20 @@ class Crm extends Component {
             state: { lead: lead, tipo: 'Contratado' }
         });
     }
-    changePageDetailsCR= (lead) => {
+    changePageDetailsCR = (lead) => {
         const { history } = this.props
         let status = ''
-        if(lead.estatus.estatus==='Cancelado'){
-            status='Cancelado'
+        if (lead.estatus.estatus === 'Cancelado') {
+            status = 'Cancelado'
         }
-        else{
-            status='Rechazado'
+        else {
+            status = 'Rechazado'
         }
         history.push({
             pathname: '/leads/crm/info/info',
-            state: { lead: lead, tipo:status}
+            state: { lead: lead, tipo: status }
         });
-    }    
+    }
     changePageDetailsDetenido = (lead) => {
         const { history } = this.props
         history.push({
@@ -1122,9 +1209,75 @@ class Crm extends Component {
             console.log(error, 'error')
         })
     }
+    mostrarFormulario() {
+        const { showForm } = this.state
+        this.setState({
+            ...this.state,
+            showForm: !showForm
+        })
+    }
+    async agregarContacto() {
+        waitAlert()
+        const { lead, formHistorial } = this.state
+        const { access_token } = this.props.authUser
+        const data = new FormData();
+        let aux = Object.keys(formHistorial)
+        aux.map((element) => {
+            switch (element) {
+                case 'fechaContacto':
+                    data.append(element, (new Date(formHistorial[element])).toDateString())
+                    break
+                case 'adjuntos':
+                    break;
+                default:
+                    data.append(element, formHistorial[element]);
+                    break
+            }
+            return false
+        })
+        aux = Object.keys(formHistorial.adjuntos)
+        aux.map((element) => {
+            if (formHistorial.adjuntos[element].value !== '') {
+                for (var i = 0; i < formHistorial.adjuntos[element].files.length; i++) {
+                    data.append(`files_name_${element}[]`, formHistorial.adjuntos[element].files[i].name)
+                    data.append(`files_${element}[]`, formHistorial.adjuntos[element].files[i].file)
+                }
+                data.append('adjuntos[]', element)
+            }
+            return false
+        })
+        await axios.post(URL_DEV + 'crm/contacto/lead/' + lead.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { lead } = response.data
+                const { formHistorial } = this.state
+                this.setState({
+                    ...this.state,
+                    formHistorial,
+                    lead: lead
+                })
+                doneAlert('Historial actualizado con éxito');
+                const { history } = this.props
+                history.push({
+                    pathname: '/leads/crm',
+                    state: { lead: lead }
+                });
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     render() {
         const { ultimos_contactados, prospectos_sin_contactar, ultimos_ingresados, lead_web, activeTable, leads_en_contacto, leads_en_negociacion,
-            leads_contratados, leads_cancelados, leads_detenidos, modal_agendar, form, lead, lead_rh_proveedores, options, modal_editar, formEditar} = this.state
+            leads_contratados, leads_cancelados, leads_detenidos, modal_agendar, form, lead, lead_rh_proveedores, options, modal_editar, formEditar, modal_historial, formHistorial} = this.state
         return (
             <Layout active='leads' {...this.props} >
                 <Row>
@@ -1327,6 +1480,7 @@ class Crm extends Component {
                                             options={options}
                                             changeOrigen={this.changeOrigen}
                                             openModalEditar={this.openModalEditar}
+                                            openModalHistorial={this.openModalHistorial}
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="contacto">
@@ -1401,9 +1555,95 @@ class Crm extends Component {
                             onChange={this.onChangeEditar}
                             onSubmit={this.submitForm}
                             lead={lead}
-                            formeditado = { false } 
+                            formeditado={false}
                         />
                     </div>
+                </Modal>
+                <Modal size="xl" title='HISTORIAL DE CONTACTO' show={modal_historial} handleClose={this.handleCloseModalHistorial}>
+                    <div className="d-flex justify-content-end mt-4">
+                        <Button
+                            icon=''
+                            className={"btn btn-light btn-hover-secondary font-weight-bolder p-2"}
+                            onClick={() => { this.mostrarFormulario() }}
+                            only_icon={"flaticon2-plus icon-13px mr-2"}
+                            text='NUEVO CONTACTO'
+                        />
+                    </div>
+                    <div className={this.state.showForm ? 'col-md-12 mb-5' : 'd-none'}>
+                        <HistorialContactoForm
+                            options={options}
+                            formHistorial={formHistorial}
+                            onChangeHistorial={this.onChangeHistorial}
+                            handleChange={this.handleChange}
+                            onSubmit={() => { waitAlert(); this.agregarContacto() }} />
+                    </div>
+                    <div className="px-2 pb-2 pt-4">
+                        {
+                            lead ?
+                                lead.prospecto ?
+                                    lead.prospecto.contactos.map((contacto, key) => {
+                                        return (
+                                            <div className="timeline timeline-6" key={key}>
+                                                <div className="timeline-items">
+                                                    <div className="timeline-item">
+                                                        <div className={contacto.success ? "timeline-media bg-light-success" : "timeline-media bg-light-danger"}>
+                                                            <span className={contacto.success ? "svg-icon svg-icon-success svg-icon-md" : "svg-icon svg-icon-danger  svg-icon-md"}>
+                                                                {
+                                                                    contacto.tipo_contacto ?
+                                                                        contacto.tipo_contacto.tipo === 'Llamada' ?
+                                                                            <SVG src={toAbsoluteUrl('/images/svg/Outgoing-call.svg')} />
+                                                                            : contacto.tipo_contacto.tipo === 'Correo' ?
+                                                                                <SVG src={toAbsoluteUrl('/images/svg/Outgoing-mail.svg')} />
+                                                                                : contacto.tipo_contacto.tipo === 'VIDEO LLAMADA' ?
+                                                                                    <SVG src={toAbsoluteUrl('/images/svg/Video-camera.svg')} />
+                                                                                    : contacto.tipo_contacto.tipo === 'Whatsapp' ?
+                                                                                        <i className={contacto.success ? "socicon-whatsapp text-success icon-16px" : "socicon-whatsapp text-danger icon-16px"}></i>
+                                                                                        : contacto.tipo_contacto.tipo === 'TAWK TO ADS' ?
+                                                                                            <i className={contacto.success ? "fas fa-dove text-success icon-16px" : "fas fa-dove text-danger icon-16px"}></i>
+                                                                                            : contacto.tipo_contacto.tipo === 'REUNIÓN PRESENCIAL' ?
+                                                                                                <i className={contacto.success ? "fas fa-users text-success icon-16px" : "fas fa-users text-danger icon-16px"}></i>
+                                                                                                : contacto.tipo_contacto.tipo === 'Visita' ?
+                                                                                                    <i className={contacto.success ? "fas fa-house-user text-success icon-16px" : "fas fa-house-user text-danger icon-16px"}></i>
+                                                                                                    : <i className={contacto.success ? "fas fa-mail-bulk text-success icon-16px" : "fas fa-mail-bulk text-danger icon-16px"}></i>
+                                                                        : ''
+                                                                }
+                                                            </span>
+                                                        </div>
+                                                        <div className={contacto.success ? "timeline-desc timeline-desc-light-success" : "timeline-desc timeline-desc-light-danger"}>
+                                                            <span className={contacto.success ? "font-weight-bolder text-success" : "font-weight-bolder text-danger"}>{setDateTableLG(contacto.created_at)}</span>
+                                                            <div className="font-weight-light pb-2 text-justify position-relative mt-2" style={{ borderRadius: '0.42rem', padding: '1rem 1.5rem', backgroundColor: '#F3F6F9' }}>
+                                                                <div className="text-dark-75 font-weight-bold mb-2">{contacto.tipo_contacto ? contacto.tipo_contacto.tipo : ''}</div>
+                                                                {contacto.comentario}
+                                                                {
+                                                                    contacto.adjunto ?
+                                                                        <div className="d-flex justify-content-end">
+                                                                            <a href={contacto.adjunto.url} target='_blank' rel="noopener noreferrer" className="text-muted text-hover-primary font-weight-bold">
+                                                                                <span className="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
+                                                                                    <SVG src={toAbsoluteUrl('/images/svg/Attachment1.svg')} />
+                                                                                </span>VER ADJUNTO
+                                                                                                            </a>
+                                                                        </div>
+                                                                        : ''
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )
+                                    })
+                                    : <div className="text-center text-dark-75 font-weight-bolder font-size-lg">No se ha registrado ningún contacto</div>
+                                : ''
+                        }
+                    </div>
+
+                    {/* <HistorialContactoForm
+                        options={options}
+                        formHistorial={formHistorial}
+                        onChangeHistorial={this.onChangeHistorial}
+                        handleChange={this.handleChange}
+                        onSubmit={() => { waitAlert(); this.agregarContacto() }}
+                    /> */}
                 </Modal>
             </Layout>
         );
