@@ -767,6 +767,8 @@ class MiProyecto extends Component {
                                                                 requirevalidation={1}
                                                                 messageinc="Incorrecto. Selecciona el medio de contacto."
                                                                 customdiv="mb-0"
+                                                                withtaglabel={0}
+                                                                withtextlabel={0}
                                                             />
                                                         </div>
                                                     </Nav>

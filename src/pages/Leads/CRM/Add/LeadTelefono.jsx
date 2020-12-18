@@ -221,6 +221,8 @@ class LeadTelefono extends Component {
                                         value={form.empresa_dirigida}
                                         onChange={this.updateEmpresa}
                                         iconclass="fas fa-building"
+                                        withtaglabel={1}
+                                        withtextlabel={1}
                                     />
                                 </div>
                                 {
@@ -249,6 +251,8 @@ class LeadTelefono extends Component {
                                                 onChange={this.updateTipoProyecto}
                                                 name="tipoProyecto"
                                                 value={form.tipoProyecto}
+                                                withtaglabel={1}
+                                                withtextlabel={1}
                                             />
                                         </div>
                                         : ''
@@ -368,6 +372,8 @@ class LeadTelefono extends Component {
                                                     onChange={this.updateOrigen}
                                                     iconclass="fas fa-mail-bulk"
                                                     messageinc="Incorrecto. Selecciona el origen para el lead."
+                                                    withtaglabel={1}
+                                                    withtextlabel={1}
                                                 />
                                             </div>
                                         </>
