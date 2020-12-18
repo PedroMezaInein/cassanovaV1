@@ -7,7 +7,7 @@ import Layout from '../../../components/layout/layout'
 import { Modal } from '../../../components/singles'
 import { CP_URL, URL_DEV } from '../../../constants'
 import axios from 'axios'
-import { doneAlert, errorAlert, forbiddenAccessAlert, waitAlert } from '../../../functions/alert'
+import { createAlert, createAlertSA2, createAlertSA2WithClose, doneAlert, errorAlert, forbiddenAccessAlert, waitAlert } from '../../../functions/alert'
 import ProyectosFormGray from '../../../components/forms/proyectos/ProyectosFormGray'
 import { setOptions } from '../../../functions/setters'
 import Swal from 'sweetalert2'
@@ -257,8 +257,35 @@ class Contratar extends Component {
         let { formProyecto, lead } = this.state
         await axios.post(URL_DEV + 'crm/convert/' + lead.id, formProyecto, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                const { proyecto } = this.state
                 const { history } = this.props
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Lead convertido con éxito.')
+                createAlertSA2WithClose(
+                    '¡FELICIDADES CREASTE EL PROYECTO!',
+                    '¿DESEAS CREAR LA CAJA CHICA?',
+                    () => this.addCajaChicaAxios(proyecto),
+                    history, '/leads/crm'
+                )
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async addCajaChicaAxios(proyecto){
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'cuentas/proyecto/caja/' + proyecto.id, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { history } = this.props
+                doneAlert('Caja chica generada con éxito.')
                 history.push({pathname: '/leads/crm'})
             },
             (error) => {
