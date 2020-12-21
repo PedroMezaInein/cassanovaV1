@@ -1518,7 +1518,8 @@ class LeadInfo extends Component {
                                                                                         <div className="text-dark-75 font-weight-bold mb-2">
                                                                                         <div class="d-flex justify-content-between">
                                                                                             {contacto.tipo_contacto?contacto.tipo_contacto.tipo:''}
-                                                                                            <a className="text-muted text-hover-danger font-weight-bold a-hover" onClick={(e) => { deleteAlert('¿ESTÁS SEGURO QUE DESEAS ELIMINAR EL CONTACTO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.eliminarContacto(contacto)) }}>
+                                                                                            <a className="text-muted text-hover-danger font-weight-bold a-hover" 
+                                                                                                onClick={(e) => { deleteAlert('¿ESTÁS SEGURO QUE DESEAS ELIMINAR EL CONTACTO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.eliminarContacto(contacto)) }}>
                                                                                                 <i className="flaticon2-cross icon-xs"/>
                                                                                             </a>
                                                                                         </div>
