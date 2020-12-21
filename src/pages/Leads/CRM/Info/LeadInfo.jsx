@@ -1062,6 +1062,28 @@ class LeadInfo extends Component {
         })
     }
 
+    async eliminarContacto(contacto){
+        const { access_token } = this.props.authUser
+        const { lead } = this.state
+        await axios.delete(URL_DEV + 'crm/prospecto/' + lead.id + '/contacto/' + contacto.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert('Registro eliminado con éxito.');
+                this.getOneLead(lead)
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     changeEstatus = (estatus, id) => {
         questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios({ id: id, estatus: estatus }))
     }
@@ -1496,7 +1518,7 @@ class LeadInfo extends Component {
                                                                                         <div className="text-dark-75 font-weight-bold mb-2">
                                                                                         <div class="d-flex justify-content-between">
                                                                                             {contacto.tipo_contacto?contacto.tipo_contacto.tipo:''}
-                                                                                            <a className="text-muted text-hover-danger font-weight-bold" onClick={(e) => { deleteAlert('¿ESTÁS SEGURO QUE DESEAS ELIMINAR EL CONTACTO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.eliminarContacto()) }}>
+                                                                                            <a className="text-muted text-hover-danger font-weight-bold a-hover" onClick={(e) => { deleteAlert('¿ESTÁS SEGURO QUE DESEAS ELIMINAR EL CONTACTO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.eliminarContacto(contacto)) }}>
                                                                                                 <i className="flaticon2-cross icon-xs"/>
                                                                                             </a>
                                                                                         </div>

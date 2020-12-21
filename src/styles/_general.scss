@@ -102,6 +102,10 @@ a.text-hover-danger2:hover,
     color: #cc4b4c !important;
 }
 
+.a-hover:hover{
+    cursor: pointer;
+}
+
 .pdfview {
     @include screen ($lg) {
         width: 275px;
