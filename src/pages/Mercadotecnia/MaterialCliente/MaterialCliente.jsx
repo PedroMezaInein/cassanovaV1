@@ -3,14 +3,14 @@ import Layout from '../../../components/layout/layout'
 import axios from 'axios'
 import { URL_DEV } from '../../../constants'
 import { connect } from 'react-redux'
-import { Button } from '../../../components/form-components'
+// import { Button } from '../../../components/form-components'
 import ItemSlider from '../../../components/singles/ItemSlider'
 import { Tab, Nav, Col, Row, Card, Accordion, } from 'react-bootstrap'
 import { setSelectOptions } from '../../../functions/setters'
-import { waitAlert, questionAlert, errorAdjuntos, doneAlert, errorAlert, forbiddenAccessAlert } from '../../../functions/alert'
+import { waitAlert, questionAlert, errorAdjuntos, errorAlert, forbiddenAccessAlert } from '../../../functions/alert'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
-class MaterialEmpresa extends Component {
+class MaterialCliente extends Component {
 
     state = {
         opciones_adjuntos: [
@@ -447,4 +447,4 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(MaterialEmpresa);
+export default connect(mapStateToProps, mapDispatchToProps)(MaterialCliente);

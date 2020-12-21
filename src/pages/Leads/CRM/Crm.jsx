@@ -146,6 +146,8 @@ class Crm extends Component {
         showForm: false
     }
     componentDidMount() {
+        const REACT_VERSION = React.version;
+        console.log('react version', REACT_VERSION)
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
         const { history } = this.props
