@@ -9,7 +9,7 @@ class SelectMinutos extends Component {
         return(
             <Form.Control as = "select" className = "px-1 py-0" style = { { height: "27px" } } 
                 value = { value } onChange = { onChange } name = { name } >
-                <option disabled selected value = { 0 }>MM</option>
+                <option disabled value = { 0 }>MM</option>
                 <option value = "00" > 00 </option>
                 <option value = "05" > 05 </option>
                 <option value = "10" > 10 </option>
