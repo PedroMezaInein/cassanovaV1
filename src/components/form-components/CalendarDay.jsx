@@ -29,10 +29,10 @@ export default class CalendarDay extends Component {
         onChange({ target: { name: name, value: item } })
     }
     render() {
-        const { date } = this.props
+        const { date, withformgroup} = this.props
         return (
             <>
-                <div className="form-group">
+                <div className={withformgroup?'form-group':''}>
                     <Calendar
                         onChange={ (item) => { this.updateDate(item)} }
                         locale = { es }

@@ -178,6 +178,7 @@ class HistorialContactoForm extends Component {
                                             value = {formHistorial.fechaContacto} 
                                             onChange = { onChangeHistorial } 
                                             name = 'fechaContacto'
+                                            withformgroup={1}
                                         />
                                     </div>
                                 </div>
