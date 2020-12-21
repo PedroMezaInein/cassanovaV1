@@ -65,12 +65,12 @@ class Empresas extends Component {
                 value: '',
                 files: []
             },
-            {
-                placeholder: 'Portafolio',
-                id: 'portafolio',
-                value: '',
-                files: []
-            },
+            // {
+            //     placeholder: 'Portafolio',
+            //     id: 'portafolio',
+            //     value: '',
+            //     files: []
+            // },
             /* {
                 placeholder: 'Cuestionario',
                 id: 'cuestionario',
