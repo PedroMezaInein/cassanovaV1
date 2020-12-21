@@ -153,7 +153,7 @@ class CalidadForm extends Component {
             this.onChangeAdjunto({ target: { name: item, value: files, files: files } })
     }
     deleteFile = element => {
-        deleteAlert('DESEAS ELIMINAR EL ARCHIVO', () => this.deleteAdjuntoAxios(element.id))
+        deleteAlert('DESEAS ELIMINAR EL ARCHIVO', '', () => this.deleteAdjuntoAxios(element.id))
     }
     changeEstatus = estatus => {
         const { ticket } = this.state

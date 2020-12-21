@@ -70,15 +70,17 @@ export function errorAlert(text) {
     })
 }
 
-export function deleteAlert(text, action) {
+export function deleteAlert(title,text,action) {
     MySwal.fire({
-        title: text,
+        title: title,
+        text:text,
         showConfirmButton: true,
         showCancelButton: true,
-        confirmButtonText: 'ACEPTAR',
+        confirmButtonText: 'ELIMINAR',
         cancelButtonText: 'CANCELAR',
+        reverseButtons: true,
         customClass: {
-            content: 'd-none',
+            content: text?'':'d-none',
             confirmButton: 'btn-light-danger-sweetalert2',
             cancelButton:'btn-light-gray-sweetalert2'
         }

@@ -179,7 +179,7 @@ class Documentos extends Component {
         })
     }
     deleteFile = element => {
-        deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', () => this.deleteAdjuntoAxios(element.id))
+        deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', '', () => this.deleteAdjuntoAxios(element.id))
     }
     async getDocumentosAxios() {
         $('#kt_datatable_documentos').DataTable().ajax.reload();

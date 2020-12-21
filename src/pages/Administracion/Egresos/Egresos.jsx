@@ -472,7 +472,7 @@ class egresos extends Component {
         })
     }
     openModalDeleteAdjuntos = adjunto => {
-        deleteAlert('¿SEGURO DESEAS BORRAR EL ADJUNTO?', () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
+        deleteAlert('¿SEGURO DESEAS BORRAR EL ADJUNTO?', '', () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
     }
     openModalSee = egreso => {
         this.setState({
