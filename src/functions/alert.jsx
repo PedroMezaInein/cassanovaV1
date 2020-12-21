@@ -1,4 +1,3 @@
-import swal from 'sweetalert'
 import { Sending } from '../components/Lottie/'
 import { Done } from '../components/Lottie/'
 import ReactDOM from 'react-dom';
@@ -7,14 +6,12 @@ import React from 'react'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
-
 let wrapperSending = document.createElement('div');
 ReactDOM.render(<Sending />, wrapperSending);
-let sending = wrapperSending.firstChild;
-
+// let sending = wrapperSending.firstChild;
 let wrapperDone = document.createElement('div');
 ReactDOM.render(<Done />, wrapperDone);
-let done = wrapperDone.firstChild;
+// let done = wrapperDone.firstChild;
 
 export async function waitAlert() {
     /* swal({
