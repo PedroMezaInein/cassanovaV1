@@ -27,18 +27,16 @@ class OptionsCheckboxHeaders extends Component {
                                         {
                                             options_tipo[tipo].map((option, key) => {
                                                 return (
-                                                    <>
-                                                        <label key={key} className="checkbox checkbox-outline checkbox-outline-2x checkbox-primary font-weight-light">
-                                                            <input
-                                                                type="checkbox"
-                                                                onChange={(e) => { onChange(e) }}
-                                                                name={option.id}
-                                                                checked={option.checked}
-                                                                value={option.checked}
-                                                            />{option.text}
-                                                            <span></span>
-                                                        </label>
-                                                    </>
+                                                    <label key={key} className="checkbox checkbox-outline checkbox-outline-2x checkbox-primary font-weight-light">
+                                                        <input
+                                                            type="checkbox"
+                                                            onChange={(e) => { onChange(e) }}
+                                                            name={option.id}
+                                                            checked={option.checked}
+                                                            value={option.checked}
+                                                        />{option.text}
+                                                        <span></span>
+                                                    </label>
                                                 )
                                             })
                                         }

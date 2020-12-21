@@ -3,6 +3,7 @@ import { Calendar } from 'react-date-range'
 import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import es from "date-fns/locale/es";
+import { parseISO, format } from 'date-fns';
 export default class CalendarDay extends Component {
 
     state = {
@@ -18,6 +19,16 @@ export default class CalendarDay extends Component {
             ...this.state,
             date: isNaN(aux) ? null : newDate
         })
+    }
+
+    componentDidUpdate(nextProps){
+        if (nextProps.date !== this.props.date){
+            const { date } = this.props
+            this.setState({
+                ...this.state,
+                date: new Date(date)
+            })
+        }
     }
 
     updateDate = item => {
