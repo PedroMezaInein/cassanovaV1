@@ -184,7 +184,7 @@ class LeadInfo extends Component {
                 form.name = lead.nombre === 'SIN ESPECIFICAR' ? '' : lead.nombre.toUpperCase()
                 form.email = lead.email.toUpperCase()
                 form.telefono = lead.telefono
-                form.proyecto = lead.prospecto.nombre_proyecto
+                form.proyecto = lead.prospecto?lead.prospecto.nombre_proyecto:''
                 form.fecha = new Date(lead.created_at)
                 
                 if(formDiseño.esquema === 'esquema_1'){
@@ -1270,39 +1270,41 @@ class LeadInfo extends Component {
                                                                             <span className="ml-3">
                                                                                 {
                                                                                     lead ?
-                                                                                        lead.prospecto.estatus_prospecto ?
-                                                                                            <Dropdown>
-                                                                                                <Dropdown.Toggle
-                                                                                                    style={
-                                                                                                        {
-                                                                                                            backgroundColor: lead.prospecto.estatus_prospecto.color_fondo, color: lead.prospecto.estatus_prospecto.color_texto, border: 'transparent', padding: '0.15rem 0.75rem',
-                                                                                                            width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '0.8rem',
-                                                                                                            fontWeight: 600
-                                                                                                        }}>
-                                                                                                    {lead.prospecto.estatus_prospecto.estatus.toUpperCase()}
-                                                                                                </Dropdown.Toggle>
-                                                                                                <Dropdown.Menu className="p-0" >
-                                                                                                    <Dropdown.Header>
-                                                                                                        <span className="font-size-sm">Elige una opción</span>
-                                                                                                    </Dropdown.Header>
-                                                                                                    <Dropdown.Item href="#" className="p-0" onClick={(e) => { e.preventDefault(); this.changeEstatus('Detenido', lead.id) }} >
-                                                                                                        <span className="navi-link w-100">
-                                                                                                            <span className="navi-text">
-                                                                                                                <span className="label label-xl label-inline bg-light-gray text-gray rounded-0 w-100">DETENIDO</span>
+                                                                                        lead.prospecto?
+                                                                                            lead.prospecto.estatus_prospecto ?
+                                                                                                <Dropdown>
+                                                                                                    <Dropdown.Toggle
+                                                                                                        style={
+                                                                                                            {
+                                                                                                                backgroundColor: lead.prospecto.estatus_prospecto.color_fondo, color: lead.prospecto.estatus_prospecto.color_texto, border: 'transparent', padding: '0.15rem 0.75rem',
+                                                                                                                width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '0.8rem',
+                                                                                                                fontWeight: 600
+                                                                                                            }}>
+                                                                                                        {lead.prospecto.estatus_prospecto.estatus.toUpperCase()}
+                                                                                                    </Dropdown.Toggle>
+                                                                                                    <Dropdown.Menu className="p-0" >
+                                                                                                        <Dropdown.Header>
+                                                                                                            <span className="font-size-sm">Elige una opción</span>
+                                                                                                        </Dropdown.Header>
+                                                                                                        <Dropdown.Item href="#" className="p-0" onClick={(e) => { e.preventDefault(); this.changeEstatus('Detenido', lead.id) }} >
+                                                                                                            <span className="navi-link w-100">
+                                                                                                                <span className="navi-text">
+                                                                                                                    <span className="label label-xl label-inline bg-light-gray text-gray rounded-0 w-100">DETENIDO</span>
+                                                                                                                </span>
                                                                                                             </span>
-                                                                                                        </span>
-                                                                                                    </Dropdown.Item>
-                                                                                                    <Dropdown.Item className="p-0" onClick={(e) => { e.preventDefault(); this.openModalWithInput('Rechazado', lead.id) }} >
-                                                                                                        <span className="navi-link w-100">
-                                                                                                            <span className="navi-text">
-                                                                                                                <span className="label label-xl label-inline label-light-danger rounded-0 w-100">Rechazado</span>
+                                                                                                        </Dropdown.Item>
+                                                                                                        <Dropdown.Item className="p-0" onClick={(e) => { e.preventDefault(); this.openModalWithInput('Rechazado', lead.id) }} >
+                                                                                                            <span className="navi-link w-100">
+                                                                                                                <span className="navi-text">
+                                                                                                                    <span className="label label-xl label-inline label-light-danger rounded-0 w-100">Rechazado</span>
+                                                                                                                </span>
                                                                                                             </span>
-                                                                                                        </span>
-                                                                                                    </Dropdown.Item>
-                                                                                                </Dropdown.Menu>
-                                                                                            </Dropdown>
+                                                                                                        </Dropdown.Item>
+                                                                                                    </Dropdown.Menu>
+                                                                                                </Dropdown>
                                                                                             : ''
                                                                                         : ''
+                                                                                    : ''
                                                                                 }
                                                                             </span>
                                                                         </div>
@@ -1459,58 +1461,60 @@ class LeadInfo extends Component {
                                             <div className="col-md-8">
                                                 {
                                                     lead ?
-                                                        lead.prospecto.contactos.map((contacto, key) => {
-                                                            return (
-                                                                <div className="timeline timeline-6" key={key}>
-                                                                    <div className="timeline-items">
-                                                                        <div className="timeline-item">
-                                                                            <div className={contacto.success ? "timeline-media bg-light-success" : "timeline-media bg-light-danger"}>
-                                                                                <span className={contacto.success ? "svg-icon svg-icon-success svg-icon-md" : "svg-icon svg-icon-danger  svg-icon-md"}>
-                                                                                    {
-                                                                                        contacto.tipo_contacto?
-                                                                                            contacto.tipo_contacto.tipo === 'Llamada' ?
-                                                                                                <SVG src={toAbsoluteUrl('/images/svg/Outgoing-call.svg')} />
-                                                                                                : contacto.tipo_contacto.tipo === 'Correo' ?
-                                                                                                    <SVG src={toAbsoluteUrl('/images/svg/Outgoing-mail.svg')} />
-                                                                                                    : contacto.tipo_contacto.tipo === 'VIDEO LLAMADA' ?
-                                                                                                        <SVG src={toAbsoluteUrl('/images/svg/Video-camera.svg')} />
-                                                                                                        : contacto.tipo_contacto.tipo === 'Whatsapp' ?
-                                                                                                            <i className={contacto.success ? "socicon-whatsapp text-success icon-16px" : "socicon-whatsapp text-danger icon-16px"}></i>
-                                                                                                            : contacto.tipo_contacto.tipo === 'TAWK TO ADS' ?
-                                                                                                                <i className={contacto.success ? "fas fa-dove text-success icon-16px" : "fas fa-dove text-danger icon-16px"}></i>
-                                                                                                                : contacto.tipo_contacto.tipo === 'REUNIÓN PRESENCIAL' ?
-                                                                                                                    <i className={contacto.success ? "fas fa-users text-success icon-16px" : "fas fa-users text-danger icon-16px"}></i>
-                                                                                                                    : contacto.tipo_contacto.tipo === 'Visita' ?
-                                                                                                                        <i className={contacto.success ? "fas fa-house-user text-success icon-16px" : "fas fa-house-user text-danger icon-16px"}></i>
-                                                                                                                        : <i className={contacto.success ? "fas fa-mail-bulk text-success icon-16px" : "fas fa-mail-bulk text-danger icon-16px"}></i>
-                                                                                        :''
-                                                                                    }
-                                                                                </span>
-                                                                            </div>
-                                                                            <div className={contacto.success ? "timeline-desc timeline-desc-light-success" : "timeline-desc timeline-desc-light-danger"}>
-                                                                                <span className={contacto.success ? "font-weight-bolder text-success" : "font-weight-bolder text-danger"}>{setDateTableLG(contacto.created_at)}</span>
-                                                                                <div className="font-weight-light pb-2 text-justify position-relative mt-2" style={{ borderRadius: '0.42rem', padding: '1rem 1.5rem', backgroundColor: '#F3F6F9' }}>
-                                                                                    <div className="text-dark-75 font-weight-bold mb-2">{contacto.tipo_contacto?contacto.tipo_contacto.tipo:''}</div>
-                                                                                    {contacto.comentario}
-                                                                                    {
-                                                                                        contacto.adjunto ?
-                                                                                            <div className="d-flex justify-content-end">
-                                                                                                <a href={contacto.adjunto.url} target='_blank' rel="noopener noreferrer" className="text-muted text-hover-primary font-weight-bold">
-                                                                                                    <span className="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
-                                                                                                        <SVG src={toAbsoluteUrl('/images/svg/Attachment1.svg')} />
-                                                                                                    </span>VER ADJUNTO
-                                                                                                    </a>
-                                                                                            </div>
-                                                                                            : ''
-                                                                                    }
+                                                        lead.prospecto?
+                                                            lead.prospecto.contactos.map((contacto, key) => {
+                                                                return (
+                                                                    <div className="timeline timeline-6" key={key}>
+                                                                        <div className="timeline-items">
+                                                                            <div className="timeline-item">
+                                                                                <div className={contacto.success ? "timeline-media bg-light-success" : "timeline-media bg-light-danger"}>
+                                                                                    <span className={contacto.success ? "svg-icon svg-icon-success svg-icon-md" : "svg-icon svg-icon-danger  svg-icon-md"}>
+                                                                                        {
+                                                                                            contacto.tipo_contacto?
+                                                                                                contacto.tipo_contacto.tipo === 'Llamada' ?
+                                                                                                    <SVG src={toAbsoluteUrl('/images/svg/Outgoing-call.svg')} />
+                                                                                                    : contacto.tipo_contacto.tipo === 'Correo' ?
+                                                                                                        <SVG src={toAbsoluteUrl('/images/svg/Outgoing-mail.svg')} />
+                                                                                                        : contacto.tipo_contacto.tipo === 'VIDEO LLAMADA' ?
+                                                                                                            <SVG src={toAbsoluteUrl('/images/svg/Video-camera.svg')} />
+                                                                                                            : contacto.tipo_contacto.tipo === 'Whatsapp' ?
+                                                                                                                <i className={contacto.success ? "socicon-whatsapp text-success icon-16px" : "socicon-whatsapp text-danger icon-16px"}></i>
+                                                                                                                : contacto.tipo_contacto.tipo === 'TAWK TO ADS' ?
+                                                                                                                    <i className={contacto.success ? "fas fa-dove text-success icon-16px" : "fas fa-dove text-danger icon-16px"}></i>
+                                                                                                                    : contacto.tipo_contacto.tipo === 'REUNIÓN PRESENCIAL' ?
+                                                                                                                        <i className={contacto.success ? "fas fa-users text-success icon-16px" : "fas fa-users text-danger icon-16px"}></i>
+                                                                                                                        : contacto.tipo_contacto.tipo === 'Visita' ?
+                                                                                                                            <i className={contacto.success ? "fas fa-house-user text-success icon-16px" : "fas fa-house-user text-danger icon-16px"}></i>
+                                                                                                                            : <i className={contacto.success ? "fas fa-mail-bulk text-success icon-16px" : "fas fa-mail-bulk text-danger icon-16px"}></i>
+                                                                                            :''
+                                                                                        }
+                                                                                    </span>
+                                                                                </div>
+                                                                                <div className={contacto.success ? "timeline-desc timeline-desc-light-success" : "timeline-desc timeline-desc-light-danger"}>
+                                                                                    <span className={contacto.success ? "font-weight-bolder text-success" : "font-weight-bolder text-danger"}>{setDateTableLG(contacto.created_at)}</span>
+                                                                                    <div className="font-weight-light pb-2 text-justify position-relative mt-2" style={{ borderRadius: '0.42rem', padding: '1rem 1.5rem', backgroundColor: '#F3F6F9' }}>
+                                                                                        <div className="text-dark-75 font-weight-bold mb-2">{contacto.tipo_contacto?contacto.tipo_contacto.tipo:''}</div>
+                                                                                        {contacto.comentario}
+                                                                                        {
+                                                                                            contacto.adjunto ?
+                                                                                                <div className="d-flex justify-content-end">
+                                                                                                    <a href={contacto.adjunto.url} target='_blank' rel="noopener noreferrer" className="text-muted text-hover-primary font-weight-bold">
+                                                                                                        <span className="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
+                                                                                                            <SVG src={toAbsoluteUrl('/images/svg/Attachment1.svg')} />
+                                                                                                        </span>VER ADJUNTO
+                                                                                                        </a>
+                                                                                                </div>
+                                                                                                : ''
+                                                                                        }
+                                                                                    </div>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
                                                                     </div>
-                                                                </div>
-                                                            )
-                                                        })
+                                                                )
+                                                            })
                                                         : ''
+                                                    : ''
                                                 }
                                             </div>
                                         </Card.Body>
