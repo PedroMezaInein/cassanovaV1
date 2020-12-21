@@ -8,7 +8,7 @@ import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../../functions/routers"
 import { setOptions, setDateTableLG } from '../../../../functions/setters';
 import axios from 'axios'
-import { doneAlert, errorAlert, forbiddenAccessAlert, waitAlert, questionAlert2, questionAlert } from '../../../../functions/alert';
+import { doneAlert, errorAlert, forbiddenAccessAlert, waitAlert, questionAlert2, questionAlert, deleteAlert } from '../../../../functions/alert';
 import Swal from 'sweetalert2'
 import { HistorialContactoForm, AgendarCitaForm, PresupuestoDiseñoCRMForm, PresupuestoGenerado,InformacionGeneral} from '../../../../components/forms'
 import { Modal } from '../../../../components/singles'
@@ -1492,20 +1492,28 @@ class LeadInfo extends Component {
                                                                                 </div>
                                                                                 <div className={contacto.success ? "timeline-desc timeline-desc-light-success" : "timeline-desc timeline-desc-light-danger"}>
                                                                                     <span className={contacto.success ? "font-weight-bolder text-success" : "font-weight-bolder text-danger"}>{setDateTableLG(contacto.created_at)}</span>
-                                                                                    <div className="font-weight-light pb-2 text-justify position-relative mt-2" style={{ borderRadius: '0.42rem', padding: '1rem 1.5rem', backgroundColor: '#F3F6F9' }}>
-                                                                                        <div className="text-dark-75 font-weight-bold mb-2">{contacto.tipo_contacto?contacto.tipo_contacto.tipo:''}</div>
+                                                                                    <div className="font-weight-light pb-2 text-justify position-relative mt-2 pr-3" style={{ borderRadius: '0.42rem', padding: '1rem 1.5rem', backgroundColor: '#F3F6F9' }}>
+                                                                                        <div className="text-dark-75 font-weight-bold mb-2">
+                                                                                        <div class="d-flex justify-content-between">
+                                                                                            {contacto.tipo_contacto?contacto.tipo_contacto.tipo:''}
+                                                                                            <a className="text-muted text-hover-danger font-weight-bold" onClick={(e) => { deleteAlert('¿ESTÁS SEGURO QUE DESEAS ELIMINAR EL CONTACTO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.eliminarContacto()) }}>
+                                                                                                <i className="flaticon2-cross icon-xs"/>
+                                                                                            </a>
+                                                                                        </div>
+                                                                                            
+                                                                                        </div>
                                                                                         {contacto.comentario}
-                                                                                        {
-                                                                                            contacto.adjunto ?
-                                                                                                <div className="d-flex justify-content-end">
+                                                                                        <div className="d-flex justify-content-end">
+                                                                                            {
+                                                                                                contacto.adjunto ?
                                                                                                     <a href={contacto.adjunto.url} target='_blank' rel="noopener noreferrer" className="text-muted text-hover-primary font-weight-bold">
                                                                                                         <span className="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
                                                                                                             <SVG src={toAbsoluteUrl('/images/svg/Attachment1.svg')} />
                                                                                                         </span>VER ADJUNTO
-                                                                                                        </a>
-                                                                                                </div>
+                                                                                                    </a>
                                                                                                 : ''
-                                                                                        }
+                                                                                            }
+                                                                                        </div>
                                                                                     </div>
                                                                                 </div>
                                                                             </div>
