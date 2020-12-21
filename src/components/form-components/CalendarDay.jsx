@@ -3,6 +3,7 @@ import { Calendar } from 'react-date-range'
 import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import es from "date-fns/locale/es";
+import { parseISO, format } from 'date-fns';
 export default class CalendarDay extends Component {
 
     state = {
@@ -20,6 +21,16 @@ export default class CalendarDay extends Component {
         })
     }
 
+    componentDidUpdate(nextProps){
+        if (nextProps.date !== this.props.date){
+            const { date } = this.props
+            this.setState({
+                ...this.state,
+                date: new Date(date)
+            })
+        }
+    }
+
     updateDate = item => {
         const { onChange, name } = this.props
         this.setState({
@@ -29,7 +40,7 @@ export default class CalendarDay extends Component {
         onChange({ target: { name: name, value: item } })
     }
     render() {
-        const { date } = this.props
+        const { date } = this.state
         return (
             <>
                 <div className="form-group">
