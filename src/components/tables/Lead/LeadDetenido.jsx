@@ -77,7 +77,17 @@ class LeadDetenido extends Component {
                                                 </td>
                                                 <td className="font-size-lg text-left font-weight-bolder">
                                                     <span>Ingreso: </span><span className="text-muted font-weight-bold font-size-sm">{setDateTableLG(lead.created_at)}</span><br />
-                                                    <span>Último contacto: </span><span className="text-muted font-weight-bold font-size-sm">{setDateTableLG(lead.prospecto.contactos[0].created_at)}</span>
+                                                    <span>Último contacto: </span><span className="text-muted font-weight-bold font-size-sm">
+                                                        {
+                                                            lead.prospecto ?
+                                                                lead.prospecto.contactos ?
+                                                                    lead.prospecto.contactos.length ?
+                                                                        setDateTableLG(lead.prospecto.contactos[0].created_at)
+                                                                    : '-'
+                                                                : '-'
+                                                            : '-'
+                                                        }
+                                                    </span>
                                                 </td>
                                                 <td>
                                                     {
