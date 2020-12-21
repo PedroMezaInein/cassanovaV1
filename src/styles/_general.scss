@@ -102,6 +102,10 @@ a.text-hover-danger2:hover,
     color: #cc4b4c !important;
 }
 
+.a-hover:hover{
+    cursor: pointer;
+}
+
 .pdfview {
     @include screen ($lg) {
         width: 275px;
@@ -1304,3 +1308,7 @@ button.modal-video-close-btn:after {
     height: 24px!important;
 }
 
+.mx-150px{
+    margin-left: 150px;
+    margin-right: 150px;
+}

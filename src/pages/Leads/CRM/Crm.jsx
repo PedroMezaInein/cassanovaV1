@@ -6,7 +6,7 @@ import Layout from '../../../components/layout/layout';
 import { Col, Row, Card, Form, Tab, Nav, DropdownButton, Dropdown } from 'react-bootstrap'
 import { setOptions, setDateTableLG } from '../../../functions/setters'
 import { UltimosContactosCard, SinContacto, UltimosIngresosCard } from '../../../components/cards'
-import { forbiddenAccessAlert, errorAlert, waitAlert, doneAlert, questionAlert, questionAlert2 } from '../../../functions/alert'
+import { forbiddenAccessAlert, errorAlert, waitAlert, doneAlert, questionAlert, questionAlert2, deleteAlert} from '../../../functions/alert'
 import LeadRhProveedor from '../../../components/tables/Lead/LeadRhProveedor'
 import LeadNuevo from '../../../components/tables/Lead/LeadNuevo'
 import LeadContacto from '../../../components/tables/Lead/LeadContacto'
@@ -1579,7 +1579,7 @@ class Crm extends Component {
                             handleChange={this.handleChange}
                             onSubmit={() => { waitAlert(); this.agregarContacto() }} />
                     </div>
-                    <div className="px-2 pb-2 pt-4">
+                    <div className="mx-150px pb-2 pt-4">
                         {
                             lead ?
                                 lead.prospecto ?
@@ -1613,8 +1613,15 @@ class Crm extends Component {
                                                         </div>
                                                         <div className={contacto.success ? "timeline-desc timeline-desc-light-success" : "timeline-desc timeline-desc-light-danger"}>
                                                             <span className={contacto.success ? "font-weight-bolder text-success" : "font-weight-bolder text-danger"}>{setDateTableLG(contacto.created_at)}</span>
-                                                            <div className="font-weight-light pb-2 text-justify position-relative mt-2" style={{ borderRadius: '0.42rem', padding: '1rem 1.5rem', backgroundColor: '#F3F6F9' }}>
-                                                                <div className="text-dark-75 font-weight-bold mb-2">{contacto.tipo_contacto ? contacto.tipo_contacto.tipo : ''}</div>
+                                                            <div className="font-weight-light pb-2 text-justify position-relative mt-2 pr-3" style={{ borderRadius: '0.42rem', padding: '1rem 1.5rem', backgroundColor: '#F3F6F9' }}>
+                                                                <div className="text-dark-75 font-weight-bold mb-2">
+                                                                    <div class="d-flex justify-content-between">
+                                                                        {contacto.tipo_contacto ? contacto.tipo_contacto.tipo : ''}
+                                                                        <a className="text-muted text-hover-danger font-weight-bold" onClick={(e) => { deleteAlert('¿ESTÁS SEGURO QUE DESEAS ELIMINAR EL CONTACTO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.eliminarContacto()) }}>
+                                                                            <i className="flaticon2-cross icon-xs" />
+                                                                        </a>
+                                                                    </div>
+                                                                </div>
                                                                 {contacto.comentario}
                                                                 {
                                                                     contacto.adjunto ?
@@ -1623,7 +1630,7 @@ class Crm extends Component {
                                                                                 <span className="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
                                                                                     <SVG src={toAbsoluteUrl('/images/svg/Attachment1.svg')} />
                                                                                 </span>VER ADJUNTO
-                                                                                                            </a>
+                                                                            </a>
                                                                         </div>
                                                                         : ''
                                                                 }
@@ -1638,14 +1645,6 @@ class Crm extends Component {
                                 : ''
                         }
                     </div>
-
-                    {/* <HistorialContactoForm
-                        options={options}
-                        formHistorial={formHistorial}
-                        onChangeHistorial={this.onChangeHistorial}
-                        handleChange={this.handleChange}
-                        onSubmit={() => { waitAlert(); this.agregarContacto() }}
-                    /> */}
                 </Modal>
             </Layout>
         );

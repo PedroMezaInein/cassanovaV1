@@ -87,7 +87,7 @@ export default class FacturaTable extends Component {
     }
     openModalDeleteFactura = (factura) => {
         const { deleteFactura } = this.props
-        deleteAlert('¿SEGURO DESEAS BORRAR LA FACTURA?', () => deleteFactura(factura.id))
+        deleteAlert('¿SEGURO DESEAS BORRAR LA FACTURA?','', () => deleteFactura(factura.id))
     }
 
     render() {
