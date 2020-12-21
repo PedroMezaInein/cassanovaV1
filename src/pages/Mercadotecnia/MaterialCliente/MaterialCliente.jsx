@@ -233,21 +233,46 @@ class MaterialEmpresa extends Component {
             form
         });
     }
-    openSubMenu = (name) => {
-        let { form } = this.state
-        form.adjuntos.slider.placeholder = name
-        form.adjuntos.slider.files = []
-        form.adjuntos.slider.menu = 1
-
-        this.setState({
-            form
-        });
-    }
+    // openSubMenu = (name) => {
+    //     let { form } = this.state
+    //     form.adjuntos.slider.placeholder = name
+    //     form.adjuntos.slider.files = []
+    //     form.adjuntos.slider.menu = 1
+    //     this.setState({
+    //         form
+    //     });
+    // }
     changeActiveKey = empresa => {
         this.setState({
             empresa: empresa
         })
-    }
+    } 
+
+    loadAdjuntos = adjuntos => {
+        let { form } = this.state
+        let subportafolio = []
+        let ejemplo = []
+        let portada = []
+        adjuntos.forEach(adjunto=>{
+            switch(adjunto.pivot.tipo){
+                case "portada":
+                    portada.push(adjunto)
+                    break;
+                case "subportafolio":
+                    subportafolio.push(adjunto)
+                    break;
+                case "ejemplo":
+                    ejemplo.push(adjunto)
+                    break;
+            }
+        })
+        form.adjuntos.portada.files =portada
+        form.adjuntos.subportafolio.files =subportafolio
+        form.adjuntos.ejemplo.files =ejemplo
+        this.setState({
+            form
+        })
+    } 
     render() {
         const { form, data, opciones_adjuntos, empresa } = this.state
         const sub_menu = (element) => {
@@ -257,7 +282,7 @@ class MaterialEmpresa extends Component {
                         empresa ?
                             empresa.tipos.map((tipo, key) => {
                                 return (
-                                    <Nav.Item className='navi-item' key={key} >
+                                    <Nav.Item className='navi-item' key={key} onClick={(e)=>{ e.preventDefault();this.loadAdjuntos(tipo.adjuntos)}}>
                                         <Nav.Link className="navi-link p-2" eventKey={tipo.id}>
                                             <span className="navi-icon">
                                                 <span className="navi-bullet">
@@ -265,7 +290,7 @@ class MaterialEmpresa extends Component {
                                                 </span>
                                             </span>
                                             <div className="navi-text">
-                                                <span className="d-block font-weight-bolder">{tipo.tipo}</span>
+                                                <span className="d-block font-weight-bolder" >{tipo.tipo}</span>
                                             </div>
                                         </Nav.Link>
                                     </Nav.Item>

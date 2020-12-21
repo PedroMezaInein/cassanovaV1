@@ -1030,9 +1030,9 @@ class Crm extends Component {
     }
 
     async changeEstatusCanceladoRechazadoAxios(data) {
-        waitAlert()
         const { access_token } = this.props.authUser
         data.motivo = document.getElementById('motivo').value
+        waitAlert()
         await axios.put(URL_DEV + 'crm/lead/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { activeTable } = this.state
