@@ -102,7 +102,7 @@ class Imss extends Component {
         })
     }
     deleteFile = element => {
-        deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', () => this.deleteAdjuntoAxios(element.id))
+        deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', '', () => this.deleteAdjuntoAxios(element.id))
     }
     setAdjuntos = adjuntos => {
         const { form } = this.state

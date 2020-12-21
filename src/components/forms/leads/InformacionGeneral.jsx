@@ -100,6 +100,7 @@ class InformacionGeneral extends Component {
                                 date = { form.fecha }
                                 onChange={onChange}
                                 name='fecha'
+                                withformgroup={1}
                             />
                         </div>
                     </div>

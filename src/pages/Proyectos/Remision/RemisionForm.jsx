@@ -174,7 +174,7 @@ class RemisionForm extends Component {
         })
     }
     deleteFile = element => {
-        deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', () => this.deleteAdjuntoAxios())
+        deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', '', () => this.deleteAdjuntoAxios())
     }
     async getOptionsAxios() {
         const { access_token } = this.props.authUser

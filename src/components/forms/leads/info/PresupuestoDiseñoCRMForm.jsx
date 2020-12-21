@@ -103,6 +103,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                 date = { formDiseño.fecha }
                                                 onChange={onChange}
                                                 name='fecha'
+                                                withformgroup={1}
                                             />
                                         </div>
                                     </Col>
