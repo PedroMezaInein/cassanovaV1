@@ -7,12 +7,10 @@ import { Column } from '../../components/draggable'
 import { DragDropContext } from 'react-beautiful-dnd'
 import { Modal } from '../../components/singles'
 import { TareaForm } from '../../components/forms'
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-// import { faTimes} from '@fortawesome/free-solid-svg-icons'
 import { Button } from '../../components/form-components'
 import moment from 'moment'
-import { Card, Nav, Tab, Row, Col, Form, Tabs} from 'react-bootstrap'
-import { errorAlert, forbiddenAccessAlert, waitAlert, validateAlert, questionAlert } from '../../functions/alert'
+import { Card, Nav, Tab, Row, Col, Form} from 'react-bootstrap'
+import { errorAlert, forbiddenAccessAlert, waitAlert, validateAlert } from '../../functions/alert'
 import { CaducadasCard, EnProcesoCard, ProximasCaducarCard } from '../../components/cards'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
@@ -44,7 +42,6 @@ class Tareas extends Component {
         adjuntoFile: '',
         adjuntoName: '',
         defaultactivekey: "",
-
         en_proceso: {
             data: [],
             numPage: 0,
@@ -983,7 +980,6 @@ class Tareas extends Component {
                                                                         <div className="timeline-item">
                                                                             <div className="timeline-media border-0">
                                                                                 <img alt="Pic" src={comentario.user.avatar ? comentario.user.avatar : "/default.jpg"}/>
-                                                                                {/* <span className="symbol-label font-size-h6 text-primary font-weight-bolder">{comentario.user.name.charAt(0)}</span> */}
                                                                             </div>
                                                                             <div className="timeline-content">
                                                                                 <span className="text-info font-weight-bolder">{comentario.user.name}</span>
@@ -1014,40 +1010,8 @@ class Tareas extends Component {
                             }
                             </Tab.Pane>
                         </Tab.Content>
-                    </Tab.Container>           
-                    
-                    {/* <div className="text-center mt-4">
-                            <Button 
-                                text="ENVIAR"
-                                className="btn btn-light-primary font-weight-bolder mr-3"
-                                onClick = { this.addComentario }
-                            /> 
-                        </div>  */}
-                    {/* <div className="form-group row form-group-marginless px-3">
-                        <div className="col-md-10">  
-                            <div className="image-upload"> 
-                                <input
-                                    onChange = {this.onChangeComentario}
-                                    value = {adjunto}
-                                    name="adjunto" 
-                                    type="file" 
-                                    id="adjunto"
-                                /> 
-                                {
-                                    adjuntoName &&
-                                        <Badge variant="light" className="d-flex px-3 w-fit-content align-items-center" pill>
-                                            <FontAwesomeIcon icon={faTimes} onClick={ (e) => { e.preventDefault(); this.deleteAdjunto() } } className=" small-button mr-2" />
-                                            {
-                                                adjuntoName
-                                            }
-                                        </Badge>
-                                }
-                            </div>
-                        </div>
-                    </div> */}
-                    
+                    </Tab.Container>
                 </Modal>
-
             </Layout>
         )
     }

@@ -1,19 +1,10 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
 import { Button } from '../form-components'
-import { faTrashAlt, faCalendarCheck } from '@fortawesome/free-solid-svg-icons'
-import Calendar from '../form-components/Calendar'
-import { Small } from '../texts'
 import InputGray from '../form-components/Gray/InputGray'
 import { CalendarDay } from '../form-components'
 import { questionAlert, deleteAlert } from '../../functions/alert'
-
 class TareaForm extends Component {
-
-    state = {
-        activeEnd: '',
-        activeDelete: ''
-    }
 
     updateParticipantes = value => {
         const { update } = this.props
@@ -26,59 +17,15 @@ class TareaForm extends Component {
         changeValueSend({ target: { name: 'fecha_limite', value: date.target.value } })
     }
 
-    onClickEnd = () => {
-        const { activeEnd } = this.state
-        if (activeEnd === '') {
-            this.setState({
-                activeEnd: 'active',
-                activeDelete: ''
-            })
-        } else {
-            this.setState({
-                activeEnd: '',
-                activeDelete: ''
-            })
-        }
-    }
-
-    onClickDelete = () => {
-        const { activeDelete } = this.state
-        if (activeDelete === '') {
-            this.setState({
-                activeDelete: 'active',
-                activeEnd: ''
-            })
-        } else {
-            this.setState({
-                activeDelete: '',
-                activeEnd: ''
-            })
-        }
-    }
-
-    onClickClose = () => {
-        this.setState({
-            activeDelete: '',
-            activeEnd: ''
-        })
-    }
-
     render() {
         const { form, changeValue, changeValueSend, deleteTarea, endTarea, formeditado, participantesTask, deleteParticipante, update, ...props } = this.props
-        const { activeEnd, activeDelete } = this.state
         return (
             <Form {...props}>
                 <div className="row mx-0">
                     <div className="form-group row form-group-marginless col-md-12 pt-4">
                         <div className="col-md-5 text-center align-self-center">
-                            {/* <Calendar
-                                onChangeCalendar={this.onChangeCalendar}
-                                placeholder="FECHA LÍMITE"
-                                name="fecha_limite"
-                                value={(form.fecha_limite === null || form.fecha_limite === undefined) ? '' : new Date(form.fecha_limite)}
-                            /> */}
                             <div className="d-flex justify-content-center" style={{ height: '1px' }}>
-                                <label className="text-center font-weight-bolder">Fecha</label>
+                                <label className="text-center font-weight-bolder">Fecha de entrega</label>
                             </div>
                             <CalendarDay
                                 date={(form.fecha_limite === null || form.fecha_limite === undefined || form.fecha_limite === NaN) ? '' : new Date(form.fecha_limite)}
@@ -96,7 +43,7 @@ class TareaForm extends Component {
                                     withicon={1}
                                     requirevalidation={0}
                                     formeditado={formeditado}
-                                    placeholder='TÍTULO'
+                                    placeholder='TÍTULO DE LA TAREA'
                                     value={form.titulo}
                                     name='titulo'
                                     onBlur={(e) => { e.preventDefault(); changeValueSend(e) }}
