@@ -890,7 +890,7 @@ class Diseño extends Component {
                                             <span className="nav-text">Obra</span>
                                         </Nav.Link>
                                     </Nav.Item>
-                                    <Nav.Item className="nav-item mr-3">
+                                    {/* <Nav.Item className="nav-item mr-3">
                                         <Nav.Link eventKey="adjuntos">
                                             <span className="nav-icon mr-2">
                                                 <span className="svg-icon mr-3">
@@ -899,7 +899,7 @@ class Diseño extends Component {
                                             </span>
                                             <span className="nav-text">Adjuntos</span>
                                         </Nav.Link>
-                                    </Nav.Item>
+                                    </Nav.Item> */}
                                     <Nav.Item className="nav-item mr-3">
                                         <Nav.Link eventKey="planos">
                                             <span className="nav-icon mr-2">
@@ -944,7 +944,7 @@ class Diseño extends Component {
                                             addRow={this.addParametricRow}
                                         />
                                     </Tab.Pane>
-                                    {
+                                    {/* {
                                         empresa ?
                                             <Tab.Pane eventKey="adjuntos">
                                                 <Tab.Container activeKey = { activeTipo } 
@@ -994,7 +994,7 @@ class Diseño extends Component {
                                                 </Tab.Container>
                                             </Tab.Pane>
                                         : ''
-                                    }
+                                    } */}
                                     
                                     {
                                         empresa ?

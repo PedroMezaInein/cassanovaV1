@@ -158,7 +158,8 @@ class Tareas extends Component {
             tarea: '',
             adjuntoName: '',
             adjuntoFile: '',
-            adjunto: ''
+            adjunto: '',
+            formComentarioAdj: this.clearForm()
         })
     }
 
@@ -451,7 +452,7 @@ class Tareas extends Component {
 
     async addComentarioAxios() {
         const { access_token } = this.props.authUser
-        const { comentario, tarea, adjuntoFile, adjuntoName, subActiveKey } = this.state
+        const { comentario, tarea, adjuntoFile, adjuntoName, subActiveKey} = this.state
         const data = new FormData();
         data.append('comentario', comentario)
         data.append('adjunto', adjuntoFile)
@@ -775,7 +776,7 @@ class Tareas extends Component {
         })
     }
     handleChange = (files, item) => {
-        const { form } = this.state
+        const { formComentarioAdj } = this.state
         let aux = []
         for (let counter = 0; counter < files.length; counter++) {
             aux.push(
@@ -787,12 +788,34 @@ class Tareas extends Component {
                 }
             )
         }
-        form['adjuntos'][item].value = files
-        form['adjuntos'][item].files = aux
+        formComentarioAdj['adjuntos'][item].value = files
+        formComentarioAdj['adjuntos'][item].files = aux
         this.setState({
             ...this.state,
-            form
+            formComentarioAdj
         })
+    }
+    clearForm = () => {
+        const { formComentarioAdj } = this.state
+        let aux = Object.keys(formComentarioAdj)
+        aux.map((element) => {
+            switch (element) {
+                case 'adjuntos':
+                    formComentarioAdj[element] = {
+                        adjunto: {
+                            files: [],
+                            value: '',
+                            placeholder: 'Adjunto'
+                        }
+                    }
+                    break;
+                default:
+                    formComentarioAdj[element] = ''
+                    break;
+            }
+            return false
+        })
+        return formComentarioAdj;
     }
     render() {
 
@@ -889,7 +912,7 @@ class Tareas extends Component {
                 </div>
                 <Modal size="xl" title="Tareas" show={modal} handleClose={this.handleCloseModal} >
                     <Tab.Container defaultActiveKey="1">
-                        <Nav className="nav-tabs nav-bold nav-tabs-line nav-tabs-line-3x border-0 nav-tabs-line-info d-flex justify-content-end mt-3">
+                        <Nav className="nav-tabs nav-bold nav-tabs-line nav-tabs-line-3x border-0 nav-tabs-line-info mt-3 d-flex justify-content-end" id="nav-tareas">
                             <Nav.Item>
                                 <Nav.Link eventKey="1">
                                     <span className="nav-icon">
