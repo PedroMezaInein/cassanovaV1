@@ -912,7 +912,7 @@ class Tareas extends Component {
                 </div>
                 <Modal size="xl" title="Tareas" show={modal} handleClose={this.handleCloseModal} >
                     <Tab.Container defaultActiveKey="1">
-                        <Nav className="nav-tabs nav-bold nav-tabs-line nav-tabs-line-3x border-0 nav-tabs-line-info d-flex justify-content-end mt-3">
+                        <Nav className="nav-tabs nav-bold nav-tabs-line nav-tabs-line-3x border-0 nav-tabs-line-info mt-3 d-flex justify-content-end" id="nav-tareas">
                             <Nav.Item>
                                 <Nav.Link eventKey="1">
                                     <span className="nav-icon">
