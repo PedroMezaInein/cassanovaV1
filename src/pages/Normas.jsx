@@ -185,7 +185,7 @@ class Normas extends Component {
                                     <div className="d-flex justify-content-center">
                                         <div className="col-md-6">
                                             <Video
-                                                src="http://www.w3schools.com/html/mov_bbb.mp4"
+                                                src="https://www.w3schools.com/html/mov_bbb.mp4"
                                             />
                                         </div>
                                     </div>
