@@ -22,7 +22,7 @@ class TareaForm extends Component {
         return (
             <Form {...props}>
                 <div className="row mx-0">
-                    <div className="form-group row form-group-marginless col-md-12 pt-4">
+                    <div className="form-group row form-group-marginless col-md-12 pt-4 mx-0">
                         <div className="col-md-5 text-center align-self-center">
                             <div className="d-flex justify-content-center" style={{ height: '1px' }}>
                                 <label className="text-center font-weight-bolder">Fecha de entrega</label>
@@ -35,7 +35,7 @@ class TareaForm extends Component {
                             />
                         </div>
                         <div className="col-md-7 align-self-center">
-                            <div>
+                            <div className="col-md-12 px-0">
                                 <InputGray
                                     withtaglabel={1}
                                     withtextlabel={1}
@@ -52,7 +52,7 @@ class TareaForm extends Component {
                                     messageinc="Incorrecto. Ingresa el título de la tarea."
                                 />
                             </div>
-                            <div>
+                            <div className="col-md-12 px-0">
                                 <InputGray
                                     withtaglabel={1}
                                     withtextlabel={1}
@@ -75,6 +75,7 @@ class TareaForm extends Component {
                     <div className="col-md-12 d-flex justify-content-center align-items-center mt-1">
                             <Button
                                 icon=''
+                                id="solicitar_cita"
                                 className={"btn btn-icon btn-xs w-auto p-3 btn-light-gray mr-2 mt-2"}
                                 onClick={(e) => { questionAlert('¿ESTÁS SEGURO QUE DESEAS TERMINAR LA TAREA?', '¡NO PODRÁS REVERTIR ESTO!', () => endTarea(form.id)) }}
                                 only_icon={"far fa-calendar-check icon-15px mr-2"}
@@ -82,6 +83,7 @@ class TareaForm extends Component {
                             />
                             <Button
                                 icon=''
+                                id="solicitar_cita"
                                 className={"btn btn-icon btn-xs w-auto p-3 btn-light-danger mr-2 mt-2"}
                                 onClick={(e) => { deleteAlert('¿ESTÁS SEGURO QUE DESEAS ELIMINAR LA TAREA?', '¡NO PODRÁS REVERTIR ESTO!', () => deleteTarea(form.id)) }}
                                 only_icon={"far fa-trash-alt icon-15px mr-2"}
