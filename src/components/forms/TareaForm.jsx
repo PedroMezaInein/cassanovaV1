@@ -6,6 +6,8 @@ import Calendar from '../form-components/Calendar'
 import { Small } from '../texts'
 import InputGray from '../form-components/Gray/InputGray'
 import { CalendarDay } from '../form-components'
+import { questionAlert, deleteAlert } from '../../functions/alert'
+
 class TareaForm extends Component {
 
 
@@ -68,8 +70,8 @@ class TareaForm extends Component {
         return (
             <Form {...this.props}>
                 <div className="row mx-0">
-                    <div className="form-group row form-group-marginless col-md-12">
-                        <div className="col-md-5 text-center align-self-center pt-5">
+                    <div className="form-group row form-group-marginless col-md-12 pt-4">
+                        <div className="col-md-5 text-center align-self-center">
                             {/* <Calendar
                                 onChangeCalendar={this.onChangeCalendar}
                                 placeholder="FECHA LÍMITE"
@@ -123,63 +125,23 @@ class TareaForm extends Component {
                                 />
                             </div>
                         </div>
-                        
-                        <div className="col-md-12 d-flex justify-content-center align-items-center">
+                    </div>
+                    <div className="col-md-12 d-flex justify-content-center align-items-center mt-1">
                             <Button
                                 icon=''
-                                only_icon={'far fa-calendar-alt'}
-                                className={"btn btn-light-primary font-weight-bold mr-2"}
-                                onClick={() => this.onClickEnd()}
-                                text='TERMINAR'
+                                className={"btn btn-icon btn-xs w-auto p-3 btn-light-gray mr-2 mt-2"}
+                                onClick={(e) => { questionAlert('¿ESTÁS SEGURO QUE DESEAS TERMINAR LA TAREA?', '¡NO PODRÁS REVERTIR ESTO!', () => endTarea(form.id)) }}
+                                only_icon={"far fa-calendar-check icon-15px mr-2"}
+                                text='TERMINAR TAREA'
                             />
-                            <div className={`${activeEnd} transition-all hidden`}>
-                                <Small className="d-flex align-items-center">
-                                    ¿Das por terminada la tarea?
-                                        <Button
-                                            icon=''
-                                            className={"btn btn-icon btn-xs mx-2 btn-light btn-text-dark btn-hover-text-dark"}
-                                            onClick={() => this.onClickClose()} 
-                                            only_icon={"flaticon2-cross icon-xs"}
-                                        />
-                                        
-                                        <Button
-                                            icon=''
-                                            className={"btn btn-icon btn-xs mr-2 btn-light btn-text-success btn-hover-text-success"} 
-                                            onClick={() => endTarea(form.id)}
-                                            only_icon={"flaticon2-check-mark icon-sm"}
-                                        />
-                                </Small>
-                            </div>
                             <Button
                                 icon=''
-                                only_icon={'far fa-trash-alt'}
-                                className={"btn btn-light-danger font-weight-bold mr-2"} 
-                                onClick={() => this.onClickDelete()}
-                                text='ELIMINAR'
+                                className={"btn btn-icon btn-xs w-auto p-3 btn-light-danger mr-2 mt-2"}
+                                onClick={(e) => { deleteAlert('¿ESTÁS SEGURO QUE DESEAS ELIMINAR LA TAREA?', '¡NO PODRÁS REVERTIR ESTO!', () => deleteTarea(form.id)) }}
+                                only_icon={"far fa-trash-alt icon-15px mr-2"}
+                                text='ELIMINAR TAREA'
                             />
-                            <div className={`${activeDelete} transition-all hidden`}>
-                                <Small className="d-flex align-items-center">
-                                    ¿Estás seguro?
-                                        <Button 
-                                            icon=''
-                                            className={"btn btn-icon btn-xs mx-2 btn-light btn-text-dark btn-hover-text-dark"} 
-                                            onClick={() => this.onClickClose()}
-                                            only_icon={"flaticon2-cross icon-xs"}
-                                        />
-                                        <Button 
-                                            icon=''
-                                            className={"btn btn-icon btn-xs mr-2 btn-light btn-text-success btn-hover-text-success"}  
-                                            onClick={() => deleteTarea(form.id)} 
-                                            only_icon={"flaticon2-check-mark icon-sm"}
-                                        />
-                                </Small>
-                            </div>
                         </div>
-                    </div>
-
-                    <div className="col-md-12">
-                        
-                    </div>
                 </div>
             </Form>
         )
