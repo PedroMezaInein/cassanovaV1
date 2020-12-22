@@ -2,35 +2,37 @@ import React, { Component } from 'react'
 import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import { URL_DEV} from '../../constants'
+import { URL_DEV } from '../../constants'
 import { Column } from '../../components/draggable'
 import { DragDropContext } from 'react-beautiful-dnd'
 import { Modal } from '../../components/singles'
 import { TareaForm } from '../../components/forms'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTimes} from '@fortawesome/free-solid-svg-icons'
-import {Input, Button}from '../../components/form-components'
+// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+// import { faTimes} from '@fortawesome/free-solid-svg-icons'
+import { Button } from '../../components/form-components'
 import moment from 'moment'
-import { Badge, Card, Nav, Tab, Row, Col} from 'react-bootstrap'
-import { errorAlert, forbiddenAccessAlert,waitAlert } from '../../functions/alert'
-import {CaducadasCard, EnProcesoCard, ProximasCaducarCard} from '../../components/cards'
+import { Card, Nav, Tab, Row, Col, Form } from 'react-bootstrap'
+import { errorAlert, forbiddenAccessAlert, waitAlert, validateAlert } from '../../functions/alert'
+import { CaducadasCard, EnProcesoCard, ProximasCaducarCard } from '../../components/cards'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+import ItemSlider from '../../components/singles/ItemSlider'
+import InputGray from '../../components/form-components/Gray/InputGray'
 const MySwal = withReactContent(Swal)
-class Tareas extends Component{
+class Tareas extends Component {
 
     state = {
-        columns:[],
+        columns: [],
         tableros: [],
-        user : '',
+        user: '',
         users: '',
         activeKey: '',
-        form:{
+        form: {
             titulo: '',
             grupo: '',
             participantes: []
         },
-        formeditado:0,
+        formeditado: 0,
         participantes: [],
         participantesTask: [],
         tarea: '',
@@ -39,7 +41,7 @@ class Tareas extends Component{
         adjunto: '',
         adjuntoFile: '',
         adjuntoName: '',
-        defaultactivekey:"",
+        defaultactivekey: "",
 
         en_proceso: {
             data: [],
@@ -62,17 +64,26 @@ class Tareas extends Component{
             total_paginas: 0,
             value: "caducadas"
         },
+        formComentarioAdj: {
+            adjuntos: {
+                adjunto: {
+                    value: '',
+                    placeholder: 'Adjunto',
+                    files: []
+                },
+            }
+        },
     }
 
-    componentDidMount(){
-        const { authUser: { user : { permisos  } } } = this.props
-        const { history : { location: { pathname } } } = this.props
+    componentDidMount() {
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
         const { history } = this.props
-        const tareas = permisos.find(function(element, index) {
+        const tareas = permisos.find(function (element, index) {
             const { modulo: { url } } = element
             return pathname === url
         });
-        if(!tareas)
+        if (!tareas)
             history.push('/')
         this.getTareasAxios()
         this.getEnProceso()
@@ -80,52 +91,51 @@ class Tareas extends Component{
         this.getProximasCaducar()
     }
 
-    diffCommentDate = ( comentario ) => {
-        var now  = new Date();
+    diffCommentDate = (comentario) => {
+        var now = new Date();
         var then = new Date(comentario.created_at);
 
         var diff = moment.duration(moment(now).diff(moment(then)));
-        var months = parseInt( moment(now).diff(moment(then), 'month' ) )
-        
+        var months = parseInt(moment(now).diff(moment(then), 'month'))
+
         var days = parseInt(diff.asDays());
         var hours = parseInt(diff.asHours());
         var minutes = parseInt(diff.asMinutes());
-        
-        if(months)
-        {
-            if(months === 1)
+
+        if (months) {
+            if (months === 1)
                 return 'Hace un mes'
             else
                 return `Hace ${months} meses`
         }
-        else{
-            if(days){
-                if(days === 1)
+        else {
+            if (days) {
+                if (days === 1)
                     return 'Hace un día'
                 else
                     return `Hace ${days} días`
             }
-            else{
-                if(hours){
-                    if(hours === 1)
+            else {
+                if (hours) {
+                    if (hours === 1)
                         return 'Hace una hora'
                     else
                         return `Hace ${hours} horas`
                 }
-                else{
-                    if(minutes){
-                        if(minutes === 1)
+                else {
+                    if (minutes) {
+                        if (minutes === 1)
                             return 'Hace un minuto'
                         else
                             return `Hace ${minutes} minutos`
                     }
-                    else{
+                    else {
                         return 'Hace un momento'
-                    }   
+                    }
                 }
             }
         }
-    
+
     }
 
     handleCloseModal = () => {
@@ -155,27 +165,27 @@ class Tareas extends Component{
         const { users } = this.state
 
         let aux = []
-        tarea.participantes.map( ( participante, key ) => {
-            aux.push( {name: participante.name, value:participante.email, identificador: participante.id} )
+        tarea.participantes.map((participante, key) => {
+            aux.push({ name: participante.name, value: participante.email, identificador: participante.id })
             return false
         })
 
         let _aux = []
-        users.map( ( participante, key ) => {
-            _aux.push( {name: participante.name, value:participante.email, identificador: participante.id} )
+        users.map((participante, key) => {
+            _aux.push({ name: participante.name, value: participante.email, identificador: participante.id })
             return false
         })
 
         let _index = []
-        
+
         _aux.map((element, index) => {
             let validador = false
             aux.map((_element, key) => {
-                if(element.identificador === _element.identificador)
+                if (element.identificador === _element.identificador)
                     validador = true
                 return false
             })
-            if(!validador)
+            if (!validador)
                 _index.push(element)
             return false
         })
@@ -197,18 +207,18 @@ class Tareas extends Component{
     onDragEnd = result => {
         const { destination, source, draggableId } = result
 
-        if(!destination)
+        if (!destination)
             return;
-        
-        if( destination.droppableId === source.droppableId &&
-            destination.index === source.index )
+
+        if (destination.droppableId === source.droppableId &&
+            destination.index === source.index)
             return;
-        
+
         const _source = {
             grupo: source.droppableId,
             index: source.index
         }
-        
+
         const _destination = {
             grupo: destination.droppableId,
             index: destination.index
@@ -246,14 +256,14 @@ class Tareas extends Component{
 
     onChangeComentario = (e) => {
         const { value, name } = e.target
-        if( name === 'adjunto'){
+        if (name === 'adjunto') {
             this.setState({
                 ...this.state,
                 adjuntoFile: e.target.files[0],
                 adjunto: e.target.value,
                 adjuntoName: e.target.files[0].name
             })
-        }else{
+        } else {
             this.setState({
                 ...this.state,
                 comentario: value
@@ -277,13 +287,13 @@ class Tareas extends Component{
         this.setState({
             ...this.state,
             tarea: tarea,
-            formeditado:1
+            formeditado: 1
         })
     }
 
     changeValueSend = event => {
         const { name, value } = event.target
-        this.editTaskAxios({[name]: value})
+        this.editTaskAxios({ [name]: value })
     }
 
     deleteAdjunto = () => {
@@ -296,10 +306,10 @@ class Tareas extends Component{
 
     updateActiveTabContainer = active => {
         const { tableros } = this.state
-        tableros.map( (tablero) => { 
-            if(tablero.nombre === active){
+        tableros.map((tablero) => {
+            if (tablero.nombre === active) {
                 this.setTareas(tablero.tareas)
-                this.setState({ 
+                this.setState({
                     subActiveKey: active
                 })
             }
@@ -307,28 +317,28 @@ class Tareas extends Component{
         })
     }
 
-    async getTareasAxios(){
+    async getTareasAxios() {
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'user/tareas', { headers: {Authorization:`Bearer ${access_token}`, } }).then(
+        await axios.get(URL_DEV + 'user/tareas', { headers: { Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
-                const { data : { user } } = response
-                const { data : { users } } = response
+                const { data: { user } } = response
+                const { data: { users } } = response
                 const { tableros } = response.data
                 this.setState({
                     ...this.state,
                     user: user,
                     users: users,
                     tableros: tableros,
-                    defaultactivekey:tableros[0].nombre,
-                    subActiveKey:tableros[0].nombre
+                    defaultactivekey: tableros[0].nombre,
+                    subActiveKey: tableros[0].nombre
                 })
                 this.setTareas(tableros[0].tareas)
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -338,20 +348,20 @@ class Tareas extends Component{
         })
     }
 
-    async addTaskAxios(){
+    async addTaskAxios() {
         const { access_token } = this.props.authUser
-        const { form, subActiveKey} = this.state
+        const { form, subActiveKey } = this.state
         waitAlert()
         form.departamento = subActiveKey
-        await axios.post(URL_DEV + 'user/tareas', form, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
+        await axios.post(URL_DEV + 'user/tareas', form, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
                 Swal.close()
-                const { data : { user } } = response
+                const { data: { user } } = response
                 const { form } = this.state
                 const { tableros } = response.data
 
                 tableros.map((tablero) => {
-                    if(tablero.nombre === subActiveKey){
+                    if (tablero.nombre === subActiveKey) {
                         this.setTareas(tablero.tareas)
                     }
                     return false
@@ -363,16 +373,16 @@ class Tareas extends Component{
                     user: user,
                     form,
                     activeKey: '',
-                    formeditado:0,
-                    tableros:tableros
+                    formeditado: 0,
+                    tableros: tableros
                 })
-                
+
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -385,31 +395,31 @@ class Tareas extends Component{
     addComentario = () => {
         const { comentario } = this.state
         MySwal.fire({
-            title:'¡UN MOMENTO!',
-            text:'SE ESTÁ ENVIANDO TU MENSAJE.',
-            icon:'info',
+            title: '¡UN MOMENTO!',
+            text: 'SE ESTÁ ENVIANDO TU MENSAJE.',
+            icon: 'info',
             customClass: {
                 actions: 'd-none',
                 icon: 'text-lowercase',
             }
         })
-        if(comentario !== '')
+        if (comentario !== '')
             this.addComentarioAxios()
     }
 
-    async addComentarioAxios(){
+    async addComentarioAxios() {
         const { access_token } = this.props.authUser
-        const { comentario, tarea, adjuntoFile, adjuntoName, subActiveKey } = this.state 
+        const { comentario, tarea, adjuntoFile, adjuntoName, subActiveKey } = this.state
         const data = new FormData();
         data.append('comentario', comentario)
         data.append('adjunto', adjuntoFile)
         data.append('adjuntoName', adjuntoName)
         data.append('id', tarea.id)
-        await axios.post(URL_DEV + 'user/tareas/comentario', data, { headers: {Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization:`Bearer ${access_token}`, } }).then(
+        await axios.post(URL_DEV + 'user/tareas/comentario', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
                 const { tableros, tarea } = response.data
                 tableros.map((tablero) => {
-                    if(tablero.nombre === subActiveKey){
+                    if (tablero.nombre === subActiveKey) {
                         this.setTareas(tablero.tareas)
                     }
                     return false
@@ -421,15 +431,15 @@ class Tareas extends Component{
                     adjunto: '',
                     adjuntoFile: '',
                     adjuntoName: '',
-                    tableros:tableros
+                    tableros: tableros
                 })
                 Swal.close()
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -439,17 +449,17 @@ class Tareas extends Component{
         })
     }
 
-    async editTaskAxios(data){
+    async editTaskAxios(data) {
         const { access_token } = this.props.authUser
         const { tarea } = this.state
-        await axios.put(URL_DEV + 'user/tareas/edit/'+tarea.id, data, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
+        await axios.put(URL_DEV + 'user/tareas/edit/' + tarea.id, data, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -467,14 +477,14 @@ class Tareas extends Component{
         this.endTareaAxios(id)
     }
 
-    async deleteTareaAxios(id){
+    async deleteTareaAxios(id) {
         const { access_token } = this.props.authUser
         const { subActiveKey } = this.state
-        await axios.delete(URL_DEV + 'user/tareas/' + id, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
+        await axios.delete(URL_DEV + 'user/tareas/' + id, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
                 const { tableros } = response.data
                 tableros.map((tablero) => {
-                    if(tablero.nombre === subActiveKey){
+                    if (tablero.nombre === subActiveKey) {
                         this.setTareas(tablero.tareas)
                     }
                     return false
@@ -486,14 +496,14 @@ class Tareas extends Component{
                     adjuntoName: '',
                     adjuntoFile: '',
                     adjunto: '',
-                    tableros:tableros
+                    tableros: tableros
                 })
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -502,14 +512,14 @@ class Tareas extends Component{
             console.log(error, 'error')
         })
     }
-    async endTareaAxios(id){
+    async endTareaAxios(id) {
         const { access_token } = this.props.authUser
         const { subActiveKey } = this.state
-        await axios.put(URL_DEV + 'user/tareas/' + id + '/end', {}, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
+        await axios.put(URL_DEV + 'user/tareas/' + id + '/end', {}, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
                 const { tableros } = response.data
                 tableros.map((tablero) => {
-                    if(tablero.nombre === subActiveKey){
+                    if (tablero.nombre === subActiveKey) {
                         this.setTareas(tablero.tareas)
                     }
                     return false
@@ -521,15 +531,15 @@ class Tareas extends Component{
                     adjuntoName: '',
                     adjuntoFile: '',
                     adjunto: '',
-                    formeditado:1,
-                    tableros:tableros
+                    formeditado: 1,
+                    tableros: tableros
                 })
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -539,14 +549,14 @@ class Tareas extends Component{
         })
     }
 
-    async reordeingTasksAxios(source, destination, task){
+    async reordeingTasksAxios(source, destination, task) {
         const { access_token } = this.props.authUser
         const { subActiveKey } = this.state
-        await axios.put(URL_DEV + 'user/tareas/order', {source, destination, task}, { headers: {Authorization:`Bearer ${access_token}`, } }).then(
+        await axios.put(URL_DEV + 'user/tareas/order', { source, destination, task }, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
                 const { tableros } = response.data
                 tableros.map((tablero) => {
-                    if(tablero.nombre === subActiveKey){
+                    if (tablero.nombre === subActiveKey) {
                         this.setTareas(tablero.tareas)
                     }
                     return false
@@ -554,14 +564,14 @@ class Tareas extends Component{
                 this.setState({
                     ...this.state,
                     modal: false,
-                    tableros:tableros
+                    tableros: tableros
                 })
             },
             (error) => {
                 console.log(error, 'error')
-                if(error.response.status === 401){
+                if (error.response.status === 401) {
                     forbiddenAccessAlert()
-                }else{
+                } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
             }
@@ -718,13 +728,33 @@ class Tareas extends Component{
             console.log(error, 'error')
         })
     }
+    handleChange = (files, item) => {
+        const { form } = this.state
+        let aux = []
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        form['adjuntos'][item].value = files
+        form['adjuntos'][item].files = aux
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
 
-    render(){
-        
-        const { columns, user, form, activeKey, modal, tarea, comentario, adjunto,adjuntoName, participantesTask, participantes, formeditado, tableros, defaultactivekey, subActiveKey,
-                en_proceso, proximas_caducar, caducadas} = this.state
-        return(
-            <Layout active={'usuarios'} { ...this.props}>
+    render() {
+
+        const { columns, user, form, activeKey, modal, tarea, comentario, adjunto, adjuntoName, participantesTask, participantes, formeditado, tableros, defaultactivekey, subActiveKey,
+            en_proceso, proximas_caducar, caducadas, formComentarioAdj } = this.state
+        return (
+            <Layout active={'usuarios'} {...this.props}>
                 <Row>
                     <Col lg={4}>
                         <EnProcesoCard
@@ -749,15 +779,15 @@ class Tareas extends Component{
                     </Col>
                 </Row>
                 <div className="d-flex flex-row">
-					<div className="flex-row-fluid">
-						<div className="d-flex flex-column flex-grow-1">
-                        <Tab.Container 
-                            id="left-tabs-example" 
-                            activeKey = { subActiveKey ? subActiveKey : defaultactivekey }
-                            defaultActiveKey={defaultactivekey}
-                            onSelect = { (select) => { this.updateActiveTabContainer(select) } }
+                    <div className="flex-row-fluid">
+                        <div className="d-flex flex-column flex-grow-1">
+                            <Tab.Container
+                                id="left-tabs-example"
+                                activeKey={subActiveKey ? subActiveKey : defaultactivekey}
+                                defaultActiveKey={defaultactivekey}
+                                onSelect={(select) => { this.updateActiveTabContainer(select) }}
                             >
-							{/* <Card className="card-custom gutter-b">
+                                {/* <Card className="card-custom gutter-b">
 								<Card.Body className="d-flex align-items-center justify-content-between flex-wrap py-3">
 									<div className="d-flex align-items-center mr-2 py-2">
 										<h3 className="font-weight-bold mb-0 mr-5">Tableros</h3>
@@ -779,86 +809,164 @@ class Tareas extends Component{
 									</div>
 								</Card.Body>
 							</Card>  */}
-                            <Card className="card-custom card-stretch gutter-b py-2">
-                                <Card.Header className="align-items-center border-0 pt-3">
-                                    <h3 className="card-title align-items-start flex-column">
-                                        <span className="font-weight-bolder text-dark">TABLEROS</span>
-                                    </h3>
-                                    <div className="card-toolbar">
-                                        <Nav className="nav-tabs nav-bold nav-tabs-line nav-tabs-line-3x border-0 nav-tabs-line-info d-flex justify-content-center">
-                                            {	
-                                                tableros.map( (tablero, key) => {
-                                                    return( 
-                                                        <Nav.Item className="navi-item" key={key}>
-                                                            <Nav.Link style={{margin:"0 0.9rem"}} eventKey = {tablero.nombre }>
-                                                                <span className="navi-text">{tablero.nombre}</span>
-                                                            </Nav.Link>
-                                                        </Nav.Item>
-                                                    )
-                                                })
-                                            }
-                                        </Nav>
-                                    </div>
-                                </Card.Header>
-                                <Card.Body className="p-0"> 
-                                    <div className="card-spacer-x pt-5 pb-4 toggle-off-item">
-                                        <div className="mb-1">
-                                            <DragDropContext onDragEnd={this.onDragEnd}>
-                                                <div className="row mx-0 justify-content-center">
-                                                    {
-                                                        columns.map((column) => {
-                                                            return(
-                                                                <div key={column.id} className="col-md-6 col-lg-3 px-3">
-                                                                    <Column 
-                                                                        form={ form }
-                                                                        submit = { this.submitAdd }
-                                                                        onChange = { this.onChange }
-                                                                        column = { column }
-                                                                        clickTask = { this.handleClickTask }
-                                                                        id = { user.id }
-                                                                        tareas = { column.tareas }
-                                                                        activeKey = {activeKey}
-                                                                        handleAccordion = {this.handleAccordion}
-                                                                    />
-                                                                </div>
-                                                            ) 
-                                                        })
-                                                    }
-                                                </div>
-                                            </DragDropContext>
+                                <Card className="card-custom card-stretch gutter-b py-2">
+                                    <Card.Header className="align-items-center border-0 pt-3">
+                                        <h3 className="card-title align-items-start flex-column">
+                                            <span className="font-weight-bolder text-dark">TABLEROS</span>
+                                        </h3>
+                                        <div className="card-toolbar">
+                                            <Nav className="nav-tabs nav-bold nav-tabs-line nav-tabs-line-3x border-0 nav-tabs-line-info d-flex justify-content-center">
+                                                {
+                                                    tableros.map((tablero, key) => {
+                                                        return (
+                                                            <Nav.Item className="navi-item" key={key}>
+                                                                <Nav.Link style={{ margin: "0 0.9rem" }} eventKey={tablero.nombre}>
+                                                                    <span className="navi-text">{tablero.nombre}</span>
+                                                                </Nav.Link>
+                                                            </Nav.Item>
+                                                        )
+                                                    })
+                                                }
+                                            </Nav>
                                         </div>
-                                    </div>  
-                                </Card.Body>
-							</Card>
-                        </Tab.Container>
-						</div>
-					</div>
-				</div>  
-                <Modal size="xl" title="Tareas" show = { modal } handleClose = { this.handleCloseModal } >
-                    <TareaForm participantes = { participantes } user = { user } form = { tarea } update = { this.onChangeParticipantes } 
-                        participantesTask = { participantesTask } deleteParticipante = { this.deleteParticipante } 
-                        changeValue = { this.changeValue } changeValueSend = { this.changeValueSend  } 
-                        deleteTarea = { this.deleteTarea } endTarea = { (value) => this.endTareaAxios(value)} formeditado={formeditado}
-                        />
-                    <div className="separator separator-dashed my-4"></div>
-                    <div className="form-group row form-group-marginless px-3">
-                        <div className="col-md-12">
-                            <Input 
-                                className="form-control form-control-lg form-control-solid"
-                                placeholder = 'Comentario' 
-                                value = { comentario } 
-                                onChange = {this.onChangeComentario} 
-                                name = 'comentario' 
-                                as="textarea" 
-                                rows="3" 
-                                style={{paddingLeft:"10px"}}
-                            />
+                                    </Card.Header>
+                                    <Card.Body className="p-0">
+                                        <div className="card-spacer-x pt-5 pb-4 toggle-off-item">
+                                            <div className="mb-1">
+                                                <DragDropContext onDragEnd={this.onDragEnd}>
+                                                    <div className="row mx-0 justify-content-center">
+                                                        {
+                                                            columns.map((column) => {
+                                                                return (
+                                                                    <div key={column.id} className="col-md-6 col-lg-3 px-3">
+                                                                        <Column
+                                                                            form={form}
+                                                                            submit={this.submitAdd}
+                                                                            onChange={this.onChange}
+                                                                            column={column}
+                                                                            clickTask={this.handleClickTask}
+                                                                            id={user.id}
+                                                                            tareas={column.tareas}
+                                                                            activeKey={activeKey}
+                                                                            handleAccordion={this.handleAccordion}
+                                                                        />
+                                                                    </div>
+                                                                )
+                                                            })
+                                                        }
+                                                    </div>
+                                                </DragDropContext>
+                                            </div>
+                                        </div>
+                                    </Card.Body>
+                                </Card>
+                            </Tab.Container>
                         </div>
-                    </div>   
-                    <div className="form-group row form-group-marginless px-3">
-                        <div className="col-md-1">
-                            <Button text="ENVIAR" className={"btn btn-light-primary font-weight-bolder mr-3"} onClick = { this.addComentario }/> 
-                        </div>  
+                    </div>
+                </div>
+                <Modal size="xl" title="Tareas" show={modal} handleClose={this.handleCloseModal} >
+                    <Tab.Container defaultActiveKey="first">
+                        <Row>
+                            <Nav className="nav-tabs nav-bold nav-tabs-line nav-tabs-line-3x border-0 nav-tabs-line-primary d-flex justify-content-end">
+                                <Nav.Item className="navi-item">
+                                    <Nav.Link eventKey="first" style={{ margin: "0 0.9rem" }}>
+                                        <span className="navi-text">Información de la tarea</span>
+                                    </Nav.Link>
+                                </Nav.Item>
+                                <Nav.Item>
+                                    <Nav.Link eventKey="second">
+                                        <span className="navi-text">Comentarios</span>
+                                    </Nav.Link>
+                                </Nav.Item>
+                                </Nav>
+                            <Col md={12}>
+                                <Tab.Content>
+                                    <Tab.Pane eventKey="first">
+                                        <TareaForm
+                                            participantes={participantes}
+                                            user={user}
+                                            form={tarea}
+                                            update={this.onChangeParticipantes}
+                                            participantesTask={participantesTask}
+                                            deleteParticipante={this.deleteParticipante}
+                                            changeValue={this.changeValue}
+                                            changeValueSend={this.changeValueSend}
+                                            deleteTarea={this.deleteTarea}
+                                            endTarea={(value) => this.endTareaAxios(value)}
+                                            formeditado={formeditado}
+                                        />
+                                    </Tab.Pane>
+                                    <Tab.Pane eventKey="second">
+                                        <Form id="form-comentario-adjunto"
+                                            onSubmit={
+                                                (e) => {
+                                                    e.preventDefault();
+                                                    validateAlert(this.addComentario, e, 'form-comentario-adjunto')
+                                                }
+                                            }
+                                        >
+                                            <div className="form-group row form-group-marginless mt-3">
+                                                <div className="col-md-6 align-self-center">
+                                                    <InputGray
+                                                        withtaglabel={1}
+                                                        withtextlabel={1}
+                                                        withplaceholder={1}
+                                                        withicon={0}
+                                                        requirevalidation={0}
+                                                        placeholder='COMENTARIO'
+                                                        value={formComentarioAdj.comentario}
+                                                        name='comentario'
+                                                        onChange={this.onChangeComentario}
+                                                        as="textarea"
+                                                        rows="5"
+                                                    />
+                                                </div>
+                                                <div className="col-md-6 d-flex justify-content-center align-self-center">
+                                                    <div>
+                                                        <div className="text-center font-weight-bolder mb-2">
+                                                            {formComentarioAdj.adjuntos.adjunto.placeholder}
+                                                        </div>
+                                                        <ItemSlider
+                                                            multiple={true}
+                                                            items={formComentarioAdj.adjuntos.adjunto.files}
+                                                            item='adjunto'
+                                                            handleChange={this.handleChange}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="card-footer py-3 pr-1">
+                                                <div className="row">
+                                                    <div className="col-lg-12 text-right pr-0 pb-0">
+                                                        <Button
+                                                            icon=''
+                                                            className="btn btn-light-primary font-weight-bold"
+                                                            onClick={
+                                                                (e) => {
+                                                                    e.preventDefault();
+                                                                    validateAlert(this.addComentario, e, 'form-comentario-adjunto')
+                                                                }
+                                                            }
+                                                            text="ENVIAR"
+                                                        />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </Form>
+                                    </Tab.Pane>
+                                </Tab.Content>
+                            </Col>
+                        </Row>
+                    </Tab.Container>
+                    
+                    {/* <div className="text-center mt-4">
+                            <Button 
+                                text="ENVIAR"
+                                className="btn btn-light-primary font-weight-bolder mr-3"
+                                onClick = { this.addComentario }
+                            /> 
+                        </div>  */}
+                    {/* <div className="form-group row form-group-marginless px-3">
                         <div className="col-md-10">  
                             <div className="image-upload"> 
                                 <input
@@ -879,57 +987,57 @@ class Tareas extends Component{
                                 }
                             </div>
                         </div>
-                    </div>
-                    <div className="separator separator-dashed my-5"></div> 
-                    {   tarea && 
+                    </div> */}
+                    <div className="separator separator-solid my-5"></div>
+                    {tarea &&
                         <div className="">
                             {
                                 tarea.comentarios.length > 0 &&
-                                    tarea.comentarios.map((comentario, key) => {
-                                        return(
-                                            <div key={key} className="form-group row form-group-marginless px-3">
-                                                <div className="col-md-12">
-                                                    <div className="timeline timeline-3">
-                                                        <div className="timeline-items">
-                                                            <div className="timeline-item">
-                                                                <div className="timeline-media bg-light-primary border-0">
-                                                                    <span className="symbol-label font-size-h6 text-primary font-weight-bolder">{comentario.user.name.charAt(0)}</span>
-                                                                </div>
-                                                                <div className="timeline-content">
-                                                                    <span className="text-primary font-weight-bold">{this.diffCommentDate(comentario)}</span>
-                                                                    <span className="text-muted ml-2">{comentario.user.name}</span>
-                                                                    <p className="p-0">{comentario.comentario}</p>
-                                                                    {
-                                                                        comentario.adjunto ?
-                                                                            <div className="d-flex justify-content-end">
-                                                                                <a href = { comentario.adjunto.url } target = '_blank' rel="noopener noreferrer">
-                                                                                    { comentario.adjunto.name }
-                                                                                </a>
-                                                                            </div>    
-                                                                        :  ''
-                                                                    }
-                                                                    
-                                                                </div>
+                                tarea.comentarios.map((comentario, key) => {
+                                    return (
+                                        <div key={key} className="form-group row form-group-marginless px-3">
+                                            <div className="col-md-12">
+                                                <div className="timeline timeline-3">
+                                                    <div className="timeline-items">
+                                                        <div className="timeline-item">
+                                                            <div className="timeline-media bg-light-primary border-0">
+                                                                <span className="symbol-label font-size-h6 text-primary font-weight-bolder">{comentario.user.name.charAt(0)}</span>
+                                                            </div>
+                                                            <div className="timeline-content">
+                                                                <span className="text-primary font-weight-bold">{this.diffCommentDate(comentario)}</span>
+                                                                <span className="text-muted ml-2">{comentario.user.name}</span>
+                                                                <p className="p-0">{comentario.comentario}</p>
+                                                                {
+                                                                    comentario.adjunto ?
+                                                                        <div className="d-flex justify-content-end">
+                                                                            <a href={comentario.adjunto.url} target='_blank' rel="noopener noreferrer">
+                                                                                {comentario.adjunto.name}
+                                                                            </a>
+                                                                        </div>
+                                                                        : ''
+                                                                }
+
                                                             </div>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                            
-                                        )
-                                    })
+                                        </div>
+
+                                    )
+                                })
                             }
                         </div>
                     }
                 </Modal>
-                
+
             </Layout>
         )
     }
 }
 
 const mapStateToProps = state => {
-    return{
+    return {
         authUser: state.authUser
     }
 }
