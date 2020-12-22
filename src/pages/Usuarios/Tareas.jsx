@@ -91,6 +91,16 @@ class Tareas extends Component {
         this.getEnProceso()
         this.getCaducadas()
         this.getProximasCaducar()
+        let queryString = this.props.history.location.search
+        if (queryString) {
+            let params = new URLSearchParams(queryString)
+            let id = params.get("depto")
+            if(id)
+                this.setState({
+                    ...this.state,
+                    subActiveKey: id
+                })
+        }
     }
 
     diffCommentDate = (comentario) => {
@@ -199,13 +209,6 @@ class Tareas extends Component {
         })
     }
 
-    setTareas = columns => {
-        this.setState({
-            ...this.state,
-            columns
-        })
-    }
-
     onDragEnd = result => {
         const { destination, source, draggableId } = result
 
@@ -310,9 +313,9 @@ class Tareas extends Component {
         const { tableros } = this.state
         tableros.map((tablero) => {
             if (tablero.nombre === active) {
-                this.setTareas(tablero.tareas)
                 this.setState({
-                    subActiveKey: active
+                    subActiveKey: active,
+                    columns: tablero.tareas
                 })
             }
             return false
@@ -323,18 +326,24 @@ class Tareas extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'user/tareas', { headers: { Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
-                const { data: { user } } = response
-                const { data: { users } } = response
-                const { tableros } = response.data
+                const { tableros, user, users } = response.data
+                const { subActiveKey } = this.state
+                let auxiliar = null
+                if(subActiveKey){
+                    tableros.map((tablero, key)=>{
+                        if(tablero.nombre === subActiveKey)
+                            auxiliar = key
+                    })
+                }
                 this.setState({
                     ...this.state,
                     user: user,
                     users: users,
                     tableros: tableros,
-                    defaultactivekey: tableros[0].nombre,
-                    subActiveKey: tableros[0].nombre
+                    defaultactivekey: auxiliar ? tableros[auxiliar].nombre : tableros[0].nombre,
+                    subActiveKey: auxiliar ? tableros[auxiliar].nombre : tableros[0].nombre,
+                    columns: auxiliar ? tableros[auxiliar].tareas : tableros[0].tareas
                 })
-                this.setTareas(tableros[0].tareas)
             },
             (error) => {
                 console.log(error, 'error')
@@ -362,10 +371,11 @@ class Tareas extends Component {
                 const { form } = this.state
                 const { tableros } = response.data
 
+                let auxTareas = []
+
                 tableros.map((tablero) => {
-                    if (tablero.nombre === subActiveKey) {
-                        this.setTareas(tablero.tareas)
-                    }
+                    if (tablero.nombre === subActiveKey) 
+                        auxTareas = tablero.tareas
                     return false
                 })
 
@@ -376,7 +386,8 @@ class Tareas extends Component {
                     form,
                     activeKey: '',
                     formeditado: 0,
-                    tableros: tableros
+                    tableros: tableros,
+                    columns: auxTareas
                 })
 
             },
@@ -420,10 +431,10 @@ class Tareas extends Component {
         await axios.post(URL_DEV + 'user/tareas/comentario', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
                 const { tableros, tarea } = response.data
+                let auxTareas = []
                 tableros.map((tablero) => {
-                    if (tablero.nombre === subActiveKey) {
-                        this.setTareas(tablero.tareas)
-                    }
+                    if (tablero.nombre === subActiveKey) 
+                        auxTareas = tablero.tareas
                     return false
                 })
                 this.setState({
@@ -433,7 +444,8 @@ class Tareas extends Component {
                     adjunto: '',
                     adjuntoFile: '',
                     adjuntoName: '',
-                    tableros: tableros
+                    tableros: tableros,
+                    columns: auxTareas
                 })
                 Swal.close()
             },
@@ -485,10 +497,10 @@ class Tareas extends Component {
         await axios.delete(URL_DEV + 'user/tareas/' + id, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
                 const { tableros } = response.data
+                let auxTareas = []
                 tableros.map((tablero) => {
-                    if (tablero.nombre === subActiveKey) {
-                        this.setTareas(tablero.tareas)
-                    }
+                    if (tablero.nombre === subActiveKey) 
+                        auxTareas = tablero.tareas
                     return false
                 })
                 this.setState({
@@ -498,7 +510,8 @@ class Tareas extends Component {
                     adjuntoName: '',
                     adjuntoFile: '',
                     adjunto: '',
-                    tableros: tableros
+                    tableros: tableros,
+                    columns: auxTareas
                 })
             },
             (error) => {
@@ -520,10 +533,10 @@ class Tareas extends Component {
         await axios.put(URL_DEV + 'user/tareas/' + id + '/end', {}, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
                 const { tableros } = response.data
+                let auxTareas = []
                 tableros.map((tablero) => {
-                    if (tablero.nombre === subActiveKey) {
-                        this.setTareas(tablero.tareas)
-                    }
+                    if (tablero.nombre === subActiveKey) 
+                        auxTareas = tablero.tareas
                     return false
                 })
                 this.setState({
@@ -534,7 +547,8 @@ class Tareas extends Component {
                     adjuntoFile: '',
                     adjunto: '',
                     formeditado: 1,
-                    tableros: tableros
+                    tableros: tableros,
+                    columns: auxTareas
                 })
             },
             (error) => {
@@ -557,16 +571,17 @@ class Tareas extends Component {
         await axios.put(URL_DEV + 'user/tareas/order', { source, destination, task }, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
                 const { tableros } = response.data
+                let auxTareas = []
                 tableros.map((tablero) => {
-                    if (tablero.nombre === subActiveKey) {
-                        this.setTareas(tablero.tareas)
-                    }
+                    if (tablero.nombre === subActiveKey) 
+                        auxTareas = tablero.tareas
                     return false
                 })
                 this.setState({
                     ...this.state,
                     modal: false,
-                    tableros: tableros
+                    tableros: tableros,
+                    columns: auxTareas
                 })
             },
             (error) => {
