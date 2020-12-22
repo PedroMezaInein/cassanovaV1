@@ -7,17 +7,17 @@ import { Column } from '../../components/draggable'
 import { DragDropContext } from 'react-beautiful-dnd'
 import { Modal } from '../../components/singles'
 import { TareaForm } from '../../components/forms'
-// import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-// import { faTimes} from '@fortawesome/free-solid-svg-icons'
 import { Button } from '../../components/form-components'
 import moment from 'moment'
-import { Card, Nav, Tab, Row, Col, Form } from 'react-bootstrap'
+import { Card, Nav, Tab, Row, Col, Form} from 'react-bootstrap'
 import { errorAlert, forbiddenAccessAlert, waitAlert, validateAlert } from '../../functions/alert'
 import { CaducadasCard, EnProcesoCard, ProximasCaducarCard } from '../../components/cards'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import ItemSlider from '../../components/singles/ItemSlider'
 import InputGray from '../../components/form-components/Gray/InputGray'
+import SVG from "react-inlinesvg";
+import { toAbsoluteUrl } from "../../functions/routers"
 const MySwal = withReactContent(Swal)
 class Tareas extends Component {
 
@@ -42,7 +42,6 @@ class Tareas extends Component {
         adjuntoFile: '',
         adjuntoName: '',
         defaultactivekey: "",
-
         en_proceso: {
             data: [],
             numPage: 0,
@@ -72,7 +71,7 @@ class Tareas extends Component {
                     files: []
                 },
             }
-        },
+        }
     }
 
     componentDidMount() {
@@ -93,11 +92,15 @@ class Tareas extends Component {
         if (queryString) {
             let params = new URLSearchParams(queryString)
             let id = params.get("depto")
+            let tarea = parseInt(params.get("tarea"))
+            console.log(tarea, 'tarea')
             if(id)
                 this.setState({
                     ...this.state,
                     subActiveKey: id
                 })
+            if(tarea)
+                this.getTareaAxios(tarea)
         }
     }
 
@@ -341,6 +344,34 @@ class Tareas extends Component {
                     defaultactivekey: auxiliar ? tableros[auxiliar].nombre : tableros[0].nombre,
                     subActiveKey: auxiliar ? tableros[auxiliar].nombre : tableros[0].nombre,
                     columns: auxiliar ? tableros[auxiliar].tareas : tableros[0].tareas
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async getTareaAxios(tarea) {
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'user/tareas/single/' + tarea, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
+            (response) => {
+                const { tarea } = response.data
+                this.setState({
+                    ...this.state,
+                    tarea: tarea,
+                    modal: true,
+                    adjuntoName: '',
+                    adjuntoFile: '',
+                    adjunto: '',
                 })
             },
             (error) => {
@@ -763,7 +794,6 @@ class Tareas extends Component {
             form
         })
     }
-
     render() {
 
         const { columns, user, form, activeKey, modal, tarea, comentario, adjunto, adjuntoName, participantesTask, participantes, formeditado, tableros, defaultactivekey, subActiveKey,
@@ -802,28 +832,6 @@ class Tareas extends Component {
                                 defaultActiveKey={defaultactivekey}
                                 onSelect={(select) => { this.updateActiveTabContainer(select) }}
                             >
-                                {/* <Card className="card-custom gutter-b">
-								<Card.Body className="d-flex align-items-center justify-content-between flex-wrap py-3">
-									<div className="d-flex align-items-center mr-2 py-2">
-										<h3 className="font-weight-bold mb-0 mr-5">Tableros</h3>
-                                    </div>
-                                    <div className="d-flex">
-										<Nav className="navi navi-hover navi-active navi-link-rounded navi-bold d-flex flex-row">
-                                            {	
-                                                tableros.map( (tablero, key) => {
-                                                    return( 
-                                                        <Nav.Item className="navi-item mr-2 " key={key}>
-                                                            <Nav.Link className="navi-link border border-light border-2" eventKey = {tablero.nombre }>
-                                                                <span className="navi-text">{tablero.nombre}</span>
-                                                            </Nav.Link>
-                                                        </Nav.Item>
-                                                    )
-                                                })
-                                            }
-                                        </Nav>
-									</div>
-								</Card.Body>
-							</Card>  */}
                                 <Card className="card-custom card-stretch gutter-b py-2">
                                     <Card.Header className="align-items-center border-0 pt-3">
                                         <h3 className="card-title align-items-start flex-column">
@@ -880,172 +888,162 @@ class Tareas extends Component {
                     </div>
                 </div>
                 <Modal size="xl" title="Tareas" show={modal} handleClose={this.handleCloseModal} >
-                    <Tab.Container defaultActiveKey="first">
-                        <Row>
-                            <Nav className="nav-tabs nav-bold nav-tabs-line nav-tabs-line-3x border-0 nav-tabs-line-primary d-flex justify-content-end">
-                                <Nav.Item className="navi-item">
-                                    <Nav.Link eventKey="first" style={{ margin: "0 0.9rem" }}>
-                                        <span className="navi-text">Información de la tarea</span>
-                                    </Nav.Link>
-                                </Nav.Item>
-                                <Nav.Item>
-                                    <Nav.Link eventKey="second">
-                                        <span className="navi-text">Comentarios</span>
-                                    </Nav.Link>
-                                </Nav.Item>
-                                </Nav>
-                            <Col md={12}>
-                                <Tab.Content>
-                                    <Tab.Pane eventKey="first">
-                                        <TareaForm
-                                            participantes={participantes}
-                                            user={user}
-                                            form={tarea}
-                                            update={this.onChangeParticipantes}
-                                            participantesTask={participantesTask}
-                                            deleteParticipante={this.deleteParticipante}
-                                            changeValue={this.changeValue}
-                                            changeValueSend={this.changeValueSend}
-                                            deleteTarea={this.deleteTarea}
-                                            endTarea={(value) => this.endTareaAxios(value)}
-                                            formeditado={formeditado}
-                                        />
-                                    </Tab.Pane>
-                                    <Tab.Pane eventKey="second">
-                                        <Form id="form-comentario-adjunto"
-                                            onSubmit={
-                                                (e) => {
-                                                    e.preventDefault();
-                                                    validateAlert(this.addComentario, e, 'form-comentario-adjunto')
-                                                }
-                                            }
-                                        >
-                                            <div className="form-group row form-group-marginless mt-3">
-                                                <div className="col-md-6 align-self-center">
-                                                    <InputGray
-                                                        withtaglabel={1}
-                                                        withtextlabel={1}
-                                                        withplaceholder={1}
-                                                        withicon={0}
-                                                        requirevalidation={0}
-                                                        placeholder='COMENTARIO'
-                                                        value={formComentarioAdj.comentario}
-                                                        name='comentario'
-                                                        onChange={this.onChangeComentario}
-                                                        as="textarea"
-                                                        rows="5"
-                                                    />
-                                                </div>
-                                                <div className="col-md-6 d-flex justify-content-center align-self-center">
-                                                    <div>
-                                                        <div className="text-center font-weight-bolder mb-2">
-                                                            {formComentarioAdj.adjuntos.adjunto.placeholder}
-                                                        </div>
-                                                        <ItemSlider
-                                                            multiple={true}
-                                                            items={formComentarioAdj.adjuntos.adjunto.files}
-                                                            item='adjunto'
-                                                            handleChange={this.handleChange}
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div className="card-footer py-3 pr-1">
-                                                <div className="row">
-                                                    <div className="col-lg-12 text-right pr-0 pb-0">
-                                                        <Button
-                                                            icon=''
-                                                            className="btn btn-light-primary font-weight-bold"
-                                                            onClick={
-                                                                (e) => {
-                                                                    e.preventDefault();
-                                                                    validateAlert(this.addComentario, e, 'form-comentario-adjunto')
-                                                                }
-                                                            }
-                                                            text="ENVIAR"
-                                                        />
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </Form>
-                                    </Tab.Pane>
-                                </Tab.Content>
-                            </Col>
-                        </Row>
-                    </Tab.Container>
-                    
-                    {/* <div className="text-center mt-4">
-                            <Button 
-                                text="ENVIAR"
-                                className="btn btn-light-primary font-weight-bolder mr-3"
-                                onClick = { this.addComentario }
-                            /> 
-                        </div>  */}
-                    {/* <div className="form-group row form-group-marginless px-3">
-                        <div className="col-md-10">  
-                            <div className="image-upload"> 
-                                <input
-                                    onChange = {this.onChangeComentario}
-                                    value = {adjunto}
-                                    name="adjunto" 
-                                    type="file" 
-                                    id="adjunto"
-                                /> 
-                                {
-                                    adjuntoName &&
-                                        <Badge variant="light" className="d-flex px-3 w-fit-content align-items-center" pill>
-                                            <FontAwesomeIcon icon={faTimes} onClick={ (e) => { e.preventDefault(); this.deleteAdjunto() } } className=" small-button mr-2" />
-                                            {
-                                                adjuntoName
-                                            }
-                                        </Badge>
-                                }
-                            </div>
-                        </div>
-                    </div> */}
-                    <div className="separator separator-solid my-5"></div>
-                    {tarea &&
-                        <div className="">
+                    <Tab.Container defaultActiveKey="1">
+                        <Nav className="nav-tabs nav-bold nav-tabs-line nav-tabs-line-3x border-0 nav-tabs-line-info d-flex justify-content-end mt-3">
+                            <Nav.Item>
+                                <Nav.Link eventKey="1">
+                                    <span className="nav-icon">
+                                        <i className="flaticon2-writing"></i>
+                                    </span>
+                                    <span className="nav-text">INFORMACIÓN DE LA TAREA</span>
+                                </Nav.Link>
+                            </Nav.Item>
+                            <Nav.Item>
+                                <Nav.Link eventKey="2">
+                                    <span className="nav-icon">
+                                        <i className="flaticon2-plus"></i>
+                                    </span>
+                                    <span className="nav-text">AGREGAR COMENTARIO</span>
+                                </Nav.Link>
+                            </Nav.Item>
                             {
-                                tarea.comentarios.length > 0 &&
-                                tarea.comentarios.map((comentario, key) => {
-                                    return (
-                                        <div key={key} className="form-group row form-group-marginless px-3">
-                                            <div className="col-md-12">
-                                                <div className="timeline timeline-3">
-                                                    <div className="timeline-items">
-                                                        <div className="timeline-item">
-                                                            <div className="timeline-media bg-light-primary border-0">
-                                                                <span className="symbol-label font-size-h6 text-primary font-weight-bolder">{comentario.user.name.charAt(0)}</span>
-                                                            </div>
-                                                            <div className="timeline-content">
-                                                                <span className="text-primary font-weight-bold">{this.diffCommentDate(comentario)}</span>
-                                                                <span className="text-muted ml-2">{comentario.user.name}</span>
-                                                                <p className="p-0">{comentario.comentario}</p>
-                                                                {
-                                                                    comentario.adjunto ?
-                                                                        <div className="d-flex justify-content-end">
-                                                                            <a href={comentario.adjunto.url} target='_blank' rel="noopener noreferrer">
-                                                                                {comentario.adjunto.name}
-                                                                            </a>
-                                                                        </div>
-                                                                        : ''
-                                                                }
-
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                tarea?
+                                    tarea.comentarios.length>0?
+                                        <Nav.Item>
+                                            <Nav.Link eventKey="3">
+                                                <span className="nav-icon">
+                                                    <i className="flaticon2-chat-1"></i>
+                                                </span>
+                                                <span className="nav-text">MOSTRAR COMENTARIOS</span>
+                                                </Nav.Link>
+                                        </Nav.Item>
+                                    :''
+                                :''
+                            }
+                        </Nav>
+                        <Tab.Content>
+                            <Tab.Pane eventKey="1">
+                                <TareaForm
+                                    participantes={participantes}
+                                    user={user}
+                                    form={tarea}
+                                    update={this.onChangeParticipantes}
+                                    participantesTask={participantesTask}
+                                    deleteParticipante={this.deleteParticipante}
+                                    changeValue={this.changeValue}
+                                    changeValueSend={this.changeValueSend}
+                                    deleteTarea={this.deleteTarea}
+                                    endTarea={(value) => this.endTareaAxios(value)}
+                                    formeditado={formeditado}
+                                />
+                            </Tab.Pane>
+                            <Tab.Pane eventKey="2">
+                                <Form id="form-comentario-adjunto"
+                                    onSubmit={
+                                        (e) => {
+                                            e.preventDefault();
+                                            validateAlert(this.addComentario, e, 'form-comentario-adjunto')
+                                        }
+                                    }
+                                    >
+                                    <div className="form-group row form-group-marginless mt-3 d-flex justify-content-center">
+                                        <div className="col-md-11 align-self-center">
+                                            <InputGray
+                                                withtaglabel={1}
+                                                withtextlabel={1}
+                                                withplaceholder={1}
+                                                withicon={0}
+                                                requirevalidation={0}
+                                                placeholder='COMENTARIO'
+                                                value={formComentarioAdj.comentario}
+                                                name='comentario'
+                                                onChange={this.onChangeComentario}
+                                                as="textarea"
+                                                rows="3"
+                                            />
+                                        </div>
+                                        <div className="col-md-12 d-flex justify-content-center align-self-center">
+                                            <div>
+                                                <div className="text-center font-weight-bolder mb-2">
+                                                    {formComentarioAdj.adjuntos.adjunto.placeholder}
                                                 </div>
+                                                <ItemSlider
+                                                    multiple={true}
+                                                    items={formComentarioAdj.adjuntos.adjunto.files}
+                                                    item='adjunto'
+                                                    handleChange={this.handleChange}
+                                                />
                                             </div>
                                         </div>
-
-                                    )
-                                })
+                                    </div>
+                                    <div className="card-footer py-3 pr-1">
+                                        <div className="row">
+                                            <div className="col-lg-12 text-right pr-0 pb-0">
+                                                <Button
+                                                    icon=''
+                                                    className="btn btn-light-primary font-weight-bold"
+                                                    onClick={
+                                                        (e) => {
+                                                            e.preventDefault();
+                                                            validateAlert(this.addComentario, e, 'form-comentario-adjunto')
+                                                        }
+                                                    }
+                                                    text="ENVIAR"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </Form>
+                            </Tab.Pane>
+                            <Tab.Pane eventKey="3">
+                                {console.log(tarea,'tarea')}
+                            {
+                                tarea &&
+                                    <div className="col-md-12 row d-flex justify-content-center">
+                                        <div className="col-md-7 mt-5">
+                                            {
+                                                tarea.comentarios.length > 0 &&
+                                                tarea.comentarios.map((comentario, key) => {
+                                                    return (
+                                                        <div key={key} className="form-group row form-group-marginless px-3">
+                                                            <div className="col-md-12">
+                                                                <div className="timeline timeline-3">
+                                                                    <div className="timeline-items">
+                                                                        <div className="timeline-item">
+                                                                            <div className="timeline-media border-0">
+                                                                                <img alt="Pic" src={comentario.user.avatar ? comentario.user.avatar : "/default.jpg"}/>
+                                                                            </div>
+                                                                            <div className="timeline-content">
+                                                                                <span className="text-info font-weight-bolder">{comentario.user.name}</span>
+                                                                                <span className="text-muted ml-2 font-weight-bold">{this.diffCommentDate(comentario)}</span>
+                                                                                <p className={comentario.adjunto===null?"p-0 font-weight-light mb-0":"p-0 font-weight-light"}>{comentario.comentario}</p>
+                                                                                {
+                                                                                    comentario.adjunto ?
+                                                                                        <div className="d-flex justify-content-end">
+                                                                                            <a href={comentario.adjunto.url} target='_blank' rel="noopener noreferrer" className="text-muted text-hover-info font-weight-bold">
+                                                                                                <span className="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
+                                                                                                    <SVG src={toAbsoluteUrl('/images/svg/Attachment1.svg')} />
+                                                                                                </span>VER ADJUNTO
+                                                                                                    </a>
+                                                                                        </div>
+                                                                                        : ''
+                                                                                }
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    )
+                                                })
+                                            }
+                                        </div>
+                                    </div>
                             }
-                        </div>
-                    }
+                            </Tab.Pane>
+                        </Tab.Content>
+                    </Tab.Container>
                 </Modal>
-
             </Layout>
         )
     }

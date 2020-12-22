@@ -494,7 +494,8 @@ class Contabilidad extends Component {
     render() {
         const { form, options } = this.state
         return (
-            <Layout active={'reportes'}  {...this.props}>
+            <Layout active='reportes'  {...this.props}>
+
                 <Card className="card-custom">
                     <Card.Header>
                         <div className="card-title">
