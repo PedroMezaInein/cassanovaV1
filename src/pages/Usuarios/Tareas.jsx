@@ -92,11 +92,15 @@ class Tareas extends Component {
         if (queryString) {
             let params = new URLSearchParams(queryString)
             let id = params.get("depto")
+            let tarea = parseInt(params.get("tarea"))
+            console.log(tarea, 'tarea')
             if(id)
                 this.setState({
                     ...this.state,
                     subActiveKey: id
                 })
+            if(tarea)
+                this.getTareaAxios(tarea)
         }
     }
 
@@ -341,6 +345,34 @@ class Tareas extends Component {
                     defaultactivekey: auxiliar ? tableros[auxiliar].nombre : tableros[0].nombre,
                     subActiveKey: auxiliar ? tableros[auxiliar].nombre : tableros[0].nombre,
                     columns: auxiliar ? tableros[auxiliar].tareas : tableros[0].tareas
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async getTareaAxios(tarea) {
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'user/tareas/single/' + tarea, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
+            (response) => {
+                const { tarea } = response.data
+                this.setState({
+                    ...this.state,
+                    tarea: tarea,
+                    modal: true,
+                    adjuntoName: '',
+                    adjuntoFile: '',
+                    adjunto: '',
                 })
             },
             (error) => {
