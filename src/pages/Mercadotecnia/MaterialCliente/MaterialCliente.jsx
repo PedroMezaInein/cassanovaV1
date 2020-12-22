@@ -1,18 +1,19 @@
 import React, { Component } from 'react'
 import Layout from '../../../components/layout/layout'
 import axios from 'axios'
-import { URL_DEV } from '../../../constants'
+import { ADJUNTOS_EMPRESA_COLUMNS, URL_DEV } from '../../../constants'
 import { connect } from 'react-redux'
 // import { Button } from '../../../components/form-components'
 import ItemSlider from '../../../components/singles/ItemSlider'
 import { Tab, Nav, Col, Row, Card, Accordion, } from 'react-bootstrap'
 import { setSelectOptions } from '../../../functions/setters'
-import { waitAlert, questionAlert, errorAdjuntos, errorAlert, forbiddenAccessAlert } from '../../../functions/alert'
+import { waitAlert, questionAlert, errorAdjuntos, errorAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
 class MaterialCliente extends Component {
 
     state = {
+        submenuactive: null,
         opciones_adjuntos: [
             {
                 nombre: 'PORTAFOLIO',
@@ -67,31 +68,6 @@ class MaterialCliente extends Component {
                     files: [],
                     menu: 0
                 },
-                // como_trabajamos: {
-                //     value: '',
-                //     placeholder: 'COMO TRABAJAMOS (FASE 1 Y 2)',
-                //     files: []
-                // },
-                // servicios_generales: {
-                //     value: '',
-                //     placeholder: 'SERVICIOS GENERALES',
-                //     files: []
-                // },
-                // // servicios_categoria: {
-                // //     value: '',
-                // //     placeholder: 'SERVICIOS POR CATEGORIA',
-                // //     files: []
-                // // },
-                // brokers: {
-                //     value: '',
-                //     placeholder: 'BROKERS',
-                //     files: []
-                // },
-                // videos: {
-                //     value: '',
-                //     placeholder: 'VIDEOS',
-                //     files: []
-                // },
                 subportafolio: {
                     value: '',
                     placeholder: 'SUBPORTAFOLIO',
@@ -172,7 +148,7 @@ class MaterialCliente extends Component {
     onChangeAdjuntos = e => {
         const { form } = this.state
         const { files, value, name } = e.target
-        let aux = []
+        let aux = form.adjuntos[name].files
         let aux2 = []
         let size = 0
         for (let counter = 0; counter < files.length; counter++) {
@@ -211,14 +187,78 @@ class MaterialCliente extends Component {
             form
         })
     }
+
     async addAdjunto(name) {
+        const { access_token } = this.props.authUser
+        const { form, empresa } = this.state
+        const data = new FormData();
+        const tipos = [
+            'portafolio',
+            'como_trabajamos',
+            'servicios_generales',
+            '',
+            'brokers',
+            'videos'
+        ]
+        data.append('empresa', empresa.id)
+        if(name === 'slider'){
+            form.adjuntos.slider.files.map((file, key) => {
+                if (typeof file.id === 'undefined') {
+                    data.append(`files_name[]`, file.name)
+                    data.append(`files[]`, file.file)
+                }                  
+            })
+            data.append('tipo', tipos[form.adjuntos.slider.eventKey])
+        }
+        await axios.post(URL_DEV + 'mercadotecnia/material-clientes', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { empresa, tipo } = response.data
+                const { form } = this.state
+                
+                if(tipo){
+                    form.adjuntos.slider.files = []
+                    empresa.adjuntos.map((adjunto, key) => {
+                        form.adjuntos.slider.files.push(adjunto)
+                    })
+                }
+
+                this.setState({
+                    ...this.state,
+                    form
+                })
+
+                this.getOptionsAxios()
+                doneAlert('Archivo adjuntado con éxito.')
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) forbiddenAccessAlert()
+                else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
     }
+    
     openAccordion = (indiceClick, name) => {
-        let { opciones_adjuntos, form } = this.state
+        
+        const tipos = ['portafolio', 'como_trabajamos', 'servicios_generales', '', 'brokers', 'videos']
+        let { opciones_adjuntos, form, empresa } = this.state
+        
         form.adjuntos.slider.placeholder = name
         form.adjuntos.slider.files = []
         form.adjuntos.slider.menu = indiceClick === 3 ? 1 : 0
         form.adjuntos.slider.eventKey = indiceClick
+        
+        if(indiceClick !== 3){
+            if(empresa.adjuntos)
+                empresa.adjuntos.map((adjunto, key) => {
+                    if( tipos[indiceClick] === adjunto.pivot.tipo )
+                        form.adjuntos.slider.files.push(adjunto)
+                })
+        }
+
         opciones_adjuntos.map((element, key) => {
             if (indiceClick === key) {
                 element.isActive = element.isActive ? false : true
@@ -228,9 +268,12 @@ class MaterialCliente extends Component {
             }
             return false
         })
+
         this.setState({
             opciones_adjuntos: opciones_adjuntos,
-            form
+            form,
+            submenuactive: '',
+            activeTipo: indiceClick
         });
     }
     // openSubMenu = (name) => {
@@ -243,12 +286,38 @@ class MaterialCliente extends Component {
     //     });
     // }
     changeActiveKey = empresa => {
-        this.setState({
-            empresa: empresa
+        console.log(empresa, 'empresa')
+        
+        let { opciones_adjuntos, form, activeTipo } = this.state
+        let aux = activeTipo === undefined ? 0 : activeTipo
+        const tipos = ['portafolio', 'como_trabajamos', 'servicios_generales', '', 'brokers', 'videos']
+        const placeholder = ['PORTAFOLIO', 'COMO TRABAJAMOS (FASE 1 Y 2)', 'SERVICIOS GENERALES', 'SERVICIOS POR CATEGORIA', 'BROKERS', 'VIDEOS']
+
+        form.adjuntos.slider.placeholder = placeholder[aux]
+        form.adjuntos.slider.files = []
+        empresa.adjuntos.map((adjunto, key) => {
+            if(aux !== 3)
+                if(adjunto.pivot.tipo === tipos[aux])
+                    form.adjuntos.slider.files.push(adjunto)
         })
+        form.adjuntos.slider.menu = aux === 3 ? 1 : 0
+        form.adjuntos.slider.eventKey = aux
+        opciones_adjuntos.map((element, key) => {
+            if(key === aux)
+                opciones_adjuntos[aux].isActive = true
+            else
+                opciones_adjuntos[key].isActive = false
+        })
+        this.setState({
+            empresa: empresa,
+            opciones_adjuntos: opciones_adjuntos,
+            form,
+            submenuactive: ''
+        });
     } 
 
-    loadAdjuntos = adjuntos => {
+    loadAdjuntos = tipo => {
+        const { adjuntos } = tipo
         let { form } = this.state
         let subportafolio = []
         let ejemplo = []
@@ -270,11 +339,12 @@ class MaterialCliente extends Component {
         form.adjuntos.subportafolio.files =subportafolio
         form.adjuntos.ejemplo.files =ejemplo
         this.setState({
-            form
+            form,
+            submenuactive: tipo.id
         })
     } 
     render() {
-        const { form, data, opciones_adjuntos, empresa } = this.state
+        const { form, data, opciones_adjuntos, empresa, submenuactive } = this.state
         const sub_menu = (element) => {
             switch (element.tipo) {
                 case 4: return <Nav className="navi">
@@ -282,14 +352,14 @@ class MaterialCliente extends Component {
                         empresa ?
                             empresa.tipos.map((tipo, key) => {
                                 return (
-                                    <Nav.Item className='navi-item' key={key} onClick={(e)=>{ e.preventDefault();this.loadAdjuntos(tipo.adjuntos)}}>
-                                        <Nav.Link className="navi-link p-2" eventKey={tipo.id}>
-                                            <span className="navi-icon">
+                                    <Nav.Item className='navi-item' key={key} onClick={(e)=>{ e.preventDefault();this.loadAdjuntos(tipo)}}>
+                                        <Nav.Link className = "navi-link p-2" eventKey={tipo.id}>
+                                            <span className={ submenuactive === tipo.id ? "navi-icon text-primary" : "navi-icon"}>
                                                 <span className="navi-bullet">
-                                                    <i className="bullet bullet-dot"></i>
+                                                    <i className = "bullet bullet-dot"></i>
                                                 </span>
                                             </span>
-                                            <div className="navi-text">
+                                            <div className={ submenuactive === tipo.id ? "navi-text text-primary" : "navi-text"}>
                                                 <span className="d-block font-weight-bolder" >{tipo.tipo}</span>
                                             </div>
                                         </Nav.Link>
@@ -305,7 +375,7 @@ class MaterialCliente extends Component {
         }
         return (
             <Layout active={'mercadotecnia'} {...this.props}>
-                <Tab.Container defaultActiveKey="3" className="p-5">
+                <Tab.Container className="p-5">
                     <Row>
                         <Col sm={3}>
                             <Card className="card-custom card-stretch gutter-b">
@@ -362,7 +432,7 @@ class MaterialCliente extends Component {
                                                 data.empresas.map((empresa, index) => {
                                                     return (
                                                         <Nav.Item key={index}>
-                                                            <Nav.Link eventKey={index} className="py-2 px-4" onClick={(e) => { e.preventDefault(); this.changeActiveKey(empresa) }} >
+                                                            <Nav.Link eventKey={empresa.id} className="py-2 px-4" onClick={(e) => { e.preventDefault(); this.changeActiveKey(empresa) }} >
                                                                 {empresa.name}
                                                             </Nav.Link>
                                                         </Nav.Item>
@@ -374,58 +444,62 @@ class MaterialCliente extends Component {
                                 </Card.Header>
                                 <Card.Body>
                                     {
-                                        form.adjuntos.slider.menu === 0 ?
-                                            <div className="col-md-12 d-flex justify-content-center">
-                                                <div>
-                                                    <div className="text-center font-weight-bolder mb-2">
-                                                        {form.adjuntos.slider.placeholder}
-                                                    </div>
-                                                    <ItemSlider
-                                                        item='slider'
-                                                        items={form.adjuntos.slider.files}
-                                                        handleChange={this.handleChange}
-                                                        multiple={true}
-                                                    />
-                                                </div>
-                                            </div>
-                                            :
-                                            <div className="col-md-12 d-flex justify-content-center">
-                                                <div className='row mx-0 justify-content-center'>
-                                                    <div className="col-md-6">
+                                        empresa !==  '' ?
+                                            form.adjuntos.slider.menu === 0 ?
+                                                <div className="col-md-12 d-flex justify-content-center">
+                                                    <div>
                                                         <div className="text-center font-weight-bolder mb-2">
-                                                            {form.adjuntos.subportafolio.placeholder}
+                                                            {form.adjuntos.slider.placeholder}
                                                         </div>
                                                         <ItemSlider
-                                                            item='subportafolio'
-                                                            items={form.adjuntos.subportafolio.files}
-                                                            handleChange={this.handleChange}
-                                                            multiple={true}
-                                                        />
-                                                    </div>
-                                                    <div className="col-md-6">
-                                                        <div className="text-center font-weight-bolder mb-2">
-                                                            {form.adjuntos.ejemplo.placeholder}
-                                                        </div>
-                                                        <ItemSlider
-                                                            item='ejemplo'
-                                                            items={form.adjuntos.ejemplo.files}
-                                                            handleChange={this.handleChange}
-                                                            multiple={true}
-                                                        />
-                                                    </div>
-                                                    <div className="col-md-6">
-                                                        <div className="text-center font-weight-bolder mb-2">
-                                                            {form.adjuntos.portada.placeholder}
-                                                        </div>
-                                                        <ItemSlider
-                                                            item='portada'
-                                                            items={form.adjuntos.portada.files}
+                                                            item='slider'
+                                                            items={form.adjuntos.slider.files}
                                                             handleChange={this.handleChange}
                                                             multiple={true}
                                                         />
                                                     </div>
                                                 </div>
-                                            </div>
+                                                :
+                                                submenuactive ? 
+                                                    <div className="col-md-12 d-flex justify-content-center">
+                                                        <div className='row mx-0 justify-content-center'>
+                                                            <div className="col-md-6">
+                                                                <div className="text-center font-weight-bolder mb-2">
+                                                                    {form.adjuntos.subportafolio.placeholder}
+                                                                </div>
+                                                                <ItemSlider
+                                                                    item='subportafolio'
+                                                                    items={form.adjuntos.subportafolio.files}
+                                                                    handleChange={this.handleChange}
+                                                                    multiple={true}
+                                                                />
+                                                            </div>
+                                                            <div className="col-md-6">
+                                                                <div className="text-center font-weight-bolder mb-2">
+                                                                    {form.adjuntos.ejemplo.placeholder}
+                                                                </div>
+                                                                <ItemSlider
+                                                                    item='ejemplo'
+                                                                    items={form.adjuntos.ejemplo.files}
+                                                                    handleChange={this.handleChange}
+                                                                    multiple={true}
+                                                                />
+                                                            </div>
+                                                            <div className="col-md-6">
+                                                                <div className="text-center font-weight-bolder mb-2">
+                                                                    {form.adjuntos.portada.placeholder}
+                                                                </div>
+                                                                <ItemSlider
+                                                                    item='portada'
+                                                                    items={form.adjuntos.portada.files}
+                                                                    handleChange={this.handleChange}
+                                                                    multiple={true}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                : ''
+                                        : ''
                                     }
                                 </Card.Body>
                             </Card>
@@ -436,7 +510,6 @@ class MaterialCliente extends Component {
         )
     }
 }
-
 
 const mapStateToProps = state => {
     return {
