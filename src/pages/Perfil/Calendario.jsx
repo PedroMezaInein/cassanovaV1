@@ -13,9 +13,11 @@ import { errorAlert, forbiddenAccessAlert, waitAlert, doneAlert } from '../../fu
 import { countDaysWithoutWeekend } from '../../functions/functions';
 import { URL_DEV } from '../../constants';
 import bootstrapPlugin from '@fullcalendar/bootstrap'
-import {DropdownButton, Dropdown,Card, OverlayTrigger, Tooltip} from 'react-bootstrap'
+import {DropdownButton, Dropdown,Card, OverlayTrigger, Tooltip, Nav} from 'react-bootstrap'
 import moment from 'moment'
 import AVATAR from '../../assets/images/icons/avatar.png'
+import Swal from 'sweetalert2'
+import { Parking } from '../../components/Lottie';
 
 const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
 class Calendario extends Component {
@@ -38,7 +40,9 @@ class Calendario extends Component {
         },
         estatus: [],
         disabledDates: [],
-        date: ''
+        date: '',
+        eventos: '',
+        activeKey: ''
     };
 
     componentDidMount() {
@@ -52,11 +56,8 @@ class Calendario extends Component {
     }
 
     handleDateClick = (arg) => { 
-        this.setState({
-            ...this.state,
-            modal_date: true,
-            date: arg.dateStr
-        })
+        waitAlert()
+        this.getEventsOneDateAxios(arg.dateStr)
     }
 
     openModal = () => {
@@ -119,7 +120,9 @@ class Calendario extends Component {
         this.setState({
             ...this.state,
             modal_date: false,
-            date: ''
+            date: '',
+            activeKey: '',
+            eventos: ''
         })
     }
 
@@ -353,6 +356,41 @@ class Calendario extends Component {
         })
     }
 
+    async getEventsOneDateAxios(date){
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'vacaciones/single/' + date, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                Swal.close()
+                const { eventos } = response.data
+                let bandera = false
+                Object.keys(eventos).map((evento, key) => {
+                    if(eventos[evento].length && bandera === false && evento !== 'feriados')
+                        bandera = evento
+                })
+                if(bandera === false)
+                    bandera = 'estacionamiento'
+                this.setState({
+                    ...this.state,
+                    modal_date: true,
+                    date: date,
+                    eventos: eventos,
+                    activeKey: bandera
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     setInvitados = (invitados) => {
         const { data } = this.state
         if(invitados)
@@ -514,8 +552,89 @@ class Calendario extends Component {
             return ''
     }
 
+    setNavTitle = element => {
+        let icon = ''
+        let nombre = ''
+        let active = ''
+        const { activeKey } = this.state
+        if(activeKey === element)
+            active = ' text-primary '
+        switch(element){
+            case 'eventos':
+                nombre = 'CITAS'
+                icon = 'far fa-clock'
+                break;
+            case 'cumpleaños':
+                nombre = 'CUMPLEAÑOS'
+                icon = 'fas fa-birthday-cake'
+                break;
+            case 'vacaciones':
+                nombre = 'VACACIONES'
+                icon = 'fas fa-umbrella-beach'
+                break;
+            case 'estacionamiento':
+                nombre = 'ESTACIONAMIENTO'
+                icon = 'fas fa-car'
+                break;
+        }
+        return(
+            <>
+                <i className= { icon + ' icon-15px mr-2 ' + active}></i>
+                {nombre}
+            </>
+        )
+    }
+
+    changeActiveKey = element => {
+        this.setState({
+            ...this.state,
+            activeKey: element
+        })
+    }
+
+    printModal = () => {
+        const { activeKey } = this.state
+        switch(activeKey){
+            case 'eventos':
+            case 'cumpleaños':
+            case 'vacaciones': 
+                break;
+            case 'estacionamiento':
+                return this.prinEstacionamiento()
+                break
+        }
+    }
+
+    prinEstacionamiento = () => {
+        const { eventos } = this.state
+        let size = eventos.estacionamiento.length > 4 ? 3 : 12/eventos.estacionamiento.length
+        return (
+            <>
+                <div className = 'row mx-0 justify-content-center '>
+                    {
+                        eventos.estacionamiento.map((auto, key) => {
+                            return(
+                                <div className = { `col-md-${size}` }>
+                                    <div className = 'text-center my-2'>
+                                        {auto}
+                                    </div>
+                                    <div className = 'row justity-content-center' >
+                                        <div className = 'col-6'>
+                                            <Parking />
+                                        </div>
+                                    </div>
+                                </div>
+                            )
+                        })
+                    }
+                </div>
+            </>
+        )
+        
+    }
+
     render() {
-        const { events, form, title, formeditado, modal, modal_status, estatus, disponibles, disabledDates, modal_date, date } = this.state
+        const { events, form, title, formeditado, modal, modal_status, estatus, disponibles, disabledDates, modal_date, date, eventos, activeKey } = this.state
         return (
             <Layout active='rh'  {...this.props}>
                 <Card className="card-custom">
@@ -559,7 +678,48 @@ class Calendario extends Component {
                         />
                     </Modal>
 
-                    <Modal title = { this.setDateText(date) } show = { modal_date } handleClose = { this.handleCloseDate }>
+                    <Modal size = 'lg' title = { this.setDateText(date) } show = { modal_date } handleClose = { this.handleCloseDate }>
+                        {
+
+                            eventos !== '' ?
+                                <Card className="card-custom card-stretch gutter-b" >
+                                    {
+                                        eventos.feriados.length ?
+                                            eventos.feriados.map((feriado, key) => {
+                                                return(
+                                                    <div className = 'px-3 mx-3 my-2 py-2 feriados text-center'>
+                                                        ¡Feliz {feriado.texto}!
+                                                    </div>        
+                                                )
+                                            })                                        
+                                        : ''
+                                    }
+                                    <Card.Header>
+                                        
+                                        <div className = 'card-toolbar'>
+                                            <Nav className = 'nav nav-pills nav-pills-sm nav-light-primary font-weight-bolder'>
+                                                {
+                                                    Object.keys(eventos).map((element, key) => {
+                                                        if((eventos[element].length || element === 'estacionamiento') && element !== 'feriados'){
+                                                            return(
+                                                                <Nav.Item key={key}>
+                                                                    <Nav.Link eventKey={element} className={ activeKey === element ? "py-2 px-4 text-primary" : 'py-2 px-4'} onClick={(e) => { e.preventDefault(); this.changeActiveKey(element) }} >
+                                                                        {this.setNavTitle(element)}
+                                                                    </Nav.Link>
+                                                                </Nav.Item>
+                                                            )
+                                                        }
+                                                    })
+                                                }
+                                            </Nav>
+                                        </div>
+                                    </Card.Header>
+                                    <Card.Body>
+                                        {this.printModal()}
+                                    </Card.Body>
+                                </Card>
+                            : ''
+                        }
                         
                     </Modal>
 
