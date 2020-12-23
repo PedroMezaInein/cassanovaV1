@@ -17,6 +17,7 @@ import {DropdownButton, Dropdown,Card, OverlayTrigger, Tooltip, Nav} from 'react
 import moment from 'moment'
 import AVATAR from '../../assets/images/icons/avatar.png'
 import Swal from 'sweetalert2'
+import { Parking } from '../../components/Lottie';
 
 const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
 class Calendario extends Component {
@@ -609,12 +610,19 @@ class Calendario extends Component {
         let size = eventos.estacionamiento.length > 4 ? 3 : 12/eventos.estacionamiento.length
         return (
             <>
-                <div className = 'row mx-0'>
+                <div className = 'row mx-0 justify-content-center '>
                     {
                         eventos.estacionamiento.map((auto, key) => {
                             return(
                                 <div className = { `col-md-${size}` }>
-                                    {auto}
+                                    <div className = 'text-center my-2'>
+                                        {auto}
+                                    </div>
+                                    <div className = 'row justity-content-center' >
+                                        <div className = 'col-6'>
+                                            <Parking />
+                                        </div>
+                                    </div>
                                 </div>
                             )
                         })
