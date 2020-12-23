@@ -569,7 +569,7 @@ class egresos extends Component {
         $('#egresos').DataTable().ajax.reload();
     }
     async getOptionsAxios() {
-        waitAlert()
+        // waitAlert()
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'egresos/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {

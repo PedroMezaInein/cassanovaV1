@@ -599,7 +599,7 @@ class Ingresos extends Component {
         })
     }
     async getOptionsAxios() {
-        waitAlert()
+        // waitAlert()
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'ingresos/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
