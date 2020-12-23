@@ -190,7 +190,7 @@ class MaterialCliente extends Component {
 
     async addAdjunto(name) {
         const { access_token } = this.props.authUser
-        const { form, empresa } = this.state
+        const { form, empresa, submenuactive } = this.state
         const data = new FormData();
         const tipos = [
             'portafolio',
@@ -209,16 +209,33 @@ class MaterialCliente extends Component {
                 }                  
             })
             data.append('tipo', tipos[form.adjuntos.slider.eventKey])
+        }else{
+            form.adjuntos[name].files.map((file, key) => {
+                if (typeof file.id === 'undefined') {
+                    data.append(`files_name[]`, file.name)
+                    data.append(`files[]`, file.file)
+                }                  
+            })
+            data.append('proyecto', submenuactive)
+            data.append('tipo', name)
         }
         await axios.post(URL_DEV + 'mercadotecnia/material-clientes', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { empresa, tipo } = response.data
                 const { form } = this.state
                 
-                if(tipo){
+                if(name === 'slider'){
                     form.adjuntos.slider.files = []
                     empresa.adjuntos.map((adjunto, key) => {
                         form.adjuntos.slider.files.push(adjunto)
+                    })
+                }else{
+                    form.adjuntos[name].files = []
+                    empresa.tipos.map((tipo, key) => {
+                        if(tipo.id === submenuactive)
+                            tipo.adjuntos.map((adjunto)=>{
+                                form.adjuntos[name].files.push(adjunto)
+                            })
                     })
                 }
 
@@ -337,7 +354,7 @@ class MaterialCliente extends Component {
         })
         form.adjuntos.portada.files =portada
         form.adjuntos.subportafolio.files =subportafolio
-        form.adjuntos.ejemplo.files =ejemplo
+        form.adjuntos.ejemplo.files = ejemplo
         this.setState({
             form,
             submenuactive: tipo.id
