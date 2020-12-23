@@ -10,6 +10,7 @@ import { setSelectOptions } from '../../../functions/setters'
 import { waitAlert, questionAlert, errorAdjuntos, errorAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
+import { Nothing } from '../../../components/Lottie'
 class MaterialCliente extends Component {
 
     state = {
@@ -109,7 +110,7 @@ class MaterialCliente extends Component {
     }
     async getOptionsAxios() {
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'mercadotecnia/opciones', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(URL_DEV + 'mercadotecnia/material-clientes', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { empresas } = response.data
                 let { activeTipo } = response.data
@@ -230,7 +231,8 @@ class MaterialCliente extends Component {
                 if(name === 'slider'){
                     form.adjuntos.slider.files = []
                     empresa.adjuntos.map((adjunto, key) => {
-                        form.adjuntos.slider.files.push(adjunto)
+                        if(adjunto.pivot.tipo === tipo)
+                            form.adjuntos.slider.files.push(adjunto)
                     })
                 }else{
                     form.adjuntos[tipo].files = []
@@ -307,7 +309,6 @@ class MaterialCliente extends Component {
     //     });
     // }
     changeActiveKey = empresa => {
-        console.log(empresa, 'empresa')
         
         let { opciones_adjuntos, form, activeTipo } = this.state
         let aux = activeTipo === undefined ? 0 : activeTipo
@@ -519,8 +520,8 @@ class MaterialCliente extends Component {
                                                             </div>
                                                         </div>
                                                     </div>
-                                                : ''
-                                        : ''
+                                                : <Nothing />
+                                        : <Nothing />
                                     }
                                 </Card.Body>
                             </Card>
