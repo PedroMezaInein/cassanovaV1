@@ -158,7 +158,7 @@ class LeadInfo extends Component {
             partidas: null
         },
         lead: '',
-        itemsPerPage: 8,
+        itemsPerPage: 5,
         activePage: 1
     }
 
