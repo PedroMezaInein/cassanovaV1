@@ -1314,6 +1314,12 @@ div#nav-tareas{
         justify-content: center!important;
     }
 }
+
+.fc-view-harness-active{
+    @include down-screen($md) {
+        height: 100vh!important;
+    }
+}
 .mt-175px{
     margin-top: 175px
 }
