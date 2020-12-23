@@ -1,25 +1,14 @@
 import { Sending } from '../components/Lottie/'
 import { Done } from '../components/Lottie/'
+import { SendingDecember } from '../components/Lottie/'
 import ReactDOM from 'react-dom';
 import React from 'react'
 
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
-let wrapperSending = document.createElement('div');
-ReactDOM.render(<Sending />, wrapperSending);
-// let sending = wrapperSending.firstChild;
-let wrapperDone = document.createElement('div');
-ReactDOM.render(<Done />, wrapperDone);
-// let done = wrapperDone.firstChild;
 
 export async function waitAlert() {
-    /* swal({
-        title: '¡UN MOMENTO!',
-        text: 'LA INFORMACIÓN ESTÁ SIENDO PROCESADA.',
-        buttons: false,
-        content: sending
-    }) */
     MySwal.fire({
         title: '¡UN MOMENTO!',
         html:
@@ -33,6 +22,37 @@ export async function waitAlert() {
             actions: 'd-none'
         }
     })
+    /* let fecha = new Date()
+    console.log(fecha.getMonth())
+    if(fecha.getMonth() === 11)
+        MySwal.fire({
+            title: '¡UN MOMENTO!',
+            html:
+                <div>
+                    <p>
+                        LA INFORMACIÓN ESTÁ SIENDO PROCESADA
+                    </p>
+                    <SendingDecember />
+                </div>,
+            customClass: {
+                actions: 'd-none'
+            }
+        })
+    else{
+        MySwal.fire({
+            title: '¡UN MOMENTO!',
+            html:
+                <div>
+                    <p>
+                        LA INFORMACIÓN ESTÁ SIENDO PROCESADA
+                    </p>
+                    <Sending />
+                </div>,
+            customClass: {
+                actions: 'd-none'
+            }
+        })
+    } */
 }
 
 export async function doneAlert(texto) {
@@ -50,13 +70,6 @@ export async function doneAlert(texto) {
         },
         timer: 2500,
     })
-    /* swal({
-        title: '¡FELICIDADES!',
-        text: texto,
-        buttons: false,
-        timer: 2500,
-        content: done
-    }) */
 }
 
 export function errorAlert(text) {
