@@ -16,6 +16,8 @@ import bootstrapPlugin from '@fullcalendar/bootstrap'
 import {DropdownButton, Dropdown,Card, OverlayTrigger, Tooltip} from 'react-bootstrap'
 import moment from 'moment'
 import AVATAR from '../../assets/images/icons/avatar.png'
+
+const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
 class Calendario extends Component {
 
     state = {
@@ -26,6 +28,7 @@ class Calendario extends Component {
         empleado: '',
         vacaciones_totales: '',
         modal_status: false,
+        modal_date: false,
         form: {
             fechaInicio: new Date(),
             fechaFin: new Date(),
@@ -34,7 +37,8 @@ class Calendario extends Component {
             usuarios: []
         },
         estatus: [],
-        disabledDates: []
+        disabledDates: [],
+        date: ''
     };
 
     componentDidMount() {
@@ -48,8 +52,13 @@ class Calendario extends Component {
     }
 
     handleDateClick = (arg) => { 
-        
+        this.setState({
+            ...this.state,
+            modal_date: true,
+            date: arg.dateStr
+        })
     }
+
     openModal = () => {
         this.setState({
             ...this.state,
@@ -103,6 +112,14 @@ class Calendario extends Component {
             modal_status: !modal_status,
             title: 'Estatus de vacaciones',
             form: this.clearForm()
+        })
+    }
+
+    handleCloseDate = () => {
+        this.setState({
+            ...this.state,
+            modal_date: false,
+            date: ''
         })
     }
 
@@ -488,8 +505,17 @@ class Calendario extends Component {
         )
     }
 
+    setDateText = date => {
+        if(date !== ''){
+            let fecha = moment(date)
+            return fecha.format('DD') + ' de ' + meses[fecha.format('M') - 1] + ' del ' + fecha.format('YYYY')
+        }
+        else
+            return ''
+    }
+
     render() {
-        const { events, form, title, formeditado, modal, modal_status, estatus, disponibles, disabledDates } = this.state
+        const { events, form, title, formeditado, modal, modal_status, estatus, disponibles, disabledDates, modal_date, date } = this.state
         return (
             <Layout active='rh'  {...this.props}>
                 <Card className="card-custom">
@@ -532,6 +558,11 @@ class Calendario extends Component {
                             estatus={estatus}
                         />
                     </Modal>
+
+                    <Modal title = { this.setDateText(date) } show = { modal_date } handleClose = { this.handleCloseDate }>
+                        
+                    </Modal>
+
                     <Card.Body> 
                             <div className="mb-3"> 
                                 <i className="fa fa-genderless text-info mr-2"></i> 
