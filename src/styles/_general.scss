@@ -1308,13 +1308,16 @@ button.modal-video-close-btn:after {
     height: 24px!important;
 }
 
-.mx-150px{
-    margin-left: 150px;
-    margin-right: 150px;
-}
 div#nav-tareas{
     @include down-screen($md) {
         display: flex!important;
         justify-content: center!important;
     }
+}
+.mt-175px{
+    margin-top: 175px
+}
+.spinner.spinner-xl:before {
+    width: 2.4rem;
+    height: 2.4rem;
 }
