@@ -799,10 +799,9 @@ class LeadInfo extends Component {
         await axios.post(URL_DEV + 'crm/contacto/lead/' + lead.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { lead } = response.data
-                const { formHistorial } = this.state
                 this.setState({
                     ...this.state,
-                    formHistorial,
+                    formHistorial: this.clearForm(),
                     lead: lead
                 })
                 doneAlert('Historial actualizado con éxito');
@@ -825,7 +824,31 @@ class LeadInfo extends Component {
             console.log(error, 'error')
         })
     }
-
+    clearForm = () => {
+        const { formHistorial } = this.state
+        let aux = Object.keys(formHistorial)
+        aux.map((element) => {
+            switch (element) {
+                case 'adjuntos':
+                    formHistorial[element] = {
+                        adjuntos: {
+                            files: [],
+                            value: '',
+                            placeholder: 'Adjuntos'
+                        }
+                    }
+                    break;
+                case 'success':
+                    formHistorial[element] = 'Contactado'
+                    break;
+                default:
+                    formHistorial[element] = ''
+                    break;
+            }
+            return false
+        })
+        return formHistorial;
+    }
     async agendarEvento() {
         const { lead, formAgenda } = this.state
         waitAlert()

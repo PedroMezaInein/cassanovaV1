@@ -1281,18 +1281,13 @@ class Crm extends Component {
         await axios.post(URL_DEV + 'crm/contacto/lead/' + lead.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { lead } = response.data
-                const { formHistorial } = this.state
                 this.setState({
                     ...this.state,
-                    formHistorial,
+                    formHistorial: this.clearForm(),
                     lead: lead
                 })
                 doneAlert('Historial actualizado con éxito');
-                const { history } = this.props
-                history.push({
-                    pathname: '/leads/crm',
-                    state: { lead: lead }
-                });
+                this.getLeadsWeb()
             },
             (error) => {
                 console.log(error, 'error')
@@ -1607,7 +1602,8 @@ class Crm extends Component {
                             formHistorial={formHistorial}
                             onChangeHistorial={this.onChangeHistorial}
                             handleChange={this.handleChange}
-                            onSubmit={() => { waitAlert(); this.agregarContacto() }} />
+                            onSubmit={() => { waitAlert(); this.agregarContacto() }}
+                        />
                     </div>
                     <div className="col-md-12 row mx-0 d-flex justify-content-center">
                         <div className="col-md-7 pb-2 pt-4">
