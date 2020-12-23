@@ -17,7 +17,7 @@ import {DropdownButton, Dropdown,Card, OverlayTrigger, Tooltip, Nav} from 'react
 import moment from 'moment'
 import AVATAR from '../../assets/images/icons/avatar.png'
 import Swal from 'sweetalert2'
-import { Parking } from '../../components/Lottie';
+import { Parking, ParkingRed } from '../../components/Lottie';
 
 const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
 class Calendario extends Component {
@@ -620,7 +620,11 @@ class Calendario extends Component {
                                     </div>
                                     <div className = 'row mx-0 justify-content-center border' >
                                         <div className = 'col-10 border'>
-                                            <Parking />
+                                            {
+                                                (key + 1) % 2 === 1?
+                                                    <ParkingRed />
+                                                : <Parking />
+                                            }
                                         </div>
                                     </div>
                                 </div>
