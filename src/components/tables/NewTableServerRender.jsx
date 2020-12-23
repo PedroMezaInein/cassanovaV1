@@ -408,9 +408,9 @@ class NewTableServerRender extends Component {
                                             <i className="flaticon-add"></i> AGREGAR
                                         </button>
                                         :
-                                        <button href={url} className="btn btn-success font-weight-bold mr-2">
+                                        <a href={url} className="btn btn-success font-weight-bold mr-2">
                                             <i className="flaticon-add"></i> AGREGAR
-                                        </button>
+                                        </a>
                                     :
                                     ""
                             }
