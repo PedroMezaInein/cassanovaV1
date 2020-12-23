@@ -799,10 +799,9 @@ class LeadInfo extends Component {
         await axios.post(URL_DEV + 'crm/contacto/lead/' + lead.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { lead } = response.data
-                const { formHistorial } = this.state
                 this.setState({
                     ...this.state,
-                    formHistorial,
+                    formHistorial: this.clearForm(),
                     lead: lead
                 })
                 doneAlert('Historial actualizado con éxito');
@@ -825,7 +824,31 @@ class LeadInfo extends Component {
             console.log(error, 'error')
         })
     }
-
+    clearForm = () => {
+        const { formHistorial } = this.state
+        let aux = Object.keys(formHistorial)
+        aux.map((element) => {
+            switch (element) {
+                case 'adjuntos':
+                    formHistorial[element] = {
+                        adjuntos: {
+                            files: [],
+                            value: '',
+                            placeholder: 'Adjuntos'
+                        }
+                    }
+                    break;
+                case 'success':
+                    formHistorial[element] = 'Contactado'
+                    break;
+                default:
+                    formHistorial[element] = ''
+                    break;
+            }
+            return false
+        })
+        return formHistorial;
+    }
     async agendarEvento() {
         const { lead, formAgenda } = this.state
         waitAlert()
@@ -1507,7 +1530,9 @@ class LeadInfo extends Component {
                                                                                                                         <i className={contacto.success ? "fas fa-users text-success icon-16px" : "fas fa-users text-danger icon-16px"}></i>
                                                                                                                         : contacto.tipo_contacto.tipo === 'Visita' ?
                                                                                                                             <i className={contacto.success ? "fas fa-house-user text-success icon-16px" : "fas fa-house-user text-danger icon-16px"}></i>
-                                                                                                                            : <i className={contacto.success ? "fas fa-mail-bulk text-success icon-16px" : "fas fa-mail-bulk text-danger icon-16px"}></i>
+                                                                                                                            :contacto.tipo_contacto.tipo === 'TAWK TO ORGANICO' ?
+                                                                                                                                <i className={contacto.success ? "fas fa-dove text-success icon-16px" : "fas fa-dove text-danger icon-16px"}></i>
+                                                                                                                                : <i className={contacto.success ? "fas fa-mail-bulk text-success icon-16px" : "fas fa-mail-bulk text-danger icon-16px"}></i>
                                                                                             :''
                                                                                         }
                                                                                     </span>

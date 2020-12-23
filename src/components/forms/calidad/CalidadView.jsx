@@ -1,11 +1,10 @@
 import React, { Component } from 'react'
-import { Card, Nav, Tab } from 'react-bootstrap'
+import { Card, Nav, Tab, Dropdown} from 'react-bootstrap'
 import Moment from 'react-moment'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
 import ItemSlider from '../../singles/ItemSlider';
 import { ProcesoTicketForm } from '../../forms';
-import { setLabelTable } from '../../../functions/setters';
 import { Button } from '../../../components/form-components'
 
 class CalidadView extends Component {
@@ -42,7 +41,6 @@ class CalidadView extends Component {
                                     </span>
                                 </div>
                             </div>
-
                             <div className="flex-grow-1">
                                 <div className="d-flex align-items-start justify-content-between flex-wrap mt-2">
                                     <div className="mr-3">
@@ -68,14 +66,60 @@ class CalidadView extends Component {
                                             </div>
                                         </div>
                                     </div>
-
                                     <div className="mb-2">
                                         {
                                             data ?
                                                 data.estatus_ticket ?
-                                                    setLabelTable(data.estatus_ticket)
+                                                        <Dropdown>
+                                                            <Dropdown.Toggle
+                                                                style={
+                                                                    {
+                                                                        backgroundColor: data.estatus_ticket.fondo, 
+                                                                        color: data.estatus_ticket.letra,
+                                                                        border: 'transparent', padding: '2.8px 5.6px',
+                                                                        width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '10.7px',
+                                                                        fontWeight: 500, paddingTop:'3px'
+                                                                    }
+                                                                }
+                                                            >
+                                                                {data.estatus_ticket.estatus.toUpperCase()}
+                                                            </Dropdown.Toggle>
+                                                            <Dropdown.Menu className="p-0">
+                                                                <Dropdown.Header>
+                                                                    <span className="font-size-sm">Elige una opción</span>
+                                                                </Dropdown.Header>
+                                                                {
+                                                                    options.estatus?
+                                                                        options.estatus.map((estatus, key) => {
+                                                                            if(estatus.name === 'Rechazado' || estatus.name === 'Aceptado' || estatus.name === 'Terminado' || 
+                                                                                estatus.name === 'En proceso' || estatus.name === 'Respuesta pendiente' || estatus.name === 'En revisión' || estatus.name === 'En espera')
+                                                                            return (
+                                                                                <>
+                                                                                    <Dropdown.Item className="p-0" key={key} onClick={() => { changeEstatus(estatus.name) }} >
+                                                                                        <span className="navi-link w-100">
+                                                                                            <span className="navi-text">
+                                                                                                <span className="label label-xl label-inline rounded-0 w-100 font-weight-bolder" 
+                                                                                                    style = {{ 
+                                                                                                        color: estatus.letra, 
+                                                                                                        backgroundColor: estatus.fondo 
+                                                                                                    }}>
+                                                                                                    {
+                                                                                                        estatus.name
+                                                                                                    }
+                                                                                                </span>
+                                                                                            </span>
+                                                                                        </span>
+                                                                                    </Dropdown.Item>
+                                                                                    <Dropdown.Divider className="m-0" style={{ borderTop: '1px solid #fff' }} />
+                                                                                </>
+                                                                            )
+                                                                        })
+                                                                    :''
+                                                                }
+                                                            </Dropdown.Menu>
+                                                        </Dropdown>
+                                                        : ''
                                                     : ''
-                                                : ''
                                         }
                                     </div>
                                 </div>
