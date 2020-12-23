@@ -155,11 +155,6 @@ class CalidadForm extends Component {
     deleteFile = element => {
         deleteAlert('DESEAS ELIMINAR EL ARCHIVO', '', () => this.deleteAdjuntoAxios(element.id))
     }
-    changeEstatus = estatus => {
-        const { ticket } = this.state
-        // this.changeEstatusAxios({id: ticket.id, estatus: estatus})
-        questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
-    }
     openModalWithInput = estatus => {
         const { ticket } = this.state
         // this.changeEstatusAxios({id: ticket.id, estatus: estatus})
@@ -367,9 +362,10 @@ class CalidadForm extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'calidad/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { empleados } = response.data
+                const { empleados, estatus } = response.data
                 const { options } = this.state
                 options['empleados'] = setOptions(empleados, 'nombre', 'id')
+                options['estatus'] = this.setOptionsEstatus(estatus, 'estatus', 'id')
                 this.setState({
                     ...this.state,
                     options
@@ -387,6 +383,44 @@ class CalidadForm extends Component {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
+    }
+    setOptionsEstatus = (arreglo) => {
+        let aux = []
+        arreglo.map((element) => {
+            aux.push(
+                { 
+                    name: element.estatus, 
+                    value: element.id.toString(),
+                    letra: element.letra,
+                    fondo: element.fondo
+                }
+            )
+        });
+        return aux
+    }
+    changeEstatus = estatus => {
+        const { ticket } = this.state
+        if (estatus === 'Rechazado') {
+            this.openModalWithInput('Rechazado')
+        }
+        if (estatus === 'Aceptado') {
+            questionAlert('¿ESTÁS SEGURO?', 'DARÁS POR ACEPTADO EL TICKET ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
+        }
+        if (estatus === 'Terminado') {
+            questionAlert('¿ESTÁS SEGURO?', 'DARÁS POR TERMINADO EL TICKET ¡NO PODRÁS REVERTIR ESTO!',  () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
+        }
+        if (estatus === 'En proceso') {
+            questionAlert('¿ESTÁS SEGURO?', 'ESTARÁ EN PROCESO EL TICKET ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
+        }
+        if (estatus === 'Respuesta pendiente') {
+            questionAlert('¿ESTÁS SEGURO?', 'ESTARÁ EL TICKET EN RESPUESTA PENDIENTE ¡NO PODRÁS REVERTIR ESTO!',  () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
+        }
+        if (estatus === 'En revisión') {
+            questionAlert('¿ESTÁS SEGURO?', 'ESTARÁ EN REVISIÓN EL TICKET ¡NO PODRÁS REVERTIR ESTO!',  () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
+        }
+        if (estatus === 'En espera') {
+            questionAlert('¿ESTÁS SEGURO?', 'ESTARÁ EN ESPERA EL TICKET ¡NO PODRÁS REVERTIR ESTO!',  () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
+        }
     }
     render() {
         const { ticket, form, options } = this.state
