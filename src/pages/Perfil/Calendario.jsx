@@ -674,7 +674,7 @@ class Calendario extends Component {
                         {
 
                             eventos !== '' ?
-                                <Card className="card-custom card-stretch gutter-b" >
+                                <Card className="card-custom shadow-none" >
                                     {
                                         eventos.feriados.length ?
                                             eventos.feriados.map((feriado, key) => {
