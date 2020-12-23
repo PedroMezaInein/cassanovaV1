@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import * as animationData from '../../assets/animate/arbol.json'
+import * as animationData from '../../assets/animate/reno.json'
 import Lottie from 'react-lottie';
 
 class Sending extends Component{
@@ -15,7 +15,6 @@ class Sending extends Component{
         return(
             <div className="mx-auto">
                 <Lottie options = { defaultOptions }
-                    speed = { 10 }
                     height= { 200 }
                     width= { 200 }
                     isStopped = { false }

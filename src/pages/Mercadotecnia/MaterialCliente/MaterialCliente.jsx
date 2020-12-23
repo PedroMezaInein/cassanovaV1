@@ -226,11 +226,6 @@ class MaterialCliente extends Component {
             (response) => {
                 const { empresa, tipo } = response.data
                 const { form } = this.state
-
-                console.log(tipo, 'tipo after post')
-                console.log(empresa, 'empresa after post')
-                console.log(name, 'name after post')
-                console.log(submenuactive, 'submenuactive after post')
                 
                 if(name === 'slider'){
                     form.adjuntos.slider.files = []
