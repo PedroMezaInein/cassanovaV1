@@ -9,7 +9,20 @@ import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
 
 export async function waitAlert() {
-    let fecha = new Date()
+    MySwal.fire({
+        title: '¡UN MOMENTO!',
+        html:
+            <div>
+                <p>
+                    LA INFORMACIÓN ESTÁ SIENDO PROCESADA
+                </p>
+                <Sending />
+            </div>,
+        customClass: {
+            actions: 'd-none'
+        }
+    })
+    /* let fecha = new Date()
     console.log(fecha.getMonth())
     if(fecha.getMonth() === 11)
         MySwal.fire({
@@ -39,7 +52,7 @@ export async function waitAlert() {
                 actions: 'd-none'
             }
         })
-    }
+    } */
 }
 
 export async function doneAlert(texto) {
