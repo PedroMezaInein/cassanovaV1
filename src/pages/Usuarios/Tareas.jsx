@@ -452,12 +452,24 @@ class Tareas extends Component {
 
     async addComentarioAxios() {
         const { access_token } = this.props.authUser
-        const { comentario, tarea, adjuntoFile, adjuntoName, subActiveKey} = this.state
+        const { comentario, tarea, adjuntoFile, adjuntoName, subActiveKey, formComentarioAdj} = this.state
         const data = new FormData();
         data.append('comentario', comentario)
         data.append('adjunto', adjuntoFile)
         data.append('adjuntoName', adjuntoName)
         data.append('id', tarea.id)
+
+        let aux = Object.keys(formComentarioAdj.adjuntos)
+        aux.map((element) => {
+            if (formComentarioAdj.adjuntos[element].value !== '') {
+                for (var i = 0; i < formComentarioAdj.adjuntos[element].files.length; i++) {
+                    data.append(`files_name_${element}[]`, formComentarioAdj.adjuntos[element].files[i].name)
+                    data.append(`files_${element}[]`, formComentarioAdj.adjuntos[element].files[i].file)
+                }
+                data.append('adjuntos[]', element)
+            }
+            return false
+        })
         await axios.post(URL_DEV + 'user/tareas/comentario', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
                 const { tableros, tarea } = response.data
