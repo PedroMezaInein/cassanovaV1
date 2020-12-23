@@ -1609,74 +1609,78 @@ class Crm extends Component {
                             handleChange={this.handleChange}
                             onSubmit={() => { waitAlert(); this.agregarContacto() }} />
                     </div>
-                    <div className="mx-150px pb-2 pt-4">
-                        {
-                            lead ?
-                                lead.prospecto ?
-                                        lead.prospecto.contactos.length ?
-                                        lead.prospecto.contactos.map((contacto, key) => {
-                                            return (
-                                                <div className="timeline timeline-6" key={key}>
-                                                    <div className="timeline-items">
-                                                        <div className="timeline-item">
-                                                            <div className={contacto.success ? "timeline-media bg-light-success" : "timeline-media bg-light-danger"}>
-                                                                <span className={contacto.success ? "svg-icon svg-icon-success svg-icon-md" : "svg-icon svg-icon-danger  svg-icon-md"}>
-                                                                    {
-                                                                        contacto.tipo_contacto ?
-                                                                            contacto.tipo_contacto.tipo === 'Llamada' ?
-                                                                                <SVG src={toAbsoluteUrl('/images/svg/Outgoing-call.svg')} />
-                                                                                : contacto.tipo_contacto.tipo === 'Correo' ?
-                                                                                    <SVG src={toAbsoluteUrl('/images/svg/Outgoing-mail.svg')} />
-                                                                                    : contacto.tipo_contacto.tipo === 'VIDEO LLAMADA' ?
-                                                                                        <SVG src={toAbsoluteUrl('/images/svg/Video-camera.svg')} />
-                                                                                        : contacto.tipo_contacto.tipo === 'Whatsapp' ?
-                                                                                            <i className={contacto.success ? "socicon-whatsapp text-success icon-16px" : "socicon-whatsapp text-danger icon-16px"}></i>
-                                                                                            : contacto.tipo_contacto.tipo === 'TAWK TO ADS' ?
-                                                                                                <i className={contacto.success ? "fas fa-dove text-success icon-16px" : "fas fa-dove text-danger icon-16px"}></i>
-                                                                                                : contacto.tipo_contacto.tipo === 'REUNIÓN PRESENCIAL' ?
-                                                                                                    <i className={contacto.success ? "fas fa-users text-success icon-16px" : "fas fa-users text-danger icon-16px"}></i>
-                                                                                                    : contacto.tipo_contacto.tipo === 'Visita' ?
-                                                                                                        <i className={contacto.success ? "fas fa-house-user text-success icon-16px" : "fas fa-house-user text-danger icon-16px"}></i>
-                                                                                                        : <i className={contacto.success ? "fas fa-mail-bulk text-success icon-16px" : "fas fa-mail-bulk text-danger icon-16px"}></i>
-                                                                            : ''
-                                                                    }
-                                                                </span>
-                                                            </div>
-                                                            <div className={contacto.success ? "timeline-desc timeline-desc-light-success" : "timeline-desc timeline-desc-light-danger"}>
-                                                                <span className={contacto.success ? "font-weight-bolder text-success" : "font-weight-bolder text-danger"}>{setDateTableLG(contacto.created_at)}</span>
-                                                                <div className="font-weight-light pb-2 text-justify position-relative mt-2 pr-3" style={{ borderRadius: '0.42rem', padding: '1rem 1.5rem', backgroundColor: '#F3F6F9' }}>
-                                                                    <div className="text-dark-75 font-weight-bold mb-2">
-                                                                        <div class="d-flex justify-content-between">
-                                                                            {contacto.tipo_contacto ? contacto.tipo_contacto.tipo : ''}
-                                                                            <a className="text-muted text-hover-danger font-weight-bold a-hover" 
-                                                                                onClick={(e) => { deleteAlert('¿ESTÁS SEGURO QUE DESEAS ELIMINAR EL CONTACTO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.eliminarContacto(contacto)) }}>
-                                                                                <i className="flaticon2-cross icon-xs" />
-                                                                            </a>
-                                                                        </div>
-                                                                    </div>
-                                                                    {contacto.comentario}
-                                                                    {
-                                                                        contacto.adjunto ?
-                                                                            <div className="d-flex justify-content-end">
-                                                                                <a href={contacto.adjunto.url} target='_blank' rel="noopener noreferrer" className="text-muted text-hover-primary font-weight-bold">
-                                                                                    <span className="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
-                                                                                        <SVG src={toAbsoluteUrl('/images/svg/Attachment1.svg')} />
-                                                                                    </span>VER ADJUNTO
+                    <div className="col-md-12 row mx-0 d-flex justify-content-center">
+                        <div className="col-md-7 pb-2 pt-4">
+                            {
+                                lead ?
+                                    lead.prospecto ?
+                                            lead.prospecto.contactos.length ?
+                                            lead.prospecto.contactos.map((contacto, key) => {
+                                                return (
+                                                    <div className="timeline timeline-6" key={key}>
+                                                        <div className="timeline-items">
+                                                            <div className="timeline-item">
+                                                                <div className={contacto.success ? "timeline-media bg-light-success" : "timeline-media bg-light-danger"}>
+                                                                    <span className={contacto.success ? "svg-icon svg-icon-success svg-icon-md" : "svg-icon svg-icon-danger  svg-icon-md"}>
+                                                                        {
+                                                                            contacto.tipo_contacto ?
+                                                                                contacto.tipo_contacto.tipo === 'Llamada' ?
+                                                                                    <SVG src={toAbsoluteUrl('/images/svg/Outgoing-call.svg')} />
+                                                                                    : contacto.tipo_contacto.tipo === 'Correo' ?
+                                                                                        <SVG src={toAbsoluteUrl('/images/svg/Outgoing-mail.svg')} />
+                                                                                        : contacto.tipo_contacto.tipo === 'VIDEO LLAMADA' ?
+                                                                                            <SVG src={toAbsoluteUrl('/images/svg/Video-camera.svg')} />
+                                                                                            : contacto.tipo_contacto.tipo === 'Whatsapp' ?
+                                                                                                <i className={contacto.success ? "socicon-whatsapp text-success icon-16px" : "socicon-whatsapp text-danger icon-16px"}></i>
+                                                                                                : contacto.tipo_contacto.tipo === 'TAWK TO ADS' ?
+                                                                                                    <i className={contacto.success ? "fas fa-dove text-success icon-16px" : "fas fa-dove text-danger icon-16px"}></i>
+                                                                                                    : contacto.tipo_contacto.tipo === 'REUNIÓN PRESENCIAL' ?
+                                                                                                        <i className={contacto.success ? "fas fa-users text-success icon-16px" : "fas fa-users text-danger icon-16px"}></i>
+                                                                                                        : contacto.tipo_contacto.tipo === 'Visita' ?
+                                                                                                            <i className={contacto.success ? "fas fa-house-user text-success icon-16px" : "fas fa-house-user text-danger icon-16px"}></i>
+                                                                                                                :contacto.tipo_contacto.tipo === 'TAWK TO ORGANICO' ?
+                                                                                                                    <i className={contacto.success ? "fas fa-dove text-success icon-16px" : "fas fa-dove text-danger icon-16px"}></i>
+                                                                                                                    : <i className={contacto.success ? "fas fa-mail-bulk text-success icon-16px" : "fas fa-mail-bulk text-danger icon-16px"}></i>
+                                                                                : ''
+                                                                        }
+                                                                    </span>
+                                                                </div>
+                                                                <div className={contacto.success ? "timeline-desc timeline-desc-light-success" : "timeline-desc timeline-desc-light-danger"}>
+                                                                    <span className={contacto.success ? "font-weight-bolder text-success" : "font-weight-bolder text-danger"}>{setDateTableLG(contacto.created_at)}</span>
+                                                                    <div className="font-weight-light pb-2 text-justify position-relative mt-2 pr-3" style={{ borderRadius: '0.42rem', padding: '1rem 1.5rem', backgroundColor: '#F3F6F9' }}>
+                                                                        <div className="text-dark-75 font-weight-bold mb-2">
+                                                                            <div class="d-flex justify-content-between">
+                                                                                {contacto.tipo_contacto ? contacto.tipo_contacto.tipo : ''}
+                                                                                <a className="text-muted text-hover-danger font-weight-bold a-hover"
+                                                                                    onClick={(e) => { deleteAlert('¿ESTÁS SEGURO QUE DESEAS ELIMINAR EL CONTACTO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.eliminarContacto(contacto)) }}>
+                                                                                    <i className="flaticon2-cross icon-xs" />
                                                                                 </a>
                                                                             </div>
-                                                                            : ''
-                                                                    }
+                                                                        </div>
+                                                                        {contacto.comentario}
+                                                                        {
+                                                                            contacto.adjunto ?
+                                                                                <div className="d-flex justify-content-end">
+                                                                                    <a href={contacto.adjunto.url} target='_blank' rel="noopener noreferrer" className="text-muted text-hover-primary font-weight-bold">
+                                                                                        <span className="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
+                                                                                            <SVG src={toAbsoluteUrl('/images/svg/Attachment1.svg')} />
+                                                                                        </span>VER ADJUNTO
+                                                                                    </a>
+                                                                                </div>
+                                                                                : ''
+                                                                        }
+                                                                    </div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            )
-                                        })
+                                                )
+                                            })
+                                            : <div className="text-center text-dark-75 font-weight-bolder font-size-lg">No se ha registrado ningún contacto</div>
                                         : <div className="text-center text-dark-75 font-weight-bolder font-size-lg">No se ha registrado ningún contacto</div>
-                                    : <div className="text-center text-dark-75 font-weight-bolder font-size-lg">No se ha registrado ningún contacto</div>
-                                : ''
-                        }
+                                    : ''
+                            }
+                        </div>
                     </div>
                 </Modal>
             </Layout>

@@ -1507,7 +1507,9 @@ class LeadInfo extends Component {
                                                                                                                         <i className={contacto.success ? "fas fa-users text-success icon-16px" : "fas fa-users text-danger icon-16px"}></i>
                                                                                                                         : contacto.tipo_contacto.tipo === 'Visita' ?
                                                                                                                             <i className={contacto.success ? "fas fa-house-user text-success icon-16px" : "fas fa-house-user text-danger icon-16px"}></i>
-                                                                                                                            : <i className={contacto.success ? "fas fa-mail-bulk text-success icon-16px" : "fas fa-mail-bulk text-danger icon-16px"}></i>
+                                                                                                                            :contacto.tipo_contacto.tipo === 'TAWK TO ORGANICO' ?
+                                                                                                                                <i className={contacto.success ? "fas fa-dove text-success icon-16px" : "fas fa-dove text-danger icon-16px"}></i>
+                                                                                                                                : <i className={contacto.success ? "fas fa-mail-bulk text-success icon-16px" : "fas fa-mail-bulk text-danger icon-16px"}></i>
                                                                                             :''
                                                                                         }
                                                                                     </span>
