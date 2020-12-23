@@ -200,7 +200,9 @@ class MaterialCliente extends Component {
             'brokers',
             'videos'
         ]
+
         data.append('empresa', empresa.id)
+        
         if(name === 'slider'){
             form.adjuntos.slider.files.map((file, key) => {
                 if (typeof file.id === 'undefined') {
@@ -219,10 +221,16 @@ class MaterialCliente extends Component {
             data.append('proyecto', submenuactive)
             data.append('tipo', name)
         }
+        
         await axios.post(URL_DEV + 'mercadotecnia/material-clientes', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { empresa, tipo } = response.data
                 const { form } = this.state
+
+                console.log(tipo, 'tipo after post')
+                console.log(empresa, 'empresa after post')
+                console.log(name, 'name after post')
+                console.log(submenuactive, 'submenuactive after post')
                 
                 if(name === 'slider'){
                     form.adjuntos.slider.files = []
@@ -230,11 +238,12 @@ class MaterialCliente extends Component {
                         form.adjuntos.slider.files.push(adjunto)
                     })
                 }else{
-                    form.adjuntos[name].files = []
-                    empresa.tipos.map((tipo, key) => {
-                        if(tipo.id === submenuactive)
-                            tipo.adjuntos.map((adjunto)=>{
-                                form.adjuntos[name].files.push(adjunto)
+                    form.adjuntos[tipo].files = []
+                    empresa.tipos.map((element, key) => {
+                        if(element.id === submenuactive)
+                            element.adjuntos.map((adjunto)=>{
+                                if(adjunto.pivot.tipo === tipo)
+                                    form.adjuntos[tipo].files.push(adjunto)
                             })
                     })
                 }
