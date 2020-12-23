@@ -607,7 +607,7 @@ class Calendario extends Component {
 
     prinEstacionamiento = () => {
         const { eventos } = this.state
-        let size = eventos.estacionamiento.length > 4 ? 3 : 12/eventos.estacionamiento.length
+        let size = 3
         return (
             <>
                 <div className = 'row mx-0 justify-content-center '>
@@ -618,8 +618,8 @@ class Calendario extends Component {
                                     <div className = 'text-center my-2'>
                                         {auto}
                                     </div>
-                                    <div className = 'row justity-content-center' >
-                                        <div className = 'col-6'>
+                                    <div className = 'row mx-0 justify-content-center border' >
+                                        <div className = 'col-10 border'>
                                             <Parking />
                                         </div>
                                     </div>
@@ -682,7 +682,7 @@ class Calendario extends Component {
                         {
 
                             eventos !== '' ?
-                                <Card className="card-custom card-stretch gutter-b" >
+                                <Card className="card-custom shadow-none" >
                                     {
                                         eventos.feriados.length ?
                                             eventos.feriados.map((feriado, key) => {
