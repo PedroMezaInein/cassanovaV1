@@ -617,7 +617,7 @@ class Compras extends Component {
     }
     async getOptionsAxios() {
         const { access_token } = this.props.authUser
-        waitAlert()
+        // waitAlert()
         await axios.get(URL_DEV + 'compras/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 Swal.close()

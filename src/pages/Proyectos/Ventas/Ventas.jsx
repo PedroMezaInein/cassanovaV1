@@ -651,7 +651,7 @@ class Ventas extends Component {
         $('#kt_datatable2_ventas').DataTable().ajax.reload();
     }
     async getOptionsAxios() {
-        waitAlert()
+        // waitAlert()
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'ventas/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {

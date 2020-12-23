@@ -73,7 +73,7 @@ class Facturacion extends Component {
         this.getRestante()
     }
     async getOptionsAxios() {
-        waitAlert()
+        // waitAlert()
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'facturas/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -101,7 +101,7 @@ class Facturacion extends Component {
         })
     }
     async getRestante() {
-        waitAlert()
+        // waitAlert()
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'facturas/ventas/restante', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
