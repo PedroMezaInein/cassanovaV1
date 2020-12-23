@@ -93,10 +93,13 @@ export function setLabelTable(text) {
             <div className="d-none">
                 {text.estatus}
             </div>
-            <span className="label label-lg bg- label-inline font-weight-bold py-2" style={{
+            <span style={{
+                backgroundColor:`${text.fondo}`,
                 color: `${text.letra}`,
-                backgroundColor: `${text.fondo}`,
-                fontSize: "75%"
+                border: 'transparent', padding: '2.8px 5.6px',
+                width:text.estatus==='Respuesta pendiente'?'min-content':'auto', 
+                margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '10.7px',
+                fontWeight: 500, borderRadius:'0.42rem'
             }} >
                 {text.estatus}
             </span>
