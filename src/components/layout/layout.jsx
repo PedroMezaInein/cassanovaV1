@@ -106,7 +106,13 @@ class Layout extends Component {
     render() {
         const { children, authUser } = this.props
         const { menu } = this.state
-        let tipo_usuario = authUser.user.tipo.tipo;
+        let tipo_usuario = authUser ? 
+                            authUser.user ? 
+                                authUser.user.tipo ? 
+                                    authUser.user.tipo.tipo
+                                : ''
+                            : ''
+                        : '';
 
         return (
             <div>
@@ -130,57 +136,41 @@ class Layout extends Component {
                         }
                         <div id="showaside" onClick={() => { clickShowAside() }}></div>
                         <div className={tipo_usuario === 'Cliente' ?
-                            "d-flex flex-column flex-row-fluid wrapper pl-0 pt-65px" : "d-flex flex-column flex-row-fluid wrapper"
-                        }>
+                            "d-flex flex-column flex-row-fluid wrapper pl-0 pt-65px" : "d-flex flex-column flex-row-fluid wrapper"}>
                             <div className={tipo_usuario === 'Cliente' ?
                                 "header header-fixed left-0" : "header header-fixed"}>
                                 <div className="container-fluid d-flex align-items-stretch justify-content-between">
-                                    {/* <div id="showheadermenu"className="header-menu-wrapper header-menu-wrapper-left" >
-                                        <div  className="header-menu header-menu-mobile header-menu-layout-default">
-                                            <ul className="menu-nav">
-                                                <li className="menu-item menu-item-submenu" data-menu-toggle="click" aria-haspopup="true">
-                                                    <a href="/proyectos/proyectos" className="menu-link menu-toggle">
-                                                        <span className="menu-text text-uppercase">Proyectos</span>
-                                                        <i className="menu-arrow"></i>
-                                                    </a>
-                                                </li>
-                                                <li className="menu-item menu-item-submenu" data-menu-toggle="click" aria-haspopup="true">
-                                                    <a href="/administracion/proveedores" className="menu-link menu-toggle">
-                                                        <span className="menu-text text-uppercase">Proveedores</span>
-                                                        <i className="menu-arrow"></i>
-                                                    </a>
-                                                </li>
-                                                <li className="menu-item menu-item-submenu menu-item-rel" data-menu-toggle="click" aria-haspopup="true">
-                                                    <a href="/leads/leads" className="menu-link menu-toggle">
-                                                        <span className="menu-text text-uppercase">Leads</span>
-                                                        <i className="menu-arrow"></i>
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </div>
-                                    </div>    */}
                                     <div id="showheader" onClick={() => { clickShowHeader() }}></div>
                                     <div className="topbar" >
                                         <div className="topbar-item">
-                                            {/* <Navbar clickResponsiveMenu={this.clickResponsiveMenu} clickLogout={this.logoutUser} {...this.props} />*/}
                                             <div className="btn btn-icon w-auto btn-clean d-flex align-items-center btn-lg px-2" id="kt_quick_user_toggle" onClick={() => { openUserProfile() }}>
                                                 <span className="text-muted font-weight-bold font-size-base d-none d-md-inline mr-1">Hola,</span>
                                                 <br />
                                                 <span className="text-dark-50 font-weight-bolder font-size-base d-none d-md-inline mr-2">
                                                     {
-                                                        this.props.authUser.user.name
+                                                        this.props ?
+                                                            this.props.authUser ?
+                                                                this.props.authUser.user ? 
+                                                                    this.props.authUser.user.name
+                                                                : ''
+                                                            : ''
+                                                        : ''
                                                     }
                                                 </span>
                                                 <span className="symbol symbol-45">
                                                     {
-                                                        this.props.authUser.user.avatar ? 
-                                                            <img className="symbol-label p-1 font-size-h5 font-weight-bold bg-transparent" src = { this.props.authUser.user.avatar } alt ="profile" />
-                                                        : 
-                                                            <span className="symbol-label font-size-h5 font-weight-bold">
-                                                            {
-                                                                this.props.authUser.user.name.charAt(0)
-                                                            }
-                                                            </span>
+                                                        this.props ?
+                                                            this.props.authUser ?
+                                                                this.props.authUser.user ?
+                                                                    this.props.authUser.user.avatar ? 
+                                                                        <img className="symbol-label p-1 font-size-h5 font-weight-bold bg-transparent" src = { this.props.authUser.user.avatar } alt ="profile" />
+                                                                    : 
+                                                                        <span className="symbol-label font-size-h5 font-weight-bold">
+                                                                            { this.props.authUser.user.name ? this.props.authUser.user.name.charAt(0) : '' }
+                                                                        </span>
+                                                                : ''
+                                                            : ''
+                                                        : ''
                                                     }
                                                 </span>
                                             </div>
@@ -188,7 +178,7 @@ class Layout extends Component {
                                     </div>
                                 </div>
                             </div>
-                            <div className="content d-flex flex-column flex-column-fluid">
+                            <div className={this.props.location.pathname==='/mi-proyecto' ?"content d-flex flex-column flex-column-fluid pt-0":"content d-flex flex-column flex-column-fluid"}>
                                 {
                                     tipo_usuario === 'Cliente' ?
                                         '' :
@@ -207,7 +197,15 @@ class Layout extends Component {
                         </div>
                     </div>
                 </div>
-                <UserPanel user = { this.props.authUser.user } avatar = { this.props.authUser.user.avatar } clickResponsiveMenu={this.clickResponsiveMenu} clickLogout={this.logoutUser} {...this.props} />
+                {
+                    this.props ?
+                        this.props.authUser ?
+                            this.props.authUser.user ?
+                                <UserPanel user = { this.props.authUser.user } avatar = { this.props.authUser.user.avatar } clickResponsiveMenu={this.clickResponsiveMenu} clickLogout={this.logoutUser} {...this.props} />
+                            : ''
+                        : ''
+                    : ''
+                }
             </div>
         )
     }

@@ -4,10 +4,10 @@ import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV } from '../../constants'
-import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert } from '../../functions/alert'
+import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert, questionAlert} from '../../functions/alert'
 import { update } from '../../redux/reducers/auth_user'
 import { ChangePasswordForm } from '../../components/forms'
-import swal from 'sweetalert';
+import Swal from 'sweetalert2'
 
 class AccountSettings extends Component {
 
@@ -23,7 +23,8 @@ class AccountSettings extends Component {
                     placeholder: 'Ingresa la firma electrónica',
                     files: []
                 }
-            }
+            },
+            correo_empresa:''
         },
         empresas: [],
         user: '',
@@ -72,6 +73,18 @@ class AccountSettings extends Component {
             form.adjuntos.firma.files = [{ url: aux.firma, name: 'firma.' + this.getExtension(aux.firma) }]
         else
             form.adjuntos.firma.files = []
+
+        aux = ''
+
+        user.empleado.correos.map((element) => {
+            if (element.empresa_id.toString() === empresa.toString())
+                aux = element
+        })
+
+        if (aux !== '')
+            form.correo_empresa = aux.correo
+        else
+            form.correo_empresa = ''
 
         this.setState({
             ...this.state,
@@ -127,7 +140,7 @@ class AccountSettings extends Component {
 
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La contraseña fue actualizada con éxito.')
                 setTimeout(() => {
-                    swal.close()
+                    Swal.close()
                     history.push({
                         pathname: '/login'
                     });
@@ -176,36 +189,35 @@ class AccountSettings extends Component {
         })
     }
     handleChange = (files, item) => {
-        const { form } = this.state
-        let aux = []
-        for (let counter = 0; counter < files.length; counter++) {
-            aux.push(
-                {
-                    name: files[counter].name,
-                    file: files[counter],
-                    url: URL.createObjectURL(files[counter]),
-                    key: counter
-                }
-            )
-        }
-        form['adjuntos'][item].value = files
-        form['adjuntos'][item].files = aux
-        this.setState({
-            ...this.state,
-            form
+        questionAlert('ENVIAR ARCHIVO', '¿ESTÁS SEGURO QUE DESEAS ENVIAR LA FIRMA?', () => {
+            const { form } = this.state
+            let aux = []
+            for (let counter = 0; counter < files.length; counter++) {
+                aux.push(
+                    {
+                        name: files[counter].name,
+                        file: files[counter],
+                        url: URL.createObjectURL(files[counter]),
+                        key: counter
+                    }
+                )
+            }
+            form['adjuntos'][item].value = files
+            form['adjuntos'][item].files = aux
+            this.setState({
+                ...this.state,
+                form
+            })
+            this.sendFirma(item) 
         })
     }
     sendFirma = async (e) => {
-
-        e.preventDefault();
+        // e.preventDefault();
         waitAlert();
-
         const { access_token } = this.props.authUser
         const { form, activeKey } = this.state
         const data = new FormData();
-
         let aux = Object.keys(form.adjuntos)
-
         aux.map((element) => {
             if (form.adjuntos[element].value !== '') {
                 for (var i = 0; i < form.adjuntos[element].files.length; i++) {
@@ -216,9 +228,7 @@ class AccountSettings extends Component {
             }
             return false
         })
-
         data.append('empresa', activeKey)
-
         await axios.post(URL_DEV + 'user/users/firma', data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 // const { activeKey } = this.state
@@ -238,6 +248,30 @@ class AccountSettings extends Component {
         })
     }
 
+    sendCorreo = async (e) => {
+        // e.preventDefault();
+        waitAlert();
+        const { access_token } = this.props.authUser
+        const { form, activeKey } = this.state
+        const data = new FormData();
+        data.append('correo', form.correo_empresa)
+        data.append('empresa', activeKey)
+        await axios.post(URL_DEV + 'user/users/correo', data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert('Correo actualizado con éxito.')
+            },
+            (error) => {
+                Swal.close()
+                console.log(error, 'error')
+                if (error.response.status === 401) forbiddenAccessAlert()
+                else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+            }
+        ).catch((error) => {
+            Swal.close()
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     render() {
         const { form, empresas, activeKey,user } = this.state
         return (
@@ -250,7 +284,7 @@ class AccountSettings extends Component {
                         sendAvatar={this.sendAvatar}
                         clearAvatar={this.clearAvatar}
                         handleChange={this.handleChange}
-                        sendFirma={this.sendFirma}
+                        sendCorreo={this.sendCorreo}
                         empresas={empresas}
                         user={user}
                         onClickEmpresa={this.onClickEmpresa}

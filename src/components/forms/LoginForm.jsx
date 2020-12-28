@@ -1,11 +1,13 @@
-import React from 'react' 
+import React from 'react'
 import axios from 'axios';
 import { URL_DEV } from '../../constants'
 import { connect } from 'react-redux'
 import { login } from '../../redux/reducers/auth_user'
 import swal from 'sweetalert'
 import '../../styles/login-3.css'
-
+import { Form } from 'react-bootstrap'
+import { validateAlert } from '../../functions/alert'
+import { Button } from '../../components/form-components'
 class LoginForm extends React.Component {
     constructor(props) {
         super(props);
@@ -23,13 +25,11 @@ class LoginForm extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
-
     changeInputType = () => {
         this.setState({
             showPassword: !this.state.showPassword
         })
     }
-
     async handleSubmit(event) {
         event.preventDefault();
         const data = this.state.form;
@@ -50,13 +50,11 @@ class LoginForm extends React.Component {
                     error: error
                 });
                 if (error.response.status === 401) {
-
                 } else {
                     swal({
                         title: '¡Ups 😕!',
                         text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
                         icon: 'error',
-
                     })
                 }
             }
@@ -69,7 +67,6 @@ class LoginForm extends React.Component {
                 title: '¡Ups 😕!',
                 text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
                 icon: 'error',
-
             })
         })
     }
@@ -131,58 +128,62 @@ class LoginForm extends React.Component {
                 break;
         }
     }
-
     render() {
+        const { form, error, showPassword } = this.state
         return (
-
-            <form className="form pt-5" onSubmit={this.handleSubmit}>
+            <Form id="form-login"
+                onSubmit={
+                    (e) => {
+                        e.preventDefault();
+                        validateAlert(this.handleSubmit, e, 'form-login')
+                    }
+                }>
                 <div className="form-group">
                     <input className={"form-control h-auto text-white bg-white-o-9 rounded-pill border-0 py-3 pl-4 font-size-sm"}
                         type="text"
                         placeholder="INGRESA TU CORREO ELECRÓNICO"
                         required
-                        value={this.state.form.email}
+                        value={form.email}
                         onChange={this.handleChange}
                         name="email"
                     />
                     {
-                        this.state.error.email !== '' &&
+                        error.email !== '' &&
                         <div className="text-white mt-4 font-size-sm">
-                            {this.state.error.email}
+                            {error.email}
                         </div>
                     }
                 </div>
-
                 <div className="form-group">
                     <input className={"form-control h-auto text-white bg-white-o-9 rounded-pill border-0 py-3 pl-4 font-size-sm"}
-                        type={this.state.showPassword ? 'text' : 'password'}
+                        type={showPassword ? 'text' : 'password'}
                         placeholder="INGRESA TU CONTRASEÑA"
                         required
-                        value={this.state.form.password}
+                        value={form.password}
                         onChange={this.handleChange}
                         name="password"
                     />
                 </div>
                 {
-                    this.state.error.password !== '' &&
+                    error.password !== '' &&
                     <div className="text-white font-size-sm">
-                        {this.state.error.password}
+                        {error.password}
                     </div>
                 }
-
                 <div className="form-group text-center mt-10 pt-4">
-                    <button className="btn btn-transparent-white font-weight-bold font-weight-bold opacity-90 pl-4 pr-4 font-size-sm"
-                        type="submit"
-                        disabled={
-                            this.state.form.email === '' ||
-                            this.state.form.password === '' ||
-                            this.state.error.email !== '' ||
-                            this.state.error.password !== ''
-                        }>
-                        Iniciar sesión
-                    </button>
+                    <Button
+                        icon=''
+                        className="btn btn-transparent-white font-weight-bold font-weight-bold opacity-90 pl-4 pr-4 font-size-sm"
+                        onClick={
+                            (e) => {
+                                e.preventDefault();
+                                validateAlert(this.handleSubmit, e, 'form-login')
+                            }
+                        }
+                        text="INICIAR SESIÓN"
+                    />
                 </div>
-            </form>
+            </Form>
         )
     }
 }
@@ -191,9 +192,7 @@ const mapStateToProps = state => {
         authUser: state.authUser
     }
 }
-
 const mapDispatchToProps = dispatch => ({
     login: payload => dispatch(login(payload))
 })
-
 export default connect(mapStateToProps, mapDispatchToProps)(LoginForm);

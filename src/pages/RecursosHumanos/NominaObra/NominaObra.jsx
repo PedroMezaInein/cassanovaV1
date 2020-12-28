@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import swal from 'sweetalert'
+import Swal from 'sweetalert2'
 import Layout from '../../../components/layout/layout' 
 import { Modal, ModalDelete} from '../../../components/singles' 
 import { NOMINA_OBRA_COLUMNS, URL_DEV, ADJUNTOS_COLUMNS} from '../../../constants'
@@ -183,7 +183,7 @@ class NominaObra extends Component {
     }
 
     openModalDeleteAdjuntos = adjunto => {
-        deleteAlert('¿Seguro deseas borrar el adjunto?', () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
+        deleteAlert('¿SEGURO DESEAS BORRAR EL ADJUNTO?', '', () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
     }
 
     setAdjuntosTable = adjuntos => {
@@ -225,11 +225,11 @@ class NominaObra extends Component {
     }
 
     async getOptionsAxios(){
-        waitAlert()
+        // waitAlert()
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'rh/nomina-obra/options', { responseType:'json', headers: {Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
-                swal.close()
+                Swal.close()
                 const { proyectos, usuarios, empresas} = response.data
                 const { options, data} = this.state
                 data.usuarios = usuarios
@@ -458,7 +458,7 @@ class NominaObra extends Component {
                     adjuntos: this.setAdjuntosTable(data.adjuntos),
                     data
                 })
-
+                doneAlert('Adjunto eliminado con éxito')
             },
             (error) => {
                 console.log(error, 'error')
@@ -473,7 +473,6 @@ class NominaObra extends Component {
             console.log(error, 'error')
         })
     }
-
 
     handleCloseModal = () => {
         const { modal } = this.state 

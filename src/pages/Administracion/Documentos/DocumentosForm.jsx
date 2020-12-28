@@ -4,7 +4,7 @@ import Layout from '../../../components/layout/layout'
 import { deleteAlert, doneAlert, errorAlert, forbiddenAccessAlert, waitAlert } from '../../../functions/alert';
 import axios from 'axios'
 import { URL_DEV } from '../../../constants';
-import swal from 'sweetalert';
+import Swal from 'sweetalert2'
 import { setOptions } from '../../../functions/setters';
 import { Card } from 'react-bootstrap';
 import { DocumentosForm as DocumentosFormulario } from '../../../components/forms'
@@ -131,7 +131,7 @@ class DocumentosForm extends Component {
         })
     }
     deleteFile = element => {
-        deleteAlert('¿Deseas eliminar el archivo?', () => this.deleteAdjuntoAxios(element.id))
+        deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', '', () => this.deleteAdjuntoAxios(element.id))
     }
     onSubmit = e => {
         e.preventDefault()
@@ -147,7 +147,7 @@ class DocumentosForm extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'documentos/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close()
+                Swal.close()
                 const { empresas } = response.data
                 const { options } = this.state
                 options.empresas = setOptions(empresas, 'name', 'id')

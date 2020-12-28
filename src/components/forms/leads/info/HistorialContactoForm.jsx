@@ -59,7 +59,7 @@ class HistorialContactoForm extends Component {
                             onSubmit={
                                 (e) => {
                                     e.preventDefault();
-                                    validateAlert(onSubmit, e, 'wizard-2-content')
+                                    validateAlert(onSubmit, e, 'for2-wizardP')
                                 }
                             }
                             {...props}
@@ -98,6 +98,8 @@ class HistorialContactoForm extends Component {
                                             value={formHistorial.tipoContacto}
                                             onChange={this.updateTipoContacto}
                                             messageinc="Incorrecto. Selecciona el medio de contacto."
+                                            withtaglabel={1}
+                                            withtextlabel={1}
                                         />
                                     </div>
                                     {
@@ -172,10 +174,11 @@ class HistorialContactoForm extends Component {
                                             <label className="text-center font-weight-bolder">Fecha de contacto</label>
                                         </div>
                                         <CalendarDay
+                                            date = { formHistorial.fechaContacto }
                                             value = {formHistorial.fechaContacto} 
                                             onChange = { onChangeHistorial } 
                                             name = 'fechaContacto'
-                                            requirevalidation={1}
+                                            withformgroup={1}
                                         />
                                     </div>
                                 </div>
@@ -190,7 +193,7 @@ class HistorialContactoForm extends Component {
                                                     onClick={
                                                         (e) => {
                                                             e.preventDefault();
-                                                            validateAlert(onSubmit, e, 'wizard-2-content')
+                                                            validateAlert(onSubmit, e, 'for2-wizardP')
                                                         }
                                                     }
                                                     text="Enviar" />

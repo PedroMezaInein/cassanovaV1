@@ -71,6 +71,7 @@ import historialContactoForm from './leads/info/HistorialContactoForm'
 import agendarCitaForm from './leads/info/AgendarCitaForm'
 import presupuestoDiseñoCRMForm from './leads/info/PresupuestoDiseñoCRMForm'
 import presupuestoGenerado from './leads/info/PresupuestoGenerado'
+import presupuestoGeneradoNoCrm from './presupuesto/PresupuestoGeneradoNoCrm'
 import informacionGeneral from './leads/InformacionGeneral'
 
 export const RegisterUserForm = registerUserForm
@@ -146,4 +147,5 @@ export const HistorialContactoForm = historialContactoForm
 export const AgendarCitaForm = agendarCitaForm
 export const PresupuestoDiseñoCRMForm = presupuestoDiseñoCRMForm
 export const PresupuestoGenerado = presupuestoGenerado
+export const PresupuestoGeneradoNoCrm = presupuestoGeneradoNoCrm
 export const InformacionGeneral = informacionGeneral

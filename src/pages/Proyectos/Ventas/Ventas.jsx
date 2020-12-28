@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import swal from 'sweetalert'
+import Swal from 'sweetalert2'
 import { URL_DEV, VENTAS_COLUMNS, ADJUNTOS_COLUMNS } from '../../../constants'
 import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setAdjuntosList } from '../../../functions/setters'
 import { waitAlert, errorAlert, createAlert, forbiddenAccessAlert, deleteAlert, doneAlert } from '../../../functions/alert'
@@ -286,10 +286,10 @@ class Ventas extends Component {
                                 options['contratos'] = setOptions(auxCliente.contratos, 'nombre', 'id')
                             }
                         } else {
-                            createAlert('No existe el cliente', '¿Lo quieres crear?', () => this.addClienteAxios(obj))
+                            createAlert('NO EXISTE EL CLIENTE', '¿LO QUIERES CREAR?', () => this.addClienteAxios(obj))
                         }
                         if (auxEmpresa && auxCliente) {
-                            swal.close()
+                            Swal.close()
                         }
                         form.facturaObject = obj
                         form.rfc = obj.rfc_receptor
@@ -532,7 +532,7 @@ class Ventas extends Component {
         })
     }
     openModalDeleteAdjuntos = adjunto => {
-        deleteAlert('¿Seguro deseas borrar el adjunto?', () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
+        deleteAlert('¿SEGURO DESEAS BORRAR EL ADJUNTO?', '', () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
     }
     openModalSee = venta => {
         this.setState({
@@ -651,7 +651,7 @@ class Ventas extends Component {
         $('#kt_datatable2_ventas').DataTable().ajax.reload();
     }
     async getOptionsAxios() {
-        waitAlert()
+        // waitAlert()
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'ventas/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -669,7 +669,7 @@ class Ventas extends Component {
                 options['estatusCompras'] = setSelectOptions(estatusCompras, 'estatus')
                 data.clientes = clientes
                 data.empresas = empresas
-                swal.close()
+                Swal.close()
                 this.setState({
                     ...this.state,
                     options,

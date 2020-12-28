@@ -215,7 +215,7 @@ class TableForModals extends Component {
                     {
                         (exportar_boton === true) ?
                             <button onClick={() => this.clickHandlerExport()} className="btn btn-primary font-weight-bold mr-2">
-                                <i className="far fa-file-excel"></i> Exportar
+                                <i className="far fa-file-excel"></i> EXPORTAR
                             </button>
                             :
                             ""
@@ -224,12 +224,12 @@ class TableForModals extends Component {
                         (mostrar_boton === true) ?
                             (abrir_modal === true) ?
                                 <button onClick={() => this.clickHandler()} className="btn btn-success font-weight-bold mr-2">
-                                    <i className="flaticon-add"></i> Agregar
-                            </button>
+                                    <i className="flaticon-add"></i> AGREGAR
+                                </button>
                                 :
                                 <a href={url} className="btn btn-success font-weight-bold mr-2">
-                                    <i className="flaticon-add"></i> Agregar
-                            </a>
+                                    <i className="flaticon-add"></i> AGREGAR
+                                </a>
                             :
                             ""
                     }

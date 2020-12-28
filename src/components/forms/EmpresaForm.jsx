@@ -167,12 +167,18 @@ class EmpresaForm extends Component {
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
-                    <div className="col-md-9">
-                        <TagInput
-                            tags={form.tipos} 
-                            onChange={tagInputChange} 
-                            placeholder={"TIPOS DE PROYECTO"}
-                            iconclass={"far fa-folder-open"}
+                    <div className="col-md-3">
+                        <Input
+                            requirevalidation={0}
+                            formeditado={formeditado}
+                            onChange={onChange}
+                            name="blog"
+                            type="text"
+                            value={form.blog}
+                            placeholder="BLOG"
+                            iconclass={"fab fa-blogger"}
+                            messageinc="Incorrecto. Ingresa la liga del blog"
+                            letterCase = { false }
                         />
                     </div>
                     <div className="col-md-3">
@@ -194,6 +200,14 @@ class EmpresaForm extends Component {
                             messageinc="Incorrecto. Ingresa el número de teléfono."
                             thousandseparator={false}
                             prefix={''}
+                        />
+                    </div>
+                    <div className="col-md-6">
+                        <TagInput
+                            tags={form.tipos} 
+                            onChange={tagInputChange} 
+                            placeholder={"TIPOS DE PROYECTO"}
+                            iconclass={"far fa-folder-open"}
                         />
                     </div>
                 </div>

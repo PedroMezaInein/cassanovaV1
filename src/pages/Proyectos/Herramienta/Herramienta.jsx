@@ -274,7 +274,7 @@ class Herramienta extends Component {
         this.sendUbicacionAxios()
     }
     deleteFile = element => {
-        deleteAlert('¿Deseas eliminar el archivo?', () => this.deleteAdjuntoAxios(element.id))
+        deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', '', () => this.deleteAdjuntoAxios(element.id))
     }
     async getHerramientasAxios() {
         $('#kt_datatable_herramientas').DataTable().ajax.reload();

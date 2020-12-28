@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import swal from 'sweetalert'
+import Swal from 'sweetalert2'
 import { URL_DEV, COMPRAS_COLUMNS, ADJUNTOS_COLUMNS } from '../../constants'
 import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setAdjuntosList } from '../../functions/setters'
 import { errorAlert, waitAlert, createAlert, forbiddenAccessAlert, deleteAlert, doneAlert } from '../../functions/alert'
@@ -295,8 +295,6 @@ class Compras extends Component {
             form.subarea = compra.subarea.id.toString()
         }
 
-
-
         form.tipoPago = compra.tipo_pago ? compra.tipo_pago.id : 0
         form.tipoImpuesto = compra.tipo_impuesto ? compra.tipo_impuesto.id : 0
         form.estatusCompra = compra.estatus_compra ? compra.estatus_compra.id : 0
@@ -352,7 +350,7 @@ class Compras extends Component {
     }
 
     openModalDeleteAdjuntos = adjunto => {
-        deleteAlert('¿Seguro deseas borrar el adjunto?', () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
+        deleteAlert('¿SEGURO DESEAS BORRAR EL ADJUNTO?', '', () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
     }
 
     handleCloseDelete = () => {
@@ -600,10 +598,10 @@ class Compras extends Component {
                                 options['contratos'] = setOptions(auxProveedor.contratos, 'nombre', 'id')
                             }
                         } else {
-                            createAlert('No existe el proveedor', '¿Lo quieres crear?', () => this.addProveedorAxios(obj))
+                            createAlert('NO EXISTE EL PROVEEDOR', '¿LO QUIERES CREAR?', () => this.addProveedorAxios(obj))
                         }
                         if (auxEmpresa && auxProveedor) {
-                            swal.close()
+                            Swal.close()
                         }
                         form.facturaObject = obj
                         form.rfc = obj.rfc_emisor
@@ -669,7 +667,7 @@ class Compras extends Component {
         waitAlert()
         await axios.get(URL_DEV + 'compras/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close()
+                Swal.close()
                 const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras, proyectos,
                     proveedores, formasPago, metodosPago, estatusFacturas } = response.data
                 const { options, data } = this.state

@@ -5,7 +5,7 @@ import { Form } from 'react-bootstrap';
 import { InputGray, SelectSearchGray, InputPhoneGray, Button } from '../../../../components/form-components';
 import axios from 'axios'
 import { doneAlert, errorAlert, forbiddenAccessAlert, validateAlert, waitAlert } from '../../../../functions/alert';
-import swal from 'sweetalert';
+import Swal from 'sweetalert2'
 import { setOptions } from '../../../../functions/setters';
 import { TEL, URL_DEV, EMAIL } from '../../../../constants';
 class LeadTelefono extends Component {
@@ -144,7 +144,7 @@ class LeadTelefono extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'crm/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close()
+                Swal.close()
                 const { empresas, origenes } = response.data
                 const { options } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
@@ -221,6 +221,8 @@ class LeadTelefono extends Component {
                                         value={form.empresa_dirigida}
                                         onChange={this.updateEmpresa}
                                         iconclass="fas fa-building"
+                                        withtaglabel={1}
+                                        withtextlabel={1}
                                     />
                                 </div>
                                 {
@@ -249,6 +251,8 @@ class LeadTelefono extends Component {
                                                 onChange={this.updateTipoProyecto}
                                                 name="tipoProyecto"
                                                 value={form.tipoProyecto}
+                                                withtaglabel={1}
+                                                withtextlabel={1}
                                             />
                                         </div>
                                         : ''
@@ -368,6 +372,8 @@ class LeadTelefono extends Component {
                                                     onChange={this.updateOrigen}
                                                     iconclass="fas fa-mail-bulk"
                                                     messageinc="Incorrecto. Selecciona el origen para el lead."
+                                                    withtaglabel={1}
+                                                    withtextlabel={1}
                                                 />
                                             </div>
                                         </>

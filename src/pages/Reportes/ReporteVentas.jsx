@@ -1,34 +1,38 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Layout from '../../components/layout/layout'
-import { Card, Tab } from 'react-bootstrap'
-import { Button, InputSinText } from '../../components/form-components';
-import moment from 'moment'
-import { waitAlert, errorAlert, forbiddenAccessAlert } from '../../functions/alert'
-import swal from 'sweetalert'
-import { COLORES_GRAFICAS_3, IM_AZUL, INEIN_RED, URL_DEV } from '../../constants'
+import { Card, Nav, Tab } from 'react-bootstrap'
+import { Button } from '../../components/form-components';
+// import moment from 'moment'
+import { waitAlert, errorAlert, forbiddenAccessAlert, questionAlert2 } from '../../functions/alert'
+import Swal from 'sweetalert2'
+import { COLORES_GRAFICAS_IM, COLORES_GRAFICAS_INEIN, IM_AZUL, INEIN_RED, URL_DEV } from '../../constants'
 import axios from 'axios'
 import { pdf } from '@react-pdf/renderer'
 import { Pie, Bar, Line } from 'react-chartjs-2';
 import "chartjs-plugin-datalabels";
-import { setLabelTable, setOptions, setDateTableLG, setTextTable } from '../../functions/setters';
+import { setLabelVentas, setOptions, setDateTableLG,setMoneyTableSinSmall } from '../../functions/setters';
 import FlujosReportesVentas from '../../components/forms/reportes/FlujosReportesVentas';
 import { Editor } from 'react-draft-wysiwyg';
 import { EditorState, convertToRaw } from 'draft-js';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import ReporteVentasInein from '../../components/pdfs/ReporteVentasInein'
 import ReporteVentasIm from '../../components/pdfs/ReporteVentasIm'
+import { Modal } from '../../components/singles'
 
 class ReporteVentas extends Component {
 
     state = {
         editorState: EditorState.createEmpty(),
+        empresas: [],
+        modal: false,
+        mes: '',
         empresa : '',
         form:{
-            fechaInicio: moment().startOf('month'),
-            fechaFin: moment().endOf('month'),
-            referencia: 'trimestral',
+            rango: '2',
             empresa: '',
+            mes: '',
+            año: new Date().getFullYear(),
             leads: [],
             adjuntos:{
                 reportes:{
@@ -50,13 +54,15 @@ class ReporteVentas extends Component {
             serviciosComparativa: {},
             tiposComparativa: {},
             prospectosComparativa: {},
-            estatusComparativa: {}
+            estatusComparativa: {},
+            cerrados: []
         },
         leads: [],
         leadsAnteriores: [],
         options: {
             empresas: []
-        }
+        },
+        empresaActive: ''
     }
 
     constructor(props) {
@@ -73,25 +79,39 @@ class ReporteVentas extends Component {
         this.chartComparativaProspectosReference = React.createRef();
         this.chartEstatusReference = React.createRef();
         this.chartComparativaEstatusReference = React.createRef();
-        this.chartCerradosReference = React.createRef();
+        /* this.chartCerradosReference = React.createRef(); */
     }
 
     componentDidMount() {
         this.getOptionsAxios()
     }
 
+    handleCloseModal =  () => {
+        this.setState({
+            ...this.state,
+            modal: false
+        })
+    }
+
+    onClickEmpresa = select => {
+        this.setState({
+            ...this.state,
+            empresaActive: select
+        })
+    }
+
     setReporte = ( images, lista ) => {
-        const { empresa, form, leadsAnteriores } = this.state
+        const { empresa, form, leadsAnteriores, mes, data } = this.state
         switch(empresa){
             case 'INEIN':
                 return(
                     <ReporteVentasInein form = { form } images = { images } anteriores = { leadsAnteriores }
-                        lista = { lista } />
+                        lista = { lista } mes = { mes.toUpperCase() } data = { data } />
                 )
             case 'INFRAESTRUCTURA MÉDICA':
                 return(
                     <ReporteVentasIm form = { form } images = { images } anteriores = { leadsAnteriores }
-                        lista = { lista } />
+                        lista = { lista } mes = { mes.toUpperCase() } data = { data } />
                 )
             default:
                 break;
@@ -102,6 +122,24 @@ class ReporteVentas extends Component {
         let aux = [];
         array.map( (element) => {
             aux.push(element+'D9')
+            return false
+        })
+        return aux
+    }
+
+    setOpacity75 = array =>{
+        let aux = [];
+        array.map( (element) => {
+            aux.push(element+'BF')
+            return false
+        })
+        return aux
+    }
+
+    setOpacity65 = array =>{
+        let aux = [];
+        array.map( (element) => {
+            aux.push(element+'A6')
             return false
         })
         return aux
@@ -121,15 +159,27 @@ class ReporteVentas extends Component {
         text.letra = estatus.color_texto
         text.fondo = estatus.color_fondo
         text.estatus = estatus.estatus
-        return setLabelTable(text)
+        return setLabelVentas(text)
     }
 
     getBG = tamaño => {
+        const { empresa} = this.state
         let aux = []
-        for(let i = 0; i < tamaño; i++){
-            aux.push(
-                COLORES_GRAFICAS_3[i]
-            )
+        switch(empresa){
+            case 'INEIN':
+                for(let i = 0; i < tamaño; i++){
+                    aux.push(
+                        COLORES_GRAFICAS_INEIN[i]
+                    )
+                }
+            case 'INFRAESTRUCTURA MÉDICA':
+                for(let i = 0; i < tamaño; i++){
+                    aux.push(
+                        COLORES_GRAFICAS_IM[i]
+                    )
+                }
+            default:
+                break;
         }
         return aux
     }
@@ -145,7 +195,7 @@ class ReporteVentas extends Component {
                                 onClick={() => { this.changeTabe(left) }}
                                 className = "btn btn-icon btn-primary-info btn-sm mr-2 ml-auto"
                                 only_icon={"fas fa-chevron-circle-left icon-md"}
-                                tooltip={{ text: 'SIGUIENTE' }}
+                                tooltip={{ text: 'ANTERIOR' }}
                                 />
                         </div>
                     : ''
@@ -204,18 +254,6 @@ class ReporteVentas extends Component {
             editorState,
         });
     };
-
-    onChangeRange = range => {
-        const { startDate, endDate } = range
-        const { form } = this.state
-        form.fechaInicio = startDate
-        form.fechaFin = endDate
-        this.setState({
-            ...this.state,
-            form
-        })
-    }
-
     onChange = e => {
         const { name, value } = e.target
         const { form, options } = this.state
@@ -256,12 +294,40 @@ class ReporteVentas extends Component {
             errorAlert('No completaste todos los campos.')
     }
 
+    async saveReporteAxios(){
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        const data = new FormData();
+        
+        data.append('empresa', form.empresa)
+        data.append('mes', form.mes)
+        data.append('año', form.año)
+
+        for (var i = 0; i < form.adjuntos.reportes.files.length; i++) 
+            data.append(`adjuntos[]`, form.adjuntos.reportes.files[i].file)
+
+        await axios.post( URL_DEV + 'reportes/ventas/save', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                Swal.close()
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) forbiddenAccessAlert()
+                else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     async getOptionsAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'reportes/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close()
+                Swal.close()
                 const { empresas } = response.data
                 const { options } = this.state
 
@@ -293,7 +359,7 @@ class ReporteVentas extends Component {
         waitAlert()
         await axios.post(URL_DEV + 'reportes/ventas', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { leads, servicios, origenes, tipos, prospectos, estatus, cerrados, observaciones, observacionesAnteriores } = response.data
+                const { leads, servicios, origenes, tipos, prospectos, estatus, cerrados, observaciones, observacionesAnteriores, mes } = response.data
                 const { data, form } = this.state
                 
                 form.leads = observaciones
@@ -302,21 +368,24 @@ class ReporteVentas extends Component {
                     return false
                 })
                 
-                swal.close()
+                Swal.close()
                 data.total = {
                     labels: ['TOTAL'],
                     datasets: [{
                         data: [leads[0].leads],
                         backgroundColor: [
-                            this.setColor()
+                            this.setColor()+'BF'
                         ],
                         hoverBackgroundColor: [
                             this.setColor()+'D9'
-                        ]
+                        ],
+                        borderWidth:3,
+                        borderColor:this.setColor()
                     }]
                 }
 
-                data.cerrados = {
+                data.cerrados = cerrados
+                /* {
                     labels: ['CERRADOS'],
                     datasets: [{
                         data: [cerrados],
@@ -327,7 +396,7 @@ class ReporteVentas extends Component {
                             this.setColor()+'D9'
                         ]
                     }]
-                }
+                } */
 
                 let arrayLabels = []
                 let arrayData = []
@@ -346,8 +415,10 @@ class ReporteVentas extends Component {
                         {
                             label: 'TOTAL DE LEADS',
                             data: arrayData,
-                            backgroundColor: colors,
-                            hoverBackgroundColor: this.setOpacity(colors)
+                            backgroundColor: this.setOpacity65(colors),
+                            hoverBackgroundColor: this.setOpacity75(colors),
+                            borderColor:colors,
+                            borderWidth:3
                         }
                     ]
                 }
@@ -373,8 +444,9 @@ class ReporteVentas extends Component {
                         {
                             label: 'ORIGEN DE LEADS',
                             data: arrayData,
-                            backgroundColor: colors,
-                            hoverBackgroundColor: this.setOpacity(colors)
+                            backgroundColor: this.setOpacity65(colors),
+                            hoverBackgroundColor: this.setOpacity75(colors),
+                            borderWidth:3
                         }
                     ]
                 }
@@ -400,8 +472,9 @@ class ReporteVentas extends Component {
                         {
                             label: 'SERVICIOS SOLICITADOS',
                             data: arrayData,
-                            backgroundColor: colors,
-                            hoverBackgroundColor: this.setOpacity(colors)
+                            backgroundColor: this.setOpacity65(colors),
+                            hoverBackgroundColor: this.setOpacity75(colors),
+                            borderWidth:3
                         }
                     ]
                 }
@@ -427,8 +500,9 @@ class ReporteVentas extends Component {
                         {
                             label: 'TIPO DE LEADS',
                             data: arrayData,
-                            backgroundColor: colors,
-                            hoverBackgroundColor: this.setOpacity(colors)
+                            backgroundColor: this.setOpacity65(colors),
+                            hoverBackgroundColor: this.setOpacity75(colors),
+                            borderWidth:3
                         }
                     ]
                 }
@@ -447,7 +521,9 @@ class ReporteVentas extends Component {
                     {
                         label: 'BASURA',
                         data: arrayData,
-                        backgroundColor: colors[0]
+                        backgroundColor: colors[0]+'A6',
+                        hoverBackgroundColor: colors[0]+'BF',
+                        borderWidth:3
                     }
                 );
 
@@ -460,7 +536,9 @@ class ReporteVentas extends Component {
                     {
                         label: 'POTENCIAL',
                         data: arrayData,
-                        backgroundColor: colors[1]
+                        backgroundColor: colors[1]+'A6',
+                        hoverBackgroundColor: colors[1]+'BF',
+                        borderWidth:3
                     }
                 );
 
@@ -476,12 +554,14 @@ class ReporteVentas extends Component {
                 arrayData = []
                 colors = []
 
-                keys.map((element)=>{
-                    if(prospectos[element][0].leads > 0){
-                        arrayLabels.push(element.toUpperCase())
-                        arrayData.push(prospectos[element][0].leads)
-                    }
-                })
+                if(prospectos['Convertido'][0].leads > 0){
+                    arrayLabels.push('CONVERTIDO')
+                    arrayData.push(prospectos['Convertido'][0].leads)
+                }
+                if(tipos['Potencial'][0].leads > 0){
+                    arrayLabels.push('POTENCIAL')
+                    arrayData.push(tipos['Potencial'][0].leads)
+                }
 
                 colors = this.getBG(arrayData.length)
                 let colors2 = this.setOpacity2(colors)
@@ -492,8 +572,9 @@ class ReporteVentas extends Component {
                         {
                             label: 'TOTAL DE PROSPECTOS',
                             data: arrayData,
-                            backgroundColor: colors,
-                            hoverBackgroundColor: this.setOpacity(colors)
+                            backgroundColor: this.setOpacity65(colors),
+                            hoverBackgroundColor: this.setOpacity75(colors),
+                            borderWidth:3
                         }
                     ]
                 }
@@ -503,10 +584,14 @@ class ReporteVentas extends Component {
                 arrayData = []
                 arrayDataSets = []
 
-                prospectos['Convertido'].map((prospecto) => {
+                /* prospectos['Convertido'].map((prospecto) => {
                     arrayLabels.push(prospecto.label.toUpperCase())
                     arrayData.push(prospecto.leads)
-                })
+                }) */
+
+                for(let i = prospectos['Convertido'].length - 1; i >= 0; i--){
+                    arrayData.push(prospectos['Convertido'][i].leads)
+                }
 
                 arrayDataSets.push(
                     {
@@ -520,13 +605,17 @@ class ReporteVentas extends Component {
                 );
 
                 arrayData = []
-                prospectos['Sin convertir'].map((element)=>{
+                /* tipos['Potencial'].map((element)=>{
                     arrayData.push(element.leads)
-                })
+                }) */
+                for(let i = tipos['Potencial'].length - 1; i >= 0; i--){
+                    arrayLabels.push(tipos['Potencial'][i].label.toUpperCase())
+                    arrayData.push(tipos['Potencial'][i].leads)
+                }
 
                 arrayDataSets.push(
                     {
-                        label: 'SIN CONVERTIR',
+                        label: 'POTENCIAL',
                         data: arrayData,
                         backgroundColor: colors[1],
                         borderColor: colors2[1],
@@ -572,7 +661,9 @@ class ReporteVentas extends Component {
                         arrayData.push(origenes[origen][key].leads)
                     })
                     element.data = arrayData
-                    element.backgroundColor = colors[key]
+                    element.backgroundColor = colors[key]+'B3'
+                    element.hoverBackgroundColor = colors[key]+'BF'
+                    element.borderWidth=3
                 })
                 let contador = 0
                 let contadorArray = []
@@ -594,35 +685,6 @@ class ReporteVentas extends Component {
                     })
                     arrayLabels.splice(element, 1)
                 })
-
-                // Stacked origenes 
-                /* keys = Object.keys(origenes)
-
-                keys.map((element, key)=>{
-                    if(key === 0){
-                        origenes[element].map((dataSet, index)=>{
-                            arrayLabels.push(dataSet.label)
-                        })
-                    }
-                    arrayDataSets.push(
-                        {
-                            label: element,
-                            data: [],
-                            backgroundColor: '',
-                        }
-                    )
-                })
-
-                colors = this.getBG(arrayDataSets.length);
-
-                arrayDataSets.map((element,key)=>{
-                    arrayData = []
-                    origenes[element.label].map((origen)=>{
-                        arrayData.push(origen.leads)
-                    })
-                    element.data = arrayData
-                    element.backgroundColor = colors[key]
-                }) */
 
                 data.origenesComparativa = {
                     labels: arrayLabels,
@@ -660,7 +722,9 @@ class ReporteVentas extends Component {
                         arrayData.push(servicios[servicio][key].leads)
                     })
                     element.data = arrayData
-                    element.backgroundColor = colors[key]
+                    element.backgroundColor = colors[key]+'B3'
+                    element.hoverBackgroundColor = colors[key]+'BF'
+                    element.borderWidth=3
                 })
 
                 data.serviciosComparativa = {
@@ -689,60 +753,80 @@ class ReporteVentas extends Component {
                         {
                             label: 'ESTATUS DE PROSPECTOS',
                             data: arrayData,
-                            backgroundColor: colors,
-                            hoverBackgroundColor: this.setOpacity(colors)
+                            backgroundColor: this.setOpacity65(colors),
+                            hoverBackgroundColor: this.setOpacity75(colors),
+                            borderWidth:3
                         }
                     ]
                 }
 
                 //Comparativa status prospectos
+                keys = Object.keys(estatus)
                 arrayLabels = []
                 arrayData = []
+                colors = []
                 arrayDataSets = []
+                keys.map((element, key)=>{
+                    arrayLabels.push(element.toUpperCase())
+                    if(key === 0){
+                        estatus[element].map((dataSet, index)=>{
+                            if( index <= 2 )
+                                arrayDataSets.push(
+                                    {
+                                        label: dataSet.label.toUpperCase(),
+                                        data: [],
+                                        backgroundColor: '',
+                                    }
+                                )
+                        })
+                    }
+                })
+
+                colors = this.getBG(arrayDataSets.length);
                 
-                keys = Object.keys(estatus)
-
-                if(keys.length > 0){
-
-                    colors = this.getBG(keys.length);
-                    colors2 = this.setOpacity2(colors)
-                    
-                    estatus[keys[0]].map((tipo) => {
-                        arrayLabels.push(tipo.label.toUpperCase())
-                        arrayData.push(tipo.leads)
+                arrayDataSets.map((element, key)=>{
+                    arrayData = []
+                    keys.map((origen) => {
+                        arrayData.push(estatus[origen][key].leads)
                     })
-
-                    keys.map((element, index)=>{
-                        if(index > 0){
-                            arrayData = []
-                            estatus[element].map((tipo) => {
-                                arrayData.push(tipo.leads)
-                            })
-                        }
-                        arrayDataSets.push(
-                            {
-                                label: element.toUpperCase(),
-                                data: arrayData,
-                                backgroundColor: colors[index],
-                                borderColor: colors2[index],
-                                fill: false,
-                                yAxisID: 'y-axis-1',
-                            }
-                        );
+                    element.data = arrayData
+                    element.backgroundColor = colors[key]+'B3'
+                    element.hoverBackgroundColor = colors[key]+'BF'
+                    element.borderWidth=3
+                })
+                contador = 0
+                contadorArray = []
+                // console.log(arrayDataSets, 'arraydatasets')
+                if(arrayDataSets.length){
+                    arrayDataSets[0].data.map((element, index)=>{
+                        contador = 0
+                        arrayDataSets.map((newElement, key)=>{
+                            contador += newElement.data[index]
+                        })
+                        if(contador === 0 )
+                            contadorArray.push(index)
                     })
                 }
-                
+
+                contadorArray.map((element)=>{
+                    arrayDataSets.map((newElement)=>{
+                        newElement.data.splice(element, 1)
+                    })
+                    arrayLabels.splice(element, 1)
+                })
+
                 data.estatusComparativa = {
                     labels: arrayLabels,
                     datasets: arrayDataSets
                 }
-
+                
                 this.setState({
                     ...this.state,
                     data,
                     key: 'one',
                     form,
-                    leadsAnteriores: observacionesAnteriores
+                    leadsAnteriores: observacionesAnteriores,
+                    mes: mes
                 })
                 
             },
@@ -755,6 +839,39 @@ class ReporteVentas extends Component {
                 }
             }
         ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async getReporteAxios(){
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'reportes/ventas/guardados', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { empresas } = response.data
+                let { empresaActive } = this.state
+                Swal.close()
+                if(empresas.length)
+                    empresaActive = empresas[0].id
+                this.setState({
+                    ...this.state,
+                    modal: true,
+                    empresas: empresas,
+                    empresaActive
+                })
+            },
+            (error) => {
+                Swal.close()
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            Swal.close()
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
@@ -777,7 +894,7 @@ class ReporteVentas extends Component {
             { name: 'prospectos-comparativa', url: this.chartComparativaProspectosReference.current.chartInstance.toBase64Image() },
             { name: 'estatus', url: this.chartEstatusReference.current.chartInstance.toBase64Image() },
             { name: 'estatus-comparativa', url: this.chartComparativaEstatusReference.current.chartInstance.toBase64Image() },
-            { name: 'cerrados', url: this.chartCerradosReference.current.chartInstance.toBase64Image() }
+            /* { name: 'cerrados', url: this.chartCerradosReference.current.chartInstance.toBase64Image() } */
         )
 
         let lista = convertToRaw(editorState.getCurrentContent())
@@ -795,23 +912,97 @@ class ReporteVentas extends Component {
         form.adjuntos.reportes.files = [
             {
                 name: 'reporte.pdf',
+                file: new File([blob], "reporte.pdf"),
                 url: URL.createObjectURL(blob)
             }
         ]
-        
-        if(form.adjuntos.reportes.files.length > 0)
-            window.open(form.adjuntos.reportes.files[0].url, '_blank');
-        
-        swal.close()
         
         this.setState({
             ...this.state,
             form
         })
+
+        Swal.close()
+        
+        questionAlert2(
+            '¿ESTÁS SEGURO?', '',
+            () => this.saveReporteAxios(),
+            this.getTextAlert()
+        )
+        
+    }
+
+    getTextAlert = () => {
+        const { empresa, form  } = this.state
+        let meses = [ '', 'ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
+        return (
+            <div>
+                <span className="text-dark-50 font-weight-bolder">
+                    ¿DESEAS GUARDAR EL 
+                        <u>
+                            <a href = { form.adjuntos.reportes.files[0].url } target='_blank' className='text-primary mx-2'>
+                                REPORTE DE VENTAS
+                            </a>
+                        </u>
+                    { ' ' + empresa + ' ' + meses[parseInt(form.mes)] + ' ' + form.año + '?' }
+                </span>
+            </div>
+        )
+    }
+
+    setComentario = lead => {
+        let aux = '-'
+        if(lead){
+            if(lead.prospecto){
+                if(lead.prospecto.estatus_prospecto){
+                    switch(lead.prospecto.estatus_prospecto.estatus){
+                        case 'Cancelado':
+                        case 'Rechazado':
+                            aux = lead.prospecto.motivo
+                            if(aux === '')
+                                aux = lead.motivo
+                            if(aux === ''){
+                                if(lead.rh)
+                                    aux = 'RRHH'
+                                if(lead.proveedor)
+                                    aux = 'PROVEEDOR'
+                            }
+                            break;
+                    }
+                }else{
+                    if(lead.estatus){
+                        switch(lead.estatus.estatus){
+                            case 'Cancelado':
+                            case 'Rechazado':
+                                aux = lead.motivo
+                                if(aux === ''){
+                                    if(lead.rh)
+                                        aux = 'RRHH'
+                                    if(lead.proveedor)
+                                        aux = 'PROVEEDOR'
+                                }
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+        if( aux  === '-' ){
+            if(lead){
+                if(lead.prospecto){
+                    if(lead.prospecto.contactos){
+                        if(lead.prospecto.contactos.length){
+                            aux = lead.prospecto.contactos[0].comentario
+                        }
+                    }
+                }
+            }
+        }
+        return aux
     }
 
     render() {
-        const { form, data, options: opciones, key, editorState, leadsAnteriores } = this.state
+        const { form, data, options: opciones, key, editorState, leadsAnteriores, mes, modal, empresas, empresaActive } = this.state
 
         const optionsPie = {
             plugins: {
@@ -851,13 +1042,45 @@ class ReporteVentas extends Component {
                     {
                         ticks: {
                             beginAtZero: true,
-                            fontSize: 25,
+                            fontSize: 14,
                             fontColor: '#000',
                             lineWidth: 10,
-                            padding: 15,
+                            padding: 10,
                             position: 'bottom',
                             autoSkip: false,
                             callback: function(value, index, values) {
+                                let auxiliar = ''
+                                switch(value){
+                                    case 'AÚN NO LO SE':
+                                        auxiliar = ['AÚN NO','LO SE']
+                                        break;
+                                    case 'ORGÁNICO THANK YOU':
+                                        auxiliar = ['ORGÁNICO','THANK YOU']
+                                        break;
+                                    case 'ADS THANK YOU':
+                                        auxiliar = ['ADS THANK', 'YOU']
+                                        break;
+                                    case 'REMODELACIÓN DE OFICINAS':
+                                        auxiliar = ['REMODELACIÓN', 'DE OFICINAS']
+                                        break;
+                                    case 'CONSTRUCCIÓN DE OFICINAS':
+                                        auxiliar = ['CONSTRUCCIÓN', 'DE OFICINAS']
+                                        break;   
+                                    case 'DISEÑO DE OFICINAS':
+                                        auxiliar = ['DISEÑO', 'DE OFICINAS']
+                                        break;
+                                    case 'QUIERO SER PROVEEDOR':
+                                        auxiliar = ['QUIERO SER', 'PROVEEDOR']
+                                        break;
+                                    case 'BOLSA DE TRABAJO':
+                                        auxiliar = ['BOLSA DE', 'TRABAJO']
+                                        break;
+                                    case 'SERVICIO DE INTERÉS':
+                                        auxiliar = ['SERVICIO DE', 'INTERÉS']
+                                        break;
+                                }
+                                if(auxiliar !== '')
+                                    return auxiliar
                                 let aux = value.split(' ')
                                 return aux
                             }
@@ -866,11 +1089,12 @@ class ReporteVentas extends Component {
                 ]
             },
             legend:{
+                display: false,
                 fullWidth: true,
                 labels: {
                     boxWidth: 20,
                     padding: 5,
-                    fontSize: 20,
+                    fontSize: 12,
                     fontColor: '#000'
                 }
             },
@@ -890,13 +1114,44 @@ class ReporteVentas extends Component {
                     {
                         ticks: {
                             beginAtZero: true,
-                            fontSize: 20,
+                            fontSize: 14,
                             fontColor: '#000',
-                            padding: 15,
+                            padding: 10,
                             position: 'bottom',
                             autoSkip: false,
-                            maxRotation: 0,
                             callback: function(value, index, values) {
+                                let auxiliar = ''
+                                switch(value){
+                                    case 'AÚN NO LO SE':
+                                        auxiliar = ['AÚN NO','LO SE']
+                                        break;
+                                    case 'ORGÁNICO THANK YOU':
+                                        auxiliar = ['ORGÁNICO','THANK YOU']
+                                        break;
+                                    case 'ADS THANK YOU':
+                                        auxiliar = ['ADS THANK', 'YOU']
+                                        break;
+                                    case 'REMODELACIÓN DE OFICINAS':
+                                        auxiliar = ['REMODELACIÓN', 'DE OFICINAS']
+                                        break;
+                                    case 'CONSTRUCCIÓN DE OFICINAS':
+                                        auxiliar = ['CONSTRUCCIÓN', 'DE OFICINAS']
+                                        break;   
+                                    case 'DISEÑO DE OFICINAS':
+                                        auxiliar = ['DISEÑO', 'DE OFICINAS']
+                                        break;
+                                    case 'QUIERO SER PROVEEDOR':
+                                        auxiliar = ['QUIERO SER', 'PROVEEDOR']
+                                        break;
+                                    case 'BOLSA DE TRABAJO':
+                                        auxiliar = ['BOLSA DE', 'TRABAJO']
+                                        break;
+                                    case 'SERVICIO DE INTERÉS':
+                                        auxiliar = ['SERVICIO DE', 'INTERÉS']
+                                        break;
+                                }
+                                if(auxiliar !== '')
+                                    return auxiliar
                                 let aux = value.split(' ')
                                 return aux
                             }
@@ -908,7 +1163,7 @@ class ReporteVentas extends Component {
                 datalabels: {
                     color: '#fff',
                     font: {
-                        size: 18,
+                        size: 13,
                         weight: 'bold'
                     }
                 }
@@ -918,7 +1173,7 @@ class ReporteVentas extends Component {
                 labels: {
                     boxWidth: 20,
                     padding: 5,
-                    fontSize: 20,
+                    fontSize: 12,
                 }
             },
         }
@@ -984,9 +1239,9 @@ class ReporteVentas extends Component {
                     {
                         ticks: {
                             beginAtZero: true,
-                            fontSize: 20,
+                            fontSize: 15,
                             fontColor: '#000',
-                            padding: 15,
+                            padding: 10,
                             position: 'bottom',
                             autoSkip: false,
                             maxRotation: 0,
@@ -1020,13 +1275,25 @@ class ReporteVentas extends Component {
                 }
             },
         }
+
+        const mesesEspañol = [ '', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
         
+        const { empresa } = this.state
         return (
             <Layout active = 'reportes'  {...this.props}>
                 <Card className="card-custom">
                     <Card.Header>
-                        <div className="card-title">
+                        <div className="card-title w-100 d-flex justify-content-between">
                             <h3 className="card-label">Reporte de ventas</h3>
+                            <div>
+                                <Button 
+                                    icon =''
+                                    className = "btn btn-light mr-2 text-hover-primary"
+                                    onClick = { () => { this.getReporteAxios() } }
+                                    only_icon = "far fa-file-pdf mr-1"
+                                    text= 'REPORTES GENERADOS'
+                                />
+                            </div>
                         </div>
                     </Card.Header>
                     <Card.Body>
@@ -1035,8 +1302,6 @@ class ReporteVentas extends Component {
                                 <FlujosReportesVentas
                                     form = { form }
                                     options = { opciones }
-                                    onChangeRange = { this.onChangeRange }
-                                    onChangeRangeRef = { this.onChangeRangeRef }
                                     onChange = { this.onChange }
                                     className = "mb-3"
                                     onSubmit = { this.onSubmit }
@@ -1047,12 +1312,12 @@ class ReporteVentas extends Component {
                             <Tab.Content>
                                 <Tab.Pane eventKey = 'one'>
                                     {this.setButtons(null, 'two', null)}
-                                    <div className = " my-3 ">
-                                        <h3 className="card-label title-reporte-ventas">
-                                            <strong>
+                                    <div className = " mt-4 mb-5 ">
+                                        <h3 className="card-label title-reporte-ventas" >
+                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
                                                 01 
                                             </strong>
-                                            ENTRADA TOTAL DE LEADS
+                                            ENTRADA TOTAL DE LEADS ({mes} {form.año}) 
                                         </h3>
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
@@ -1063,12 +1328,12 @@ class ReporteVentas extends Component {
                                 </Tab.Pane>
                                 <Tab.Pane eventKey = 'two'>
                                     {this.setButtons('one', 'three', null)}
-                                    <div className = " my-3 ">
+                                    <div className = " mt-4 mb-5 ">
                                         <h3 className="card-label title-reporte-ventas">
-                                            <strong>
+                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
                                                 02
                                             </strong>
-                                            COMPARATIVA DE LEADS TOTALES
+                                            COMPARATIVA DE LEADS TOTALES (MESES ANTERIORES)
                                         </h3>
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
@@ -1079,12 +1344,12 @@ class ReporteVentas extends Component {
                                 </Tab.Pane>
                                 <Tab.Pane eventKey = 'three'>
                                     {this.setButtons('two', 'four', null)}
-                                    <div className = " my-3 ">
+                                    <div className = " mt-4 mb-5 ">
                                         <h3 className="card-label title-reporte-ventas">
-                                            <strong>
+                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
                                                 03
                                             </strong>
-                                            ORIGEN DE LEADSS
+                                            ORIGEN DE LEADS ({mes} {form.año})
                                         </h3>
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
@@ -1095,12 +1360,12 @@ class ReporteVentas extends Component {
                                 </Tab.Pane>
                                 <Tab.Pane eventKey = 'four'>
                                     {this.setButtons('three', 'five', null)}
-                                    <div className = " my-3 ">
+                                    <div className = " mt-4 mb-5 ">
                                         <h3 className="card-label title-reporte-ventas">
-                                            <strong>
+                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
                                                 04
                                             </strong>
-                                            COMPARATIVA ORIGEN LEADS
+                                            COMPARATIVA ORIGEN LEADS (MESES ANTERIORES)
                                         </h3>
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
@@ -1111,12 +1376,12 @@ class ReporteVentas extends Component {
                                 </Tab.Pane>
                                 <Tab.Pane eventKey = 'five'>
                                     {this.setButtons('four', 'six', null)}
-                                    <div className = " my-3 ">
+                                    <div className = " mt-4 mb-5 ">
                                         <h3 className="card-label title-reporte-ventas">
-                                            <strong>
+                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
                                                 05
                                             </strong>
-                                            SERVICIOS SOLICITADOS
+                                            SERVICIOS SOLICITADOS ({mes} {form.año})
                                         </h3>
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
@@ -1127,12 +1392,12 @@ class ReporteVentas extends Component {
                                 </Tab.Pane>
                                 <Tab.Pane eventKey = 'six'>
                                     {this.setButtons('five', 'seven', null)}
-                                    <div className = " my-3 ">
+                                    <div className = " mt-4 mb-5 ">
                                         <h3 className="card-label title-reporte-ventas">
-                                            <strong>
+                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
                                                 06
                                             </strong>
-                                            COMPARATIVA SERVICIOS SOLICITADOS
+                                            COMPARATIVA SERVICIOS SOLICITADOS (MESES ANTERIORES)
                                         </h3>
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
@@ -1143,12 +1408,12 @@ class ReporteVentas extends Component {
                                 </Tab.Pane>
                                 <Tab.Pane eventKey = 'seven'>
                                     {this.setButtons('six', 'eight', null)}
-                                    <div className = " my-3 ">
+                                    <div className = " mt-4 mb-5 ">
                                         <h3 className="card-label title-reporte-ventas">
-                                            <strong>
+                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
                                                 07
                                             </strong>
-                                            TIPO DE LEAD
+                                            TIPO DE LEAD ({mes} {form.año})
                                         </h3>
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
@@ -1159,12 +1424,12 @@ class ReporteVentas extends Component {
                                 </Tab.Pane>
                                 <Tab.Pane eventKey = 'eight'>
                                     {this.setButtons('seven', 'nine', null)}
-                                    <div className = " my-3 ">
+                                    <div className = " mt-4 mb-5 ">
                                         <h3 className="card-label title-reporte-ventas">
-                                            <strong>
+                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
                                                 08
                                             </strong>
-                                            COMPARATIVA TIPO DE LEAD
+                                            COMPARATIVA TIPO DE LEAD (MESES ANTERIORES)
                                         </h3>
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
@@ -1175,12 +1440,12 @@ class ReporteVentas extends Component {
                                 </Tab.Pane>
                                 <Tab.Pane eventKey = 'nine'>
                                     {this.setButtons('eight', 'ten', null)}
-                                    <div className = " my-3 ">
+                                    <div className = " mt-4 mb-5 ">
                                         <h3 className="card-label title-reporte-ventas">
-                                            <strong>
+                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
                                                 09
                                             </strong>
-                                            TOTAL DE PROSPECTOS
+                                            TOTAL DE PROSPECTOS ({mes} {form.año})
                                         </h3>
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
@@ -1191,28 +1456,28 @@ class ReporteVentas extends Component {
                                 </Tab.Pane>
                                 <Tab.Pane eventKey = 'ten'>
                                     {this.setButtons('nine', 'eleven', null)}
-                                    <div className = " my-3 ">
+                                    <div className = " mt-4 mb-5 ">
                                         <h3 className="card-label title-reporte-ventas">
-                                            <strong>
+                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
                                                 10
                                             </strong>
-                                            COMPARATIVA TOTAL DE PROSPECTOS
+                                            COMPARATIVA TOTAL DE PROSPECTOS (MESES ANTERIORES)
                                         </h3>
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
-                                        <div className = "col-md-6" >
+                                        <div className = "col-md-9" >
                                             <Line ref = { this.chartComparativaProspectosReference } data = { data.prospectosComparativa } options = { optionsLine } />
                                         </div>
                                     </div>
                                 </Tab.Pane>
                                 <Tab.Pane eventKey = 'eleven'>
                                     {this.setButtons('ten', 'twelve', null)}
-                                    <div className = " my-3 ">
+                                    <div className = " mt-4 mb-5 ">
                                         <h3 className="card-label title-reporte-ventas">
-                                            <strong>
+                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
                                                 11
                                             </strong>
-                                            STATUS DE PROSPECTOS
+                                            ESTATUS DE PROSPECTOS ({mes} {form.año})
                                         </h3>
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
@@ -1223,67 +1488,167 @@ class ReporteVentas extends Component {
                                 </Tab.Pane>
                                 <Tab.Pane eventKey = 'twelve'>
                                     {this.setButtons('eleven', 'thirteen', null)}
-                                    <div className = " my-3 ">
+                                    <div className = " mt-4 mb-5 ">
                                         <h3 className="card-label title-reporte-ventas">
-                                            <strong>
+                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
                                                 12
                                             </strong>
-                                            COMPARATIVA STATUS DE PROSPECTOS
+                                            COMPARATIVA ESTATUS DE PROSPECTOS (MESES ANTERIORES)
                                         </h3>
                                     </div>
                                     <div className = "row mx-0 mb-2 justify-content-center">
                                         <div className = "col-md-6" >
-                                            <Line ref = { this.chartComparativaEstatusReference } data = { data.estatusComparativa } options = { optionsLine } />
+                                            <Bar ref = { this.chartComparativaEstatusReference } data = { data.estatusComparativa } options = { optionsBarGroup } />
                                         </div>
                                     </div>
                                 </Tab.Pane>
                                 <Tab.Pane eventKey = 'thirteen'>
                                     {this.setButtons('twelve', 'fourteen', null)}
-                                    <div className = " my-3 ">
+                                    <div className = " mt-4 mb-5 ">
                                         <h3 className="card-label title-reporte-ventas">
-                                            <strong>
+                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
                                                 13
                                             </strong>
-                                            PROSPECTOS CERRADOS
+                                            PROSPECTOS CONTRATADOS ({mes} {form.año})
                                         </h3>
                                     </div>
-                                    <div className = "row mx-0 mb-2 justify-content-center">
+                                    {/* <div className = "row mx-0 mb-2 justify-content-center">
                                         <div className = "col-md-6" >
                                             <Pie ref = { this.chartCerradosReference } data = { data.cerrados } options = { optionsPie } />
                                         </div>
-                                    </div>
-                                </Tab.Pane>
-                                <Tab.Pane eventKey = 'fourteen'>
-                                    {this.setButtons('thirteen', 'fifteen', null)}
-                                    <div className = "my-3">
-                                        <h3 className="card-label title-reporte-ventas">
-                                            <strong>
-                                                14
-                                            </strong>
-                                            OBSERVACIONES DE PROSPECTOS
-                                        </h3>
-                                    </div>
-                                    <table className="table table-separate table-responsive-sm">
+                                    </div> */}
+                                    <table className="table table-separate table-responsive-sm table-borderless table-vertical-center">
                                         <thead>
-                                            <tr>
+                                            <tr className="bg-light-gray text-dark-75">
                                                 <th className="border-0 center_content">
-                                                    <div className="font-size-lg font-weight-bolder text-center">
+                                                    <div className="font-size-lg font-weight-bolder text-justify">
                                                         NOMBRE DE LEAD
                                                     </div>
                                                 </th>
+                                                <th className="border-0 center_content">
+                                                    <div className="font-size-lg font-weight-bolder text-justify">
+                                                        VENDEDOR
+                                                    </div>
+                                                </th>
+                                                <th className="clave border-0 center_content">
+                                                    <div className="font-size-lg font-weight-bolder text-justify">
+                                                        ORIGEN
+                                                    </div>
+                                                </th>
                                                 <th className="clave border-0 center_content">
                                                     <div className="font-size-lg font-weight-bolder text-center">
+                                                        COSTO
+                                                    </div>
+                                                </th>
+                                                <th className="clave border-0 center_content"style={{ minWidth: "100px" }}>
+                                                    <div className="font-size-lg font-weight-bolder text-center">
+                                                        FECHA DE CONTRATACION
+                                                    </div>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                data.cerrados.map((element, index)=>{
+                                                    return(
+                                                        <tr key = { index } >
+                                                            <td className="font-size-sm text-justify">
+                                                                {
+                                                                    element.prospecto ?
+                                                                        element.prospecto.lead ?
+                                                                            element.prospecto.lead.nombre
+                                                                        : '-'
+                                                                    : '-'
+                                                                }
+                                                            </td>
+                                                            <td className="font-size-sm text-justify">
+                                                                {
+                                                                    element.prospecto ?
+                                                                        element.prospecto.vendedores ?
+                                                                            element.prospecto.vendedores.length > 0 ?
+                                                                                <ul className = 'no-list'>
+                                                                                    {
+                                                                                        element.prospecto.vendedores.map((vendedor, index)=>{
+                                                                                            return(
+                                                                                                <li key = { index }>
+                                                                                                    {vendedor.name}
+                                                                                                </li>
+                                                                                            )
+                                                                                        })
+                                                                                    }
+                                                                                </ul>
+                                                                            : '-'
+                                                                        : '-'
+                                                                    : '-'
+                                                                }
+                                                            </td>
+                                                            <td className="font-size-sm text-justify">
+                                                                {
+                                                                    element.prospecto ?
+                                                                        element.prospecto.lead ?
+                                                                            element.prospecto.lead.origen ?
+                                                                                element.prospecto.lead.origen.origen
+                                                                            : ''
+                                                                        : ''
+                                                                    : ''
+                                                                }
+                                                            </td>
+                                                            <td className="font-size-sm text-center">
+                                                                {
+                                                                    element.prospecto ?
+                                                                        element.prospecto.lead ?
+                                                                            element.prospecto.lead.presupuesto_diseño ?
+                                                                                setMoneyTableSinSmall(element.prospecto.lead.presupuesto_diseño.total)
+                                                                            : '-'
+                                                                        : '-'
+                                                                    : '-'
+                                                                }        
+                                                            </td>
+                                                            <td className="font-size-sm text-center">
+                                                                { setDateTableLG(element.created_at) }
+                                                            </td>
+                                                        </tr>
+                                                    )
+                                                })
+                                            }
+                                            {
+                                                data.cerrados.length === 0 ?
+                                                    <tr>
+                                                        <td className = 'font-size-sm text-center' colSpan = "5">
+                                                            No hubo prospectos cerrados
+                                                        </td>
+                                                    </tr>
+                                                : ''
+                                            }
+                                        </tbody>
+                                    </table>
+                                </Tab.Pane>
+                                <Tab.Pane eventKey = 'fourteen'>
+                                    {this.setButtons('thirteen', 'fifteen', null)}
+                                    <div className = "mt-4 mb-5">
+                                        <h3 className="card-label title-reporte-ventas">
+                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
+                                                14
+                                            </strong>
+                                            OBSERVACIONES DE PROSPECTOS ({mes} {form.año})
+                                        </h3>
+                                    </div>
+                                    <table className="table table-separate table-responsive-sm table-borderless table-vertical-center">
+                                        <thead>
+                                            <tr className="bg-light-gray text-dark-75">
+                                                <th className="border-0 center_content text-justify">
+                                                    <div className="font-size-lg font-weight-bolder">
+                                                        NOMBRE DE LEAD
+                                                    </div>
+                                                </th>
+                                                <th className="clave border-0 center_content text-justify" style={{ minWidth: "121px" }}>
+                                                    <div className="font-size-lg font-weight-bolder">
                                                         PROYECTO
                                                     </div>
                                                 </th>
-                                                <th className="border-0 center_content">
-                                                    <div className="font-size-lg font-weight-bolder text-center">
-                                                        OBSERVACIONES
-                                                    </div>
-                                                </th>
                                                 <th className="clave border-0 center_content">
                                                     <div className="font-size-lg font-weight-bolder text-center">
-                                                        STATUS
+                                                        ESTATUS
                                                     </div>
                                                 </th>
                                                 <th className="clave border-0 center_content">
@@ -1291,10 +1656,14 @@ class ReporteVentas extends Component {
                                                         PRIMER CONTACTO
                                                     </div>
                                                 </th>
-
                                                 <th className="clave border-0 center_content">
                                                     <div className="font-size-lg font-weight-bolder text-center">
                                                         ÚLTIMO CONTACTO
+                                                    </div>
+                                                </th>
+                                                <th className="border-0 center_content">
+                                                    <div className="font-size-lg font-weight-bolder text-center">
+                                                        OBSERVACIONES
                                                     </div>
                                                 </th>
                                             </tr>
@@ -1305,12 +1674,12 @@ class ReporteVentas extends Component {
                                                     if(lead.prospecto)
                                                         return(
                                                             <tr key = { index } >
-                                                                <td className="font-size-sm text-center">
+                                                                <td className="font-size-sm text-justify">
                                                                     {
                                                                         lead.nombre
                                                                     }
                                                                 </td>
-                                                                <td className="font-size-sm text-center">
+                                                                <td className="font-size-sm text-justify">
                                                                     {
                                                                         lead.prospecto.tipoProyecto ?
                                                                             lead.prospecto.tipoProyecto.tipo
@@ -1319,20 +1688,6 @@ class ReporteVentas extends Component {
                                                                                 return serv.servicio
                                                                             })
                                                                     }
-                                                                </td>
-                                                                <td>
-                                                                    {
-                                                                        form.leads.length ?
-                                                                            <InputSinText
-                                                                                name = { index}
-                                                                                as = 'textarea'
-                                                                                rows = { 1 }
-                                                                                onChange = { this.onChangeObservaciones }
-                                                                                value = { form.leads[index].observacion }
-                                                                                />
-                                                                        :''
-                                                                    }
-                                                                    
                                                                 </td>
                                                                 <td className='text-center'>
                                                                     {
@@ -1346,8 +1701,8 @@ class ReporteVentas extends Component {
                                                                         lead.prospecto.contactos ?
                                                                             lead.prospecto.contactos.length ?
                                                                                 setDateTableLG(lead.prospecto.contactos[lead.prospecto.contactos.length - 1].created_at)
-                                                                            : 'Sin contacto'
-                                                                        : 'Sin contacto'
+                                                                            : 'SIN CONTACTO'
+                                                                        : 'SIN CONTACTO'
                                                                     }
                                                                 </td>
                                                                 <td className = 'text-center'>
@@ -1355,8 +1710,13 @@ class ReporteVentas extends Component {
                                                                         lead.prospecto.contactos ?
                                                                             lead.prospecto.contactos.length ?
                                                                                 setDateTableLG(lead.prospecto.contactos[0].created_at)
-                                                                            : 'Sin contacto'
-                                                                        : 'Sin contacto'
+                                                                            : 'SIN CONTACTO'
+                                                                        : 'SIN CONTACTO'
+                                                                    }
+                                                                </td>
+                                                                <td className="font-size-sm text-justify">
+                                                                    {
+                                                                        this.setComentario(lead)
                                                                     }
                                                                 </td>
                                                             </tr>
@@ -1369,35 +1729,30 @@ class ReporteVentas extends Component {
                                 </Tab.Pane>
                                 <Tab.Pane eventKey = 'fifteen'>
                                     {this.setButtons('fourteen', 'sixteen', null)}
-                                    <div className = "my-3">
+                                    <div className = "mt-4 mb-5">
                                         <h3 className="card-label title-reporte-ventas">
-                                            <strong>
+                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
                                                 15
                                             </strong>
-                                            LISTADO DE PROSPECTO MESES ANTERIORES
+                                            LISTADO DE PROSPECTO (MESES ANTERIORES)
                                         </h3>
                                     </div>
-                                    <table className="table table-separate table-responsive-sm">
+                                    <table className="table table-separate table-responsive-sm table-borderless table-vertical-center">
                                         <thead>
-                                            <tr>
-                                                <th className="border-0 center_content">
-                                                    <div className="font-size-lg font-weight-bolder text-center">
+                                            <tr className="bg-light-gray text-dark-75">
+                                                <th className="border-0 center_content" style={{ minWidth: "133px" }}>
+                                                    <div className="font-size-lg font-weight-bolder text-justify">
                                                         NOMBRE DE LEAD
                                                     </div>
                                                 </th>
                                                 <th className="clave border-0 center_content">
-                                                    <div className="font-size-lg font-weight-bolder text-center">
+                                                    <div className="font-size-lg font-weight-bolder text-justify">
                                                         PROYECTO
                                                     </div>
                                                 </th>
                                                 <th className="clave border-0 center_content">
                                                     <div className="font-size-lg font-weight-bolder text-center">
-                                                        STATUS
-                                                    </div>
-                                                </th>
-                                                <th className="clave border-0 center_content">
-                                                    <div className="font-size-lg font-weight-bolder text-center">
-                                                        MOTIVO
+                                                        ESTATUS
                                                     </div>
                                                 </th>
                                                 <th className="clave border-0 center_content">
@@ -1405,10 +1760,14 @@ class ReporteVentas extends Component {
                                                         PRIMER CONTACTO
                                                     </div>
                                                 </th>
-
                                                 <th className="clave border-0 center_content">
                                                     <div className="font-size-lg font-weight-bolder text-center">
                                                         ÚLTIMO CONTACTO
+                                                    </div>
+                                                </th>
+                                                <th className="clave border-0 center_content">
+                                                    <div className="font-size-lg font-weight-bolder text-center">
+                                                        MOTIVO
                                                     </div>
                                                 </th>
                                             </tr>
@@ -1419,12 +1778,12 @@ class ReporteVentas extends Component {
                                                     if(lead.prospecto)
                                                         return(
                                                             <tr key = { index } >
-                                                                <td className="font-size-sm text-center">
+                                                                <td className="font-size-sm text-justify">
                                                                     {
                                                                         lead.nombre
                                                                     }
                                                                 </td>
-                                                                <td className="font-size-sm text-center">
+                                                                <td className="font-size-sm text-justify">
                                                                     {
                                                                         lead.prospecto.tipoProyecto ?
                                                                             lead.prospecto.tipoProyecto.tipo
@@ -1441,22 +1800,13 @@ class ReporteVentas extends Component {
                                                                         : ''
                                                                     }
                                                                 </td>
-                                                                <td className='text-center'>
-                                                                    {
-                                                                        lead.motivo ?
-                                                                            setTextTable(lead.motivo)
-                                                                        :   lead.prospecto.motivo ?
-                                                                                setTextTable(lead.prospecto.motivo)
-                                                                            : '-'
-                                                                    }
-                                                                </td>
                                                                 <td className = 'text-center'>
                                                                     {
                                                                         lead.prospecto.contactos ?
                                                                             lead.prospecto.contactos.length ?
                                                                                 setDateTableLG(lead.prospecto.contactos[lead.prospecto.contactos.length - 1].created_at)
-                                                                            : 'Sin contacto'
-                                                                        : 'Sin contacto'
+                                                                            : 'SIN CONTACTO'
+                                                                        : 'SIN CONTACTO'
                                                                     }
                                                                 </td>
                                                                 <td className = 'text-center'>
@@ -1464,8 +1814,13 @@ class ReporteVentas extends Component {
                                                                         lead.prospecto.contactos ?
                                                                             lead.prospecto.contactos.length ?
                                                                                 setDateTableLG(lead.prospecto.contactos[0].created_at)
-                                                                            : 'Sin contacto'
-                                                                        : 'Sin contacto'
+                                                                            : 'SIN CONTACTO'
+                                                                        : 'SIN CONTACTO'
+                                                                    }
+                                                                </td>
+                                                                <td className="font-size-sm text-justify">
+                                                                    {
+                                                                        this.setComentario(lead)
                                                                     }
                                                                 </td>
                                                             </tr>
@@ -1478,9 +1833,9 @@ class ReporteVentas extends Component {
                                 </Tab.Pane>
                                 <Tab.Pane eventKey = 'sixteen'>
                                     {this.setButtons('fifteen', null, true)}
-                                    <div className = "my-3">
+                                    <div className = "mt-4 mb-5">
                                         <h3 className="card-label title-reporte-ventas">
-                                            <strong>
+                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
                                                 16
                                             </strong>
                                             CONCLUSIONES
@@ -1505,6 +1860,79 @@ class ReporteVentas extends Component {
                         </Tab.Container>
                     </Card.Body>
                 </Card>
+                <Modal title = "Reportes de ventas" show = { modal } handleClose = { this.handleCloseModal } >
+                    <Tab.Container activeKey = { empresaActive } 
+                        onSelect = { (select) => this.onClickEmpresa(select) }>
+                        <div className="d-flex justify-content-end mt-2">
+                            <Nav className="nav-tabs nav-bold nav-tabs-line nav-tabs-line-3x border-0">
+                                {
+                                    empresas.map((empresa, key) => {
+                                        return (
+                                            <Nav.Item className="navi-item" key={key}>
+												<Nav.Link eventKey={empresa.id}>{empresa.name}</Nav.Link>
+											</Nav.Item>
+                                        )
+                                    })
+                                }
+                            </Nav>
+                        </div>
+                        {
+                            empresas.map((empresa)=>{
+                                console.log(empresaActive, 'active')
+                                console.log(empresa.id, 'id')
+                                if(empresaActive.toString() === empresa.id.toString())
+                                    return(
+                                        <div className="d-flex justify-content-center mt-2">
+                                            <table className="table table-responsive-lg table-vertical-center text-center mt-3" id="esquemas">
+                                                <thead>
+                                                    <tr className="bg-gray-200">
+                                                        <th>
+                                                            Año
+                                                        </th>
+                                                        <th>
+                                                            Mes
+                                                        </th>
+                                                        <th>
+                                                            Archivo
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {
+                                                        empresa.reportes.map((reporte, key) => {
+                                                            return(
+                                                                <tr key = { key }>
+                                                                    <td> { reporte.año } </td>
+                                                                    <td> { mesesEspañol[reporte.mes] } </td>
+                                                                    <td>
+                                                                        <a href = { reporte.adjunto.url}className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-primary">
+                                                                            <span className="svg-icon svg-icon-md">
+                                                                                <i className="far fa-file-pdf icon-15px"></i>
+                                                                            </span>
+                                                                        </a>
+                                                                    </td>
+                                                                </tr>
+                                                            )
+                                                        })
+                                                    }
+                                                    {
+                                                        empresa.reportes.length === 0 ?
+                                                            <tr>
+                                                                <td colSpan = "3">
+                                                                    No hay reportes generados
+                                                                </td>
+                                                            </tr>
+                                                        : ''
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        
+                                    )
+                            })
+                        }
+                    </Tab.Container>
+                </Modal>
             </Layout>
         );
     }

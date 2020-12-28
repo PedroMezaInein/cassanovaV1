@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import Layout from '../components/layout/layout'
 import { connect } from 'react-redux'
-import { Button } from '../components/form-components/'
-import { Tab, Nav, Col, Row, OverlayTrigger, Tooltip, Card } from 'react-bootstrap'
+import { Button, Video } from '../components/form-components/'
+import { Tab, Nav, Col, Row, OverlayTrigger, Tooltip, Card} from 'react-bootstrap'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../functions/routers"
 class Normas extends Component {
@@ -182,6 +182,13 @@ class Normas extends Component {
                         <Col sm={9}>
                             <div className="card card-custom card-stretch">
                                 <Card.Body>
+                                    <div className="d-flex justify-content-center">
+                                        <div className="col-md-6">
+                                            <Video
+                                                src="https://www.w3schools.com/html/mov_bbb.mp4"
+                                            />
+                                        </div>
+                                    </div>
                                     <Tab.Content>
                                         <Tab.Pane eventKey="1">
                                             <form className="form" id="kt_form">

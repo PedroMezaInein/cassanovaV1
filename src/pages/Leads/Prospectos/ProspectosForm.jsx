@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import swal from 'sweetalert';
+import Swal from 'sweetalert2'
 import { URL_DEV } from '../../../constants'
 import Layout from '../../../components/layout/layout'
 import { errorAlert, forbiddenAccessAlert, doneAlert, waitAlert, questionAlert } from '../../../functions/alert'
@@ -324,7 +324,7 @@ class ProspectosForm extends Component {
         const { access_token } = this.props.authUser
         await axios.put(`${URL_DEV}prospecto/${prospecto.id}/estatus`, { estatus: estatus }, { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close()
+                Swal.close()
                 doneAlert('Estado actualizado con éxito')
                 const { history } = this.props
                 history.push({

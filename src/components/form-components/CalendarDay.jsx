@@ -3,33 +3,32 @@ import { Calendar } from 'react-date-range'
 import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 import es from "date-fns/locale/es";
+import { parseISO, format } from 'date-fns';
 export default class CalendarDay extends Component {
 
     state = {
-        date: new Date(),
-        calendarValido: true
-    }
-    validarFecha(e) { 
-        const { requirevalidation } = this.props
-        if (requirevalidation) {    
-            if(e instanceof Date){
-                this.setState({
-                    calendarValido: true
-                })
-            }else{
-                this.setState({
-                    calendarValido: false
-                })
-            } 
-        }
+        date: new Date()
     }
 
     componentDidMount(){
         const { date } = this.props
+        
+        let newDate = new Date(date)
+        let aux = Date.parse(newDate)
         this.setState({
             ...this.state,
-            date: date
+            date: isNaN(aux) ? null : newDate
         })
+    }
+
+    componentDidUpdate(nextProps){
+        if (nextProps.date !== this.props.date){
+            const { date } = this.props
+            this.setState({
+                ...this.state,
+                date: new Date(date)
+            })
+        }
     }
 
     updateDate = item => {
@@ -41,16 +40,16 @@ export default class CalendarDay extends Component {
         onChange({ target: { name: name, value: item } })
     }
     render() {
-        const { date, calendarValido } = this.state
+        const { date, withformgroup} = this.props
         return (
             <>
-                <div className="form-group">
+                <div className={withformgroup?'form-group':''}>
                     <Calendar
-                        onChange={ (item) => { this.validarFecha(item); this.updateDate(item)} }
+                        onChange={ (item) => { this.updateDate(item)} }
                         locale = { es }
                         date = { date }
                     />
-                    <span className={ calendarValido ? "form-text text-danger hidden" : "form-text text-danger is-invalid" }>Incorrecto. Selecciona la fecha.</span>
+                    <span className={ date ? "form-text text-danger hidden" : "form-text text-danger is-invalid" }>Incorrecto. Selecciona la fecha.</span>
                 </div>
             </>
         )

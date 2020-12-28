@@ -14,7 +14,7 @@ import { toAbsoluteUrl } from "../../functions/routers"
 import ItemSlider from '../../components/singles/ItemSlider'
 import InputSinText from '../../components/form-components/SinText/InputSinText'
 
-class Contabilidad extends Component {
+class Diseño extends Component {
 
     state = {
         
@@ -844,6 +844,7 @@ class Contabilidad extends Component {
 
     render() {
         const { form, empresa, data, grafica, activeTipo } = this.state
+            // {console.log(empresa)}
         return (
             <Layout active={'catalogos'}  {...this.props}>
                 <Tab.Container activeKey={empresa !== '' ? empresa.id : ''} >
@@ -889,7 +890,7 @@ class Contabilidad extends Component {
                                             <span className="nav-text">Obra</span>
                                         </Nav.Link>
                                     </Nav.Item>
-                                    <Nav.Item className="nav-item mr-3">
+                                    {/* <Nav.Item className="nav-item mr-3">
                                         <Nav.Link eventKey="adjuntos">
                                             <span className="nav-icon mr-2">
                                                 <span className="svg-icon mr-3">
@@ -898,7 +899,7 @@ class Contabilidad extends Component {
                                             </span>
                                             <span className="nav-text">Adjuntos</span>
                                         </Nav.Link>
-                                    </Nav.Item>
+                                    </Nav.Item> */}
                                     <Nav.Item className="nav-item mr-3">
                                         <Nav.Link eventKey="planos">
                                             <span className="nav-icon mr-2">
@@ -943,7 +944,7 @@ class Contabilidad extends Component {
                                             addRow={this.addParametricRow}
                                         />
                                     </Tab.Pane>
-                                    {
+                                    {/* {
                                         empresa ?
                                             <Tab.Pane eventKey="adjuntos">
                                                 <Tab.Container activeKey = { activeTipo } 
@@ -993,7 +994,7 @@ class Contabilidad extends Component {
                                                 </Tab.Container>
                                             </Tab.Pane>
                                         : ''
-                                    }
+                                    } */}
                                     
                                     {
                                         empresa ?
@@ -1229,4 +1230,4 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Contabilidad);
+export default connect(mapStateToProps, mapDispatchToProps)(Diseño);

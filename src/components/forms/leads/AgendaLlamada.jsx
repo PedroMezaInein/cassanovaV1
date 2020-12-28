@@ -1,10 +1,9 @@
 import React, { Component } from 'react'
 import { CalendarDay, Button } from '../../form-components'
 import { Col, Form } from 'react-bootstrap'
-// import SelectMinutos from '../../form-components/SelectMinutos'
 import SelectHorario from '../../form-components/SelectHorario'
+import { validateAlert } from '../../../functions/alert'
 class AgendaLlamada extends Component {
-
     render() {
         const { form, onChange, onSubmit, lead, cierre_reviso, cita_reviso} = this.props
         let fecha = new Date(form["fecha"])
@@ -72,7 +71,7 @@ class AgendaLlamada extends Component {
                         :''
                     :''
                 }
-            <Form>
+            <Form id="form-agendar">
                 <div className="row">
                     <Col md="12" className="text-center">
                         <div className="d-flex justify-content-center">
@@ -87,7 +86,7 @@ class AgendaLlamada extends Component {
                         <div className="d-flex justify-content-center" style={{ height: '1px' }}>
                             <label className="text-center font-weight-bolder">Fecha</label>
                         </div>
-                        <CalendarDay value = { form.fecha } name = 'fecha' onChange = { onChange } />
+                        <CalendarDay value = { form.fecha } name = 'fecha' onChange = { onChange } date = { form.fecha } withformgroup={1} />
                     </Col>
                 </div>
                 <div className="card-footer pt-3 pr-1 pb-0">
@@ -97,7 +96,7 @@ class AgendaLlamada extends Component {
                                 onClick={
                                     (e) => {
                                         e.preventDefault();
-                                        onSubmit()
+                                        validateAlert(onSubmit, e, 'form-agendar') 
                                     }
                                 }
                                 text="ENVIAR"

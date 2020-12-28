@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import swal from 'sweetalert'
 import { URL_DEV, FLUJOS_COLUMNS } from '../../constants'
 import { setOptions, setTextTable, setMoneyTable } from '../../functions/setters'
 import { waitAlert, errorAlert, forbiddenAccessAlert } from '../../functions/alert'
@@ -10,6 +9,7 @@ import Layout from '../../components/layout/layout'
 import { Card } from 'react-bootstrap'
 import { FlujosForm } from '../../components/forms'
 import TableForModals from '../../components/tables/TableForModals'
+import Swal from 'sweetalert2'
 class Flujos extends Component {
     state = {
         form: {
@@ -203,7 +203,7 @@ class Flujos extends Component {
                 const { data } = this.state
                 const { flujos } = response.data
                 data.flujos = flujos
-                swal.close()
+                Swal.close()
                 this.setState({
                     ...this.state,
                     data,

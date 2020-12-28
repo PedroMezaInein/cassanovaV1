@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import swal from 'sweetalert'
+import Swal from 'sweetalert2'
 import { URL_DEV } from '../../../constants'
 import { setOptions, setSelectOptions } from '../../../functions/setters'
 import { errorAlert, waitAlert, forbiddenAccessAlert, createAlert, doneAlert } from '../../../functions/alert'
@@ -258,10 +258,10 @@ class IngresosForm extends Component {
                         if (auxCliente) {
                             form.cliente = auxCliente.empresa
                         } else {
-                            createAlert('No existe el cliente', '¿Lo quieres crear?', () => this.addClienteAxios(obj))
+                            createAlert('NO EXISTE EL CLIENTE', '¿LO QUIERES CREAR?', () => this.addClienteAxios(obj))
                         }
                         if (auxEmpresa && auxCliente) {
-                            swal.close()
+                            Swal.close()
                         }
                         form.facturaObject = obj
                         form.rfc = obj.rfc_receptor

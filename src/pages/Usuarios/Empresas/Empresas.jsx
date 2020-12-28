@@ -5,7 +5,6 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV } from '../../../constants'
 import { Modal, ModalDelete } from '../../../components/singles'
-import swal from 'sweetalert'
 import { EMPRESA_COLUMNS } from '../../../constants'
 import { setTextTable } from '../../../functions/setters'
 import ItemSlider from '../../../components/singles/ItemSlider'
@@ -66,12 +65,12 @@ class Empresas extends Component {
                 value: '',
                 files: []
             },
-            {
-                placeholder: 'Portafolio',
-                id: 'portafolio',
-                value: '',
-                files: []
-            },
+            // {
+            //     placeholder: 'Portafolio',
+            //     id: 'portafolio',
+            //     value: '',
+            //     files: []
+            // },
             /* {
                 placeholder: 'Cuestionario',
                 id: 'cuestionario',
@@ -457,7 +456,7 @@ class Empresas extends Component {
         await axios.get(URL_DEV + 'empresa/detenidas', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { empresas } = response.data
-                swal.close();
+                Swal.close();
                 this.setState({
                     ...this.state,
                     modalInhabilitadas: true,

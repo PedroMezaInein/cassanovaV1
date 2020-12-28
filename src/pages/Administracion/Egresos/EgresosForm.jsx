@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import swal from 'sweetalert'
+import Swal from 'sweetalert2'
 import { URL_DEV } from '../../../constants'
 import { setOptions, setSelectOptions } from '../../../functions/setters'
 import { errorAlert, waitAlert, forbiddenAccessAlert, createAlert, doneAlert } from '../../../functions/alert'
@@ -178,10 +178,10 @@ class EgresosForm extends Component {
                         if (auxProveedor) {
                             form.proveedor = auxProveedor.id.toString()
                         } else {
-                            createAlert('No existe el proveedor', '¿Lo quieres crear?', () => this.addProveedorAxios(obj))
+                            createAlert('NO EXISTE EL PROVEEDOR', '¿LO QUIERES CREAR?', () => this.addProveedorAxios(obj))
                         }
                         if (auxEmpresa && auxProveedor) {
-                            swal.close()
+                            Swal.close()
                         }
                         form.facturaObject = obj
                         form.rfc = obj.rfc_emisor
@@ -384,7 +384,7 @@ class EgresosForm extends Component {
                     options,
                     data
                 })
-                swal.close()
+                Swal.close()
             },
             (error) => {
                 console.log(error, 'error')

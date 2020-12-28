@@ -351,7 +351,7 @@ class Vacaciones extends Component {
 
     downloadPlantilla = () => {
         const link = document.createElement('a');
-        const url = 'https://admin-proyectos.s3.us-east-2.amazonaws.com/plantillas/feriados.xlsx'
+        const url = 'https://admin-proyectos.s3.us-east-2.amazonaws.com/plantillas/plantilla-feriados.xlsx'
         link.href = url;
         document.body.appendChild(link);
         link.click();
@@ -452,7 +452,7 @@ class Vacaciones extends Component {
                                                                 <td className="pr-0">
                                                                     <span className="btn btn-icon btn-light-success btn-sm mr-2 ml-auto" onClick = { (e) =>  { 
                                                                         e.preventDefault(); 
-                                                                        createAlert('¿Estás seguro que deseas aceptar las vacaciones?', '', 
+                                                                        createAlert('¿ESTÁS SEGURO QUE DESEAS ACEPTAR LAS VACACIONES?', '', 
                                                                         () => this.editVacacionesAxios(vacacion, 'Aceptadas'))
                                                                     }}  
                                                                     >
@@ -461,7 +461,7 @@ class Vacaciones extends Component {
                                                                 
                                                                     <span className="btn btn-icon  btn-light-danger btn-sm pulse pulse-danger"onClick = { (e) =>  { 
                                                                         e.preventDefault(); 
-                                                                        createAlert('¿Estás seguro que deseas rechazar las vacaciones?', '', 
+                                                                        createAlert('¿ESTÁS SEGURO QUE DESEAS RECHAZAR LAS VACACIONES?', '', 
                                                                         () => this.editVacacionesAxios(vacacion, 'Rechazadas'))
                                                                     }}
                                                                     >
@@ -496,7 +496,7 @@ class Vacaciones extends Component {
                             onClick = { () => { this.downloadPlantilla() } }
                             className = "btn btn-icon btn-light-primary btn-sm mr-2 ml-auto"
                             only_icon = "fas fa-file-excel icon-md"
-                            tooltip = { { text: 'Descargar plantilla' } }
+                            tooltip = { { text: 'DESCARGAR PLANTILLA' } }
                             />
                     </div>
                     <div>
@@ -534,7 +534,6 @@ function renderEventContent(eventInfo) {
                 <span>{eventInfo.event.title}</span>
             </div>
         </OverlayTrigger>
-
 
     )
 }

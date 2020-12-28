@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import swal from 'sweetalert'
+import Swal from 'sweetalert2'
 import { URL_DEV, URL_ASSETS } from '../../constants'
 import { setSelectOptions} from '../../functions/setters'
 import { waitAlert, errorAlert, forbiddenAccessAlert } from '../../functions/alert'
@@ -113,20 +113,18 @@ class Contabilidad extends Component {
         })
     }
 
-    onChangeEmpresa = e => {
-        const { value } = e.target
+    onChangeEmpresa = empresa => {
         const { options, form } = this.state
         let auxEmpresa = form.empresas
         let aux = []
         options.empresas.find(function (_aux) {
-            if (_aux.value.toString() === value.toString()) {
+            if (_aux.value.toString() === empresa.toString()) {
                 auxEmpresa.push(_aux)
             } else {
                 aux.push(_aux)
             }
             return false
         })
-
         options.empresas = aux
         form['empresas'] = auxEmpresa
         this.setState({
@@ -463,13 +461,11 @@ class Contabilidad extends Component {
                         return false
                     })
                     zip.generateAsync({type:"blob"})
-                        .then((blob) => {saveAs(blob, 'contabilidad.zip'); swal.close()})
+                        .then((blob) => {saveAs(blob, 'contabilidad.zip'); Swal.close()})
                         .catch(e => console.log(e));
                     
                 }
                 
-                
-
             },
             (error) => {
                 console.log(error, 'error')
@@ -498,7 +494,8 @@ class Contabilidad extends Component {
     render() {
         const { form, options } = this.state
         return (
-            <Layout active={'reportes'}  {...this.props}>
+            <Layout active='reportes'  {...this.props}>
+
                 <Card className="card-custom">
                     <Card.Header>
                         <div className="card-title">
@@ -521,7 +518,6 @@ class Contabilidad extends Component {
         )
     }
 }
-
 
 const mapStateToProps = state => {
     return {

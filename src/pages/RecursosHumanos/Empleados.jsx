@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server' 
 import { connect } from 'react-redux'
 import axios from 'axios'
-import swal from 'sweetalert'
+import Swal from 'sweetalert2'
 import Layout from '../../components/layout/layout' 
 import { Modal, ModalDelete} from '../../components/singles' 
 import { EMPLEADOS_COLUMNS, URL_DEV, ADJUNTOS_COLUMNS} from '../../constants'
@@ -157,7 +157,6 @@ class Empleados extends Component {
         return texto
     }
 
-
     openModalDelete = empleado => {
         const { modal } = this.state
         modal.delete = true
@@ -183,7 +182,7 @@ class Empleados extends Component {
     }
 
     openModalDeleteAdjuntos = adjunto => {
-        deleteAlert('¿Seguro deseas borrar el adjunto?', () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
+        deleteAlert('¿SEGURO DESEAS BORRAR EL ADJUNTO?', '', () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
     }
 
     openModalSee = empleado => {
@@ -248,7 +247,7 @@ class Empleados extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'rh/empleado/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close() 
+                Swal.close() 
                 const { empresas } = response.data
                 const { options } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
@@ -759,7 +758,6 @@ class Empleados extends Component {
             form
         })
     }
-
 
     render() {
         const { modal, options, title, form, formeditado, key, adjuntos, data, empleado } = this.state

@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import swal from 'sweetalert'
 import { URL_DEV, EGRESOS_COLUMNS, ADJUNTOS_COLUMNS } from '../../../constants'
 import { setOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setAdjuntosList, setSelectOptions } from '../../../functions/setters'
 import { errorAlert, waitAlert, forbiddenAccessAlert, createAlert, deleteAlert, doneAlert } from '../../../functions/alert'
@@ -16,6 +15,7 @@ import Select from '../../../components/form-components/Select'
 import TableForModals from '../../../components/tables/TableForModals'
 import AdjuntosForm from '../../../components/forms/AdjuntosForm'
 import { EgresosCard } from '../../../components/cards'
+import Swal from 'sweetalert2'
 const $ = require('jquery');
 class egresos extends Component {
     state = {
@@ -242,10 +242,10 @@ class egresos extends Component {
                         if (auxProveedor) {
                             form.proveedor = auxProveedor.id.toString()
                         } else {
-                            createAlert('No existe el proveedor', '¿Lo quieres crear?', () => this.addProveedorAxios(obj))
+                            createAlert('NO EXISTE EL PROVEEDOR', '¿LO QUIERES CREAR?', () => this.addProveedorAxios(obj))
                         }
                         if (auxEmpresa && auxProveedor) {
-                            swal.close()
+                            Swal.close()
                         }
                         form.facturaObject = obj
                         form.rfc = obj.rfc_emisor
@@ -472,7 +472,7 @@ class egresos extends Component {
         })
     }
     openModalDeleteAdjuntos = adjunto => {
-        deleteAlert('¿Seguro deseas borrar el adjunto?', () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
+        deleteAlert('¿SEGURO DESEAS BORRAR EL ADJUNTO?', '', () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
     }
     openModalSee = egreso => {
         this.setState({
@@ -569,7 +569,7 @@ class egresos extends Component {
         $('#egresos').DataTable().ajax.reload();
     }
     async getOptionsAxios() {
-        waitAlert()
+        // waitAlert()
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'egresos/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -578,7 +578,7 @@ class egresos extends Component {
                 data.proveedores = proveedores
                 data.empresas = empresas
                 options['estatusCompras'] = setSelectOptions(estatusCompras, 'estatus')
-                swal.close()
+                Swal.close()
                 this.setState({
                     ...this.state,
                     data, options

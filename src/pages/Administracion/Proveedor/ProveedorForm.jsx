@@ -7,7 +7,7 @@ import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert } from '../../..
 import Layout from '../../../components/layout/layout'
 import { ProveedorForm as ProveedorFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
-import swal from 'sweetalert';
+import Swal from 'sweetalert2'
 class ProveedorForm extends Component {
     state = {
         title: 'Nuevo proveedor',
@@ -177,7 +177,7 @@ class ProveedorForm extends Component {
         waitAlert()
         await axios.get(URL_DEV + 'proveedores/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close()
+                Swal.close()
                 const { areas, bancos, tipos_cuentas } = response.data
                 const { options } = this.state
                 options['areas'] = setOptions(areas, 'nombre', 'id')

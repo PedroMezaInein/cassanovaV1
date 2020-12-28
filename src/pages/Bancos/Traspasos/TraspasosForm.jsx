@@ -1,15 +1,13 @@
 import React, { Component } from 'react';
 import { Card } from 'react-bootstrap';
 import { connect } from 'react-redux'
-import swal from 'sweetalert';
+import Swal from 'sweetalert2'
 import Layout from '../../../components/layout/layout'
 import { URL_DEV } from '../../../constants';
 import { deleteAlert, doneAlert, errorAlert, forbiddenAccessAlert, waitAlert } from '../../../functions/alert';
 import axios from 'axios'
 import { setOptions } from '../../../functions/setters';
 import { TraspasoForm as TraspasosFormulario } from '../../../components/forms'
-import Swal from 'sweetalert2'
-import withReactContent from 'sweetalert2-react-content'
 class TraspasosForm extends Component {
     state = {
         title: 'Traspaso nuevo',
@@ -116,7 +114,7 @@ class TraspasosForm extends Component {
         })
     }
     deleteFile = element => {
-        deleteAlert('¿Deseas eliminar el archivo?', () => this.deleteAdjuntoAxios(element.id))
+        deleteAlert('DESEAS ELIMINAR EL ARCHIVO', '', () => this.deleteAdjuntoAxios(element.id))
     }
     onSubmit = e => {
         e.preventDefault()
@@ -140,7 +138,7 @@ class TraspasosForm extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'traspasos/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close()
+                Swal.close()
                 const { cuentas } = response.data
                 const { options, form } = this.state
                 options.cuentas = setOptions(cuentas, 'nombre', 'numero')

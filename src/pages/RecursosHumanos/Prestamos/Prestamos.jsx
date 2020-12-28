@@ -214,10 +214,10 @@ class Prestamos extends Component {
         })
     }
     deleteFile = element => {
-        deleteAlert('¿Deseas eliminar el archivo?', () => this.deleteAdjuntoAxios(element.id))
+        deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', '', () => this.deleteAdjuntoAxios(element.id))
     }
     deleteAbono = element => {
-        deleteAlert('¿Deseas eliminar el abono?', () => this.deleteAbonoAxios(element))
+        deleteAlert('¿DESEAS ELIMINAR EL ABONO?', '', () => this.deleteAbonoAxios(element))
     }
     setAdjuntos = adjuntos => {
         const { form } = this.state

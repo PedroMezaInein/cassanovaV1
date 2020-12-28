@@ -3,6 +3,8 @@ import { Page, Text, View, Document, StyleSheet, Image, Font, Link } from '@reac
 import IM from '../../assets/logos/im.png'
 import SpartanBold from '../../assets/fonts/Spartan-Bold.ttf'
 import Spartan from '../../assets/fonts/Spartan-Regular.ttf'
+import OpenSans from '../../assets/fonts/OpenSans-Light.ttf'
+import OpenSansBold from '../../assets/fonts/OpenSans-Bold.ttf'
 import moment from 'moment'
 import { IM_AZUL, IM_DORADO } from '../../constants'
 
@@ -11,6 +13,13 @@ Font.register({
     fonts:[
         { src: Spartan },
         { src: SpartanBold, fontWeight: 700 }
+    ]
+})
+Font.register({
+    family: 'Open Sans',
+    fonts:[
+        { src: OpenSans },
+        { src: OpenSansBold, fontWeight: 700 }
     ]
 })
 
@@ -39,15 +48,15 @@ const styles = StyleSheet.create({
         color: IM_AZUL,
         fontWeight: 'bold',
         fontFamily: 'Spartan',
-        fontSize: 35
+        fontSize: 25,
     },
     titulo:{
         color: '#535353',
         fontSize: 20,
         fontWeight: 'bold',
         fontFamily: 'Spartan',
-        paddingBottom: 9,
-        paddingLeft: 8
+        paddingBottom: 1,
+        paddingLeft: 8,
     },
     texto:{
         marginTop: '0.5rem',
@@ -77,7 +86,7 @@ const styles = StyleSheet.create({
     tableRowBodyNon:{
         display: 'flex',
         flexDirection: 'row',
-        backgroundColor: '#E6E6E6'
+        backgroundColor: '#F3F6F9'
     },
     tableRowBodyPar:{
         display: 'flex',
@@ -114,17 +123,19 @@ const styles = StyleSheet.create({
         alignContent: 'center',
         textAlign: 'center',
         flexWrap: 'wrap',
-        width: '5%'
+        width: '2%',
+        paddingBottom:20
     }, 
     cellLista:{
         display: 'flex',
         justifyContent: 'flex-start',
         flexWrap: 'wrap',
-        width: '95%',
-        fontSize: '10',
-        marginBottom: 5,
+        width: '97%',
+        fontSize: 10,
+        marginBottom: 15,
         textAlign: "justify",
-        lineHeight: 1.2
+        lineHeight: 1.5,
+        fontFamily: 'Open Sans',
     },
     cell20: {
         display: 'flex',
@@ -132,7 +143,17 @@ const styles = StyleSheet.create({
         alignContent: 'center',
         textAlign: 'center',
         flexWrap: 'wrap',
-        width: '22%'
+        width: '20%',
+        padding:'4px'
+    },
+    cell8: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignContent: 'center',
+        textAlign: 'center',
+        flexWrap: 'wrap',
+        width: '8%',
+        padding:'4px'
     },
     cell10: {
         display: 'flex',
@@ -140,7 +161,17 @@ const styles = StyleSheet.create({
         alignContent: 'center',
         textAlign: 'center',
         flexWrap: 'wrap',
-        width: '11%'
+        width: '10%',
+        padding:'4px'
+    },
+    cell11: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignContent: 'center',
+        textAlign: 'center',
+        flexWrap: 'wrap',
+        width: '11%',
+        padding:'4px'
     },
     cell15: {
         display: 'flex',
@@ -148,7 +179,8 @@ const styles = StyleSheet.create({
         alignContent: 'center',
         textAlign: 'center',
         flexWrap: 'wrap',
-        width: '17%'
+        width: '15%',
+        padding:'4px'
     },
     cell30: {
         display: 'flex',
@@ -156,28 +188,47 @@ const styles = StyleSheet.create({
         alignContent: 'center',
         textAlign: 'center',
         flexWrap: 'wrap',
-        width: '22%'
+        width: '30%',
+        padding:'4px'
     },  
-    cell40: {
+    cell43: {
         display: 'flex',
         justifyContent: 'center',
         alignContent: 'center',
         textAlign: 'center',
         flexWrap: 'wrap',
-        width: '34%'
+        width: '43%',
+        padding:'4px'
     }, 
     headerText:{
         color: 'white',
         fontWeight: 'bold',
-        fontSize: 10,
+        fontFamily: 'Spartan',
+        fontSize: 7,
         padding:3,
-        textAlign: 'left'
+        textAlign: 'center'
+    },
+    headerTextJustify:{
+        color: 'white',
+        fontWeight: 'bold',
+        fontFamily: 'Spartan',
+        fontSize: 8,
+        padding:3,
+        textAlign: 'justify'
+    },
+    bodyTextCenter:{
+        fontWeight: 100,
+        fontSize: 8,
+        textAlign: "center",
+        lineHeight:1.3,
+        fontFamily: 'Open Sans'
     },
     bodyText:{
         fontWeight: 100,
         fontSize: 8,
-        padding:1,
-        textAlign: "left"
+        textAlign: "justify",
+        lineHeight:1.3,
+        fontFamily: 'Open Sans',
     },
     imagenCentrada:{
         width: '95%',
@@ -212,11 +263,12 @@ const styles = StyleSheet.create({
     },
     logoPortada:{
         position: 'absolute',
-        width: '60%',
-        left: '20%',
+        width: '50%',
+        left: '25%',
         right: '20%',
         height: 'auto',
         top: '25%',
+        marginTop:'100px'
     },
     logoFin:{
         position: 'absolute',
@@ -225,6 +277,7 @@ const styles = StyleSheet.create({
         right: '28%',
         height: 'auto',
         top: '35%',
+        marginTop:'80px'
     },
     textPortada:{
         position: 'absolute',
@@ -246,34 +299,16 @@ export default class ReporteVentasInein extends Component {
 
     getFecha = () => {
         const { form } = this.props
-        let fecha = moment(form.fechaInicio)
-        let fecha2 = moment(form.fechaFin)
+        let fecha = moment(form.mes+'/01/'+form.año)
+        let fecha2 = moment(form.mes+'/01/'+form.año).endOf('month')
         let meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
         let aux = meses[fecha.month()] + ' ' + fecha.date() + ' - ' + meses[fecha2.month()] + ' ' + fecha2.date()
         return aux
     }
 
-    getMonth = () => {
-        const { form } = this.props
-        let fecha = moment(form.fechaInicio)
-        let mes = fecha.month()
-        let meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
-        return meses[mes]
-    }
-
-    getLastMonth = () => {
-        const { form } = this.props
-        let fecha = moment(form.fechaInicioRef)
-        let mes = fecha.month()
-        let meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
-        return meses[mes]
-    }
-
     getYear = () => {
         const { form } = this.props
-        let fecha = moment(form.fechaInicio)
-        let año = fecha.year()
-        return año
+        return moment(form.mes+'/01/'+form.año).year()
     }
 
     setStyleRowBody = index => {
@@ -289,8 +324,67 @@ export default class ReporteVentasInein extends Component {
         return element.replace(/&nbsp;/gi,'')
     }
 
+    setComentario = lead => {
+        let aux = '-'
+        if(lead){
+            if(lead.prospecto){
+                if(lead.prospecto.estatus_prospecto){
+                    switch(lead.prospecto.estatus_prospecto.estatus){
+                        case 'Cancelado':
+                        case 'Rechazado':
+                            aux = lead.prospecto.motivo
+                            if(aux === '')
+                                aux = lead.motivo
+                            if(aux === ''){
+                                if(lead.rh)
+                                    aux = 'RRHH'
+                                if(lead.proveedor)
+                                    aux = 'PROVEEDOR'
+                            }
+                            break;
+                    }
+                }else{
+                    if(lead.estatus){
+                        switch(lead.estatus.estatus){
+                            case 'Cancelado':
+                            case 'Rechazado':
+                                aux = lead.motivo
+                                if(aux === ''){
+                                    if(lead.rh)
+                                        aux = 'RRHH'
+                                    if(lead.proveedor)
+                                        aux = 'PROVEEDOR'
+                                }
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+        if( aux  === '-' ){
+            if(lead){
+                if(lead.prospecto){
+                    if(lead.prospecto.contactos){
+                        if(lead.prospecto.contactos.length){
+                            aux = lead.prospecto.contactos[0].comentario
+                        }
+                    }
+                }
+            }
+        }
+        return aux
+    }
+
+    setMoney = value => {
+        var formatter = new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+        });
+        return formatter.format(value);
+    }
+
     render() {
-        const { lista, images, form, anteriores } = this.props
+        const { lista, images, form, anteriores, mes, data } = this.props
         return (
             <Document style = {{ fontFamily: 'Spartan', color: '#535353' }}>
                 <Page style = {{ position: 'relative', height: '100%' }} size="A4" orientation = "landscape">
@@ -300,13 +394,13 @@ export default class ReporteVentasInein extends Component {
                     </View>
                     <Image src = { IM } style = { styles.logoPortada } />
                     <View style = { styles.textPortada } >
-                        <Text style = {{  textAlign: 'center', fontWeight: 'bold', fontSize: '25', color: '#535353' }}>
+                        <Text style = {{  textAlign: 'center', fontWeight: 'bold', fontSize: '22', color: '#535353',  marginTop:'70px'}}>
                             REPORTE DE VENTAS
                         </Text>
-                        <Text style = {{  textAlign: 'center', marginTop: 5, fontSize: '15', color: '#535353' }}>
+                        <Text style = {{  textAlign: 'center', marginTop: 5, fontSize: '14', color: '#535353' }}>
                             {this.getFecha()}
                         </Text>
-                        <Text style = {{  textAlign: 'center', marginTop: 5, fontSize: '15', color: '#535353' }}>
+                        <Text style = {{  textAlign: 'center', marginTop: 5, fontSize: '14', color: '#535353' }}>
                             {this.getYear()}
                         </Text>
                     </View>
@@ -319,7 +413,7 @@ export default class ReporteVentasInein extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    ENTRADA TOTAL DE LEADS
+                                    ENTRADA TOTAL DE LEADS ({mes} {form.año})
                                 </Text>
                             </View>
                         </View>
@@ -335,7 +429,7 @@ export default class ReporteVentasInein extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    COMPARATIVA DE LEADS TOTALES
+                                    COMPARATIVA DE LEADS TOTALES (MESES ANTERIORES)
                                 </Text>
                             </View>
                         </View>
@@ -351,7 +445,7 @@ export default class ReporteVentasInein extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    ORIGEN DE LEADS
+                                    ORIGEN DE LEADS ({mes} {form.año})
                                 </Text>
                             </View>
                         </View>
@@ -367,7 +461,7 @@ export default class ReporteVentasInein extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    COMPARATIVA ORIGEN LEADS
+                                    COMPARATIVA ORIGEN LEADS (MESES ANTERIORES)
                                 </Text>
                             </View>
                         </View>
@@ -383,7 +477,7 @@ export default class ReporteVentasInein extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    SERVICIOS SOLICITADOS
+                                    SERVICIOS SOLICITADOS ({mes} {form.año})
                                 </Text>
                             </View>
                         </View>
@@ -399,7 +493,7 @@ export default class ReporteVentasInein extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    COMPARATIVA SERVICIOS SOLICITADOS
+                                    COMPARATIVA SERVICIOS SOLICITADOS (MESES ANTERIORES)
                                 </Text>
                             </View>
                         </View>
@@ -415,7 +509,7 @@ export default class ReporteVentasInein extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    TIPO DE LEAD
+                                    TIPO DE LEAD ({mes} {form.año})
                                 </Text>
                             </View>
                         </View>
@@ -431,7 +525,7 @@ export default class ReporteVentasInein extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    COMPARATIVA TIPO DE LEAD
+                                    COMPARATIVA TIPO DE LEAD (MESES ANTERIORES)
                                 </Text>
                             </View>
                         </View>
@@ -447,7 +541,7 @@ export default class ReporteVentasInein extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    TOTAL DE PROSPECTOS
+                                    TOTAL DE PROSPECTOS ({mes} {form.año})
                                 </Text>
                             </View>
                         </View>
@@ -463,7 +557,7 @@ export default class ReporteVentasInein extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    COMPARATIVA TOTAL DE PROSPECTOS
+                                    COMPARATIVA TOTAL DE PROSPECTOS (MESES ANTERIORES)
                                 </Text>
                             </View>
                         </View>
@@ -479,7 +573,7 @@ export default class ReporteVentasInein extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    STATUS DE PROSPECTOS
+                                    STATUS DE PROSPECTOS ({mes} {form.año})
                                 </Text>
                             </View>
                         </View>
@@ -495,7 +589,7 @@ export default class ReporteVentasInein extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    COMPARATIVA STATUS DE PROSPECTOS
+                                    COMPARATIVA STATUS DE PROSPECTOS (MESES ANTERIORES)
                                 </Text>
                             </View>
                         </View>
@@ -511,11 +605,118 @@ export default class ReporteVentasInein extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    PROSPECTOS CERRADOS
+                                    PROSPECTOS CONTRATADOS ({mes} {form.año})
                                 </Text>
                             </View>
                         </View>
-                        <Image style = { styles.imagenCentrada }  src = { images[12].url }/>
+                        <View style = {{ marginTop: 10}}>
+                            <View style = { styles.table}  >
+                                <View style = { styles.tableRowHeader } >
+                                    <View style = { styles.cell20 }>
+                                        <Text style = { styles.headerTextJustify } >
+                                            NOMBRE
+                                        </Text>
+                                    </View>
+                                    <View style = { styles.cell30 }>
+                                        <Text style = { styles.headerTextJustify } >
+                                            VENDEDOR
+                                        </Text>
+                                    </View>
+                                    <View style = { styles.cell30 }>
+                                        <Text style = { styles.headerTextJustify } >
+                                            ORIGEN
+                                        </Text>
+                                    </View>
+                                    <View style = { styles.cell10 }>
+                                        <Text style = { styles.headerText } >
+                                            COSTO
+                                        </Text>
+                                    </View>
+                                    <View style = { styles.cell10 }>
+                                        <Text style = { styles.headerText } >
+                                            FECHA DE CONTRATACION
+                                        </Text>
+                                    </View>
+                                </View>
+                                {
+                                    data.cerrados.map( (element, index) =>{
+                                        if(element.prospecto)
+                                            return(
+                                                <View key = { index } style = { this.setStyleRowBody(index) } >
+                                                    <View style = { styles.cell20 }>
+                                                        <Text style = { styles.bodyText } >
+                                                            {
+                                                                element.prospecto ?
+                                                                    element.prospecto.lead ?
+                                                                        element.prospecto.lead.nombre.toUpperCase()
+                                                                    : ''
+                                                                : ''
+                                                            }
+                                                        </Text>
+                                                    </View>
+                                                    <View style = { styles.cell30 }>
+                                                        <Text style = { styles.bodyText } >
+                                                            {
+                                                                element.prospecto ?
+                                                                    element.prospecto.vendedores ?
+                                                                        element.prospecto.vendedores.length > 0 ?
+                                                                            <View>
+                                                                                {
+                                                                                    element.prospecto.vendedores.map((vendedor, index)=>{
+                                                                                        return(
+                                                                                            <Text key = { index }>
+                                                                                                {vendedor.name.toUpperCase()}
+                                                                                            </Text>
+                                                                                        )
+                                                                                    })
+                                                                                }
+                                                                            </View>
+                                                                        : '-'
+                                                                    : '-'
+                                                                : '-'
+                                                            }
+                                                        </Text>
+                                                    </View>
+                                                    <View style = { styles.cell30 }>
+                                                        <Text style = { styles.bodyText } >
+                                                            {
+                                                                element.prospecto ?
+                                                                    element.prospecto.lead ?
+                                                                        element.prospecto.lead.origen ?
+                                                                            element.prospecto.lead.origen.origen.toUpperCase()
+                                                                        : ''
+                                                                    : ''
+                                                                : ''
+                                                            }
+                                                        </Text>
+                                                    </View>
+                                                    <View style = { styles.cell10 }>
+                                                        <Text style = { styles.bodyTextCenter } >
+                                                            {
+                                                                element.prospecto ?
+                                                                    element.prospecto.lead ?
+                                                                        element.prospecto.lead.presupuesto_diseño ?
+                                                                            this.setMoney(element.prospecto.lead.presupuesto_diseño.total)
+                                                                        : '-'
+                                                                    : '-'
+                                                                : '-'
+                                                            }        
+                                                        </Text>
+                                                    </View>
+                                                    <View style = { styles.cell10 }>
+                                                        <Text style = { styles.bodyTextCenter } >
+                                                            {
+                                                                this.getFechaText(element.created_at)
+                                                            }
+                                                        </Text>
+                                                    </View>
+                                                </View>
+                                            )
+                                        return false
+                                    })
+                                }
+                            </View>
+                        </View>
                     </View>
                 </Page>
 
@@ -531,35 +732,35 @@ export default class ReporteVentasInein extends Component {
                                 </Text>
                             </View>
                         </View>
-                        <View style = {{ marginTop: 40}}>
+                        <View style = {{ marginTop: 10}}>
                             <View style = { styles.table}  >
                                 <View style = { styles.tableRowHeader } >
-                                    <View style = { styles.cell20 }>
-                                        <Text style = { styles.headerText } >
+                                    <View style = { styles.cell15 }>
+                                        <Text style = { styles.headerTextJustify } >
                                             NOMBRE DEL LEAD
                                         </Text>
                                     </View>
-                                    <View style = { styles.cell10 }>
-                                        <Text style = { styles.headerText } >
+                                    <View style = { styles.cell15 }>
+                                        <Text style = { styles.headerTextJustify } >
                                             PROYECTO
                                         </Text>
                                     </View>
-                                    <View style = { styles.cell30 }>
+                                    <View style = { styles.cell43 }>
                                         <Text style = { styles.headerText } >
                                             OBSERVACIONES
                                         </Text>
                                     </View>
-                                    <View style = { styles.cell10 }>
+                                    <View style = { styles.cell11 }>
                                         <Text style = { styles.headerText } >
-                                            STATUS
+                                            ESTATUS
                                         </Text>
                                     </View>
-                                    <View style = { styles.cell15 }>
+                                    <View style = { styles.cell8 }>
                                         <Text style = { styles.headerText } >
                                             PRIMER CONTACTO
                                         </Text>
                                     </View>
-                                    <View style = { styles.cell15 }>
+                                    <View style = { styles.cell8 }>
                                         <Text style = { styles.headerText } >
                                             ÚLTIMO CONTACTO
                                         </Text>
@@ -570,60 +771,63 @@ export default class ReporteVentasInein extends Component {
                                         if(lead.prospecto)
                                             return(
                                                 <View key = { index } style = { this.setStyleRowBody(index) } >
-                                                    <View style = { styles.cell20 }>
+                                                    <View style = { styles.cell15 }>
                                                         <Text style = { styles.bodyText } >
                                                             {
-                                                                lead.nombre
+                                                                lead.nombre.toUpperCase()
                                                             }
                                                         </Text>
                                                     </View>
-                                                    <View style = { styles.cell10 }>
+                                                    <View style = { styles.cell15 }>
                                                         <Text style = { styles.bodyText } >
                                                             {
                                                                 lead.prospecto.tipoProyecto ?
-                                                                    lead.prospecto.tipoProyecto.tipo
+                                                                    lead.prospecto.tipoProyecto.tipo.toUpperCase()
                                                                 : 
                                                                     lead.servicios.map((serv, index) => {
-                                                                        return serv.servicio
+                                                                        return serv.servicio.toUpperCase()
                                                                     })
                                                             }
                                                         </Text>
                                                     </View>
-                                                    <View style = { styles.cell30 }>
+                                                    <View style = { styles.cell43 }>
                                                         <Text style = { styles.bodyText } >
-                                                            {
-                                                                lead.observacion
-                                                            }
+                                                            { this.setComentario(lead) }
                                                         </Text>
                                                     </View>
-                                                    <View style = { styles.cell10 }>
-                                                        <Text style = { styles.bodyText } >
+                                                    <View style = { styles.cell11 }>
+                                                        <Text style = { styles.bodyTextCenter } >
                                                             {
                                                                 lead.prospecto.estatus_prospecto ?
-                                                                    lead.prospecto.estatus_prospecto.estatus
+                                                                    <Text style={
+                                                                        {
+                                                                            color: lead.prospecto.estatus_prospecto.color_texto, fontWeight:700
+                                                                        }}>
+                                                                            { lead.prospecto.estatus_prospecto.estatus.toUpperCase()}
+                                                                    </Text>
                                                                 :''
                                                             }
                                                         </Text>
                                                     </View>
-                                                    <View style = { styles.cell15 }>
-                                                        <Text style = { styles.bodyText } >
+                                                    <View style = { styles.cell8 }>
+                                                        <Text style = { styles.bodyTextCenter } >
                                                             {
                                                                 lead.prospecto.contactos ?
                                                                     lead.prospecto.contactos.length ?
                                                                         this.getFechaText(lead.prospecto.contactos[lead.prospecto.contactos.length - 1].created_at)
-                                                                    : 'Sin contacto'
-                                                                : 'Sin contacto'
+                                                                    : 'SIN CONTACTO'
+                                                                : 'SIN CONTACTO'
                                                             }
                                                         </Text>
                                                     </View>
-                                                    <View style = { styles.cell15 }>
-                                                        <Text style = { styles.bodyText } >
+                                                    <View style = { styles.cell8 }>
+                                                        <Text style = { styles.bodyTextCenter } >
                                                             {
                                                                 lead.prospecto.contactos ?
                                                                     lead.prospecto.contactos.length ?
                                                                         this.getFechaText(lead.prospecto.contactos[0].created_at)
-                                                                    : 'Sin contacto'
-                                                                : 'Sin contacto'
+                                                                    : 'SIN CONTACTO'
+                                                                : 'SIN CONTACTO'
                                                             }
                                                         </Text>
                                                     </View>
@@ -650,35 +854,35 @@ export default class ReporteVentasInein extends Component {
                                 </Text>
                             </View>
                         </View>
-                        <View style = {{ marginTop: 40}}>
+                        <View style = {{ marginTop: 10}}>
                             <View style = { styles.table}  >
                                 <View style = { styles.tableRowHeader } >
-                                    <View style = { styles.cell20 }>
-                                        <Text style = { styles.headerText } >
+                                    <View style = { styles.cell15 }>
+                                        <Text style = { styles.headerTextJustify } >
                                             NOMBRE DEL LEAD
                                         </Text>
                                     </View>
-                                    <View style = { styles.cell10 }>
-                                        <Text style = { styles.headerText } >
+                                    <View style = { styles.cell15 }>
+                                        <Text style = { styles.headerTextJustify } >
                                             PROYECTO
                                         </Text>
                                     </View>
-                                    <View style = { styles.cell30 }>
+                                    <View style = { styles.cell43 }>
                                         <Text style = { styles.headerText } >
                                             MOTIVO
                                         </Text>
                                     </View>
-                                    <View style = { styles.cell10 }>
+                                    <View style = { styles.cell11 }>
                                         <Text style = { styles.headerText } >
-                                            STATUS
+                                            ESTATUS
                                         </Text>
                                     </View>
-                                    <View style = { styles.cell15 }>
+                                    <View style = { styles.cell8 }>
                                         <Text style = { styles.headerText } >
                                             PRIMER CONTACTO
                                         </Text>
                                     </View>
-                                    <View style = { styles.cell15 }>
+                                    <View style = { styles.cell8 }>
                                         <Text style = { styles.headerText } >
                                             ÚLTIMO CONTACTO
                                         </Text>
@@ -689,65 +893,63 @@ export default class ReporteVentasInein extends Component {
                                         if(lead.prospecto)
                                             return(
                                                 <View key = { index } style = { this.setStyleRowBody(index) } >
-                                                    <View style = { styles.cell20 }>
+                                                    <View style = { styles.cell15 }>
                                                         <Text style = { styles.bodyText } >
                                                             {
-                                                                lead.nombre
+                                                                lead.nombre.toUpperCase()
                                                             }
                                                         </Text>
                                                     </View>
-                                                    <View style = { styles.cell10 }>
+                                                    <View style = { styles.cell15 }>
                                                         <Text style = { styles.bodyText } >
                                                             {
                                                                 lead.prospecto.tipoProyecto ?
-                                                                    lead.prospecto.tipoProyecto.tipo
+                                                                    lead.prospecto.tipoProyecto.tipo.toUpperCase()
                                                                 : 
                                                                     lead.servicios.map((serv, index) => {
-                                                                        return serv.servicio
+                                                                        return serv.servicio.toUpperCase()
                                                                     })
                                                             }
                                                         </Text>
                                                     </View>
-                                                    <View style = { styles.cell30 }>
+                                                    <View style = { styles.cell43 }>
                                                         <Text style = { styles.bodyText } >
-                                                            {
-                                                                lead.motivo ?
-                                                                    lead.motivo
-                                                                :   
-                                                                    lead.prospecto.motivo ?
-                                                                        lead.prospecto.motivo
-                                                                    : '-'
-                                                            }
+                                                        { this.setComentario(lead) }
                                                         </Text>
                                                     </View>
-                                                    <View style = { styles.cell10 }>
-                                                        <Text style = { styles.bodyText } >
+                                                    <View style = { styles.cell11 }>
+                                                        <Text style = { styles.bodyTextCenter } >
                                                             {
                                                                 lead.prospecto.estatus_prospecto ?
-                                                                    lead.prospecto.estatus_prospecto.estatus
+                                                                    <Text style={
+                                                                        {
+                                                                            color: lead.prospecto.estatus_prospecto.color_texto, fontWeight:700
+                                                                        }}>
+                                                                            { lead.prospecto.estatus_prospecto.estatus.toUpperCase()}
+                                                                    </Text>
                                                                 :''
                                                             }
                                                         </Text>
                                                     </View>
-                                                    <View style = { styles.cell15 }>
-                                                        <Text style = { styles.bodyText } >
+                                                    <View style = { styles.cell8 }>
+                                                        <Text style = { styles.bodyTextCenter } >
                                                             {
                                                                 lead.prospecto.contactos ?
                                                                     lead.prospecto.contactos.length ?
                                                                         this.getFechaText(lead.prospecto.contactos[lead.prospecto.contactos.length - 1].created_at)
-                                                                    : 'Sin contacto'
-                                                                : 'Sin contacto'
+                                                                    : 'SIN CONTACTO'
+                                                                : 'SIN CONTACTO'
                                                             }
                                                         </Text>
                                                     </View>
-                                                    <View style = { styles.cell15 }>
-                                                        <Text style = { styles.bodyText } >
+                                                    <View style = { styles.cell8 }>
+                                                        <Text style = { styles.bodyTextCenter } >
                                                             {
                                                                 lead.prospecto.contactos ?
                                                                     lead.prospecto.contactos.length ?
                                                                         this.getFechaText(lead.prospecto.contactos[0].created_at)
-                                                                    : 'Sin contacto'
-                                                                : 'Sin contacto'
+                                                                    : 'SIN CONTACTO'
+                                                                : 'SIN CONTACTO'
                                                             }
                                                         </Text>
                                                     </View>

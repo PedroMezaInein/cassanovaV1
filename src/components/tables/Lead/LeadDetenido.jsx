@@ -21,7 +21,7 @@ class LeadDetenido extends Component {
         return false;
     }
     render() {
-        const { leads, onClickNext, onClickPrev, openModalWithInput, changeEstatus } = this.props
+        const { leads, onClickNext, onClickPrev, openModalWithInput, changeEstatus, changePageDetails } = this.props
         return (
             <div className="tab-content">
                 <div className="table-responsive-lg">
@@ -77,7 +77,17 @@ class LeadDetenido extends Component {
                                                 </td>
                                                 <td className="font-size-lg text-left font-weight-bolder">
                                                     <span>Ingreso: </span><span className="text-muted font-weight-bold font-size-sm">{setDateTableLG(lead.created_at)}</span><br />
-                                                    <span>Último contacto: </span><span className="text-muted font-weight-bold font-size-sm">{setDateTableLG(lead.prospecto.contactos[0].created_at)}</span>
+                                                    <span>Último contacto: </span><span className="text-muted font-weight-bold font-size-sm">
+                                                        {
+                                                            lead.prospecto ?
+                                                                lead.prospecto.contactos ?
+                                                                    lead.prospecto.contactos.length ?
+                                                                        setDateTableLG(lead.prospecto.contactos[0].created_at)
+                                                                    : '-'
+                                                                : '-'
+                                                            : '-'
+                                                        }
+                                                    </span>
                                                 </td>
                                                 <td>
                                                     {
@@ -167,7 +177,7 @@ class LeadDetenido extends Component {
                                                 </td>
                                                 <td className="pr-0 text-center">
                                                     <OverlayTrigger overlay={<Tooltip>VER MÁS</Tooltip>}>
-                                                        <a href='/leads/crm/info/info' className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-gray">
+                                                        <a onClick={(e) => { changePageDetails(lead) }} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-gray">
                                                             <i className="flaticon2-plus icon-nm"></i>
                                                         </a>
                                                     </OverlayTrigger>

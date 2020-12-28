@@ -19,6 +19,7 @@ import imageUpload from './ImageUpload'
 import optionsCheckboxHeaders from './OptionsCheckboxHeaders'
 import tagInput from './TagInput'
 import tagSelectSearch from './TagSelectSearch'
+import video from './Video'
 // Validado, pero sin texto de error
 import inputMoneySinText from './SinText/InputMoneySinText'
 import selectSearchSinText from './SinText/SelectSearchSinText'
@@ -59,6 +60,7 @@ export const ImageUpload = imageUpload
 export const OptionsCheckboxHeaders = optionsCheckboxHeaders
 export const TagInput = tagInput
 export const TagSelectSearch = tagSelectSearch
+export const Video = video
 // Validado, pero sin texto de error
 export const InputMoneySinText = inputMoneySinText
 export const SelectSearchSinText = selectSearchSinText

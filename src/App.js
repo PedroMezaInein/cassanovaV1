@@ -6,7 +6,7 @@ import { connect } from 'react-redux';
 import axios from 'axios';
 import { URL_DEV } from './constants';
 import { logout, login } from './redux/reducers/auth_user'
-import swal from 'sweetalert'
+import { errorAlert } from './functions/alert';
 
 const Loader = x => Loadable({
     loading: Loading,
@@ -160,6 +160,9 @@ const Vacaciones = Loader(() => import('./pages/RecursosHumanos/Vacaciones/Vacac
 const Calidad = Loader(() => import('./pages/Calidad/Calidad') )
 const CalidadForm = Loader(() => import('./pages/Calidad/CalidadForm') )
 
+const MaterialEmpresa = Loader( () => import('./pages/Mercadotecnia/MaterialEmpresa/MaterialEmpresa') )
+const MaterialCliente = Loader( () => import('./pages/Mercadotecnia/MaterialCliente/MaterialCliente') )
+
 class App extends Component{
     async componentDidMount(){
         const { access_token } = this.props.authUser
@@ -168,29 +171,18 @@ class App extends Component{
                 const { data } = response
                 login(data)
             },
+
             (error) => {
-                if(error.response.status === 401){
-                    this.logoutUser()    
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    this.logoutUser()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
-                else{
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
-                        icon: 'error',
-                        
-                    })
-                }
-                console.log(error.response, 'response')
-                /* this.logoutUser() */
             }
         ).catch((error) => {
-            /* this.logoutUser() */
-            swal({
-                title: '¡Ups 😕!',
-                text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.' ,
-                icon: 'error',
-                
-            })
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
@@ -372,7 +364,9 @@ class App extends Component{
 
                 <Route path = "/calidad/calidad" exact component ={ Calidad } />
                 <Route path = "/calidad/calidad/:action" exact component = { CalidadForm } />
-
+                <Route path = "/mercadotecnia/material-empresas" exact component ={ MaterialEmpresa } />
+                <Route path = "/mercadotecnia/material-clientes" exact component ={ MaterialCliente} />
+                
             </>
         )
     }

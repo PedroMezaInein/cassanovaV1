@@ -6,7 +6,7 @@ import { URL_DEV } from '../../../constants'
 import { waitAlert, doneAlert, errorAlert, forbiddenAccessAlert, deleteAlert } from '../../../functions/alert'
 import { Card } from 'react-bootstrap'
 import { EstadosCuentaForm as EstadosCuentaFormulario } from '../../../components/forms'
-import swal from 'sweetalert'
+import Swal from 'sweetalert2'
 import { setOptions } from '../../../functions/setters'
 class EstadosCuentaForm extends Component {
     state = {
@@ -85,7 +85,7 @@ class EstadosCuentaForm extends Component {
         })
     }
     deleteFile = element => {
-        deleteAlert('¿Deseas eliminar el archivo?', () => this.deleteAdjuntoAxios(element.id))
+        deleteAlert('DESEAS ELIMINAR EL ARCHIVO', '', () => this.deleteAdjuntoAxios(element.id))
     }
     onSubmit = e => {
         e.preventDefault();
@@ -97,7 +97,7 @@ class EstadosCuentaForm extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'estados-cuentas/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close()
+                Swal.close()
                 const { cuentas } = response.data
                 const { options } = this.state
                 options.cuentas = setOptions(cuentas, 'nombre', 'numero')

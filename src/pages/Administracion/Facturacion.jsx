@@ -9,11 +9,12 @@ import { setTextTable, setMoneyTable, setDateTable, setOptions, setLabelTable } 
 import { errorAlert, forbiddenAccessAlert, doneAlert, waitAlert, createAlert, questionAlertY } from '../../functions/alert'
 import { Modal, ItemSlider } from '../../components/singles'
 import { Button, FileInput } from '../../components/form-components'
-import swal from 'sweetalert'
 import { Tabs, Tab, Form } from 'react-bootstrap'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
 import { FacturacionCard } from '../../components/cards'
 import NumberFormat from 'react-number-format'
+import Swal from 'sweetalert2'
+
 const $ = require('jquery');
 class Facturacion extends Component {
     state = {
@@ -72,7 +73,7 @@ class Facturacion extends Component {
         this.getRestante()
     }
     async getOptionsAxios() {
-        waitAlert()
+        // waitAlert()
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'facturas/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -80,7 +81,7 @@ class Facturacion extends Component {
                 const { data } = this.state
                 data.clientes = clientes
                 data.empresas = empresas
-                swal.close()
+                Swal.close()
                 this.setState({
                     ...this.state,
                     data
@@ -100,7 +101,7 @@ class Facturacion extends Component {
         })
     }
     async getRestante() {
-        waitAlert()
+        // waitAlert()
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'facturas/ventas/restante', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -631,10 +632,10 @@ class Facturacion extends Component {
                         }
                         if (auxCliente) {
                         } else {
-                            createAlert('No existe el cliente', '¿Lo quieres crear?', () => this.addClienteAxios(obj))
+                            createAlert('NO EXISTE EL CLIENTE', '¿LO QUIERES CREAR?', () => this.addClienteAxios(obj))
                         }
                         if (auxEmpresa && auxCliente) {
-                            swal.close()
+                            Swal.close()
                         }
                         form.facturaObject = obj
                         this.setState({

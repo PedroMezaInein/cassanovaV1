@@ -249,8 +249,8 @@ class NewTableServerRender extends Component {
                 "sProcessing": renderToString(
                     <div className="d-flex align-items-center justify-content-center">
                         <div className="position-fixed p-5">
-                            <div className="">
-                                <Spinner animation="border" variant="primary" size="lg" as="span" />
+                            <div className="mt-175px">
+                                <div class="spinner spinner-primary spinner-xl"></div>
                             </div>
                         </div>
                     </div>),
@@ -301,7 +301,7 @@ class NewTableServerRender extends Component {
                 }
             }
             ],
-            lengthMenu: [[20, 30, 40, 50, -1], [20, 30, 40, 50, "Todos"]],
+            lengthMenu: [[20, 30, 40, 50], [20, 30, 40, 50]],
             pageLength: 20,
             select: checkbox ? { style: 'multi' } : false
 
@@ -396,7 +396,7 @@ class NewTableServerRender extends Component {
                             }
                             {(exportar_boton === true) ?
                                 <button onClick={() => this.clickHandlerExport()} className="btn btn-primary font-weight-bold mr-2">
-                                    <i className="far fa-file-excel"></i> Exportar
+                                    <i className="far fa-file-excel"></i> EXPORTAR
                                 </button>
                                 :
                                 ""
@@ -405,12 +405,12 @@ class NewTableServerRender extends Component {
                                 (mostrar_boton === true) ?
                                     (abrir_modal === true) ?
                                         <button onClick={() => this.clickHandler()} className="btn btn-success font-weight-bold mr-2">
-                                            <i className="flaticon-add"></i> Agregar
-                                            </button>
+                                            <i className="flaticon-add"></i> AGREGAR
+                                        </button>
                                         :
                                         <a href={url} className="btn btn-success font-weight-bold mr-2">
-                                            <i className="flaticon-add"></i> Agregar
-                                            </a>
+                                            <i className="flaticon-add"></i> AGREGAR
+                                        </a>
                                     :
                                     ""
                             }

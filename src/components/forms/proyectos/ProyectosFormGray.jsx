@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
-import { Button, RangeCalendar, TagInputGray, TagSelectSearchGray, InputPhoneGray, InputGray, InputNumberGray, SelectSearchGray } from '../../form-components'
+import { Button, RangeCalendar, TagInputGray, TagSelectSearchGray, InputPhoneGray, InputGray, InputNumberGray, SelectSearchGray, CalendarDay } from '../../form-components'
 // import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { TEL } from '../../../constants'
 import { openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
@@ -62,6 +62,40 @@ class ProyectosForm extends Component {
             return false
         })
         onChange({ target: { value: value, name: 'cliente' } })
+    }
+
+    nuevoUpdateFase = seleccionados => {
+        const { form, deleteOption } = this.props
+        seleccionados = seleccionados ? seleccionados : [];
+        if (seleccionados.length > form.fases.length) {
+            let diferencia = $(seleccionados).not(form.fases).get();
+            let val_diferencia = diferencia[0].value
+            this.updateFase(val_diferencia)
+        }
+        else {
+            let diferencia = $(form.fases).not(seleccionados).get();
+            diferencia.forEach(borrar => {
+                deleteOption(borrar, "fases")
+            })
+        }
+    }
+
+    updateFase = value => {
+        const { onChange, options, onChangeOptions, form } = this.props
+        options.fases.map((fase) => {
+            if (fase.value === value) {
+                let aux = false;
+                form.fases.map((element) => {
+                    if (element.value === value)
+                        aux = true
+                    return false
+                })
+                if (!aux)
+                    onChangeOptions({ target: { value: fase.value, name: 'fase' } }, 'fases')
+            }
+            return false
+        })
+        onChange({ target: { value: value, name: 'fase' } })
     }
 
     updateEmpresa = value => {
@@ -137,79 +171,12 @@ class ProyectosForm extends Component {
                             <div id="wizard-1-content" className="pb-3 px-2" data-wizard-type="step-content" data-wizard-state="current">
                                 <h5 className="mb-4 font-weight-bold text-dark">Ingresa los datos de generales</h5>
                                 <div className="form-group row form-group-marginless">
-                                    {/* <div className = 'col-md-2 mt-2'>
-                                        <div className="d-flex">
-                                            <div className="mr-5">
-                                                <div className="text-center">
-                                                    <p className="font-size-sm font-weight-bold">FASE 1</p>
-                                                </div>
-                                                <div className="d-flex justify-content-center">
-                                                    <Form.Group>
-                                                        <div className="checkbox-list pt-2">
-                                                            <label className="checkbox checkbox-outline checkbox-outline-2x checkbox-primary">
-                                                                <input
-                                                                    name = 'fase1'
-                                                                    type="checkbox"
-                                                                    checked = { form.fase1 }
-                                                                    onChange={e => this.handleToggler(e)}
-                                                                    disabled = { form.fase1_relacionado === false ? false : form.fase1_relacionado }
-                                                                    />
-                                                                <span className = { form.fase1_relacionado === false ? '' : 'disabled-label-span' } ></span>
-                                                            </label>
-                                                        </div>
-                                                    </Form.Group>
-                                                </div>
-                                            </div>
-                                            <div className="mr-5">
-                                                <div className="text-center">
-                                                    <p className="font-size-sm font-weight-bold">FASE 2</p>
-                                                </div>
-                                                <div className="d-flex justify-content-center">
-                                                    <Form.Group>
-                                                        <div className="checkbox-list pt-2">
-                                                            <label className="checkbox checkbox-outline checkbox-outline-2x checkbox-primary">
-                                                                <input
-                                                                    name = 'fase2'
-                                                                    type="checkbox"
-                                                                    checked = { form.fase2 }
-                                                                    onChange={e => this.handleToggler(e)}
-                                                                    disabled = { form.fase2_relacionado === false ? false : form.fase2_relacionado }
-                                                                    />
-                                                                <span className = { form.fase2_relacionado === false ? '' : 'disabled-label-span' } ></span>
-                                                            </label>
-                                                        </div>
-                                                    </Form.Group>
-                                                </div>
-                                            </div>
-                                            <div>
-                                                <div className="text-center">
-                                                    <p className="font-size-sm font-weight-bold">FASE 3</p>
-                                                </div>
-                                                <div className="d-flex justify-content-center">
-                                                    <Form.Group>
-                                                        <div className="checkbox-list pt-2">
-                                                            <label className="checkbox checkbox-outline checkbox-outline-2x checkbox-primary">
-                                                                <input
-                                                                    name = 'fase3'
-                                                                    type="checkbox"
-                                                                    checked = { form.fase3 }
-                                                                    onChange={e => this.handleToggler(e)}
-                                                                    disabled = { form.fase3_relacionado === false ? false : form.fase3_relacionado }
-                                                                    />
-                                                                <span className = { form.fase3_relacionado === false ? '' : 'disabled-label-span' } ></span>
-                                                            </label>
-                                                        </div>
-                                                    </Form.Group>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div> */}
                                     <div className="col-md-4">
                                         <TagSelectSearchGray
                                             placeholder="SELECCIONA LA FASE"
-                                            options={this.transformarOptions(options.clientes)}
-                                            defaultvalue={this.transformarOptions(form.clientes)}
-                                            onChange={this.nuevoUpdateCliente}
+                                            options={this.transformarOptions(options.fases)}
+                                            defaultvalue={this.transformarOptions(form.fases)}
+                                            onChange={this.nuevoUpdateFase}
                                             iconclass={"far fa-folder-open"}
                                         />
                                     </div>
@@ -268,51 +235,15 @@ class ProyectosForm extends Component {
                                         />
                                     </div>
                                     <div className="col-md-4">
-                                        {
-                                            formeditado && form.clientes.length ?
-                                                <>
-                                                    {/* <SelectSearchTrue
-                                                        formeditado={formeditado}
-                                                        options={options.clientes}
-                                                        placeholder="SELECCIONA EL CLIENTE"
-                                                        name="cliente"
-                                                        value={form.cliente}
-                                                        onChange={this.updateCliente}
-                                                        iconclass={"far fa-user"}
-                                                    /> */}
-                                                    <TagSelectSearchGray
-                                                        requirevalidation={1}
-                                                        placeholder="SELECCIONA EL CLIENTE"
-                                                        options={this.transformarOptions(options.clientes)}
-                                                        defaultvalue={this.transformarOptions(form.clientes)}
-                                                        onChange={this.nuevoUpdateCliente}
-                                                        iconclass={"far fa-folder-open"}
-                                                        messageinc="Incorrecto. Selecciona el cliente."
-                                                    />
-                                                </>
-                                                :
-                                                <>
-                                                    {/* <SelectSearch
-                                                    formeditado={formeditado}
-                                                    options={options.clientes}
-                                                    placeholder="SELECCIONA EL CLIENTE"
-                                                    name="cliente"
-                                                    value={form.cliente}
-                                                    onChange={this.updateCliente}
-                                                    iconclass={"far fa-user"}
-                                                    messageinc="Incorrecto. Selecciona el cliente"
-                                                /> */}
-                                                    <TagSelectSearchGray
-                                                        requirevalidation={1}
-                                                        placeholder="SELECCIONA EL CLIENTE"
-                                                        options={this.transformarOptions(options.clientes)}
-                                                        defaultvalue={this.transformarOptions(form.clientes)}
-                                                        onChange={this.nuevoUpdateCliente}
-                                                        iconclass={"far fa-folder-open"}
-                                                        messageinc="Incorrecto. Selecciona el cliente."
-                                                    />
-                                                </>
-                                        }
+                                        <TagSelectSearchGray
+                                            requirevalidation={1}
+                                            placeholder="SELECCIONA EL CLIENTE"
+                                            options={this.transformarOptions(options.clientes)}
+                                            defaultvalue={this.transformarOptions(form.clientes)}
+                                            onChange={this.nuevoUpdateCliente}
+                                            iconclass={"far fa-folder-open"}
+                                            messageinc="Incorrecto. Selecciona el cliente."
+                                            />
                                     </div>
                                     <div className="col-md-4">
                                         <TagInputGray
@@ -399,6 +330,8 @@ class ProyectosForm extends Component {
                                                 defaultValue={form.colonia}
                                                 onChange={this.updateColonia}
                                                 messageinc="Incorrecto. Selecciona la colonia"
+                                                withtaglabel={1}
+                                                withtextlabel={1}
                                             />
                                         }
                                         {
@@ -472,13 +405,17 @@ class ProyectosForm extends Component {
                                 </div>
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless justify-content-center mt-3">
-                                    <div className="col-md-12 text-center">
+                                    <div className="col-md-6 text-center">
                                         <label className="col-form-label my-2 font-weight-bolder">Fecha de inicio - Fecha final</label><br />
                                         <RangeCalendar
-                                            onChange={onChangeRange}
-                                            start={form.fechaInicio}
-                                            end={form.fechaFin}
+                                            onChange = { onChangeRange }
+                                            start = { form.fechaInicio }
+                                            end = { form.fechaFin }
                                         />
+                                    </div>
+                                    <div className="col-md-6 text-center">
+                                        <label className="col-form-label my-2 font-weight-bolder">Fecha de Reunión</label><br />
+                                        <CalendarDay value = { form.fechaReunion } name = 'fechaReunion' onChange = { onChange } date = { form.fechaReunion } withformgroup={1}/>
                                     </div>
                                 </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">

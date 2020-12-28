@@ -2,14 +2,14 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux'
 import { Card, Accordion } from 'react-bootstrap';
 import axios from 'axios';
-import swal from 'sweetalert';
+import Swal from 'sweetalert2'
 import { faEye } from '@fortawesome/free-solid-svg-icons';
 import Layout from '../../../components/layout/layout'
 import { ProyectosForm as ProyectoFormulario } from '../../../components/forms'
 import { URL_DEV, CP_URL } from '../../../constants';
 import { Button } from '../../../components/form-components'
 import { ProyectoCard, ProyectosCard } from '../../../components/cards'
-import { waitAlert, forbiddenAccessAlert, errorAlert, doneAlert, questionAlert } from '../../../functions/alert';
+import { waitAlert, forbiddenAccessAlert, errorAlert, doneAlert, questionAlert, createAlert } from '../../../functions/alert';
 import { setOptions } from '../../../functions/setters';
 class ProyectosForm extends Component {
     state = {
@@ -755,7 +755,7 @@ class ProyectosForm extends Component {
         const { access_token } = this.props.authUser
         await axios.put(`${URL_DEV}proyectos/${proyecto.id}/estatus`,{estatus: estatus}, { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close()
+                Swal.close()
                 doneAlert('Estado actualizado con éxito')
                 const { history } = this.props
                 history.push({
@@ -781,7 +781,7 @@ class ProyectosForm extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'proyectos/opciones', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close()
+                Swal.close()
                 const { clientes, empresas, estatus } = response.data
                 const { options } = this.state
                 options['clientes'] = setOptions(clientes, 'empresa', 'id')
@@ -857,7 +857,13 @@ class ProyectosForm extends Component {
         })
         await axios.post(URL_DEV + 'proyectos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue creado con éxito.')
+                const { proyecto } = response.data
+                /* doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue creado con éxito.') */
+                createAlert(
+                    '¡FELICIDADES CREASTE EL PROYECTO!',
+                    '¿DESEAS CREAR LA CAJA CHICA?',
+                    () => this.addCajaChicaAxios(proyecto)
+                )
                 const { history } = this.props
                 history.push({
                     pathname: '/proyectos/proyectos'
@@ -876,6 +882,27 @@ class ProyectosForm extends Component {
             console.log(error, 'error')
         })
     }
+
+    async addCajaChicaAxios(proyecto){
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'cuentas/proyecto/caja/' + proyecto.id, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert('Caja chica generada con éxito.')
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     async addProyectoRelacionadoAxios() {
         const { access_token } = this.props.authUser
         const { form, proyecto } = this.state

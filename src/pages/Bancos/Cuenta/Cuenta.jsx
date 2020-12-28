@@ -284,7 +284,7 @@ class Cuenta extends Component {
         })
     }
     openModalDeleteEstado = estado => {
-        deleteAlert('¿Deseas eliminar el estado de cuenta?', () => this.deleteEstadoCuentaAxios(estado))
+        deleteAlert('¿DESEAS ELIMINAR EL ESTADO DE CUENTA?', '', () => this.deleteEstadoCuentaAxios(estado))
     }
     async deleteCuentaAxios() {
         const { access_token } = this.props.authUser

@@ -7,7 +7,6 @@ import { AvanceForm } from '../../../components/forms'
 import axios from 'axios'
 import { URL_DEV, PROYECTOS_COLUMNS, URL_ASSETS } from '../../../constants'
 import { Small } from '../../../components/texts'
-import swal from 'sweetalert'
 import { Card, Tabs } from 'react-bootstrap'
 import { setTextTable, setDateTable, setArrayTable, setListTable, setLabelTable } from '../../../functions/setters'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
@@ -1012,7 +1011,7 @@ class Proyectos extends Component {
         waitAlert()
         await axios.post(URL_DEV + 'proyectos/' + proyecto.id + '/adjuntos/zip', aux, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close()
+                Swal.close()
                 const url = URL_ASSETS + '/storage/adjuntos.zip'
                 const link = document.createElement('a');
                 link.href = url;

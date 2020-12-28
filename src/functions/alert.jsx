@@ -1,6 +1,6 @@
-import swal from 'sweetalert'
 import { Sending } from '../components/Lottie/'
 import { Done } from '../components/Lottie/'
+import { SendingDecember } from '../components/Lottie/'
 import ReactDOM from 'react-dom';
 import React from 'react'
 
@@ -8,35 +8,71 @@ import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
 
-let wrapperSending = document.createElement('div');
-ReactDOM.render(<Sending />, wrapperSending);
-let sending = wrapperSending.firstChild;
-
-let wrapperDone = document.createElement('div');
-ReactDOM.render(<Done />, wrapperDone);
-let done = wrapperDone.firstChild;
-
 export async function waitAlert() {
-    swal({
+    MySwal.fire({
         title: '¡UN MOMENTO!',
-        text: 'LA INFORMACIÓN ESTÁ SIENDO PROCESADA.',
-        buttons: false,
-        content: sending
+        html:
+            <div>
+                <p>
+                    LA INFORMACIÓN ESTÁ SIENDO PROCESADA
+                </p>
+                <Sending />
+            </div>,
+        customClass: {
+            actions: 'd-none'
+        }
     })
+    /* let fecha = new Date()
+    console.log(fecha.getMonth())
+    if(fecha.getMonth() === 11)
+        MySwal.fire({
+            title: '¡UN MOMENTO!',
+            html:
+                <div>
+                    <p>
+                        LA INFORMACIÓN ESTÁ SIENDO PROCESADA
+                    </p>
+                    <SendingDecember />
+                </div>,
+            customClass: {
+                actions: 'd-none'
+            }
+        })
+    else{
+        MySwal.fire({
+            title: '¡UN MOMENTO!',
+            html:
+                <div>
+                    <p>
+                        LA INFORMACIÓN ESTÁ SIENDO PROCESADA
+                    </p>
+                    <Sending />
+                </div>,
+            customClass: {
+                actions: 'd-none'
+            }
+        })
+    } */
 }
 
 export async function doneAlert(texto) {
-    swal({
+    MySwal.fire({
         title: '¡FELICIDADES!',
-        text: texto,
-        buttons: false,
+        html:
+            <div>
+                <p>
+                    {texto}
+                </p>
+                <Done />
+            </div>,
+        customClass: {
+            actions: 'd-none'
+        },
         timer: 2500,
-        content: done
     })
 }
 
 export function errorAlert(text) {
-    swal.close();
     Swal.fire({
         title: '¡UPS!',
         text: text,
@@ -47,54 +83,42 @@ export function errorAlert(text) {
     })
 }
 
-export function deleteAlert(text, action) {
-    swal({
-        title: text,
-        buttons: {
-            cancel: {
-                text: "CANCELAR",
-                value: null,
-                visible: true,
-                className: "button__green btn-primary cancel",
-                closeModal: true,
-            },
-            confirm: {
-                text: "ACEPTAR",
-                value: true,
-                visible: true,
-                className: "button__red btn-primary",
-                closeModal: true
-            }
+export function deleteAlert(title,text,action) {
+    MySwal.fire({
+        title: title,
+        text:text,
+        showConfirmButton: true,
+        showCancelButton: true,
+        confirmButtonText: 'ELIMINAR',
+        cancelButtonText: 'CANCELAR',
+        reverseButtons: true,
+        customClass: {
+            content: text?'':'d-none',
+            confirmButton: 'btn-light-danger-sweetalert2',
+            cancelButton:'btn-light-gray-sweetalert2'
         }
     }).then((result) => {
-        if (result) {
+        if (result.value) {
             action()
         }
     })
 }
 
 export function createAlert(title, text, action) {
-    swal({
+    MySwal.fire({
         title: title,
         text: text,
-        buttons: {
-            cancel: {
-                text: "CANCELAR",
-                value: null,
-                visible: true,
-                className: "btn btn-light-danger",
-                closeModal: true,
-            },
-            confirm: {
-                text: "ACEPTAR",
-                value: true,
-                visible: true,
-                className: "btn btn-light-primary",
-                closeModal: true
-            }
+        showCancelButton: true,
+        confirmButtonText: 'ACEPTAR',
+        cancelButtonText: 'CANCELAR',
+        reverseButtons: true,
+        customClass: {
+            content: text?text:'d-none',
+            confirmButton: 'btn-light-success-sweetalert2',
+            cancelButton:'btn-light-gray-sweetalert2'
         }
     }).then((result) => {
-        if (result) {
+        if (result.value) {
             action()
         }
     })
@@ -113,6 +137,25 @@ export function createAlertSA2(title, text, action) {
         if (result.value) {
             action()
         }
+    })
+}
+
+export function createAlertSA2WithClose(title, text, action, history, ruta) {
+    MySwal.fire({
+        title: title,
+        text: text,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'ACEPTAR',
+        cancelButtonText: 'CANCELAR',
+        reverseButtons: true,
+    }).then((result) => {
+        if(result.dismiss)
+            history.push({pathname: ruta})
+        else
+            if (result.value) {
+                action()
+            }
     })
 }
 
@@ -210,12 +253,19 @@ export function errorAdjuntos(title, text, html) {
 }
 
 export function forbiddenAccessAlert() {
-    swal({
-        title: '¡Ups 😕!',
+    Swal.fire({
+        title: '¡UPS 😕!',
         text: 'PARECE QUE NO HAS INICIADO SESIÓN',
         icon: 'warning',
-        confirmButtonText: 'INICIA SESIÓN'
-    });
+        showConfirmButton: false,
+        showCancelButton: true,
+        confirmButtonText: 'ACEPTAR',
+        cancelButtonText: 'INICIAR SESIÓN',
+        customClass: {
+            cancelButton: 'btn btn-light-danger',
+            closeButton: 'd-none'
+        }
+    })
 }
 
 export function validateAlert(success, e, name) {
@@ -223,12 +273,14 @@ export function validateAlert(success, e, name) {
     if (elementsInvalid.length === 0) {
         success(e)
     } else {
-        swal({
+        Swal.fire({
             title: '¡LO SENTIMOS!',
-            text: 'LLENA TODOS LOS CAMPOS REQUERIDOS',
+            text: 'Llena todos los campos requeridos',
             icon: 'warning',
-            timer: 1500,
-            buttons: false
+            customClass: {
+                actions: 'd-none'
+            },
+            timer: 2500,
         })
     }
 }

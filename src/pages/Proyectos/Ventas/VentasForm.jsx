@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import swal from 'sweetalert'
+import Swal from 'sweetalert2'
 import { URL_DEV } from '../../../constants'
 import { setOptions, setSelectOptions } from '../../../functions/setters'
 import { waitAlert, errorAlert, createAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
@@ -205,10 +205,10 @@ class Ventas extends Component {
                                 options['contratos'] = setOptions(auxCliente.contratos, 'nombre', 'id')
                             }
                         } else {
-                            createAlert('No existe el cliente', '¿Lo quieres crear?', () => this.addClienteAxios(obj))
+                            createAlert('NO EXISTE EL CLIENTE', '¿LO QUIERES CREAR?', () => this.addClienteAxios(obj))
                         }
                         if (auxEmpresa && auxCliente) {
-                            swal.close()
+                            Swal.close()
                         }
                         form.facturaObject = obj
                         form.rfc = obj.rfc_receptor
@@ -428,7 +428,7 @@ class Ventas extends Component {
                 options['estatusCompras'] = setSelectOptions(estatusCompras, 'estatus')
                 data.clientes = clientes
                 data.empresas = empresas
-                swal.close()
+                Swal.close()
                 this.setState({
                     ...this.state,
                     options,

@@ -6,7 +6,7 @@ import axios from 'axios'
 import { URL_DEV } from '../../../constants';
 import { Card } from 'react-bootstrap';
 import { CuentaForm as CuentaFormulario } from '../../../components/forms'
-import swal from 'sweetalert';
+import Swal from 'sweetalert2'
 import { setOptions, setSelectOptions } from '../../../functions/setters';
 class CuentaForm extends Component {
     state = {
@@ -155,7 +155,7 @@ class CuentaForm extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'cuentas/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close()
+                Swal.close()
                 const { bancos, estatus, tipos, empresas } = response.data
                 const { options, cuenta } = this.state
                 let aux = []
@@ -294,7 +294,8 @@ class CuentaForm extends Component {
                         <CuentaFormulario
                             options={options}
                             formeditado={formeditado}
-                            form={form} onChange={this.onChange}
+                            form={form}
+                            onChange={this.onChange}
                             removeEmpresa={this.removeEmpresa}
                             onSubmit={this.onSubmit}
                             tipo={tipo} 

@@ -3,11 +3,10 @@ import React, { Component } from 'react';
 import axios from 'axios'
 import { URL_DEV } from '../../../constants'
 import Layout from '../../../components/layout/layout';
-import swal from 'sweetalert'
 import { Col, Row, Card, Form, Tab, Nav, DropdownButton, Dropdown } from 'react-bootstrap'
-import { setOptions } from '../../../functions/setters'
+import { setOptions, setDateTableLG } from '../../../functions/setters'
 import { UltimosContactosCard, SinContacto, UltimosIngresosCard } from '../../../components/cards'
-import { forbiddenAccessAlert, errorAlert, waitAlert, doneAlert, questionAlert, questionAlert2 } from '../../../functions/alert'
+import { forbiddenAccessAlert, errorAlert, waitAlert, doneAlert, questionAlert, questionAlert2, deleteAlert} from '../../../functions/alert'
 import LeadRhProveedor from '../../../components/tables/Lead/LeadRhProveedor'
 import LeadNuevo from '../../../components/tables/Lead/LeadNuevo'
 import LeadContacto from '../../../components/tables/Lead/LeadContacto'
@@ -15,9 +14,15 @@ import LeadNegociacion from '../../../components/tables/Lead/LeadNegociacion'
 import LeadContrato from '../../../components/tables/Lead/LeadContrato'
 import LeadNoContratado from '../../../components/tables/Lead/LeadNoContratado'
 import LeadDetenido from '../../../components/tables/Lead/LeadDetenido'
-import { Modal } from '../../../components/singles'
-import { AgendaLlamada, InformacionGeneral} from '../../../components/forms'
+import { Modal, } from '../../../components/singles'
+import { AgendaLlamada, InformacionGeneral, HistorialContactoForm } from '../../../components/forms'
 import InputGray from '../../../components/form-components/Gray/InputGray'
+import SVG from "react-inlinesvg";
+import { toAbsoluteUrl } from "../../../functions/routers"
+import Swal from 'sweetalert2'
+import { Button } from '../../../components/form-components';
+import Pagination from "react-js-pagination";
+const $ = require('jquery');
 class Crm extends Component {
     state = {
         ultimos_contactados: {
@@ -123,8 +128,26 @@ class Crm extends Component {
             proyecto: '',
             fecha: '',
         },
+        formHistorial: {
+            comentario: '',
+            fechaContacto: '',
+            success: 'Contactado',
+            tipoContacto: '',
+            newTipoContacto: '',
+            adjuntos: {
+                adjuntos: {
+                    files: [],
+                    value: '',
+                    placeholder: 'Adjuntos'
+                }
+            }
+        },
         modal_agendar: false,
-        modal_editar: false
+        modal_editar: false,
+        modal_historial: false,
+        showForm: false,
+        itemsPerPage: 5,
+        activePage: 1
     }
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
@@ -142,14 +165,45 @@ class Crm extends Component {
         this.getUltimosIngresados()
         this.getLeadsWeb()
     }
+
+    async eliminarContacto(contacto){
+        const { access_token } = this.props.authUser
+        const { lead } = this.state
+        await axios.delete(URL_DEV + 'crm/prospecto/' + lead.id + '/contacto/' + contacto.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert('Registro eliminado con éxito.');
+                const { lead } = response.data
+                this.setState({
+                    ...this.state,
+                    lead: lead
+                })
+                setTimeout(() => {
+                    this.getLeadsWeb()
+                }, 1500);
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     async getOptionsAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'crm/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close()
-                const { empresas, origenes } = response.data
+                Swal.close()
+                const { empresas, origenes, medios } = response.data
                 const { options } = this.state
+                options['tiposContactos'] = setOptions(medios, 'tipo', 'id')
                 options.empresas = setOptions(empresas, 'name', 'id')
                 let aux = []
                 origenes.map((origen) => {
@@ -482,7 +536,7 @@ class Crm extends Component {
         const { lead_rh_proveedores, form } = this.state
         await axios.put(URL_DEV + 'crm/table/lead-rh-proveedor/' + lead_rh_proveedores.numPage, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close()
+                Swal.close()
                 const { leads, total, page } = response.data
                 const { lead_rh_proveedores } = this.state
                 lead_rh_proveedores.data = leads
@@ -515,7 +569,7 @@ class Crm extends Component {
         const { lead_web, form } = this.state
         await axios.put(URL_DEV + 'crm/table/lead-web/' + lead_web.numPage, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close()
+                Swal.close()
                 const { leads, total, page } = response.data
                 const { lead_web } = this.state
                 lead_web.data = leads
@@ -548,7 +602,7 @@ class Crm extends Component {
         const { leads_en_negociacion, form } = this.state
         await axios.put(URL_DEV + 'crm/table/lead-en-negociacion/' + leads_en_negociacion.numPage, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close()
+                Swal.close()
                 const { leads, total, page } = response.data
                 const { leads_en_negociacion } = this.state
                 leads_en_negociacion.data = leads
@@ -581,7 +635,7 @@ class Crm extends Component {
         const { leads_en_contacto, form } = this.state
         await axios.put(URL_DEV + 'crm/table/lead-en-contacto/' + leads_en_contacto.numPage, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close()
+                Swal.close()
                 const { leads, total, page } = response.data
                 const { leads_en_contacto } = this.state
                 leads_en_contacto.data = leads
@@ -614,7 +668,7 @@ class Crm extends Component {
         const { leads_cancelados, form } = this.state
         await axios.put(URL_DEV + 'crm/table/lead-cancelados/' + leads_cancelados.numPage, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close()
+                Swal.close()
                 const { leads, total, page } = response.data
                 const { leads_cancelados } = this.state
                 leads_cancelados.data = leads
@@ -646,7 +700,7 @@ class Crm extends Component {
         const { leads_contratados, form } = this.state
         await axios.put(URL_DEV + 'crm/table/lead-contratados/' + leads_contratados.numPage, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close()
+                Swal.close()
                 const { leads, total, page } = response.data
                 const { leads_contratados } = this.state
                 leads_contratados.data = leads
@@ -678,7 +732,7 @@ class Crm extends Component {
         const { leads_detenidos, form } = this.state
         await axios.put(URL_DEV + 'crm/table/lead-detenidos/' + leads_detenidos.numPage, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close()
+                Swal.close()
                 const { leads, total, page } = response.data
                 const { leads_detenidos } = this.state
                 leads_detenidos.data = leads
@@ -720,6 +774,15 @@ class Crm extends Component {
         this.setState({
             ...this.state,
             formEditar
+        })
+    }
+    onChangeHistorial = e => {
+        const { formHistorial } = this.state
+        const { name, value } = e.target
+        formHistorial[name] = value
+        this.setState({
+            ...this.state,
+            formHistorial
         })
     }
     sendEmailNewWebLead = async lead => {
@@ -870,10 +933,16 @@ class Crm extends Component {
         })
     }
     openModalEditar = lead => {
+        const { formEditar } = this.state
+        formEditar.name = lead.nombre
+        formEditar.email = lead.email
+        formEditar.telefono = lead.telefono
+        formEditar.fecha = new Date(lead.created_at)
         this.setState({
             ...this.state,
             modal_editar: true,
-            lead: lead
+            lead: lead,
+            formEditar
         })
     }
     handleCloseModalEditar = () => {
@@ -882,6 +951,69 @@ class Crm extends Component {
             modal_editar: false,
             lead: ''
         })
+    }
+    handleChange = (files, item) => {
+        const { formHistorial } = this.state
+        let aux = []
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        formHistorial['adjuntos'][item].value = files
+        formHistorial['adjuntos'][item].files = aux
+        this.setState({
+            ...this.state,
+            formHistorial
+        })
+    }
+    openModalHistorial = lead => {
+        let { activePage } = this.state
+        activePage = 1
+        this.setState({
+            ...this.state,
+            modal_historial: true,
+            lead: lead,
+            activePage
+        })
+    }
+    handleCloseModalHistorial = () => {
+        this.setState({
+            ...this.state,
+            modal_historial: false,
+            lead: '',
+            formHistorial: this.clearForm(),
+        })
+    }
+    clearForm = () => {
+        const { formHistorial } = this.state
+        let aux = Object.keys(formHistorial)
+        aux.map((element) => {
+            switch (element) {
+                case 'adjuntos':
+                    formHistorial[element] = {
+                        adjuntos: {
+                            files: [],
+                            value: '',
+                            placeholder: 'Adjuntos'
+                        }
+                    }
+                    break;
+                case 'success':
+                    formHistorial[element] = 'Contactado'
+                    break;
+                default:
+                    formHistorial[element] = ''
+                    break;
+            }
+            return false
+        })
+        return formHistorial;
     }
     async changeEstatusAxios(data) {
         waitAlert()
@@ -935,9 +1067,9 @@ class Crm extends Component {
     }
 
     async changeEstatusCanceladoRechazadoAxios(data) {
-        waitAlert()
         const { access_token } = this.props.authUser
         data.motivo = document.getElementById('motivo').value
+        waitAlert()
         await axios.put(URL_DEV + 'crm/lead/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { activeTable } = this.state
@@ -980,7 +1112,7 @@ class Crm extends Component {
                             'MOTIVO DE CANCELACIÓN' :
                             'MOTIVO DE RECHAZO'
                     }
-                    className="form-control form-control-solid h-auto py-7 px-6"
+                    className="form-control form-control-solid h-auto py-7 px-6 text-uppercase"
                     id='motivo'
                     as="textarea"
                     rows="3"
@@ -1012,6 +1144,34 @@ class Crm extends Component {
             state: { lead: lead, tipo: 'En negociación' }
         });
     }
+    changePageDetailsContratado = (lead) => {
+        const { history } = this.props
+        history.push({
+            pathname: '/leads/crm/info/info',
+            state: { lead: lead, tipo: 'Contratado' }
+        });
+    }
+    changePageDetailsCR = (lead) => {
+        const { history } = this.props
+        let status = ''
+        if (lead.estatus.estatus === 'Cancelado') {
+            status = 'Cancelado'
+        }
+        else {
+            status = 'Rechazado'
+        }
+        history.push({
+            pathname: '/leads/crm/info/info',
+            state: { lead: lead, tipo: status }
+        });
+    }
+    changePageDetailsDetenido = (lead) => {
+        const { history } = this.props
+        history.push({
+            pathname: '/leads/crm/info/info',
+            state: { lead: lead, tipo: 'Detenido' }
+        });
+    }
 
     changePageCierreVenta = (lead) => {
         const { history } = this.props
@@ -1035,10 +1195,43 @@ class Crm extends Component {
 
     async addLeadInfoAxios() {
         const { access_token } = this.props.authUser
-        const { form, lead } = this.state
-        await axios.put(URL_DEV + 'crm/update/lead-en-contacto/' + lead.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        const { formEditar, lead } = this.state
+        await axios.put(URL_DEV + 'crm/update/lead-en-contacto/' + lead.id, formEditar, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito el lead.')
+                const { formEditar, activeTable } = this.state
+                formEditar.name = ''
+                formEditar.telefono = ''
+                formEditar.email = ''
+                switch (activeTable) {
+                    case 'rh-proveedores':
+                        this.getLeadsRhProveedores();
+                        break;
+                    case 'web':
+                        this.getLeadsWeb();
+                        break;
+                    case 'contacto':
+                        this.getLeadsEnContacto();
+                        break;
+                    case 'contratados':
+                        this.getLeadsContratados();
+                        break;
+                    case 'cancelados':
+                        this.getLeadsCancelados();
+                        break;
+                    case 'detenidos':
+                        this.getLeadsDetenidos();
+                        break;
+                    case 'negociacion':
+                        this.getLeadsEnNegociacion();
+                        break;
+                    default: break;
+                }
+                this.setState({
+                    ...this.state,
+                    modal_editar: false,
+                    formEditar
+                })
             },
             (error) => {
                 console.log(error, 'error')
@@ -1053,9 +1246,81 @@ class Crm extends Component {
             console.log(error, 'error')
         })
     }
+    mostrarFormulario() {
+        const { showForm } = this.state
+        this.setState({
+            ...this.state,
+            showForm: !showForm
+        })
+    }
+    async agregarContacto() {
+        waitAlert()
+        const { lead, formHistorial } = this.state
+        const { access_token } = this.props.authUser
+        const data = new FormData();
+        let aux = Object.keys(formHistorial)
+        aux.map((element) => {
+            switch (element) {
+                case 'fechaContacto':
+                    data.append(element, (new Date(formHistorial[element])).toDateString())
+                    break
+                case 'adjuntos':
+                    break;
+                default:
+                    data.append(element, formHistorial[element]);
+                    break
+            }
+            return false
+        })
+        aux = Object.keys(formHistorial.adjuntos)
+        aux.map((element) => {
+            if (formHistorial.adjuntos[element].value !== '') {
+                for (var i = 0; i < formHistorial.adjuntos[element].files.length; i++) {
+                    data.append(`files_name_${element}[]`, formHistorial.adjuntos[element].files[i].name)
+                    data.append(`files_${element}[]`, formHistorial.adjuntos[element].files[i].file)
+                }
+                data.append('adjuntos[]', element)
+            }
+            return false
+        })
+        await axios.post(URL_DEV + 'crm/contacto/lead/' + lead.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { lead } = response.data
+                this.setState({
+                    ...this.state,
+                    formHistorial: this.clearForm(),
+                    lead: lead
+                })
+                doneAlert('Historial actualizado con éxito');
+                this.getLeadsWeb()
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    onChangePage(pageNumber){
+        let { activePage } = this.state
+        activePage = pageNumber
+        this.setState({
+            ...this.state,
+            activePage
+        })
+    }
+    componentDidUpdate(){
+        $(".pagination").removeClass("page-link");
+    }
     render() {
         const { ultimos_contactados, prospectos_sin_contactar, ultimos_ingresados, lead_web, activeTable, leads_en_contacto, leads_en_negociacion,
-            leads_contratados, leads_cancelados, leads_detenidos, modal_agendar, form, lead, lead_rh_proveedores, options, modal_editar, formEditar} = this.state
+            leads_contratados, leads_cancelados, leads_detenidos, modal_agendar, form, lead, lead_rh_proveedores, options, modal_editar, formEditar, modal_historial, formHistorial, itemsPerPage, activePage} = this.state
         return (
             <Layout active='leads' {...this.props} >
                 <Row>
@@ -1258,6 +1523,7 @@ class Crm extends Component {
                                             options={options}
                                             changeOrigen={this.changeOrigen}
                                             openModalEditar={this.openModalEditar}
+                                            openModalHistorial={this.openModalHistorial}
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="contacto">
@@ -1290,6 +1556,7 @@ class Crm extends Component {
                                             leads={leads_contratados}
                                             onClickNext={this.nextPageLeadContratados}
                                             onClickPrev={this.prevPageLeadContratados}
+                                            changePageDetails={this.changePageDetailsContratado}
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="detenidos">
@@ -1299,6 +1566,7 @@ class Crm extends Component {
                                             onClickPrev={this.prevPageLeadDetenidos}
                                             changeEstatus={this.changeEstatus}
                                             openModalWithInput={this.openModalWithInput}
+                                            changePageDetails={this.changePageDetailsDetenido}
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="cancelados">
@@ -1306,6 +1574,7 @@ class Crm extends Component {
                                             leads={leads_cancelados}
                                             onClickNext={this.nextPageLeadCancelados}
                                             onClickPrev={this.prevPageLeadCancelados}
+                                            changePageDetails={this.changePageDetailsCR}
                                         />
                                     </Tab.Pane>
                                 </Tab.Content>
@@ -1322,14 +1591,143 @@ class Crm extends Component {
                         lead={lead}
                     />
                 </Modal>
-                <Modal size="xl" title='Editar información general' show={modal_editar} handleClose={this.handleCloseModalEditar}>
-                    <InformacionGeneral
-                        form={formEditar}
-                        onChange={this.onChangeEditar}
-                        onSubmit={this.submitForm}
-                        user={this.props.authUser.user}
-                        lead={lead}
-                    />
+                <Modal size="lg" title='Editar información general' show={modal_editar} handleClose={this.handleCloseModalEditar}>
+                    <div className="mt-3">
+                        <InformacionGeneral
+                            form={formEditar}
+                            onChange={this.onChangeEditar}
+                            onSubmit={this.submitForm}
+                            lead={lead}
+                            formeditado={false}
+                        />
+                    </div>
+                </Modal>
+                <Modal size="xl" title='HISTORIAL DE CONTACTO' show={modal_historial} handleClose={this.handleCloseModalHistorial}>
+                    <div className="d-flex justify-content-end mt-4">
+                        <Button
+                            icon=''
+                            className={"btn btn-light btn-hover-secondary font-weight-bolder p-2"}
+                            onClick={() => { this.mostrarFormulario() }}
+                            only_icon={"flaticon2-plus icon-13px mr-2"}
+                            text='NUEVO CONTACTO'
+                        />
+                    </div>
+                    <div className={this.state.showForm ? 'col-md-12 mb-5' : 'd-none'}>
+                        <HistorialContactoForm
+                            options={options}
+                            formHistorial={formHistorial}
+                            onChangeHistorial={this.onChangeHistorial}
+                            handleChange={this.handleChange}
+                            onSubmit={() => { waitAlert(); this.agregarContacto() }}
+                        />
+                    </div>
+                    <div className="col-md-12 row mx-0 d-flex justify-content-center">
+                        <div className="col-md-7 pt-4">
+                            {
+                                lead ?
+                                    lead.prospecto ?
+                                        lead.prospecto.contactos.length === 0 ?
+                                            <div className="text-center text-dark-75 font-weight-bolder font-size-lg">No se ha registrado ningún contacto</div>
+                                        :
+                                            lead.prospecto.contactos.map((contacto, key) => {
+                                                let limiteInferior = (activePage - 1) * itemsPerPage
+                                                let limiteSuperior = limiteInferior + (itemsPerPage - 1)
+                                                if(contacto.length < itemsPerPage || ( key >= limiteInferior && key <= limiteSuperior))
+                                                    return(
+                                                        <div className="timeline timeline-6" key={key}>
+                                                            <div className="timeline-items">
+                                                                <div className="timeline-item">
+                                                                    <div className={contacto.success ? "timeline-media bg-light-success" : "timeline-media bg-light-danger"}>
+                                                                        <span className={contacto.success ? "svg-icon svg-icon-success svg-icon-md" : "svg-icon svg-icon-danger  svg-icon-md"}>
+                                                                            {
+                                                                                contacto.tipo_contacto ?
+                                                                                    contacto.tipo_contacto.tipo === 'Llamada' ?
+                                                                                        <SVG src={toAbsoluteUrl('/images/svg/Outgoing-call.svg')} />
+                                                                                        : contacto.tipo_contacto.tipo === 'Correo' ?
+                                                                                            <SVG src={toAbsoluteUrl('/images/svg/Outgoing-mail.svg')} />
+                                                                                            : contacto.tipo_contacto.tipo === 'VIDEO LLAMADA' ?
+                                                                                                <SVG src={toAbsoluteUrl('/images/svg/Video-camera.svg')} />
+                                                                                                : contacto.tipo_contacto.tipo === 'Whatsapp' ?
+                                                                                                    <i className={contacto.success ? "socicon-whatsapp text-success icon-16px" : "socicon-whatsapp text-danger icon-16px"}></i>
+                                                                                                    : contacto.tipo_contacto.tipo === 'TAWK TO ADS' ?
+                                                                                                        <i className={contacto.success ? "fas fa-dove text-success icon-16px" : "fas fa-dove text-danger icon-16px"}></i>
+                                                                                                        : contacto.tipo_contacto.tipo === 'REUNIÓN PRESENCIAL' ?
+                                                                                                            <i className={contacto.success ? "fas fa-users text-success icon-16px" : "fas fa-users text-danger icon-16px"}></i>
+                                                                                                            : contacto.tipo_contacto.tipo === 'Visita' ?
+                                                                                                                <i className={contacto.success ? "fas fa-house-user text-success icon-16px" : "fas fa-house-user text-danger icon-16px"}></i>
+                                                                                                                    :contacto.tipo_contacto.tipo === 'TAWK TO ORGANICO' ?
+                                                                                                                        <i className={contacto.success ? "fas fa-dove text-success icon-16px" : "fas fa-dove text-danger icon-16px"}></i>
+                                                                                                                        : <i className={contacto.success ? "fas fa-mail-bulk text-success icon-16px" : "fas fa-mail-bulk text-danger icon-16px"}></i>
+                                                                                    : ''
+                                                                            }
+                                                                        </span>
+                                                                    </div>
+                                                                    <div className={contacto.success ? "timeline-desc timeline-desc-light-success" : "timeline-desc timeline-desc-light-danger"}>
+                                                                        <span className={contacto.success ? "font-weight-bolder text-success" : "font-weight-bolder text-danger"}>{setDateTableLG(contacto.created_at)}</span>
+                                                                        <div className="font-weight-light pb-2 text-justify position-relative mt-2 pr-3" style={{ borderRadius: '0.42rem', padding: '1rem 1.5rem', backgroundColor: '#F3F6F9' }}>
+                                                                            <div className="text-dark-75 font-weight-bold mb-2">
+                                                                                <div className="d-flex justify-content-between">
+                                                                                    {contacto.tipo_contacto ? contacto.tipo_contacto.tipo : ''}
+                                                                                    <a className="text-muted text-hover-danger font-weight-bold a-hover"
+                                                                                        onClick={(e) => { deleteAlert('¿ESTÁS SEGURO QUE DESEAS ELIMINAR EL CONTACTO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.eliminarContacto(contacto)) }}>
+                                                                                        <i className="flaticon2-cross icon-xs" />
+                                                                                    </a>
+                                                                                </div>
+                                                                            </div>
+                                                                            {contacto.comentario}
+                                                                            {
+                                                                                contacto.adjunto ?
+                                                                                    <div className="d-flex justify-content-end">
+                                                                                        <a href={contacto.adjunto.url} target='_blank' rel="noopener noreferrer" className="text-muted text-hover-primary font-weight-bold">
+                                                                                            <span className="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
+                                                                                                <SVG src={toAbsoluteUrl('/images/svg/Attachment1.svg')} />
+                                                                                            </span>VER ADJUNTO
+                                                                                        </a>
+                                                                                    </div>
+                                                                                    : ''
+                                                                            }
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    )  
+                                                return false
+                                            })
+                                        : <div className="text-center text-dark-75 font-weight-bolder font-size-lg">No se ha registrado ningún contacto</div>
+                                    : <div className="text-center text-dark-75 font-weight-bolder font-size-lg">No se ha registrado ningún contacto</div>
+                            }
+                            {
+                                lead ? 
+                                    lead.prospecto ?
+                                        lead.prospecto.contactos.length > itemsPerPage ?
+                                            <div className="d-flex justify-content-center mt-4">
+                                                <Pagination
+                                                    itemClass="page-item"
+                                                    linkClass="page-link"
+                                                    firstPageText = 'Primero'
+                                                    lastPageText = 'Último'
+                                                    activePage = { activePage }
+                                                    itemsCountPerPage = { itemsPerPage }
+                                                    totalItemsCount = { lead.prospecto.contactos.length }
+                                                    pageRangeDisplayed = { 5 }
+                                                    onChange={this.onChangePage.bind(this)}
+                                                    itemClassLast="d-none"
+                                                    itemClassFirst="d-none"
+                                                    prevPageText={<i className='ki ki-bold-arrow-back icon-xs'/>}
+                                                    nextPageText={<i className='ki ki-bold-arrow-next icon-xs'/>}
+                                                    linkClassPrev="btn btn-icon btn-sm btn-light-primary mr-2 my-1 pagination"
+                                                    linkClassNext="btn btn-icon btn-sm btn-light-primary mr-2 my-1 pagination"
+                                                    linkClass="btn btn-icon btn-sm border-0 btn-hover-primary mr-2 my-1 pagination"
+                                                    activeLinkClass="btn btn-icon btn-sm border-0 btn-light btn-hover-primary active mr-2 my-1 pagination"
+                                                />
+                                            </div>
+                                        : ''
+                                    : ''
+                                : ''
+                            }
+                        </div>
+                    </div>
                 </Modal>
             </Layout>
         );

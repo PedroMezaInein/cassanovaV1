@@ -44,7 +44,7 @@ class LeadNuevo extends Component {
     }
     
     render() {
-        const { leads, onClickPrev, onClickNext, sendEmail, openModal, openModalWithInput, openModalEditar, changePageLlamadaSalida, options, changeOrigen } = this.props
+        const { leads, onClickPrev, onClickNext, sendEmail, openModal, openModalWithInput, openModalEditar, changePageLlamadaSalida, options, changeOrigen, openModalHistorial } = this.props
         return (
             <>
                 <div className="tab-content">
@@ -65,7 +65,7 @@ class LeadNuevo extends Component {
                                     <th style={{ minWidth: "95px" }} className="text-center">Empresa</th>
                                     <th style={{ minWidth: "100px" }} className="text-center">Origen</th>
                                     <th style={{ minWidth: "100px" }} className="text-center">Estatus</th>
-                                    <th style={{ minWidth: "105px" }}></th>
+                                    <th style={{ minWidth: "auto" }}></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -209,7 +209,7 @@ class LeadNuevo extends Component {
                                                         <td className="pr-0 text-center">
                                                             <OverlayTrigger overlay={<Tooltip>EDITAR INFORMACIÓN GENERAL</Tooltip>}>
                                                                 <span onClick={(e) => { openModalEditar(lead) }}
-                                                                    className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-info">
+                                                                    className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-info" id="info-general">
                                                                     <span className="svg-icon svg-icon-md">
                                                                         <SVG src={toAbsoluteUrl('/images/svg/Edit.svg')} />
                                                                     </span>
@@ -219,7 +219,7 @@ class LeadNuevo extends Component {
                                                                 this.canSendFirstEmail(lead) ?
                                                                     <OverlayTrigger overlay={<Tooltip>ENVIAR CORREO</Tooltip>}>
                                                                         <span onClick={(e) => { questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => sendEmail(lead)) }}
-                                                                            className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-info">
+                                                                            className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-info" id="env-correo">
                                                                             <span className="svg-icon svg-icon-md ">{/* svg-icon-primary */}
                                                                                 <SVG src={toAbsoluteUrl('/images/svg/Outgoing-mail.svg')} />
                                                                             </span>
@@ -229,18 +229,26 @@ class LeadNuevo extends Component {
                                                             }
                                                             <OverlayTrigger overlay={<Tooltip>AGENDAR LLAMADA</Tooltip>}>
                                                                 <span onClick={(e) => { openModal(lead) }}
-                                                                    className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-info">
+                                                                    className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-info" id="ag-llamada">
                                                                     <span className="svg-icon svg-icon-md">
                                                                         <SVG src={toAbsoluteUrl('/images/svg/Active-call.svg')} />
                                                                     </span>
                                                                 </span>
                                                             </OverlayTrigger>
                                                             <OverlayTrigger overlay={<Tooltip>SEGUIMIENTO (SCRIPT)</Tooltip>}>
-                                                                <a onClick={(e) => { changePageLlamadaSalida(lead) }} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-info">
+                                                                <a onClick={(e) => { changePageLlamadaSalida(lead) }} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-info" id="seg-script">
                                                                     <span className="svg-icon svg-icon-md">
                                                                         <SVG src={toAbsoluteUrl('/images/svg/File.svg')} />
                                                                     </span>
                                                                 </a>
+                                                            </OverlayTrigger>
+                                                            <OverlayTrigger overlay={<Tooltip>HISTORIAL DE CONTACTO</Tooltip>}>
+                                                                <span onClick={(e) => { openModalHistorial(lead) }}
+                                                                    className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-info" id="historial">
+                                                                    <span className="svg-icon svg-icon-md">
+                                                                        <SVG src={toAbsoluteUrl('/images/svg/Clipboard-list.svg')} />
+                                                                    </span>
+                                                                </span>
                                                             </OverlayTrigger>
                                                         </td>
                                                     </tr>

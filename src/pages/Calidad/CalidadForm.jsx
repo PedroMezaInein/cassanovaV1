@@ -153,12 +153,7 @@ class CalidadForm extends Component {
             this.onChangeAdjunto({ target: { name: item, value: files, files: files } })
     }
     deleteFile = element => {
-        deleteAlert('¿Deseas eliminar el archivo?', () => this.deleteAdjuntoAxios(element.id))
-    }
-    changeEstatus = estatus => {
-        const { ticket } = this.state
-        // this.changeEstatusAxios({id: ticket.id, estatus: estatus})
-        questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
+        deleteAlert('DESEAS ELIMINAR EL ARCHIVO', '', () => this.deleteAdjuntoAxios(element.id))
     }
     openModalWithInput = estatus => {
         const { ticket } = this.state
@@ -167,7 +162,7 @@ class CalidadForm extends Component {
             <div>
                 <Form.Control
                     placeholder='MOTIVO DE CANCELACIÓN'
-                    className="form-control form-control-solid h-auto py-7 px-6"
+                    className="form-control form-control-solid h-auto py-7 px-6 text-uppercase"
                     id='motivo'
                     as="textarea"
                     rows="3"
@@ -367,9 +362,10 @@ class CalidadForm extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'calidad/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { empleados } = response.data
+                const { empleados, estatus } = response.data
                 const { options } = this.state
                 options['empleados'] = setOptions(empleados, 'nombre', 'id')
+                options['estatus'] = this.setOptionsEstatus(estatus, 'estatus', 'id')
                 this.setState({
                     ...this.state,
                     options
@@ -388,10 +384,48 @@ class CalidadForm extends Component {
             console.log(error, 'error')
         })
     }
+    setOptionsEstatus = (arreglo) => {
+        let aux = []
+        arreglo.map((element) => {
+            aux.push(
+                { 
+                    name: element.estatus, 
+                    value: element.id.toString(),
+                    letra: element.letra,
+                    fondo: element.fondo
+                }
+            )
+        });
+        return aux
+    }
+    changeEstatus = estatus => {
+        const { ticket } = this.state
+        if (estatus === 'Rechazado') {
+            this.openModalWithInput('Rechazado')
+        }
+        if (estatus === 'Aceptado') {
+            questionAlert('¿ESTÁS SEGURO?', 'DARÁS POR ACEPTADO EL TICKET ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
+        }
+        if (estatus === 'Terminado') {
+            questionAlert('¿ESTÁS SEGURO?', 'DARÁS POR TERMINADO EL TICKET ¡NO PODRÁS REVERTIR ESTO!',  () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
+        }
+        if (estatus === 'En proceso') {
+            questionAlert('¿ESTÁS SEGURO?', 'ESTARÁ EN PROCESO EL TICKET ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
+        }
+        if (estatus === 'Respuesta pendiente') {
+            questionAlert('¿ESTÁS SEGURO?', 'ESTARÁ EL TICKET EN RESPUESTA PENDIENTE ¡NO PODRÁS REVERTIR ESTO!',  () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
+        }
+        if (estatus === 'En revisión') {
+            questionAlert('¿ESTÁS SEGURO?', 'ESTARÁ EN REVISIÓN EL TICKET ¡NO PODRÁS REVERTIR ESTO!',  () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
+        }
+        if (estatus === 'En espera') {
+            questionAlert('¿ESTÁS SEGURO?', 'ESTARÁ EN ESPERA EL TICKET ¡NO PODRÁS REVERTIR ESTO!',  () => this.changeEstatusAxios({ id: ticket.id, estatus: estatus }))
+        }
+    }
     render() {
         const { ticket, form, options } = this.state
         return (
-            <Layout active={'proyectos'}  {...this.props}>
+            <Layout active={'calidad'}  {...this.props}>
                 <CalidadView
                     data={ticket}
                     form={form}

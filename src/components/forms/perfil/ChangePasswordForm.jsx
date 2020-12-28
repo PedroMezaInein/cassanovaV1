@@ -6,6 +6,7 @@ import { ItemSlider } from '../../../components/singles'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
 import { setDateTableLG } from '../../../functions/setters'
+import { EMAIL } from '../../../constants'
 class ChangePasswordFrom extends Component {
 
 	getName = () => {
@@ -19,7 +20,7 @@ class ChangePasswordFrom extends Component {
 	}
 
 	render() {
-		const { user, onSubmit, form, onChange, sendAvatar, clearAvatar, handleChange, sendFirma, empresas, onClickEmpresa, activeKey } = this.props
+		const { user, onSubmit, form, onChange, sendAvatar, clearAvatar, handleChange, sendCorreo, empresas, onClickEmpresa, activeKey } = this.props
 		return (<>
 			<Tab.Container defaultActiveKey="1" className="p-5">
 				<Row>
@@ -88,7 +89,7 @@ class ChangePasswordFrom extends Component {
 														</span>
 													</span>
 													<div className="navi-text">
-														<span className="d-block font-weight-bold">Firma electrónica</span>
+														<span className="d-block font-weight-bold">Firma electrónica y correo electrónico</span>
 													</div>
 												</Nav.Link>
 											</Nav.Item>
@@ -225,19 +226,11 @@ class ChangePasswordFrom extends Component {
 									<Card.Header className="align-items-center border-0 mt-4 pt-3 pb-0">
 										<Card.Title className="mb-0">
 											<h3 className="card-title align-items-start flex-column mb-0">
-												<span className="font-weight-bolder text-dark">Firma electrónica</span>
+												<span className="font-weight-bolder text-dark">Firma electrónica y correo electrónico</span>
 											</h3>
 										</Card.Title>
 									</Card.Header>
 									<Card.Body className="pt-0">
-										<Form id="form-firma"
-											onSubmit={
-												(e) => {
-													e.preventDefault();
-													validateAlert(sendAvatar, e, 'form-firma')
-												}
-											}
-										>
 											<Tab.Container activeKey={activeKey} onSelect={(select) => { onClickEmpresa(select) }}>
 												<div className="d-flex justify-content-end">
 													<Nav className="nav-tabs nav-bold nav-tabs-line nav-tabs-line-3x border-0">
@@ -252,41 +245,67 @@ class ChangePasswordFrom extends Component {
 														}
 													</Nav>
 												</div>
-												<div className='row mx-0'>
+												{/* <div className=''> */}
 													{
 														activeKey !== '' ?
-															<div className='col-md-12 text-center mt-5'>
-																<div>
-																	<label className="col-form-label my-2 font-weight-bolder">{form.adjuntos.firma.placeholder}
-																		{this.getName()}
-																	</label>
-																</div>
-																<div className=' d-flex align-items-center justify-content-center'>
+															<>
+																<Form id="form-correo"
+																	onSubmit={
+																		(e) => {
+																			e.preventDefault();
+																			validateAlert(sendCorreo, e, 'form-correo')
+																		}
+																	}
+																>
+																	<div className="form-group row form-group-marginless justify-content-center">
+																		<div className="col-md-4">
+																			<Input
+																				requirevalidation={0}
+																				placeholder={`CORREO ELECTRÓNICO${this.getName()}`}
+																				type="email"
+																				name="correo_empresa"
+																				value={form.correo_empresa}
+																				onChange={onChange}
+																				iconclass="fas fa-envelope"
+																				messageinc="Incorrecto. Ej. usuario@dominio.com"
+																				letterCase={false}
+																				patterns={EMAIL}
+																			/>
+																		</div>
+																	</div>
+																	<div className="mt-4 text-center">
+																		<Button icon='' className="btn btn-light-primary font-weight-bold"
+																			onClick={
+																				(e) => {
+																					e.preventDefault();
+																					validateAlert(sendCorreo, e, 'form-correo')
+																				}
+																			}
+																			text="ENVIAR CORREO" />
+																	</div>
+																</Form>
+																<div className='col-md-12 text-center mt-5'>
 																	<div>
-																		<ItemSlider
-																			items={form.adjuntos.firma.files}
-																			item='firma'
-																			handleChange={handleChange}
-																			multiple={false}
-																		/>
+																		<label className="col-form-label my-2 font-weight-bolder">{form.adjuntos.firma.placeholder}
+																			
+																		</label>
+																	</div>
+																	<div className='d-flex align-items-center justify-content-center'>
+																		<div>
+																			<ItemSlider
+																				items={form.adjuntos.firma.files}
+																				item='firma'
+																				handleChange={handleChange}
+																				multiple={false}
+																			/>
+																		</div>
 																	</div>
 																</div>
-																<div className="mt-4 text-center">
-																	<Button icon='' className="btn btn-light-primary font-weight-bold"
-																		onClick={
-																			(e) => {
-																				e.preventDefault();
-																				validateAlert(sendFirma, e, 'form-firma')
-																			}
-																		}
-																		text="SUBIR FIRMA" />
-																</div>
-															</div>
+															</>
 															: ''
 													}
-												</div>
+												{/* </div> */}
 											</Tab.Container>
-										</Form>
 									</Card.Body>
 								</Tab.Pane>
 							</Tab.Content>

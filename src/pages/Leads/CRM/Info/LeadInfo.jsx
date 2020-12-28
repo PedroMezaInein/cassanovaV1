@@ -8,10 +8,12 @@ import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../../functions/routers"
 import { setOptions, setDateTableLG } from '../../../../functions/setters';
 import axios from 'axios'
-import { doneAlert, errorAlert, forbiddenAccessAlert, waitAlert, questionAlert2, questionAlert } from '../../../../functions/alert';
-import swal from 'sweetalert';
+import { doneAlert, errorAlert, forbiddenAccessAlert, waitAlert, questionAlert2, questionAlert, deleteAlert } from '../../../../functions/alert';
+import Swal from 'sweetalert2'
 import { HistorialContactoForm, AgendarCitaForm, PresupuestoDiseñoCRMForm, PresupuestoGenerado,InformacionGeneral} from '../../../../components/forms'
 import { Modal } from '../../../../components/singles'
+import Pagination from "react-js-pagination";
+const $ = require('jquery');
 class LeadInfo extends Component {
     state = {
         tipo: '',
@@ -154,7 +156,10 @@ class LeadInfo extends Component {
             empresa: null,
             tipoProyecto: null,
             partidas: null
-        }
+        },
+        lead: '',
+        itemsPerPage: 5,
+        activePage: 1
     }
 
     mostrarFormulario() {
@@ -178,20 +183,63 @@ class LeadInfo extends Component {
         const { history } = this.props
         if (state) {
             if (state.lead) {
-                const { form, options } = this.state
+                const { form, options, formDiseño } = this.state
                 const { lead, tipo } = state
                 form.name = lead.nombre === 'SIN ESPECIFICAR' ? '' : lead.nombre.toUpperCase()
                 form.email = lead.email.toUpperCase()
                 form.telefono = lead.telefono
-                form.proyecto = lead.prospecto.nombre_proyecto
-                form.fecha = lead.created_at
+                form.proyecto = lead.prospecto?lead.prospecto.nombre_proyecto:''
+                form.fecha = new Date(lead.created_at)
+                
+                if(formDiseño.esquema === 'esquema_1'){
+                    formDiseño.tiempo_ejecucion_diseno = 7
+                    formDiseño.semanas = this.calculateSemanas(formDiseño.tiempo_ejecucion_diseno)
+                    formDiseño.conceptos = [
+                        {
+                            value: '1',
+                            text: 'VISITA A INSTALACIONES Y REUNIÓN DE AMBOS EQUIPOS',
+                            name: 'concepto1'
+                        },
+                        {
+                            value: '1 AL 2',
+                            text: 'DESARROLLO DEL MATERIAL PARA LA PRIMERA REVISIÓN PRESENCIAL',
+                            name: 'concepto2'
+                        },
+                        {
+                            value: '3',
+                            text: 'JUNTA PRESENCIAL/REMOTA PARA PRIMERA REVISIÓN DE LA PROPUESTA DE DISEÑO Y MODELO 3D',
+                            name: 'concepto3'
+                        },
+                        {
+                            value: '3 AL 4',
+                            text: 'DESARROLLO DEL PROYECTO',
+                            name: 'concepto4'
+                        },
+                        {
+                            value: '5',
+                            text: 'JUNTA PRESENCIAL/REMOTA PARA SEGUNDA REVISIÓN DE LA PROPUESTA DE DISEÑO ,MODELO 3D Y V.º B.º DE DISEÑO ',
+                            name: 'concepto5'
+                        },
+                        {
+                            value: '5 AL 6',
+                            text: 'DESARROLLO DEL PROYECTO',
+                            name: 'concepto6'
+                        },
+                        {
+                            value: '7',
+                            text: 'ENTREGA FINAL DEL PROYECTO DIGITAL',
+                            name: 'concepto7'
+                        },
+                    ]
+                }
                 this.setState({
                     ...this.state,
                     lead: lead,
                     form,
                     formeditado: 1,
                     options,
-                    tipo: tipo
+                    tipo: tipo,
+                    formDiseño
                 })
                 this.getPresupuestoDiseñoOptionsAxios(lead.id)
                 this.getOneLead(lead)
@@ -209,7 +257,7 @@ class LeadInfo extends Component {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'crm/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                swal.close()
+                Swal.close()
                 const { empresas, medios } = response.data
                 const { options } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
@@ -329,28 +377,158 @@ class LeadInfo extends Component {
         const { name, value, type, checked } = e.target
         const { formDiseño, data } = this.state
         formDiseño[name] = value
-        if (name === 'esquema') {
-            formDiseño.conceptos.map((concepto) => {
-                if (concepto.name === 'concepto4') {
-                    if (value === 'esquema_1' || value === 'esquema_2')
-                        concepto.text = 'DESARROLLO DEL PROYECTO'
-                    if (value === 'esquema_3')
-                        concepto.text = 'DESARROLLO DEL PROYECTO EJECUTIVO'
+        switch (name) {
+            case 'esquema':
+                // Tiempo de ejecución
+                switch(value){
+                    case 'esquema_1':
+                        formDiseño.tiempo_ejecucion_diseno = 7
+                        formDiseño.semanas = this.calculateSemanas(7)
+                        break;
+                    case 'esquema_2':
+                        formDiseño.tiempo_ejecucion_diseno = 10
+                        formDiseño.semanas = this.calculateSemanas(10)
+                        break;
+                    case 'esquema_3':
+                        formDiseño.tiempo_ejecucion_diseno = 15
+                        formDiseño.semanas = this.calculateSemanas(15)
+                        break;
+                    default:
+                        break;
                 }
-                if (concepto.name === 'concepto6') {
-                    if (value === 'esquema_1' || value === 'esquema_2')
-                        concepto.text = 'DESARROLLO DEL PROYECTO'
-                    if (value === 'esquema_3')
-                        concepto.text = 'DESARROLLO DEL PROYECTO EJECUTIVO'
-                }
-                if (concepto.name === 'concepto7') {
-                    if (value === 'esquema_1' || value === 'esquema_2')
-                        concepto.text = 'ENTREGA FINAL DEL PROYECTO DIGITAL'
-                    if (value === 'esquema_3')
-                        concepto.text = 'ENTREGA FINAL DEL PROYECTO EJECUTIVO EN DIGITAL'
-                }
-                return false
-            })
+                
+                // Planos
+                let planos = []
+                if (data.empresa)
+                    data.empresa.planos.map((plano) => {
+                        if (plano[formDiseño.esquema])
+                            planos.push(plano)
+                    })
+                formDiseño.planos = this.setOptionsCheckboxes(planos, true)
+
+                // Conceptos
+                formDiseño.conceptos.map((concepto) => {
+                    switch(concepto.name){
+                        case 'concepto1':
+                            concepto.value = "1";
+                            break;
+                        case 'concepto2':
+                            switch(value){
+                                case 'esquema_1':
+                                    concepto.value = "1 AL 2"
+                                    break;
+                                case 'esquema_2':
+                                    concepto.value = "2 AL 3"
+                                    break;
+                                case 'esquema_3':
+                                    concepto.value = "2 AL 4"
+                                    break;
+                                default:
+                                    break;
+                            }
+                            break;
+                        case 'concepto3':
+                            switch(value){
+                                case 'esquema_1':
+                                    concepto.value = "3"
+                                    break;
+                                case 'esquema_2':
+                                    concepto.value = "4"
+                                    break;
+                                case 'esquema_3':
+                                    concepto.value = "5"
+                                    break;
+                                default:
+                                    break;
+                            }
+                            break;
+                        case 'concepto4':
+                            switch(value){
+                                case 'esquema_1':
+                                    concepto.value = "3 AL 4"
+                                    concepto.text = 'DESARROLLO DEL PROYECTO'
+                                    break;
+                                case 'esquema_2':
+                                    concepto.value = "5 AL 6"
+                                    concepto.text = 'DESARROLLO DEL PROYECTO'
+                                    break;
+                                case 'esquema_3':
+                                    concepto.value = "6 AL 9"
+                                    concepto.text = 'DESARROLLO DEL PROYECTO EJECUTIVO'
+                                    break;
+                                default:
+                                    break;
+                            }
+                            break;
+                        case 'concepto5':
+                            switch(value){
+                                case 'esquema_1':
+                                    concepto.value = "5"
+                                    break;
+                                case 'esquema_2':
+                                    concepto.value = "7"
+                                    break;
+                                case 'esquema_3':
+                                    concepto.value = "10"
+                                    break;
+                                default:
+                                    break;
+                            }
+                            break;
+                        case 'concepto6':
+                            switch(value){
+                                case 'esquema_1':
+                                    concepto.value = "5 AL 6"
+                                    concepto.text = 'DESARROLLO DEL PROYECTO'
+                                    break;
+                                case 'esquema_2':
+                                    concepto.value = "8 AL 9"
+                                    concepto.text = 'DESARROLLO DEL PROYECTO'
+                                    break;
+                                case 'esquema_3':
+                                    concepto.value = "11 AL 14"
+                                    concepto.text = 'DESARROLLO DEL PROYECTO EJECUTIVO'
+                                    break;
+                                default:
+                                    break;
+                            }
+                            break;
+                        case 'concepto7':
+                            switch(value){
+                                case 'esquema_1':
+                                    concepto.value = "7"
+                                    concepto.text = 'ENTREGA FINAL DEL PROYECTO DIGITAL'
+                                    break;
+                                case 'esquema_2':
+                                    concepto.value = "10"
+                                    concepto.text = 'ENTREGA FINAL DEL PROYECTO DIGITAL'
+                                    break;
+                                case 'esquema_3':
+                                    concepto.value = "15"
+                                    concepto.text = 'ENTREGA FINAL DEL PROYECTO EJECUTIVO EN DIGITAL'
+                                    break;
+                                default:
+                                    break;
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+                    return false
+                })
+                break;
+            case 'tiempo_ejecucion_diseno':
+                formDiseño.semanas = this.calculateSemanas(value)
+                break;
+            default:
+                break;
+        }
+        if (name === 'm2' || name === 'esquema')
+            if (formDiseño.m2 && formDiseño.esquema) {
+                formDiseño.subtotal = this.getSubtotal(formDiseño.m2, formDiseño.esquema)
+            }
+        if (formDiseño.subtotal > 0) {
+            formDiseño.total = formDiseño.subtotal * (1 - (formDiseño.descuento / 100))
         }
         if (type === 'checkbox')
             formDiseño[name] = checked
@@ -364,38 +542,60 @@ class LeadInfo extends Component {
             case 'construccion_civil_sup':
             case 'mobiliario_inf':
             case 'mobiliario_sup':
-                formDiseño[name] = value.replace(',', '')
+                formDiseño[name] = value.replace(/[,]/gi, '')
                 break
             default:
                 break;
         }
-
-        if (name === 'tiempo_ejecucion_diseno') {
-            let modulo = parseFloat(value) % 5
-            let aux = Object.keys(
-                {
-                    lunes: false,
-                    martes: false,
-                    miercoles: false,
-                    jueves: false,
-                    viernes: false,
-                    sabado: false,
-                    domingo: false
-                }
-            )
-            formDiseño.semanas = [];
-            for (let i = 0; i < Math.floor(parseFloat(value) / 5); i++) {
-                formDiseño.semanas.push({
-                    lunes: true,
-                    martes: true,
-                    miercoles: true,
-                    jueves: true,
-                    viernes: true,
-                    sabado: false,
-                    domingo: false
-                })
+        this.setState({
+            ...this.state,
+            formDiseño
+        })
+    }
+    calculateSemanas = tiempo => {
+        let modulo = parseFloat(tiempo) % 5
+        let aux = Object.keys(
+            {
+                lunes: false,
+                martes: false,
+                miercoles: false,
+                jueves: false,
+                viernes: false,
+                sabado: false,
+                domingo: false
             }
-            formDiseño.semanas.push({
+        )
+        let semanas = []
+        for (let i = 0; i < Math.floor(parseFloat(tiempo) / 5); i++) {
+            semanas.push({
+                lunes: true,
+                martes: true,
+                miercoles: true,
+                jueves: true,
+                viernes: true,
+                sabado: false,
+                domingo: false
+            })
+        }
+        semanas.push({
+            lunes: false,
+            martes: false,
+            miercoles: false,
+            jueves: false,
+            viernes: false,
+            sabado: false,
+            domingo: false
+        })
+        aux.map((element, key) => {
+            if (key < modulo) {
+                semanas[semanas.length - 1][element] = true
+            } else {
+                semanas[semanas.length - 1][element] = false
+            }
+            return false
+        })
+        if (modulo > 2) {
+            semanas.push({
                 lunes: false,
                 martes: false,
                 miercoles: false,
@@ -404,50 +604,8 @@ class LeadInfo extends Component {
                 sabado: false,
                 domingo: false
             })
-            aux.map((element, key) => {
-                if (key < modulo) {
-                    formDiseño.semanas[formDiseño.semanas.length - 1][element] = true
-                } else {
-                    formDiseño.semanas[formDiseño.semanas.length - 1][element] = false
-                }
-                return false
-            })
-            if (modulo > 2) {
-                formDiseño.semanas.push({
-                    lunes: false,
-                    martes: false,
-                    miercoles: false,
-                    jueves: false,
-                    viernes: false,
-                    sabado: false,
-                    domingo: false
-                })
-            }
         }
-
-        if (name === 'm2' || name === 'esquema')
-            if (formDiseño.m2 && formDiseño.esquema) {
-                formDiseño.subtotal = this.getSubtotal(formDiseño.m2, formDiseño.esquema)
-
-            }
-        if (formDiseño.subtotal > 0) {
-            formDiseño.total = formDiseño.subtotal * (1 - (formDiseño.descuento / 100))
-        }
-
-        if (name === 'esquema') {
-            let planos = []
-            if (data.empresa)
-                data.empresa.planos.map((plano) => {
-                    if (plano[formDiseño.esquema])
-                        planos.push(plano)
-                })
-            formDiseño.planos = this.setOptionsCheckboxes(planos, true)
-        }
-
-        this.setState({
-            ...this.state,
-            formDiseño
-        })
+        return semanas
     }
     handleChange = (files, item) => {
         const { formHistorial } = this.state
@@ -645,10 +803,9 @@ class LeadInfo extends Component {
         await axios.post(URL_DEV + 'crm/contacto/lead/' + lead.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { lead } = response.data
-                const { formHistorial } = this.state
                 this.setState({
                     ...this.state,
-                    formHistorial,
+                    formHistorial: this.clearForm(),
                     lead: lead
                 })
                 doneAlert('Historial actualizado con éxito');
@@ -671,7 +828,31 @@ class LeadInfo extends Component {
             console.log(error, 'error')
         })
     }
-
+    clearForm = () => {
+        const { formHistorial } = this.state
+        let aux = Object.keys(formHistorial)
+        aux.map((element) => {
+            switch (element) {
+                case 'adjuntos':
+                    formHistorial[element] = {
+                        adjuntos: {
+                            files: [],
+                            value: '',
+                            placeholder: 'Adjuntos'
+                        }
+                    }
+                    break;
+                case 'success':
+                    formHistorial[element] = 'Contactado'
+                    break;
+                default:
+                    formHistorial[element] = ''
+                    break;
+            }
+            return false
+        })
+        return formHistorial;
+    }
     async agendarEvento() {
         const { lead, formAgenda } = this.state
         waitAlert()
@@ -715,7 +896,7 @@ class LeadInfo extends Component {
             <div>
                 <Form.Control
                     placeholder='MOTIVO DE RECHAZO'
-                    className="form-control form-control-solid h-auto py-7 px-6"
+                    className="form-control form-control-solid h-auto py-7 px-6 text-uppercase"
                     id='motivo'
                     as="textarea"
                     rows="3"
@@ -734,22 +915,28 @@ class LeadInfo extends Component {
 
         let api = ''
 
-        if (lead.estatus.estatus === 'En proceso')
+        if (lead.estatus.estatus === 'En proceso'){
             api = 'crm/table/lead-en-contacto/';
-        else
+        }else if(lead.estatus.estatus === 'En negociación'){
             api = 'crm/table/lead-en-negociacion/';
-
+        }else{
+            api = 'crm/table/lead-detenido/';
+        }
+        // console.log(api)
+        // console.log(lead, 'lead')
+        // console.log(lead.id, 'lead.id')
         await axios.get(URL_DEV + api + lead.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { lead } = response.data
                 const { history } = this.props
                 const { form, formDiseño, data } = this.state
+
                 form.name = lead.nombre
                 form.email = lead.email
                 form.telefono = lead.telefono
                 form.proyecto = lead.prospecto.nombre_proyecto
-                form.fecha = lead.created_at
-
+                form.fecha = new Date(lead.created_at)
+                
                 if (lead.presupuesto_diseño) {
 
                     formDiseño.fase1 = lead.presupuesto_diseño.fase1
@@ -832,14 +1019,15 @@ class LeadInfo extends Component {
 
                 }
 
-                history.push({
-                    state: { lead: lead }
-                })
                 this.setState({
                     ...this.state,
                     lead: lead,
                     form,
                     formDiseño
+                })
+
+                history.push({
+                    state: { lead: lead }
                 })
             },
             (error) => {
@@ -886,6 +1074,28 @@ class LeadInfo extends Component {
                 const { history } = this.props
                 history.push('/leads/crm')
                 doneAlert('El estatus fue actualizado con éxito.')
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async eliminarContacto(contacto){
+        const { access_token } = this.props.authUser
+        const { lead } = this.state
+        await axios.delete(URL_DEV + 'crm/prospecto/' + lead.id + '/contacto/' + contacto.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert('Registro eliminado con éxito.');
+                this.getOneLead(lead)
             },
             (error) => {
                 console.log(error, 'error')
@@ -1023,7 +1233,7 @@ class LeadInfo extends Component {
                         if (presupuesto.pdfs)
                             if (presupuesto.pdfs[0])
                                 if (presupuesto.pdfs[0].pivot) {
-                                    swal.close()
+                                    Swal.close()
                                     questionAlert2('¡NO PODRÁS REVERTIR ESTO!', '',
                                         () => this.sendCorreoPresupuesto(presupuesto.pdfs[0].pivot.identificador),
                                         this.getTextAlert(presupuesto.pdfs[0].url)
@@ -1075,8 +1285,20 @@ class LeadInfo extends Component {
             formAgenda
         })
     }
+    onChangePage(pageNumber){
+        let { activePage } = this.state
+        activePage = pageNumber
+        this.setState({
+            ...this.state,
+            activePage
+        })
+    }
+    componentDidUpdate(){
+        $(".pagination").removeClass("page-link");
+    }
     render() {
-        const { lead, form, formHistorial, options, formAgenda, formDiseño, modal } = this.state
+        const { lead, form, formHistorial, options, formAgenda, formDiseño, modal, formeditado, itemsPerPage, activePage } = this.state
+        // console.log(lead)
         return (
             <Layout active={'leads'}  {...this.props} botonHeader={this.botonHeader} >
                 <Tab.Container defaultActiveKey="2" className="p-5">
@@ -1108,39 +1330,41 @@ class LeadInfo extends Component {
                                                                             <span className="ml-3">
                                                                                 {
                                                                                     lead ?
-                                                                                        lead.prospecto.estatus_prospecto ?
-                                                                                            <Dropdown>
-                                                                                                <Dropdown.Toggle
-                                                                                                    style={
-                                                                                                        {
-                                                                                                            backgroundColor: lead.prospecto.estatus_prospecto.color_fondo, color: lead.prospecto.estatus_prospecto.color_texto, border: 'transparent', padding: '0.15rem 0.75rem',
-                                                                                                            width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '0.8rem',
-                                                                                                            fontWeight: 600
-                                                                                                        }}>
-                                                                                                    {lead.prospecto.estatus_prospecto.estatus.toUpperCase()}
-                                                                                                </Dropdown.Toggle>
-                                                                                                <Dropdown.Menu className="p-0" >
-                                                                                                    <Dropdown.Header>
-                                                                                                        <span className="font-size-sm">Elige una opción</span>
-                                                                                                    </Dropdown.Header>
-                                                                                                    <Dropdown.Item href="#" className="p-0" onClick={(e) => { e.preventDefault(); this.changeEstatus('Detenido', lead.id) }} >
-                                                                                                        <span className="navi-link w-100">
-                                                                                                            <span className="navi-text">
-                                                                                                                <span className="label label-xl label-inline bg-light-gray text-gray rounded-0 w-100">DETENIDO</span>
+                                                                                        lead.prospecto?
+                                                                                            lead.prospecto.estatus_prospecto ?
+                                                                                                <Dropdown>
+                                                                                                    <Dropdown.Toggle
+                                                                                                        style={
+                                                                                                            {
+                                                                                                                backgroundColor: lead.prospecto.estatus_prospecto.color_fondo, color: lead.prospecto.estatus_prospecto.color_texto, border: 'transparent', padding: '0.15rem 0.75rem',
+                                                                                                                width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '0.8rem',
+                                                                                                                fontWeight: 600
+                                                                                                            }}>
+                                                                                                        {lead.prospecto.estatus_prospecto.estatus.toUpperCase()}
+                                                                                                    </Dropdown.Toggle>
+                                                                                                    <Dropdown.Menu className="p-0" >
+                                                                                                        <Dropdown.Header>
+                                                                                                            <span className="font-size-sm">Elige una opción</span>
+                                                                                                        </Dropdown.Header>
+                                                                                                        <Dropdown.Item href="#" className="p-0" onClick={(e) => { e.preventDefault(); this.changeEstatus('Detenido', lead.id) }} >
+                                                                                                            <span className="navi-link w-100">
+                                                                                                                <span className="navi-text">
+                                                                                                                    <span className="label label-xl label-inline bg-light-gray text-gray rounded-0 w-100">DETENIDO</span>
+                                                                                                                </span>
                                                                                                             </span>
-                                                                                                        </span>
-                                                                                                    </Dropdown.Item>
-                                                                                                    <Dropdown.Item className="p-0" onClick={(e) => { e.preventDefault(); this.openModalWithInput('Rechazado', lead.id) }} >
-                                                                                                        <span className="navi-link w-100">
-                                                                                                            <span className="navi-text">
-                                                                                                                <span className="label label-xl label-inline label-light-danger rounded-0 w-100">Rechazado</span>
+                                                                                                        </Dropdown.Item>
+                                                                                                        <Dropdown.Item className="p-0" onClick={(e) => { e.preventDefault(); this.openModalWithInput('Rechazado', lead.id) }} >
+                                                                                                            <span className="navi-link w-100">
+                                                                                                                <span className="navi-text">
+                                                                                                                    <span className="label label-xl label-inline label-light-danger rounded-0 w-100">Rechazado</span>
+                                                                                                                </span>
                                                                                                             </span>
-                                                                                                        </span>
-                                                                                                    </Dropdown.Item>
-                                                                                                </Dropdown.Menu>
-                                                                                            </Dropdown>
+                                                                                                        </Dropdown.Item>
+                                                                                                    </Dropdown.Menu>
+                                                                                                </Dropdown>
                                                                                             : ''
                                                                                         : ''
+                                                                                    : ''
                                                                                 }
                                                                             </span>
                                                                         </div>
@@ -1240,6 +1464,7 @@ class LeadInfo extends Component {
                                                 onSubmit={this.submitForm}
                                                 user={this.props.authUser.user}
                                                 lead={lead}
+                                                formeditado={formeditado}
                                             />
                                         </Card.Body>
                                     </Tab.Pane>
@@ -1296,56 +1521,106 @@ class LeadInfo extends Component {
                                             <div className="col-md-8">
                                                 {
                                                     lead ?
-                                                        lead.prospecto.contactos.map((contacto, key) => {
-                                                            return (
-                                                                <div className="timeline timeline-6" key={key}>
-                                                                    <div className="timeline-items">
-                                                                        <div className="timeline-item">
-                                                                            <div className={contacto.success ? "timeline-media bg-light-success" : "timeline-media bg-light-danger"}>
-                                                                                <span className={contacto.success ? "svg-icon svg-icon-success svg-icon-md" : "svg-icon svg-icon-danger  svg-icon-md"}>
-                                                                                    {
-                                                                                        contacto.tipo_contacto.tipo === 'Llamada' ?
-                                                                                            <SVG src={toAbsoluteUrl('/images/svg/Outgoing-call.svg')} />
-                                                                                            : contacto.tipo_contacto.tipo === 'Correo' ?
-                                                                                                <SVG src={toAbsoluteUrl('/images/svg/Outgoing-mail.svg')} />
-                                                                                                : contacto.tipo_contacto.tipo === 'VIDEO LLAMADA' ?
-                                                                                                    <SVG src={toAbsoluteUrl('/images/svg/Video-camera.svg')} />
-                                                                                                    : contacto.tipo_contacto.tipo === 'Whatsapp' ?
-                                                                                                        <i className={contacto.success ? "socicon-whatsapp text-success icon-16px" : "socicon-whatsapp text-danger icon-16px"}></i>
-                                                                                                        : contacto.tipo_contacto.tipo === 'TAWK TO ADS' ?
-                                                                                                            <i className={contacto.success ? "fas fa-dove text-success icon-16px" : "fas fa-dove text-danger icon-16px"}></i>
-                                                                                                            : contacto.tipo_contacto.tipo === 'REUNIÓN PRESENCIAL' ?
-                                                                                                                <i className={contacto.success ? "fas fa-users text-success icon-16px" : "fas fa-users text-danger icon-16px"}></i>
-                                                                                                                : contacto.tipo_contacto.tipo === 'Visita' ?
-                                                                                                                    <i className={contacto.success ? "fas fa-house-user text-success icon-16px" : "fas fa-house-user text-danger icon-16px"}></i>
-                                                                                                                    : <i className={contacto.success ? "fas fa-mail-bulk text-success icon-16px" : "fas fa-mail-bulk text-danger icon-16px"}></i>
-                                                                                    }
-                                                                                </span>
-                                                                            </div>
-                                                                            <div className={contacto.success ? "timeline-desc timeline-desc-light-success" : "timeline-desc timeline-desc-light-danger"}>
-                                                                                <span className={contacto.success ? "font-weight-bolder text-success" : "font-weight-bolder text-danger"}>{setDateTableLG(contacto.created_at)}</span>
-                                                                                <div className="font-weight-light pb-2 text-justify position-relative mt-2" style={{ borderRadius: '0.42rem', padding: '1rem 1.5rem', backgroundColor: '#F3F6F9' }}>
-                                                                                    <div className="text-dark-75 font-weight-bold mb-2">{contacto.tipo_contacto.tipo}</div>
-                                                                                    {contacto.comentario}
-                                                                                    {
-                                                                                        contacto.adjunto ?
-                                                                                            <div className="d-flex justify-content-end">
-                                                                                                <a href={contacto.adjunto.url} target='_blank' rel="noopener noreferrer" className="text-muted text-hover-primary font-weight-bold">
-                                                                                                    <span className="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
-                                                                                                        <SVG src={toAbsoluteUrl('/images/svg/Attachment1.svg')} />
-                                                                                                    </span>VER ADJUNTO
-                                                                                                    </a>
+                                                        lead.prospecto ?
+                                                            lead.prospecto.contactos.length === 0 ?
+                                                                <div className="text-center text-dark-75 font-weight-bolder font-size-lg">No se ha registrado ningún contacto</div>
+                                                            :
+                                                                lead.prospecto.contactos.map((contacto, key) => {
+                                                                    let limiteInferior = (activePage - 1) * itemsPerPage
+                                                                    let limiteSuperior = limiteInferior + (itemsPerPage - 1)
+                                                                    if(contacto.length < itemsPerPage || ( key >= limiteInferior && key <= limiteSuperior))
+                                                                        return(
+                                                                            <div className="timeline timeline-6" key={key}>
+                                                                                <div className="timeline-items">
+                                                                                    <div className="timeline-item">
+                                                                                        <div className={contacto.success ? "timeline-media bg-light-success" : "timeline-media bg-light-danger"}>
+                                                                                            <span className={contacto.success ? "svg-icon svg-icon-success svg-icon-md" : "svg-icon svg-icon-danger  svg-icon-md"}>
+                                                                                                {
+                                                                                                    contacto.tipo_contacto ?
+                                                                                                        contacto.tipo_contacto.tipo === 'Llamada' ?
+                                                                                                            <SVG src={toAbsoluteUrl('/images/svg/Outgoing-call.svg')} />
+                                                                                                            : contacto.tipo_contacto.tipo === 'Correo' ?
+                                                                                                                <SVG src={toAbsoluteUrl('/images/svg/Outgoing-mail.svg')} />
+                                                                                                                : contacto.tipo_contacto.tipo === 'VIDEO LLAMADA' ?
+                                                                                                                    <SVG src={toAbsoluteUrl('/images/svg/Video-camera.svg')} />
+                                                                                                                    : contacto.tipo_contacto.tipo === 'Whatsapp' ?
+                                                                                                                        <i className={contacto.success ? "socicon-whatsapp text-success icon-16px" : "socicon-whatsapp text-danger icon-16px"}></i>
+                                                                                                                        : contacto.tipo_contacto.tipo === 'TAWK TO ADS' ?
+                                                                                                                            <i className={contacto.success ? "fas fa-dove text-success icon-16px" : "fas fa-dove text-danger icon-16px"}></i>
+                                                                                                                            : contacto.tipo_contacto.tipo === 'REUNIÓN PRESENCIAL' ?
+                                                                                                                                <i className={contacto.success ? "fas fa-users text-success icon-16px" : "fas fa-users text-danger icon-16px"}></i>
+                                                                                                                                : contacto.tipo_contacto.tipo === 'Visita' ?
+                                                                                                                                    <i className={contacto.success ? "fas fa-house-user text-success icon-16px" : "fas fa-house-user text-danger icon-16px"}></i>
+                                                                                                                                        :contacto.tipo_contacto.tipo === 'TAWK TO ORGANICO' ?
+                                                                                                                                            <i className={contacto.success ? "fas fa-dove text-success icon-16px" : "fas fa-dove text-danger icon-16px"}></i>
+                                                                                                                                            : <i className={contacto.success ? "fas fa-mail-bulk text-success icon-16px" : "fas fa-mail-bulk text-danger icon-16px"}></i>
+                                                                                                        : ''
+                                                                                                }
+                                                                                            </span>
+                                                                                        </div>
+                                                                                        <div className={contacto.success ? "timeline-desc timeline-desc-light-success" : "timeline-desc timeline-desc-light-danger"}>
+                                                                                            <span className={contacto.success ? "font-weight-bolder text-success" : "font-weight-bolder text-danger"}>{setDateTableLG(contacto.created_at)}</span>
+                                                                                            <div className="font-weight-light pb-2 text-justify position-relative mt-2 pr-3" style={{ borderRadius: '0.42rem', padding: '1rem 1.5rem', backgroundColor: '#F3F6F9' }}>
+                                                                                                <div className="text-dark-75 font-weight-bold mb-2">
+                                                                                                    <div className="d-flex justify-content-between">
+                                                                                                        {contacto.tipo_contacto ? contacto.tipo_contacto.tipo : ''}
+                                                                                                        <a className="text-muted text-hover-danger font-weight-bold a-hover"
+                                                                                                            onClick={(e) => { deleteAlert('¿ESTÁS SEGURO QUE DESEAS ELIMINAR EL CONTACTO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.eliminarContacto(contacto)) }}>
+                                                                                                            <i className="flaticon2-cross icon-xs" />
+                                                                                                        </a>
+                                                                                                    </div>
+                                                                                                </div>
+                                                                                                {contacto.comentario}
+                                                                                                {
+                                                                                                    contacto.adjunto ?
+                                                                                                        <div className="d-flex justify-content-end">
+                                                                                                            <a href={contacto.adjunto.url} target='_blank' rel="noopener noreferrer" className="text-muted text-hover-primary font-weight-bold">
+                                                                                                                <span className="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
+                                                                                                                    <SVG src={toAbsoluteUrl('/images/svg/Attachment1.svg')} />
+                                                                                                                </span>VER ADJUNTO
+                                                                                                            </a>
+                                                                                                        </div>
+                                                                                                        : ''
+                                                                                                }
                                                                                             </div>
-                                                                                            : ''
-                                                                                    }
+                                                                                        </div>
+                                                                                    </div>
                                                                                 </div>
                                                                             </div>
-                                                                        </div>
-                                                                    </div>
+                                                                        )  
+                                                                    return false
+                                                                })
+                                                            : <div className="text-center text-dark-75 font-weight-bolder font-size-lg">No se ha registrado ningún contacto</div>
+                                                        : <div className="text-center text-dark-75 font-weight-bolder font-size-lg">No se ha registrado ningún contacto</div>
+                                                }
+                                                {
+                                                    lead ? 
+                                                        lead.prospecto ?
+                                                            lead.prospecto.contactos.length > itemsPerPage ?
+                                                                <div className="d-flex justify-content-center mt-4">
+                                                                    <Pagination
+                                                                        itemClass="page-item"
+                                                                        linkClass="page-link"
+                                                                        firstPageText = 'Primero'
+                                                                        lastPageText = 'Último'
+                                                                        activePage = { activePage }
+                                                                        itemsCountPerPage = { itemsPerPage }
+                                                                        totalItemsCount = { lead.prospecto.contactos.length }
+                                                                        pageRangeDisplayed = { 5 }
+                                                                        onChange={this.onChangePage.bind(this)}
+                                                                        itemClassLast="d-none"
+                                                                        itemClassFirst="d-none"
+                                                                        prevPageText={<i className='ki ki-bold-arrow-back icon-xs'/>}
+                                                                        nextPageText={<i className='ki ki-bold-arrow-next icon-xs'/>}
+                                                                        linkClassPrev="btn btn-icon btn-sm btn-light-primary mr-2 my-1 pagination"
+                                                                        linkClassNext="btn btn-icon btn-sm btn-light-primary mr-2 my-1 pagination"
+                                                                        linkClass="btn btn-icon btn-sm border-0 btn-hover-primary mr-2 my-1 pagination"
+                                                                        activeLinkClass="btn btn-icon btn-sm border-0 btn-light btn-hover-primary active mr-2 my-1 pagination"
+                                                                    />
                                                                 </div>
-                                                            )
-                                                        })
+                                                            : ''
                                                         : ''
+                                                    : ''
                                                 }
                                             </div>
                                         </Card.Body>
@@ -1385,6 +1660,7 @@ class LeadInfo extends Component {
                                                 onChangeCheckboxes={this.handleChangeCheckbox}
                                                 onSubmit={this.onSubmitPresupuestoDiseño}
                                                 submitPDF={this.onSubmitPDF}
+                                                formeditado={formeditado}
                                             />
                                         </Card.Body>
                                     </Tab.Pane>
