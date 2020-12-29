@@ -97,7 +97,17 @@ class LeadNegociacion extends Component {
                                                     </span><br />
                                                     <span>Último contacto: </span>
                                                     <span className="text-muted font-weight-bold font-size-sm">
-                                                        {setDateTableLG(lead.prospecto.contactos[0].created_at)}
+                                                        {
+                                                            lead ?
+                                                                lead.prospecto ?
+                                                                    lead.prospecto.contactos ?
+                                                                        lead.prospecto.contactos.length ?
+                                                                            setDateTableLG(lead.prospecto.contactos[0].created_at)
+                                                                        : ''
+                                                                    : ''
+                                                                : ''
+                                                            : ''
+                                                        }
                                                     </span>
                                                 </td>
                                                 <td>
@@ -185,7 +195,7 @@ class LeadNegociacion extends Component {
                                                             <i className="flaticon2-plus icon-nm"></i>
                                                         </span>
                                                     </OverlayTrigger>
-                                                    {
+                                                    {/* {
                                                         this.actionsButton(lead) ?
                                                             <OverlayTrigger overlay={<Tooltip>CONTRATAR</Tooltip>}>
                                                                 <span onClick={(e) => { changePageContratar(lead) }} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-brown">
@@ -200,7 +210,19 @@ class LeadNegociacion extends Component {
                                                                     </span>
                                                                 </a>
                                                             </OverlayTrigger>
-                                                    }
+                                                    } */}
+                                                    <OverlayTrigger overlay={<Tooltip>SEGUIMIENTO DE VENTA</Tooltip>}>
+                                                        <a onClick={(e) => { changePageCierreVenta(lead) }} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-brown">
+                                                            <span className="svg-icon svg-icon-md">
+                                                                <SVG src={toAbsoluteUrl('/images/svg/File.svg')} />
+                                                            </span>
+                                                        </a>
+                                                    </OverlayTrigger>
+                                                    <OverlayTrigger overlay={<Tooltip>CONTRATAR</Tooltip>}>
+                                                        <span onClick={(e) => { changePageContratar(lead) }} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-brown">
+                                                            <i className="fas fa-file-signature icon-14px"></i>
+                                                        </span>
+                                                    </OverlayTrigger>
                                                 </td>
                                             </tr>
                                         )
