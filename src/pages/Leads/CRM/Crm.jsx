@@ -1068,7 +1068,8 @@ class Crm extends Component {
 
     async changeEstatusCanceladoRechazadoAxios(data) {
         const { access_token } = this.props.authUser
-        data.motivo = document.getElementById('motivo').value
+        if(document.getElementById('motivo'))
+            data.motivo = document.getElementById('motivo').value
         waitAlert()
         await axios.put(URL_DEV + 'crm/lead/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -1099,26 +1100,30 @@ class Crm extends Component {
     }
 
     openModalWithInput = (estatus, id) => {
-        questionAlert2(
-            estatus === 'Cancelado' ?
-                'ESCRIBE EL MOTIVO DE CANCELACIÓN' :
-                'ESCRIBE EL MOTIVO DE RECHAZO',
-            '',
-            () => this.changeEstatusCanceladoRechazadoAxios({ id: id, estatus: estatus }),
-            <div>
-                <Form.Control
-                    placeholder={
-                        estatus === 'Cancelado' ?
-                            'MOTIVO DE CANCELACIÓN' :
-                            'MOTIVO DE RECHAZO'
-                    }
-                    className="form-control form-control-solid h-auto py-7 px-6 text-uppercase"
-                    id='motivo'
-                    as="textarea"
-                    rows="3"
-                />
-            </div>
-        )
+        if(estatus === 'En negociación'){
+            questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusCanceladoRechazadoAxios({ id: id, estatus: estatus }))
+        }else{
+            questionAlert2(
+                estatus === 'Cancelado' ?
+                    'ESCRIBE EL MOTIVO DE CANCELACIÓN' :
+                    'ESCRIBE EL MOTIVO DE RECHAZO',
+                '',
+                () => this.changeEstatusCanceladoRechazadoAxios({ id: id, estatus: estatus }),
+                <div>
+                    <Form.Control
+                        placeholder={
+                            estatus === 'Cancelado' ?
+                                'MOTIVO DE CANCELACIÓN' :
+                                'MOTIVO DE RECHAZO'
+                        }
+                        className="form-control form-control-solid h-auto py-7 px-6 text-uppercase"
+                        id='motivo'
+                        as="textarea"
+                        rows="3"
+                    />
+                </div>
+            )
+        }
     }
 
     changePageLlamadaSalida = (lead) => {

@@ -201,6 +201,13 @@ class LeadNuevo extends Component {
                                                                                     </span>
                                                                                 </span>
                                                                             </Dropdown.Item>
+                                                                            <Dropdown.Item className="p-0" onClick={(e) => { e.preventDefault(); openModalWithInput('En negociación', lead.id) }} >
+                                                                                <span className="navi-link w-100">
+                                                                                    <span className="navi-text">
+                                                                                        <span className="label label-xl label-inline label-light-success rounded-0 w-100">EN NEGOCIACIÓN</span>
+                                                                                    </span>
+                                                                                </span>
+                                                                            </Dropdown.Item>
                                                                         </Dropdown.Menu>
                                                                     </Dropdown>
                                                                     : ''
