@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Layout from '../../components/layout/layout';
 import axios from 'axios';
-
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from "@fullcalendar/interaction"; // needed for dayClick
@@ -13,11 +12,11 @@ import { errorAlert, forbiddenAccessAlert, waitAlert, doneAlert } from '../../fu
 import { countDaysWithoutWeekend } from '../../functions/functions';
 import { URL_DEV } from '../../constants';
 import bootstrapPlugin from '@fullcalendar/bootstrap'
-import {DropdownButton, Dropdown,Card, OverlayTrigger, Tooltip, Nav} from 'react-bootstrap'
+import { DropdownButton, Dropdown, Card, OverlayTrigger, Tooltip, Nav } from 'react-bootstrap'
 import moment from 'moment'
 import AVATAR from '../../assets/images/icons/avatar.png'
 import Swal from 'sweetalert2'
-import { Parking, ParkingRed } from '../../components/Lottie';
+import { Parking, ParkingRed, PassportTravel, HappyBirthday, Calendar } from '../../components/Lottie';
 
 const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
 class Calendario extends Component {
@@ -35,7 +34,7 @@ class Calendario extends Component {
             fechaInicio: new Date(),
             fechaFin: new Date(),
         },
-        data:{
+        data: {
             usuarios: []
         },
         estatus: [],
@@ -55,7 +54,7 @@ class Calendario extends Component {
         this.getVacacionesAxios()
     }
 
-    handleDateClick = (arg) => { 
+    handleDateClick = (arg) => {
         waitAlert()
         this.getEventsOneDateAxios(arg.dateStr)
     }
@@ -249,7 +248,7 @@ class Calendario extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Vacaciones solicitadas con éxito.')
                 this.getVacacionesAxios();
                 this.handleClose();
-                
+
             },
             (error) => {
                 console.log(error, 'error')
@@ -317,7 +316,7 @@ class Calendario extends Component {
                     return false
                 })
 
-                eventos.map((evento)=>{
+                eventos.map((evento) => {
                     aux.push({
                         shortName: 'Eventos',
                         title: evento.googleEvent.summary,
@@ -356,7 +355,7 @@ class Calendario extends Component {
         })
     }
 
-    async getEventsOneDateAxios(date){
+    async getEventsOneDateAxios(date) {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'vacaciones/single/' + date, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -364,10 +363,10 @@ class Calendario extends Component {
                 const { eventos } = response.data
                 let bandera = false
                 Object.keys(eventos).map((evento, key) => {
-                    if(eventos[evento].length && bandera === false && evento !== 'feriados')
+                    if (eventos[evento].length && bandera === false && evento !== 'feriados')
                         bandera = evento
                 })
-                if(bandera === false)
+                if (bandera === false)
                     bandera = 'estacionamiento'
                 this.setState({
                     ...this.state,
@@ -393,29 +392,28 @@ class Calendario extends Component {
 
     setInvitados = (invitados) => {
         const { data } = this.state
-        if(invitados)
-            return(
+        if (invitados)
+            return (
                 <div>
                     <div className="d-flex mb-3 flex-wrap  justify-content-center">
                         {
-                            invitados.map((invitado, index)=>{
+                            invitados.map((invitado, index) => {
                                 let aux = false
-                                data.usuarios.map((user)=>{
-                                    if(user.email.toUpperCase() === invitado.email.toUpperCase()){
+                                data.usuarios.map((user) => {
+                                    if (user.email.toUpperCase() === invitado.email.toUpperCase()) {
                                         aux = user
                                     }
                                     return false
                                 })
-                                if(aux !== false)
-                                {
-                                    if(aux.avatar){
-                                        return(
-                                            <img className = "calendar-avatar mr-3 mb-2" src = {aux.avatar} alt = '' />
+                                if (aux !== false) {
+                                    if (aux.avatar) {
+                                        return (
+                                            <img className="calendar-avatar mr-3 mb-2" src={aux.avatar} alt='' />
                                         )
-                                    }else{
-                                        return(
-                                            <img className = "calendar-avatar mr-3 mb-2" src = {AVATAR} alt = '' />
-                                        )   
+                                    } else {
+                                        return (
+                                            <img className="calendar-avatar mr-3 mb-2" src={AVATAR} alt='' />
+                                        )
                                     }
                                 }
                                 return false
@@ -424,32 +422,32 @@ class Calendario extends Component {
                     </div>
                     <div className="lista-invitados text-left">
                         {
-                            invitados.map((invitado)=>{
+                            invitados.map((invitado) => {
                                 let aux = false
-                                data.usuarios.map((user)=>{
-                                    if(user.email.toUpperCase() === invitado.email.toUpperCase()){
+                                data.usuarios.map((user) => {
+                                    if (user.email.toUpperCase() === invitado.email.toUpperCase()) {
                                         aux = user
                                     }
                                     return false
                                 })
-                                if(aux === false)
-                                return(
-                                    <div className="d-flex align-items-center my-2">
-                                        <i className={ invitado.responseStatus === 'accepted' ? "fas fa-check-circle kt-font-boldest mr-3 icon-green" : 'fas fa-clock kt-font-boldest mr-3 icon-purple'}></i>
-                                        <span>{invitado.email}</span>
-                                    </div>
-                                )
+                                if (aux === false)
+                                    return (
+                                        <div className="d-flex align-items-center my-2">
+                                            <i className={invitado.responseStatus === 'accepted' ? "fas fa-check-circle kt-font-boldest mr-3 icon-green" : 'fas fa-clock kt-font-boldest mr-3 icon-purple'}></i>
+                                            <span>{invitado.email}</span>
+                                        </div>
+                                    )
                                 return false
                             })
                         }
                     </div>
                 </div>
-                
+
             )
     }
-    
+
     setTimer = (time) => {
-        switch(time){
+        switch (time) {
             case 0:
                 return '00'
             case 1:
@@ -476,62 +474,61 @@ class Calendario extends Component {
     }
 
     getInvitadosSprits = invitados => {
-        if(invitados)
-            return(
-                <img className = "calendar-avatar" src = {AVATAR}  alt = ''/>
+        if (invitados)
+            return (
+                <img className="calendar-avatar" src={AVATAR} alt='' />
             )
     }
 
     renderEventContent = (eventInfo) => {
-        if(eventInfo.event._def.extendedProps.evento){
+        if (eventInfo.event._def.extendedProps.evento) {
             let start = new Date(eventInfo.event._def.extendedProps.evento.googleEvent.start.dateTime);
             let end = new Date(eventInfo.event._def.extendedProps.evento.googleEvent.end.dateTime);
-            return(
-                    <OverlayTrigger 
-                        /* defaultShow = { true } */
-                        overlay = {
-                            <Tooltip className="tool-calendar">
-                                <div className="tool-titulo">
-                                    <b>
-                                        {eventInfo.event.title}
-                                    </b>
-                                </div>
-                                <div className="p-2">
-                                    <div className="tool-horario">
-                                        <span>
+            return (
+                <OverlayTrigger
+                    /* defaultShow = { true } */
+                    overlay={
+                        <Tooltip className="tool-calendar">
+                            <div className="tool-titulo">
+                                <b>
+                                    {eventInfo.event.title}
+                                </b>
+                            </div>
+                            <div className="p-2">
+                                <div className="tool-horario">
+                                    <span>
+                                        {
+                                            this.setTimer(start.getHours()) + ':' + this.setTimer(start.getMinutes())
+                                        }
+                                            &nbsp; - &nbsp;
                                             {
-                                                this.setTimer(start.getHours()) + ':' + this.setTimer(start.getMinutes())
-                                            }
-                                            &nbsp; - &nbsp; 
-                                            {
-                                                this.setTimer(end.getHours()) + ':' + this.setTimer(end.getMinutes())
-                                            }
-                                        </span>
-                                    </div>
-                                    <br />
-                                    {
-                                        this.setInvitados(eventInfo.event._def.extendedProps.evento.googleEvent.attendees)
-                                    }
+                                            this.setTimer(end.getHours()) + ':' + this.setTimer(end.getMinutes())
+                                        }
+                                    </span>
                                 </div>
-                            </Tooltip>
-                            }
-                        >
-                        <div className={eventInfo.event._def.extendedProps.containerClass + ' evento text-left'}>
-                            <div className="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <i className={eventInfo.event._def.extendedProps.iconClass + " kt-font-boldest mr-3"}></i>
-                                    <span>{eventInfo.event.title}</span>
-                                </div>
-                                <div>
-                                    {
-                                        this.getInvitadosSprits(eventInfo.event._def.extendedProps.evento.googleEvent.attendees)
-                                    }
-                                </div>
+                                <br />
+                                {
+                                    this.setInvitados(eventInfo.event._def.extendedProps.evento.googleEvent.attendees)
+                                }
+                            </div>
+                        </Tooltip>
+                    }
+                >
+                    <div className={eventInfo.event._def.extendedProps.containerClass + ' evento text-left'}>
+                        <div className="d-flex justify-content-between align-items-center">
+                            <div>
+                                <i className={eventInfo.event._def.extendedProps.iconClass + " kt-font-boldest mr-3"}></i>
+                                <span>{eventInfo.event.title}</span>
+                            </div>
+                            <div>
+                                {
+                                    this.getInvitadosSprits(eventInfo.event._def.extendedProps.evento.googleEvent.attendees)
+                                }
                             </div>
                         </div>
-                        
-                    </OverlayTrigger>
-                )
+                    </div>
+                </OverlayTrigger>
+            )
         }
         return (
             <OverlayTrigger overlay={<Tooltip>{eventInfo.event.title}</Tooltip>}>
@@ -544,7 +541,7 @@ class Calendario extends Component {
     }
 
     setDateText = date => {
-        if(date !== ''){
+        if (date !== '') {
             let fecha = moment(date)
             return fecha.format('DD') + ' de ' + meses[fecha.format('M') - 1] + ' del ' + fecha.format('YYYY')
         }
@@ -555,11 +552,8 @@ class Calendario extends Component {
     setNavTitle = element => {
         let icon = ''
         let nombre = ''
-        let active = ''
         const { activeKey } = this.state
-        if(activeKey === element)
-            active = ' text-primary '
-        switch(element){
+        switch (element) {
             case 'eventos':
                 nombre = 'CITAS'
                 icon = 'far fa-clock'
@@ -577,10 +571,10 @@ class Calendario extends Component {
                 icon = 'fas fa-car'
                 break;
         }
-        return(
+        return (
             <>
-                <i className= { icon + ' icon-15px mr-2 ' + active}></i>
-                {nombre}
+                <span className="nav-icon"><i className={icon}></i></span>
+                <span className="nav-text font-size-lg">{nombre}</span>
             </>
         )
     }
@@ -594,36 +588,157 @@ class Calendario extends Component {
 
     printModal = () => {
         const { activeKey } = this.state
-        switch(activeKey){
+        switch (activeKey) {
             case 'eventos':
+                return this.printEventos()
+                break;
             case 'cumpleaños':
-            case 'vacaciones': 
+                return this.printCumpleaños()
+                break;
+            case 'vacaciones':
+                return this.printVacaciones()
                 break;
             case 'estacionamiento':
                 return this.prinEstacionamiento()
                 break
+            default:
+                return ''
+                break;
         }
     }
+    getHours(dateTimeStart, dateTimeEnd) {
+        var fechaStart = new Date(dateTimeStart)
+        var horaStart = this.setTimer(fechaStart.getHours()) + ":" + this.setTimer(fechaStart.getMinutes())
 
+        var fechaEnd = new Date(dateTimeEnd)
+        var horaEnd = this.setTimer(fechaEnd.getHours()) + ":" + this.setTimer(fechaEnd.getMinutes())
+
+        return horaStart + " - " + horaEnd
+    }
+    printEventos = () => {
+        const { eventos } = this.state
+        return (
+            <>
+
+                <Calendar />
+                <div class="table-responsive">
+                    <table class="table table-head-custom table-head-bg table-borderless table-vertical-center">
+                        <thead>
+                            <tr class="text-center text-uppercase">
+                                <th style={{ minWidth: "100px" }} class="pl-7">
+                                    <span class="text-dark-75">Nombre de la reunión</span>
+                                </th>
+                                <th style={{ minWidth: "100px" }}>Correo de participantes</th>
+                                <th style={{ minWidth: "100px" }}>Hora de la reunión</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                eventos.eventos.map((gEvent, key) => {
+                                    return (
+                                        <tr className="text-center" key={key}>
+                                            <td class="pl-0">
+                                                <div class="text-dark-75 font-weight-bolder mb-1 font-size-lg">{gEvent.googleEvent.summary}</div>
+                                            </td>
+                                            <td>
+                                                {
+                                                    gEvent.googleEvent.attendees.map((participantes, key) => {
+                                                        return (
+                                                            <span class="font-weight-light d-block text-lowercase" key={key}>{participantes.email}</span>
+                                                        )
+                                                    })
+                                                }
+                                            </td>
+                                            <td>
+                                                <span class="font-weight-light">
+                                                    {this.getHours(gEvent.googleEvent.end.dateTime, gEvent.googleEvent.start.dateTime)}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    )
+                                })
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </>
+        )
+    }
+    printCumpleaños = () => {
+        const { eventos } = this.state
+        return (
+            <>
+                <div className="form-group row form-group-marginless">
+                    <div className="col-md-12">
+                        <div className="text-primary text-center font-weight-bolder font-size-h2">
+                            ¡Feliz Cumpleaños!
+                        </div>
+                        <HappyBirthday />
+                    </div>
+                    <div className="col-md-12 text-center mt-3">
+                        {
+                            eventos.cumpleaños.map((cumpleaños, key) => {
+                                return (
+                                    <div key={key}>
+                                        <div class="font-weight-bold text-dark mb-1 font-size-lg">
+                                            {cumpleaños.nombre}
+                                        </div>
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
+                </div>
+            </>
+        )
+    }
+    printVacaciones = () => {
+        const { eventos } = this.state
+        return (
+            <>
+                <div className="form-group row form-group-marginless">
+                    <div className="col-md-12">
+                        <div className="text-primary text-center font-weight-bolder font-size-h2">
+                            ¡Felices Vacaciones!
+                        </div>
+                        <PassportTravel />
+                    </div>
+                    <div className="col-md-12 text-center mt-3">
+                        {
+                            eventos.vacaciones.map((vacaciones, key) => {
+                                return (
+                                    <div key={key}>
+                                        <div class="font-weight-bold text-dark mb-1 font-size-lg">
+                                            {vacaciones.empleado.nombre}
+                                        </div>
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
+                </div>
+            </>
+        )
+    }
     prinEstacionamiento = () => {
         const { eventos } = this.state
         let size = 3
         return (
             <>
-                <div className = 'row mx-0 justify-content-center '>
+                <div className='row mx-0 justify-content-center '>
                     {
                         eventos.estacionamiento.map((auto, key) => {
-                            return(
-                                <div className = { `col-md-${size}` }>
-                                    <div className = 'text-center my-2'>
+                            return (
+                                <div className={`col-md-${size}`}>
+                                    <div className='text-center my-2'>
                                         {auto}
                                     </div>
-                                    <div className = 'row mx-0 justify-content-center border' >
-                                        <div className = 'col-10 border'>
+                                    <div className='row mx-0 justify-content-center border' >
+                                        <div className='col-10 border'>
                                             {
-                                                (key + 1) % 2 === 1?
+                                                (key + 1) % 2 === 1 ?
                                                     <ParkingRed />
-                                                : <Parking />
+                                                    : <Parking />
                                             }
                                         </div>
                                     </div>
@@ -634,9 +749,7 @@ class Calendario extends Component {
                 </div>
             </>
         )
-        
     }
-
     render() {
         const { events, form, title, formeditado, modal, modal_status, estatus, disponibles, disabledDates, modal_date, date, eventos, activeKey } = this.state
         return (
@@ -648,28 +761,27 @@ class Calendario extends Component {
                         </div>
                         <div className="card-toolbar">
                             {
-                                disponibles > 0 ? 
-                                <DropdownButton
-                                    title={
-                                        <i className="ki ki-bold-more-ver p-0"></i>
-                                    }
-                                    id={`dropdown-button-drop-left`}
-                                    drop={'left'}
-                                >
-                                    <Dropdown.Item onClick={this.openModal}>Solicitar vacaciones</Dropdown.Item>
-                                    <Dropdown.Item onClick={this.openModalEstatus}>Estatus de vacaciones</Dropdown.Item>
-                                </DropdownButton>
-                                :''
+                                disponibles > 0 ?
+                                    <DropdownButton
+                                        title={
+                                            <i className="ki ki-bold-more-ver p-0"></i>
+                                        }
+                                        id={`dropdown-button-drop-left`}
+                                        drop={'left'}
+                                    >
+                                        <Dropdown.Item onClick={this.openModal}>Solicitar vacaciones</Dropdown.Item>
+                                        <Dropdown.Item onClick={this.openModalEstatus}>Estatus de vacaciones</Dropdown.Item>
+                                    </DropdownButton>
+                                    : ''
                             }
-                            
                         </div>
                     </Card.Header>
-                    <Modal title={title} show={modal} handleClose={this.handleClose} size = "lg">
+                    <Modal title={title} show={modal} handleClose={this.handleClose} size="lg">
                         <SolicitarVacacionesForm
                             formeditado={formeditado}
                             form={form}
                             onChange={this.onChange}
-                            disabledDates = { disabledDates }
+                            disabledDates={disabledDates}
                             onSubmit={(e) => { e.preventDefault(); waitAlert(); this.askVacationAxios() }}
                         />
                     </Modal>
@@ -681,59 +793,48 @@ class Calendario extends Component {
                             estatus={estatus}
                         />
                     </Modal>
-
-                    <Modal size = 'lg' title = { this.setDateText(date) } show = { modal_date } handleClose = { this.handleCloseDate }>
+                    <Modal size='lg' title={this.setDateText(date)} show={modal_date} handleClose={this.handleCloseDate}>
                         {
-
                             eventos !== '' ?
-                                <Card className="card-custom shadow-none" >
+                                <>
                                     {
                                         eventos.feriados.length ?
                                             eventos.feriados.map((feriado, key) => {
-                                                return(
-                                                    <div className = 'px-3 mx-3 my-2 py-2 feriados text-center'>
+                                                return (
+                                                    <div className='px-3 mx-3 my-2 py-2 feriados text-center'>
                                                         ¡Feliz {feriado.texto}!
-                                                    </div>        
+                                                    </div>
                                                 )
-                                            })                                        
-                                        : ''
+                                            })
+                                            : ''
                                     }
-                                    <Card.Header>
-                                        
-                                        <div className = 'card-toolbar'>
-                                            <Nav className = 'nav nav-pills nav-pills-sm nav-light-primary font-weight-bolder'>
-                                                {
-                                                    Object.keys(eventos).map((element, key) => {
-                                                        if((eventos[element].length || element === 'estacionamiento') && element !== 'feriados'){
-                                                            return(
-                                                                <Nav.Item key={key}>
-                                                                    <Nav.Link eventKey={element} className={ activeKey === element ? "py-2 px-4 text-primary" : 'py-2 px-4'} onClick={(e) => { e.preventDefault(); this.changeActiveKey(element) }} >
-                                                                        {this.setNavTitle(element)}
-                                                                    </Nav.Link>
-                                                                </Nav.Item>
-                                                            )
-                                                        }
-                                                    })
+                                    <Nav className='nav nav-pills nav-pills-md nav-light-primary nav-bolder justify-content-center my-4'>
+                                        {
+                                            Object.keys(eventos).map((element, key) => {
+                                                if ((eventos[element].length || element === 'estacionamiento') && element !== 'feriados') {
+                                                    return (
+                                                        <Nav.Item className='nav-item' key={key}>
+                                                            <Nav.Link eventKey={element} className={activeKey === element ? "nav-link py-2 px-4 text-primary active" : ' nav-link py-2 px-4'} onClick={(e) => { e.preventDefault(); this.changeActiveKey(element) }} >
+                                                                {this.setNavTitle(element)}
+                                                            </Nav.Link>
+                                                        </Nav.Item>
+                                                    )
                                                 }
-                                            </Nav>
-                                        </div>
-                                    </Card.Header>
-                                    <Card.Body>
-                                        {this.printModal()}
-                                    </Card.Body>
-                                </Card>
-                            : ''
+                                            })
+                                        }
+                                    </Nav>
+                                    {this.printModal()}
+                                </>
+                                : ''
                         }
-                        
                     </Modal>
-
-                    <Card.Body> 
-                            <div className="mb-3"> 
-                                <i className="fa fa-genderless text-info mr-2"></i> 
-                                <span className=" font-weight-bolder font-size-lg">Vacaciones disponibles:</span> 
-                                <span className="label label-rounded label-light-info font-weight-bolder ml-2">{disponibles}</span> 
-                                <span className=" font-weight-bolder font-size-lg ml-2">días.</span> 
-                            </div>
+                    <Card.Body>
+                        <div className="mb-3">
+                            <i className="fa fa-genderless text-info mr-2"></i>
+                            <span className=" font-weight-bolder font-size-lg">Vacaciones disponibles:</span>
+                            <span className="label label-rounded label-light-info font-weight-bolder ml-2">{disponibles}</span>
+                            <span className=" font-weight-bolder font-size-lg ml-2">días.</span>
+                        </div>
                         <FullCalendar
                             locale={esLocale}
                             plugins={[dayGridPlugin, interactionPlugin, bootstrapPlugin]}

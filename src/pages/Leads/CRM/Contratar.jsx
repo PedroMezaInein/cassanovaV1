@@ -212,9 +212,18 @@ class Contratar extends Component {
 
     async getOneLead() {
         const { location: { state: historyState } } = this.props
+        const { formProyecto } = this.state
+        let arreglo = []
+        formProyecto.numeroContacto = historyState.lead.telefono
+        formProyecto.contacto = historyState.lead.nombre
+        if(historyState.lead.email){
+            arreglo.push(historyState.lead.email)
+            formProyecto.correos = arreglo
+        }
         this.setState({
             ...this.state,
-            lead: historyState.lead
+            lead: historyState.lead,
+            formProyecto
         })
     }
 
