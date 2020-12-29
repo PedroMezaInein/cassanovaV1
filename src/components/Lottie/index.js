@@ -4,6 +4,9 @@ import sendingDecember from './SendingDecember'
 import nothing from './Nothing'
 import parking from './Parking'
 import parkingRed from './ParkingRed'
+import passportTravel from './PassportTravel'
+import happyBirthday from './HappyBirthday'
+import calendar from './Calendar'
 
 export const Sending = sending
 export const Done = done
@@ -11,3 +14,6 @@ export const SendingDecember = sendingDecember
 export const Nothing = nothing
 export const Parking = parking
 export const ParkingRed = parkingRed
+export const PassportTravel = passportTravel
+export const HappyBirthday = happyBirthday
+export const Calendar = calendar
