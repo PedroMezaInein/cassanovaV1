@@ -234,7 +234,6 @@ class LeadLlamadaSalida extends Component {
                         <span className={typeForm === "whatsapp"?"w-97":""}>
                             De acuerdo, me parece increíble.
                             <span className="font-weight-boldest"> ¿Tu proyecto se trata de diseño o construcción?</span>
-                            {typeForm}
                         </span>
                         {
                             typeForm === "whatsapp" ?
@@ -462,9 +461,14 @@ class LeadLlamadaSalida extends Component {
                         </div></>;
                 }
                 break;
+            case'empresa':
+            case'telefono':
+            case'comentario':
+            return <></>;
+            break;
             default:
                 return this.showMessages(typeForm)
-                break;
+            break;
         }
     }
 
