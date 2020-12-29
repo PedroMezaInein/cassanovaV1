@@ -73,6 +73,7 @@ import presupuestoDiseñoCRMForm from './leads/info/PresupuestoDiseñoCRMForm'
 import presupuestoGenerado from './leads/info/PresupuestoGenerado'
 import presupuestoGeneradoNoCrm from './presupuesto/PresupuestoGeneradoNoCrm'
 import informacionGeneral from './leads/InformacionGeneral'
+import tipoContacto from './leads/TipoContacto'
 
 export const RegisterUserForm = registerUserForm
 export const EmpresaForm = empresaForm
@@ -149,3 +150,4 @@ export const PresupuestoDiseñoCRMForm = presupuestoDiseñoCRMForm
 export const PresupuestoGenerado = presupuestoGenerado
 export const PresupuestoGeneradoNoCrm = presupuestoGeneradoNoCrm
 export const InformacionGeneral = informacionGeneral
+export const TipoContacto = tipoContacto
