@@ -1,13 +1,15 @@
 import { connect } from 'react-redux';
 import React, { Component } from 'react';
 import Layout from '../../../../components/layout/layout';
-import { Card, Nav, Tab } from 'react-bootstrap';
+import { Card, Nav, Tab, Col, Row } from 'react-bootstrap';
 import axios from 'axios'
-import { doneAlert, errorAlert, forbiddenAccessAlert, validateAlert, waitAlert } from '../../../../functions/alert';
+import { doneAlert, errorAlert, forbiddenAccessAlert, waitAlert } from '../../../../functions/alert';
 import Swal from 'sweetalert2'
 import { setOptions } from '../../../../functions/setters';
-import { TEL, URL_DEV, EMAIL } from '../../../../constants';
-import { TipoContacto } from '../../../../components/forms';
+import { URL_DEV } from '../../../../constants';
+import FormLlamada from '../../../../components/forms/leads/FormLlamada'
+import FormWhatsapp from '../../../../components/forms/leads/FormWhatsapp'
+import MensajePrincipal from '../../../../components/forms/leads/MensajePrincipal'
 
 class LeadLlamadaSalida extends Component {
 
@@ -33,7 +35,7 @@ class LeadLlamadaSalida extends Component {
             origenes: []
         },
         formeditado: 0,
-        typeForm: "llamada",
+        boton:1
     }
 
     componentDidMount() {
@@ -94,23 +96,42 @@ class LeadLlamadaSalida extends Component {
         })
         this.onChange({ target: { value: tipoProyecto, name: 'tipoProyectoNombre' } })
     }
-
-    updateOrigen = value => {
-        this.onChange({ target: { value: value, name: 'origen' } })
-    }
-
     onChange = e => {
         const { name, value, checked, type } = e.target
-        const { form, typeForm } = this.state
+        const { form } = this.state
         form[name] = value
         if (type === 'checkbox')
             form[name] = checked
         this.setState({
             ...this.state,
             form,
-            messages: this.updateMessages2(name,typeForm),
+            messages: this.updateMessages2(name),
             tipo: name
         })
+    }
+    onChange2 = e => {
+        const { name, value, checked, type } = e.target
+        const { form } = this.state
+        form[name] = value
+        if (type === 'checkbox')
+            form[name] = checked
+        this.setState({
+            ...this.state,
+            form,
+            tipo: name
+        })
+    }
+    updateTipoProyecto2 = value => {
+        const { options } = this.state
+        this.onChange2({ target: { value: value, name: 'tipoProyecto' } })
+        let tipoProyecto = ''
+        options.tipos.map((tipo) => {
+            if (value.toString() === tipo.value.toString()) {
+                tipoProyecto = tipo.name
+            }
+            return false
+        })
+        this.onChange2({ target: { value: tipoProyecto, name: 'tipoProyectoNombre' } })
     }
 
     servicio = servicios => {
@@ -121,350 +142,341 @@ class LeadLlamadaSalida extends Component {
         })
         return servicio
     }
-    onClickLlamada = type => {
-        let { tipo} = this.state
-        this.setState({
-            typeForm:type,
-            messages:this.updateMessages2(tipo, type)
-        })
+    mensajeNameNullIM(boton){
+        const { lead } = this.state
+        const usuario = this.props.authUser.user
+        return (
+            <MensajePrincipal
+                primerTexto={`Buen día mi nombre es ${usuario.name}, ${usuario.genero === 'femenino' ? 'asesora' : 'asesor'} comercial en `}
+                primerBoldest={`IM ${lead.empresa.name}`}
+                segundoTexto={lead.nombre === 'SIN ESPECIFICAR' ? ' ¿Con quién tengo el gusto' : ' ¿Tengo el gusto con '}
+                segundoBoldest={lead.nombre === 'SIN ESPECIFICAR' ? '' : lead.nombre}
+                tercerTexto={"?"}
+                boton={boton}
+            />
+        )
     }
-    showIcon(){
+    mensajeNameNullINEIN(boton){
+        const { lead } = this.state
+        const usuario = this.props.authUser.user
+        return (
+            <MensajePrincipal
+                primerTexto={`Buen día mi nombre es ${usuario.name}, ${usuario.genero === 'femenino' ? 'asesora' : 'asesor'} comercial en `}
+                primerBoldest={"Infraestructura e Interiores"}
+                segundoTexto={lead.nombre === 'SIN ESPECIFICAR' ? ' ¿Con quién tengo el gusto' : ' ¿Tengo el gusto con '}
+                segundoBoldest={lead.nombre === 'SIN ESPECIFICAR' ? '' : lead.nombre}
+                tercerTexto={"?"}
+                boton={boton}
+            />
+        )
+    }
+    mensajeTipoProyectoIM(boton){
+        const { lead, form } = this.state
         return (
             <>
-                <span className="w-3 d-flex justify-content-end align-items-center">
-                    <a className="btn btn-icon btn-light-primary btn-xs">
-                        <i className="far fa-copy"></i>
-                    </a>
-                </span>
+                <MensajePrincipal
+                    primerTexto={"Mucho gusto "}
+                    primerBoldest={`${form.name.split(" ", 1)}, `}
+                    segundoTexto={"recibimos exitosamente su información a través de nuestro sitio web. Me pongo en contacto con usted a relación del servicio que seleccionó de "}
+                    segundoBoldest={this.servicio(lead.servicios)}
+                    tercerTexto={this.servicio(lead.servicios) === ' Diseño de proyectos para el sector salud' ? '.' : ' para el sector salud.'}
+                    separator={1}
+                    boton={boton}
+                />
+                <MensajePrincipal
+                    primerTexto={"Excelente, puede indicarme "}
+                    primerBoldest={"¿Qué tipo de proyecto es?"}
+                    boton={boton}
+                />
             </>
         )
     }
-    separator(){
+    mensajeTipoProyectoINEIN(boton){
+        const { form, lead } = this.state
         return (
             <>
-                <div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">...</div>
+                <MensajePrincipal
+                    primerTexto={"Mucho gusto "}
+                    primerBoldest={`${form.name.split(" ", 1)}, `}
+                    segundoTexto={"recibimos exitosamente su información a través de nuestro sitio web. Me pongo en contacto en relación del servicio que seleccionaste de "}
+                    segundoBoldest={`${this.servicio(lead.servicios)}.`}
+                    separator={1}
+                />
+                <MensajePrincipal
+                    primerTexto={"¡EXCELENTE! TE AGRADEZCO QUE NOS TOMES EN CUENTA PARA TU PROYECTO, PUEDES INDICARME: "}
+                    primerBoldest={"¿Qué tipo de proyecto es?"}
+                    boton={boton}
+                />
             </>
         )
-        
     }
-
-    updateMessages2 = (name, typeForm) => {
+    mensajeEmailINEIN(boton){
+        const { form } = this.state
+        return (
+            <>
+                <MensajePrincipal
+                    primerTexto={"En unos minutos te haré "}
+                    primerBoldest={"llegar a tu correo un cuestionario, "}
+                    segundoTexto={"te pido nos apoyes en constarlo, para que una vez que yo lo reciba pueda evaluar tu proyecto, ¿De acuerdo?."}
+                    separator={1}
+                    boton={boton}
+                />
+                <MensajePrincipal
+                    primerTexto={"¿Existiría algo mas en lo que te pueda ayudar?"}
+                    separator={1}
+                    boton={boton}
+                />
+                <MensajePrincipal 
+                    primerTexto={"Muy bien "}
+                    primerBoldest={`${form.name.split(" ", 1)}, `}
+                    segundoTexto={"en un momento te hago el envio del cuestionario. Que tengas un excelente día."}
+                    boton={boton}
+                />
+            </>
+        )
+    }
+    mensajeEmailIM(boton){
+        return (
+            <>
+            <MensajePrincipal
+                primerTexto={"Gracias, en unos minutos le "}
+                primerBoldest={"estaré enviado dicho cuestionario a su correo y además le anexare un documento que será útil para usted, "}
+                segundoTexto={"en él se describe detalladamente cada servicio que podemos brindarle. "}
+                separator={1}
+                boton={boton}
+            />
+            <MensajePrincipal
+                primerTexto={"Una vez que me haga llegar su información, la analizare y "}
+                primerBoldest={"posteriormente me estaré comunicado con usted."}
+                separator={1}
+                boton={boton}
+            />
+            <MensajePrincipal
+                primerTexto={"Gracias por contactarnos, que tenga un excelente día."}
+                boton={boton}
+            />
+            </>
+        )
+    }
+    caseDiseñoObra(boton){
+        const { form, lead } = this.state
+        if (lead.empresa.name === 'INFRAESTRUCTURA MÉDICA') {
+            if (lead.email === null) {
+                return <>
+                    <MensajePrincipal 
+                        primerTexto={"Me gustaría conocer más detalles específicos acerca su proyecto "}
+                        primerBoldest={"por lo que le solicito me pueda proporcionar su correo electrónico "}
+                        segundoTexto={"para hacerle llegar un cuestionario"}
+                        boton={boton}
+                    />
+                    {
+                        form.email?
+                            <>
+                                <div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">...</div>
+                                {this.mensajeEmailIM(boton)}
+                            </>
+                        :""
+                    }
+                </>;
+            } else {
+            return <>
+                <MensajePrincipal
+                    primerTexto={"Me gustaría conocer más detalles específicos acerca su proyecto "}
+                    primerBoldest={"por lo que le solicito me pueda corroborar su correo electrónico "}
+                    segundoTexto={"para hacerle llegar un cuestionario. Su correo es: "}
+                    segundoBoldest={lead.email}
+                    separator={1}
+                    boton={boton}
+                />
+                {this.mensajeEmailIM(boton)}
+            </>;
+            }
+        }else if (lead.empresa.name === 'INEIN') {
+            if (lead.email === null) {
+                return <>
+                    <MensajePrincipal 
+                        primerTexto={"Me gustaría conocer más detalles de tu proyecto "}
+                        primerBoldest={"¿Me podrías proporcionar tu correo electrónico? "}
+                        segundoTexto={"para hacerte llegar un cuestionario"}
+                        boton={boton}
+                    />
+                    {
+                        form.email?
+                            <>
+                                <div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">...</div>
+                                {this.mensajeEmailINEIN(boton)}
+                            </>
+                        :""
+                    }
+                </>;
+            } else {
+                return <>
+                    <MensajePrincipal 
+                        primerTexto={"Me gustaría conocer más detalles de tu proyecto "}
+                        primerBoldest={"¿Me podrías corroborar tu correo electrónico? "}
+                        segundoTexto={"para hacerte llegar un cuestionario. Tu correo es: "}
+                        segundoBoldest={lead.email}
+                        separator={1}
+                        boton={boton}
+                    />
+                    {this.mensajeEmailINEIN(boton)}
+                </>;
+            }
+        }
+    }
+    mensajeDiseñoConstruccion(boton) {
+        return (
+            <>
+                <MensajePrincipal
+                    primerBoldest={"¿EL PROYECTO SE TRATA DE DISEÑO O CONSTRUCCIÓN?"}
+                    separator={1}
+                    boton={boton}
+                />
+            </>
+        )
+    }
+    // caseName(boton){
+    //     const { form, lead } = this.state
+    //     if (lead.empresa.name === 'INFRAESTRUCTURA MÉDICA') {
+    //         if (lead.nombre === 'SIN ESPECIFICAR') {
+    //             return <>
+    //                 {this.mensajeNameNullIM(boton)}
+    //                 {
+    //                     form.name !==""?
+    //                         <>
+    //                             <div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">...</div>
+    //                             {this.mensajeTipoProyectoIM(boton)}
+    //                         </>
+    //                     :""
+    //                 }
+    //             </>;
+    //         } else {
+    //             return <>
+    //                 {this.mensajeNameNullIM(boton)}
+    //                 {this.mensajeTipoProyectoIM(boton)}
+    //             </>;
+    //         }
+    //     } else if (lead.empresa.name === 'INEIN') {
+    //         if (lead.nombre === 'SIN ESPECIFICAR') {
+    //             return <>
+    //                 {this.mensajeNameNullINEIN(boton)}
+    //                 {
+    //                     form.name !==""?
+    //                         <>
+    //                             <div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">...</div>
+    //                             {this.mensajeTipoProyectoINEIN(boton)}
+    //                         </>
+    //                     :""
+    //                 }
+    //             </>;
+    //         } else {
+    //             return <>
+    //                 {this.mensajeNameNullINEIN(boton)}
+    //                 {this.mensajeTipoProyectoINEIN(boton)}
+    //             </>;
+    //         }
+    //     }
+    // }
+    
+    updateMessages2 = (name) => {
         const { form, lead } = this.state
         switch (name) {
             case 'name':
                 if (lead.empresa.name === 'INFRAESTRUCTURA MÉDICA') {
                     return <>
-                    <div className={`bg-light-primary text-primary font-weight-bold py-2 font-size-lg mb-3 text-justify ${typeForm === "whatsapp"?" row mx-0 pl-4 pr-2":" px-4"}`}>
-                        <span className={typeForm === "whatsapp"?"w-97":""}>
-                            Mucho gusto 
-                            <span className="font-weight-boldest"> {form.name.split(" ", 1)}</span>
-                            , recibimos exitosamente su información a través de nuestro sitio web. Me pongo en contacto con usted a relación del servicio que seleccionó de
-                            <span className="font-weight-boldest"> {this.servicio(lead.servicios)}</span>
-                            {this.servicio(lead.servicios) === ' Diseño de proyectos para el sector salud' ? '.' : ' para el sector salud.'}
-                        </span>
-                        {
-                            typeForm === "whatsapp" ?
-                                this.showIcon()
-                            : ""
-                        }
-                    </div>
-                    {this.separator()}                    
-                    <div className={`bg-light-primary text-primary font-weight-bold py-2 font-size-lg mb-3 text-justify ${typeForm === "whatsapp"?" row mx-0 pl-4 pr-2":" px-4"}`}>
-                        <span className={typeForm === "whatsapp"?"w-97":""}>
-                            Excelente, puede indicarme
-                            <span className="font-weight-boldest"> ¿Qué tipo de proyecto es? </span>
-                        </span>
-                        {
-                            typeForm === "whatsapp" ?
-                                this.showIcon()
-                            : ""
-                        }
-                    </div></>;
+                        {this.mensajeTipoProyectoIM()}
+                    </>;
                 } else if (lead.empresa.name === 'INEIN') {
                     return <>
-                    <div className={`bg-light-primary text-primary font-weight-bold py-2 font-size-lg mb-3 text-justify ${typeForm === "whatsapp"?" row mx-0 pl-4 pr-2":" px-4"}`}>
-                        <span className={typeForm === "whatsapp"?"w-97":""}>
-                            Mucho gusto
-                            <span className="font-weight-boldest"> {form.name.split(" ", 1)}</span>
-                            , recibimos exitosamente su información a través de nuestro sitio web. Me pongo en contacto en relación del servicio que seleccionaste de
-                            <span className="font-weight-boldest"> {this.servicio(lead.servicios)}.</span>
-                        </span>
-                        {
-                            typeForm === "whatsapp" ?
-                                this.showIcon()
-                            : ""
-                        }
-                    </div>
-                    {this.separator()}
-                    <div className={`bg-light-primary text-primary font-weight-bold py-2 font-size-lg mb-3 text-justify ${typeForm === "whatsapp"?" row mx-0 pl-4 pr-2":" px-4"}`}>
-                        <span className={typeForm === "whatsapp"?"w-97":""}>
-                            ¡EXCELENTE! TE AGRADEZCO QUE NOS TOMES EN CUENTA PARA TU PROYECTO, PUEDES INDICARME
-                            <span className="font-weight-boldest">¿Qué tipo de proyecto es?</span>
-                        </span>
-                        {
-                            typeForm === "whatsapp" ?
-                                this.showIcon()
-                            : ""
-                        }
-                    </div></>;
+                        {this.mensajeTipoProyectoINEIN()}
+                    </>;
                 }
-                break;
+            break;
             case 'tipoProyecto':
             case 'tipoProyectoNombre':
                 if (lead.empresa.name === 'INFRAESTRUCTURA MÉDICA') {
                     return  <>
-                    <div className={`bg-light-primary text-primary font-weight-bold py-2 font-size-lg mb-3 text-justify ${typeForm === "whatsapp"?" row mx-0 pl-4 pr-2":" px-4"}`}>
-                        <span className={typeForm === "whatsapp"?"w-97":""}>
-                            En
-                            <span className="font-weight-boldest"> IM {lead.empresa.name} </span>
-                            somos especialistas en el diseño, construcción y remodelación de
-                            <span className="font-weight-boldest"> {form.tipoProyectoNombre}</span>
-                            <span className="font-weight-boldest"> {form.tipo_proyecto}</span>.
-                            <span className="font-weight-boldest"> ¿Su proyecto se trata de diseño o construcción?</span>
-                        </span>
-                        {
-                            typeForm === "whatsapp" ?
-                                this.showIcon()
-                            : ""
-                        }
-                    </div></>;
+                        <MensajePrincipal 
+                            primerTexto={"En "}
+                            primerBoldest={`IM ${lead.empresa.name}, `}
+                            segundoTexto={"somos especialistas en el diseño, construcción y remodelación de "}
+                            segundoBoldest={`${form.tipoProyectoNombre}. `}
+                            tercerBoldest={"¿Su proyecto se trata de diseño o construcción?"}
+                        />
+                    </>;
                 } else if (lead.empresa.name === 'INEIN') {
                     return <>
-                    <div className={`bg-light-primary text-primary font-weight-bold py-2 font-size-lg mb-3 text-justify ${typeForm === "whatsapp"?" row mx-0 pl-4 pr-2":" px-4"}`}>
-                        <span className={typeForm === "whatsapp"?"w-97":""}>
-                            De acuerdo, me parece increíble.
-                            <span className="font-weight-boldest"> ¿Tu proyecto se trata de diseño o construcción?</span>
-                            {typeForm}
-                        </span>
-                        {
-                            typeForm === "whatsapp" ?
-                                this.showIcon()
-                            : ""
-                        }
-                    </div></>;
+                        <MensajePrincipal 
+                            primerTexto={"De acuerdo, me parece increíble. "}
+                            primerBoldest={"¿Tu proyecto se trata de diseño o construcción?"}
+                        />
+                    </>;
                 }
                 break;
             case 'diseño':
             case 'obra':
-                if (lead.empresa.name === 'INFRAESTRUCTURA MÉDICA') {
-                    if (lead.email === null) {
-                        return <>
-                            <div className={`bg-light-primary text-primary font-weight-bold py-2 font-size-lg mb-3 text-justify ${typeForm === "whatsapp"?" row mx-0 pl-4 pr-2":" px-4"}`}>
-                                <span className={typeForm === "whatsapp"?"w-97":""}>
-                                    Me gustaría conocer más detalles específicos acerca su proyecto
-                                    <span className="font-weight-boldest"> por lo que le solicito me pueda proporcionar su correo electrónico </span>
-                                    para hacerle llegar un cuestionario
-                                </span>
-                            {
-                                typeForm === "whatsapp" ?
-                                    this.showIcon()
-                                : ""
-                            }
-                            </div></>;
-                    } else {
-                        return <>
-                            <div className={`bg-light-primary text-primary font-weight-bold py-2 font-size-lg mb-3 text-justify ${typeForm === "whatsapp"?" row mx-0 pl-4 pr-2":" px-4"}`}>
-                                <span className={typeForm === "whatsapp"?"w-97":""}>
-                                    Me gustaría conocer más detalles específicos acerca su proyecto 
-                                    <span className="font-weight-boldest"> por lo que le solicito me pueda corroborar su correo electrónico </span>
-                                    para hacerle llegar un cuestionario. Su correo es: 
-                                    <span className="font-weight-boldest"> {lead.email}</span>
-                                </span>
-                                {
-                                    typeForm === "whatsapp" ?
-                                        this.showIcon()
-                                    : ""
-                                }
-                            </div>
-                            {this.separator()}
-                            <div className={`bg-light-primary text-primary font-weight-bold py-2 font-size-lg mb-3 text-justify ${typeForm === "whatsapp"?" row mx-0 pl-4 pr-2":" px-4"}`}>
-                                <span className={typeForm === "whatsapp"?"w-97":""}>
-                                    Gracias, en unos minutos le 
-                                    <span className="font-weight-boldest"> estaré enviado dicho cuestionario a su correo y además le anexare un documento que será útil para usted </span>
-                                    , en él se describe detalladamente cada servicio que podemos brindarle.
-                                </span>
-                                {
-                                    typeForm === "whatsapp" ?
-                                        this.showIcon()
-                                    : ""
-                                }
-                            </div>
-                            {this.separator()}
-                            <div className={`bg-light-primary text-primary font-weight-bold py-2 font-size-lg mb-3 text-justify ${typeForm === "whatsapp"?" row mx-0 pl-4 pr-2":" px-4"}`}>
-                                <span className={typeForm === "whatsapp"?"w-97":""}>
-                                    Una vez que me haga llegar su información, la analizare y 
-                                    <span className="font-weight-boldest">posteriormente me estaré comunicado con usted.</span>
-                                </span>
-                                {
-                                    typeForm === "whatsapp" ?
-                                        this.showIcon()
-                                    : ""
-                                }
-                            </div>
-                            {this.separator()}
-                            <div className={`bg-light-primary text-primary font-weight-bold py-2 font-size-lg mb-3 text-justify ${typeForm === "whatsapp"?" row mx-0 pl-4 pr-2":" px-4"}`}>
-                                <span className={typeForm === "whatsapp"?"w-97":""}>
-                                    Gracias por contactarnos, que tenga un excelente día.
-                                </span>
-                                {
-                                    typeForm === "whatsapp" ?
-                                        this.showIcon()
-                                    : ""
-                                }
-                            </div></>;
-                    }
-                }
-                else if (lead.empresa.name === 'INEIN') {
-                    if (lead.email === null) {
-                        return <>
-                        <div className="bg-light-primary text-primary font-weight-bold py-2 px-4 font-size-lg text-justify">
-                            <span className={typeForm === "whatsapp"?"w-97":""}>
-                                Me gustaría conocer más detalles de tu proyecto
-                                <span className="font-weight-boldest">¿Me podrías proporcionar tu correo electrónico? </span>
-                                para hacerte llegar un cuestionario
-                            </span>
-                            {
-                                typeForm === "whatsapp" ?
-                                    this.showIcon()
-                                : ""
-                            }
-                        </div></>;
-                    } else {
-                        return <>
-                            <div className={`bg-light-primary text-primary font-weight-bold py-2 font-size-lg mb-3 text-justify ${typeForm === "whatsapp"?" row mx-0 pl-4 pr-2":" px-4"}`}>
-                                <span className={typeForm === "whatsapp"?"w-97":""}>
-                                    Me gustaría conocer más detalles de tu proyecto
-                                    <span className="font-weight-boldest"> ¿Me podrías corroborar tu correo electrónico?</span>
-                                    &nbsp;para hacerte llegar un cuestionario. Tu correo es:
-                                    <span className="font-weight-boldest"> {lead.email}</span>
-                                </span>
-                                {
-                                    typeForm === "whatsapp" ?
-                                        this.showIcon()
-                                    : ""
-                                }
-                            </div>
-                            {this.separator()}
-                            <div className={`bg-light-primary text-primary font-weight-bold py-2 font-size-lg mb-3 text-justify ${typeForm === "whatsapp"?" row mx-0 pl-4 pr-2":" px-4"}`}>
-                                <span className={typeForm === "whatsapp"?"w-97":""}>
-                                    En unos minutos te hare
-                                    <span className="font-weight-boldest"> llegar a tu correo un cuestionario </span>
-                                    , te pido nos apoyes en constarlo, para que una vez que yo lo reciba pueda evaluar tu proyecto, ¿De acuerdo?.
-                                </span>
-                                {
-                                    typeForm === "whatsapp" ?
-                                        this.showIcon()
-                                    : ""
-                                }
-                            </div>
-                            {this.separator()}
-                            <div className={`bg-light-primary text-primary font-weight-bold py-2 font-size-lg mb-3 text-justify ${typeForm === "whatsapp"?" row mx-0 pl-4 pr-2":" px-4"}`}>
-                                <span className={typeForm === "whatsapp"?"w-97":""}>
-                                    ¿Existiría algo mas en lo que te pueda ayudar antes de finalizar esta llamada?
-                                </span>
-                                {
-                                    typeForm === "whatsapp" ?
-                                        this.showIcon()
-                                    : ""
-                                }
-                            </div>
-                            {this.separator()}
-                            <div className={`bg-light-primary text-primary font-weight-bold py-2 font-size-lg mb-3 text-justify ${typeForm === "whatsapp"?" row mx-0 pl-4 pr-2":" px-4"}`}>
-                                <span className={typeForm === "whatsapp"?"w-97":""}>
-                                    Muy bien
-                                    <span className="font-weight-boldest"> {form.name.split(" ", 1)}</span>
-                                    , en un momento te hago el envio del cuestionario. Que tengas un excelente día.
-                                </span>
-                                {
-                                    typeForm === "whatsapp" ?
-                                        this.showIcon()
-                                    : ""
-                                }
-                            </div></>;
-                    }
-                }
+                return <>
+                    {this.caseDiseñoObra()}
+                </>;
                 break;
             case 'email':
                 if (lead.empresa.name === 'INFRAESTRUCTURA MÉDICA') {
                     return <>
-                        <div className={`bg-light-primary text-primary font-weight-bold py-2 font-size-lg mb-3 text-justify ${typeForm === "whatsapp"?" row mx-0 pl-4 pr-2":" px-4"}`}>
-                            <span className={typeForm === "whatsapp"?"w-97":""}>
-                                Gracias, en unos minutos le
-                                <span className="font-weight-boldest"> estaré enviado dicho cuestionario a su correo y además le anexare un documento que será útil para usted </span>
-                                , en él se describe detalladamente cada servicio que podemos brindarle.
-                            </span>
-                            {
-                                typeForm === "whatsapp" ?
-                                    this.showIcon()
-                                : ""
-                            }
-                        </div>
-                        {this.separator()}
-                        <div className={`bg-light-primary text-primary font-weight-bold py-2 font-size-lg mb-3 text-justify ${typeForm === "whatsapp"?" row mx-0 pl-4 pr-2":" px-4"}`}>
-                            <span className={typeForm === "whatsapp"?"w-97":""}>
-                                Una vez que me haga llegar su información, la analizare y
-                                <span className="font-weight-boldest"> posteriormente me estaré comunicado con usted.</span>
-                            </span>
-                            {
-                                typeForm === "whatsapp" ?
-                                    this.showIcon()
-                                : ""
-                            }
-                        </div>
-                        {this.separator()}
-                        <div className={`bg-light-primary text-primary font-weight-bold py-2 font-size-lg mb-3 text-justify ${typeForm === "whatsapp"?" row mx-0 pl-4 pr-2":" px-4"}`}>
-                            <span className={typeForm === "whatsapp"?"w-97":""}>
-                                Gracias por contactarnos, que tenga un excelente día.
-                            </span>
-                            {
-                                typeForm === "whatsapp" ?
-                                    this.showIcon()
-                                : ""
-                            }
-                        </div></>;
+                        {this.mensajeEmailIM()}
+                    </>;
                 } else if (lead.empresa.name === 'INEIN') {
                     return <>
-                        <div className={`bg-light-primary text-primary font-weight-bold py-2 font-size-lg mb-3 text-justify ${typeForm === "whatsapp"?" row mx-0 pl-4 pr-2":" px-4"}`}>
-                            <span className={typeForm === "whatsapp"?"w-97":""}>
-                                En unos minutos te hare
-                                <span className="font-weight-boldest"> llegar a tu correo un cuestionario</span>
-                                , te pido nos apoyes en constarlo, para que una vez que yo lo reciba pueda evaluar tu proyecto, ¿De acuerdo?.
-                            </span>
-                            {
-                                typeForm === "whatsapp" ?
-                                    this.showIcon()
-                                : ""
-                            }
-                        </div>
-                        {this.separator()}
-                        <div className={`bg-light-primary text-primary font-weight-bold py-2 font-size-lg mb-3 text-justify ${typeForm === "whatsapp"?" row mx-0 pl-4 pr-2":" px-4"}`}>
-                            <span className={typeForm === "whatsapp"?"w-97":""}>
-                                ¿Existiría algo mas en lo que te pueda ayudar antes de finalizar esta llamada?
-                            </span>
-                            {
-                                typeForm === "whatsapp" ?
-                                    this.showIcon()
-                                : ""
-                            }
-                        </div>
-                        {this.separator()}
-                        <div className={`bg-light-primary text-primary font-weight-bold py-2 font-size-lg mb-3 text-justify ${typeForm === "whatsapp"?" row mx-0 pl-4 pr-2":" px-4"}`}>
-                            <span className={typeForm === "whatsapp"?"w-97":""}> 
-                                Muy bien
-                                <span className="font-weight-boldest"> {form.name.split(" ", 1)}</span>
-                                , en un momento te hago el envio del cuestionario. Que tengas un excelente día.
-                            </span>
-                            {
-                                typeForm === "whatsapp" ?
-                                    this.showIcon()
-                                : ""
-                            }
-                        </div></>;
+                        {this.mensajeEmailINEIN()}
+                    </>;
                 }
                 break;
             default:
-                return this.showMessages(typeForm)
-                break;
+                return <></>;
+            break;
+        }
+    }
+    showMessages = (boton) => {
+        const { lead, form } = this.state
+        const usuario = this.props.authUser.user
+        if(lead.empresa.name === 'INFRAESTRUCTURA MÉDICA'){
+            if(lead.nombre === 'SIN ESPECIFICAR'){
+                return <>
+                    {this.mensajeNameNullIM(boton)}
+                </>;
+            }else{
+                return <>
+                    {this.mensajeNameNullIM(boton)}
+                    <div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">...</div>
+                    {this.mensajeTipoProyectoIM(boton)}
+                    
+                </>;
+            }
+        }else if(lead.empresa.name === 'INEIN'){
+            if(lead.nombre === 'SIN ESPECIFICAR'){
+                return <>
+                    {this.mensajeNameNullINEIN(boton)}
+                </>;
+            }
+            return <>
+                    {this.mensajeNameNullINEIN(boton)}
+                    <div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">...</div>
+                    {this.mensajeTipoProyectoINEIN(boton)}
+                </>;
+        }
+    }
+    allMessages(){
+        const { lead, boton } = this.state
+        if(lead !== undefined){
+            return ( 
+                <>
+                    {this.showMessages(boton)}
+                    <div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">...</div>
+                    {this.mensajeDiseñoConstruccion(boton)}
+                    {this.caseDiseñoObra(boton)}
+                    
+                    
+                </>
+            )
         }
     }
 
@@ -521,136 +533,7 @@ class LeadLlamadaSalida extends Component {
             console.log(error, 'error')
         })
     }
-    showMessages = (typeForm) => {
-        const { lead } = this.state
-        const usuario = this.props.authUser.user
-        if(lead.empresa.name === 'INFRAESTRUCTURA MÉDICA'){
-            if(lead.nombre === 'SIN ESPECIFICAR'){
-                return <>
-                <div className={`bg-light-primary text-primary font-weight-bold py-2 font-size-lg mb-3 text-justify ${typeForm === "whatsapp"?" row mx-0 pl-4 pr-2":" px-4"}`}>
-                    <span className={typeForm === "whatsapp"?"w-97":""}>
-                        Buen día mi nombre es {usuario.name}, asesora comercial en
-                        <span className="font-weight-boldest"> IM {lead.empresa.name}</span>.
-                            {lead.nombre === 'SIN ESPECIFICAR' ? ' ¿Con quién tengo el gusto' : ' ¿Tengo el gusto con '}
-                        <span className="font-weight-boldest"> 
-                            {lead.nombre === 'SIN ESPECIFICAR' ? '' : lead.nombre}
-                        </span>
-                        ?
-                    </span>
-                    {
-                        typeForm === "whatsapp" ?
-                            this.showIcon()
-                        : ""
-                    }
-                </div></>;
-            }else{
-                return <>
-                <div className={`bg-light-primary text-primary font-weight-bold py-2 font-size-lg mb-3 text-justify ${typeForm === "whatsapp"?" row mx-0 pl-4 pr-2":" px-4"}`}>
-                    <span className={typeForm === "whatsapp"?"w-97":""}>
-                        Buen día mi nombre es {usuario.name}, {usuario.genero === 'femenino' ? 'asesora' : 'asesor'} comercial en 
-                        <span className="font-weight-boldest"> IM {lead.empresa.name}</span>
-                        . {lead.nombre === 'SIN ESPECIFICAR' ? '¿Con quién tengo el gusto' : '¿Tengo el gusto con '}
-                        <span className="font-weight-boldest">{lead.nombre === 'SIN ESPECIFICAR' ? '' : lead.nombre}</span>
-                        ?
-                    </span>
-                    {
-                        typeForm === "whatsapp" ?
-                            this.showIcon()
-                        : ""
-                    }
-                </div>
-                {this.separator()}
-                <div className={`bg-light-primary text-primary font-weight-bold py-2 font-size-lg mb-3 text-justify ${typeForm === "whatsapp"?" row mx-0 pl-4 pr-2":" px-4"}`}>
-                    <span className={typeForm === "whatsapp"?"w-97":""}>
-                        Mucho gusto 
-                        <span className="font-weight-boldest"> {lead.nombre.split(" ", 1)}</span>
-                        , recibimos exitosamente su información a través de nuestro sitio web. Me pongo en contacto con usted a relación del servicio que seleccionó de 
-                        <span className="font-weight-boldest"> {this.servicio(lead.servicios)}</span>
-                        {this.servicio(lead.servicios) === ' Diseño de proyectos para el sector salud' ? '.' : ' para el sector salud.'}
-                    </span>
-                    {
-                        typeForm === "whatsapp" ?
-                            this.showIcon()
-                        : ""
-                    }
-                </div>
-                {this.separator()}
-                <div className={`bg-light-primary text-primary font-weight-bold py-2 font-size-lg mb-3 text-justify ${typeForm === "whatsapp"?" row mx-0 pl-4 pr-2":" px-4"}`}>
-                    <span className={typeForm === "whatsapp"?"w-97":""}>
-                        Excelente, puede indicarme 
-                        <span className="font-weight-boldest"> ¿Qué tipo de proyecto es?</span>
-                    </span>
-                    {
-                        typeForm === "whatsapp" ?
-                            this.showIcon()
-                        : ""
-                    }
-                </div></>;
-            }
-        }else if(lead.empresa.name === 'INEIN'){
-            if(lead.nombre === 'SIN ESPECIFICAR'){
-                return <>
-                <div className={`bg-light-primary text-primary font-weight-bold py-2 font-size-lg mb-3 text-justify ${typeForm === "whatsapp"?" row mx-0 pl-4 pr-2":" px-4"}`}>
-                    <span className={typeForm === "whatsapp"?"w-97":""}>
-                        Buen día mi nombre es {usuario.name}, asesora comercial en
-                        <span className="font-weight-boldest"> Infraestructura e Interiores</span>.
-                            {lead.nombre === 'SIN ESPECIFICAR' ? ' ¿Con quién tengo el gusto' : ' ¿Tengo el gusto con '}
-                        <span className="font-weight-boldest">
-                            {lead.nombre === 'SIN ESPECIFICAR' ? '' : lead.nombre}
-                        </span>
-                        ?
-                    </span>
-                    {
-                        typeForm === "whatsapp" ?
-                            this.showIcon()
-                        : ""
-                    }
-                </div></>;
-            }
-            return <>
-                <div className={`bg-light-primary text-primary font-weight-bold py-2 font-size-lg mb-3 text-justify ${typeForm === "whatsapp"?" row mx-0 pl-4 pr-2":" px-4"}`}>
-                    <span className={typeForm === "whatsapp"?"w-97":""}>
-                        Buen día mi nombre es {usuario.name}, {usuario.genero === 'femenino' ? 'asesora' : 'asesor'} comercial en
-                            <span className="font-weight-boldest"> Infraestructura e Interiores</span>
-                            . {lead.nombre === 'SIN ESPECIFICAR' ? '¿Con quién tengo el gusto' : '¿Tengo el gusto con '}
-                        <span className="font-weight-boldest">{lead.nombre === 'SIN ESPECIFICAR' ? '' : lead.nombre}</span>
-                            ?
-                    </span>
-                    {
-                        typeForm === "whatsapp" ?
-                            this.showIcon()
-                        : ""
-                    }
-                </div>
-                {this.separator()}
-                <div className={`bg-light-primary text-primary font-weight-bold py-2 font-size-lg mb-3 text-justify ${typeForm === "whatsapp"?" row mx-0 pl-4 pr-2":" px-4"}`}>
-                    <span className={typeForm === "whatsapp"?"w-97":""}>
-                        Mucho gusto
-                        <span className="font-weight-boldest"> {lead.nombre.split(" ", 1)}</span>
-                        , recibimos exitosamente su información a través de nuestro sitio web. Me pongo en contacto a relación del servicio que seleccionaste de
-                        <span className="font-weight-boldest"> {this.servicio(lead.servicios)}</span>.
-                    </span>
-                    {
-                        typeForm === "whatsapp" ?
-                            this.showIcon()
-                        : ""
-                    }
-                </div>
-                {this.separator()}
-                <div className={`bg-light-primary text-primary font-weight-bold py-2 font-size-lg mb-3 text-justify ${typeForm === "whatsapp"?" row mx-0 pl-4 pr-2":" px-4"}`}>
-                    <span className={typeForm === "whatsapp"?"w-97":""}>
-                        ¡EXCELENTE! TE AGRADEZCO QUE NOS TOMES EN CUENTA PARA TU PROYECTO, PUEDES INDICARME
-                        <span className="font-weight-boldest">¿Qué tipo de proyecto es?</span>
-                    </span>
-                    {
-                        typeForm === "whatsapp" ?
-                            this.showIcon()
-                        : ""
-                    }
-                </div></>;
-        }
-    }
-
+    
     render() {
         const { messages, form, options, lead } = this.state
         return (
@@ -661,7 +544,7 @@ class LeadLlamadaSalida extends Component {
                             <div className="card-toolbar">
                                 <Nav className="nav nav-light-info nav-bolder nav-pills">
                                     <Nav.Item>
-                                        <Nav.Link eventKey="first" className="rounded-0" onClick={(e) =>{ e.preventDefault(); this.onClickLlamada("llamada")}}>
+                                        <Nav.Link eventKey="first" className="rounded-0">
                                             <span className="nav-icon">
                                                 <i className="fas fa-phone-alt"></i>
                                             </span>
@@ -671,7 +554,7 @@ class LeadLlamadaSalida extends Component {
                                         </Nav.Link>
                                     </Nav.Item>
                                     <Nav.Item>
-                                        <Nav.Link eventKey="second" className="rounded-0" onClick={(e) =>{ e.preventDefault();  this.onClickLlamada("whatsapp")}}>
+                                        <Nav.Link eventKey="second" className="rounded-0">
                                             <span className="nav-icon">
                                                 <i className="socicon-whatsapp"></i>
                                             </span>
@@ -689,11 +572,11 @@ class LeadLlamadaSalida extends Component {
                                     {
                                         messages.length === 0 ?
                                             lead !== undefined ?
-                                                this.showMessages("llamada")
+                                                this.showMessages()
                                             : ''
                                         : messages
                                     }
-                                    <TipoContacto
+                                    <FormLlamada
                                         form={form}
                                         onChange={this.onChange}
                                         updateTipoProyecto={this.updateTipoProyecto}
@@ -702,20 +585,22 @@ class LeadLlamadaSalida extends Component {
                                     />
                                 </Tab.Pane>
                                 <Tab.Pane eventKey="second">
-                                    {
-                                        messages.length === 0 ?
-                                            lead !== undefined ?
-                                                this.showMessages("whatsapp")
-                                            : ''
-                                        : messages
-                                    }
-                                    <TipoContacto
-                                        form={form}
-                                        onChange={this.onChange}
-                                        updateTipoProyecto={this.updateTipoProyecto}
-                                        options={options}
-                                        onSubmit={this.onSubmit}
-                                    />
+                                <Row className="mx-0">
+                                        <Col md={7}>
+                                            {
+                                                this.allMessages()
+                                            }
+                                        </Col>
+                                        <Col md={5}>
+                                            <FormWhatsapp
+                                                form={form}
+                                                onChange={this.onChange2}
+                                                updateTipoProyecto={this.updateTipoProyecto2}
+                                                options={options}
+                                                onSubmit={this.onSubmit}
+                                            />
+                                        </Col>
+                                    </Row>
                                 </Tab.Pane>
                             </Tab.Content>
                         </Card.Body>
