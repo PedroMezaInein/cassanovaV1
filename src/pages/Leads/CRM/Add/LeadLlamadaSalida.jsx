@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import Layout from '../../../../components/layout/layout';
 import { Card, Nav, Tab, Col, Row } from 'react-bootstrap';
 import axios from 'axios'
-import { doneAlert, errorAlert, forbiddenAccessAlert, waitAlert } from '../../../../functions/alert';
+import { doneAlert, errorAlert, forbiddenAccessAlert, questionAlertY, waitAlert } from '../../../../functions/alert';
 import Swal from 'sweetalert2'
 import { setOptions } from '../../../../functions/setters';
 import { URL_DEV } from '../../../../constants';
@@ -153,6 +153,7 @@ class LeadLlamadaSalida extends Component {
                 segundoBoldest={lead.nombre === 'SIN ESPECIFICAR' ? '' : lead.nombre}
                 tercerTexto={"?"}
                 boton={boton}
+                bontonFunction = { (e, value) => { e.preventDefault(); this.sendWhatsapp(value) } }
             />
         )
     }
@@ -167,6 +168,7 @@ class LeadLlamadaSalida extends Component {
                 segundoBoldest={lead.nombre === 'SIN ESPECIFICAR' ? '' : lead.nombre}
                 tercerTexto={"?"}
                 boton={boton}
+                bontonFunction = { (e, value) => { e.preventDefault(); this.sendWhatsapp(value) } }
             />
         )
     }
@@ -182,11 +184,13 @@ class LeadLlamadaSalida extends Component {
                     tercerTexto={this.servicio(lead.servicios) === ' Diseño de proyectos para el sector salud' ? '.' : ' para el sector salud.'}
                     separator={1}
                     boton={boton}
+                    bontonFunction = { (e, value) => { e.preventDefault(); this.sendWhatsapp(value) } }
                 />
                 <MensajePrincipal
                     primerTexto={"Excelente, puede indicarme "}
                     primerBoldest={"¿Qué tipo de proyecto es?"}
                     boton={boton}
+                    bontonFunction = { (e, value) => { e.preventDefault(); this.sendWhatsapp(value) } }
                 />
             </>
         )
@@ -202,11 +206,13 @@ class LeadLlamadaSalida extends Component {
                     segundoBoldest={`${this.servicio(lead.servicios)}.`}
                     separator={1}
                     boton={boton}
+                    bontonFunction = { (e, value) => { e.preventDefault(); this.sendWhatsapp(value) } }
                 />
                 <MensajePrincipal
                     primerTexto={"¡EXCELENTE! TE AGRADEZCO QUE NOS TOMES EN CUENTA PARA TU PROYECTO, PUEDES INDICARME: "}
                     primerBoldest={"¿Qué tipo de proyecto es?"}
                     boton={boton}
+                    bontonFunction = { (e, value) => { e.preventDefault(); this.sendWhatsapp(value) } }
                 />
             </>
         )
@@ -221,17 +227,20 @@ class LeadLlamadaSalida extends Component {
                     segundoTexto={"te pido nos apoyes en constarlo, para que una vez que yo lo reciba pueda evaluar tu proyecto, ¿De acuerdo?."}
                     separator={1}
                     boton={boton}
+                    bontonFunction = { (e, value) => { e.preventDefault(); this.sendWhatsapp(value) } }
                 />
                 <MensajePrincipal
                     primerTexto={"¿Existiría algo mas en lo que te pueda ayudar?"}
                     separator={1}
                     boton={boton}
+                    bontonFunction = { (e, value) => { e.preventDefault(); this.sendWhatsapp(value) } }
                 />
                 <MensajePrincipal 
                     primerTexto={"Muy bien "}
                     primerBoldest={`${form.name.split(" ", 1)}, `}
                     segundoTexto={"en un momento te hago el envio del cuestionario. Que tengas un excelente día."}
                     boton={boton}
+                    bontonFunction = { (e, value) => { e.preventDefault(); this.sendWhatsapp(value) } }
                 />
             </>
         )
@@ -245,16 +254,19 @@ class LeadLlamadaSalida extends Component {
                 segundoTexto={"en él se describe detalladamente cada servicio que podemos brindarle. "}
                 separator={1}
                 boton={boton}
+                bontonFunction = { (e, value) => { e.preventDefault(); this.sendWhatsapp(value) } }
             />
             <MensajePrincipal
                 primerTexto={"Una vez que me haga llegar su información, la analizare y "}
                 primerBoldest={"posteriormente me estaré comunicado con usted."}
                 separator={1}
                 boton={boton}
+                bontonFunction = { (e, value) => { e.preventDefault(); this.sendWhatsapp(value) } }
             />
             <MensajePrincipal
                 primerTexto={"Gracias por contactarnos, que tenga un excelente día."}
                 boton={boton}
+                bontonFunction = { (e, value) => { e.preventDefault(); this.sendWhatsapp(value) } }
             />
             </>
         )
@@ -269,6 +281,7 @@ class LeadLlamadaSalida extends Component {
                         primerBoldest={"por lo que le solicito me pueda proporcionar su correo electrónico "}
                         segundoTexto={"para hacerle llegar un cuestionario"}
                         boton={boton}
+                        bontonFunction = { (e, value) => { e.preventDefault(); this.sendWhatsapp(value) } }
                     />
                     {
                         form.email?
@@ -288,6 +301,7 @@ class LeadLlamadaSalida extends Component {
                     segundoBoldest={lead.email}
                     separator={1}
                     boton={boton}
+                    bontonFunction = { (e, value) => { e.preventDefault(); this.sendWhatsapp(value) } }
                 />
                 {this.mensajeEmailIM(boton)}
             </>;
@@ -300,6 +314,7 @@ class LeadLlamadaSalida extends Component {
                         primerBoldest={"¿Me podrías proporcionar tu correo electrónico? "}
                         segundoTexto={"para hacerte llegar un cuestionario"}
                         boton={boton}
+                        bontonFunction = { (e, value) => { e.preventDefault(); this.sendWhatsapp(value) } }
                     />
                     {
                         form.email?
@@ -319,6 +334,7 @@ class LeadLlamadaSalida extends Component {
                         segundoBoldest={lead.email}
                         separator={1}
                         boton={boton}
+                        bontonFunction = { (e, value) => { e.preventDefault(); this.sendWhatsapp(value) } }
                     />
                     {this.mensajeEmailINEIN(boton)}
                 </>;
@@ -332,6 +348,7 @@ class LeadLlamadaSalida extends Component {
                     primerBoldest={"¿EL PROYECTO SE TRATA DE DISEÑO O CONSTRUCCIÓN?"}
                     separator={1}
                     boton={boton}
+                    bontonFunction = { (e, value) => { e.preventDefault(); this.sendWhatsapp(value) } }
                 />
             </>
         )
@@ -479,8 +496,6 @@ class LeadLlamadaSalida extends Component {
                     <div className="bg-light-pink text-pink font-weight-bold py-2 px-4 font-size-lg mb-3 text-justify">...</div>
                     {this.mensajeDiseñoConstruccion(boton)}
                     {this.caseDiseñoObra(boton)}
-                    
-                    
                 </>
             )
         }
@@ -539,7 +554,40 @@ class LeadLlamadaSalida extends Component {
             console.log(error, 'error')
         })
     }
+
+    sendWhatsapp = texto => {
+
+        const { lead } = this.state
+        if(lead.telefono)
+            window.open(`https://wa.me/52${lead.telefono}?text=${texto}`, '_blank');
+        else
+            window.open(`https://wa.me/${lead.telefono}?text=${texto}`, '_blank');
+        questionAlertY('¿ESTÁS SEGURO?', '¿DESEAS GENERAR EL REGISTRO DE CONTACTO?', () => this.sendRegistro(texto))
     
+    }
+    
+    sendRegistro = async texto => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { lead } = this.state
+        await axios.put(URL_DEV + 'crm/add/registro/whatsapp/' + lead.id, { texto: texto }, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                Swal.close()
+                doneAlert('Contacto registrado con éxito')
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401)
+                    forbiddenAccessAlert();
+                else
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     render() {
         const { messages, form, options, lead } = this.state
         return (
