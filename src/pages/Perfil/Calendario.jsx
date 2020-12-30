@@ -552,7 +552,6 @@ class Calendario extends Component {
     setNavTitle = element => {
         let icon = ''
         let nombre = ''
-        const { activeKey } = this.state
         switch (element) {
             case 'eventos':
                 nombre = 'CITAS'
@@ -621,12 +620,12 @@ class Calendario extends Component {
             <>
 
                 <Calendar />
-                <div class="table-responsive">
-                    <table class="table table-head-custom table-head-bg table-borderless table-vertical-center">
+                <div className="table-responsive">
+                    <table className="table table-head-custom table-head-bg table-borderless table-vertical-center">
                         <thead>
-                            <tr class="text-center text-uppercase">
-                                <th style={{ minWidth: "100px" }} class="pl-7">
-                                    <span class="text-dark-75">Nombre de la reunión</span>
+                            <tr className="text-center text-uppercase">
+                                <th style={{ minWidth: "100px" }} className="pl-7">
+                                    <span className="text-dark-75">Nombre de la reunión</span>
                                 </th>
                                 <th style={{ minWidth: "100px" }}>Correo de participantes</th>
                                 <th style={{ minWidth: "100px" }}>Hora de la reunión</th>
@@ -637,20 +636,20 @@ class Calendario extends Component {
                                 eventos.eventos.map((gEvent, key) => {
                                     return (
                                         <tr className="text-center" key={key}>
-                                            <td class="pl-0">
-                                                <div class="text-dark-75 font-weight-bolder mb-1 font-size-lg">{gEvent.googleEvent.summary}</div>
+                                            <td className="pl-0">
+                                                <div className="text-dark-75 font-weight-bolder mb-1 font-size-lg">{gEvent.googleEvent.summary}</div>
                                             </td>
                                             <td>
                                                 {
                                                     gEvent.googleEvent.attendees.map((participantes, key) => {
                                                         return (
-                                                            <span class="font-weight-light d-block text-lowercase" key={key}>{participantes.email}</span>
+                                                            <span className="font-weight-light d-block text-lowercase" key={key}>{participantes.email}</span>
                                                         )
                                                     })
                                                 }
                                             </td>
                                             <td>
-                                                <span class="font-weight-light">
+                                                <span className="font-weight-light">
                                                     {this.getHours(gEvent.googleEvent.end.dateTime, gEvent.googleEvent.start.dateTime)}
                                                 </span>
                                             </td>
@@ -680,7 +679,7 @@ class Calendario extends Component {
                             eventos.cumpleaños.map((cumpleaños, key) => {
                                 return (
                                     <div key={key}>
-                                        <div class="font-weight-bold text-dark mb-1 font-size-lg">
+                                        <div className="font-weight-bold text-dark mb-1 font-size-lg">
                                             {cumpleaños.nombre}
                                         </div>
                                     </div>
@@ -708,7 +707,7 @@ class Calendario extends Component {
                             eventos.vacaciones.map((vacaciones, key) => {
                                 return (
                                     <div key={key}>
-                                        <div class="font-weight-bold text-dark mb-1 font-size-lg">
+                                        <div className="font-weight-bold text-dark mb-1 font-size-lg">
                                             {vacaciones.empleado.nombre}
                                         </div>
                                     </div>
