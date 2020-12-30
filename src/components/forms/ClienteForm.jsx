@@ -31,9 +31,9 @@ class ClienteForm extends Component {
                             value={form.empresa}
                             onChange={onChange}
                             type="text"
-                            placeholder="NOMBRE EMPRESA"
+                            placeholder="NOMBRE EMPRESA O PARTICULAR"
                             iconclass={"far fa-building"}
-                            messageinc="Incorrecto. Ingresa el nombre de la empresa."
+                            messageinc="Incorrecto. Ingresa el nombre de la empresa o particular."
                         />
                     </div>
                     <div className="col-md-4">
@@ -44,7 +44,7 @@ class ClienteForm extends Component {
                             value={form.rfc}
                             onChange={onChange}
                             type="text"
-                            placeholder="RFC EMPRESA"
+                            placeholder="RFC DE LA EMPRESA O PARTICULAR"
                             iconclass={"far fa-file-alt"}
                             patterns={RFC}
                             messageinc="Incorrecto. Ej. ABCD001122ABC"
@@ -53,7 +53,7 @@ class ClienteForm extends Component {
                     </div>
                     <div className="col-md-4">
                         <Input
-                            requirevalidation={1}
+                            requirevalidation={0}
                             formeditado={formeditado}
                             name="nombre"
                             value={form.nombre}
