@@ -201,6 +201,7 @@ class LeadLlamadaSalida extends Component {
                     segundoTexto={"recibimos exitosamente su información a través de nuestro sitio web. Me pongo en contacto en relación del servicio que seleccionaste de "}
                     segundoBoldest={`${this.servicio(lead.servicios)}.`}
                     separator={1}
+                    boton={boton}
                 />
                 <MensajePrincipal
                     primerTexto={"¡EXCELENTE! TE AGRADEZCO QUE NOS TOMES EN CUENTA PARA TU PROYECTO, PUEDES INDICARME: "}
@@ -430,6 +431,11 @@ class LeadLlamadaSalida extends Component {
                     </>;
                 }
                 break;
+            case'empresa':
+            case'telefono':
+            case'comentario':
+            return <></>;
+            break;
             default:
                 return <></>;
             break;
