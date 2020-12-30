@@ -433,10 +433,10 @@ class Contratar extends Component {
                         <div className="d-flex justify-content-end">
                             <Button
                                 icon=''
-                                className={"btn btn-icon btn-xs p-3 btn-light-success mr-2"}
+                                className={"btn btn-icon btn-xs w-auto p-3 btn-light-success"}
                                 onClick = { this.openModal }
-                                only_icon={"flaticon2-plus icon-13px"}
-                                tooltip={{ text: 'AGREGAR NUEVO CLIENTE' }}
+                                only_icon={"flaticon2-plus icon-15px mr-2"}
+                                text="NUEVO CLIENTE"
                             />
                         </div>
                     </Card.Header>
@@ -458,8 +458,9 @@ class Contratar extends Component {
                                     lead !== '' ? 
                                         lead.prospecto ?
                                             <div className="d-flex justify-content-end">
-                                                <Accordion.Toggle as = { Button } icon = { faEye } pulse="pulse-ring" 
-                                                eventKey = 'prospecto' className="btn btn-icon btn-light-info pulse pulse-info" />
+                                                <Accordion.Toggle as = { Button }  only_icon={"far fa-eye icon-15px mr-2"} text="INFORMACIÓN LEAD"
+                                                eventKey = 'prospecto' className={"btn btn-icon btn-xs w-auto p-3 btn-light-info mr-2"}
+                                                />
                                             </div>
                                         : ''
                                     : ''
@@ -489,7 +490,8 @@ class Contratar extends Component {
                             onChange = { this.onChange }
                             changeCP = { this.changeCP }
                             onSubmit = { this.onSubmitCliente }
-                            />
+                            className="mt-4"
+                        />
                 </Modal>
             </Layout>
         )
