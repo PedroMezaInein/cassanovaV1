@@ -17,7 +17,7 @@ class FormWhatsapp extends Component {
                             validateAlert(onSubmit, e, 'form-lead-telefono')
                         }
                     }
-                    {...this.props}>
+                    >
                     <div className="form-group row form-group-marginless mt-4 mb-0">
                         <div className="col-md-12">
                             <InputGray
