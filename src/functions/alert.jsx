@@ -1,9 +1,6 @@
 import { Sending } from '../components/Lottie/'
 import { Done } from '../components/Lottie/'
-import { SendingDecember } from '../components/Lottie/'
-import ReactDOM from 'react-dom';
 import React from 'react'
-
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)

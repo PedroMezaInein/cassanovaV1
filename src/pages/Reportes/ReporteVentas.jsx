@@ -172,12 +172,14 @@ class ReporteVentas extends Component {
                         COLORES_GRAFICAS_INEIN[i]
                     )
                 }
+                break;
             case 'INFRAESTRUCTURA MÉDICA':
                 for(let i = 0; i < tamaño; i++){
                     aux.push(
                         COLORES_GRAFICAS_IM[i]
                     )
                 }
+                break;
             default:
                 break;
         }

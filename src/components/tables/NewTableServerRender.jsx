@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import '../../styles/custom_datatable.css'
 import '../../styles/metronic/_datables.scss';
 import { errorAlert } from '../../functions/alert'
-import { Card, Spinner } from 'react-bootstrap'
+import { Card } from 'react-bootstrap'
 import { renderToString } from 'react-dom/server';
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
