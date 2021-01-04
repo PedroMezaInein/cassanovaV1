@@ -934,8 +934,8 @@ class Crm extends Component {
     }
     openModalEditar = lead => {
         const { formEditar } = this.state
-        formEditar.name = lead.nombre
-        formEditar.email = lead.email
+        formEditar.name = lead.nombre.toUpperCase()
+        formEditar.email = lead.email!==null?lead.email:''
         formEditar.telefono = lead.telefono
         formEditar.fecha = new Date(lead.created_at)
         this.setState({
@@ -1379,7 +1379,7 @@ class Crm extends Component {
                                         </Nav.Item>
                                         <Nav.Item className="nav-item pt-2">
                                             <DropdownButton
-                                                menuAlign="right"
+                                                menualign="right"
                                                 title={
                                                     <i className="fas fa-chevron-down icon-nm p-0"></i>
                                                 }
