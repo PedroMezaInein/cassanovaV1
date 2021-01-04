@@ -831,7 +831,7 @@ class Tareas extends Component {
     }
     render() {
 
-        const { columns, user, form, activeKey, modal, tarea, comentario, adjunto, adjuntoName, participantesTask, participantes, formeditado, tableros, defaultactivekey, subActiveKey,
+        const { columns, user, form, activeKey, modal, tarea,participantesTask, participantes, formeditado, tableros, defaultactivekey, subActiveKey,
             en_proceso, proximas_caducar, caducadas, formComentarioAdj } = this.state
         return (
             <Layout active={'usuarios'} {...this.props}>

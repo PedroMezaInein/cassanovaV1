@@ -11,14 +11,11 @@ import { createAlertSA2WithClose, doneAlert, errorAlert, forbiddenAccessAlert, w
 import ProyectosFormGray from '../../../components/forms/proyectos/ProyectosFormGray'
 import { setOptions } from '../../../functions/setters'
 import Swal from 'sweetalert2'
-import { faEye } from '@fortawesome/free-solid-svg-icons'
 import { ProyectoCard } from '../../../components/cards'
 
 class Contratar extends Component {
-
     state = {
         modal: false,
-        formeditado: false,
         form: {
             colonias: [],
             empresa: '',
@@ -422,7 +419,7 @@ class Contratar extends Component {
     }
 
     render() {
-        const { modal, form, formProyecto, options, formeditado, lead } = this.state
+        const { modal, form, formProyecto, options, lead } = this.state
         return (
             <Layout active = 'leads' { ... this.props }>
                 <Card className="card-custom card-stretch">
@@ -465,7 +462,7 @@ class Contratar extends Component {
                                         : ''
                                     : ''
                                 }
-                                <Accordion.Collapse eventKey='prospecto'  className="px-md-5 px-2">
+                                <Accordion.Collapse eventKey='prospecto'  className="px-md-6 px-0">
                                     <div>
                                         {
                                             lead !== ''?
@@ -485,7 +482,7 @@ class Contratar extends Component {
                 <Modal size = 'xl' title = 'Nuevo cliente' show = { modal }
                     handleClose = { this.handleClose }>
                         <ClienteForm
-                            formeditado = { formeditado }
+                            formeditado = { 0 }
                             form = { form }
                             onChange = { this.onChange }
                             changeCP = { this.changeCP }

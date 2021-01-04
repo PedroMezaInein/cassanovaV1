@@ -1319,14 +1319,14 @@ class LeadInfo extends Component {
                                                                 <div className="d-flex flex-column font-weight-bold ml-2">
                                                                     <div>
                                                                         <div className="d-flex align-items-center text-dark font-size-h5 font-weight-bold mr-3 text-center ">{lead.nombre}
-                                                                            <span className="ml-3">
+                                                                            {/* <span className="ml-3">
                                                                                 <Button
                                                                                     icon=''
                                                                                     className="btn btn-light-success p-1"
                                                                                     only_icon="fab fa-whatsapp pr-0"
                                                                                     tooltip={{ text: 'CONTACTAR POR WHATSAPP' }}
                                                                                 />
-                                                                            </span>
+                                                                            </span> */}
                                                                             <span className="ml-3">
                                                                                 {
                                                                                     lead ?
