@@ -11,7 +11,6 @@ import { Button } from '../../components/form-components'
 import { Line } from 'react-chartjs-2';
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../functions/routers"
-import ItemSlider from '../../components/singles/ItemSlider'
 import InputSinText from '../../components/form-components/SinText/InputSinText'
 
 class Diseño extends Component {
@@ -843,7 +842,7 @@ class Diseño extends Component {
     }
 
     render() {
-        const { form, empresa, data, grafica, activeTipo } = this.state
+        const { form, empresa, data, grafica } = this.state
             // {console.log(empresa)}
         return (
             <Layout active={'catalogos'}  {...this.props}>

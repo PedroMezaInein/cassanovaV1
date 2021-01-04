@@ -3,13 +3,11 @@ import Layout from '../../../components/layout/layout'
 import axios from 'axios'
 import { URL_DEV } from '../../../constants'
 import { connect } from 'react-redux'
-// import { Button } from '../../../components/form-components'
 import ItemSlider from '../../../components/singles/ItemSlider'
 import { Tab, Nav, Col, Row, Card, Accordion, } from 'react-bootstrap'
 import { setSelectOptions } from '../../../functions/setters'
 import { waitAlert, questionAlert, errorAdjuntos, errorAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
-import { FormikProvider } from 'formik'
-import { Nothing, Sending } from '../../../components/Lottie'
+import { Nothing } from '../../../components/Lottie'
 
 const tiposArray = ['logo', 'carta_membretada', 'firmas_electronicas', 'tarjetas_presentacion', 'imagenes_personal']
 const placeholderArray = ['LOGOS', 'CARTA MEMBRETADA', 'FIRMAS ELECTRÓNICAS', 'TARJETAS DE PRESENTACIÓN', 'IMÁGENES DEL PERSONAL']
@@ -119,7 +117,7 @@ class MaterialEmpresa extends Component {
     async addAdjunto(name) {
 
         const { access_token } = this.props.authUser
-        const { form, empresa, submenuactive } = this.state
+        const { form, empresa } = this.state
         const data = new FormData();
 
         data.append('empresa', empresa.id)

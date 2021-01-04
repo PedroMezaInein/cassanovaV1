@@ -11,7 +11,6 @@ import { createAlertSA2WithClose, doneAlert, errorAlert, forbiddenAccessAlert, w
 import ProyectosFormGray from '../../../components/forms/proyectos/ProyectosFormGray'
 import { setOptions } from '../../../functions/setters'
 import Swal from 'sweetalert2'
-import { faEye } from '@fortawesome/free-solid-svg-icons'
 import { ProyectoCard } from '../../../components/cards'
 
 class Contratar extends Component {

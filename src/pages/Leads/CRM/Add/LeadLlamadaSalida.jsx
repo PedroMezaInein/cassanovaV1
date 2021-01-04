@@ -459,8 +459,7 @@ class LeadLlamadaSalida extends Component {
         }
     }
     showMessages = (boton) => {
-        const { lead, form } = this.state
-        const usuario = this.props.authUser.user
+        const { lead } = this.state
         if(lead.empresa.name === 'INFRAESTRUCTURA MÉDICA'){
             if(lead.nombre === 'SIN ESPECIFICAR'){
                 return <>
