@@ -483,11 +483,9 @@ class Tareas extends Component {
                     ...this.state,
                     comentario: '',
                     tarea: tarea,
-                    adjunto: '',
-                    adjuntoFile: '',
-                    adjuntoName: '',
                     tableros: tableros,
-                    columns: auxTareas
+                    columns: auxTareas,
+                    formComentarioAdj: this.clearForm()
                 })
                 Swal.close()
             },
@@ -832,7 +830,7 @@ class Tareas extends Component {
     render() {
 
         const { columns, user, form, activeKey, modal, tarea,participantesTask, participantes, formeditado, tableros, defaultactivekey, subActiveKey,
-            en_proceso, proximas_caducar, caducadas, formComentarioAdj } = this.state
+            en_proceso, proximas_caducar, caducadas, formComentarioAdj, comentario } = this.state
         return (
             <Layout active={'usuarios'} {...this.props}>
                 <Row>
@@ -990,7 +988,7 @@ class Tareas extends Component {
                                                 withicon={0}
                                                 requirevalidation={0}
                                                 placeholder='COMENTARIO'
-                                                value={formComentarioAdj.comentario}
+                                                value={comentario}
                                                 name='comentario'
                                                 onChange={this.onChangeComentario}
                                                 as="textarea"
