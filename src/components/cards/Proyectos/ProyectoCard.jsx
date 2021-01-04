@@ -55,7 +55,7 @@ export default class ProyectoCard extends Component {
                                                             </div>
                                                         </div>
                                                         <div>
-                                                            <a rel="noopener noreferrer" target="_blank" href={`tel:+${data.lead.telefono}`} className="font-size-h6 text-dark-75 font-weight-bolder text-hover-primary">{data.lead.telefono}</a>
+                                                            <a rel="noopener noreferrer" target="_blank" href={`tel:+${data.lead.telefono}`} className="font-size-h6 text-dark-75 font-weight-bolder text-hover-primary">{data.lead.telefono?data.lead.telefono:"-"}</a>
                                                             <div className="font-size-sm text-muted font-weight-bold mt-1">TELÉFONO</div>
                                                         </div>
                                                     </div>
@@ -187,6 +187,7 @@ export default class ProyectoCard extends Component {
                                         }
                                         {
                                             data.vendedores !== null ?
+                                                data.vendedores?
                                                 <div className="col-md-6">
                                                     <div className="d-flex justify-content-start">
                                                         <div className="symbol symbol-35 symbol-light-info mr-4 flex-shrink-0">
@@ -198,32 +199,35 @@ export default class ProyectoCard extends Component {
                                                         </div>
                                                         <div>
                                                             {
-                                                                data.vendedores.length === 1 ?
-                                                                    data.vendedores.map((vendedor, key) => {
-                                                                        return (
-                                                                            <div key={key}>
-                                                                                <div className="font-size-h6 text-dark-75 font-weight-bolder">{vendedor.name}</div>
-                                                                                <div className="font-size-sm text-muted font-weight-bold mt-1">Vendedor</div>
-                                                                            </div>
-                                                                        )
-                                                                    })
-                                                                    :
-                                                                    <>
-                                                                        <ul className="list-inline mb-0 font-size-h6 text-dark-75 font-weight-bolder">
-                                                                            {
-                                                                                data.vendedores.map((vendedor, key) => {
-                                                                                    return (
-                                                                                        <li className="list-inline-item" key={key}>&#8226; {vendedor.name}</li>
-                                                                                    )
-                                                                                })
-                                                                            }
-                                                                        </ul>
-                                                                        <div className="font-size-sm text-muted font-weight-bold mt-1">Vendedores</div>
-                                                                    </>
+                                                                
+                                                                    data.vendedores.length === 1 ?
+                                                                        data.vendedores.map((vendedor, key) => {
+                                                                            return (
+                                                                                <div key={key}>
+                                                                                    <div className="font-size-h6 text-dark-75 font-weight-bolder">{vendedor.name}</div>
+                                                                                    <div className="font-size-sm text-muted font-weight-bold mt-1">Vendedor</div>
+                                                                                </div>
+                                                                            )
+                                                                        })
+                                                                        :
+                                                                        <>
+                                                                            <ul className="list-inline mb-0 font-size-h6 text-dark-75 font-weight-bolder">
+                                                                                {
+                                                                                    data.vendedores.map((vendedor, key) => {
+                                                                                        return (
+                                                                                            <li className="list-inline-item" key={key}>&#8226; {vendedor.name}</li>
+                                                                                        )
+                                                                                    })
+                                                                                }
+                                                                            </ul>
+                                                                            <div className="font-size-sm text-muted font-weight-bold mt-1">Vendedores</div>
+                                                                        </>
+                                                                    
                                                             }
                                                         </div>
                                                     </div>
                                                 </div>
+                                                : ''
                                                 : <div className="font-size-h6 text-dark-75 font-weight-bolder">No tiene vendedores</div>
                                         }
                                     </div>

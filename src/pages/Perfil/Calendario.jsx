@@ -823,7 +823,7 @@ class Calendario extends Component {
                                                     <ParkingRed />
                                                     : <Parking />
                                             }
-                                            <div className='text-center mb-3'>
+                                            <div className='text-center mb-3 font-weight-bold text-dark-75'>
                                                 {
                                                     auto ?
                                                         auto.empleado ?
