@@ -28,7 +28,6 @@ class Loading extends Component{
                     height={400}
                     width={400}
                     isStopped={false}
-                    speed = { 20 }
                     isPaused={false}/>
             </div>
         )
