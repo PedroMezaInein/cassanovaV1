@@ -8,7 +8,7 @@ import interactionPlugin from "@fullcalendar/interaction"; // needed for dayClic
 import esLocale from '@fullcalendar/core/locales/es';
 import { Modal } from '../../components/singles'
 import { SolicitarVacacionesForm, EstatusForm } from "../../components/forms";
-import { errorAlert, forbiddenAccessAlert, waitAlert, doneAlert } from '../../functions/alert';
+import { errorAlert, forbiddenAccessAlert, waitAlert, doneAlert, questionAlert } from '../../functions/alert';
 import { countDaysWithoutWeekend } from '../../functions/functions';
 import { URL_DEV } from '../../constants';
 import bootstrapPlugin from '@fullcalendar/bootstrap'
@@ -17,8 +17,10 @@ import moment from 'moment'
 import AVATAR from '../../assets/images/icons/avatar.png'
 import Swal from 'sweetalert2'
 import { Parking, ParkingRed, PassportTravel, HappyBirthday, Calendar } from '../../components/Lottie';
+import { Button } from '../../components/form-components'
 
 const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
+const dias = ['DOMINGO', 'LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO']
 class Calendario extends Component {
 
     state = {
@@ -390,6 +392,53 @@ class Calendario extends Component {
         })
     }
 
+    solicitarCajon = async() => {
+        const { access_token } = this.props.authUser
+        const { date } = this.state
+        waitAlert()
+        await axios.put(URL_DEV + 'vacaciones/cajones/' + date, {}, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                Swal.close()
+                doneAlert('EL CAJÓN FUE ASIGNADO CON ÉXITO')
+                this.getEventsOneDateAxios(date)
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    deleteCajon = async(id) => {
+        const { access_token } = this.props.authUser
+        const { date } = this.state
+        waitAlert()
+        await axios.delete(URL_DEV + 'vacaciones/cajones/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                Swal.close()
+                this.getEventsOneDateAxios(date)
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     setInvitados = (invitados) => {
         const { data } = this.state
         if (invitados)
@@ -408,11 +457,11 @@ class Calendario extends Component {
                                 if (aux !== false) {
                                     if (aux.avatar) {
                                         return (
-                                            <img className="calendar-avatar mr-3 mb-2" src={aux.avatar} alt='' />
+                                            <img key = { index } className="calendar-avatar mr-3 mb-2" src={aux.avatar} alt='' />
                                         )
                                     } else {
                                         return (
-                                            <img className="calendar-avatar mr-3 mb-2" src={AVATAR} alt='' />
+                                            <img key = { index } className="calendar-avatar mr-3 mb-2" src={AVATAR} alt='' />
                                         )
                                     }
                                 }
@@ -422,7 +471,7 @@ class Calendario extends Component {
                     </div>
                     <div className="lista-invitados text-left">
                         {
-                            invitados.map((invitado) => {
+                            invitados.map((invitado, key) => {
                                 let aux = false
                                 data.usuarios.map((user) => {
                                     if (user.email.toUpperCase() === invitado.email.toUpperCase()) {
@@ -432,7 +481,7 @@ class Calendario extends Component {
                                 })
                                 if (aux === false)
                                     return (
-                                        <div className="d-flex align-items-center my-2">
+                                        <div key = { key } className="d-flex align-items-center my-2">
                                             <i className={invitado.responseStatus === 'accepted' ? "fas fa-check-circle kt-font-boldest mr-3 icon-green" : 'fas fa-clock kt-font-boldest mr-3 icon-purple'}></i>
                                             <span>{invitado.email}</span>
                                         </div>
@@ -541,9 +590,10 @@ class Calendario extends Component {
     }
 
     setDateText = date => {
+        
         if (date !== '') {
             let fecha = moment(date)
-            return fecha.format('DD') + ' de ' + meses[fecha.format('M') - 1] + ' del ' + fecha.format('YYYY')
+            return dias[fecha.format('e')] + ' ' + parseInt(fecha.format('DD')) + ' de ' + meses[fecha.format('M') - 1] + ' del ' + fecha.format('YYYY')
         }
         else
             return ''
@@ -587,6 +637,7 @@ class Calendario extends Component {
 
     printModal = () => {
         const { activeKey } = this.state
+
         switch (activeKey) {
             case 'eventos':
                 return this.printEventos()
@@ -721,24 +772,54 @@ class Calendario extends Component {
     }
     prinEstacionamiento = () => {
         const { eventos } = this.state
+        const { user } = this.props.authUser
         let size = 3
         return (
             <>
+                <div className = 'd-flex justify-content-end mb-4'>
+                    <Button icon = '' className = "btn btn-icon btn-xs w-auto p-3 btn-light-info mr-2 mt-2"
+                        onClick = { (e) => { questionAlert('¿ESTÁS SEGURO?', `PEDIRÁS EL CAJÓN DE ESTACIONAMIENTO EL DÍA ${this.setDateText()}`, () => this.solicitarCajon() ) }} 
+                        only_icon = "far fa-calendar-check icon-15px mr-2" text = 'SOLICITAR ESPACIO'/>
+                        
+                </div>
                 <div className='row mx-0 justify-content-center '>
                     {
                         eventos.estacionamiento.map((auto, key) => {
                             return (
-                                <div className={`col-md-${size}`}>
-                                    <div className='text-center my-2'>
-                                        {auto}
-                                    </div>
+                                <div key = { key } className={`col-md-${size}`}>
                                     <div className='row mx-0 justify-content-center border' >
-                                        <div className='col-10 border'>
+                                        <div className='col-10 border position-relative'>
+                                            {
+                                                auto ?
+                                                    auto.empleado ?
+                                                        auto.empleado.usuario ?
+                                                            auto.empleado.usuario.id === user.id ?
+                                                                <div className = 'position-absolute button-up' 
+                                                                    onClick = { (e) => { e.preventDefault(); 
+                                                                        questionAlert('¿ESTÁS SEGURO?', `YA NO TENDRÁS EL CAJÓN PARA EL DÍA ${this.setDateText()}`, () => this.deleteCajon(auto.id) )} }>
+                                                                    <i className="fa fa-times text-danger"></i>
+                                                                </div>
+                                                            : ''
+                                                        : ''
+                                                    : ''
+                                                : ''
+                                            }
                                             {
                                                 (key + 1) % 2 === 1 ?
                                                     <ParkingRed />
                                                     : <Parking />
                                             }
+                                            <div className='text-center mb-3'>
+                                                {
+                                                    auto ?
+                                                        auto.empleado ?
+                                                            auto.empleado.usuario ?
+                                                                auto.empleado.usuario.name
+                                                            : ''
+                                                        : ''
+                                                    : ''
+                                                }
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
@@ -853,6 +934,7 @@ class Calendario extends Component {
 }
 
 const mapStateToProps = state => {
+    console.log(state, 'state')
     return {
         authUser: state.authUser
     }

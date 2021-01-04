@@ -183,7 +183,6 @@
     z-index: 10;
 }
 
-
 // btn.btn-light-pink 
 .btn.btn-light-pink {
     color: #e44e93;
@@ -588,7 +587,6 @@
     color: #5D4037 !important;
 }
 
-
 // btn.btn-light-gray 
 .btn.btn-light-gray {
     color: #5F6A6A;
@@ -789,4 +787,16 @@
 .show>.btn.btn-hover-text-gray.dropdown-toggle.dropdown-toggle:after,
 .show .btn.btn-hover-text-gray.btn-dropdown.dropdown-toggle:after {
     color: #5F6A6A !important;
+}
+
+.button-up{
+    z-index: 1;
+    right: 8px;
+    top: 5px;
+    &:hover{
+        cursor: pointer;
+    }
+    i{
+        font-size: 20px;
+    }
 }
