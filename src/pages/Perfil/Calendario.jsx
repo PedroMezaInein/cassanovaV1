@@ -16,7 +16,7 @@ import { DropdownButton, Dropdown, Card, OverlayTrigger, Tooltip, Nav } from 're
 import moment from 'moment'
 import AVATAR from '../../assets/images/icons/avatar.png'
 import Swal from 'sweetalert2'
-import { Parking, ParkingRed, PassportTravel, HappyBirthday, Calendar } from '../../components/Lottie';
+import { Parking, ParkingRed, PassportTravel, HappyBirthday, Calendar, EmptyParkSlot } from '../../components/Lottie';
 import { Button } from '../../components/form-components'
 
 const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
@@ -363,6 +363,7 @@ class Calendario extends Component {
             (response) => {
                 Swal.close()
                 const { eventos } = response.data
+                const { activeKey } = this.state
                 let bandera = false
                 Object.keys(eventos).map((evento, key) => {
                     if (eventos[evento].length && bandera === false && evento !== 'feriados')
@@ -370,6 +371,9 @@ class Calendario extends Component {
                 })
                 if (bandera === false)
                     bandera = 'estacionamiento'
+                if(activeKey !== '')
+                    bandera = activeKey
+                console.log(bandera, 'bandera')
                 this.setState({
                     ...this.state,
                     modal_date: true,
@@ -776,18 +780,28 @@ class Calendario extends Component {
         let size = 3
         return (
             <>
-                <div className = 'd-flex justify-content-end mb-4'>
-                    <Button icon = '' className = "btn btn-icon btn-xs w-auto p-3 btn-light-info mr-2 mt-2"
-                        onClick = { (e) => { questionAlert('¿ESTÁS SEGURO?', `PEDIRÁS EL CAJÓN DE ESTACIONAMIENTO EL DÍA ${this.setDateText()}`, () => this.solicitarCajon() ) }} 
-                        only_icon = "far fa-calendar-check icon-15px mr-2" text = 'SOLICITAR ESPACIO'/>
-                        
-                </div>
+                {
+                    this.isActiveSolicitarButton() ?
+                        <div className = 'd-flex justify-content-end mb-4'>
+                            <Button icon = '' className = "btn btn-icon btn-xs w-auto p-3 btn-light-info mr-2 mt-2"
+                                onClick = { (e) => { questionAlert('¿ESTÁS SEGURO?', `PEDIRÁS EL CAJÓN DE ESTACIONAMIENTO EL DÍA ${this.setDateText()}`, () => this.solicitarCajon() ) }} 
+                                only_icon = "far fa-calendar-check icon-15px mr-2" text = 'SOLICITAR ESPACIO'/>
+                        </div>
+                    : ''
+                }
                 <div className='row mx-0 justify-content-center '>
+                    {
+                        eventos.estacionamiento.length === 0 ?
+                            <div className = 'col-md-6'>
+                                <EmptyParkSlot />
+                            </div>
+                        : ''
+                    }
                     {
                         eventos.estacionamiento.map((auto, key) => {
                             return (
                                 <div key = { key } className={`col-md-${size}`}>
-                                    <div className='row mx-0 justify-content-center border' >
+                                    <div className='row mx-0 h-100 justify-content-center border' >
                                         <div className='col-10 border position-relative'>
                                             {
                                                 auto ?
@@ -830,6 +844,26 @@ class Calendario extends Component {
             </>
         )
     }
+
+    isActiveSolicitarButton = () => {
+        const { eventos } = this.state
+        const { user } = this.props.authUser
+        let bandera = false
+        if(eventos.estacionamiento)
+            if(eventos.estacionamiento.length < 2 && eventos.estacionamiento.length >= 0){
+                eventos.estacionamiento.map( (auto) => {
+                    if(auto.empleado)
+                        if(auto.empleado.usuario)
+                            if(auto.empleado.usuario.id.toString() === user.id.toString() )
+                                bandera = true
+                })
+            }else
+                bandera = true
+        if(bandera)
+            return false
+        return true
+    }
+
     render() {
         const { events, form, title, formeditado, modal, modal_status, estatus, disponibles, disabledDates, modal_date, date, eventos, activeKey } = this.state
         return (
@@ -933,14 +967,6 @@ class Calendario extends Component {
     }
 }
 
-const mapStateToProps = state => {
-    console.log(state, 'state')
-    return {
-        authUser: state.authUser
-    }
-}
-
-const mapDispatchToProps = dispatch => ({
-})
-
+const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapDispatchToProps = dispatch => ({})
 export default connect(mapStateToProps, mapDispatchToProps)(Calendario)
