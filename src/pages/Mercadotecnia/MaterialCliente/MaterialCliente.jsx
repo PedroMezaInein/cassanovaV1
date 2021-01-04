@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Layout from '../../../components/layout/layout'
 import axios from 'axios'
-import { ADJUNTOS_EMPRESA_COLUMNS, URL_DEV } from '../../../constants'
+import { URL_DEV } from '../../../constants'
 import { connect } from 'react-redux'
 // import { Button } from '../../../components/form-components'
 import ItemSlider from '../../../components/singles/ItemSlider'

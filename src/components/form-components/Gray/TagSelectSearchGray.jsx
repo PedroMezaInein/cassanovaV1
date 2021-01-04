@@ -77,7 +77,7 @@ class TagSelectSearchGray extends Component {
                         isMulti
                         value={defaultvalue}
                         options={options}
-                        noOptionsMessage={placeholder}
+                        // noOptionsMessage={placeholder}
                         placeholder={placeholder}
                         onChange={onChange}
                         styles={customStyles}
