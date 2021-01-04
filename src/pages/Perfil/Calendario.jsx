@@ -408,11 +408,11 @@ class Calendario extends Component {
                                 if (aux !== false) {
                                     if (aux.avatar) {
                                         return (
-                                            <img className="calendar-avatar mr-3 mb-2" src={aux.avatar} alt='' />
+                                            <img className="calendar-avatar mr-3 mb-2" src={aux.avatar} alt='' key={index} />
                                         )
                                     } else {
                                         return (
-                                            <img className="calendar-avatar mr-3 mb-2" src={AVATAR} alt='' />
+                                            <img className="calendar-avatar mr-3 mb-2" src={AVATAR} alt='' key={index} />
                                         )
                                     }
                                 }
@@ -422,7 +422,7 @@ class Calendario extends Component {
                     </div>
                     <div className="lista-invitados text-left">
                         {
-                            invitados.map((invitado) => {
+                            invitados.map((invitado, index) => {
                                 let aux = false
                                 data.usuarios.map((user) => {
                                     if (user.email.toUpperCase() === invitado.email.toUpperCase()) {
@@ -432,7 +432,7 @@ class Calendario extends Component {
                                 })
                                 if (aux === false)
                                     return (
-                                        <div className="d-flex align-items-center my-2">
+                                        <div className="d-flex align-items-center my-2" key={index}>
                                             <i className={invitado.responseStatus === 'accepted' ? "fas fa-check-circle kt-font-boldest mr-3 icon-green" : 'fas fa-clock kt-font-boldest mr-3 icon-purple'}></i>
                                             <span>{invitado.email}</span>
                                         </div>
@@ -636,7 +636,7 @@ class Calendario extends Component {
                                 eventos.eventos.map((gEvent, key) => {
                                     return (
                                         <tr className="text-center" key={key}>
-                                            <td className="pl-0">
+                                            <td>
                                                 <div className="text-dark-75 font-weight-bolder mb-1 font-size-lg">{gEvent.googleEvent.summary}</div>
                                             </td>
                                             <td>
@@ -650,7 +650,7 @@ class Calendario extends Component {
                                             </td>
                                             <td>
                                                 <span className="font-weight-light">
-                                                    {this.getHours(gEvent.googleEvent.end.dateTime, gEvent.googleEvent.start.dateTime)}
+                                                    {this.getHours(gEvent.googleEvent.start.dateTime, gEvent.googleEvent.end.dateTime)}
                                                 </span>
                                             </td>
                                         </tr>
@@ -728,7 +728,7 @@ class Calendario extends Component {
                     {
                         eventos.estacionamiento.map((auto, key) => {
                             return (
-                                <div className={`col-md-${size}`}>
+                                <div className={`col-md-${size}`}  key={key} >
                                     <div className='text-center my-2'>
                                         {auto}
                                     </div>
@@ -800,7 +800,7 @@ class Calendario extends Component {
                                         eventos.feriados.length ?
                                             eventos.feriados.map((feriado, key) => {
                                                 return (
-                                                    <div className='px-3 mx-3 my-2 py-2 feriados text-center'>
+                                                    <div className='px-3 mx-3 my-2 py-2 feriados text-center' key={key}>
                                                         ¡Feliz {feriado.texto}!
                                                     </div>
                                                 )
