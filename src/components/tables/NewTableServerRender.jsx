@@ -250,7 +250,7 @@ class NewTableServerRender extends Component {
                     <div className="d-flex align-items-center justify-content-center">
                         <div className="position-fixed p-5">
                             <div className="mt-175px">
-                                <div class="spinner spinner-primary spinner-xl"></div>
+                                <div className="spinner spinner-primary spinner-xl"></div>
                             </div>
                         </div>
                     </div>),

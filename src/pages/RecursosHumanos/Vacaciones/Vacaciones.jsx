@@ -7,7 +7,7 @@ import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from "@fullcalendar/interaction"; // needed for dayClick
 import esLocale from '@fullcalendar/core/locales/es';
-import { forbiddenAccessAlert, errorAlert, createAlert, doneAlert, waitAlert } from '../../../functions/alert';
+import { forbiddenAccessAlert, errorAlert, createAlert, doneAlert, waitAlert, questionAlert } from '../../../functions/alert';
 import { URL_DEV } from '../../../constants';
 import bootstrapPlugin from '@fullcalendar/bootstrap'
 import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
@@ -16,9 +16,15 @@ import { ItemSlider, Modal } from '../../../components/singles'
 import DropdownButton from 'react-bootstrap/DropdownButton'
 import Dropdown from 'react-bootstrap/Dropdown'
 import { AgregarVacacionesForm } from "../../../components/forms";
-import { Button } from '../../../components/form-components'
+import { Button, SelectSearch } from '../../../components/form-components'
 import readXlsxFile from 'read-excel-file'
 import moment from 'moment'
+import Swal from 'sweetalert2'
+import { Nav } from 'react-bootstrap'
+import { Parking, ParkingRed, PassportTravel, HappyBirthday, Calendar, EmptyParkSlot } from '../../../components/Lottie';
+
+const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
+const dias = ['DOMINGO', 'LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO']
 
 class Vacaciones extends Component {
 
@@ -28,6 +34,10 @@ class Vacaciones extends Component {
         events: [],
         modal_add_vacaciones: false,
         modal_add_feriados: false,
+        modal_cajones: false,
+        modal_date: false,
+        eventos: '',
+        date: '',
         form: {
             fechaInicio: new Date(),
             fechaFin: new Date(),
@@ -82,6 +92,296 @@ class Vacaciones extends Component {
             ...this.state,
             options
         })
+    }
+
+    updateEmpleado = value => {
+        this.onChange({ target: { value: value, name: 'empleado' } })
+    }
+
+    setDateText = date => {
+        
+        if (date !== '') {
+            let fecha = moment(date)
+            return dias[fecha.format('e')] + ' ' + parseInt(fecha.format('DD')) + ' de ' + meses[fecha.format('M') - 1] + ' del ' + fecha.format('YYYY')
+        }
+        else
+            return ''
+    }
+
+    setNavTitle = element => {
+        let icon = ''
+        let nombre = ''
+        switch (element) {
+            case 'eventos':
+                nombre = 'CITAS'
+                icon = 'far fa-clock'
+                break;
+            case 'cumpleaños':
+                nombre = 'CUMPLEAÑOS'
+                icon = 'fas fa-birthday-cake'
+                break;
+            case 'vacaciones':
+                nombre = 'VACACIONES'
+                icon = 'fas fa-umbrella-beach'
+                break;
+            case 'estacionamiento':
+                nombre = 'ESTACIONAMIENTO'
+                icon = 'fas fa-car'
+                break;
+        }
+        return (
+            <>
+                <span className="nav-icon"><i className={icon}></i></span>
+                <span className="nav-text font-size-lg">{nombre}</span>
+            </>
+        )
+    }
+
+    changeActiveKey = element => {
+        this.setState({
+            ...this.state,
+            activeKey: element
+        })
+    }
+
+    getHours(dateTimeStart, dateTimeEnd) {
+        var fechaStart = new Date(dateTimeStart)
+        var horaStart = this.setTimer(fechaStart.getHours()) + ":" + this.setTimer(fechaStart.getMinutes())
+
+        var fechaEnd = new Date(dateTimeEnd)
+        var horaEnd = this.setTimer(fechaEnd.getHours()) + ":" + this.setTimer(fechaEnd.getMinutes())
+
+        return horaStart + " - " + horaEnd
+    }
+
+    setTimer = (time) => {
+        switch (time) {
+            case 0:
+                return '00'
+            case 1:
+                return '01'
+            case 2:
+                return '02'
+            case 3:
+                return '03'
+            case 4:
+                return '04'
+            case 5:
+                return '05'
+            case 6:
+                return '06'
+            case 7:
+                return '07'
+            case 8:
+                return '08'
+            case 9:
+                return '09'
+            default:
+                return time
+        }
+    }
+
+    printModal = () => {
+        const { activeKey } = this.state
+
+        switch (activeKey) {
+            case 'eventos':
+                return this.printEventos()
+                break;
+            case 'cumpleaños':
+                return this.printCumpleaños()
+                break;
+            case 'vacaciones':
+                return this.printVacaciones()
+                break;
+            case 'estacionamiento':
+                return this.prinEstacionamiento()
+                break
+            default:
+                return ''
+                break;
+        }
+    }
+
+    printEventos = () => {
+        const { eventos } = this.state
+        return (
+            <>
+
+                <Calendar />
+                <div className="table-responsive">
+                    <table className="table table-head-custom table-head-bg table-borderless table-vertical-center">
+                        <thead>
+                            <tr className="text-center text-uppercase">
+                                <th style={{ minWidth: "100px" }} className="pl-7">
+                                    <span className="text-dark-75">Nombre de la reunión</span>
+                                </th>
+                                <th style={{ minWidth: "100px" }}>Correo de participantes</th>
+                                <th style={{ minWidth: "100px" }}>Hora de la reunión</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {
+                                eventos.eventos.map((gEvent, key) => {
+                                    return (
+                                        <tr className="text-center" key={key}>
+                                            <td>
+                                                <div className="text-dark-75 font-weight-bolder mb-1 font-size-lg">{gEvent.googleEvent.summary}</div>
+                                            </td>
+                                            <td>
+                                                {
+                                                    gEvent.googleEvent.attendees.map((participantes, key) => {
+                                                        return (
+                                                            <span className="font-weight-light d-block text-lowercase" key={key}>{participantes.email}</span>
+                                                        )
+                                                    })
+                                                }
+                                            </td>
+                                            <td>
+                                                <span className="font-weight-light">
+                                                    {this.getHours(gEvent.googleEvent.start.dateTime, gEvent.googleEvent.end.dateTime)}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    )
+                                })
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </>
+        )
+    }
+    printCumpleaños = () => {
+        const { eventos } = this.state
+        return (
+            <>
+                <div className="form-group row form-group-marginless">
+                    <div className="col-md-12">
+                        <div className="text-primary text-center font-weight-bolder font-size-h2">
+                            ¡Feliz Cumpleaños!
+                        </div>
+                        <HappyBirthday />
+                    </div>
+                    <div className="col-md-12 text-center mt-3">
+                        {
+                            eventos.cumpleaños.map((cumpleaños, key) => {
+                                return (
+                                    <div key={key}>
+                                        <div className="font-weight-bold text-dark mb-1 font-size-lg">
+                                            {cumpleaños.nombre}
+                                        </div>
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
+                </div>
+            </>
+        )
+    }
+    printVacaciones = () => {
+        const { eventos } = this.state
+        return (
+            <>
+                <div className="form-group row form-group-marginless">
+                    <div className="col-md-12">
+                        <div className="text-primary text-center font-weight-bolder font-size-h2">
+                            ¡Felices Vacaciones!
+                        </div>
+                        <PassportTravel />
+                    </div>
+                    <div className="col-md-12 text-center mt-3">
+                        {
+                            eventos.vacaciones.map((vacaciones, key) => {
+                                return (
+                                    <div key={key}>
+                                        <div className="font-weight-bold text-dark mb-1 font-size-lg">
+                                            {vacaciones.empleado.nombre}
+                                        </div>
+                                    </div>
+                                )
+                            })
+                        }
+                    </div>
+                </div>
+            </>
+        )
+    }
+    prinEstacionamiento = () => {
+        const { eventos, options, form, formeditado } = this.state
+        const { user } = this.props.authUser
+        let size = 3
+        return (
+            <>
+                {
+                    eventos !== '' ?
+                        eventos.estacionamiento.length >= 0 && eventos.estacionamiento.length < 2  ?
+                            <div className="form-group row form-group-marginless justify-content-center mb-4">
+                                <div className="col-md-6">
+                                    <SelectSearch options = { options.empleados } placeholder = "SELECCIONA EL EMPLEADO"
+                                        name = "empleado" value = { form.empleado } onChange = { this.updateEmpleado }
+                                        iconclass = "fas fa-layer-group" formeditado = { formeditado }
+                                        messageinc = "Incorrecto. Selecciona el empleado"
+                                        />
+                                </div>
+                                {
+                                    form.empleado !== '' ?
+                                        <div className = 'col-md-12 text-center mb-3'>
+                                            <Button icon = '' className = "btn btn-icon btn-xs w-auto p-3 btn-light-info mr-2 mt-2"
+                                                onClick = { (e) => { questionAlert('¿ESTÁS SEGURO?', `ASIGNARÁS EL CAJÓN DE ESTACIONAMIENTO EL DÍA ${this.setDateText()}`, () => this.solicitarCajon() ) }} 
+                                                only_icon = "far fa-calendar-check icon-15px mr-2" text = 'SOLICITAR ESPACIO'/>
+                                        </div>
+                                    : ''
+                                }
+                            </div>
+                        : ''
+                    : ''
+                }
+                <div className='row mx-0 justify-content-center '>
+                    {
+                        eventos.estacionamiento.length === 0 ?
+                            <div className = 'col-md-6'>
+                                <EmptyParkSlot />
+                            </div>
+                        : ''
+                    }
+                    {
+                        eventos.estacionamiento.map((auto, key) => {
+                            return (
+                                <div key = { key } className={`col-md-${size}`}>
+                                    <div className='row mx-0 h-100 justify-content-center border' >
+                                        <div className='col-10 border position-relative'>
+                                            <div className = 'position-absolute button-up' 
+                                                onClick = { (e) => { e.preventDefault(); 
+                                                    questionAlert('¿ESTÁS SEGURO?', `${auto.empleado.usuario.name} YA NO TENDRÁ EL CAJÓN PARA EL DÍA ${this.setDateText()}`, () => this.deleteCajon(auto.id) )} }>
+                                                <i className="fa fa-times text-danger"></i>
+                                            </div>
+                                            {
+                                                (key + 1) % 2 === 1 ?
+                                                    <ParkingRed />
+                                                    : <Parking />
+                                            }
+                                            <div className='text-center mb-3'>
+                                                {
+                                                    auto ?
+                                                        auto.empleado ?
+                                                            auto.empleado.usuario ?
+                                                                auto.empleado.usuario.name
+                                                            : ''
+                                                        : ''
+                                                    : ''
+                                                }
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            )
+                        })
+                    }
+                </div>
+            </>
+        )
     }
 
     async getVacaciones() {
@@ -235,11 +535,68 @@ class Vacaciones extends Component {
         })
     }
 
+    solicitarCajon = async() => {
+        const { access_token } = this.props.authUser
+        const { date, form } = this.state
+        waitAlert()
+        await axios.post(URL_DEV + 'vacaciones/cajones', { fecha: date, empleado: form.empleado }, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                Swal.close()
+                doneAlert('EL CAJÓN FUE ASIGNADO CON ÉXITO')
+                this.getEventsOneDateAxios(date)
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    deleteCajon = async(id) => {
+        const { access_token } = this.props.authUser
+        const { date } = this.state
+        waitAlert()
+        await axios.delete(URL_DEV + 'vacaciones/cajones/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                Swal.close()
+                this.getEventsOneDateAxios(date)
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     openModalAddVacaciones = () => {
         this.setState({
             ...this.state,
             modal_add_vacaciones: true,
             title: 'Agregar vacaciones',
+            form: this.clearForm(),
+            formeditado: 0
+        })
+    }
+
+    openModalCajones = () => {
+        this.setState({
+            ...this.state,
+            modal_cajones: true,
+            title: 'Agendar cajones de estacionamiento',
             form: this.clearForm(),
             formeditado: 0
         })
@@ -302,6 +659,27 @@ class Vacaciones extends Component {
         })
     }
 
+    handleCloseCajones = () => {
+        const { modal_cajones } = this.state
+        this.setState({
+            ...this.state,
+            modal_cajones: !modal_cajones,
+            title: 'Agregar vacaciones',
+            form: this.clearForm()
+        })
+    }
+
+    handleCloseDate = () => {
+        this.setState({
+            ...this.state,
+            modal_date: false,
+            date: '',
+            activeKey: '',
+            eventos: '',
+            form: this.clearForm()
+        })
+    }
+
     onChange = e => {
         const { name, value } = e.target
         const { form } = this.state
@@ -358,8 +736,43 @@ class Vacaciones extends Component {
         document.body.removeChild(link);
     }
 
+    handleDateClick = (arg) => {
+        waitAlert()
+        this.getEventsOneDateAxios(arg.dateStr)
+    }
+
+    async getEventsOneDateAxios(date) {
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'vacaciones/single/' + date, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                Swal.close()
+                const { eventos } = response.data
+                const { activeKey } = this.state
+                let bandera = 'estacionamiento'
+                this.setState({
+                    ...this.state,
+                    modal_date: true,
+                    date: date,
+                    eventos: eventos,
+                    activeKey: bandera
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     render() {
-        const { events, espera, modal, form, title, modal_add_vacaciones, formeditado, options, modal_add_feriados, disabledDates } = this.state
+        const { events, espera, modal, form, title, modal_add_vacaciones, formeditado, options, modal_add_feriados, disabledDates, modal_cajones, modal_date, activeKey, date, eventos } = this.state
         return (
             <Layout active='rh'  {...this.props}>
                 <Card className="card-custom">
@@ -382,29 +795,16 @@ class Vacaciones extends Component {
                                 }
                                 <Dropdown.Item onClick={this.openModalAddVacaciones}>Agregar vacaciones</Dropdown.Item>
                                 <Dropdown.Item onClick={this.openModalAddFeriados}>Agregar feriados</Dropdown.Item>
+                                {/* <Dropdown.Item onClick={this.openModalCajones}>Agendar cajones de estacionamiento</Dropdown.Item> */}
                             </DropdownButton>
                         </div>
                     </Card.Header>
                     <Card.Body>
                         <FullCalendar
-                            className={"prueba"}
-                            locale={esLocale}
-                            plugins={[dayGridPlugin, interactionPlugin,
-                                bootstrapPlugin
-                            ]}
-                            initialView="dayGridMonth"
-                            weekends={true}
-                            events={events}
-                            dateClick={this.handleDateClick}
-                            eventContent={renderEventContent}
-                            firstDay={1}
-                            // headerToolbar=  {{
-                            //     left: 'prev,next today',
-                            //     center: 'title',
-                            //     right: 'dayGridMonth' 
-
-                            // }}
-                            themeSystem='bootstrap'
+                            className = "prueba" locale = { esLocale }
+                            plugins = { [ dayGridPlugin, interactionPlugin, bootstrapPlugin ] }
+                            initialView = "dayGridMonth" weekends = { true } events = { events } firstDay = { 1 }
+                            dateClick = { this.handleDateClick } eventContent = { renderEventContent } themeSystem = 'bootstrap'
                         />
                     </Card.Body>
                 </Card>
@@ -490,6 +890,9 @@ class Vacaciones extends Component {
                             onSubmit={(e) => { e.preventDefault(); waitAlert(); this.addVacationAxiosAdmin() }}
                         />
                 </Modal>
+                <Modal size = "lg" title = { title } show = { modal_cajones } handleClose = { this.handleCloseCajones } >
+                    
+                </Modal>
                 <Modal size = 'lg' title = { title } show = { modal_add_feriados } handleClose = { this.handleCloseAddFeriados }>
                     <div className="d-flex m-2 justify-content-end">
                         <Button
@@ -519,6 +922,41 @@ class Vacaciones extends Component {
                                     />
                             </div>
                         : ''
+                    }
+                </Modal>
+                <Modal size='lg' title = { this.setDateText(date) } show = { modal_date } handleClose = { this.handleCloseDate } >
+                    {
+                        eventos !== '' ?
+                            <>
+                                {
+                                    eventos.feriados.length ?
+                                        eventos.feriados.map((feriado, key) => {
+                                            return (
+                                                <div className='px-3 mx-3 my-2 py-2 feriados text-center' key={key}>
+                                                    ¡Feliz {feriado.texto}!
+                                                </div>
+                                            )
+                                        })
+                                    : ''
+                                }
+                                <Nav className='nav nav-pills nav-pills-md nav-light-primary nav-bolder justify-content-center my-4'>
+                                    {
+                                        Object.keys(eventos).map((element, key) => {
+                                            if ((eventos[element].length || element === 'estacionamiento') && element !== 'feriados') {
+                                                return (
+                                                    <Nav.Item className='nav-item' key={key}>
+                                                        <Nav.Link eventKey={element} className={activeKey === element ? "nav-link py-2 px-4 text-primary active" : ' nav-link py-2 px-4'} onClick={(e) => { e.preventDefault(); this.changeActiveKey(element) }} >
+                                                            {this.setNavTitle(element)}
+                                                        </Nav.Link>
+                                                    </Nav.Item>
+                                                )
+                                            }
+                                        })
+                                    }
+                                </Nav>
+                                {this.printModal()}
+                            </>
+                            : ''
                     }
                 </Modal>
             </Layout>
