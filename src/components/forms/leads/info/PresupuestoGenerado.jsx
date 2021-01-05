@@ -26,7 +26,7 @@ class PresupuestoGenerado extends Component {
                                         <td>
                                             <div className="d-flex align-items-center">
                                                 <div>
-                                                    <a target="_blank" href={pdf.url} className="text-dark-75 font-weight-bolder text-hover-success mb-1 font-size-lg">{pdf.name}</a>
+                                                    <a target="_blank" href={pdf.url} className="text-dark-primary font-weight-bolder text-hover-success mb-1 font-size-lg">{pdf.name}</a>
                                                     <span className="text-muted font-weight-bold d-block">
                                                         {
                                                             setDateTableLG(pdf.created_at)
@@ -51,7 +51,7 @@ class PresupuestoGenerado extends Component {
                                         </td>
                                         <td className="text-center">
                                             <span onClick = { (e) => { e.preventDefault(); onClick(pdf); } } className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-success">
-                                                <span className="svg-icon svg-icon-md">
+                                                <span className="svg-icon svg-icon-md svg-icon-primary">
                                                     <SVG src={toAbsoluteUrl('/images/svg/Sending-mail.svg')} />
                                                 </span>
                                             </span>
