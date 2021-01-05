@@ -893,7 +893,7 @@ class Calendario extends Component {
         const { events, form, title, formeditado, modal, modal_status, estatus, disponibles, disabledDates, modal_date, date, eventos, activeKey, activeKeyTab, tab } = this.state
         return (
             <Layout active='rh'  {...this.props}>
-                <Tab.Container defaultActiveKey={activeKeyTab} className="p-5" onSelect={(select) => this.onClickTabContainer(select)}>
+                <Tab.Container activeKey = {activeKeyTab} defaultActiveKey = {activeKeyTab} className="p-5">
                     <Card className="card-custom">
                         <Card.Header>
                             <div className="d-flex align-items-center">
@@ -942,22 +942,6 @@ class Calendario extends Component {
                                             <span className=" font-weight-bolder font-size-lg">Vacaciones disponibles:</span>
                                             <span className="label label-rounded label-light-info font-weight-bolder ml-2">{disponibles}</span>
                                             <span className=" font-weight-bolder font-size-lg ml-2">días.</span>
-                                        </div>
-                                        <div className="col-md-1 d-flex justify-content-end">
-                                            {/* {
-                                                disponibles > 0 ?
-                                                    <DropdownButton
-                                                        title={
-                                                            <i className="ki ki-menu p-0"></i>
-                                                        }
-                                                        id={`dropdown-button-drop-left`}
-                                                        drop={'left'}
-                                                    >
-                                                        <Dropdown.Item onClick={this.openModal}>Solicitar vacaciones</Dropdown.Item>
-                                                        <Dropdown.Item onClick={this.openModalEstatus}>Estatus de vacaciones</Dropdown.Item>
-                                                    </DropdownButton>
-                                                    : ''
-                                            } */}
                                         </div>
                                     </div>
                                     <FullCalendar
