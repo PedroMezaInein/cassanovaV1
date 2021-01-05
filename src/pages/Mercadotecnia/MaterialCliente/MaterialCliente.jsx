@@ -150,39 +150,18 @@ class MaterialCliente extends Component {
         const { form } = this.state
         const { files, value, name } = e.target
         let aux = form.adjuntos[name].files
-        let aux2 = []
-        let size = 0
         for (let counter = 0; counter < files.length; counter++) {
-            size = files[counter].size;
-            size = size / (Math.pow(2, 20))
-            if (size <= 2)
-                aux.push(
-                    {
-                        name: files[counter].name,
-                        file: files[counter],
-                        url: URL.createObjectURL(files[counter]),
-                        key: counter
-                    }
-                )
-            else
-                aux2.push(files[counter].name)
-        }
-        if (aux2.length) {
-            let html = ''
-            aux2.map((element) => {
-                html += '<div class="mb-2 text-dark-50">' + '&bull;&nbsp;' + element + '<br/>' + '</div>'
-            })
-            // html
-            errorAdjuntos(
-                'OCURRIÓ UN ERROR',
-                'LOS SIGUIENTES ARCHIVOS NO SE PUDIERON ADJUNTAR, PESAN MÁS DE 2M',
-                html
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
             )
-            form['adjuntos'][name].value = ''
-        } else {
-            form['adjuntos'][name].value = value
-            form['adjuntos'][name].files = aux
         }
+        form['adjuntos'][name].value = value
+        form['adjuntos'][name].files = aux
         this.setState({
             ...this.state,
             form

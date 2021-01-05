@@ -1,0 +1,49 @@
+.rmdp-wrapper.active {
+    box-shadow: none;
+    .rmdp-week-day{
+        line-height: 2.667em!important;
+        font-weight: 400!important;
+        color: rgb(132, 144, 149)!important;
+        font-size: 12px!important;
+    }
+    span.rmdp-arrow-container.rmdp-left, span.rmdp-arrow-container.rmdp-right{
+        border-radius: 5px;
+        background: #EFF2F7;
+        margin: 0 12px
+    }
+    i.rmdp-arrow{
+        margin: auto!important;
+    }
+    .rmdp-header-values span{
+        font-weight: 400;
+        color: #484a4b !important;
+        letter-spacing: 2px;
+    }
+    .rmdp-day span{
+        left: 0;
+        right: 0;
+        top: 5px;
+        bottom: 5px;
+        font-size: 13px;
+        font-weight: 300;
+    }
+    .rmdp-day.rmdp-selected span:not(.highlight){
+        background-color: #EFF2F7;
+        box-shadow: none;
+        font-weight: 500;
+        color: #357ec7;
+        letter-spacing: 1px;
+        border-radius: 0px;
+    }
+    .rmdp-day:not(.rmdp-disabled):not(.rmdp-day-hidden) span:hover{
+        color: #2171c1 !important;
+        background: #e1f0ff !important;
+        font-weight: 500;
+        letter-spacing: 1px;
+        border-radius: 0px;
+    }
+    .rmdp-wrapper.active .rmdp-day span{
+        font-weight: 300;
+        letter-spacing: 1px;
+    }
+}
