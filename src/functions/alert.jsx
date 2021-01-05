@@ -1,5 +1,6 @@
 import { Sending } from '../components/Lottie/'
 import { Done } from '../components/Lottie/'
+import { Message } from '../components/Lottie/'
 import React from 'react'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
@@ -50,6 +51,22 @@ export async function waitAlert() {
             }
         })
     } */
+}
+
+export async function commentAlert() {
+    MySwal.fire({
+        title: '¡UN MOMENTO!',
+        html:
+            <div>
+                <p>
+                    SE ESTÁ ENVIANDO TU COMENTARIO
+                </p>
+                <Message />
+            </div>,
+        customClass: {
+            actions: 'd-none'
+        }
+    })
 }
 
 export async function doneAlert(texto) {

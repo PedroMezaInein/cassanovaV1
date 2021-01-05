@@ -44,7 +44,20 @@ class Calendario extends Component {
         disabledDates: [],
         date: '',
         eventos: '',
-        activeKey: ''
+        activeKey: '',
+        activeKeyTab: 'citas',
+        tab: [
+            {
+                nombre: 'Citas y cumpleaños',
+                icono: 'far fa-calendar-check',
+                active: 'citas'
+            },
+            {
+                nombre: 'Estacionamiento',
+                icono: 'fas fa-car-alt',
+                active: 'estacionamiento'
+            }
+        ]
     };
 
     componentDidMount() {
@@ -68,7 +81,7 @@ class Calendario extends Component {
             modal: true,
             title: 'Solicitar vacaciones',
             form: this.clearForm(),
-            formeditado: 0
+            formeditado: 0,
         })
     }
     openModalEstatus = () => {
@@ -374,7 +387,6 @@ class Calendario extends Component {
                     bandera = 'estacionamiento'
                 if (activeKey !== '')
                     bandera = activeKey
-                console.log(bandera, 'bandera')
                 this.setState({
                     ...this.state,
                     modal_date: true,
@@ -639,7 +651,12 @@ class Calendario extends Component {
             activeKey: element
         })
     }
-
+    changeActiveKeyTab = tab => {
+        this.setState({
+            ...this.state,
+            activeKeyTab: tab
+        })
+    }
     printModal = () => {
         const { activeKey } = this.state
 
@@ -866,36 +883,37 @@ class Calendario extends Component {
             return false
         return true
     }
-
+    onClickTabContainer = select => {
+        this.setState({
+            ...this.state,
+            activeKeyTab: select
+        })
+    }
     render() {
-        const { events, form, title, formeditado, modal, modal_status, estatus, disponibles, disabledDates, modal_date, date, eventos, activeKey } = this.state
+        const { events, form, title, formeditado, modal, modal_status, estatus, disponibles, disabledDates, modal_date, date, eventos, activeKey, activeKeyTab, tab } = this.state
         return (
             <Layout active='rh'  {...this.props}>
-                <Tab.Container defaultActiveKey="calendario_citas" className="p-5">
+                <Tab.Container defaultActiveKey={activeKeyTab} className="p-5" onSelect={(select) => this.onClickTabContainer(select)}>
                     <Card className="card-custom">
                         <Card.Header>
                             <div className="d-flex align-items-center">
                                 <Nav className="navi navi-bold navi-hover navi-active navi-link-rounded d-inline-flex d-flex justify-content-center navi-info navi-accent">
-                                    <Nav.Item className="navi-item mr-3">
-                                        <Nav.Link className="navi-link px-2" eventKey="calendario_citas" style={{ display: '-webkit-box' }}>
-                                            <span className="navi-icon mx-2">
-                                                <i className="far fa-calendar-check"></i>
-                                            </span>
-                                            <div className="navi-text">
-                                                <span className="d-block font-weight-bolder">Citas y cumpleaños</span>
-                                            </div>
-                                        </Nav.Link>
-                                    </Nav.Item>
-                                    <Nav.Item className="navi-item mr-3">
-                                        <Nav.Link className="navi-link px-2" eventKey="calendario_estacionamiento" style={{ display: '-webkit-box' }}>
-                                            <span className="navi-icon mx-2">
-                                                <i className="fas fa-car-alt"></i>
-                                            </span>
-                                            <div className="navi-text">
-                                                <span className="d-block font-weight-bolder">Estacionamiento</span>
-                                            </div>
-                                        </Nav.Link>
-                                    </Nav.Item>
+                                    {
+                                        tab.map((tab, key) => {
+                                            return (
+                                                <Nav.Item className="navi-item mr-3" key={key}>
+                                                    <Nav.Link className="navi-link px-2" eventKey={tab.active} style={{ display: '-webkit-box' }} onClick={(e) => { e.preventDefault(); this.changeActiveKeyTab(tab.active) }}>
+                                                        <span className="navi-icon mx-2">
+                                                            <i className={tab.icono}></i>
+                                                        </span>
+                                                        <div className="navi-text">
+                                                            <span className="d-block font-weight-bolder">{tab.nombre}</span>
+                                                        </div>
+                                                    </Nav.Link>
+                                                </Nav.Item>
+                                            )
+                                        })
+                                    }
                                 </Nav>
                             </div>
                             <div className="card-toolbar">
@@ -903,7 +921,7 @@ class Calendario extends Component {
                                     disponibles > 0 ?
                                         <DropdownButton
                                             title={
-                                                <i className="ki ki-bold-more-ver p-0"></i>
+                                                <i className="ki ki-menu p-0"></i>
                                             }
                                             id={`dropdown-button-drop-left`}
                                             drop={'left'}
@@ -917,12 +935,30 @@ class Calendario extends Component {
                         </Card.Header>
                         <Card.Body>
                             <Tab.Content>
-                                <Tab.Pane eventKey="calendario_citas">
-                                    <div className="mb-3">
-                                        <i className="fa fa-genderless text-info mr-2"></i>
-                                        <span className=" font-weight-bolder font-size-lg">Vacaciones disponibles:</span>
-                                        <span className="label label-rounded label-light-info font-weight-bolder ml-2">{disponibles}</span>
-                                        <span className=" font-weight-bolder font-size-lg ml-2">días.</span>
+                                <Tab.Pane eventKey="citas">
+                                    <div className="row row-paddingless mx-0 mb-4">
+                                        <div className="col-md-11">
+                                            <i className="fa fa-genderless text-info mr-2"></i>
+                                            <span className=" font-weight-bolder font-size-lg">Vacaciones disponibles:</span>
+                                            <span className="label label-rounded label-light-info font-weight-bolder ml-2">{disponibles}</span>
+                                            <span className=" font-weight-bolder font-size-lg ml-2">días.</span>
+                                        </div>
+                                        <div className="col-md-1 d-flex justify-content-end">
+                                            {/* {
+                                                disponibles > 0 ?
+                                                    <DropdownButton
+                                                        title={
+                                                            <i className="ki ki-menu p-0"></i>
+                                                        }
+                                                        id={`dropdown-button-drop-left`}
+                                                        drop={'left'}
+                                                    >
+                                                        <Dropdown.Item onClick={this.openModal}>Solicitar vacaciones</Dropdown.Item>
+                                                        <Dropdown.Item onClick={this.openModalEstatus}>Estatus de vacaciones</Dropdown.Item>
+                                                    </DropdownButton>
+                                                    : ''
+                                            } */}
+                                        </div>
                                     </div>
                                     <FullCalendar
                                         locale={esLocale}
@@ -934,16 +970,11 @@ class Calendario extends Component {
                                         eventContent={this.renderEventContent}
                                         firstDay={1}
                                         themeSystem='bootstrap'
+                                        height='1290.37px'
                                     />
                                 </Tab.Pane>
-                                <Tab.Pane eventKey="calendario_estacionamiento">
-                                    <div className="mb-3">
-                                        <i className="fa fa-genderless text-info mr-2"></i>
-                                        <span className=" font-weight-bolder font-size-lg">Vacaciones disponibles:</span>
-                                        <span className="label label-rounded label-light-info font-weight-bolder ml-2">{disponibles}</span>
-                                        <span className=" font-weight-bolder font-size-lg ml-2">días.</span>
-                                    </div>
-                                    {/* <FullCalendar
+                                <Tab.Pane eventKey="estacionamiento">
+                                    <FullCalendar
                                         locale={esLocale}
                                         plugins={[dayGridPlugin, interactionPlugin, bootstrapPlugin]}
                                         initialView="dayGridMonth"
@@ -953,7 +984,8 @@ class Calendario extends Component {
                                         eventContent={this.renderEventContent}
                                         firstDay={1}
                                         themeSystem='bootstrap'
-                                    /> */}
+                                        height='1290.37px'
+                                    />
                                 </Tab.Pane>
                             </Tab.Content>
                         </Card.Body>
@@ -1013,6 +1045,7 @@ class Calendario extends Component {
                 </Modal>
 
             </Layout>
+
         );
     }
 }
