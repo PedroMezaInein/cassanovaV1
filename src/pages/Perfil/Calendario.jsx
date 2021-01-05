@@ -911,8 +911,8 @@ class Calendario extends Component {
     render() {
         const { events, form, title, formeditado, modal, modal_status, estatus, disponibles, disabledDates, modal_date, date, eventos, activeKey, activeKeyTab, tab, modal_estacionamiento } = this.state
         return (
-            <Layout active='rh'  {...this.props}>
-                <Tab.Container defaultActiveKey={activeKeyTab} activeKey={activeKeyTab} className="p-5">
+            <Layout {...this.props}>
+                {/* <Tab.Container defaultActiveKey={activeKeyTab} activeKey={activeKeyTab} className="p-5"> */}
                     <Card className="card-custom">
                         <Card.Header>
                             <div className="d-flex align-items-center">
@@ -1011,7 +1011,7 @@ class Calendario extends Component {
                             </Tab.Content> */}
                         </Card.Body>
                     </Card>
-                </Tab.Container>
+                {/* </Tab.Container> */}
                 <Modal size="lg" title={title} show={modal} handleClose={this.handleClose}>
                     <SolicitarVacacionesForm
                         formeditado={formeditado}

@@ -10,7 +10,7 @@ import { TareaForm } from '../../components/forms'
 import { Button } from '../../components/form-components'
 import moment from 'moment'
 import { Card, Nav, Tab, Row, Col, Form} from 'react-bootstrap'
-import { errorAlert, forbiddenAccessAlert, waitAlert, validateAlert } from '../../functions/alert'
+import { errorAlert, forbiddenAccessAlert, waitAlert, validateAlert, messageAlert, commentAlert } from '../../functions/alert'
 import { CaducadasCard, EnProcesoCard, ProximasCaducarCard } from '../../components/cards'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
@@ -437,17 +437,10 @@ class Tareas extends Component {
 
     addComentario = () => {
         const { comentario } = this.state
-        MySwal.fire({
-            title: '¡UN MOMENTO!',
-            text: 'SE ESTÁ ENVIANDO TU MENSAJE.',
-            icon: 'info',
-            customClass: {
-                actions: 'd-none',
-                icon: 'text-lowercase',
-            }
-        })
-        if (comentario !== '')
+        if (comentario !== ''){
+            commentAlert()
             this.addComentarioAxios()
+        }
     }
 
     async addComentarioAxios() {
