@@ -17,7 +17,7 @@ import moment from 'moment'
 import AVATAR from '../../assets/images/icons/avatar.png'
 import Swal from 'sweetalert2'
 import { Parking, ParkingRed, PassportTravel, HappyBirthday, Calendar, EmptyParkSlot } from '../../components/Lottie';
-import { Button } from '../../components/form-components'
+import { Button, DatePickerMulti } from '../../components/form-components'
 
 const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
 const dias = ['DOMINGO', 'LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO']
@@ -33,6 +33,7 @@ class Calendario extends Component {
         vacaciones_totales: '',
         modal_status: false,
         modal_date: false,
+        modal_estacionamiento: false,
         form: {
             fechaInicio: new Date(),
             fechaFin: new Date(),
@@ -94,6 +95,15 @@ class Calendario extends Component {
         })
     }
 
+    openModalEstacionamiento = () => {
+        this.setState({
+            ...this.state,
+            modal_estacionamiento: true,
+            title: 'Solicitud de espacio de estacionamiento',
+            form: this.clearForm(),
+        })
+    }
+
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
@@ -138,6 +148,15 @@ class Calendario extends Component {
             date: '',
             activeKey: '',
             eventos: ''
+        })
+    }
+    handleCloseEstacionamiento = () => {
+        const { modal_estacionamiento, options } = this.state
+        this.setState({
+            ...this.state,
+            modal_estacionamiento: !modal_estacionamiento,
+            options,
+            title: 'Solicitud de espacio de estacionamiento',
         })
     }
 
@@ -632,10 +651,10 @@ class Calendario extends Component {
                 nombre = 'VACACIONES'
                 icon = 'fas fa-umbrella-beach'
                 break;
-            case 'estacionamiento':
-                nombre = 'ESTACIONAMIENTO'
-                icon = 'fas fa-car'
-                break;
+            // case 'estacionamiento':
+            //     nombre = 'ESTACIONAMIENTO'
+            //     icon = 'fas fa-car'
+            //     break;
         }
         return (
             <>
@@ -670,9 +689,9 @@ class Calendario extends Component {
             case 'vacaciones':
                 return this.printVacaciones()
                 break;
-            case 'estacionamiento':
-                return this.prinEstacionamiento()
-                break
+            // case 'estacionamiento':
+            //     return this.prinEstacionamiento()
+            //     break
             default:
                 return <></>
                 break;
@@ -890,14 +909,15 @@ class Calendario extends Component {
         })
     }
     render() {
-        const { events, form, title, formeditado, modal, modal_status, estatus, disponibles, disabledDates, modal_date, date, eventos, activeKey, activeKeyTab, tab } = this.state
+        const { events, form, title, formeditado, modal, modal_status, estatus, disponibles, disabledDates, modal_date, date, eventos, activeKey, activeKeyTab, tab, modal_estacionamiento } = this.state
         return (
-            <Layout active='rh'  {...this.props}>
-                <Tab.Container activeKey = {activeKeyTab} defaultActiveKey = {activeKeyTab} className="p-5">
+            <Layout {...this.props}>
+                {/* <Tab.Container defaultActiveKey={activeKeyTab} activeKey={activeKeyTab} className="p-5"> */}
                     <Card className="card-custom">
                         <Card.Header>
                             <div className="d-flex align-items-center">
-                                <Nav className="navi navi-bold navi-hover navi-active navi-link-rounded d-inline-flex d-flex justify-content-center navi-info navi-accent">
+                                <h3 class="card-title align-items-start flex-column"><span class="font-weight-bolder text-dark">Calendario</span></h3>
+                                {/* <Nav className="navi navi-bold navi-hover navi-active navi-link-rounded d-inline-flex d-flex justify-content-center navi-info navi-accent">
                                     {
                                         tab.map((tab, key) => {
                                             return (
@@ -914,7 +934,7 @@ class Calendario extends Component {
                                             )
                                         })
                                     }
-                                </Nav>
+                                </Nav> */}
                             </div>
                             <div className="card-toolbar">
                                 {
@@ -928,21 +948,38 @@ class Calendario extends Component {
                                         >
                                             <Dropdown.Item onClick={this.openModal}>Solicitar vacaciones</Dropdown.Item>
                                             <Dropdown.Item onClick={this.openModalEstatus}>Estatus de vacaciones</Dropdown.Item>
+                                            {/* <Dropdown.Item onClick={this.openModalEstacionamiento}>Solicitar lugar de estacionamiento</Dropdown.Item> */}
                                         </DropdownButton>
                                         : ''
                                 }
                             </div>
                         </Card.Header>
                         <Card.Body>
-                            <Tab.Content>
+                            <div className="mb-4">
+                                <i className="fa fa-genderless text-info mr-2"></i>
+                                <span className=" font-weight-bolder font-size-lg">Vacaciones disponibles:</span>
+                                <span className="label label-rounded label-light-info font-weight-bolder ml-2">{disponibles}</span>
+                                <span className=" font-weight-bolder font-size-lg ml-2">días.</span>
+                            </div>
+                            <FullCalendar
+                                locale={esLocale}
+                                plugins={[dayGridPlugin, interactionPlugin, bootstrapPlugin]}
+                                initialView="dayGridMonth"
+                                weekends={true}
+                                events={events}
+                                dateClick={this.handleDateClick}
+                                eventContent={this.renderEventContent}
+                                firstDay={1}
+                                themeSystem='bootstrap'
+                                height='1290.37px'
+                            />
+                            {/* <Tab.Content>
                                 <Tab.Pane eventKey="citas">
-                                    <div className="row row-paddingless mx-0 mb-4">
-                                        <div className="col-md-11">
-                                            <i className="fa fa-genderless text-info mr-2"></i>
-                                            <span className=" font-weight-bolder font-size-lg">Vacaciones disponibles:</span>
-                                            <span className="label label-rounded label-light-info font-weight-bolder ml-2">{disponibles}</span>
-                                            <span className=" font-weight-bolder font-size-lg ml-2">días.</span>
-                                        </div>
+                                    <div className="mb-4">
+                                        <i className="fa fa-genderless text-info mr-2"></i>
+                                        <span className=" font-weight-bolder font-size-lg">Vacaciones disponibles:</span>
+                                        <span className="label label-rounded label-light-info font-weight-bolder ml-2">{disponibles}</span>
+                                        <span className=" font-weight-bolder font-size-lg ml-2">días.</span>
                                     </div>
                                     <FullCalendar
                                         locale={esLocale}
@@ -971,11 +1008,11 @@ class Calendario extends Component {
                                         height='1290.37px'
                                     />
                                 </Tab.Pane>
-                            </Tab.Content>
+                            </Tab.Content> */}
                         </Card.Body>
                     </Card>
-                </Tab.Container>
-                <Modal title={title} show={modal} handleClose={this.handleClose} size="lg">
+                {/* </Tab.Container> */}
+                <Modal size="lg" title={title} show={modal} handleClose={this.handleClose}>
                     <SolicitarVacacionesForm
                         formeditado={formeditado}
                         form={form}
@@ -1027,7 +1064,12 @@ class Calendario extends Component {
                             : ''
                     }
                 </Modal>
-
+                {/* <Modal size="lg" title={title} show={modal_estacionamiento} handleClose={this.handleCloseEstacionamiento}>
+                    <div className="d-flex justify-content-center mt-4">
+                        <DatePickerMulti
+                        />
+                    </div>
+                </Modal> */}
             </Layout>
 
         );

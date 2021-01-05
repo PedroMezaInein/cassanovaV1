@@ -13,7 +13,7 @@ class DropZone extends Component{
         
         return(
             <Dropzone { ... props} 
-                maxSize = { 10000000 }
+                /* maxSize = { 10000000 } */
                 onDrop={this.handleDrop}
                 >
                 {({ getRootProps, getInputProps }) => {
