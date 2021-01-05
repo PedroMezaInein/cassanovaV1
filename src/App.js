@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
-import { Route } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import Loadable from 'react-loadable';
 import Loading from './pages/Loading';
+import NotFound from './pages/NotFound';
 import { connect } from 'react-redux';
 import axios from 'axios';
 import { URL_DEV } from './constants';
@@ -216,158 +217,206 @@ class App extends Component{
     render(){
         
         return(
-            <>
-                
-                <Route path = "/login" exact component = { Login } />
+            <div>
 
-                <Route path = "/" exact component= { Home } />
+                <Switch>
 
-                <Route path = "/mi-proyecto" exact component = { MiProyecto } />
+                    // ANCHOR Routes from login
 
-                <Route path = "/usuarios/usuarios" exact component = { Usuarios } />
-                <Route path = "/usuarios/usuarios/:action" exact component ={ UsuariosForm } />
-                <Route path = "/usuarios/tareas" exact component = { Tareas } />
-                <Route path = "/usuarios/empresas" exact component ={ Empresas } />
-                <Route path = "/usuarios/empresas/:action" exact component ={ EmpresasForm } />
+                    <Route path = "/login" exact component = { Login } />
 
-                <Route path = "/presupuesto/conceptos" exact component ={ Conceptos } />
-                <Route path = "/presupuesto/conceptos/:action" exact component ={ ConceptosForm } />
+                    // ANCHOR Routes for home
 
-                <Route path = "/presupuesto/rendimiento" exact component ={ Rendimiento } />
-                <Route path = "/presupuesto/rendimiento/:action" exact component ={ RendimientoForm } />
+                    <Route path = "/" exact component= { Home } />
 
-                <Route path = "/presupuesto/presupuesto" exact component ={ Presupuesto } />
-                <Route path = "/presupuesto/presupuesto/add" exact component ={ AddPresupuestoForm } />
-                <Route path = "/presupuesto/presupuesto/update" exact component ={ ActualizarPresupuesto } />  
-                <Route path = "/presupuesto/presupuesto/finish" exact component ={ UltimoPresupuesto } />
+                    // ANCHOR Routes for mi proyecto
 
-                <Route path = "/presupuesto/presupuesto-diseño" exact component ={ PresupuestoDiseño } />  
-                <Route path = "/presupuesto/presupuesto-diseño/:action" exact component ={ PresupuestoDiseñoForm } />            
+                    <Route path = "/mi-proyecto" exact component = { MiProyecto } />
 
-                <Route path = "/proyectos/proyectos" exact component ={ Proyectos } />
-                <Route path = "/proyectos/proyectos/:action" exact component ={ ProyectosForm } />
+                    // ANCHOR Routes for usuarios
 
-                {/* <Route path = "/proyectos/ventas" exact component ={ Ventas } /> */}
-                {/* <Route path = "/proyectos/compras" exact component ={ Compras } /> */}
-                <Route path = "/proyectos/utilidad" exact component ={ Utilidad } />
-                
-                <Route path = "/proyectos/remision" exact component ={ Remision } />
-                <Route path = "/proyectos/remision/:action" exact component ={ RemisionForm } />
+                    <Route path = "/usuarios/usuarios" exact component = { Usuarios } />
+                    <Route path = "/usuarios/usuarios/:action" exact component ={ UsuariosForm } />
 
-                <Route path = "/proyectos/compras" exact component ={ Compras } />
-                <Route path = "/proyectos/compras/:action" exact component ={ ComprasForm } />
+                    <Route path = "/usuarios/tareas" exact component = { Tareas } />
 
-                <Route path = "/proyectos/ventas" exact component ={ Ventas } />
-                <Route path = "/proyectos/ventas/:action" exact component ={ VentasForm } />
+                    <Route path = "/usuarios/empresas" exact component ={ Empresas } />
+                    <Route path = "/usuarios/empresas/:action" exact component ={ EmpresasForm } />
 
-                <Route path = "/proyectos/solicitud-compra" exact component ={ SolicitudCompra } />
-                <Route path = "/proyectos/solicitud-compra/:action" exact component ={ SolicitudCompraForm } />
+                    // ANCHOR Routes for presupuesto
 
-                <Route path = "/proyectos/solicitud-venta" exact component ={ SolicitudVenta } />
-                <Route path = "/proyectos/solicitud-venta/:action" exact component ={ SolicitudVentaForm } />
-                
-                {/* <Route path = "/proyectos/solicitud-venta" exact component ={ SolicitudVenta } /> */}
+                    <Route path = "/presupuesto/conceptos" exact component ={ Conceptos } />
+                    <Route path = "/presupuesto/conceptos/:action" exact component ={ ConceptosForm } />
 
-                <Route path = "/proyectos/herramientas" exact component ={ Herramienta } />
-                <Route path = "/proyectos/herramientas/:action" exact component ={ HerramientaForm } />
+                    <Route path = "/presupuesto/rendimiento" exact component ={ Rendimiento } />
+                    <Route path = "/presupuesto/rendimiento/:action" exact component ={ RendimientoForm } />
 
-                <Route path = "/administracion/egresos" exact component ={ Egresos } />
-                <Route path = "/administracion/egresos/:action" exact component ={ EgresosForm } />
+                    <Route path = "/presupuesto/presupuesto" exact component ={ Presupuesto } />
+                    <Route path = "/presupuesto/presupuesto/add" exact component ={ AddPresupuestoForm } />
+                    <Route path = "/presupuesto/presupuesto/update" exact component ={ ActualizarPresupuesto } />  
+                    <Route path = "/presupuesto/presupuesto/finish" exact component ={ UltimoPresupuesto } />
 
-                <Route path = "/administracion/ingresos" exact component ={ Ingresos } />
-                <Route path = "/administracion/ingresos/:action" exact component ={ IngresosForm } />
-                
-                {/* <Route path = "/administracion/contratos" exact component ={ Contratos } /> */}
-                <Route path = "/administracion/contratos" exact component ={ Contratos } />
-                <Route path = "/administracion/contratos/:action" exact component ={ ContratosForm } />
-                
-                <Route path = "/administracion/facturacion" exact component ={ Facturacion } />
-                <Route path = "/administracion/flujos" exact component ={ Flujos } />
+                    <Route path = "/presupuesto/presupuesto-diseño" exact component ={ PresupuestoDiseño } />  
+                    <Route path = "/presupuesto/presupuesto-diseño/:action" exact component ={ PresupuestoDiseñoForm } />            
 
-                <Route path = "/administracion/proveedores" exact component ={ Proveedores } />
-                <Route path = "/administracion/proveedores/:action" exact component ={ ProveedoresForm } />
+                    // ANCHOR Routes for proyectos
 
-                <Route path = "/administracion/documentos" exact component ={ Documentos } />
-                <Route path = "/administracion/documentos/:action" exact component ={ DocumentosForm } />
+                    <Route path = "/proyectos/proyectos" exact component ={ Proyectos } />
+                    <Route path = "/proyectos/proyectos/:action" exact component ={ ProyectosForm } />
 
-                <Route path = "/bancos/cuentas" exact component ={ Cuentas } />
-                <Route path = "/bancos/cuentas/:action" exact component ={ CuentasForm } />
-                <Route path = "/bancos/cuentas/details/:id" exact component ={ CuentaDetails } />
+                    {/* <Route path = "/proyectos/ventas" exact component ={ Ventas } /> */}
+                    {/* <Route path = "/proyectos/compras" exact component ={ Compras } /> */}
+                    <Route path = "/proyectos/utilidad" exact component ={ Utilidad } />
 
-                {/* <Route path = "/bancos/estados-cuenta" exact component ={ EstadosCuenta } /> */}
-                <Route path = "/bancos/estados-cuenta" exact component ={ EstadosCuenta } />
-                <Route path = "/bancos/estados-cuenta/:action" exact component ={ EstadosCuentaForm } />
-                
-                <Route path = "/bancos/traspasos" exact component ={ Traspasos } />
-                <Route path = "/bancos/traspasos/:action" exact component ={ TraspasosForm } />
-                
-                <Route path = "/leads/leads" exact component ={ Leads } />
-                <Route path = "/leads/leads/:action" exact component ={ LeadsForm } />
+                    <Route path = "/proyectos/remision" exact component ={ Remision } />
+                    <Route path = "/proyectos/remision/:action" exact component ={ RemisionForm } />
 
-                <Route path = "/leads/crm" exact component = { Crm } />
-                <Route path = "/leads/crm/add/telefono" exact component = { LeadTelefono } />
-                <Route path = "/leads/crm/add/llamada-salida" exact component = { LeadLlamadaSalida } />
-                <Route path = "/leads/crm/cierre/llamada-cierre" exact component = { LeadLlamadaCierre } />
-                
-                <Route path = "/leads/crm/info/info" exact component = { LeadInfo } />
-                <Route path = "/leads/crm/contratar" exact component = { LeadContratar } />
+                    <Route path = "/proyectos/compras" exact component ={ Compras } />
+                    <Route path = "/proyectos/compras/:action" exact component ={ ComprasForm } />
 
-                <Route path = "/leads/prospectos" exact component = { Prospectos } />
-                <Route path = "/leads/prospectos/:action" exact component = { ProspectosForm } />
+                    <Route path = "/proyectos/ventas" exact component ={ Ventas } />
+                    <Route path = "/proyectos/ventas/:action" exact component ={ VentasForm } />
 
-                <Route path = "/leads/clientes" exact component = { Clientes } />
-                <Route path = "/leads/clientes/:action" exact component = { ClientesForm } />
+                    <Route path = "/proyectos/solicitud-compra" exact component ={ SolicitudCompra } />
+                    <Route path = "/proyectos/solicitud-compra/:action" exact component ={ SolicitudCompraForm } />
 
-                <Route path = "/normas" exact component ={ Normas } />
+                    <Route path = "/proyectos/solicitud-venta" exact component ={ SolicitudVenta } />
+                    <Route path = "/proyectos/solicitud-venta/:action" exact component ={ SolicitudVentaForm } />
 
-                <Route path = "/catalogos/areas" exact component ={ Areas } />
-                <Route path = "/catalogos/partidas" exact component ={ Partidas } />
-                <Route path = "/catalogos/unidades" exact component ={ Unidades } />
-                <Route path = "/catalogos/tipos-contratos" exact component ={ TiposContratos } />
-                <Route path = "/catalogos/bancos" exact component ={ Bancos } />
-                <Route path = "/catalogos/precio-diseno" exact component ={ PrecioDiseño } />
-                <Route path = "/catalogos/precio-diseno/:action" exact component ={ PrecioDiseñoForm } />
-                <Route path = "/catalogos/partidas-diseño" exact component ={ PartidasDiseño } />
-                <Route path = "/catalogos/partidas-diseño/:action" exact component ={ PartidasDiseñoForm } />
-                <Route path = "/catalogos/adjuntos" exact component ={ AdjuntosEmpresa } />
-                <Route path = "/catalogos/adjuntos/:action" exact component ={ AdjuntosEmpresaForm } />
-                <Route path = "/catalogos/tabulador" exact component ={ Diseño } />
-                <Route path = "/catalogos/origenes-leads" exact component = { OrigenesLeads } />
+                    {/* <Route path = "/proyectos/solicitud-venta" exact component ={ SolicitudVenta } /> */}
 
-                <Route path = "/reportes/contabilidad" exact component ={ Contabilidad } />
-                <Route path = "/reportes/reporte-ventas" exact component ={ ReporteVentas } />
-                <Route path = "/reportes/flujo-proyectos" exact component ={ FlujoProyectos } />
-                <Route path = "/reportes/flujo-departamentos" exact component ={ FlujoDepartamentos } />
-                <Route path = "/reportes/estado-resultados" exact component ={ EstadoResultados } />
-                
-                <Route path = "/mi-perfil" exact component ={ AccountSettings } />
-                <Route path = "/mi-calendario" exact component ={ Calendario } />
-                <Route path = "/mis-notificaciones" exact component ={ Notificaciones } />
+                    <Route path = "/proyectos/herramientas" exact component ={ Herramienta } />
+                    <Route path = "/proyectos/herramientas/:action" exact component ={ HerramientaForm } />
 
-                <Route path = "/rh/nomina-obras" exact component ={ NominaObra } />  
-                <Route path = "/rh/nomina-obras/:action" exact component ={ NominaObraForm } />
-                <Route path = "/rh/nomina-obras/single/:id" exact component ={ NominaObraSingle } />
+                    // ANCHOR Routes for administracion
 
-                <Route path = "/rh/nomina-admin" exact component ={ NominaAdmin } />
-                <Route path = "/rh/nomina-admin/:action" exact component ={ NominaAdminForm } />
-                <Route path = "/rh/nomina-admin/single/:id" exact component ={ NominaAdminSingle } />
-                {/* <Route path = "/rh/empleados" exact component ={ Empleados } /> */}
-                <Route path = "/rh/empleados" exact component ={ Empleados } />
-                <Route path = "/rh/empleados/:action" exact component ={ EmpleadosForm } />
-                <Route path = "/rh/vacaciones" exact component ={ Vacaciones } />
+                    <Route path = "/administracion/egresos" exact component ={ Egresos } />
+                    <Route path = "/administracion/egresos/:action" exact component ={ EgresosForm } />
 
-                <Route path = "/rh/imss" exact component ={ Imss } />
-                <Route path = "/rh/imss/:action" exact component = { ImssForm } />
+                    <Route path = "/administracion/ingresos" exact component ={ Ingresos } />
+                    <Route path = "/administracion/ingresos/:action" exact component ={ IngresosForm } />
 
-                <Route path = "/rh/prestamos" exact component ={ Prestamos } />
-                <Route path = "/rh/prestamos/:action" exact component = { PrestamosForm } />
+                    {/* <Route path = "/administracion/contratos" exact component ={ Contratos } /> */}
+                    <Route path = "/administracion/contratos" exact component ={ Contratos } />
+                    <Route path = "/administracion/contratos/:action" exact component ={ ContratosForm } />
 
-                <Route path = "/calidad/calidad" exact component ={ Calidad } />
-                <Route path = "/calidad/calidad/:action" exact component = { CalidadForm } />
-                <Route path = "/mercadotecnia/material-empresas" exact component ={ MaterialEmpresa } />
-                <Route path = "/mercadotecnia/material-clientes" exact component ={ MaterialCliente} />
-                
-            </>
+                    <Route path = "/administracion/facturacion" exact component ={ Facturacion } />
+                    <Route path = "/administracion/flujos" exact component ={ Flujos } />
+
+                    <Route path = "/administracion/proveedores" exact component ={ Proveedores } />
+                    <Route path = "/administracion/proveedores/:action" exact component ={ ProveedoresForm } />
+
+                    <Route path = "/administracion/documentos" exact component ={ Documentos } />
+                    <Route path = "/administracion/documentos/:action" exact component ={ DocumentosForm } />
+
+                    // ANCHOR Routes for bancos
+
+                    <Route path = "/bancos/cuentas" exact component ={ Cuentas } />
+                    <Route path = "/bancos/cuentas/:action" exact component ={ CuentasForm } />
+                    <Route path = "/bancos/cuentas/details/:id" exact component ={ CuentaDetails } />
+
+                    {/* <Route path = "/bancos/estados-cuenta" exact component ={ EstadosCuenta } /> */}
+                    <Route path = "/bancos/estados-cuenta" exact component ={ EstadosCuenta } />
+                    <Route path = "/bancos/estados-cuenta/:action" exact component ={ EstadosCuentaForm } />
+
+                    <Route path = "/bancos/traspasos" exact component ={ Traspasos } />
+                    <Route path = "/bancos/traspasos/:action" exact component ={ TraspasosForm } />
+
+                    // ANCHOR Routes for leads
+
+                    <Route path = "/leads/leads" exact component ={ Leads } />
+                    <Route path = "/leads/leads/:action" exact component ={ LeadsForm } />
+
+                    <Route path = "/leads/crm" exact component = { Crm } />
+                    <Route path = "/leads/crm/add/telefono" exact component = { LeadTelefono } />
+                    <Route path = "/leads/crm/add/llamada-salida" exact component = { LeadLlamadaSalida } />
+                    <Route path = "/leads/crm/cierre/llamada-cierre" exact component = { LeadLlamadaCierre } />
+
+                    <Route path = "/leads/crm/info/info" exact component = { LeadInfo } />
+                    <Route path = "/leads/crm/contratar" exact component = { LeadContratar } />
+
+                    <Route path = "/leads/prospectos" exact component = { Prospectos } />
+                    <Route path = "/leads/prospectos/:action" exact component = { ProspectosForm } />
+
+                    <Route path = "/leads/clientes" exact component = { Clientes } />
+                    <Route path = "/leads/clientes/:action" exact component = { ClientesForm } />
+
+                    // ANCHOR Routes for normas
+
+                    <Route path = "/normas" exact component ={ Normas } />
+
+                    // ANCHOR Routes for catálogos
+
+                    <Route path = "/catalogos/areas" exact component ={ Areas } />
+                    <Route path = "/catalogos/partidas" exact component ={ Partidas } />
+                    <Route path = "/catalogos/unidades" exact component ={ Unidades } />
+                    <Route path = "/catalogos/tipos-contratos" exact component ={ TiposContratos } />
+                    <Route path = "/catalogos/bancos" exact component ={ Bancos } />
+                    
+                    <Route path = "/catalogos/precio-diseno" exact component ={ PrecioDiseño } />
+                    <Route path = "/catalogos/precio-diseno/:action" exact component ={ PrecioDiseñoForm } />
+                    
+                    <Route path = "/catalogos/partidas-diseño" exact component ={ PartidasDiseño } />
+                    <Route path = "/catalogos/partidas-diseño/:action" exact component ={ PartidasDiseñoForm } />
+                    
+                    <Route path = "/catalogos/adjuntos" exact component ={ AdjuntosEmpresa } />
+                    <Route path = "/catalogos/adjuntos/:action" exact component ={ AdjuntosEmpresaForm } />
+                    
+                    <Route path = "/catalogos/tabulador" exact component ={ Diseño } />
+                    <Route path = "/catalogos/origenes-leads" exact component = { OrigenesLeads } />
+
+                    // ANCHOR Routes for reportes
+
+                    <Route path = "/reportes/contabilidad" exact component ={ Contabilidad } />
+                    <Route path = "/reportes/reporte-ventas" exact component ={ ReporteVentas } />
+                    <Route path = "/reportes/flujo-proyectos" exact component ={ FlujoProyectos } />
+                    <Route path = "/reportes/flujo-departamentos" exact component ={ FlujoDepartamentos } />
+                    <Route path = "/reportes/estado-resultados" exact component ={ EstadoResultados } />
+
+                    // ANCHOR Routes for RH
+
+                    <Route path = "/rh/nomina-obras" exact component ={ NominaObra } />  
+                    <Route path = "/rh/nomina-obras/:action" exact component ={ NominaObraForm } />
+                    <Route path = "/rh/nomina-obras/single/:id" exact component ={ NominaObraSingle } />
+
+                    <Route path = "/rh/nomina-admin" exact component ={ NominaAdmin } />
+                    <Route path = "/rh/nomina-admin/:action" exact component ={ NominaAdminForm } />
+                    <Route path = "/rh/nomina-admin/single/:id" exact component ={ NominaAdminSingle } />
+                    
+                    {/* <Route path = "/rh/empleados" exact component ={ Empleados } /> */}
+                    <Route path = "/rh/empleados" exact component ={ Empleados } />
+                    <Route path = "/rh/empleados/:action" exact component ={ EmpleadosForm } />
+                    
+                    <Route path = "/rh/vacaciones" exact component ={ Vacaciones } />
+
+                    <Route path = "/rh/imss" exact component ={ Imss } />
+                    <Route path = "/rh/imss/:action" exact component = { ImssForm } />
+
+                    <Route path = "/rh/prestamos" exact component ={ Prestamos } />
+                    <Route path = "/rh/prestamos/:action" exact component = { PrestamosForm } />
+
+                    // ANCHOR Routes for calidad
+
+                    <Route path = "/calidad/calidad" exact component ={ Calidad } />
+                    <Route path = "/calidad/calidad/:action" exact component = { CalidadForm } />
+
+                    // ANCHOR Routes for mercadotécnia
+                    
+                    <Route path = "/mercadotecnia/material-empresas" exact component ={ MaterialEmpresa } />
+                    <Route path = "/mercadotecnia/material-clientes" exact component ={ MaterialCliente} />
+
+                    // ANCHOR Routes for user settings
+
+                    <Route path = "/mi-perfil" exact component ={ AccountSettings } />
+                    <Route path = "/mi-calendario" exact component ={ Calendario } />
+                    <Route path = "/mis-notificaciones" exact component ={ Notificaciones } />
+
+                    // ANCHOR NOT FOUND ROUTE
+                    <Route path = "*" component = { NotFound } />
+                    
+                </Switch>
+
+            </div>
         )
     }
 }
