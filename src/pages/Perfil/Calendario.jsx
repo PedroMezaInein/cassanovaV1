@@ -12,7 +12,7 @@ import { errorAlert, forbiddenAccessAlert, waitAlert, doneAlert, questionAlert }
 import { countDaysWithoutWeekend } from '../../functions/functions';
 import { URL_DEV } from '../../constants';
 import bootstrapPlugin from '@fullcalendar/bootstrap'
-import { DropdownButton, Dropdown, Card, OverlayTrigger, Tooltip, Nav } from 'react-bootstrap'
+import { DropdownButton, Dropdown, Card, OverlayTrigger, Tooltip, Nav, Tab } from 'react-bootstrap'
 import moment from 'moment'
 import AVATAR from '../../assets/images/icons/avatar.png'
 import Swal from 'sweetalert2'
@@ -21,6 +21,7 @@ import { Button } from '../../components/form-components'
 
 const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
 const dias = ['DOMINGO', 'LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO']
+const $ = require('jquery');
 class Calendario extends Component {
 
     state = {
@@ -371,7 +372,7 @@ class Calendario extends Component {
                 })
                 if (bandera === false)
                     bandera = 'estacionamiento'
-                if(activeKey !== '')
+                if (activeKey !== '')
                     bandera = activeKey
                 console.log(bandera, 'bandera')
                 this.setState({
@@ -396,7 +397,7 @@ class Calendario extends Component {
         })
     }
 
-    solicitarCajon = async() => {
+    solicitarCajon = async () => {
         const { access_token } = this.props.authUser
         const { date } = this.state
         waitAlert()
@@ -420,7 +421,7 @@ class Calendario extends Component {
         })
     }
 
-    deleteCajon = async(id) => {
+    deleteCajon = async (id) => {
         const { access_token } = this.props.authUser
         const { date } = this.state
         waitAlert()
@@ -594,7 +595,7 @@ class Calendario extends Component {
     }
 
     setDateText = date => {
-        
+
         if (date !== '') {
             let fecha = moment(date)
             return dias[fecha.format('e')] + ' ' + parseInt(fecha.format('DD')) + ' de ' + meses[fecha.format('M') - 1] + ' del ' + fecha.format('YYYY')
@@ -656,7 +657,7 @@ class Calendario extends Component {
                 return this.prinEstacionamiento()
                 break
             default:
-                return ''
+                return <></>
                 break;
         }
     }
@@ -782,25 +783,25 @@ class Calendario extends Component {
             <>
                 {
                     this.isActiveSolicitarButton() ?
-                        <div className = 'd-flex justify-content-end mb-4'>
-                            <Button icon = '' className = "btn btn-icon btn-xs w-auto p-3 btn-light-info mr-2 mt-2"
-                                onClick = { (e) => { questionAlert('¿ESTÁS SEGURO?', `PEDIRÁS EL CAJÓN DE ESTACIONAMIENTO EL DÍA ${this.setDateText()}`, () => this.solicitarCajon() ) }} 
-                                only_icon = "far fa-calendar-check icon-15px mr-2" text = 'SOLICITAR ESPACIO'/>
+                        <div className='d-flex justify-content-end mb-4'>
+                            <Button icon='' className="btn btn-icon btn-xs w-auto p-3 btn-light-info mr-2 mt-2"
+                                onClick={(e) => { questionAlert('¿ESTÁS SEGURO?', `PEDIRÁS EL CAJÓN DE ESTACIONAMIENTO EL DÍA ${this.setDateText()}`, () => this.solicitarCajon()) }}
+                                only_icon="far fa-calendar-check icon-15px mr-2" text='SOLICITAR ESPACIO' />
                         </div>
-                    : ''
+                        : ''
                 }
                 <div className='row mx-0 justify-content-center '>
                     {
                         eventos.estacionamiento.length === 0 ?
-                            <div className = 'col-md-6'>
+                            <div className='col-md-6'>
                                 <EmptyParkSlot />
                             </div>
-                        : ''
+                            : ''
                     }
                     {
                         eventos.estacionamiento.map((auto, key) => {
                             return (
-                                <div key = { key } className={`col-md-${size}`}>
+                                <div key={key} className={`col-md-${size}`}>
                                     <div className='row mx-0 h-100 justify-content-center border' >
                                         <div className='col-10 border position-relative'>
                                             {
@@ -808,15 +809,17 @@ class Calendario extends Component {
                                                     auto.empleado ?
                                                         auto.empleado.usuario ?
                                                             auto.empleado.usuario.id === user.id ?
-                                                                <div className = 'position-absolute button-up' 
-                                                                    onClick = { (e) => { e.preventDefault(); 
-                                                                        questionAlert('¿ESTÁS SEGURO?', `YA NO TENDRÁS EL CAJÓN PARA EL DÍA ${this.setDateText()}`, () => this.deleteCajon(auto.id) )} }>
+                                                                <div className='position-absolute button-up'
+                                                                    onClick={(e) => {
+                                                                        e.preventDefault();
+                                                                        questionAlert('¿ESTÁS SEGURO?', `YA NO TENDRÁS EL CAJÓN PARA EL DÍA ${this.setDateText()}`, () => this.deleteCajon(auto.id))
+                                                                    }}>
                                                                     <i className="fa fa-times text-danger"></i>
                                                                 </div>
+                                                                : ''
                                                             : ''
                                                         : ''
                                                     : ''
-                                                : ''
                                             }
                                             {
                                                 (key + 1) % 2 === 1 ?
@@ -829,9 +832,9 @@ class Calendario extends Component {
                                                         auto.empleado ?
                                                             auto.empleado.usuario ?
                                                                 auto.empleado.usuario.name
+                                                                : ''
                                                             : ''
                                                         : ''
-                                                    : ''
                                                 }
                                             </div>
                                         </div>
@@ -849,17 +852,17 @@ class Calendario extends Component {
         const { eventos } = this.state
         const { user } = this.props.authUser
         let bandera = false
-        if(eventos.estacionamiento)
-            if(eventos.estacionamiento.length < 2 && eventos.estacionamiento.length >= 0){
-                eventos.estacionamiento.map( (auto) => {
-                    if(auto.empleado)
-                        if(auto.empleado.usuario)
-                            if(auto.empleado.usuario.id.toString() === user.id.toString() )
+        if (eventos.estacionamiento)
+            if (eventos.estacionamiento.length < 2 && eventos.estacionamiento.length >= 0) {
+                eventos.estacionamiento.map((auto) => {
+                    if (auto.empleado)
+                        if (auto.empleado.usuario)
+                            if (auto.empleado.usuario.id.toString() === user.id.toString())
                                 bandera = true
                 })
-            }else
+            } else
                 bandera = true
-        if(bandera)
+        if (bandera)
             return false
         return true
     }
@@ -868,100 +871,147 @@ class Calendario extends Component {
         const { events, form, title, formeditado, modal, modal_status, estatus, disponibles, disabledDates, modal_date, date, eventos, activeKey } = this.state
         return (
             <Layout active='rh'  {...this.props}>
-                <Card className="card-custom">
-                    <Card.Header>
-                        <div className="card-title">
-                            <h3 className="card-label">Calendario</h3>
-                        </div>
-                        <div className="card-toolbar">
-                            {
-                                disponibles > 0 ?
-                                    <DropdownButton
-                                        title={
-                                            <i className="ki ki-bold-more-ver p-0"></i>
-                                        }
-                                        id={`dropdown-button-drop-left`}
-                                        drop={'left'}
-                                    >
-                                        <Dropdown.Item onClick={this.openModal}>Solicitar vacaciones</Dropdown.Item>
-                                        <Dropdown.Item onClick={this.openModalEstatus}>Estatus de vacaciones</Dropdown.Item>
-                                    </DropdownButton>
-                                    : ''
-                            }
-                        </div>
-                    </Card.Header>
-                    <Modal title={title} show={modal} handleClose={this.handleClose} size="lg">
-                        <SolicitarVacacionesForm
-                            formeditado={formeditado}
-                            form={form}
-                            onChange={this.onChange}
-                            disabledDates={disabledDates}
-                            onSubmit={(e) => { e.preventDefault(); waitAlert(); this.askVacationAxios() }}
-                        />
-                    </Modal>
-                    <Modal title={title} show={modal_status} handleClose={this.handleCloseEstatus}>
-                        <EstatusForm
-                            formeditado={formeditado}
-                            form={form}
-                            onChange={this.onChange}
-                            estatus={estatus}
-                        />
-                    </Modal>
-                    <Modal size='lg' title={this.setDateText(date)} show={modal_date} handleClose={this.handleCloseDate}>
-                        {
-                            eventos !== '' ?
-                                <>
+                <Tab.Container defaultActiveKey="calendario_citas" className="p-5">
+                    <Card className="card-custom">
+                        <Card.Header>
+                            <div className="d-flex align-items-center">
+                                <Nav className="navi navi-bold navi-hover navi-active navi-link-rounded d-inline-flex d-flex justify-content-center navi-info navi-accent">
+                                    <Nav.Item className="navi-item mr-3">
+                                        <Nav.Link className="navi-link px-2" eventKey="calendario_citas" style={{ display: '-webkit-box' }}>
+                                            <span className="navi-icon mx-2">
+                                                <i className="far fa-calendar-check"></i>
+                                            </span>
+                                            <div className="navi-text">
+                                                <span className="d-block font-weight-bolder">Citas y cumpleaños</span>
+                                            </div>
+                                        </Nav.Link>
+                                    </Nav.Item>
+                                    <Nav.Item className="navi-item mr-3">
+                                        <Nav.Link className="navi-link px-2" eventKey="calendario_estacionamiento" style={{ display: '-webkit-box' }}>
+                                            <span className="navi-icon mx-2">
+                                                <i className="fas fa-car-alt"></i>
+                                            </span>
+                                            <div className="navi-text">
+                                                <span className="d-block font-weight-bolder">Estacionamiento</span>
+                                            </div>
+                                        </Nav.Link>
+                                    </Nav.Item>
+                                </Nav>
+                            </div>
+                            <div className="card-toolbar">
+                                {
+                                    disponibles > 0 ?
+                                        <DropdownButton
+                                            title={
+                                                <i className="ki ki-bold-more-ver p-0"></i>
+                                            }
+                                            id={`dropdown-button-drop-left`}
+                                            drop={'left'}
+                                        >
+                                            <Dropdown.Item onClick={this.openModal}>Solicitar vacaciones</Dropdown.Item>
+                                            <Dropdown.Item onClick={this.openModalEstatus}>Estatus de vacaciones</Dropdown.Item>
+                                        </DropdownButton>
+                                        : ''
+                                }
+                            </div>
+                        </Card.Header>
+                        <Card.Body>
+                            <Tab.Content>
+                                <Tab.Pane eventKey="calendario_citas">
+                                    <div className="mb-3">
+                                        <i className="fa fa-genderless text-info mr-2"></i>
+                                        <span className=" font-weight-bolder font-size-lg">Vacaciones disponibles:</span>
+                                        <span className="label label-rounded label-light-info font-weight-bolder ml-2">{disponibles}</span>
+                                        <span className=" font-weight-bolder font-size-lg ml-2">días.</span>
+                                    </div>
+                                    <FullCalendar
+                                        locale={esLocale}
+                                        plugins={[dayGridPlugin, interactionPlugin, bootstrapPlugin]}
+                                        initialView="dayGridMonth"
+                                        weekends={true}
+                                        events={events}
+                                        dateClick={this.handleDateClick}
+                                        eventContent={this.renderEventContent}
+                                        firstDay={1}
+                                        themeSystem='bootstrap'
+                                    />
+                                </Tab.Pane>
+                                <Tab.Pane eventKey="calendario_estacionamiento">
+                                    <div className="mb-3">
+                                        <i className="fa fa-genderless text-info mr-2"></i>
+                                        <span className=" font-weight-bolder font-size-lg">Vacaciones disponibles:</span>
+                                        <span className="label label-rounded label-light-info font-weight-bolder ml-2">{disponibles}</span>
+                                        <span className=" font-weight-bolder font-size-lg ml-2">días.</span>
+                                    </div>
+                                    {/* <FullCalendar
+                                        locale={esLocale}
+                                        plugins={[dayGridPlugin, interactionPlugin, bootstrapPlugin]}
+                                        initialView="dayGridMonth"
+                                        weekends={true}
+                                        events={events}
+                                        dateClick={this.handleDateClick}
+                                        eventContent={this.renderEventContent}
+                                        firstDay={1}
+                                        themeSystem='bootstrap'
+                                    /> */}
+                                </Tab.Pane>
+                            </Tab.Content>
+                        </Card.Body>
+                    </Card>
+                </Tab.Container>
+                <Modal title={title} show={modal} handleClose={this.handleClose} size="lg">
+                    <SolicitarVacacionesForm
+                        formeditado={formeditado}
+                        form={form}
+                        onChange={this.onChange}
+                        disabledDates={disabledDates}
+                        onSubmit={(e) => { e.preventDefault(); waitAlert(); this.askVacationAxios() }}
+                    />
+                </Modal>
+                <Modal title={title} show={modal_status} handleClose={this.handleCloseEstatus}>
+                    <EstatusForm
+                        formeditado={formeditado}
+                        form={form}
+                        onChange={this.onChange}
+                        estatus={estatus}
+                    />
+                </Modal>
+                <Modal size='lg' title={this.setDateText(date)} show={modal_date} handleClose={this.handleCloseDate}>
+                    {
+                        eventos !== '' ?
+                            <>
+                                {
+                                    eventos.feriados.length ?
+                                        eventos.feriados.map((feriado, key) => {
+                                            return (
+                                                <div className='px-3 mx-3 my-2 py-2 feriados text-center' key={key}>
+                                                    ¡Feliz {feriado.texto}!
+                                                </div>
+                                            )
+                                        })
+                                        : ''
+                                }
+                                <Nav className='nav nav-pills nav-pills-md nav-light-primary nav-bolder justify-content-center my-4'>
                                     {
-                                        eventos.feriados.length ?
-                                            eventos.feriados.map((feriado, key) => {
+                                        Object.keys(eventos).map((element, key) => {
+                                            if ((eventos[element].length || element === 'estacionamiento') && element !== 'feriados') {
                                                 return (
-                                                    <div className='px-3 mx-3 my-2 py-2 feriados text-center' key={key}>
-                                                        ¡Feliz {feriado.texto}!
-                                                    </div>
+                                                    <Nav.Item className='nav-item' key={key}>
+                                                        <Nav.Link eventKey={element} className={activeKey === element ? "nav-link py-2 px-4 text-primary active" : ' nav-link py-2 px-4'} onClick={(e) => { e.preventDefault(); this.changeActiveKey(element) }} >
+                                                            {this.setNavTitle(element)}
+                                                        </Nav.Link>
+                                                    </Nav.Item>
                                                 )
-                                            })
-                                            : ''
+                                            }
+                                        })
                                     }
-                                    <Nav className='nav nav-pills nav-pills-md nav-light-primary nav-bolder justify-content-center my-4'>
-                                        {
-                                            Object.keys(eventos).map((element, key) => {
-                                                if ((eventos[element].length || element === 'estacionamiento') && element !== 'feriados') {
-                                                    return (
-                                                        <Nav.Item className='nav-item' key={key}>
-                                                            <Nav.Link eventKey={element} className={activeKey === element ? "nav-link py-2 px-4 text-primary active" : ' nav-link py-2 px-4'} onClick={(e) => { e.preventDefault(); this.changeActiveKey(element) }} >
-                                                                {this.setNavTitle(element)}
-                                                            </Nav.Link>
-                                                        </Nav.Item>
-                                                    )
-                                                }
-                                            })
-                                        }
-                                    </Nav>
-                                    {this.printModal()}
-                                </>
-                                : ''
-                        }
-                    </Modal>
-                    <Card.Body>
-                        <div className="mb-3">
-                            <i className="fa fa-genderless text-info mr-2"></i>
-                            <span className=" font-weight-bolder font-size-lg">Vacaciones disponibles:</span>
-                            <span className="label label-rounded label-light-info font-weight-bolder ml-2">{disponibles}</span>
-                            <span className=" font-weight-bolder font-size-lg ml-2">días.</span>
-                        </div>
-                        <FullCalendar
-                            locale={esLocale}
-                            plugins={[dayGridPlugin, interactionPlugin, bootstrapPlugin]}
-                            initialView="dayGridMonth"
-                            weekends={true}
-                            events={events}
-                            dateClick={this.handleDateClick}
-                            eventContent={this.renderEventContent}
-                            firstDay={1}
-                            themeSystem='bootstrap'
-                        />
-                    </Card.Body>
-                </Card>
+                                </Nav>
+                                {this.printModal()}
+                            </>
+                            : ''
+                    }
+                </Modal>
+
             </Layout>
         );
     }
