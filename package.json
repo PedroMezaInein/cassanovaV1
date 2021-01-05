@@ -134,6 +134,7 @@
       "react-lottie": "^1.2.3",
       "react-modal-video": "^1.2.6",
       "react-moment": "^0.9.7",
+      "react-multi-date-picker": "^2.0.0",
       "react-number-format": "^4.4.1",
       "react-perfect-scrollbar": "^1.5.8",
       "react-portal": "4.2.0",
