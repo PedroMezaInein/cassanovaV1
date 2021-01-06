@@ -126,7 +126,7 @@ class AccesosForm extends Component {
                             value={form.password}
                             placeholder="CONTRASEÑA"
                             onChange={onChange}
-                            iconclass={"far fa-user"}
+                            iconclass={"fab fa-diaspora"}
                             messageinc="Incorrecto. Ingresa la contraseña."
                         />
                     </div>
