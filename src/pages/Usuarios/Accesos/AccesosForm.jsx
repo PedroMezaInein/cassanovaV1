@@ -6,7 +6,7 @@ import axios from 'axios'
 import { URL_DEV } from '../../../constants'
 import { AccesosForm as AccesosFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
-import { errorAlert, forbiddenAccessAlert } from '../../../functions/alert'
+import { errorAlert, forbiddenAccessAlert, waitAlert } from '../../../functions/alert'
 import { setSelectOptions } from '../../../functions/setters'
 
 class AccesosForm extends Component {
@@ -14,18 +14,22 @@ class AccesosForm extends Component {
     state = {
         form: {
             plataforma: '',
-            link: '',
-            user: '',
-            password: '',
+            url: '',
+            usuario: '',
+            contraseña: '',
             usuarios: [],
-            email: '',
-            telefono: '',
+            correo: '',
+            numero: '',
             empresas: [],
             descripcion: '',
         },
         options: {
             usuarios: [],
             empresas: [],
+        },
+        editables: {
+            usuarios: [],
+            empresas: []
         }
     }
     componentDidMount() {
@@ -49,15 +53,15 @@ class AccesosForm extends Component {
                 if (state) {
                     if (state.acceso) {
                         const { acceso } = state
-                        const { form, options } = this.state
+                        const { form, options, editables } = this.state
                         form.plataforma = acceso.plataforma
-                        form.link = acceso.link
-                        form.user = acceso.user
-                        form.password = acceso.password
-                        form.usuarios = acceso.usuarios
-                        form.email = acceso.email
-                        form.telefono = acceso.telefono
-                        form.empresas = acceso.empresas
+                        form.url = acceso.url
+                        form.usuario = acceso.usuario
+                        form.contraseña = acceso.contraseña
+                        editables.usuarios = acceso.usuarios
+                        form.correo = acceso.correo
+                        form.numero = acceso.numero
+                        editables.empresas = acceso.empresas
                         form.descripcion = acceso.descripcion
                         this.setState({
                             ...this.state,
@@ -65,7 +69,8 @@ class AccesosForm extends Component {
                             acceso: acceso,
                             form,
                             options,
-                            formeditado: 1
+                            formeditado: 1,
+                            editables
                         })
                     }
                     else
@@ -80,18 +85,64 @@ class AccesosForm extends Component {
             history.push('/')
         this.getOptionsAxios()
     }
+
     async getOptionsAxios() {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'accesos/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 Swal.close()
                 const { usuarios, empresas } = response.data
-                const { options } = this.state
+                const { options, editables, form } = this.state
                 options['usuarios'] = setSelectOptions(usuarios, 'name', 'id')
                 options['empresas'] = setSelectOptions(empresas, 'name', 'id')
+                let auxArray = []
+                options.usuarios.map((element)=>{
+                    let bandera = false
+                    editables.usuarios.map((usuario)=>{
+                        if(element.value.toString() === usuario.id.toString())
+                            bandera = usuario
+                    })
+                    if(bandera !== false){
+                        form.usuarios.push(
+                            {
+                                value: bandera.id.toString(),
+                                target: bandera.name,
+                                text: bandera.name
+                            }
+                        )
+                    }
+                    else
+                        auxArray.push(element)
+                })
+                console.log(editables, 'editables')
+                if(editables.usuarios.length)
+                    options.usuarios = auxArray
+                auxArray = []
+                options.empresas.map((element)=>{
+                    let bandera = false
+                    editables.empresas.map((empresa)=>{
+                        if(element.value.toString() === empresa.id.toString())
+                            bandera = empresa
+                    })
+                    if(bandera !== false){
+                        form.empresas.push(
+                            {
+                                value: bandera.id.toString(),
+                                target: bandera.name,
+                                text: bandera.name
+                            }
+                        )
+                    }
+                    else
+                        auxArray.push(element)
+                })
+                if(editables.empresas.length)
+                    options.empresas = auxArray
                 this.setState({
                     ...this.state,
-                    options
+                    options,
+                    editables,
+                    form
                 })
             },
             (error) => {
@@ -107,6 +158,49 @@ class AccesosForm extends Component {
             console.log(error, 'error')
         })
     }
+
+    onSubmit = async() => {
+        waitAlert()
+        const { form } = this.state
+        const { access_token } = this.props.authUser
+        await axios.post(URL_DEV + 'accesos', form, { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                Swal.close()
+                const { history } = this.props
+                history.push({pathname: '/usuarios/accesos'});
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) { forbiddenAccessAlert() } 
+                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    onSubmitEdit = async() => {
+        waitAlert()
+        const { form, acceso } = this.state
+        const { access_token } = this.props.authUser
+        await axios.put(URL_DEV + 'accesos/'+acceso.id, form, { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                Swal.close()
+                const { history } = this.props
+                history.push({pathname: '/usuarios/accesos'});
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) { forbiddenAccessAlert() } 
+                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     deleteOption = (option, arreglo) => {
         const { form, options } = this.state
         let aux = []
@@ -124,6 +218,7 @@ class AccesosForm extends Component {
             form
         })
     }
+
     onChange = e => {
         const { name, value } = e.target
         const { form } = this.state
@@ -133,6 +228,7 @@ class AccesosForm extends Component {
             form
         })
     }
+
     onChangeAndAdd = (e, arreglo) => {
         const { value } = e.target
         const { options, form } = this.state
@@ -153,6 +249,7 @@ class AccesosForm extends Component {
             options
         })
     }
+
     onChangeEmpresa = empresa => {
         const { options, form } = this.state
         let auxEmpresa = form.empresas
@@ -173,6 +270,7 @@ class AccesosForm extends Component {
             options
         })
     }
+
     updateEmpresa = empresa => {
         const { form, options } = this.state
         let aux = []
@@ -191,6 +289,7 @@ class AccesosForm extends Component {
             form
         })
     }
+
     render() {
         const { form, title, formeditado, options } = this.state
         return (
@@ -202,16 +301,10 @@ class AccesosForm extends Component {
                         </div>
                     </Card.Header>
                     <Card.Body>
-                        <AccesosFormulario
-                            form={form}
-                            formeditado={formeditado}
-                            options={options}
-                            onChange={this.onChange}
-                            onChangeAndAdd={this.onChangeAndAdd}
-                            deleteOption={this.deleteOption}
-                            onChangeEmpresa={this.onChangeEmpresa}
-                            updateEmpresa={this.updateEmpresa}
-                        />
+                        <AccesosFormulario form = { form } formeditado = { formeditado } options = { options } 
+                            onChange = { this.onChange } onChangeAndAdd = { this.onChangeAndAdd } deleteOption = { this.deleteOption }
+                            onChangeEmpresa = { this.onChangeEmpresa } updateEmpresa = { this.updateEmpresa } 
+                            onSubmit = { title === 'Editar acceso' ? this.onSubmitEdit : this.onSubmit } />
                     </Card.Body>
                 </Card>
             </Layout>

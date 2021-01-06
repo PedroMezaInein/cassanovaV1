@@ -69,125 +69,72 @@ class AccesosForm extends Component {
             >
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
-                        <TagSelectSearch
-                            placeholder="SELECCIONA LA EMPRESA"
-                            options={this.transformarOptions(options.empresas)}
-                            defaultvalue={this.transformarOptions(form.empresas)}
-                            onChange={this.nuevoUpdateEmpresa}
-                            iconclass={"far fa-building"}
-                            requirevalidation={1}
-                            messageinc="Incorrecto. Selecciona la(s) empresas."
-                        />
+                        <TagSelectSearch placeholder = "SELECCIONA LA EMPRESA"
+                            options = { this.transformarOptions(options.empresas) }
+                            defaultvalue = { this.transformarOptions(form.empresas) }
+                            onChange = { this.nuevoUpdateEmpresa } iconclass = "far fa-building"
+                            messageinc = "Incorrecto. Selecciona la(s) empresas." />
                     </div>
                     <div className="col-md-4">
-                        <Input
-                            requirevalidation={1}
-                            formeditado={formeditado}
-                            name="plataforma"
-                            value={form.plataforma}
-                            placeholder="NOMBRE DE LA PLATAFORMA"
-                            onChange={onChange}
-                            iconclass={"flaticon2-website"}
+                        <Input requirevalidation = { 1 } formeditado = { formeditado } name = "plataforma"
+                            value = { form.plataforma } placeholder = "NOMBRE DE LA PLATAFORMA"
+                            onChange = { onChange } iconclass = "flaticon2-website"
                             messageinc="Incorrecto. Ingresa el nombre de la plataforma."
-                        />
+                            /* letterCase = { false } */ />
                     </div>
                     <div className="col-md-4">
-                        <Input
-                            requirevalidation={1}
-                            formeditado={formeditado}
-                            name="link"
-                            value={form.link}
-                            placeholder="LINK DE LA PLATAFORMA"
-                            onChange={onChange}
-                            iconclass={"fas fa-share-square"}
-                            messageinc="Incorrecto. Ingresa el nombre del banco."
-                        />
+                        <Input requirevalidation = { 1 } formeditado = { formeditado } name = "url"
+                            value = { form.url } placeholder = "LINK DE LA PLATAFORMA" onChange = { onChange }
+                            iconclass = "fas fa-share-square" messageinc="Incorrecto. Ingresa el nombre del banco."
+                            letterCase = { false }/>
                     </div>
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
-                        <Input
-                            requirevalidation={1}
-                            formeditado={formeditado}
-                            name="user"
-                            value={form.user}
-                            placeholder="USUARIO"
-                            onChange={onChange}
-                            iconclass={"far fa-user"}
-                            messageinc="Incorrecto. Ingresa el usuario."
+                        <Input requirevalidation = { 1 } formeditado = { formeditado } name = "usuario"
+                            value = { form.usuario } placeholder = "USUARIO" onChange = { onChange } iconclass = "far fa-user"
+                            messageinc = "Incorrecto. Ingresa el usuario." letterCase = { false }
                         />
                     </div>
                     <div className="col-md-4">
-                        <Input
-                            requirevalidation={1}
-                            formeditado={formeditado}
-                            name="password"
-                            value={form.password}
-                            placeholder="CONTRASEÑA"
-                            onChange={onChange}
-                            iconclass={"far fa-user"}
-                            messageinc="Incorrecto. Ingresa la contraseña."
-                        />
+                        <Input formeditado = { formeditado } name = "contraseña" value = { form.contraseña }
+                            placeholder = "CONTRASEÑA" onChange = { onChange } iconclass = "far fa-user"
+                            messageinc = "Incorrecto. Ingresa la contraseña." letterCase = { false } 
+                            requirevalidation = { 1 } />
                     </div>
                     <div className="col-md-4">
-                        <TagSelectSearch
-                            placeholder="SELECCIONA LO(S) RESPONSABLE(S)"
-                            options={this.transformarOptions(options.usuarios)}
-                            defaultvalue={this.transformarOptions(form.usuarios)}
-                            onChange={this.nuevoUpdateUsuarios}
-                            requirevalidation={1}
-                            iconclass={"far fa-user"}
-                            messageinc="Incorrecto. Selecciona lo(s) responsable(s)"
-                        />
+                        <TagSelectSearch placeholder = "SELECCIONA LO(S) RESPONSABLE(S)"
+                            options = { this.transformarOptions(options.usuarios) }
+                            defaultvalue = { this.transformarOptions(form.usuarios) }
+                            onChange = { this.nuevoUpdateUsuarios }
+                            requirevalidation = { 1 } iconclass = "far fa-user"
+                            messageinc = "Incorrecto. Selecciona lo(s) responsable(s)" />
                     </div>
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
-                        <Input
-                            formeditado={formeditado}
-                            requirevalidation={1}
-                            placeholder="CORREO ELECTRÓNICO"
-                            value={form.email}
-                            name="email"
-                            onChange={onChange}
-                            iconclass={"far fa-envelope"}
-                            messageinc="Incorrecto. Ej. usuario@dominio.com"
-                            patterns={EMAIL}
+                        <Input formeditado = { formeditado } placeholder = "CORREO ELECTRÓNICO" value = { form.correo }
+                            name = "correo" onChange = { onChange } iconclass = "far fa-envelope"
+                            messageinc="Incorrecto. Ej. usuario@dominio.com" patterns = { EMAIL }
+                            letterCase = { false }
                         />
                     </div>
                     <div className="col-md-4">
-                        <InputPhone
-                            requirevalidation={1}
-                            thousandseparator={false}
-                            prefix={''}
-                            name="telefono"
-                            value={form.telefono}
-                            placeholder="TELÉFONO"
-                            onChange={onChange}
-                            iconclass={"fas fa-mobile-alt"}
-                            messageinc="Incorrecto. Ingresa el número de teléfono."
-                            patterns={TEL}
-                            formeditado={formeditado}
-                        />
+                        <InputPhone thousandseparator = { false } prefix = '' name = "numero" value = { form.numero }
+                            placeholder = "TELÉFONO" onChange = { onChange } iconclass = "fas fa-mobile-alt"
+                            messageinc="Incorrecto. Ingresa el número de teléfono." patterns = { TEL } 
+                            formeditado = { formeditado } />
                     </div>
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-12">
-                        <Input
-                            requirevalidation={0}
-                            formeditado={formeditado}
-                            rows="3"
-                            as="textarea"
-                            placeholder="DESCRIPCIÓN"
-                            name="descripcion"
-                            value={form.descripcion}
-                            onChange={onChange}
-                            style={{ paddingLeft: "10px" }}
-                            messageinc="Incorrecto. Ingresa la descripción."
-                        />
+                        <Input requirevalidation = { 0 } formeditado = { formeditado } rows = "3"
+                            as = "textarea" placeholder = "DESCRIPCIÓN" name = "descripcion"
+                            value = { form.descripcion } onChange = { onChange } style = { { paddingLeft: "10px" } }
+                            messageinc = "Incorrecto. Ingresa la descripción." />
                     </div>
                 </div>
                 <div className="card-footer py-3 pr-1">
