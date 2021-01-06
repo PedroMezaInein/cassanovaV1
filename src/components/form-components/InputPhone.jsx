@@ -95,7 +95,7 @@ class InputPhone extends Component {
                         allowEmptyFormatting
                         mask="_"
                         placeholder={placeholder}
-                        className={inputPhone ? " form-control is-valid " : " form-control is-invalid"}
+                        className={inputPhone ? " form-control is-valid sin_icono " : " form-control is-invalid sin_icono"}
                         {...props}
                     />
                 </div>
