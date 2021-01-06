@@ -294,7 +294,7 @@ class ProyectosForm extends Component {
                                 </div>
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">
-                                    <div className="col-md-10">
+                                    <div className="col-md-12">
                                         <TagInput
                                             tags={form.correos} 
                                             onChange={tagInputChange} 

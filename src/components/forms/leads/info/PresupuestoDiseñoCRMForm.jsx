@@ -376,8 +376,8 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                 <Button 
                                                     icon=''
                                                     className="btn btn-light-primary btn-sm mr-2"
-                                                    only_icon="far fa-save pr-0"
-                                                    tooltip={{ text: 'GUARDAR' }}
+                                                    only_icon="far fa-save pr-0 mr-2"
+                                                    text='GUARDAR'
                                                     onClick={
                                                         (e) => {
                                                             e.preventDefault();
@@ -388,8 +388,8 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                 <Button 
                                                     icon=''
                                                     className="btn btn-light-success btn-sm mr-2"
-                                                    only_icon="far fa-file-pdf pr-0"
-                                                    tooltip={{ text: 'GENERAR PDF' }}
+                                                    only_icon="far fa-file-pdf pr-0 mr-2"
+                                                    text='GENERAR PDF'
                                                     onClick={
                                                         (e) => {
                                                             e.preventDefault();
@@ -524,8 +524,8 @@ class PresupuestoDiseñoCRMForm extends Component {
                                         <Button 
                                             icon=''
                                             className="btn btn-light-primary btn-sm mr-2"
-                                            only_icon="far fa-save pr-0"
-                                            tooltip={{ text: 'GUARDAR' }}
+                                            only_icon="far fa-save pr-0 mr-2"
+                                            text='GUARDAR'
                                             onClick={
                                                 (e) => {
                                                     e.preventDefault();
@@ -536,8 +536,8 @@ class PresupuestoDiseñoCRMForm extends Component {
                                         <Button 
                                             icon=''
                                             className="btn btn-light-success btn-sm mr-2"
-                                            only_icon="far fa-file-pdf pr-0"
-                                            tooltip={{ text: 'GENERAR PDF' }}
+                                            only_icon="far fa-file-pdf pr-0 mr-2"
+                                            text='GENERAR PDF'
                                             onClick={
                                                 (e) => {
                                                     e.preventDefault();

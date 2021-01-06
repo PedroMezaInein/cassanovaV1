@@ -7,6 +7,8 @@ import { forbiddenAccessAlert, errorAlert, waitAlert, doneAlert } from '../../..
 import { save, deleteForm } from '../../../redux/reducers/formulario'
 import { Card } from 'react-bootstrap'
 import { PartidasDiseñoForm as PartidasDiseoFormulario } from '../../../components/forms'
+import Swal from 'sweetalert2'
+import { setOptions } from '../../../functions/setters'
 const $ = require('jquery');
 
 class PartidasDiseñoForm extends Component {
@@ -17,12 +19,29 @@ class PartidasDiseñoForm extends Component {
         title: 'Nueva partida',
         form: {
             nombre: '',
-            empresa:'inein'
+            empresa:'',
+            rubro: '',
+            partidas: []
         },
         data:{
             partidas:[],
         },
         formeditado: 0,
+        options:{
+            rubro:
+            [
+                {
+                    name: "ACABADOS E INSTALACIONES", value: "1", label: "ACABADOS E INSTALACIONES"
+                },
+                {
+                    name: "OBRA CIVIL", value: "2", label: "OBRA CIVIL"
+                },
+                {
+                    name: "MOBILIARIO", value: "3", label: "MOBILIARIO"
+                },
+            ],
+            empresas: [],
+        }
     }
 
     componentDidMount(){
@@ -70,6 +89,35 @@ class PartidasDiseñoForm extends Component {
         }
         if (!partida)
             history.push('/')
+            this.getOptionsAxios()
+    }
+    // Falta hacer el options
+    async getOptionsAxios() {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'contratos/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                Swal.close()
+                const { empresas } = response.data
+                const { options } = this.state
+                options.empresas = setOptions(empresas, 'name', 'id')
+                this.setState({
+                    ...this.state,
+                    options
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
     }
 
     async addPartidaDiseñoAxios() {
@@ -254,8 +302,22 @@ class PartidasDiseñoForm extends Component {
         deleteForm()
     }
 
+    tagInputChange = (nuevasPartidas) => {
+        const uppercased = nuevasPartidas.map(tipo => tipo.toUpperCase());
+        const { form } = this.state
+        let unico = {};
+        uppercased.forEach(function (i) {
+            if (!unico[i]) { unico[i] = true }
+        })
+        form.partidas = uppercased ? Object.keys(unico) : [];
+        this.setState({
+            form
+        })
+    }
+    
+
     render(){
-        const { title, form, formeditado} = this.state
+        const { title, form, formeditado, options} = this.state
         return (
             <Layout active = { 'catalogos' }  { ...this.props } >
                 <Card className="card-custom">
@@ -270,6 +332,8 @@ class PartidasDiseñoForm extends Component {
                             formeditado={formeditado}   
                             onSubmit = { this.onSubmit } 
                             onChange = { this.onChange }
+                            options = {options}
+                            tagInputChange={(e) => this.tagInputChange(e)}
                         />
                     </Card.Body>
                 </Card>
