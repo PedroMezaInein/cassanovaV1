@@ -76,6 +76,7 @@ import informacionGeneral from './leads/InformacionGeneral'
 import formLlamada from './leads/FormLlamada'
 import formWhatsapp from './leads/FormWhatsapp'
 import mensajePrincipal from './leads/MensajePrincipal'
+import accesosForm from './usuarios/AccesosForm'
 
 export const RegisterUserForm = registerUserForm
 export const EmpresaForm = empresaForm
@@ -155,3 +156,4 @@ export const InformacionGeneral = informacionGeneral
 export const FormLlamada = formLlamada
 export const FormWhatsap = formWhatsapp
 export const MensajePrincipal = mensajePrincipal
+export const AccesosForm = accesosForm

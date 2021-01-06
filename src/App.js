@@ -25,6 +25,9 @@ const EmpresasForm = Loader(() => import('./pages/Usuarios/Empresas/EmpresasForm
 const Usuarios = Loader(() => import('./pages/Usuarios/Usuarios/Usuarios') )
 const UsuariosForm = Loader(() => import('./pages/Usuarios/Usuarios/UsuariosForm') )
 
+const Accesos = Loader(() => import('./pages/Usuarios/Accesos/Accesos') )
+const AccesosForm = Loader(() => import('./pages/Usuarios/Accesos/AccesosForm') )
+
 const Normas = Loader(() => import('./pages/Normas') )
 
 const Leads = Loader(() => import('./pages/Leads/Leads/Leads') )
@@ -242,6 +245,9 @@ class App extends Component{
 
                     <Route path = "/usuarios/empresas" exact component ={ Empresas } />
                     <Route path = "/usuarios/empresas/:action" exact component ={ EmpresasForm } />
+
+                    <Route path = "/usuarios/accesos" exact component = { Accesos } />
+                    <Route path = "/usuarios/accesos/:action" exact component ={ AccesosForm } />
 
                     // ANCHOR Routes for presupuesto
 
