@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import ItemSlider from '../../../components/singles/ItemSlider'
 import { Tab, Nav, Col, Row, Card, Accordion, } from 'react-bootstrap'
 import { setSelectOptions } from '../../../functions/setters'
-import { waitAlert, questionAlert, errorAdjuntos, errorAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
+import { waitAlert, questionAlert, errorAdjuntos, errorAlert, forbiddenAccessAlert, doneAlert, deleteAlert } from '../../../functions/alert'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
 import { Nothing } from '../../../components/Lottie'
@@ -165,6 +165,66 @@ class MaterialCliente extends Component {
         this.setState({
             ...this.state,
             form
+        })
+    }
+
+    deleteFile = element => {
+        deleteAlert('DESEAS ELIMINAR EL ARCHIVO', '', () => this.deleteAdjuntoAxios(element.id, 'slider'))
+    }
+
+    deleteFileSubportafolio = element => {
+        deleteAlert('DESEAS ELIMINAR EL ARCHIVO', '', () => this.deleteAdjuntoAxios(element.id, 'subportafolio'))
+    }
+
+    deleteFileEjemplo = element => {
+        deleteAlert('DESEAS ELIMINAR EL ARCHIVO', '', () => this.deleteAdjuntoAxios(element.id, 'ejemplo'))
+    }
+
+    deleteFilePortada = element => {
+        deleteAlert('DESEAS ELIMINAR EL ARCHIVO', '', () => this.deleteAdjuntoAxios(element.id, 'portada'))
+    }
+
+    deleteAdjuntoAxios = async(id, tipo_adjunto) => {
+        const { access_token } = this.props.authUser
+        const { empresa, submenuactive } = this.state
+        await axios.delete(URL_DEV + 'mercadotecnia/material-clientes/' + empresa.id + '/adjunto/' + tipo_adjunto + '/' + id, 
+            { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { empresa, tipo } = response.data
+                const { form } = this.state
+                if(tipo_adjunto === 'slider'){
+                    form.adjuntos.slider.files = []
+                    empresa.adjuntos.map((adjunto, key) => {
+                        if(adjunto.pivot.tipo === tipo)
+                            form.adjuntos.slider.files.push(adjunto)
+                    })
+                }else{
+                    form.adjuntos[tipo].files = []
+                    empresa.tipos.map((element, key) => {
+                        if(element.id === submenuactive)
+                            element.adjuntos.map((adjunto)=>{
+                                if(adjunto.pivot.tipo === tipo)
+                                    form.adjuntos[tipo].files.push(adjunto)
+                            })
+                    })
+                }
+                
+                this.setState({
+                    ...this.state,
+                    form
+                })
+
+                this.getOptionsAxios()
+                doneAlert('Archivo eliminado con éxito.')
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) forbiddenAccessAlert()
+                else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
@@ -452,11 +512,9 @@ class MaterialCliente extends Component {
                                                         <div className="text-center font-weight-bolder mb-2">
                                                             {form.adjuntos.slider.placeholder}
                                                         </div>
-                                                        <ItemSlider
-                                                            item='slider'
-                                                            items={form.adjuntos.slider.files}
-                                                            handleChange={this.handleChange}
-                                                            multiple={true}
+                                                        <ItemSlider item = 'slider' items = { form.adjuntos.slider.files }
+                                                            handleChange = { this.handleChange } multiple = { true }
+                                                            deleteFile = { this.deleteFile }
                                                         />
                                                     </div>
                                                 </div>
@@ -468,33 +526,27 @@ class MaterialCliente extends Component {
                                                                 <div className="text-center font-weight-bolder mb-2">
                                                                     {form.adjuntos.subportafolio.placeholder}
                                                                 </div>
-                                                                <ItemSlider
-                                                                    item='subportafolio'
-                                                                    items={form.adjuntos.subportafolio.files}
-                                                                    handleChange={this.handleChange}
-                                                                    multiple={true}
+                                                                <ItemSlider item='subportafolio' items = { form.adjuntos.subportafolio.files }
+                                                                    handleChange = { this.handleChange } multiple = { true }
+                                                                    deleteFile = { this.deleteFileSubportafolio }
                                                                 />
                                                             </div>
                                                             <div className="col-md-6">
                                                                 <div className="text-center font-weight-bolder mb-2">
                                                                     {form.adjuntos.ejemplo.placeholder}
                                                                 </div>
-                                                                <ItemSlider
-                                                                    item='ejemplo'
-                                                                    items={form.adjuntos.ejemplo.files}
-                                                                    handleChange={this.handleChange}
-                                                                    multiple={true}
+                                                                <ItemSlider item = 'ejemplo' items = { form.adjuntos.ejemplo.files }
+                                                                    handleChange = { this.handleChange } multiple = { true }
+                                                                    deleteFile = { this.deleteFileEjemplo }
                                                                 />
                                                             </div>
                                                             <div className="col-md-6">
                                                                 <div className="text-center font-weight-bolder mb-2">
                                                                     {form.adjuntos.portada.placeholder}
                                                                 </div>
-                                                                <ItemSlider
-                                                                    item='portada'
-                                                                    items={form.adjuntos.portada.files}
-                                                                    handleChange={this.handleChange}
-                                                                    multiple={true}
+                                                                <ItemSlider item = 'portada' items = { form.adjuntos.portada.files }
+                                                                    handleChange = { this.handleChange } multiple = { true }
+                                                                    deleteFile = { this.deleteFilePortada }
                                                                 />
                                                             </div>
                                                         </div>
