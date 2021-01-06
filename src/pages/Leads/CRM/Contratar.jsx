@@ -263,7 +263,7 @@ class Contratar extends Component {
         let { formProyecto, lead } = this.state
         await axios.post(URL_DEV + 'crm/convert/' + lead.id, formProyecto, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { proyecto } = this.state
+                const { proyecto } = response.data
                 const { history } = this.props
                 createAlertSA2WithClose(
                     '¡FELICIDADES CREASTE EL PROYECTO!',
