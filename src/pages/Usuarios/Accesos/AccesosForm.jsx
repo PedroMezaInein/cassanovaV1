@@ -6,12 +6,14 @@ import axios from 'axios'
 import { URL_DEV } from '../../../constants'
 import { AccesosForm as AccesosFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
-import { errorAlert, forbiddenAccessAlert, waitAlert } from '../../../functions/alert'
+import { errorAlert, forbiddenAccessAlert, waitAlert, createAlert } from '../../../functions/alert'
 import { setSelectOptions } from '../../../functions/setters'
-
+import { ItemSlider, Modal } from '../../../components/singles'
+import { Button } from '../../../components/form-components'
 class AccesosForm extends Component {
 
     state = {
+        modal_add_excel: false,
         form: {
             plataforma: '',
             url: '',
@@ -22,6 +24,13 @@ class AccesosForm extends Component {
             numero: '',
             empresas: [],
             descripcion: '',
+            adjuntos: {
+                adjuntos: {
+                    files: [],
+                    value: '',
+                    placeholder: 'Adjuntos'
+                }
+            }
         },
         options: {
             usuarios: [],
@@ -290,14 +299,94 @@ class AccesosForm extends Component {
         })
     }
 
+    clearForm = () => {
+        const { form } = this.state
+        let aux = Object.keys(form)
+        aux.map((element) => {
+            switch (element) {
+                case 'adjuntos':
+                    form[element] = {
+                        adjuntos: {
+                            files: [],
+                            value: '',
+                            placeholder: 'Adjuntos'
+                        }
+                    }
+                    break;
+                default:
+                    form[element] = ''
+                    break;
+            }
+            return false
+        })
+        return form;
+    }
+
+    openModal = () => {
+        this.setState({
+            ...this.state,
+            modal_add_excel: true,
+            title: 'Agregar accesos',
+            form: this.clearForm(),
+            formeditado: 0
+        })
+    }
+    handleCloseAddExcel = () => {
+        const { modal_add_excel } = this.state
+        this.setState({
+            ...this.state,
+            modal_add_excel: !modal_add_excel,
+            title: 'Agregar accesos',
+            form: this.clearForm()
+        })
+    }
+
+    handleChange = (files, item) => {
+        const { form } = this.state
+        let aux = []
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        form['adjuntos'][item].value = files
+        form['adjuntos'][item].files = aux
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
+    downloadPlantilla = () => {
+        const link = document.createElement('a');
+        const url = 'https://admin-proyectos.s3.us-east-2.amazonaws.com/plantillas/plantilla-acceso.xlsx'
+        link.href = url;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    }
+
     render() {
-        const { form, title, formeditado, options } = this.state
+        const { form, title, formeditado, options, modal_add_excel } = this.state
         return (
             <Layout active={'usuarios'} {...this.props}>
                 <Card className="card-custom">
                     <Card.Header>
                         <div className="card-title">
                             <h3 className="card-label">{title}</h3>
+                        </div>
+                        <div className="card-toolbar">
+                            <Button
+                                icon=''
+                                className="btn btn-light-success btn-sm mr-2"
+                                only_icon="far fa-file-pdf pr-0 mr-2"
+                                text='AGREGAR ACCESO'
+                                onClick={this.openModal}
+                            />
                         </div>
                     </Card.Header>
                     <Card.Body>
@@ -307,6 +396,44 @@ class AccesosForm extends Component {
                             onSubmit = { title === 'Editar acceso' ? this.onSubmitEdit : this.onSubmit } />
                     </Card.Body>
                 </Card>
+                <Modal size='lg' title={title} show={modal_add_excel} handleClose={this.handleCloseAddExcel}>
+                    <div className="d-flex mt-3 justify-content-end">
+                        <Button
+                            onClick={(e) => {
+                                e.preventDefault();
+                                createAlert('¡IMPORTANTE!', 'LAS EMPRESAS Y LOS RESPONSABLES TIENEN QUE ESTAR EN MAYÚSCULAS Y SEPARADOS POR COMAS.', () => this.downloadPlantilla())
+                            }}
+                            className="btn btn-light-primary btn-sm ml-auto"
+                            only_icon="fas fa-file-download icon-md"
+                            text='DESCARGAR PLANTILLA'
+                        />
+                    </div>
+                    <div>
+                        <ItemSlider
+                            items={form.adjuntos.adjuntos.files}
+                            item='adjuntos'
+                            multiple={false}
+                            handleChange={this.handleChange}
+                            accept='.xlsx, .xls, .csv'
+                        />
+                    </div>
+                    {
+                        form.adjuntos.adjuntos.files.length > 0 ?
+                            <div className="d-flex justify-content-center">
+                                <Button icon='' className="btn btn-primary m-2"
+                                    onClick={
+                                        (e) => {
+                                            e.preventDefault();
+                                            waitAlert();
+                                            this.sendVacaciones();
+                                        }
+                                    }
+                                    text="ENVIAR"
+                                />
+                            </div>
+                            : ''
+                    }
+                </Modal>
             </Layout>
         )
     }

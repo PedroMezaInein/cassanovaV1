@@ -99,7 +99,7 @@ class AccesosForm extends Component {
                     </div>
                     <div className="col-md-4">
                         <Input formeditado = { formeditado } name = "contraseña" value = { form.contraseña }
-                            placeholder = "CONTRASEÑA" onChange = { onChange } iconclass = "far fa-user"
+                            placeholder = "CONTRASEÑA" onChange = { onChange } iconclass = "fab fa-diaspora"
                             messageinc = "Incorrecto. Ingresa la contraseña." letterCase = { false } 
                             requirevalidation = { 1 } />
                     </div>
