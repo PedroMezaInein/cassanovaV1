@@ -6,7 +6,7 @@ import axios from 'axios'
 import { URL_DEV } from '../../../constants'
 import { AccesosForm as AccesosFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
-import { errorAlert, forbiddenAccessAlert, waitAlert } from '../../../functions/alert'
+import { errorAlert, forbiddenAccessAlert, waitAlert, createAlert } from '../../../functions/alert'
 import { setSelectOptions } from '../../../functions/setters'
 import { ItemSlider, Modal } from '../../../components/singles'
 import { Button } from '../../../components/form-components'
@@ -307,17 +307,20 @@ class AccesosForm extends Component {
                 <Modal size='lg' title={title} show={modal_add_excel} handleClose={this.handleCloseAddExcel}>
                     <div className="d-flex mt-3 justify-content-end">
                         <Button
-                            onClick={() => { this.downloadPlantilla() }}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                createAlert('¡IMPORTANTE!', 'LAS EMPRESAS Y LOS RESPONSABLES TIENEN QUE ESTAR EN MAYÚSCULAS Y SEPARADOS POR COMAS.', () => this.downloadPlantilla())
+                            }}
                             className="btn btn-light-primary btn-sm ml-auto"
                             only_icon="fas fa-file-download icon-md"
                             text='DESCARGAR PLANTILLA'
                         />
                     </div>
                     <div>
-                        <ItemSlider 
-                            items={form.adjuntos.adjuntos.files} 
+                        <ItemSlider
+                            items={form.adjuntos.adjuntos.files}
                             item='adjuntos'
-                            multiple={false} 
+                            multiple={false}
                             handleChange={this.handleChange}
                             accept='.xlsx, .xls, .csv'
                         />
