@@ -128,6 +128,8 @@ class Vacaciones extends Component {
                 nombre = 'ESTACIONAMIENTO'
                 icon = 'fas fa-car'
                 break;
+            default: 
+                break;
         }
         return (
             <>
@@ -183,23 +185,12 @@ class Vacaciones extends Component {
 
     printModal = () => {
         const { activeKey } = this.state
-
         switch (activeKey) {
-            case 'eventos':
-                return this.printEventos()
-                break;
-            case 'cumpleaños':
-                return this.printCumpleaños()
-                break;
-            case 'vacaciones':
-                return this.printVacaciones()
-                break;
-            case 'estacionamiento':
-                return this.prinEstacionamiento()
-                break
-            default:
-                return ''
-                break;
+            case 'eventos': return this.printEventos()
+            case 'cumpleaños': return this.printCumpleaños()
+            case 'vacaciones': return this.printVacaciones()
+            case 'estacionamiento': return this.prinEstacionamiento()
+            default: return ''
         }
     }
 
@@ -310,7 +301,6 @@ class Vacaciones extends Component {
     }
     prinEstacionamiento = () => {
         const { eventos, options, form, formeditado } = this.state
-        const { user } = this.props.authUser
         let size = 3
         return (
             <>
@@ -747,7 +737,6 @@ class Vacaciones extends Component {
             (response) => {
                 Swal.close()
                 const { eventos } = response.data
-                const { activeKey } = this.state
                 let bandera = 'estacionamiento'
                 this.setState({
                     ...this.state,
@@ -950,7 +939,7 @@ class Vacaciones extends Component {
                                                         </Nav.Link>
                                                     </Nav.Item>
                                                 )
-                                            }
+                                            }else return ''
                                         })
                                     }
                                 </Nav>
@@ -963,7 +952,6 @@ class Vacaciones extends Component {
         );
     }
 }
-
 function renderEventContent(eventInfo) {
     return (
         <OverlayTrigger overlay={<Tooltip>{eventInfo.event.title}</Tooltip>}>
@@ -972,16 +960,8 @@ function renderEventContent(eventInfo) {
                 <span>{eventInfo.event.title}</span>
             </div>
         </OverlayTrigger>
-
     )
 }
-const mapStateToProps = state => {
-    return {
-        authUser: state.authUser
-    }
-}
-
-const mapDispatchToProps = dispatch => ({
-})
-
+const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapDispatchToProps = dispatch => ({ })
 export default connect(mapStateToProps, mapDispatchToProps)(Vacaciones)
