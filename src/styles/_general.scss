@@ -1336,3 +1336,59 @@ div#nav-tareas{
 .w-30{
     width: 30%;
 }
+
+.error-title{
+    @include screen($xxl) {
+        font-size: 100px!important;
+        letter-spacing: 2px!important;
+        margin-bottom: 3rem!important;
+    }
+    @include screen($md) {
+        font-size: 72px;
+        letter-spacing: 1px;
+        margin-bottom: 3rem;
+    }
+    @include down-screen($md) {
+        font-size: 35px;
+        letter-spacing: 1px;
+        margin-bottom: 2rem!important;
+    }
+}
+.error-subtitle{
+    @include screen($xxl) {
+        font-size: 35px!important;
+        letter-spacing: 1px!important;
+        margin-bottom: 1.5rem!important;
+    }
+    @include screen($md) {
+        font-size: 29px;
+        letter-spacing: 1px;
+        margin-bottom: 1.5rem;
+    }
+    @include down-screen($md) {
+        font-size: 21px;
+        letter-spacing: 1px;
+        margin-bottom: 2rem!important;
+    }
+}
+.error-subtitle-2{
+    @include screen($xxl) {
+        font-size: 20px!important;
+        letter-spacing: 1px!important;
+        margin-bottom: 3rem!important;
+    }
+    @include screen($md) {
+        font-size: 17px;
+        letter-spacing: 1px;
+        margin-bottom: 3rem;
+    }
+    @include down-screen($md) {
+        font-size: 17px;
+        letter-spacing: 1px;
+        margin-bottom: 2rem!important;
+        
+    }
+}
+span.font-weight-bolder.text-hover-error:hover{
+    color: #00ac9f !important;
+}
