@@ -76,6 +76,13 @@ class Accesos extends Component {
         });
     }
 
+    setHiddenPassword = pwd => {
+        let aux = ''
+        for(let i = 0; i < pwd.length; i++)
+            aux += '*'
+        return aux
+    }
+
     render() {
         const { accesos } = this.state
         return (
@@ -114,17 +121,23 @@ class Accesos extends Component {
                                                 return(
                                                     <tr key = { key } >
                                                         <td className="font-size-lg text-left font-weight-bolder">
-                                                            <span>Nombre: </span><span className="text-muted font-weight-bold font-size-sm">{acceso.plataforma}</span><br />
+                                                            <span>Nombre: </span><span className="text-muted font-weight-bold font-size-sm text-transform-none">{acceso.plataforma}</span><br />
                                                             <span>Link: </span>
-                                                            <a href = { acceso.url } target = '_blank' className="text-muted font-weight-bold font-size-sm">{acceso.url}</a>
+                                                            <a href = { acceso.url } target = '_blank' className="text-muted font-weight-bold font-size-sm text-transform-none">{acceso.url}</a>
                                                         </td>
                                                         <td className="font-size-lg text-left font-weight-bolder">
-                                                            <span>Usuario: </span><span className="text-muted font-weight-bold font-size-sm">{acceso.usuario}</span><br />
-                                                            <span>Contraseña: </span><span className="text-muted font-weight-bold font-size-sm">{acceso.contraseña}</span>
+                                                            <span>Usuario: </span><span className="text-muted font-weight-bold font-size-sm text-transform-none">{acceso.usuario}</span><br />
+                                                            <div className = 'text-hover' onClick={() => {navigator.clipboard.writeText(acceso.contraseña)}}>
+                                                                <span>Contraseña: </span>
+                                                                <OverlayTrigger overlay = { <Tooltip> <span className="text-muted font-weight-bold font-size-sm text-transform-none">{acceso.contraseña}</span></Tooltip>}>
+                                                                    <span className="text-muted font-weight-bold font-size-sm text-transform-none">{this.setHiddenPassword(acceso.contraseña)}</span>
+                                                                </OverlayTrigger>
+                                                            </div>
+                                                            
                                                         </td>
                                                         <td className="font-size-lg text-left font-weight-bolder">
                                                             <span>Correo: </span>
-                                                            <a href = { `mailto:+${acceso.correo}` } className="text-muted font-weight-bold font-size-sm">
+                                                            <a href = { `mailto:+${acceso.correo}` } className="text-muted font-weight-bold font-size-sm text-transform-none">
                                                                 {acceso.correo}
                                                             </a>
                                                             <br />
