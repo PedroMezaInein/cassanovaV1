@@ -790,6 +790,9 @@ class Crm extends Component {
         const { access_token } = this.props.authUser
         await axios.put(URL_DEV + 'crm/email/solicitud-llamada/' + lead.id, {}, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                this.getSinContactar()
+                this.getUltimosIngresados()
+                this.getUltimosIngresados()
                 doneAlert('Correo enviado con éxito');
                 this.getLeadsWeb()
             },
@@ -813,6 +816,9 @@ class Crm extends Component {
         const { access_token } = this.props.authUser
         await axios.post(URL_DEV + 'crm/add/evento/' + lead.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                this.getUltimosIngresados()
+                this.getSinContactar()
+                this.getUltimosContactos()
                 const { form } = this.state
                 form.fecha = new Date()
                 form.hora = 0
@@ -1073,6 +1079,9 @@ class Crm extends Component {
         waitAlert()
         await axios.put(URL_DEV + 'crm/lead/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                this.getUltimosIngresados()
+                this.getSinContactar()
+                this.getUltimosContactos()
                 const { activeTable } = this.state
                 this.changeActiveTable(activeTable)
                 doneAlert('El estatus fue actualizado con éxito.')
@@ -1290,6 +1299,9 @@ class Crm extends Component {
         })
         await axios.post(URL_DEV + 'crm/contacto/lead/' + lead.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                this.getUltimosIngresados()
+                this.getSinContactar()
+                this.getUltimosContactos()
                 const { lead } = response.data
                 this.setState({
                     ...this.state,

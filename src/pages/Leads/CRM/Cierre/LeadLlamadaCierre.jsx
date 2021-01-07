@@ -29,6 +29,7 @@ class LeadLlamadaCierre extends Component {
             tipo: '',
             name: '',
             empresa: '',
+            ubicacion: ''
         },
         tipo: '',
         formeditado: 0,
@@ -247,6 +248,14 @@ class LeadLlamadaCierre extends Component {
 
     presupuesto_fecha() {
         let { presupuesto } = this.state
+        if(!presupuesto)
+            return ''
+        else
+            if(!presupuesto.pivot)
+                return ''
+            else
+                if(!presupuesto.pivot.fecha_envio)
+                    return ''
         let show_fecha = ""
         let hoy = new Date().getDate();
         let fecha_presupuesto = new Date(presupuesto.pivot.fecha_envio)
@@ -304,6 +313,14 @@ class LeadLlamadaCierre extends Component {
     }
     presupuesto_hora() {
         let { presupuesto } = this.state
+        if(!presupuesto)
+            return ''
+        else
+            if(!presupuesto.pivot)
+                return ''
+            else
+                if(!presupuesto.pivot.fecha_envio)
+                    return ''
         let show_hora = ""
         let fecha_presupuesto = new Date(presupuesto.pivot.fecha_envio)
         let hora = fecha_presupuesto.getHours();
@@ -331,6 +348,7 @@ class LeadLlamadaCierre extends Component {
     }
     render() {
         const { messages, form, lead, modal_reviso, modal_duda, cierre_reviso, cita_reviso, cierre_cita, cita_contrato } = this.state
+        const { authUser, staticContext, ...props } = this.props
         return (
             <Layout active='leads' {...this.props} >
                 <Modal title = 'Agenda una nueva llamada.' show = { modal_reviso } handleClose = { this.hideModalReviso } >
@@ -379,7 +397,7 @@ class LeadLlamadaCierre extends Component {
                                     validateAlert(this.onSubmit, e, 'form-lead-cierre')
                                 }
                             }
-                            {...this.props}>
+                            {...props}>
                             <div className="form-group row form-group-marginless my-4">
                                 <div className="col-md-4 d-flex align-items-center">
                                     <div className="col-md-12">
