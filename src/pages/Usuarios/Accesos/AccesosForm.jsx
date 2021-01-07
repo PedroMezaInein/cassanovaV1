@@ -115,6 +115,7 @@ class AccesosForm extends Component {
                             descripcion: row[8]
                         })
                     }
+                    return false
                 })
                 if(arreglo.length > 0) this.sendPlantillaAxios(arreglo)
                 else errorAlert('Adjunta la plantilla correcta')
@@ -181,8 +182,8 @@ class AccesosForm extends Component {
                     }
                     else
                         auxArray.push(element)
+                    return false
                 })
-                console.log(editables, 'editables')
                 if(editables.usuarios.length)
                     options.usuarios = auxArray
                 auxArray = []
@@ -203,6 +204,7 @@ class AccesosForm extends Component {
                     }
                     else
                         auxArray.push(element)
+                    return false
                 })
                 if(editables.empresas.length)
                     options.empresas = auxArray
