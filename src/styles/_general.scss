@@ -1336,3 +1336,13 @@ div#nav-tareas{
 .w-30{
     width: 30%;
 }
+
+.text-transform-none{
+    text-transform: none!important;
+}
+
+.text-hover{
+    &:hover{
+        cursor: pointer;
+    }
+}
