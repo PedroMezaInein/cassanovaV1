@@ -232,7 +232,7 @@ class Tareas extends Component {
         }
 
         const task = draggableId
-
+        
         this.reordeingTasksAxios(_source, _destination, task)
 
     }
@@ -497,10 +497,16 @@ class Tareas extends Component {
     }
 
     async editTaskAxios(data) {
+        console.log(data, 'data')
         const { access_token } = this.props.authUser
         const { tarea } = this.state
         await axios.put(URL_DEV + 'user/tareas/edit/' + tarea.id, data, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
+                if(!data.hasOwnProperty('descripcion')){
+                    this.getEnProceso()
+                    this.getCaducadas()
+                    this.getProximasCaducar()
+                }
             },
             (error) => {
                 console.log(error, 'error')
@@ -529,6 +535,9 @@ class Tareas extends Component {
         const { subActiveKey } = this.state
         await axios.delete(URL_DEV + 'user/tareas/' + id, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
+                this.getEnProceso()
+                this.getCaducadas()
+                this.getProximasCaducar()
                 const { tableros } = response.data
                 let auxTareas = []
                 tableros.map((tablero) => {
@@ -565,6 +574,9 @@ class Tareas extends Component {
         const { subActiveKey } = this.state
         await axios.put(URL_DEV + 'user/tareas/' + id + '/end', {}, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
+                this.getEnProceso()
+                this.getCaducadas()
+                this.getProximasCaducar()
                 const { tableros } = response.data
                 let auxTareas = []
                 tableros.map((tablero) => {
@@ -603,6 +615,11 @@ class Tareas extends Component {
         const { subActiveKey } = this.state
         await axios.put(URL_DEV + 'user/tareas/order', { source, destination, task }, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
+                if(source.grupo !== destination.grupo){
+                    this.getCaducadas()
+                    this.getEnProceso()
+                    this.getProximasCaducar()
+                }
                 const { tableros } = response.data
                 let auxTareas = []
                 tableros.map((tablero) => {
@@ -820,6 +837,11 @@ class Tareas extends Component {
         })
         return formComentarioAdj;
     }
+
+    onClickCard = (tarea) => {
+        this.getTareaAxios(tarea.id)
+    }
+
     render() {
 
         const { columns, user, form, activeKey, modal, tarea,participantesTask, participantes, formeditado, tableros, defaultactivekey, subActiveKey,
@@ -828,25 +850,16 @@ class Tareas extends Component {
             <Layout active={'usuarios'} {...this.props}>
                 <Row>
                     <Col lg={4}>
-                        <EnProcesoCard
-                            en_proceso={en_proceso}
-                            onClick={this.nextPageEnProceso}
-                            onClickPrev={this.prevPageEnProceso}
-                        />
+                        <EnProcesoCard en_proceso = { en_proceso } onClick = { this.nextPageEnProceso }
+                            onClickPrev = { this.prevPageEnProceso } onClickCard = { this.onClickCard }/>
                     </Col>
                     <Col lg={4}>
-                        <ProximasCaducarCard
-                            proximas_caducar={proximas_caducar}
-                            onClick={this.nextPageProximasCaducar}
-                            onClickPrev={this.prevPageProximasCaducar}
-                        />
+                        <ProximasCaducarCard proximas_caducar = { proximas_caducar } onClick = { this.nextPageProximasCaducar }
+                            onClickPrev = { this.prevPageProximasCaducar } onClickCard = { this.onClickCard }/>
                     </Col>
                     <Col lg={4}>
-                        <CaducadasCard
-                            caducadas={caducadas}
-                            onClick={this.nextPageCaducadas}
-                            onClickPrev={this.prevPageCaducadas}
-                        />
+                        <CaducadasCard caducadas = { caducadas } onClick = { this.nextPageCaducadas }
+                            onClickPrev = { this.prevPageCaducadas } onClickCard = { this.onClickCard }/>
                     </Col>
                 </Row>
                 <div className="d-flex flex-row">
@@ -1022,7 +1035,6 @@ class Tareas extends Component {
                                 </Form>
                             </Tab.Pane>
                             <Tab.Pane eventKey="3">
-                                {console.log(tarea,'tarea')}
                             {
                                 tarea &&
                                     <div className="col-md-12 row d-flex justify-content-center">
@@ -1075,13 +1087,6 @@ class Tareas extends Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        authUser: state.authUser
-    }
-}
-
-const mapDispatchToProps = dispatch => ({
-})
-
+const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapDispatchToProps = dispatch => ({})
 export default connect(mapStateToProps, mapDispatchToProps)(Tareas);
