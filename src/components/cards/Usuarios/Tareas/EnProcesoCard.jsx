@@ -20,7 +20,7 @@ export default class EnProcesoCard extends Component {
         return false;
     }
     render() {
-        const { en_proceso, onClick, onClickPrev} = this.props
+        const { en_proceso, onClick, onClickPrev, onClickCard } = this.props
         return (
             <Card className="card-custom card-stretch gutter-b py-2">
                 <Card.Header className="align-items-center border-0">
@@ -44,7 +44,8 @@ export default class EnProcesoCard extends Component {
                             {
                                 en_proceso.data.map((element, index) => {
                                     return(
-                                        <div className="timeline-item mb-4 pl-30px" key = { index } >
+                                        <div onClick = { (e) => { e.preventDefault(); onClickCard(element); } }
+                                            className="timeline-item mb-4 pl-30px" key = { index } >
                                             <div className="timeline-badge border border-5 border-white bg-light-primary">
                                                 {
                                                     element.departamento.nombre==='TI'?<i className="fas fa-laptop-code text-primary pt-1px icon-1-26rem"></i>:
@@ -70,7 +71,7 @@ export default class EnProcesoCard extends Component {
                                                 }
                                             </span>
                                             </div>
-                                            <div className="timeline-content text-justify bg-white px-2 py-2 font-weight-light">
+                                            <div className="timeline-content text-justify bg-white px-2 py-2 font-weight-light text-hover">
                                                 <span className="text-dark-75 font-weight-bolder">
                                                     { element.departamento.nombre }
                                                 </span> - { element.titulo }

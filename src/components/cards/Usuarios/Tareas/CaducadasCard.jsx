@@ -20,7 +20,7 @@ export default class CaducadasCard extends Component {
         return false;
     }
     render() {
-        const { caducadas, onClick, onClickPrev} = this.props
+        const { caducadas, onClick, onClickPrev, onClickCard } = this.props
         return (
             <Card className="card-custom card-stretch gutter-b py-2">
                 <Card.Header className="align-items-center border-0">
@@ -192,7 +192,8 @@ export default class CaducadasCard extends Component {
                             {
                                 caducadas.data.map((element, key)=>{
                                     return(
-                                        <div className="timeline-item mb-4 pl-30px" key = { key }>
+                                        <div onClick = { (e) => { e.preventDefault(); onClickCard(element); } } 
+                                            className="timeline-item mb-4 pl-30px" key = { key }>
                                             <div className="timeline-badge border border-5 border-white bg-light-danger">
                                                 {
                                                     element.departamento.nombre==='TI'?<i className="fas fa-laptop-code text-danger pt-1px icon-1-26rem"></i>:
@@ -218,7 +219,7 @@ export default class CaducadasCard extends Component {
                                                     }
                                                 </span>
                                             </div>
-                                            <div className="timeline-content text-justify bg-white px-2 py-2 font-weight-light">
+                                            <div className="timeline-content text-justify bg-white px-2 py-2 font-weight-light text-hover">
                                                 <span className="text-dark-75 font-weight-bolder">
                                                     { element.departamento.nombre }
                                                 </span> - { element.titulo }
