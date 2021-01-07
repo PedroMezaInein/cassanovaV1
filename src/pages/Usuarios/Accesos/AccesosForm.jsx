@@ -6,10 +6,11 @@ import axios from 'axios'
 import { URL_DEV } from '../../../constants'
 import { AccesosForm as AccesosFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
-import { errorAlert, forbiddenAccessAlert, waitAlert, createAlert } from '../../../functions/alert'
+import { errorAlert, forbiddenAccessAlert, waitAlert, createAlert, questionAlert } from '../../../functions/alert'
 import { setSelectOptions } from '../../../functions/setters'
 import { ItemSlider, Modal } from '../../../components/singles'
 import { Button } from '../../../components/form-components'
+import readXlsxFile from 'read-excel-file'
 class AccesosForm extends Component {
 
     state = {
@@ -93,6 +94,64 @@ class AccesosForm extends Component {
         if (!accesos)
             history.push('/')
         this.getOptionsAxios()
+    }
+
+    sendPlantilla = async(item) => {
+        let arreglo = []
+        if(item.files.length === 1){
+            readXlsxFile(item.files[0].file).then((rows) => {
+                rows.map((row, index)=>{
+                    if(index > 0){
+                        console.log(index + '.- ' + row[0])
+                        arreglo.push({
+                            empresas: row[0],
+                            plataforma: row[1],
+                            url: row[2],
+                            usuario: row[3],
+                            contraseña: row[4],
+                            usuarios: row[5],
+                            correo: row[6],
+                            numero: row[7],
+                            descripcion: row[8]
+                        })
+                    }
+                })
+                if(arreglo.length > 0) this.sendPlantillaAxios(arreglo)
+                else errorAlert('Adjunta la plantilla correcta')
+            })
+        }else
+            errorAlert('Adjunta la plantilla correcta')
+            
+    }
+
+    sendPlantillaAxios = async(arreglo) => {
+        const { access_token } = this.props.authUser
+        await axios.post(URL_DEV + 'accesos/excel', {data: arreglo}, { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                Swal.close()
+                const { history } = this.props
+                history.push({pathname: '/usuarios/accesos'});
+            },
+            (error) => {
+                this.setState({
+                    ...this.state,
+                    form: this.clearForm(),
+                })
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            this.setState({
+                ...this.state,
+                form: this.clearForm(),
+            })
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
     }
 
     async getOptionsAxios() {
@@ -356,6 +415,7 @@ class AccesosForm extends Component {
         }
         form['adjuntos'][item].value = files
         form['adjuntos'][item].files = aux
+        questionAlert('¿DESEAS ENVIAR LA PLANTILLA?', '', () => this.sendPlantilla(form.adjuntos[item]))
         this.setState({
             ...this.state,
             form
@@ -417,7 +477,7 @@ class AccesosForm extends Component {
                             accept='.xlsx, .xls, .csv'
                         />
                     </div>
-                    {
+                    {/* {
                         form.adjuntos.adjuntos.files.length > 0 ?
                             <div className="d-flex justify-content-center">
                                 <Button icon='' className="btn btn-primary m-2"
@@ -432,7 +492,7 @@ class AccesosForm extends Component {
                                 />
                             </div>
                             : ''
-                    }
+                    } */}
                 </Modal>
             </Layout>
         )
