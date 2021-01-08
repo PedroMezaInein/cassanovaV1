@@ -76,14 +76,14 @@ class AccesosForm extends Component {
                             messageinc = "Incorrecto. Selecciona la(s) empresas." />
                     </div>
                     <div className="col-md-4">
-                        <Input requirevalidation = { 1 } formeditado = { formeditado } name = "plataforma"
+                        <Input requirevalidation = { 0 } formeditado = { formeditado } name = "plataforma"
                             value = { form.plataforma } placeholder = "NOMBRE DE LA PLATAFORMA"
                             onChange = { onChange } iconclass = "flaticon2-website"
                             messageinc="Incorrecto. Ingresa el nombre de la plataforma."
                             /* letterCase = { false } */ />
                     </div>
                     <div className="col-md-4">
-                        <Input requirevalidation = { 1 } formeditado = { formeditado } name = "url"
+                        <Input requirevalidation = { 0 } formeditado = { formeditado } name = "url"
                             value = { form.url } placeholder = "LINK DE LA PLATAFORMA" onChange = { onChange }
                             iconclass = "fas fa-share-square" messageinc="Incorrecto. Ingresa el nombre del banco."
                             letterCase = { false }/>
@@ -92,7 +92,7 @@ class AccesosForm extends Component {
                 <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
-                        <Input requirevalidation = { 1 } formeditado = { formeditado } name = "usuario"
+                        <Input requirevalidation = { 0 } formeditado = { formeditado } name = "usuario"
                             value = { form.usuario } placeholder = "USUARIO" onChange = { onChange } iconclass = "far fa-user"
                             messageinc = "Incorrecto. Ingresa el usuario." letterCase = { false }
                         />
@@ -101,14 +101,14 @@ class AccesosForm extends Component {
                         <Input formeditado = { formeditado } name = "contraseña" value = { form.contraseña }
                             placeholder = "CONTRASEÑA" onChange = { onChange } iconclass = "fab fa-diaspora"
                             messageinc = "Incorrecto. Ingresa la contraseña." letterCase = { false } 
-                            requirevalidation = { 1 } />
+                            requirevalidation = { 0 } />
                     </div>
                     <div className="col-md-4">
                         <TagSelectSearch placeholder = "SELECCIONA LO(S) RESPONSABLE(S)"
                             options = { this.transformarOptions(options.usuarios) }
                             defaultvalue = { this.transformarOptions(form.usuarios) }
                             onChange = { this.nuevoUpdateUsuarios }
-                            requirevalidation = { 1 } iconclass = "far fa-user"
+                            requirevalidation = { 0 } iconclass = "far fa-user"
                             messageinc = "Incorrecto. Selecciona lo(s) responsable(s)" />
                     </div>
                 </div>
