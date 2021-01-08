@@ -166,6 +166,8 @@ const CalidadForm = Loader(() => import('./pages/Calidad/CalidadForm') )
 
 const MaterialEmpresa = Loader( () => import('./pages/Mercadotecnia/MaterialEmpresa/MaterialEmpresa') )
 const MaterialCliente = Loader( () => import('./pages/Mercadotecnia/MaterialCliente/MaterialCliente') )
+const ParrillasContenido = Loader( () => import('./pages/Mercadotecnia/ParrillasContenido/ParrillasContenido') )
+
 
 class App extends Component{
     async componentDidMount(){
@@ -410,6 +412,7 @@ class App extends Component{
                     
                     <Route path = "/mercadotecnia/material-empresas" exact component ={ MaterialEmpresa } />
                     <Route path = "/mercadotecnia/material-clientes" exact component ={ MaterialCliente} />
+                    <Route path = "/mercadotecnia/parrillas-de-contenido" exact component ={ ParrillasContenido} />
 
                     // ANCHOR Routes for user settings
 
