@@ -8,6 +8,7 @@ import { deleteAlert, errorAlert, forbiddenAccessAlert, waitAlert } from '../../
 import axios from 'axios'
 import { URL_DEV } from '../../../constants';
 import Swal from 'sweetalert2';
+const $ = require('jquery');
 class Accesos extends Component {
 
     state = {
@@ -27,7 +28,7 @@ class Accesos extends Component {
         this.getAccesosAxios()
     }
 
-    getAccesosAxios = async() => {
+    getAccesosAxios = async () => {
         waitAlert()
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'accesos', { headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', Authorization: `Bearer ${access_token}` } }).then(
@@ -41,7 +42,7 @@ class Accesos extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) { forbiddenAccessAlert() } 
+                if (error.response.status === 401) { forbiddenAccessAlert() }
                 else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
             }
         ).catch((error) => {
@@ -50,7 +51,7 @@ class Accesos extends Component {
         })
     }
 
-    deleteAccesoAxios = async(id) => {
+    deleteAccesoAxios = async (id) => {
         waitAlert()
         const { access_token } = this.props.authUser
         await axios.delete(URL_DEV + 'accesos/' + id, { headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', Authorization: `Bearer ${access_token}` } }).then(
@@ -59,7 +60,7 @@ class Accesos extends Component {
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) { forbiddenAccessAlert() } 
+                if (error.response.status === 401) { forbiddenAccessAlert() }
                 else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
             }
         ).catch((error) => {
@@ -78,9 +79,42 @@ class Accesos extends Component {
 
     setHiddenPassword = pwd => {
         let aux = ''
-        for(let i = 0; i < pwd.length; i++)
+        for (let i = 0; i < pwd.length; i++)
             aux += '*'
         return aux
+    }
+    substrCadena = cadena => {
+        let pantalla = $(window).width()
+        let aux = ''
+        if (pantalla < 1400) {
+            if (cadena.length > 15) {
+                aux = cadena.substr(0, 15) + "..."
+                return(
+                    <OverlayTrigger overlay={<Tooltip>{cadena}</Tooltip>}>
+                        <span className="text-dark-75 font-weight-bolder d-block font-size-lg text-hover-primary text-transform-none">{aux}</span>
+                    </OverlayTrigger>
+                )
+            } else {
+                aux = cadena
+                return(
+                    <span className="text-dark-75 font-weight-bolder d-block font-size-lg text-hover-primary text-transform-none">{aux}</span>
+                )
+            }
+        } else {
+            if (cadena.length > 20) {
+                aux = cadena.substr(0, 20) + "..."
+                return(
+                    <OverlayTrigger overlay={<Tooltip>{cadena}</Tooltip>}>
+                        <span className="text-dark-75 font-weight-bolder d-block font-size-lg text-hover-primary text-transform-none">{aux}</span>
+                    </OverlayTrigger>
+                )
+            } else {
+                aux = cadena
+                return(
+                    <span className="text-dark-75 font-weight-bolder d-block font-size-lg text-hover-primary text-transform-none">{aux}</span>
+                )
+            }
+        }
     }
 
     render() {
@@ -103,87 +137,116 @@ class Accesos extends Component {
                     <Card.Body>
                         <div className="tab-content">
                             <div className="table-responsive-lg">
-                                <table className="table table-borderless table-vertical-center w-100">
-                                    <thead>
-                                        <tr className="text-uppercase bg-primary-o-20 text-primary">
-                                            <th className="w-auto">Plataforma</th>
-                                            <th className="w-auto">Accesos</th>
-                                            <th className="w-auto">Correo y teléfono de alta</th>
-                                            <th className="w-auto text-center">Responsables</th>
-                                            <th className="w-auto text-center">Empresas</th>
-                                            <th className="w-30 text-center">Descripción de plataforma</th>
-                                            <th style={{ minWidth: "100px" }}></th>
+                                <table className="table table-head-custom table-vertical-center">
+                                    <thead className="bg-gray-100">
+                                        <tr className="text-left">
+                                            <th className="min-width-100px">Plataforma</th>
+                                            <th className="min-width-100px">Usuario y contraseña</th>
+                                            <th className="min-width-100px">Correo y teléfono de alta</th>
+                                            <th className="min-width-100px">Responsables</th>
+                                            <th className="min-width-100px">Empresas</th>
+                                            <th className="min-width-100px text-center">Descripción</th>
+                                            <th ></th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {
-                                            accesos.map((acceso, key)=>{
-                                                return(
-                                                    <tr key = { key } >
-                                                        <td className="font-size-lg text-left font-weight-bolder">
-                                                            <span>Nombre: </span><span className="text-muted font-weight-bold font-size-sm text-transform-none">{acceso.plataforma}</span><br />
-                                                            <span>Link: </span>
-                                                            <a href = { acceso.url } target = '_blank' className="text-muted font-weight-bold font-size-sm text-transform-none">{acceso.url}</a>
+                                            accesos.map((acceso, key) => {
+                                                return (
+                                                    <tr key={key}>
+                                                        <td>
+                                                            <a href={acceso.url} className="font-weight-bolder text-dark text-hover-primary font-size-lg">{acceso.plataforma}</a>
                                                         </td>
-                                                        <td className="font-size-lg text-left font-weight-bolder">
-                                                            <span>Usuario: </span><span className="text-muted font-weight-bold font-size-sm text-transform-none">{acceso.usuario}</span><br />
-                                                            <div className = 'text-hover' onClick={() => {navigator.clipboard.writeText(acceso.contraseña)}}>
-                                                                <span>Contraseña: </span>
-                                                                <OverlayTrigger overlay = { <Tooltip> <span className="text-muted font-weight-bold font-size-sm text-transform-none">{acceso.contraseña}</span></Tooltip>}>
-                                                                    <span className="text-muted font-weight-bold font-size-sm text-transform-none">{this.setHiddenPassword(acceso.contraseña)}</span>
+                                                        <td>
+                                                            <div className='text-hover' onClick={() => { navigator.clipboard.writeText(acceso.usuario) }}>
+                                                            {
+                                                                acceso.correo ?
+                                                                    <span>{this.substrCadena(acceso.usuario)}</span>
+                                                                : <div className="text-dark-75 font-weight-bolder d-block font-size-lg text-hover-primary">-</div>
+                                                            }
+                                                            </div>
+                                                            <div className='text-hover' onClick={() => { navigator.clipboard.writeText(acceso.contraseña) }}>
+                                                                <OverlayTrigger overlay={<Tooltip>{acceso.contraseña}</Tooltip>}>
+                                                                    <span className="text-muted font-weight-bold text-transform-none">{this.setHiddenPassword(acceso.contraseña)}</span>
                                                                 </OverlayTrigger>
                                                             </div>
-                                                            
                                                         </td>
-                                                        <td className="font-size-lg text-left font-weight-bolder">
-                                                            <span>Correo: </span>
-                                                            <a href = { `mailto:+${acceso.correo}` } className="text-muted font-weight-bold font-size-sm text-transform-none">
-                                                                {acceso.correo}
-                                                            </a>
-                                                            <br />
-                                                            <span>Teléfono: </span>
-                                                            <a href = { `tel:+${acceso.numero}` } className="text-muted font-weight-bold font-size-sm">
-                                                                {acceso.numero}
-                                                            </a>
+                                                        <td>
+                                                            <div className='text-hover' onClick={() => { navigator.clipboard.writeText(acceso.correo) }}>
+                                                                {
+                                                                    acceso.correo ?
+                                                                        <OverlayTrigger overlay={<Tooltip>{acceso.correo}</Tooltip>}>
+                                                                            <a className="text-dark-75 font-weight-bolder d-block font-size-lg text-hover-primary text-transform-none">{this.substrCadena(acceso.correo)}</a>
+                                                                        </OverlayTrigger>
+                                                                        : <div className="text-dark-75 font-weight-bolder d-block font-size-lg text-hover-primary">-</div>
+                                                                }
+                                                            </div>
+                                                            <div className='text-hover' onClick={() => { navigator.clipboard.writeText(acceso.numero) }}>
+                                                                {
+                                                                    acceso.numero ?
+                                                                        <a className="text-muted font-weight-bold">{acceso.numero}</a>
+                                                                        : <div className="text-muted font-weight-bold">-</div>
+                                                                }
+                                                            </div>
                                                         </td>
-                                                        <td className="text-center">
+                                                        <td>
                                                             {
-                                                                acceso.usuarios.map((usuario, index) => {
-                                                                    return(
-                                                                        <span className="text-muted font-weight-bold font-size-sm" key = { index } >{usuario.name} <br/></span>
-                                                                    )
-                                                                })
+                                                                acceso.usuarios.length > 1 ?
+                                                                    acceso.usuarios.map((usuario, index) => {
+                                                                        return (
+                                                                            <span className="text-muted font-weight-bold" key={index}>
+                                                                                <ul className="pl-4 mb-2">
+                                                                                    <li>{usuario.name}</li>
+                                                                                </ul>
+                                                                            </span>
+                                                                        )
+                                                                    })
+                                                                    :
+                                                                    acceso.usuarios.map((usuario, index) => {
+                                                                        return (
+                                                                            <span className="text-muted font-weight-bold" key={index}>{usuario.name} <br /></span>
+                                                                        )
+                                                                    })
                                                             }
                                                         </td>
-                                                        <td className="text-center">
+                                                        <td>
                                                             {
-                                                                acceso.empresas.map((empresa, index) => {
-                                                                    return(
-                                                                        <span className="text-muted font-weight-bold font-size-sm" key = { index } >{empresa.name} <br/></span>
-                                                                    )
-                                                                })
+                                                                acceso.empresas.length > 1 ?
+                                                                    acceso.empresas.map((empresa, index) => {
+                                                                        return (
+                                                                            <span className="text-muted font-weight-bold" key={index} >
+                                                                                <ul className="pl-4 mb-2">
+                                                                                    <li>{empresa.name}</li>
+                                                                                </ul>
+                                                                            </span>
+                                                                        )
+                                                                    })
+                                                                    :
+                                                                    acceso.empresas.map((empresa, index) => {
+                                                                        return (
+                                                                            <span className="text-muted font-weight-bold" key={index} >{empresa.name} <br /></span>
+                                                                        )
+                                                                    })
                                                             }
                                                         </td>
                                                         <td className="text-justify">
-                                                            <span className="text-muted font-weight-bold font-size-sm">
-                                                                { acceso.descripcion }
-                                                            </span>
+                                                            <span className="text-muted font-weight-bold">{acceso.descripcion}</span>
                                                         </td>
                                                         <td className="pr-0 text-center">
                                                             <OverlayTrigger overlay={<Tooltip>EDITAR</Tooltip>}>
-                                                                <span 
-                                                                    onClick = { (e) => { e.preventDefault(); this.changePageEdit(acceso) } }
-                                                                    className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-success">
-                                                                    <span className="svg-icon svg-icon-md">
+                                                                <span
+                                                                    onClick={(e) => { e.preventDefault(); this.changePageEdit(acceso) }}
+                                                                    className="btn btn-icon btn-sm mr-2 btn-hover-success mb-2">
+                                                                    <span className="svg-icon svg-icon-md svg-icon-success">
                                                                         <SVG src={toAbsoluteUrl('/images/svg/Write.svg')} />
                                                                     </span>
                                                                 </span>
                                                             </OverlayTrigger>
                                                             <OverlayTrigger overlay={<Tooltip>ELIMINAR</Tooltip>}>
-                                                                <span 
+                                                                <span
                                                                     onClick={(e) => { deleteAlert('¿ESTÁS SEGURO QUE DESEAS ELIMINAR EL REGISTRO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.deleteAccesoAxios(acceso.id)) }}
-                                                                    className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-danger">
-                                                                    <span className="svg-icon svg-icon-md">
+                                                                    className="btn btn-icon btn-sm btn-hover-danger mb-2">
+                                                                    <span className="svg-icon svg-icon-md svg-icon-danger">
                                                                         <SVG src={toAbsoluteUrl('/images/svg/Trash.svg')} />
                                                                     </span>
                                                                 </span>
@@ -198,8 +261,8 @@ class Accesos extends Component {
                             </div>
                         </div>
                     </Card.Body>
-                </Card>
-            </Layout>
+                </Card >
+            </Layout >
         )
     }
 }
