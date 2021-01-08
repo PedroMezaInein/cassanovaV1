@@ -216,23 +216,27 @@ class MaterialCliente extends Component {
     }
 
     deleteFile = element => {
-        deleteAlert('DESEAS ELIMINAR EL ARCHIVO', '', () => this.deleteAdjuntoAxios(element.id, 'slider'))
+        deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', '', () => this.deleteAdjuntoAxios(element.id, 'slider'))
     }
 
     deleteFileSubportafolio = element => {
-        deleteAlert('DESEAS ELIMINAR EL ARCHIVO', '', () => this.deleteAdjuntoAxios(element.id, 'subportafolio'))
+        deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', '', () => this.deleteAdjuntoAxios(element.id, 'subportafolio'))
     }
 
     deleteFileEjemplo = element => {
-        deleteAlert('DESEAS ELIMINAR EL ARCHIVO', '', () => this.deleteAdjuntoAxios(element.id, 'ejemplo'))
+        deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', '', () => this.deleteAdjuntoAxios(element.id, 'ejemplo'))
     }
 
     deleteFilePortada = element => {
-        deleteAlert('DESEAS ELIMINAR EL ARCHIVO', '', () => this.deleteAdjuntoAxios(element.id, 'portada'))
+        deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', '', () => this.deleteAdjuntoAxios(element.id, 'portada'))
     }
 
     onClickDelete = element => {
-        deleteAlert('DESEAS ELIMINAR EL ARCHIVO', element.name, () => this.deleteAdjuntoFromFolder(element.id))
+        deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', element.name, () => this.deleteAdjuntoFromFolder(element.id))
+    }
+
+    onClickDeleteFolder = element => {
+        deleteAlert('¿DESEAS ELIMINAR LA CARPETA?', element.tipo, () => this.deleteFolderAxios(element.id))
     }
 
     newFolder = () => {
@@ -275,7 +279,8 @@ class MaterialCliente extends Component {
                     ...this.state,
                     empresa: empresa,
                     newFolder: false,
-                    form
+                    form,
+                    data
                 })
             },
             (error) => {
@@ -286,6 +291,42 @@ class MaterialCliente extends Component {
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
+        })
+    }
+
+    updateDirectoryAxios = async(name, element) => {
+        console.log(name, 'name')
+        console.log(element, 'element')
+        const { access_token } = this.props.authUser
+        const { form, empresa } = this.state
+        waitAlert()
+        await axios.put(URL_DEV + 'mercadotecnia/material-clientes/empresas/'+empresa.id+'/caso-exito/' + element.id, { tipo: name },
+            { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                Swal.close()
+                const { empresa, empresas } = response.data
+                const { form, data } = this.state
+                data.empresas = empresas
+                form.carpeta = ''
+                this.setState({
+                    ...this.state,
+                    empresa: empresa,
+                    newFolder: false,
+                    form,
+                    data
+                })
+                return true
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) forbiddenAccessAlert()
+                else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                return true
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+            return true
         })
     }
 
@@ -346,7 +387,35 @@ class MaterialCliente extends Component {
                 this.setState({
                     ...this.state,
                     empresa: empresa,
-                    activeFolder: carpeta
+                    activeFolder: carpeta,
+                    data
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) forbiddenAccessAlert()
+                else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    deleteFolderAxios = async(id) => {
+        const { access_token } = this.props.authUser
+        const { empresa } = this.state
+        await axios.delete(URL_DEV + 'mercadotecnia/material-clientes/empresas/'+empresa.id+'/caso-exito/'+ id,
+            { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { empresa, empresas } = response.data
+                const { data } = this.state
+                data.empresas = empresas
+                doneAlert('Carpeta eliminada con éxito')
+                this.setState({
+                    ...this.state,
+                    empresa: empresa,
+                    data
                 })
             },
             (error) => {
@@ -386,7 +455,8 @@ class MaterialCliente extends Component {
                     empresa: empresa,
                     modal_add: false,
                     activeFolder: carpeta,
-                    form
+                    form,
+                    data
                 })
             },
             (error) => {
@@ -727,7 +797,9 @@ class MaterialCliente extends Component {
                                                                     empresa.casos_exito.map((element, index)=>{
                                                                         return(
                                                                             <div className = 'col-md-3 col-lg-2' key = { index }>
-                                                                                <Folder text = {element.tipo}  onClick = { this.onClickFolder } element = { element } />
+                                                                                <Folder text = {element.tipo}  onClick = { this.onClickFolder } 
+                                                                                    onClickDelete = { this.onClickDeleteFolder }
+                                                                                    element = { element } updateDirectory = { this.updateDirectoryAxios } />
                                                                             </div>
                                                                         )
                                                                     })
