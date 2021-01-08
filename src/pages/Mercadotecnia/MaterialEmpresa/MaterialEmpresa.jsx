@@ -8,6 +8,7 @@ import { Tab, Nav, Col, Row, Card, Accordion, } from 'react-bootstrap'
 import { setSelectOptions } from '../../../functions/setters'
 import { waitAlert, questionAlert, errorAdjuntos, errorAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
 import { Nothing } from '../../../components/Lottie'
+import { Folder } from '../../../components/singles'
 
 const tiposArray = ['logo', 'carta_membretada', 'firmas_electronicas', 'tarjetas_presentacion', 'imagenes_personal']
 const placeholderArray = ['LOGOS', 'CARTA MEMBRETADA', 'FIRMAS ELECTRÓNICAS', 'TARJETAS DE PRESENTACIÓN', 'IMÁGENES DEL PERSONAL']
