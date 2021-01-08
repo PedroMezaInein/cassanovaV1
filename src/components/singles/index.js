@@ -8,6 +8,7 @@ import sliderImages from './SliderImages'
 import floatButtons from './FloatButtons'
 import notificacion from './Notificacion'
 import audioApp from './AudioApp'
+import folder from './Folder'
 
 export const Card = card;
 export const Modal = modal;
@@ -19,3 +20,4 @@ export const SliderImages = sliderImages
 export const FloatButtons = floatButtons
 export const Notificacion = notificacion
 export const AudioApp = audioApp
+export const Folder = folder
