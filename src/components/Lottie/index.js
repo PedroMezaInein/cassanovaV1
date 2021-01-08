@@ -9,6 +9,7 @@ import happyBirthday from './HappyBirthday'
 import calendar from './Calendar'
 import emptyParkSlot from './EmptyParkSlot'
 import message from './Message'
+import noFiles from './NoFiles'
 
 export const Sending = sending
 export const Done = done
@@ -21,3 +22,4 @@ export const HappyBirthday = happyBirthday
 export const Calendar = calendar
 export const EmptyParkSlot = emptyParkSlot
 export const Message = message
+export const NoFiles = noFiles
