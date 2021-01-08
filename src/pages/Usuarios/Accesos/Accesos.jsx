@@ -232,7 +232,7 @@ class Accesos extends Component {
                                                         <td className="text-justify">
                                                             <span className="text-muted font-weight-bold">{acceso.descripcion}</span>
                                                         </td>
-                                                        <td className="pr-0 text-center">
+                                                        <td className="px-0 text-center">
                                                             <OverlayTrigger overlay={<Tooltip>EDITAR</Tooltip>}>
                                                                 <span
                                                                     onClick={(e) => { e.preventDefault(); this.changePageEdit(acceso) }}
