@@ -17,6 +17,7 @@ import areasForm from './catalogos/AreaForm'
 import partidaForm from './catalogos/PartidaForm'
 import unidadForm from './catalogos/UnidadForm'
 import origenLeadForm from './catalogos/OrigenLeadForm'
+import redesSocialesForm from './catalogos/RedesSocialesForm'
 import bancoForm from './catalogos/BancoForm'
 import tipoForm from './catalogos/TipoForm'
 import proyectosForm from './proyectos/ProyectosForm'
@@ -98,6 +99,7 @@ export const AreasForm = areasForm
 export const PartidaForm = partidaForm
 export const UnidadForm = unidadForm
 export const OrigenLeadForm = origenLeadForm
+export const RedesSocialesForm = redesSocialesForm
 export const BancoForm = bancoForm
 export const TipoForm = tipoForm
 export const ProyectosForm = proyectosForm

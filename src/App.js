@@ -130,6 +130,7 @@ const AdjuntosEmpresa = Loader( () => import('./pages/Catalogos/AdjuntosEmpresa/
 const AdjuntosEmpresaForm = Loader( () => import('./pages/Catalogos/AdjuntosEmpresa/AdjuntosEmpresaForm') )
 const Diseño = Loader( () => import('./pages/Catalogos/Diseño') )
 const OrigenesLeads = Loader( () => import('./pages/Catalogos/OrigenesLeads') )
+const RedesSociales = Loader( () => import('./pages/Catalogos/RedesSociales') )
 
 const Contabilidad = Loader( () => import('./pages/Reportes/Contabilidad') )
 const ReporteVentas = Loader( () => import('./pages/Reportes/ReporteVentas') )
@@ -372,6 +373,7 @@ class App extends Component{
                     
                     <Route path = "/catalogos/tabulador" exact component ={ Diseño } />
                     <Route path = "/catalogos/origenes-leads" exact component = { OrigenesLeads } />
+                    <Route path = "/catalogos/redes-sociales" exact component = { RedesSociales } />
 
                     // ANCHOR Routes for reportes
 
