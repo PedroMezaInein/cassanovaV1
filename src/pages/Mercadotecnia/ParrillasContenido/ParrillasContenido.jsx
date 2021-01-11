@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { URL_DEV } from '../../../constants';
 import moment from 'moment'
-import { errorAlert, forbiddenAccessAlert } from '../../../functions/alert';
+import { doneAlert, errorAlert, forbiddenAccessAlert, waitAlert } from '../../../functions/alert';
 import { connect } from 'react-redux';
 import Layout from '../../../components/layout/layout';
 import { Card } from 'react-bootstrap'
@@ -14,6 +14,7 @@ import esLocale from '@fullcalendar/core/locales/es';
 import { Button } from '../../../components/form-components'
 import { Modal } from '../../../components/singles'
 import ParrillaContenidoForm from '../../../components/forms/mercadotecnia/ParrillaContenidoForm';
+import { setOptions } from '../../../functions/setters';
 const $ = require('jquery');
 
 class Calendario extends Component {
@@ -26,7 +27,7 @@ class Calendario extends Component {
         },
         form:{
             socialNetwork:'',
-            typeConent:'',
+            typeContent:"contenido",
             title:'',
             copy:'',
             cta:'',
@@ -34,30 +35,17 @@ class Calendario extends Component {
             empresa: '',
             hora: '09',
             minuto: '00',
+            fecha: ''
         },
         options:{
-            socialNetworks:
-            [
-                {
-                    name: "FACEBOOK", value: "1", label: "FACEBOOK"
-                },
-                {
-                    name: "INSTAGRAM", value: "2", label: "INSTAGRAM"
-                },
-                {
-                    name: "PINTEREST", value: "3", label: "PINTEREST"
-                },
-                {
-                    name: "LINKEDIN", value: "4", label: "LINKEDIN"
-                },
-            ],
+            socialNetworks: [],
             typeContents:
             [
                 {
-                    name: "CONTENIDO", value: "1", label: "CONTENIDO"
+                    name: "CONTENIDO", value: "contenido", label: "CONTENIDO"
                 },
                 {
-                    name: "HISTORIA", value: "2", label: "HISTORIA"
+                    name: "HISTORIA", value: "historia", label: "HISTORIA"
                 }
             ],
             empresas: []
@@ -74,11 +62,17 @@ class Calendario extends Component {
     }
     async getContentAxios() {
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'content', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(URL_DEV + 'mercadotecnia/parrilla-contenido', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                const { options } = this.state
+                const { empresas, redes } = response.data
+
+                options.empresas = setOptions(empresas, 'name', 'id')
+                options.socialNetworks  = setOptions(redes, 'nombre', 'id')
 
                 this.setState({
                     ... this.state,
+                    options
                 })
             },
             (error) => {
@@ -94,6 +88,36 @@ class Calendario extends Component {
             console.log(error, 'error')
         })
     }
+
+    sendParrillaAxios = async() => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        await axios.post(URL_DEV + 'mercadotecnia/parrilla-contenido', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert('Parrilla guardad con éxito');
+                const { modal} = this.state
+                modal.form = false
+                this.setState({
+                    ...this.state,
+                    modal
+                })
+                this.getContentAxios()
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     openModal = () => {
         const { modal} = this.state
         modal.form =true
@@ -101,6 +125,7 @@ class Calendario extends Component {
             ...this.state,
             modal,
             title: 'Agregar contenido',
+            form: this.clearForm()
         })
     }
 
@@ -122,7 +147,29 @@ class Calendario extends Component {
             ...this.state,
             form
         })
-    }    
+    }
+
+    clearForm = () => {
+        const { form } = this.state
+        let aux = Object.keys(form)
+        aux.map((element) => {
+            switch(element){
+                case 'typeContent':
+                    form[element] =  "contenido";
+                    break;
+                case 'hora':
+                    form[element] = "09";
+                    break;
+                case 'minuto':
+                    form[element] = "00";
+                    break;
+                default:
+                    form[element] = '';
+                    break;
+            }
+        })
+        return form
+    }
 
     render() {
         const { modal, title, form, formeditado, options, content} = this.state
@@ -165,6 +212,7 @@ class Calendario extends Component {
                         formeditado={formeditado}
                         options={options}
                         onChange={this.onChange}
+                        onSubmit = { this.sendParrillaAxios }
                     />
                 </Modal>
             </Layout>

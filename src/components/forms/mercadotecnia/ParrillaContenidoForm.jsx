@@ -134,7 +134,7 @@ class ParrillaContenidoForm extends Component {
                                     value={form.comments}
                                     onChange={onChange}
                                     type="text"
-                                    placeholder="COMENTARIOS"
+                                    placeholder="COMENTARIOS (IMAGEN)"
                                     iconclass={"far fa-file-alt"}
                                     messageinc="Incorrecto. Ingresa los comentarios."
                                 />
