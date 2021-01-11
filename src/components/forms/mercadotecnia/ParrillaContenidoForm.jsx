@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { SelectSearch, Button, Input, CalendarDay } from '../../form-components'
+import { SelectSearch, Button, Input, CalendarDay, SelectHorario } from '../../form-components'
 import { Form, Col, Row } from 'react-bootstrap'
 import { validateAlert } from '../../../functions/alert'
 
@@ -13,6 +13,11 @@ class ParrillaContenidoForm extends Component {
     updateTypeContent = value => {
         const { onChange } = this.props
         onChange({ target: { value: value, name: 'typeContent' } })
+    }
+
+    updateEmpresa = value => {
+        const { onChange } = this.props
+        onChange({ target: { value: value, name: 'empresa' } })
     }
 
     render() {
@@ -29,9 +34,9 @@ class ParrillaContenidoForm extends Component {
             >
                 <Row>
                     <Col md={4} className="d-flex justify-content-center">
-                        <div className="col-md-12 text-center align-self-center">
+                        <div className="col-md-12 text-center align-self-center mt-4">
                             <div className="d-flex justify-content-center" style={{ height: '1px' }}>
-                                <label className="text-center font-weight-bold text-dark-60">Fecha de ingreso</label>
+                                <label className="text-center font-weight-bolder">Fecha de publicación</label>
                             </div>
                             <CalendarDay
                                 value={form.fecha}
@@ -40,10 +45,34 @@ class ParrillaContenidoForm extends Component {
                                 name='fecha'
                                 withformgroup={1}
                             />
+                            <div className="d-flex justify-content-center">
+                                    <div className="col-md-12">
+                                        <label className="col-form-label text-center font-weight-bolder">Hora de publicación</label>
+                                        <div className="form-group row d-flex justify-content-center">
+                                            <SelectHorario 
+                                                onChange = { onChange }
+                                                hora = {{ value: form.hora, name: 'hora'}}
+                                                minuto = {{ value: form.minuto, name: 'minuto'}}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
                         </div>
                     </Col>
                     <Col md={8}>
                         <div className="form-group row form-group-marginless mt-4">
+                            <div className="col-md-4">
+                                <SelectSearch
+                                    formeditado={formeditado}
+                                    options={options.empresas}
+                                    placeholder="SELECCIONA LA EMPRESA"
+                                    name="empresa"
+                                    value={form.empresa}
+                                    onChange={this.updateEmpresa}
+                                    iconclass={"far fa-building"}
+                                    messageinc="Incorrecto. Selecciona la empresa"
+                                />
+                            </div>
                             <div className="col-md-4">
                                 <SelectSearch
                                     formeditado={formeditado}
@@ -68,6 +97,9 @@ class ParrillaContenidoForm extends Component {
                                     messageinc="Incorrecto. Selecciona el contenido"
                                 />
                             </div>
+                        </div>
+                        <div className="separator separator-dashed mt-1 mb-2"></div>
+                        <div className="form-group row form-group-marginless justify-content-center">
                             <div className="col-md-4">
                                 <Input
                                     requirevalidation={1}
@@ -81,10 +113,7 @@ class ParrillaContenidoForm extends Component {
                                     messageinc="Incorrecto. Ingresa el título."
                                 />
                             </div>
-                        </div>
-                        <div className="separator separator-dashed mt-1 mb-2"></div>
-                        <div className="form-group row form-group-marginless justify-content-center">
-                            <div className="col-md-6">
+                            <div className="col-md-4">
                                 <Input
                                     requirevalidation={1}
                                     formeditado={formeditado}
@@ -97,7 +126,7 @@ class ParrillaContenidoForm extends Component {
                                     messageinc="Incorrecto. Ingresa la cta."
                                 />
                             </div>
-                            <div className="col-md-6">
+                            <div className="col-md-4">
                                 <Input
                                     requirevalidation={0}
                                     formeditado={formeditado}
