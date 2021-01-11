@@ -113,6 +113,7 @@ class CalidadView extends Component {
                                                                                     <Dropdown.Divider className="m-0" style={{ borderTop: '1px solid #fff' }} />
                                                                                 </>
                                                                             )
+                                                                            else return ''
                                                                         })
                                                                     :''
                                                                 }

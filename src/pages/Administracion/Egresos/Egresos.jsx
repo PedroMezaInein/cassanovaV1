@@ -743,6 +743,7 @@ class egresos extends Component {
                     }
                 }
             }
+            return ''
         })
         waitAlert();
         const { access_token } = this.props.authUser
