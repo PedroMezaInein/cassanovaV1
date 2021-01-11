@@ -130,6 +130,7 @@ const AdjuntosEmpresa = Loader( () => import('./pages/Catalogos/AdjuntosEmpresa/
 const AdjuntosEmpresaForm = Loader( () => import('./pages/Catalogos/AdjuntosEmpresa/AdjuntosEmpresaForm') )
 const Diseño = Loader( () => import('./pages/Catalogos/Diseño') )
 const OrigenesLeads = Loader( () => import('./pages/Catalogos/OrigenesLeads') )
+const RedesSociales = Loader( () => import('./pages/Catalogos/RedesSociales') )
 
 const Contabilidad = Loader( () => import('./pages/Reportes/Contabilidad') )
 const ReporteVentas = Loader( () => import('./pages/Reportes/ReporteVentas') )
@@ -166,6 +167,8 @@ const CalidadForm = Loader(() => import('./pages/Calidad/CalidadForm') )
 
 const MaterialEmpresa = Loader( () => import('./pages/Mercadotecnia/MaterialEmpresa/MaterialEmpresa') )
 const MaterialCliente = Loader( () => import('./pages/Mercadotecnia/MaterialCliente/MaterialCliente') )
+const ParrillasContenido = Loader( () => import('./pages/Mercadotecnia/ParrillasContenido/ParrillasContenido') )
+
 
 class App extends Component{
     async componentDidMount(){
@@ -370,6 +373,7 @@ class App extends Component{
                     
                     <Route path = "/catalogos/tabulador" exact component ={ Diseño } />
                     <Route path = "/catalogos/origenes-leads" exact component = { OrigenesLeads } />
+                    <Route path = "/catalogos/redes-sociales" exact component = { RedesSociales } />
 
                     // ANCHOR Routes for reportes
 
@@ -410,6 +414,7 @@ class App extends Component{
                     
                     <Route path = "/mercadotecnia/material-empresas" exact component ={ MaterialEmpresa } />
                     <Route path = "/mercadotecnia/material-clientes" exact component ={ MaterialCliente} />
+                    <Route path = "/mercadotecnia/parrillas-de-contenido" exact component ={ ParrillasContenido} />
 
                     // ANCHOR Routes for user settings
 
