@@ -4,7 +4,6 @@ import { Calendar } from "react-multi-date-picker";
 class DatePickerMulti extends Component {
 
     render() {
-        const {  } = this.props
         return (
             <Calendar
                 multiple

@@ -16,7 +16,6 @@ require("datatables.net-fixedheader");
 const global_variable = {}
 class TableForModals extends Component {
 
-
     reloadTableData(props) {
         const { data, actions, elements, dataID } = props
         var table = $(this.refs.main)
@@ -89,6 +88,7 @@ class TableForModals extends Component {
                                 .draw();
                         }
                     });
+                    return ''
                 });
             },
 
