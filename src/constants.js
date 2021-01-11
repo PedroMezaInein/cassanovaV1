@@ -838,6 +838,17 @@ export const ORIGENES_COLUMNS = [
     }
 ]
 
+export const RED_SOCIAL_COLUMNS = [
+    {
+        Header: 'Opciones',
+        accessor: 'actions'
+    },
+    {
+        Header: 'Red Social',
+        accessor: 'redSocial'
+    }
+]
+
 export const BANCOS_COLUMNS = [
     {
         Header: 'OPCIONES',

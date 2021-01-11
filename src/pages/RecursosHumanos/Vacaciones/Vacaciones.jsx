@@ -124,10 +124,10 @@ class Vacaciones extends Component {
                 nombre = 'VACACIONES'
                 icon = 'fas fa-umbrella-beach'
                 break;
-            case 'estacionamiento':
-                nombre = 'ESTACIONAMIENTO'
-                icon = 'fas fa-car'
-                break;
+            // case 'estacionamiento':
+            //     nombre = 'ESTACIONAMIENTO'
+            //     icon = 'fas fa-car'
+            //     break;
             default: 
                 break;
         }
@@ -189,8 +189,8 @@ class Vacaciones extends Component {
             case 'eventos': return this.printEventos()
             case 'cumpleaños': return this.printCumpleaños()
             case 'vacaciones': return this.printVacaciones()
-            case 'estacionamiento': return this.prinEstacionamiento()
-            default: return ''
+            // case 'estacionamiento': return this.prinEstacionamiento()
+            default: return <></>
         }
     }
 
@@ -328,7 +328,7 @@ class Vacaciones extends Component {
                         : ''
                     : ''
                 }
-                <div className='row mx-0 justify-content-center '>
+                {/* <div className='row mx-0 justify-content-center '>
                     {
                         eventos.estacionamiento.length === 0 ?
                             <div className = 'col-md-6'>
@@ -369,7 +369,7 @@ class Vacaciones extends Component {
                             )
                         })
                     }
-                </div>
+                </div> */}
             </>
         )
     }
