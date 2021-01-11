@@ -31,6 +31,9 @@ class Calendario extends Component {
             copy:'',
             cta:'',
             comments:'',
+            empresa: '',
+            hora: '09',
+            minuto: '00',
         },
         options:{
             socialNetworks:
@@ -57,6 +60,7 @@ class Calendario extends Component {
                     name: "HISTORIA", value: "2", label: "HISTORIA"
                 }
             ],
+            empresas: []
         }
     }
     componentDidMount() {
