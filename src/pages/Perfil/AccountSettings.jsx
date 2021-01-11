@@ -67,6 +67,7 @@ class AccountSettings extends Component {
         user.empleado.firmas.map((element) => {
             if (element.empresa_id.toString() === empresa.toString())
                 aux = element
+            return ''
         })
 
         if (aux !== '')
@@ -79,6 +80,7 @@ class AccountSettings extends Component {
         user.empleado.correos.map((element) => {
             if (element.empresa_id.toString() === empresa.toString())
                 aux = element
+            return ''
         })
 
         if (aux !== '')

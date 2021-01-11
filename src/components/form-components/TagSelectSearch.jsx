@@ -73,7 +73,6 @@ class TagSelectSearch extends Component {
                         isMulti
                         value={defaultvalue}
                         options={options}
-                        noOptionsMessage={placeholder}
                         placeholder={placeholder}
                         onChange={onChange}
                         styles={customStyles}

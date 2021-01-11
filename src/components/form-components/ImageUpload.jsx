@@ -72,7 +72,7 @@ class ImageUpload extends React.Component {
                 {
                     this.state.preview?
                         <div className="col align-self-center text-center">
-                            <img src={this.state.preview} />
+                            <img src={this.state.preview} alt = 'imagen-profile' />
                         </div>
                     :''
                 }
