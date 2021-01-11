@@ -15,7 +15,7 @@ class RedesSociales extends Component {
 
     state = {
         form: {
-            redSocial: '',
+            nombre: '',
         },
         data: {
             redesSociales: []
@@ -47,7 +47,7 @@ class RedesSociales extends Component {
         redesSociales.map((redSocial) => {
             aux.push({
                 actions: this.setActions(redSocial),
-                redSocial: renderToString(setTextTable(redSocial.redSocial)),
+                redSocial: renderToString(setTextTable(redSocial.nombre)),
                 id: redSocial.id
             })
             return false
@@ -99,7 +99,7 @@ class RedesSociales extends Component {
     openModalEdit = redSocial => {
         const { form, modal } = this.state
         modal.form = true
-        form.redSocial = redSocial.redSocial
+        form.nombre = redSocial.nombre
         this.setState({
             modal,
             title: 'Editar red social',
@@ -161,7 +161,7 @@ class RedesSociales extends Component {
     async addRedSocialAxios() {
         const { access_token } = this.props.authUser
         const { form, modal } = this.state
-        await axios.post(URL_DEV + 'redesSociales', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(URL_DEV + 'redes-sociales', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 modal.form = false
                 this.getRedSocialAxios()
@@ -190,8 +190,8 @@ class RedesSociales extends Component {
 
     async updateRedSocialAxios() {
         const { access_token } = this.props.authUser
-        const { form, origen, modal } = this.state
-        await axios.put(URL_DEV + 'redesSociales/' + origen.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        const { form, redSocial, modal } = this.state
+        await axios.put(URL_DEV + 'redes-sociales/' + redSocial.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 modal.form = false
                 this.getRedSocialAxios()
@@ -201,7 +201,7 @@ class RedesSociales extends Component {
                     ...this.state,
                     modal,
                     form: this.clearForm(),
-                    origen: ''
+                    redSocial: ''
                 })
 
             },
@@ -221,8 +221,8 @@ class RedesSociales extends Component {
 
     async deleteRedSocialAxios() {
         const { access_token } = this.props.authUser
-        const { origen  } = this.state
-        await axios.delete(URL_DEV + 'redesSociales/' + origen.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        const { redSocial  } = this.state
+        await axios.delete(URL_DEV + 'redes-sociales/' + redSocial.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { modal } = this.state
                 this.getRedSocialAxios()
@@ -232,7 +232,7 @@ class RedesSociales extends Component {
                 this.setState({
                     ...this.state,
                     modal,
-                    origen: '',
+                    redSocial: '',
                 })
             },
             (error) => {
@@ -274,7 +274,7 @@ class RedesSociales extends Component {
                     idTable = 'kt_datatable_redesSociales'
                     accessToken = { this.props.authUser.access_token }
                     setter = { this.setRedesSociales }
-                    urlRender = { URL_DEV + 'redesSociales'}
+                    urlRender = { URL_DEV + 'redes-sociales'}
                     cardTable = 'cardTable'
                     cardTableHeader = 'cardTableHeader'
                     cardBody = 'cardBody'

@@ -20,8 +20,8 @@ class RedesSocialesForm extends Component {
                         <Input
                             requirevalidation={1}
                             formeditado={formeditado}
-                            name="redSocial"
-                            value={form.redSocial}
+                            name="nombre"
+                            value={form.nombre}
                             placeholder="NOMBRE DE LA RED SOCIAL"
                             onChange={onChange}
                             iconclass={"far fa-window-maximize"}
