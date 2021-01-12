@@ -137,6 +137,7 @@ const ReporteVentas = Loader( () => import('./pages/Reportes/ReporteVentas') )
 const FlujoProyectos = Loader( () => import('./pages/Reportes/FlujoProyectos') )
 const FlujoDepartamentos = Loader( () => import('./pages/Reportes/FlujoDepartamentos') )
 const EstadoResultados = Loader( () => import('./pages/Reportes/EstadoResultados') )
+const ReporteMercadotecnia = Loader( () => import('./pages/Reportes/Mercadotecnia/Mercadotecnia') )
 
 const AccountSettings = Loader(() => import('./pages/Perfil/AccountSettings') )
 const Calendario = Loader(() => import('./pages/Perfil/Calendario') )
@@ -381,6 +382,7 @@ class App extends Component{
                     <Route path = "/reportes/flujo-proyectos" exact component ={ FlujoProyectos } />
                     <Route path = "/reportes/flujo-departamentos" exact component ={ FlujoDepartamentos } />
                     <Route path = "/reportes/estado-resultados" exact component ={ EstadoResultados } />
+                    <Route path = "/reportes/reporte-mercadotecnia" exact component = { ReporteMercadotecnia } />
 
                     {/* ANCHOR Routes for RH */}
 

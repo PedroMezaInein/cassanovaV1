@@ -249,6 +249,13 @@ export const LEADS_COLUMNS = [
     }
 ]
 
+export const REPORTE_MERCA_COLUMNS = [
+    { Header: 'OPCIONES', accessor: 'actions' },
+    { Header: 'EMPRESA', accessor: 'empresa' },
+    { Header: 'FECHA', accessor: 'fecha' },
+    { Header: 'REPORTE', accessor: 'reporte' },
+]
+
 export const PROSPECTOS_COLUMNS = [                
     {
         Header: 'OPCIONES',
