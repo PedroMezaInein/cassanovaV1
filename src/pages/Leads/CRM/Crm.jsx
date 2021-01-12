@@ -5,7 +5,7 @@ import { URL_DEV } from '../../../constants'
 import Layout from '../../../components/layout/layout';
 import { Col, Row, Card, Form, Tab, Nav, DropdownButton, Dropdown } from 'react-bootstrap'
 import { setOptions, setDateTableLG } from '../../../functions/setters'
-import { UltimosContactosCard, SinContacto, UltimosIngresosCard } from '../../../components/cards'
+import { UltimosContactosCard, SinContacto, UltimosIngresosCard, LeadCard } from '../../../components/cards'
 import { forbiddenAccessAlert, errorAlert, waitAlert, doneAlert, questionAlert, questionAlert2, deleteAlert} from '../../../functions/alert'
 import LeadRhProveedor from '../../../components/tables/Lead/LeadRhProveedor'
 import LeadNuevo from '../../../components/tables/Lead/LeadNuevo'
@@ -22,8 +22,11 @@ import { toAbsoluteUrl } from "../../../functions/routers"
 import Swal from 'sweetalert2'
 import { Button } from '../../../components/form-components';
 import Pagination from "react-js-pagination";
+import SymbolIcon from '../../../components/singles/SymbolIcon';
+import Moment from 'react-moment';
 const $ = require('jquery');
 class Crm extends Component {
+
     state = {
         ultimos_contactados: {
             data: [],
@@ -145,10 +148,12 @@ class Crm extends Component {
         modal_agendar: false,
         modal_editar: false,
         modal_historial: false,
+        modal_one_lead: false,
         showForm: false,
         itemsPerPage: 5,
         activePage: 1
     }
+
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
@@ -166,6 +171,239 @@ class Crm extends Component {
         this.getLeadsWeb()
     }
 
+    nextUltimosContactados = (e) => {
+        e.preventDefault()
+        const { ultimos_contactados } = this.state
+        if (ultimos_contactados.numPage < ultimos_contactados.total_paginas - 1) {
+            this.setState({
+                numPage: ultimos_contactados.numPage++
+            })
+            this.getUltimosContactos()
+        }
+    }
+
+    prevUltimosContactados = (e) => {
+        e.preventDefault()
+        const { ultimos_contactados } = this.state
+        if (ultimos_contactados.numPage > 0) {
+            this.setState({
+                numPage: ultimos_contactados.numPage--
+            })
+            this.getUltimosContactos()
+        }
+    }
+
+    nextPageProspectosSinContactar = (e) => {
+        e.preventDefault()
+        const { prospectos_sin_contactar } = this.state
+        if (prospectos_sin_contactar.numPage < prospectos_sin_contactar.total_paginas - 1) {
+            this.setState({
+                numPage: prospectos_sin_contactar.numPage++
+            })
+            this.getSinContactar()
+        }
+    }
+
+    prevPageProspectosSinContactar = (e) => {
+        e.preventDefault()
+        const { prospectos_sin_contactar } = this.state
+        if (prospectos_sin_contactar.numPage > 0) {
+            this.setState({
+                numPage: prospectos_sin_contactar.numPage--
+            })
+            this.getSinContactar()
+        }
+    }
+
+    nextPageUltimosIngresados = (e) => {
+        e.preventDefault()
+        const { ultimos_ingresados } = this.state
+        if (ultimos_ingresados.numPage < ultimos_ingresados.total_paginas - 1) {
+            this.setState({
+                numPage: ultimos_ingresados.numPage++
+            })
+        }
+        this.getUltimosIngresados()
+    }
+
+    prevPageUltimosIngresados = (e) => {
+        e.preventDefault()
+        const { ultimos_ingresados } = this.state
+        if (ultimos_ingresados.numPage > 0) {
+            this.setState({
+                numPage: ultimos_ingresados.numPage--
+            })
+            this.getUltimosIngresados()
+        }
+    }
+
+    nextPageLeadWeb = (e) => {
+        e.preventDefault()
+        const { lead_web } = this.state
+        if (lead_web.numPage < lead_web.total_paginas - 1) {
+            this.setState({
+                numPage: lead_web.numPage++
+            })
+        }
+        this.getLeadsWeb()
+    }
+
+    prevPageLeadWeb = (e) => {
+        e.preventDefault()
+        const { lead_web } = this.state
+        if (lead_web.numPage > 0) {
+            this.setState({
+                numPage: lead_web.numPage--
+            })
+            this.getLeadsWeb()
+        }
+    }
+
+    nextPageLeadEnContacto = (e) => {
+        e.preventDefault()
+        const { leads_en_contacto } = this.state
+        if (leads_en_contacto.numPage < leads_en_contacto.total_paginas - 1) {
+            leads_en_contacto.numPage++
+            this.setState({
+                leads_en_contacto
+            })
+        }
+        this.getLeadsEnContacto()
+    }
+
+    prevPageLeadEnContacto = (e) => {
+        e.preventDefault()
+        const { leads_en_contacto } = this.state
+        if (leads_en_contacto.numPage > 0) {
+            leads_en_contacto.numPage--
+            this.setState({
+                leads_en_contacto
+            })
+            this.getLeadsEnContacto()
+        }
+    }
+
+    nextPageLeadEnNegociacion = (e) => {
+        e.preventDefault()
+        const { leads_en_negociacion } = this.state
+        if (leads_en_negociacion.numPage < leads_en_negociacion.total_paginas - 1) {
+            leads_en_negociacion.numPage++
+            this.setState({
+                leads_en_negociacion
+            })
+        }
+        this.getLeadsEnNegociacion()
+    }
+
+    prevPageLeadEnNegociacion = (e) => {
+        e.preventDefault()
+        const { leads_en_negociacion } = this.state
+        if (leads_en_negociacion.numPage > 0) {
+            leads_en_negociacion.numPage--
+            this.setState({
+                leads_en_negociacion
+            })
+            this.getLeadsEnNegociacion()
+        }
+    }
+
+    nextPageLeadCancelados = (e) => {
+        e.preventDefault()
+        const { leads_cancelados } = this.state
+        if (leads_cancelados.numPage < leads_cancelados.total_paginas - 1) {
+            leads_cancelados.numPage++
+            this.setState({
+                leads_cancelados
+            })
+        }
+        this.getLeadsCancelados()
+    }
+
+    prevPageLeadCancelados = (e) => {
+        e.preventDefault()
+        const { leads_cancelados } = this.state
+        if (leads_cancelados.numPage > 0) {
+            leads_cancelados.numPage--
+            this.setState({
+                leads_cancelados
+            })
+            this.getLeadsCancelados()
+        }
+    }
+
+    nextPageLeadContratados = (e) => {
+        e.preventDefault()
+        const { leads_contratados } = this.state
+        if (leads_contratados.numPage < leads_contratados.total_paginas - 1) {
+            leads_contratados.numPage++
+            this.setState({
+                leads_contratados
+            })
+        }
+        this.getLeadsContratados()
+    }
+
+    prevPageLeadContratados = (e) => {
+        e.preventDefault()
+        const { leads_contratados } = this.state
+        if (leads_contratados.numPage > 0) {
+            leads_contratados.numPage--
+            this.setState({
+                leads_contratados
+            })
+            this.getLeadsContratados()
+        }
+    }
+
+    nextPageLeadDetenidos = (e) => {
+        e.preventDefault()
+        const { leads_detenidos } = this.state
+        if (leads_detenidos.numPage < leads_detenidos.total_paginas - 1) {
+            leads_detenidos.numPage++
+            this.setState({
+                leads_detenidos
+            })
+        }
+        this.getLeadsDetenidos()
+    }
+
+    prevPageLeadDetenidos = (e) => {
+        e.preventDefault()
+        const { leads_detenidos } = this.state
+        if (leads_detenidos.numPage > 0) {
+            leads_detenidos.numPage--
+            this.setState({
+                leads_detenidos
+            })
+            this.getLeadsDetenidos()
+        }
+    }
+
+    nextPageRhProveedor = (e) => {
+        e.preventDefault()
+        const { lead_rh_proveedores } = this.state
+        if (lead_rh_proveedores.numPage < lead_rh_proveedores.total_paginas - 1) {
+            lead_rh_proveedores.numPage++
+            this.setState({
+                lead_rh_proveedores
+            })
+        }
+        this.getLeadsRhProveedores()
+    }
+
+    prevPageRhProveedor = (e) => {
+        e.preventDefault()
+        const { lead_rh_proveedores } = this.state
+        if (lead_rh_proveedores.numPage > 0) {
+            lead_rh_proveedores.numPage--
+            this.setState({
+                lead_rh_proveedores
+            })
+            this.getLeadsRhProveedores()
+        }
+    }
+
+    /* ANCHOR CRM ELIMINAR CONTACTO */
     async eliminarContacto(contacto){
         const { access_token } = this.props.authUser
         const { lead } = this.state
@@ -195,6 +433,7 @@ class Crm extends Component {
         })
     }
 
+    /* ANCHOR CRM GET ALL OPTIONS */
     async getOptionsAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -231,218 +470,8 @@ class Crm extends Component {
             console.log(error, 'error')
         })
     }
-    nextUltimosContactados = (e) => {
-        e.preventDefault()
-        const { ultimos_contactados } = this.state
-        if (ultimos_contactados.numPage < ultimos_contactados.total_paginas - 1) {
-            this.setState({
-                numPage: ultimos_contactados.numPage++
-            })
-            this.getUltimosContactos()
-        }
-    }
-    prevUltimosContactados = (e) => {
-        e.preventDefault()
-        const { ultimos_contactados } = this.state
-        if (ultimos_contactados.numPage > 0) {
-            this.setState({
-                numPage: ultimos_contactados.numPage--
-            })
-            this.getUltimosContactos()
-        }
-    }
-    nextPageProspectosSinContactar = (e) => {
-        e.preventDefault()
-        const { prospectos_sin_contactar } = this.state
-        if (prospectos_sin_contactar.numPage < prospectos_sin_contactar.total_paginas - 1) {
-            this.setState({
-                numPage: prospectos_sin_contactar.numPage++
-            })
-            this.getSinContactar()
-        }
-    }
-    prevPageProspectosSinContactar = (e) => {
-        e.preventDefault()
-        const { prospectos_sin_contactar } = this.state
-        if (prospectos_sin_contactar.numPage > 0) {
-            this.setState({
-                numPage: prospectos_sin_contactar.numPage--
-            })
-            this.getSinContactar()
-        }
-    }
-    nextPageUltimosIngresados = (e) => {
-        e.preventDefault()
-        const { ultimos_ingresados } = this.state
-        if (ultimos_ingresados.numPage < ultimos_ingresados.total_paginas - 1) {
-            this.setState({
-                numPage: ultimos_ingresados.numPage++
-            })
-        }
-        this.getUltimosIngresados()
-    }
-    prevPageUltimosIngresados = (e) => {
-        e.preventDefault()
-        const { ultimos_ingresados } = this.state
-        if (ultimos_ingresados.numPage > 0) {
-            this.setState({
-                numPage: ultimos_ingresados.numPage--
-            })
-            this.getUltimosIngresados()
-        }
-    }
-    nextPageLeadWeb = (e) => {
-        e.preventDefault()
-        const { lead_web } = this.state
-        if (lead_web.numPage < lead_web.total_paginas - 1) {
-            this.setState({
-                numPage: lead_web.numPage++
-            })
-        }
-        this.getLeadsWeb()
-    }
-    prevPageLeadWeb = (e) => {
-        e.preventDefault()
-        const { lead_web } = this.state
-        if (lead_web.numPage > 0) {
-            this.setState({
-                numPage: lead_web.numPage--
-            })
-            this.getLeadsWeb()
-        }
-    }
-    nextPageLeadEnContacto = (e) => {
-        e.preventDefault()
-        const { leads_en_contacto } = this.state
-        if (leads_en_contacto.numPage < leads_en_contacto.total_paginas - 1) {
-            leads_en_contacto.numPage++
-            this.setState({
-                leads_en_contacto
-            })
-        }
-        this.getLeadsEnContacto()
-    }
-    prevPageLeadEnContacto = (e) => {
-        e.preventDefault()
-        const { leads_en_contacto } = this.state
-        if (leads_en_contacto.numPage > 0) {
-            leads_en_contacto.numPage--
-            this.setState({
-                leads_en_contacto
-            })
-            this.getLeadsEnContacto()
-        }
-    }
-    nextPageLeadEnNegociacion = (e) => {
-        e.preventDefault()
-        const { leads_en_negociacion } = this.state
-        if (leads_en_negociacion.numPage < leads_en_negociacion.total_paginas - 1) {
-            leads_en_negociacion.numPage++
-            this.setState({
-                leads_en_negociacion
-            })
-        }
-        this.getLeadsEnNegociacion()
-    }
-    prevPageLeadEnNegociacion = (e) => {
-        e.preventDefault()
-        const { leads_en_negociacion } = this.state
-        if (leads_en_negociacion.numPage > 0) {
-            leads_en_negociacion.numPage--
-            this.setState({
-                leads_en_negociacion
-            })
-            this.getLeadsEnNegociacion()
-        }
-    }
-    nextPageLeadCancelados = (e) => {
-        e.preventDefault()
-        const { leads_cancelados } = this.state
-        if (leads_cancelados.numPage < leads_cancelados.total_paginas - 1) {
-            leads_cancelados.numPage++
-            this.setState({
-                leads_cancelados
-            })
-        }
-        this.getLeadsCancelados()
-    }
-    prevPageLeadCancelados = (e) => {
-        e.preventDefault()
-        const { leads_cancelados } = this.state
-        if (leads_cancelados.numPage > 0) {
-            leads_cancelados.numPage--
-            this.setState({
-                leads_cancelados
-            })
-            this.getLeadsCancelados()
-        }
-    }
-    nextPageLeadContratados = (e) => {
-        e.preventDefault()
-        const { leads_contratados } = this.state
-        if (leads_contratados.numPage < leads_contratados.total_paginas - 1) {
-            leads_contratados.numPage++
-            this.setState({
-                leads_contratados
-            })
-        }
-        this.getLeadsContratados()
-    }
-    prevPageLeadContratados = (e) => {
-        e.preventDefault()
-        const { leads_contratados } = this.state
-        if (leads_contratados.numPage > 0) {
-            leads_contratados.numPage--
-            this.setState({
-                leads_contratados
-            })
-            this.getLeadsContratados()
-        }
-    }
-    nextPageLeadDetenidos = (e) => {
-        e.preventDefault()
-        const { leads_detenidos } = this.state
-        if (leads_detenidos.numPage < leads_detenidos.total_paginas - 1) {
-            leads_detenidos.numPage++
-            this.setState({
-                leads_detenidos
-            })
-        }
-        this.getLeadsDetenidos()
-    }
-    prevPageLeadDetenidos = (e) => {
-        e.preventDefault()
-        const { leads_detenidos } = this.state
-        if (leads_detenidos.numPage > 0) {
-            leads_detenidos.numPage--
-            this.setState({
-                leads_detenidos
-            })
-            this.getLeadsDetenidos()
-        }
-    }
-    nextPageRhProveedor = (e) => {
-        e.preventDefault()
-        const { lead_rh_proveedores } = this.state
-        if (lead_rh_proveedores.numPage < lead_rh_proveedores.total_paginas - 1) {
-            lead_rh_proveedores.numPage++
-            this.setState({
-                lead_rh_proveedores
-            })
-        }
-        this.getLeadsRhProveedores()
-    }
-    prevPageRhProveedor = (e) => {
-        e.preventDefault()
-        const { lead_rh_proveedores } = this.state
-        if (lead_rh_proveedores.numPage > 0) {
-            lead_rh_proveedores.numPage--
-            this.setState({
-                lead_rh_proveedores
-            })
-            this.getLeadsRhProveedores()
-        }
-    }
+    
+    /* ANCHOR CRM TIMELINE GET ULTIMOS LEADS INGRESADOS */
     async getUltimosContactos() {
         const { access_token } = this.props.authUser
         const { ultimos_contactados } = this.state
@@ -472,6 +501,8 @@ class Crm extends Component {
             console.log(error, 'error')
         })
     }
+
+    /* ANCHOR CRM TIMELINE GET ULTIMOS LEADS SIN CONTACTO */
     async getSinContactar() {
         const { access_token } = this.props.authUser
         const { prospectos_sin_contactar } = this.state
@@ -501,6 +532,8 @@ class Crm extends Component {
             console.log(error, 'error')
         })
     }
+
+    /* ANCHOR CRM TIMELINE GET ULTIMOS LEADS INGRESADOS */
     async getUltimosIngresados() {
         const { access_token } = this.props.authUser
         const { ultimos_ingresados } = this.state
@@ -530,6 +563,8 @@ class Crm extends Component {
             console.log(error, 'error')
         })
     }
+
+    /* ANCHOR CRM TABLE PUT LEADS RRHH PROVEEDOR */
     async getLeadsRhProveedores() {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -563,6 +598,7 @@ class Crm extends Component {
         })
     }
 
+    /* ANCHOR CRM TABLE PUT LEADS DE PÁGINAS WEB */
     async getLeadsWeb() {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -596,6 +632,7 @@ class Crm extends Component {
         })
     }
 
+    /* ANCHOR CRM TABLE PUT LEADS EN NEGOCIACIÓN */
     async getLeadsEnNegociacion() {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -629,6 +666,7 @@ class Crm extends Component {
         })
     }
 
+    /* ANCHOR CRM TABLE PUT LEADS EN CONTACTO */
     async getLeadsEnContacto() {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -662,6 +700,7 @@ class Crm extends Component {
         })
     }
 
+    /* ANCHOR CRM TABLE PUT LEADS CANCELADOS */
     async getLeadsCancelados() {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -694,6 +733,8 @@ class Crm extends Component {
             console.log(error, 'error')
         })
     }
+
+    /* ANCHOR CRM TABLE PUT LEADS CONTRATADOS */
     async getLeadsContratados() {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -726,6 +767,8 @@ class Crm extends Component {
             console.log(error, 'error')
         })
     }
+
+    /* ANCHOR CRM TABLE PUT LEADS DETENIDOS */
     async getLeadsDetenidos() {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -758,33 +801,8 @@ class Crm extends Component {
             console.log(error, 'error')
         })
     }
-    onChange = e => {
-        const { name, value } = e.target
-        const { form } = this.state
-        form[name] = value
-        this.setState({
-            ...this.state,
-            form
-        })
-    }
-    onChangeEditar = e => {
-        const { name, value } = e.target
-        const { formEditar } = this.state
-        formEditar[name] = value
-        this.setState({
-            ...this.state,
-            formEditar
-        })
-    }
-    onChangeHistorial = e => {
-        const { formHistorial } = this.state
-        const { name, value } = e.target
-        formHistorial[name] = value
-        this.setState({
-            ...this.state,
-            formHistorial
-        })
-    }
+
+    /* ANCHOR CRM SOLICITAR LLAMADA */
     sendEmailNewWebLead = async lead => {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -810,6 +828,7 @@ class Crm extends Component {
         })
     }
 
+    /* ANCHOR CRM AGENDAR LLAMADA */
     agendarLlamada = async () => {
         const { lead, form } = this.state
         waitAlert()
@@ -842,6 +861,260 @@ class Crm extends Component {
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
+        })
+    }
+
+    /* ANCHOR LEAD PUT CAMBIO DE ESTATUS */
+    async changeEstatusAxios(data) {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.put(URL_DEV + 'crm/lead/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { activeTable } = this.state
+                this.changeActiveTable(activeTable)
+                doneAlert('El estatus fue actualizado con éxito.')
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    /* ANCHOR CRM PUT CAMBIO DE ORIGEN */
+    async changeOrigenAxios(data) {
+
+        waitAlert()
+
+        const { access_token } = this.props.authUser
+
+        await axios.put(URL_DEV + 'crm/lead/origen/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+
+                const { activeTable } = this.state
+                this.changeActiveTable(activeTable)
+                doneAlert('El origen fue actualizado con éxito.')
+
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    /* ANCHOR CRM PUT CAMBIO DE ESTATUS CANCELADO Y RECHAZADO */
+    async changeEstatusCanceladoRechazadoAxios(data) {
+        const { access_token } = this.props.authUser
+        if(document.getElementById('motivo'))
+            data.motivo = document.getElementById('motivo').value
+        waitAlert()
+        await axios.put(URL_DEV + 'crm/lead/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.getUltimosIngresados()
+                this.getSinContactar()
+                this.getUltimosContactos()
+                const { activeTable } = this.state
+                this.changeActiveTable(activeTable)
+                doneAlert('El estatus fue actualizado con éxito.')
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    /* ANCHOR CRM UPDATE INFO LEAD */
+    async addLeadInfoAxios() {
+        const { access_token } = this.props.authUser
+        const { formEditar, lead } = this.state
+        await axios.put(URL_DEV + 'crm/update/lead-en-contacto/' + lead.id, formEditar, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito el lead.')
+                const { formEditar, activeTable } = this.state
+                formEditar.name = ''
+                formEditar.telefono = ''
+                formEditar.email = ''
+                switch (activeTable) {
+                    case 'rh-proveedores':
+                        this.getLeadsRhProveedores();
+                        break;
+                    case 'web':
+                        this.getLeadsWeb();
+                        break;
+                    case 'contacto':
+                        this.getLeadsEnContacto();
+                        break;
+                    case 'contratados':
+                        this.getLeadsContratados();
+                        break;
+                    case 'cancelados':
+                        this.getLeadsCancelados();
+                        break;
+                    case 'detenidos':
+                        this.getLeadsDetenidos();
+                        break;
+                    case 'negociacion':
+                        this.getLeadsEnNegociacion();
+                        break;
+                    default: break;
+                }
+                this.setState({
+                    ...this.state,
+                    modal_editar: false,
+                    formEditar
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    /* ANCHOR CRM AGREGAR CONTACTO DE LEAD */
+    async agregarContacto() {
+        waitAlert()
+        const { lead, formHistorial } = this.state
+        const { access_token } = this.props.authUser
+        const data = new FormData();
+        let aux = Object.keys(formHistorial)
+        aux.map((element) => {
+            switch (element) {
+                case 'fechaContacto':
+                    data.append(element, (new Date(formHistorial[element])).toDateString())
+                    break
+                case 'adjuntos':
+                    break;
+                default:
+                    data.append(element, formHistorial[element]);
+                    break
+            }
+            return false
+        })
+        aux = Object.keys(formHistorial.adjuntos)
+        aux.map((element) => {
+            if (formHistorial.adjuntos[element].value !== '') {
+                for (var i = 0; i < formHistorial.adjuntos[element].files.length; i++) {
+                    data.append(`files_name_${element}[]`, formHistorial.adjuntos[element].files[i].name)
+                    data.append(`files_${element}[]`, formHistorial.adjuntos[element].files[i].file)
+                }
+                data.append('adjuntos[]', element)
+            }
+            return false
+        })
+        await axios.post(URL_DEV + 'crm/contacto/lead/' + lead.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.getUltimosIngresados()
+                this.getSinContactar()
+                this.getUltimosContactos()
+                const { lead } = response.data
+                this.setState({
+                    ...this.state,
+                    formHistorial: this.clearForm(),
+                    lead: lead
+                })
+                doneAlert('Historial actualizado con éxito');
+                this.getLeadsWeb()
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    /* ANCHOR CRM GET ONE LEAD ALL INFO */
+    getOneLeadInfoAxios = async( lead ) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'crm/lead/' + lead, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                Swal.close()
+                const { lead } = response.data
+                this.setState({
+                    ...this.state,
+                    modal_one_lead: true,
+                    lead: lead
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    onChange = e => {
+        const { name, value } = e.target
+        const { form } = this.state
+        form[name] = value
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
+
+    onChangeEditar = e => {
+        const { name, value } = e.target
+        const { formEditar } = this.state
+        formEditar[name] = value
+        this.setState({
+            ...this.state,
+            formEditar
+        })
+    }
+
+    onChangeHistorial = e => {
+        const { formHistorial } = this.state
+        const { name, value } = e.target
+        formHistorial[name] = value
+        this.setState({
+            ...this.state,
+            formHistorial
         })
     }
 
@@ -931,6 +1204,7 @@ class Crm extends Component {
             lead: lead
         })
     }
+
     handleCloseModal = () => {
         this.setState({
             ...this.state,
@@ -938,6 +1212,15 @@ class Crm extends Component {
             lead: ''
         })
     }
+
+    handleCloseModalOneLead = () => {
+        this.setState({
+            ...this.state,
+            modal_one_lead: false,
+            lead: ''
+        })
+    }
+
     openModalEditar = lead => {
         const { formEditar } = this.state
         formEditar.name = lead.nombre.toUpperCase()
@@ -951,6 +1234,7 @@ class Crm extends Component {
             formEditar
         })
     }
+
     handleCloseModalEditar = () => {
         this.setState({
             ...this.state,
@@ -958,6 +1242,7 @@ class Crm extends Component {
             lead: ''
         })
     }
+
     handleChange = (files, item) => {
         const { formHistorial } = this.state
         let aux = []
@@ -978,6 +1263,7 @@ class Crm extends Component {
             formHistorial
         })
     }
+
     openModalHistorial = lead => {
         let { activePage } = this.state
         activePage = 1
@@ -988,6 +1274,7 @@ class Crm extends Component {
             activePage
         })
     }
+
     handleCloseModalHistorial = () => {
         this.setState({
             ...this.state,
@@ -996,6 +1283,7 @@ class Crm extends Component {
             formHistorial: this.clearForm(),
         })
     }
+
     clearForm = () => {
         const { formHistorial } = this.state
         let aux = Object.keys(formHistorial)
@@ -1020,84 +1308,6 @@ class Crm extends Component {
             return false
         })
         return formHistorial;
-    }
-    async changeEstatusAxios(data) {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        await axios.put(URL_DEV + 'crm/lead/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { activeTable } = this.state
-                this.changeActiveTable(activeTable)
-                doneAlert('El estatus fue actualizado con éxito.')
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-
-    async changeOrigenAxios(data) {
-
-        waitAlert()
-
-        const { access_token } = this.props.authUser
-
-        await axios.put(URL_DEV + 'crm/lead/origen/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-
-                const { activeTable } = this.state
-                this.changeActiveTable(activeTable)
-                doneAlert('El origen fue actualizado con éxito.')
-
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-
-    async changeEstatusCanceladoRechazadoAxios(data) {
-        const { access_token } = this.props.authUser
-        if(document.getElementById('motivo'))
-            data.motivo = document.getElementById('motivo').value
-        waitAlert()
-        await axios.put(URL_DEV + 'crm/lead/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                this.getUltimosIngresados()
-                this.getSinContactar()
-                this.getUltimosContactos()
-                const { activeTable } = this.state
-                this.changeActiveTable(activeTable)
-                doneAlert('El estatus fue actualizado con éxito.')
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
     }
 
     changeEstatus = (estatus, id) => {
@@ -1158,6 +1368,7 @@ class Crm extends Component {
             state: { lead: lead, tipo: 'En negociación' }
         });
     }
+
     changePageDetailsContratado = (lead) => {
         const { history } = this.props
         history.push({
@@ -1165,6 +1376,7 @@ class Crm extends Component {
             state: { lead: lead, tipo: 'Contratado' }
         });
     }
+
     changePageDetailsCR = (lead) => {
         const { history } = this.props
         let status = ''
@@ -1179,6 +1391,7 @@ class Crm extends Component {
             state: { lead: lead, tipo: status }
         });
     }
+
     changePageDetailsDetenido = (lead) => {
         const { history } = this.props
         history.push({
@@ -1207,59 +1420,6 @@ class Crm extends Component {
         this.addLeadInfoAxios()
     }
 
-    async addLeadInfoAxios() {
-        const { access_token } = this.props.authUser
-        const { formEditar, lead } = this.state
-        await axios.put(URL_DEV + 'crm/update/lead-en-contacto/' + lead.id, formEditar, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito el lead.')
-                const { formEditar, activeTable } = this.state
-                formEditar.name = ''
-                formEditar.telefono = ''
-                formEditar.email = ''
-                switch (activeTable) {
-                    case 'rh-proveedores':
-                        this.getLeadsRhProveedores();
-                        break;
-                    case 'web':
-                        this.getLeadsWeb();
-                        break;
-                    case 'contacto':
-                        this.getLeadsEnContacto();
-                        break;
-                    case 'contratados':
-                        this.getLeadsContratados();
-                        break;
-                    case 'cancelados':
-                        this.getLeadsCancelados();
-                        break;
-                    case 'detenidos':
-                        this.getLeadsDetenidos();
-                        break;
-                    case 'negociacion':
-                        this.getLeadsEnNegociacion();
-                        break;
-                    default: break;
-                }
-                this.setState({
-                    ...this.state,
-                    modal_editar: false,
-                    formEditar
-                })
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
     mostrarFormulario() {
         const { showForm } = this.state
         this.setState({
@@ -1267,63 +1427,7 @@ class Crm extends Component {
             showForm: !showForm
         })
     }
-    async agregarContacto() {
-        waitAlert()
-        const { lead, formHistorial } = this.state
-        const { access_token } = this.props.authUser
-        const data = new FormData();
-        let aux = Object.keys(formHistorial)
-        aux.map((element) => {
-            switch (element) {
-                case 'fechaContacto':
-                    data.append(element, (new Date(formHistorial[element])).toDateString())
-                    break
-                case 'adjuntos':
-                    break;
-                default:
-                    data.append(element, formHistorial[element]);
-                    break
-            }
-            return false
-        })
-        aux = Object.keys(formHistorial.adjuntos)
-        aux.map((element) => {
-            if (formHistorial.adjuntos[element].value !== '') {
-                for (var i = 0; i < formHistorial.adjuntos[element].files.length; i++) {
-                    data.append(`files_name_${element}[]`, formHistorial.adjuntos[element].files[i].name)
-                    data.append(`files_${element}[]`, formHistorial.adjuntos[element].files[i].file)
-                }
-                data.append('adjuntos[]', element)
-            }
-            return false
-        })
-        await axios.post(URL_DEV + 'crm/contacto/lead/' + lead.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                this.getUltimosIngresados()
-                this.getSinContactar()
-                this.getUltimosContactos()
-                const { lead } = response.data
-                this.setState({
-                    ...this.state,
-                    formHistorial: this.clearForm(),
-                    lead: lead
-                })
-                doneAlert('Historial actualizado con éxito');
-                this.getLeadsWeb()
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
+
     onChangePage(pageNumber){
         let { activePage } = this.state
         activePage = pageNumber
@@ -1332,11 +1436,13 @@ class Crm extends Component {
             activePage
         })
     }
+
     componentDidUpdate(){
         $(".pagination").removeClass("page-link");
     }
+
     render() {
-        const { ultimos_contactados, prospectos_sin_contactar, ultimos_ingresados, lead_web, activeTable, leads_en_contacto, leads_en_negociacion,
+        const { ultimos_contactados, prospectos_sin_contactar, ultimos_ingresados, lead_web, activeTable, leads_en_contacto, leads_en_negociacion, modal_one_lead,
             leads_contratados, leads_cancelados, leads_detenidos, modal_agendar, form, lead, lead_rh_proveedores, options, modal_editar, formEditar, modal_historial, formHistorial, itemsPerPage, activePage} = this.state
         return (
             <Layout active='leads' {...this.props} >
@@ -1346,6 +1452,7 @@ class Crm extends Component {
                             ultimos_ingresados={ultimos_ingresados}
                             onClick={this.nextPageUltimosIngresados}
                             onClickPrev={this.prevPageUltimosIngresados}
+                            clickOneLead = { this.getOneLeadInfoAxios }
                         />
                     </Col>
                     <Col lg={4}>
@@ -1747,6 +1854,148 @@ class Crm extends Component {
                             }
                         </div>
                     </div>
+                </Modal>
+
+                {/* ANCHOR MODAL SINGLE ONE LEAD */}
+                <Modal size="xl" title='INFORMACIÓN DEL LEAD' 
+                    show = { modal_one_lead } handleClose = { this.handleCloseModalOneLead } >
+                    <div className = "row mx-0">
+                        <div className = "col-md-12">
+                            <div className = "d-flex justify-content-between mt-4">
+                                <p className = "font-size-h5 text-muted font-size-lg mt-0">
+                                    Nombre:&nbsp; <strong className="font-size-h6">{lead.nombre}</strong>
+                                </p>
+                                {
+                                    lead.estatus ? 
+                                        <span className="navi-link">
+                                            <span className="navi-text">
+                                                <span className="label label-xl label-inline w-100 font-weight-bolder" 
+                                                    style = { { backgroundColor: lead.estatus.color_fondo, color: lead.estatus.color_texto, border: 'transparent' } }>
+                                                    { lead.estatus.estatus.toUpperCase() }
+                                                </span>
+                                            </span>
+                                        </span>
+                                    : ''
+                                }
+                            </div>
+                            <div className="separator separator-solid mb-3"></div>
+                        </div>
+                    </div>
+                    <Tab.Container defaultActiveKey = 'info'>
+                        <Nav className="nav-tabs nav-bold nav-tabs-line nav-tabs-line-3x border-0 mb-4 justify-content-end">
+                            <Nav.Item className="nav-item">
+                                <Nav.Link eventKey="info">
+                                    <span className="nav-text font-weight-bold">INFORMACIÓN GENERAL</span>
+                                </Nav.Link>
+                            </Nav.Item>
+                            {
+                                lead.prospecto ?
+                                    lead.prospecto.contactos ?
+                                        lead.prospecto.contactos.length > 0 ?
+                                            <Nav.Item className="nav-item">
+                                                <Nav.Link eventKey="contactos">
+                                                    <span className="nav-text font-weight-bold">HISTORIAL DE CONTACTO</span>
+                                                </Nav.Link>
+                                            </Nav.Item>                
+                                        : ''
+                                    : ''
+                                : ''
+                            }
+                        </Nav>
+                        <Tab.Content>
+                            <Tab.Pane eventKey = 'contactos'>
+                                
+                            </Tab.Pane>
+                            <Tab.Pane eventKey = 'info'>
+                                <div className = "row mx-0 px-lg-2">
+                                    {
+                                        lead.empresa ? 
+                                            <div className="col-md-3">
+                                                <div className="d-flex justify-content-start">
+                                                    <SymbolIcon tipo = 'info' urlIcon = '/images/svg/Building.svg' />
+                                                    <div>
+                                                        <div className="font-size-h6 text-dark-75 font-weight-bolder">{lead.empresa.name}</div>
+                                                        <div className="font-size-sm text-muted font-weight-bold mt-1">Empresa</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        : ''
+                                    }
+                                    <div className="col-md-3">
+                                        <div className="d-flex justify-content-start mr-2">
+                                            <SymbolIcon tipo = 'primary' urlIcon = '/images/svg/iPhone-X.svg' />
+                                            <div>
+                                                <a target="_blank" href={`tel:+${lead.telefono}`} rel="noopener noreferrer"
+                                                    className="font-size-h6 text-dark-75 font-weight-bolder text-hover-primary">
+                                                    { lead.telefono }
+                                                </a>
+                                                <div className="font-size-sm text-muted font-weight-bold mt-1">TELÉFONO</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="col-md-3">
+                                        <div className="d-flex justify-content-start mr-2">
+                                            <SymbolIcon tipo = 'info' urlIcon = '/images/svg/Box1.svg' />
+                                            <div>
+                                                <div className="font-size-h6 text-dark-75 font-weight-bolder"><Moment format="DD/MM/YYYY">{lead.created_at}</Moment></div>
+                                                <div className="font-size-sm text-muted font-weight-bold mt-1">FECHA</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="col-md-3">
+                                        <div className="d-flex justify-content-start mr-2">
+                                            <SymbolIcon tipo = 'primary' urlIcon = '/images/svg/Mail.svg' />
+                                            <div>
+                                                <a target="_blank" href={`mailto:+${lead.email}`} rel="noopener noreferrer"
+                                                    className="font-size-h6 text-dark-75 font-weight-bolder text-hover-primary">
+                                                    { lead.email }
+                                                </a>
+                                                <div className="font-size-sm text-muted font-weight-bold mt-1">CORREO ELECTRÓNICO</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {
+                                        lead.origen ? 
+                                            <div className="col-md-3 mt-4">
+                                                <div className="d-flex justify-content-start mr-2">
+                                                    <SymbolIcon tipo = 'primary' urlIcon = '/images/svg/Folder-cloud.svg' />
+                                                    <div>
+                                                        <div className="font-size-h6 text-dark-75 font-weight-bolder">{lead.origen.origen}</div>
+                                                        <div className="font-size-sm text-muted font-weight-bold mt-1">Origen</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        : ''
+                                    }
+                                    <div className="col-md-9 mt-4">
+                                        <div className="d-flex justify-content-start mr-2">
+                                            <SymbolIcon tipo = 'info' urlIcon = '/images/svg/Tools.svg' />
+                                            <div>
+                                                <ul className="list-inline mb-0 font-size-h6 text-dark-75 font-weight-bolder">
+                                                    {
+                                                        lead.servicios ? 
+                                                            lead.servicios.map((servicio, key) => {
+                                                                return (
+                                                                    <li className="list-inline-item" key={key}>&#8226; {servicio.servicio}</li>
+                                                                )
+                                                            })
+                                                        :
+                                                            <li className="list-inline-item">No hay servicios registrados</li>
+                                                    }
+                                                </ul>
+                                                <div className="font-size-sm text-muted font-weight-bold mt-1">Servicios</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className = 'col-md-12 mt-4'>
+                                        <div className="bg-gray-100 p-3 font-size-lg font-weight-light" >
+                                            <strong >Comentario: </strong>{lead.comentario}
+                                        </div>
+                                    </div>
+                                </div>
+                            </Tab.Pane>
+                        </Tab.Content>
+                    </Tab.Container>
                 </Modal>
             </Layout>
         );
