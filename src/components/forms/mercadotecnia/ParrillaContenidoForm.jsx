@@ -88,14 +88,6 @@ class ParrillaContenidoForm extends Component {
                     {
                         evento !== '' ?
                             <>
-                                <Nav.Item onClick={(e) => { e.preventDefault(); onChangeModalTab("comments") }}>
-                                    <Nav.Link eventKey="comments" >
-                                        <span className="nav-icon">
-                                            <i className="flaticon2-chat-1"></i>
-                                        </span>
-                                        <span className="nav-text">COMENTARIOS</span>
-                                    </Nav.Link>
-                                </Nav.Item>
                                 <Nav.Item onClick={(e) => { e.preventDefault(); onChangeModalTab("files") }}>
                                     <Nav.Link eventKey="files" >
                                         <span className="nav-icon">
@@ -104,7 +96,28 @@ class ParrillaContenidoForm extends Component {
                                         <span className="nav-text">ADJUNTOS</span>
                                     </Nav.Link>
                                 </Nav.Item>
+                                <Nav.Item onClick={(e) => { e.preventDefault(); onChangeModalTab("addcomments") }}>
+                                    <Nav.Link eventKey="addcomments" >
+                                        <span className="nav-icon">
+                                            <i className="flaticon2-plus"></i>
+                                        </span>
+                                        <span className="nav-text">AGREGAR COMENTARIO</span>
+                                    </Nav.Link>
+                                </Nav.Item>
                             </>
+                            : ''
+                    }
+                    {
+                        evento &&
+                        evento.comentarios.length > 0 ?
+                            <Nav.Item onClick={(e) => { e.preventDefault(); onChangeModalTab("comments") }}>
+                                <Nav.Link eventKey="comments" >
+                                    <span className="nav-icon">
+                                        <i className="flaticon2-chat-1"></i>
+                                    </span>
+                                    <span className="nav-text">MOSTRAR COMENTARIOS</span>
+                                </Nav.Link>
+                            </Nav.Item>
                         : ''
                     }
                 </Nav>
@@ -238,7 +251,7 @@ class ParrillaContenidoForm extends Component {
                             </div>
                         </Form>
                     </Tab.Pane>
-                    <Tab.Pane eventKey="comments">
+                    <Tab.Pane eventKey="addcomments">
                         <div>
                             <Form id="form-comentario"
                                 onSubmit={
@@ -283,11 +296,13 @@ class ParrillaContenidoForm extends Component {
                                 </div>
                             </Form>
                         </div>
+                    </Tab.Pane>
+                    <Tab.Pane eventKey="comments">
                         {
                             evento &&
                                 evento.comentarios.length > 0 ?
-                                <div className='row mx-0 justify-content-center'>
-                                    <div className="col-md-8 mt-5">
+                                <div className="col-md-12 row d-flex justify-content-center">
+                                    <div className="col-md-7 mt-5">
                                         {
                                             evento.comentarios.length > 0 &&
                                             evento.comentarios.map((comentario, key) => {
@@ -301,13 +316,13 @@ class ParrillaContenidoForm extends Component {
                                                                             <img alt="Pic" src={comentario.user.avatar ? comentario.user.avatar : "/default.jpg"} />
                                                                         </div>
                                                                         <div className="timeline-content">
-                                                                            <span className="text-info font-weight-bolder">{comentario.user.name}</span>
+                                                                            <span className="text-primary font-weight-bolder">{comentario.user.name}</span>
                                                                             <span className="text-muted ml-2 font-weight-bold">{this.diffCommentDate(comentario)}</span>
                                                                             <p className="p-0 font-weight-light mb-0">{comentario.comentario}</p>
                                                                             {
                                                                                 comentario.adjunto ?
                                                                                     <div className="d-flex justify-content-end">
-                                                                                        <a href={comentario.adjunto.url} target='_blank' rel="noopener noreferrer" className="text-muted text-hover-info font-weight-bold">
+                                                                                        <a href={comentario.adjunto.url} target='_blank' rel="noopener noreferrer" className="text-muted text-hover-primary font-weight-bold">
                                                                                             <span className="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
                                                                                                 <SVG src={toAbsoluteUrl('/images/svg/Attachment1.svg')} />
                                                                                             </span>VER ADJUNTO

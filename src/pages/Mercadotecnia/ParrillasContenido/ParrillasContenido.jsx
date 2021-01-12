@@ -409,7 +409,7 @@ class Calendario extends Component {
             form,
             modal,
             formeditado: 1,
-            activeKeyModal: "comments",
+            activeKeyModal: "addcomments",
             evento: event,
             title: 'Editar contenido'
         })
