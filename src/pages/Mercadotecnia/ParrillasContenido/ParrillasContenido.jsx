@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import moment from 'moment'
 import { URL_DEV } from '../../../constants';
-import { doneAlert, errorAlert, forbiddenAccessAlert, waitAlert } from '../../../functions/alert';
+import { doneAlert, errorAlert, forbiddenAccessAlert, questionAlert, waitAlert } from '../../../functions/alert';
 import { connect } from 'react-redux';
 import Layout from '../../../components/layout/layout';
 import { Card, Nav, OverlayTrigger, Tooltip } from 'react-bootstrap'
@@ -215,14 +215,98 @@ class Calendario extends Component {
         waitAlert()
         const { access_token } = this.props.authUser
         const { form, evento } = this.state
-        await axios.post(URL_DEV + 'mercadotecnia/parrilla-contenido/comentario/' + evento.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        const data = new FormData();
+
+        form.adjuntos.adjunto_comentario.files.map(( adjunto) => {
+            data.append(`files_name_adjunto[]`, adjunto.name)
+            data.append(`files_adjunto[]`, adjunto.file)
+        })
+
+        data.append(`comentario`, form.comentario)
+        
+        await axios.post(URL_DEV + 'mercadotecnia/parrilla-contenido/comentario/' + evento.id, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert('Comentario agregado con éxito');
                 const { form } = this.state
                 form.comentario = ''
+                form.adjuntos.adjunto_comentario = {
+                    value: '',
+                    placeholder: 'Adjunto',
+                    files: []
+                }
                 this.setState({
                     ...this.state,
                     form
+                })
+                this.getContentAxios()
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    sendAdjuntoAxios = async(files, item) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { evento } = this.state
+        const data = new FormData();
+
+        for (var i = 0; i < files.length; i++) {
+            data.append(`files_name_adjunto[]`, files[i].name)
+            data.append(`files_adjunto[]`, files[i])
+        }
+
+        await axios.post(URL_DEV + 'mercadotecnia/parrilla-contenido/adjunto/' + evento.id, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert('Adjunto agregado con éxito');
+                const { form } = this.state
+                form.adjuntos.adjunto = {
+                        value: '',
+                        placeholder: 'Adjunto',
+                        files: []
+                    }
+
+                this.setState({
+                    ...this.state,
+                    form
+                })
+                this.getContentAxios()
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async deleteContenidoAxios() {
+        const { evento } = this.state
+        const { access_token } = this.props.authUser
+        await axios.delete(URL_DEV + 'mercadotecnia/parrilla-contenido/' + evento.id, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
+            (response) => {
+                const { modal } = this.state
+                modal.form = false
+                doneAlert('Adjunto eliminado con éxito.')
+                this.setState({
+                    ...this.state,
+                    evento: '',
+                    modal
                 })
                 this.getContentAxios()
             },
@@ -418,6 +502,11 @@ class Calendario extends Component {
             </OverlayTrigger>
         )
     }
+
+    handleChangeSubmit = (files, item) => {
+        questionAlert('¿DESEAS ADJUNTAR EL ARCHIVO?', '', () => this.sendAdjuntoAxios(files, item))
+    }
+    
     handleChange = (files, item) => {
         const { form } = this.state
         let aux = []
@@ -438,30 +527,11 @@ class Calendario extends Component {
             form
         })
     }
+
     deleteContenido = (id) => {
         this.deleteContenidoAxios(id)
     }
-    async deleteContenidoAxios(id) {
-        const { access_token } = this.props.authUser
-        await axios.delete(URL_DEV + 'mercadotecnia/parrillas-de-contenido/' + id, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
-            (response) => {
-                this.setState({
-                    ...this.state,
-                })
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
+    
     render() {
 
         const { modal, title, form, formeditado, options, content, data, empresa, activeKeyModal, evento } = this.state
@@ -512,11 +582,11 @@ class Calendario extends Component {
                     </Card.Body>
                 </Card>
                 <Modal size="xl" title={title} show={modal.form} handleClose={this.handleCloseForm}>
-                    <ParrillaContenidoForm form={form} formeditado={formeditado}
+                    <ParrillaContenidoForm form={form} formeditado={formeditado} title = { title }
                         options={options} onChange={this.onChange} onSubmit={this.sendParrillaAxios}
                         onChangeModalTab={this.onChangeModalTab} activeKey={activeKeyModal}
                         addComentario={this.addComentarioAxios} evento={evento} handleChange={this.handleChange} 
-                        deleteContenido={this.deleteContenido}
+                        deleteContenido={this.deleteContenido} handleChangeSubmit = {this.handleChangeSubmit}
                     />
                 </Modal>
             </Layout>

@@ -6,6 +6,7 @@ import moment from 'moment'
 import ItemSlider from '../../../components/singles/ItemSlider'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
+import FileItem from '../../singles/FileItem'
 class ParrillaContenidoForm extends Component {
 
     updateSocialNetworks = value => {
@@ -71,7 +72,8 @@ class ParrillaContenidoForm extends Component {
     }
 
     render() {
-        const { options, form, onChange, onSubmit, formeditado, activeKey, onChangeModalTab, addComentario, evento, handleChange, deleteContenido, ...props } = this.props
+        const { options, form, onChange, onSubmit, formeditado, activeKey, onChangeModalTab, addComentario, evento, handleChange, deleteContenido, 
+            title, addAdjunto, handleChangeSubmit, ...props } = this.props
         return (
             <Tab.Container activeKey={activeKey} >
                 <Nav className="nav-tabs nav-bold nav-tabs-line nav-tabs-line-3x border-0 nav-tabs-line-primary my-3 d-flex justify-content-end">
@@ -85,14 +87,24 @@ class ParrillaContenidoForm extends Component {
                     </Nav.Item>
                     {
                         evento !== '' ?
-                            <Nav.Item onClick={(e) => { e.preventDefault(); onChangeModalTab("addcomments") }}>
-                                <Nav.Link eventKey="addcomments" >
-                                    <span className="nav-icon">
-                                        <i className="flaticon2-plus"></i>
-                                    </span>
-                                    <span className="nav-text">AGREGAR COMENTARIO</span>
-                                </Nav.Link>
-                            </Nav.Item>
+                            <>
+                                <Nav.Item onClick={(e) => { e.preventDefault(); onChangeModalTab("files") }}>
+                                    <Nav.Link eventKey="files" >
+                                        <span className="nav-icon">
+                                            <i className="flaticon2-file"></i>
+                                        </span>
+                                        <span className="nav-text">ADJUNTOS</span>
+                                    </Nav.Link>
+                                </Nav.Item>
+                                <Nav.Item onClick={(e) => { e.preventDefault(); onChangeModalTab("addcomments") }}>
+                                    <Nav.Link eventKey="addcomments" >
+                                        <span className="nav-icon">
+                                            <i className="flaticon2-plus"></i>
+                                        </span>
+                                        <span className="nav-text">AGREGAR COMENTARIO</span>
+                                    </Nav.Link>
+                                </Nav.Item>
+                            </>
                             : ''
                     }
                     {
@@ -196,23 +208,23 @@ class ParrillaContenidoForm extends Component {
                                         </div>
                                     </div>
                                 </Col>
-                                <Col md="12">
-                                    <div className="form-group row form-group-marginless justify-content-center">
-                                        <div className="col-md-12 d-flex justify-content-center align-self-center">
-                                            <div>
-                                                <div className="text-center font-weight-bolder mb-2">
-                                                    {form.adjuntos.adjunto.placeholder}
+                                {
+                                    title === 'Agregar contenido'  && false ? 
+                                        <Col md="12">
+                                            <div className="form-group row form-group-marginless justify-content-center">
+                                                <div className="col-md-12 d-flex justify-content-center align-self-center">
+                                                    <div>
+                                                        <div className="text-center font-weight-bolder mb-2">
+                                                            {form.adjuntos.adjunto.placeholder}
+                                                        </div>
+                                                        <ItemSlider multiple = { true } items = { form.adjuntos.adjunto.files }
+                                                            item = 'adjunto' handleChange={handleChange}/>
+                                                    </div>
                                                 </div>
-                                                <ItemSlider
-                                                    multiple={true}
-                                                    items={form.adjuntos.adjunto.files}
-                                                    item='adjunto'
-                                                    handleChange={handleChange}
-                                                />
                                             </div>
-                                        </div>
-                                    </div>
-                                </Col>
+                                        </Col>
+                                    : ''
+                                }
                             </Row>
                             <div className="card-footer py-3 pr-1">
                                 <div className="row mx-0">
@@ -331,6 +343,74 @@ class ParrillaContenidoForm extends Component {
                                 </div>
                                 : ''
                         }
+                    </Tab.Pane>
+                    <Tab.Pane eventKey="files">
+                        <div>
+                            <Form id="form-adjuntos"
+                                onSubmit={
+                                    (e) => {
+                                        e.preventDefault();
+                                        validateAlert(addAdjunto, e, 'form-adjuntos')
+                                    }
+                                }>
+                                <Row>
+                                    <Col md = '12'>
+                                        <div className="table-responsive mt-4">
+                                            <table className="table table-vertical-center">
+                                                <thead className="thead-light">
+                                                    <tr className="text-left text-dark-75">
+                                                        <th className="pl-2" style={{ minWidth: "150px" }}>Adjunto</th>
+                                                        <th style={{ minWidth: "80px" }} className="text-center">Fecha</th>
+                                                        <th className="pr-0 text-right" style={{ minWidth: "70px" }}></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody >
+                                                    {
+                                                        evento ?
+                                                            evento.adjuntos ?
+                                                                evento.adjuntos.length === 0 ?
+                                                                    <tr className="text-center text-dark-75">
+                                                                        <th className="pl-2" colSpan = "3" >NO HAY ADJUNTOS</th>
+                                                                    </tr>
+                                                                : ''
+                                                            : 
+                                                                <tr className="text-center text-dark-75">
+                                                                    <th className="pl-2" colSpan = "3" >NO HAY ADJUNTOS</th>
+                                                                </tr>
+                                                        : 
+                                                            <tr className="text-center text-dark-75">
+                                                                <th className="pl-2" colSpan = "3" >NO HAY ADJUNTOS</th>
+                                                            </tr>
+                                                    }
+                                                    {
+                                                        evento ?
+                                                            evento.adjuntos.map((adjunto, key) => {
+                                                                return (
+                                                                    <FileItem item={adjunto} onClickDelete={this.onClickDelete} key={key} />
+                                                                )
+                                                            })
+                                                        : ''
+                                                    }
+                                                </tbody>
+                                            </table>
+                                        </div >
+                                    </Col>
+                                    <Col md="12">
+                                        <div className="form-group row form-group-marginless justify-content-center">
+                                            <div className="col-md-12 d-flex justify-content-center align-self-center">
+                                                <div>
+                                                    <div className="text-center font-weight-bolder mb-2">
+                                                        {form.adjuntos.adjunto.placeholder}
+                                                    </div>
+                                                    <ItemSlider multiple = { true } items = { form.adjuntos.adjunto.files }
+                                                        item = 'adjunto' handleChange = { handleChangeSubmit } />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </Col>
+                                </Row>
+                            </Form>
+                        </div>
                     </Tab.Pane>
                 </Tab.Content>
             </Tab.Container>
