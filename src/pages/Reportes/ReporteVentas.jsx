@@ -953,50 +953,46 @@ class ReporteVentas extends Component {
     }
 
     setComentario = lead => {
-        let aux = '-'
-        if(lead){
-            if(lead.prospecto){
+        let aux = '';
+        if(lead.estatus){
+            switch(lead.estatus.estatus){
+                case 'Rechazado':
+                case 'Cancelado':
+                    if(lead.motivo === '' || lead.motivo === null){
+                        if(lead.rh)
+                            aux += "RR.HH.\n "
+                        if(lead.proveedor)
+                            aux += "PROVEEDOR.\n "
+                    }
+                        else
+                        aux += lead.motivo + "\n"
+                    break;
+                default: break;
+            }
+        }
+        if( lead.prospecto ){
+            if(aux === ''){
                 if(lead.prospecto.estatus_prospecto){
                     switch(lead.prospecto.estatus_prospecto.estatus){
-                        case 'Cancelado':
                         case 'Rechazado':
-                            aux = lead.prospecto.motivo
-                            if(aux === '')
-                                aux = lead.motivo
-                            if(aux === ''){
+                        case 'Cancelado':
+                            if(lead.motivo === '' || lead.motivo === null){
                                 if(lead.rh)
-                                    aux = 'RRHH'
+                                    aux += "RR.HH.\n "
                                 if(lead.proveedor)
-                                    aux = 'PROVEEDOR'
+                                    aux += "PROVEEDOR.\n "
                             }
+                            else
+                                aux += lead.motivo + "\n"
+                            aux += lead.motivo + "\n"
                             break;
-                    }
-                }else{
-                    if(lead.estatus){
-                        switch(lead.estatus.estatus){
-                            case 'Cancelado':
-                            case 'Rechazado':
-                                aux = lead.motivo
-                                if(aux === ''){
-                                    if(lead.rh)
-                                        aux = 'RRHH'
-                                    if(lead.proveedor)
-                                        aux = 'PROVEEDOR'
-                                }
-                                break;
-                        }
+                        default: break;
                     }
                 }
             }
-        }
-        if( aux  === '-' ){
-            if(lead){
-                if(lead.prospecto){
-                    if(lead.prospecto.contactos){
-                        if(lead.prospecto.contactos.length){
-                            aux = lead.prospecto.contactos[0].comentario
-                        }
-                    }
+            if(lead.prospecto.contactos){
+                if(lead.prospecto.contactos.length){
+                    aux += lead.prospecto.contactos[0].comentario
                 }
             }
         }
@@ -1671,6 +1667,7 @@ class ReporteVentas extends Component {
                                             </tr>
                                         </thead>
                                         <tbody>
+                                            { console.log(form.leads, 'LEADS') }
                                             {
                                                 form.leads.map((lead, index)=>{
                                                     if(lead.prospecto)
