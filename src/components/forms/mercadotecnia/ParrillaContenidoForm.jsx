@@ -73,10 +73,10 @@ class ParrillaContenidoForm extends Component {
 
     render() {
         const { options, form, onChange, onSubmit, formeditado, activeKey, onChangeModalTab, addComentario, evento, handleChange, deleteContenido, 
-            title, addAdjunto, handleChangeSubmit, ...props } = this.props
+            title, addAdjunto, handleChangeSubmit, onClickDelete, ...props } = this.props
         return (
             <Tab.Container activeKey={activeKey} >
-                <Nav className="nav-tabs nav-bold nav-tabs-line nav-tabs-line-3x border-0 nav-tabs-line-primary my-3 d-flex justify-content-end">
+                <Nav className="nav-tabs nav-bold nav-tabs-line nav-tabs-line-3x border-0 nav-tabs-line-primary mt-2 mb-4 d-flex justify-content-end">
                     <Nav.Item onClick={(e) => { e.preventDefault(); onChangeModalTab("form") }}>
                         <Nav.Link eventKey="form" >
                             <span className="nav-icon">
@@ -91,7 +91,7 @@ class ParrillaContenidoForm extends Component {
                                 <Nav.Item onClick={(e) => { e.preventDefault(); onChangeModalTab("files") }}>
                                     <Nav.Link eventKey="files" >
                                         <span className="nav-icon">
-                                            <i className="flaticon2-file"></i>
+                                            <i className="flaticon-attachment"></i>
                                         </span>
                                         <span className="nav-text">ADJUNTOS</span>
                                     </Nav.Link>
@@ -354,6 +354,19 @@ class ParrillaContenidoForm extends Component {
                                     }
                                 }>
                                 <Row>
+                                    <Col md="12">
+                                        <div className="form-group row form-group-marginless justify-content-center">
+                                            <div className="col-md-12 d-flex justify-content-center align-self-center">
+                                                <div>
+                                                    <div className="text-center font-weight-bolder mb-2">
+                                                        {form.adjuntos.adjunto.placeholder}
+                                                    </div>
+                                                    <ItemSlider multiple = { true } items = { form.adjuntos.adjunto.files }
+                                                        item = 'adjunto' handleChange = { handleChangeSubmit } />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </Col>
                                     <Col md = '12'>
                                         <div className="table-responsive mt-4">
                                             <table className="table table-vertical-center">
@@ -386,7 +399,7 @@ class ParrillaContenidoForm extends Component {
                                                         evento ?
                                                             evento.adjuntos.map((adjunto, key) => {
                                                                 return (
-                                                                    <FileItem item={adjunto} onClickDelete={this.onClickDelete} key={key} />
+                                                                    <FileItem item={adjunto} onClickDelete={onClickDelete} key={key} />
                                                                 )
                                                             })
                                                         : ''
@@ -394,19 +407,6 @@ class ParrillaContenidoForm extends Component {
                                                 </tbody>
                                             </table>
                                         </div >
-                                    </Col>
-                                    <Col md="12">
-                                        <div className="form-group row form-group-marginless justify-content-center">
-                                            <div className="col-md-12 d-flex justify-content-center align-self-center">
-                                                <div>
-                                                    <div className="text-center font-weight-bolder mb-2">
-                                                        {form.adjuntos.adjunto.placeholder}
-                                                    </div>
-                                                    <ItemSlider multiple = { true } items = { form.adjuntos.adjunto.files }
-                                                        item = 'adjunto' handleChange = { handleChangeSubmit } />
-                                                </div>
-                                            </div>
-                                        </div>
                                     </Col>
                                 </Row>
                             </Form>
