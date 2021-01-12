@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import moment from 'react-moment'
 import { URL_DEV } from '../../../constants';
 import { doneAlert, errorAlert, forbiddenAccessAlert, waitAlert } from '../../../functions/alert';
 import { connect } from 'react-redux';
