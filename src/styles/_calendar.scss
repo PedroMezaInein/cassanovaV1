@@ -190,23 +190,30 @@ i.icon-purple{
 
 .parrilla {
     .fc{
+        a.fc-daygrid-day-number{
+            font-size: 16px;
+            margin-bottom: 4px;
+            letter-spacing: 1px;
+        }
         .fc-daygrid-body-unbalanced{
             .fc-daygrid-day-events{
                 display: flex;
                 flex-flow: wrap;
                 overflow: hidden;
                 .fc-daygrid-event-harness{
-                    &:nth-child(odd){
-                        .fc-h-event{
-                            background-color: #D8005ABF;
-                        }
-                    }
-                    &:nth-child(even){
-                        .fc-h-event{
-                            background-color: #444444BF;
-                        }
-                    }
+                    // &:nth-child(odd){
+                    //     .fc-h-event{
+                    //         background-color: #D8005ABF;
+                    //     }
+                    // }
+                    // &:nth-child(even){
+                    //     .fc-h-event{
+                    //         background-color: #444444BF;
+                    //     }
+                    // }
                     .fc-h-event{
+                        border: none!important;
+                        background-color: transparent;
                         &:hover{
                             cursor: pointer;
                         }
