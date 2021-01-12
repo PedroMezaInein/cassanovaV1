@@ -62,7 +62,7 @@ export default class UltimosContactosCard extends Component {
         return false;
     }
     render() {
-        const { ultimos_ingresados, onClick, onClickPrev} = this.props
+        const { ultimos_ingresados, onClick, onClickPrev, clickOneLead } = this.props
         return (
             <Card className="card-custom card-stretch gutter-b py-2">
                 <Card.Header className="align-items-center border-0">
@@ -85,7 +85,8 @@ export default class UltimosContactosCard extends Component {
                         {
                             ultimos_ingresados.data.map((contacto, key) => {
                                 return (
-                                    <div className="timeline-item" key={key}>
+                                    <div className = "timeline-item text-hover" key = { key } 
+                                        onClick = { ( e ) => { e.preventDefault(); clickOneLead(contacto.id) } } >
                                         <div className="timeline-label"> {this.diffCommentDate(contacto)}</div>
                                         <div className="timeline-badge"><span className="bg-primary w-50 h-50"></span></div>
                                         <div className="timeline-content text-justify">

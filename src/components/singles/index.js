@@ -10,6 +10,7 @@ import notificacion from './Notificacion'
 import audioApp from './AudioApp'
 import folder from './Folder'
 import fileItem from './FileItem'
+import symbolIcon from './SymbolIcon'
 
 export const Card = card;
 export const Modal = modal;
@@ -23,3 +24,4 @@ export const Notificacion = notificacion
 export const AudioApp = audioApp
 export const Folder = folder
 export const FileItem = fileItem
+export const SymbolIcon = symbolIcon
