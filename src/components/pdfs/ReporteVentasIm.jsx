@@ -223,6 +223,13 @@ const styles = StyleSheet.create({
         lineHeight:1.3,
         fontFamily: 'Open Sans'
     },
+    bodyTextCenterBig: {
+        fontWeight: 100,
+        fontSize: 15,
+        textAlign: "center",
+        lineHeight:1.3,
+        fontFamily: 'Open Sans'
+    },
     bodyText:{
         fontWeight: 100,
         fontSize: 8,
@@ -324,7 +331,7 @@ export default class ReporteVentasInein extends Component {
         return element.replace(/&nbsp;/gi,'')
     }
 
-    setComentario = lead => {
+    /* setComentario = lead => {
         let aux = '-'
         if(lead){
             if(lead.prospecto){
@@ -369,6 +376,52 @@ export default class ReporteVentasInein extends Component {
                             aux = lead.prospecto.contactos[0].comentario
                         }
                     }
+                }
+            }
+        }
+        return aux
+    } */
+    setComentario = lead => {
+        let aux = '';
+        if(lead.estatus){
+            switch(lead.estatus.estatus){
+                case 'Rechazado':
+                case 'Cancelado':
+                    if(lead.motivo === '' || lead.motivo === null){
+                        if(lead.rh)
+                            aux += "RR.HH.\n "
+                        if(lead.proveedor)
+                            aux += "PROVEEDOR.\n "
+                    }
+                        else
+                        aux += lead.motivo + "\n"
+                    break;
+                default: break;
+            }
+        }
+        if( lead.prospecto ){
+            if(aux === ''){
+                if(lead.prospecto.estatus_prospecto){
+                    switch(lead.prospecto.estatus_prospecto.estatus){
+                        case 'Rechazado':
+                        case 'Cancelado':
+                            if(lead.motivo === '' || lead.motivo === null){
+                                if(lead.rh)
+                                    aux += "RR.HH.\n "
+                                if(lead.proveedor)
+                                    aux += "PROVEEDOR.\n "
+                            }
+                            else
+                                aux += lead.motivo + "\n"
+                            aux += lead.motivo + "\n"
+                            break;
+                        default: break;
+                    }
+                }
+            }
+            if(lead.prospecto.contactos){
+                if(lead.prospecto.contactos.length){
+                    aux += lead.prospecto.contactos[0].comentario
                 }
             }
         }
@@ -638,6 +691,15 @@ export default class ReporteVentasInein extends Component {
                                         </Text>
                                     </View>
                                 </View>
+                                {
+                                    data.cerrados.length === 0 ?
+                                        <View>
+                                            <Text style = { styles.bodyTextCenterBig } >
+                                                NO SE CERRARON PROSPECTOS DURANTE ESTE MES
+                                            </Text>
+                                        </View>
+                                    : ''
+                                }
                                 {
                                     data.cerrados.map( (element, index) =>{
                                         if(element.prospecto)
