@@ -47,7 +47,7 @@ class InputGray extends Component {
     }
     
     render() {
-        const { messageinc,error, onChange, placeholder, iconclass, letterCase, customlabel, customstyle, customclass, withicon, withtextlabel, withtaglabel, withplaceholder, customdiv, ...props } = this.props
+        const { messageinc,error, onChange, placeholder, iconclass, letterCase, customlabel, customstyle, customclass, withicon, withtextlabel, withtaglabel, withplaceholder, customdiv, withformgroup, ...props } = this.props
         const { inputValido } =  this.state
         const toInputUppercase = e => {
             const { type, value, selectionStart, selectionEnd } = e.target
@@ -60,7 +60,7 @@ class InputGray extends Component {
             return e
         }
         return (
-            <div className={`form-group ${customdiv}`}>
+            <div className={withformgroup?`form-group ${customdiv}`:''}>
                 {
                     withtaglabel?
                     <label className={`col-form-label font-weight-bold text-dark-60  ${customlabel}`}>{withtextlabel?placeholder:''}</label>

@@ -110,6 +110,7 @@ class HistorialContactoForm extends Component {
                                                 withtextlabel={1}
                                                 withplaceholder={1}
                                                 withicon={1}
+                                                withformgroup={1}
                                                 formeditado={formeditado}
                                                 requirevalidation={1}
                                                 onChange={onChangeHistorial}
@@ -130,6 +131,7 @@ class HistorialContactoForm extends Component {
                                             withtextlabel={1}
                                             withplaceholder={1}
                                             withicon={0}
+                                            withformgroup={1}
                                             formeditado={formeditado}
                                             requirevalidation={1}
                                             as='textarea'
