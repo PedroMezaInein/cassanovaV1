@@ -4,7 +4,7 @@ import Layout from '../../../../components/layout/layout';
 import { Form } from 'react-bootstrap';
 import { InputGray, Button } from '../../../../components/form-components';
 import axios from 'axios'
-import { doneAlert, errorAlert, forbiddenAccessAlert, validateAlert, waitAlert } from '../../../../functions/alert';
+import { deleteAlert, doneAlert, errorAlert, forbiddenAccessAlert, validateAlert, waitAlert } from '../../../../functions/alert';
 import { URL_DEV } from '../../../../constants';
 import { Modal } from '../../../../components/singles'
 import { AgendaLlamada, AgendaLlamadaUbicacion} from '../../../../components/forms'
@@ -61,6 +61,7 @@ class LeadLlamadaCierre extends Component {
                                         pdfObject = pdf
                                     }
                                 }
+                                return ''
                             })
                         }
                     }
@@ -194,7 +195,6 @@ class LeadLlamadaCierre extends Component {
                 break;
             default:
                 return <></>
-                break;
         }
     }
 
@@ -301,6 +301,7 @@ class LeadLlamadaCierre extends Component {
             case 12:
                 mes = "Diciembre";
                 break;
+            default: break;
         }
         if (hoy === dia_presupuesto) {
             show_fecha = "EL DÍA DE HOY"

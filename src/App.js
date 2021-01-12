@@ -169,7 +169,6 @@ const MaterialEmpresa = Loader( () => import('./pages/Mercadotecnia/MaterialEmpr
 const MaterialCliente = Loader( () => import('./pages/Mercadotecnia/MaterialCliente/MaterialCliente') )
 const ParrillasContenido = Loader( () => import('./pages/Mercadotecnia/ParrillasContenido/ParrillasContenido') )
 
-
 class App extends Component{
     async componentDidMount(){
         const { access_token } = this.props.authUser
@@ -227,19 +226,19 @@ class App extends Component{
 
                 <Switch>
 
-                    // ANCHOR Routes from login
+                    {/* ANCHOR Routes from login */}
 
                     <Route path = "/login" exact component = { Login } />
 
-                    // ANCHOR Routes for home
+                    {/*  ANCHOR Routes for home */}
 
                     <Route path = "/" exact component= { Home } />
 
-                    // ANCHOR Routes for mi proyecto
+                     {/* ANCHOR Routes for mi proyecto */}
 
                     <Route path = "/mi-proyecto" exact component = { MiProyecto } />
 
-                    // ANCHOR Routes for usuarios
+                    {/* ANCHOR Routes for usuarios */}
 
                     <Route path = "/usuarios/usuarios" exact component = { Usuarios } />
                     <Route path = "/usuarios/usuarios/:action" exact component ={ UsuariosForm } />
@@ -252,7 +251,7 @@ class App extends Component{
                     <Route path = "/usuarios/accesos" exact component = { Accesos } />
                     <Route path = "/usuarios/accesos/:action" exact component ={ AccesosForm } />
 
-                    // ANCHOR Routes for presupuesto
+                    {/*  ANCHOR Routes for presupuesto */}
 
                     <Route path = "/presupuesto/conceptos" exact component ={ Conceptos } />
                     <Route path = "/presupuesto/conceptos/:action" exact component ={ ConceptosForm } />
@@ -268,7 +267,7 @@ class App extends Component{
                     <Route path = "/presupuesto/presupuesto-diseño" exact component ={ PresupuestoDiseño } />  
                     <Route path = "/presupuesto/presupuesto-diseño/:action" exact component ={ PresupuestoDiseñoForm } />            
 
-                    // ANCHOR Routes for proyectos
+                    {/*  ANCHOR Routes for proyectos */}
 
                     <Route path = "/proyectos/proyectos" exact component ={ Proyectos } />
                     <Route path = "/proyectos/proyectos/:action" exact component ={ ProyectosForm } />
@@ -297,7 +296,7 @@ class App extends Component{
                     <Route path = "/proyectos/herramientas" exact component ={ Herramienta } />
                     <Route path = "/proyectos/herramientas/:action" exact component ={ HerramientaForm } />
 
-                    // ANCHOR Routes for administracion
+                    {/*  ANCHOR Routes for administracion */}
 
                     <Route path = "/administracion/egresos" exact component ={ Egresos } />
                     <Route path = "/administracion/egresos/:action" exact component ={ EgresosForm } />
@@ -318,7 +317,7 @@ class App extends Component{
                     <Route path = "/administracion/documentos" exact component ={ Documentos } />
                     <Route path = "/administracion/documentos/:action" exact component ={ DocumentosForm } />
 
-                    // ANCHOR Routes for bancos
+                    {/*  ANCHOR Routes for bancos */}
 
                     <Route path = "/bancos/cuentas" exact component ={ Cuentas } />
                     <Route path = "/bancos/cuentas/:action" exact component ={ CuentasForm } />
@@ -331,7 +330,7 @@ class App extends Component{
                     <Route path = "/bancos/traspasos" exact component ={ Traspasos } />
                     <Route path = "/bancos/traspasos/:action" exact component ={ TraspasosForm } />
 
-                    // ANCHOR Routes for leads
+                    {/*  ANCHOR Routes for leads */}
 
                     <Route path = "/leads/leads" exact component ={ Leads } />
                     <Route path = "/leads/leads/:action" exact component ={ LeadsForm } />
@@ -350,11 +349,11 @@ class App extends Component{
                     <Route path = "/leads/clientes" exact component = { Clientes } />
                     <Route path = "/leads/clientes/:action" exact component = { ClientesForm } />
 
-                    // ANCHOR Routes for normas
+                    {/* ANCHOR Routes for normas */}
 
                     <Route path = "/normas" exact component ={ Normas } />
 
-                    // ANCHOR Routes for catálogos
+                    {/* ANCHOR Routes for catálogos */}
 
                     <Route path = "/catalogos/areas" exact component ={ Areas } />
                     <Route path = "/catalogos/partidas" exact component ={ Partidas } />
@@ -375,7 +374,7 @@ class App extends Component{
                     <Route path = "/catalogos/origenes-leads" exact component = { OrigenesLeads } />
                     <Route path = "/catalogos/redes-sociales" exact component = { RedesSociales } />
 
-                    // ANCHOR Routes for reportes
+                    {/* ANCHOR Routes for reportes */}
 
                     <Route path = "/reportes/contabilidad" exact component ={ Contabilidad } />
                     <Route path = "/reportes/reporte-ventas" exact component ={ ReporteVentas } />
@@ -383,7 +382,7 @@ class App extends Component{
                     <Route path = "/reportes/flujo-departamentos" exact component ={ FlujoDepartamentos } />
                     <Route path = "/reportes/estado-resultados" exact component ={ EstadoResultados } />
 
-                    // ANCHOR Routes for RH
+                    {/* ANCHOR Routes for RH */}
 
                     <Route path = "/rh/nomina-obras" exact component ={ NominaObra } />  
                     <Route path = "/rh/nomina-obras/:action" exact component ={ NominaObraForm } />
@@ -405,24 +404,25 @@ class App extends Component{
                     <Route path = "/rh/prestamos" exact component ={ Prestamos } />
                     <Route path = "/rh/prestamos/:action" exact component = { PrestamosForm } />
 
-                    // ANCHOR Routes for calidad
+                    {/* ANCHOR Routes for calidad */}
 
                     <Route path = "/calidad/calidad" exact component ={ Calidad } />
                     <Route path = "/calidad/calidad/:action" exact component = { CalidadForm } />
 
-                    // ANCHOR Routes for mercadotécnia
+                    {/* ANCHOR Routes for mercadotécnia */}
                     
                     <Route path = "/mercadotecnia/material-empresas" exact component ={ MaterialEmpresa } />
                     <Route path = "/mercadotecnia/material-clientes" exact component ={ MaterialCliente} />
                     <Route path = "/mercadotecnia/parrillas-de-contenido" exact component ={ ParrillasContenido} />
 
-                    // ANCHOR Routes for user settings
+                    {/* ANCHOR Routes for user settings */}
 
                     <Route path = "/mi-perfil" exact component ={ AccountSettings } />
                     <Route path = "/mi-calendario" exact component ={ Calendario } />
                     <Route path = "/mis-notificaciones" exact component ={ Notificaciones } />
 
-                    // ANCHOR NOT FOUND ROUTE
+                    {/* ANCHOR NOT FOUND ROUTE */}
+
                     <Route path = "*" component = { NotFound } />
                     
                 </Switch>

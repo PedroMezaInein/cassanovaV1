@@ -114,6 +114,7 @@ class Diseño extends Component {
                                     auxEj.push(adjunto)
                                 if(adjunto.pivot.tipo === 'portada')
                                     auxPortada.push(adjunto)
+                                return ''
                             })
                             form.adjuntos.ejemplo.files = auxEj
                             form.adjuntos.subportafolio.files = auxSub
@@ -129,6 +130,7 @@ class Diseño extends Component {
                             this.onChangeVariaciones(index, { target: { value: variacion.superior } }, 'superior')
                             this.onChangeVariaciones(index, { target: { value: variacion.inferior } }, 'inferior')
                             this.onChangeVariaciones(index, { target: { value: variacion.cambio } }, 'cambio')
+                            return ''
                         })
 
                         let aux = []
@@ -145,6 +147,7 @@ class Diseño extends Component {
                                     mobiliario_sup: tipo.mobiliario_sup
                                 }
                             })
+                            return ''
                         })
                         form.tipos = aux
 
@@ -159,6 +162,7 @@ class Diseño extends Component {
                                 auxEsquema2.push(plano)
                             if(plano.esquema_3)
                                 auxEsquema3.push(plano)
+                            return ''
                         })
                         
                         auxEsquema1.push({id: '', nombre: ''})
@@ -217,6 +221,7 @@ class Diseño extends Component {
                                 auxEj.push(adjunto)
                             if(adjunto.pivot.tipo === 'portada')
                                 auxPortada.push(adjunto)
+                            return ''
                         })
                         form.adjuntos.ejemplo.files = auxEj
                         form.adjuntos.subportafolio.files = auxSub
@@ -232,6 +237,7 @@ class Diseño extends Component {
                         this.onChangeVariaciones(index, { target: { value: variacion.superior } }, 'superior')
                         this.onChangeVariaciones(index, { target: { value: variacion.inferior } }, 'inferior')
                         this.onChangeVariaciones(index, { target: { value: variacion.cambio } }, 'cambio')
+                        return ''
                     })
 
                     let aux = []
@@ -249,6 +255,7 @@ class Diseño extends Component {
                                 mobiliario_sup: tipo.mobiliario_sup
                             }
                         })
+                        return ''
                     })
                     form.tipos = aux
 
@@ -263,6 +270,7 @@ class Diseño extends Component {
                             auxEsquema2.push(plano)
                         if(plano.esquema_3)
                             auxEsquema3.push(plano)
+                        return ''
                     })
                 
                     auxEsquema1.push({id: '', nombre: ''})
@@ -393,6 +401,7 @@ class Diseño extends Component {
                     if(element.id === empresa.id){
                         empresa = element
                     }
+                    return ''
                 })
                 let arregloAuxiliar = []
                 empresa.tipos.map((element)=>{
@@ -402,6 +411,7 @@ class Diseño extends Component {
                                 arregloAuxiliar.push(adjunto)
                         })
                     }
+                    return ''
                 })
                 form.adjuntos[name].files = arregloAuxiliar
 
@@ -522,6 +532,7 @@ class Diseño extends Component {
                 variacion.cambio === '0.' || variacion.cambio === '.' || variacion.superior < variacion.inferior) {
                 aux = false
             }
+            return ''
         })
 
         if (aux) {
@@ -550,6 +561,7 @@ class Diseño extends Component {
                     aux = false
                 }
             arreglo.push(variacion)
+            return ''
         })
         if (aux) {
             form.variaciones = arreglo
@@ -576,6 +588,7 @@ class Diseño extends Component {
         form.tipos.map((tipo) => {
             if (tipo.name === '')
                 aux = false
+            return ''
         })
         if (aux) {
             arreglo.push({
@@ -682,6 +695,7 @@ class Diseño extends Component {
                     variacion.superior !== null && variacion.superior !== '' &&
                     variacion.cambio !== ''))
                     aux = false
+                return ''
             })
             if (aux) {
                 auxilar = form.variaciones
@@ -711,6 +725,7 @@ class Diseño extends Component {
                                 if (m2Aux >= parseInt(variacion.inferior) && m2Aux <= parseInt(variacion.superior))
                                     total = parseFloat(acumulado) * parseFloat(m2)
                             }
+                            return ''
                         })
                         return total
                     } else return '-'
@@ -727,6 +742,7 @@ class Diseño extends Component {
         empresa.tipos.map((tipo)=>{
             if(tipo.id.toString() === select.toString())
                 aux = tipo
+            return '';
         })
         if(aux !== ''){
 
@@ -741,6 +757,7 @@ class Diseño extends Component {
                     auxEjemplos.push(adjunto)
                 if(adjunto.pivot.tipo === 'portada')
                     auxPortadas.push(adjunto)
+                return ''
             })
 
             form.adjuntos.ejemplo.files = auxEjemplos
@@ -1218,7 +1235,6 @@ class Diseño extends Component {
         )
     }
 }
-
 
 const mapStateToProps = state => {
     return {

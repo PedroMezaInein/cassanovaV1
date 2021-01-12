@@ -1219,6 +1219,7 @@ class Proyectos extends Component {
                     data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
                 }
             }
+            return ''
         })
         await axios.post(URL_DEV + 'proyectos/' + proyecto.id + '/avances/file', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
