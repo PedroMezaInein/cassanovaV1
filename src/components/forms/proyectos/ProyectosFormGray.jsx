@@ -188,6 +188,7 @@ class ProyectosForm extends Component {
                                             withplaceholder={1}
                                             withicon={1}
                                             requirevalidation={1}
+                                            withformgroup={1}
                                             formeditado={formeditado}
                                             name="nombre"
                                             value={form.nombre}
@@ -224,6 +225,7 @@ class ProyectosForm extends Component {
                                             withplaceholder={1}
                                             withicon={1}
                                             requirevalidation={1}
+                                            withformgroup={1}
                                             formeditado={formeditado}
                                             name="contacto"
                                             value={form.contacto}
@@ -286,6 +288,7 @@ class ProyectosForm extends Component {
                                             withplaceholder={1}
                                             withicon={1}
                                             requirevalidation={0}
+                                            withformgroup={1}
                                             formeditado={formeditado}
                                             readOnly={options.colonias.length <= 0 ? true : false}
                                             value={form.estado}
@@ -304,6 +307,7 @@ class ProyectosForm extends Component {
                                             withplaceholder={1}
                                             withicon={0}
                                             requirevalidation={0}
+                                            withformgroup={1}
                                             formeditado={formeditado}
                                             readOnly={options.colonias.length <= 0 ? true : false}
                                             value={form.municipio}
@@ -343,6 +347,7 @@ class ProyectosForm extends Component {
                                                 withplaceholder={1}
                                                 withicon={1}
                                                 requirevalidation={1}
+                                                withformgroup={1}
                                                 formeditado={formeditado}
                                                 readOnly
                                                 value={form.colonia}
@@ -360,6 +365,7 @@ class ProyectosForm extends Component {
                                             withplaceholder={1}
                                             withicon={1}
                                             requirevalidation={1}
+                                            withformgroup={1}
                                             formeditado={formeditado}
                                             name="calle"
                                             value={form.calle}
@@ -391,6 +397,7 @@ class ProyectosForm extends Component {
                                             withplaceholder={1}
                                             withicon={0}
                                             requirevalidation={0}
+                                            withformgroup={1}
                                             formeditado={formeditado}
                                             rows="3"
                                             as="textarea"

@@ -993,6 +993,7 @@ class Tareas extends Component {
                                                 withplaceholder={1}
                                                 withicon={0}
                                                 requirevalidation={0}
+                                                withformgroup={1}
                                                 placeholder='COMENTARIO'
                                                 value={comentario}
                                                 name='comentario'

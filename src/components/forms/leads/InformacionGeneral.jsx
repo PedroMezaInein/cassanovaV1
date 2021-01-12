@@ -21,6 +21,7 @@ class InformacionGeneral extends Component {
                                 withtextlabel={1}
                                 withplaceholder={1}
                                 withicon={1}
+                                withformgroup={1}
                                 requirevalidation = { formeditado === false ? 0 : 1 }
                                 placeholder='NOMBRE DEL LEAD'
                                 iconclass="far fa-user"
@@ -36,6 +37,7 @@ class InformacionGeneral extends Component {
                                 withtextlabel={1}
                                 withplaceholder={1}
                                 withicon={1}
+                                withformgroup={1}
                                 requirevalidation = { formeditado === false ? 0 : 1 }
                                 placeholder="CORREO ELECTRÓNICO"
                                 iconclass="fas fa-envelope"
@@ -75,6 +77,7 @@ class InformacionGeneral extends Component {
                                             withplaceholder={1}
                                             withicon={1}
                                             requirevalidation={1}
+                                            withformgroup={1}
                                             formeditado={formeditado}
                                             placeholder='NOMBRE DEL PROYECTO'
                                             iconclass="far fa-folder-open"

@@ -42,6 +42,7 @@ class TareaForm extends Component {
                                     withplaceholder={1}
                                     withicon={1}
                                     requirevalidation={0}
+                                    withformgroup={1}
                                     formeditado={formeditado}
                                     placeholder='TÍTULO DE LA TAREA'
                                     value={form.titulo}
@@ -59,6 +60,7 @@ class TareaForm extends Component {
                                     withplaceholder={1}
                                     withicon={0}
                                     requirevalidation={0}
+                                    withformgroup={1}
                                     formeditado={formeditado}
                                     placeholder='DESCRIPCIÓN'
                                     value = { form.descripcion === null ? '' : form.descripcion }

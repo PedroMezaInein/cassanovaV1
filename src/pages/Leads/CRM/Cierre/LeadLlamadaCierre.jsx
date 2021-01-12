@@ -520,6 +520,7 @@ class LeadLlamadaCierre extends Component {
                                                 withtextlabel={1}
                                                 withplaceholder={1}
                                                 withicon={0}
+                                                withformgroup={1}
                                                 placeholder="COMENTARIO"
                                                 name="comentario"
                                                 value={form.comentario}

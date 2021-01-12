@@ -65,6 +65,7 @@ class AgendarCitaForm extends Component {
                                     withtextlabel={1}
                                     withplaceholder={1}
                                     withicon={1}
+                                    withformgroup={1}
                                     placeholder='NOMBRE DE LA REUNIÓN'
                                     iconclass="fas fa-users"
                                     name='titulo'
@@ -127,6 +128,7 @@ class AgendarCitaForm extends Component {
                                             withtextlabel = { 1 }
                                             withplaceholder = { 1 }
                                             withicon = { 1 }
+                                            withformgroup={1}
                                             placeholder = { formAgenda.lugar === 'presencial' ? 'UBICACIÓN' : 'URL' }
                                             iconclass = { formAgenda.lugar === 'presencial' ? 'fas fa-map-marker-alt' : ' fas fa-link' }
                                             name = { formAgenda.lugar === 'presencial' ? 'ubicacion' : 'url' }
