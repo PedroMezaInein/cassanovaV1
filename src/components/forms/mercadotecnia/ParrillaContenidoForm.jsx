@@ -85,15 +85,28 @@ class ParrillaContenidoForm extends Component {
                     </Nav.Item>
                     {
                         evento !== '' ?
+                            <Nav.Item onClick={(e) => { e.preventDefault(); onChangeModalTab("addcomments") }}>
+                                <Nav.Link eventKey="addcomments" >
+                                    <span className="nav-icon">
+                                        <i className="flaticon2-plus"></i>
+                                    </span>
+                                    <span className="nav-text">AGREGAR COMENTARIO</span>
+                                </Nav.Link>
+                            </Nav.Item>
+                            : ''
+                    }
+                    {
+                        evento &&
+                        evento.comentarios.length > 0 ?
                             <Nav.Item onClick={(e) => { e.preventDefault(); onChangeModalTab("comments") }}>
                                 <Nav.Link eventKey="comments" >
                                     <span className="nav-icon">
                                         <i className="flaticon2-chat-1"></i>
                                     </span>
-                                    <span className="nav-text">COMENTARIOS</span>
+                                    <span className="nav-text">MOSTRAR COMENTARIOS</span>
                                 </Nav.Link>
                             </Nav.Item>
-                            : ''
+                        : ''
                     }
                 </Nav>
                 <Tab.Content>
@@ -226,7 +239,7 @@ class ParrillaContenidoForm extends Component {
                             </div>
                         </Form>
                     </Tab.Pane>
-                    <Tab.Pane eventKey="comments">
+                    <Tab.Pane eventKey="addcomments">
                         <div>
                             <Form id="form-comentario"
                                 onSubmit={
@@ -271,11 +284,13 @@ class ParrillaContenidoForm extends Component {
                                 </div>
                             </Form>
                         </div>
+                    </Tab.Pane>
+                    <Tab.Pane eventKey="comments">
                         {
                             evento &&
                                 evento.comentarios.length > 0 ?
-                                <div className='row mx-0 justify-content-center'>
-                                    <div className="col-md-8 mt-5">
+                                <div className="col-md-12 row d-flex justify-content-center">
+                                    <div className="col-md-7 mt-5">
                                         {
                                             evento.comentarios.length > 0 &&
                                             evento.comentarios.map((comentario, key) => {
