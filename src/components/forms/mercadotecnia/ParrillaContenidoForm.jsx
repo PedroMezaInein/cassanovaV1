@@ -304,13 +304,13 @@ class ParrillaContenidoForm extends Component {
                                                                             <img alt="Pic" src={comentario.user.avatar ? comentario.user.avatar : "/default.jpg"} />
                                                                         </div>
                                                                         <div className="timeline-content">
-                                                                            <span className="text-info font-weight-bolder">{comentario.user.name}</span>
+                                                                            <span className="text-primary font-weight-bolder">{comentario.user.name}</span>
                                                                             <span className="text-muted ml-2 font-weight-bold">{this.diffCommentDate(comentario)}</span>
                                                                             <p className="p-0 font-weight-light mb-0">{comentario.comentario}</p>
                                                                             {
                                                                                 comentario.adjunto ?
                                                                                     <div className="d-flex justify-content-end">
-                                                                                        <a href={comentario.adjunto.url} target='_blank' rel="noopener noreferrer" className="text-muted text-hover-info font-weight-bold">
+                                                                                        <a href={comentario.adjunto.url} target='_blank' rel="noopener noreferrer" className="text-muted text-hover-primary font-weight-bold">
                                                                                             <span className="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
                                                                                                 <SVG src={toAbsoluteUrl('/images/svg/Attachment1.svg')} />
                                                                                             </span>VER ADJUNTO
