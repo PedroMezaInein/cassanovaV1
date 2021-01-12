@@ -753,14 +753,14 @@ class MaterialCliente extends Component {
                                                                         <Button 
                                                                             id="regresar"
                                                                             icon=''
-                                                                            className="btn btn-icon btn-xs w-auto p-3 mr-2 btn-light-info"
+                                                                            className="btn btn-outline-secondary btn-icon btn-sm "
                                                                             onClick={(e) => { e.preventDefault(); this.goBackFolder() }}
-                                                                            only_icon="fas fa-angle-left icon-15px mr-2" text='REGRESAR'
+                                                                            only_icon="fas fa-angle-left icon-md"
+                                                                            tooltip={{ text: 'REGRESAR' }}
                                                                         />
-                                                                        <div>
-                                                                            MATERIAL DE CLIENTES / <span> {activeFolder.tipo}</span>
-                                                                        </div>
-                                                                        
+                                                                        <span className="text-muted font-weight-bold mr-4 ml-2">
+                                                                            Casos de éxito | <span className="text-primary font-weight-bolder"> {activeFolder.tipo}</span>
+                                                                        </span>
                                                                     </>
                                                                     : ''
                                                             }
@@ -772,17 +772,19 @@ class MaterialCliente extends Component {
                                                                     <Button
                                                                         id="nueva_carpeta"
                                                                         icon=''
-                                                                        className="btn btn-icon btn-xs w-auto p-3 btn-light-success"
+                                                                        className="btn btn-outline-secondary btn-icon btn-sm "
                                                                         onClick={(e) => { e.preventDefault(); this.newFolder() }}
-                                                                        only_icon="fas fa-folder-plus icon-15px mr-2" text='NUEVA CARPETA'
+                                                                        only_icon="fas fa-folder-plus icon-15px text-success"
+                                                                        tooltip={{ text: 'NUEVA CARPETA' }}
                                                                     />
                                                                     :
                                                                     <Button
                                                                         id="subir_archivos"
                                                                         icon=''
-                                                                        className="btn btn-icon btn-md w-auto p-3 btn-light-primary"
+                                                                        className="btn btn-outline-secondary btn-icon btn-sm "
                                                                         onClick={(e) => { e.preventDefault(); this.openModalAddFiles() }}
-                                                                        only_icon="fas fa-upload icon-15px mr-2" text='SUBIR ARCHIVOS'
+                                                                        only_icon="fas fa-upload icon-15px"
+                                                                        tooltip={{ text: 'SUBIR ARCHIVOS' }}
                                                                     />
                                                             }
                                                         </div>
