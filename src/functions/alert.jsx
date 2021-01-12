@@ -214,6 +214,9 @@ export function questionAlert(title, text, action) {
         confirmButtonText: "ENVIAR",
         cancelButtonText: "CANCELAR",
         reverseButtons: true,
+        customClass: {
+            content: text?text:'d-none'
+        }
     }).then((result) => {
         if (result.value) {
             action()
