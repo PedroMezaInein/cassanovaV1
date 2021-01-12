@@ -316,7 +316,7 @@ class NewTable extends Component {
                 <Card id={cardTable} className="card-custom card-sticky">
                     <Card.Header id={cardTableHeader}>
                         <div className="card-title">
-                            <h2 className="card-label font-weight-bolder font-size-h2">
+                            <h3 className="card-label font-weight-bolder font-size-h3">
                                 {
                                     title ? title : ''
                                 }
@@ -327,7 +327,7 @@ class NewTable extends Component {
                                         </span>
                                     : ''
                                 }
-                            </h2>
+                            </h3>
                         </div>
                         <div className="card-toolbar">
                             {(exportar_boton === true) ?

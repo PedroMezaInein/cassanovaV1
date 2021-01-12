@@ -364,7 +364,7 @@ class NewTableServerRender extends Component {
                 <Card id={cardTable} className="card-custom card-sticky">
                     <Card.Header id={cardTableHeader}>
                         <div className="card-title">
-                            <h2 className="card-label font-weight-bolder font-size-h2">
+                            <h3 className="card-label font-weight-bolder font-size-h3">
                                 {
                                     title ? title : ''
                                 }
@@ -373,7 +373,7 @@ class NewTableServerRender extends Component {
                                         subtitle ? subtitle : ''
                                     }
                                 </span>
-                            </h2>
+                            </h3>
                         </div>
                         <div className="card-toolbar">
                             {(restante_empresa === true) ?
