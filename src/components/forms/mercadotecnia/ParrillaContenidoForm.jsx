@@ -3,8 +3,6 @@ import { SelectSearch, Button, Input, CalendarDay, SelectHorario, InputGray } fr
 import { Form, Col, Row, Nav, Tab } from 'react-bootstrap'
 import { validateAlert } from '../../../functions/alert'
 import moment from 'moment'
-import SVG from "react-inlinesvg";
-import { toAbsoluteUrl } from "../../../functions/routers"
 class ParrillaContenidoForm extends Component {
 
     updateSocialNetworks = value => {

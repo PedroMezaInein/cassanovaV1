@@ -114,7 +114,6 @@ class RangeCalendar extends Component {
                 ranges = { range }
                 direction = "horizontal"
                 locale = { es }
-                editableDateInputs = { true }
                 initialFocusedRange = { [0,0] }
                 staticRanges = {
                     [

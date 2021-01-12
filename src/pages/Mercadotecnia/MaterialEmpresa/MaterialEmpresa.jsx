@@ -8,7 +8,6 @@ import { Tab, Nav, Col, Row, Card, Accordion, } from 'react-bootstrap'
 import { setSelectOptions } from '../../../functions/setters'
 import { waitAlert, questionAlert, errorAdjuntos, errorAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
 import { Nothing } from '../../../components/Lottie'
-import { Folder } from '../../../components/singles'
 
 const tiposArray = ['logo', 'carta_membretada', 'firmas_electronicas', 'tarjetas_presentacion', 'imagenes_personal']
 const placeholderArray = ['LOGOS', 'CARTA MEMBRETADA', 'FIRMAS ELECTRÓNICAS', 'TARJETAS DE PRESENTACIÓN', 'IMÁGENES DEL PERSONAL']
@@ -127,7 +126,8 @@ class MaterialEmpresa extends Component {
             if (typeof file.id === 'undefined') {
                 data.append(`files_name[]`, file.name)
                 data.append(`files[]`, file.file)
-            }                  
+            }
+            return ''
         })
 
         data.append('tipo', tiposArray[form.adjuntos.slider.eventKey])
@@ -141,6 +141,7 @@ class MaterialEmpresa extends Component {
                 empresa.adjuntos.map((adjunto, key) => {
                     if(adjunto.pivot.tipo === tipo)
                         form.adjuntos.slider.files.push(adjunto)
+                    return ''
                 })
 
                 this.setState({
@@ -195,6 +196,7 @@ class MaterialEmpresa extends Component {
             let html = ''
             aux2.map((element) => {
                 html += '<div class="mb-2 text-dark-50">' + '&bull;&nbsp;' + element + '<br/>' + '</div>'
+                return ''
             })
             // html
             errorAdjuntos(
