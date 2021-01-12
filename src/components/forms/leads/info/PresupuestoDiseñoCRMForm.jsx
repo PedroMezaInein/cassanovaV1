@@ -261,6 +261,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                                         withtextlabel={0}
                                                                         withplaceholder={0}
                                                                         withicon={0}
+                                                                        withformgroup={1}
                                                                         placeholder='DÍA'
                                                                         requirevalidation={1}
                                                                         formeditado={formeditado}
@@ -493,6 +494,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                             withplaceholder={1}
                                             withicon={1}
                                             requirevalidation={1}
+                                            withformgroup={1}
                                             formeditado={formeditado}
                                             placeholder="TIEMPO DE EJECUCIÓN(SEMANAS)"
                                             value={formDiseño.tiempo_ejecucion_construccion}

@@ -1425,6 +1425,7 @@ class Crm extends Component {
                                                 withplaceholder={1}
                                                 withicon={1}
                                                 requirevalidation={0}
+                                                withformgroup={1}
                                                 name="cliente"
                                                 value={form.cliente}
                                                 onChange={this.onChange}
@@ -1443,6 +1444,7 @@ class Crm extends Component {
                                                         withplaceholder={1}
                                                         withicon={1}
                                                         requirevalidation={0}
+                                                        withformgroup={1}
                                                         name="proyecto"
                                                         value={form.proyecto}
                                                         onChange={this.onChange}

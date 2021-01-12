@@ -25,6 +25,7 @@ class FormWhatsapp extends Component {
                                 withtextlabel={1}
                                 withplaceholder={1}
                                 withicon={1}
+                                withformgroup={1}
                                 placeholder='NOMBRE DEL LEAD'
                                 iconclass="far fa-user"
                                 name='name'
@@ -84,6 +85,7 @@ class FormWhatsapp extends Component {
                                 withtextlabel={1}
                                 withplaceholder={1}
                                 withicon={1}
+                                withformgroup={1}
                                 placeholder="CORREO ELECTRÓNICO DE CONTACTO"
                                 iconclass="fas fa-envelope"
                                 type="email"
@@ -99,6 +101,7 @@ class FormWhatsapp extends Component {
                                 withtextlabel={1}
                                 withplaceholder={1}
                                 withicon={1}
+                                withformgroup={1}
                                 name='empresa'
                                 value={form.empresa}
                                 placeholder='EMPRESA'
@@ -125,6 +128,7 @@ class FormWhatsapp extends Component {
                                 withtextlabel={1}
                                 withplaceholder={1}
                                 withicon={0}
+                                withformgroup={1}
                                 placeholder="COMENTARIO"
                                 name="comentario"
                                 value={form.comentario}

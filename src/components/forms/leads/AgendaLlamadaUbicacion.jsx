@@ -102,6 +102,7 @@ class AgendaLlamadaUbicacion extends Component {
                                     withtextlabel = { 1 }
                                     withplaceholder = { 1 }
                                     withicon = { 1 }
+                                    withformgroup={1}
                                     placeholder = 'UBICACIÓN'
                                     iconclass = 'fas fa-map-marker-alt'
                                     name = 'ubicacion'
