@@ -182,9 +182,37 @@ i.icon-purple{
     color: #8950FC
 }
 
-
 .time-picker{
     border-top: 0px transparent!important;
     border-right: 0px transparent!important;
     border-left: 0px transparent!important;
+}
+
+.parrilla {
+    .fc{
+        .fc-daygrid-body-unbalanced{
+            .fc-daygrid-day-events{
+                display: flex;
+                flex-flow: wrap;
+                overflow: hidden;
+                .fc-daygrid-event-harness{
+                    &:nth-child(odd){
+                        .fc-h-event{
+                            background-color: #D8005ABF;
+                        }
+                    }
+                    &:nth-child(even){
+                        .fc-h-event{
+                            background-color: #444444BF;
+                        }
+                    }
+                    .fc-h-event{
+                        &:hover{
+                            cursor: pointer;
+                        }
+                    }
+                }
+            }
+        }
+    }
 }
