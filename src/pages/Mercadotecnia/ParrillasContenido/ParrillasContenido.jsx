@@ -171,16 +171,18 @@ class Calendario extends Component {
         })
     }
 
-    addComentarioAxios = async () => {
+    updateParrillaAxios = async() => {
         waitAlert()
         const { access_token } = this.props.authUser
         const { form, evento } = this.state
-        await axios.post(URL_DEV + 'mercadotecnia/parrilla-contenido/comentario/' +evento.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.put(URL_DEV + 'mercadotecnia/parrilla-contenido/' + evento.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                doneAlert('Comentario agregado con éxito');
+                doneAlert('Parrilla editada con éxito');
+                const { modal} = this.state
+                modal.form = false
                 this.setState({
                     ...this.state,
-                    form: this.clearForm()
+                    modal
                 })
                 this.getContentAxios()
             },
@@ -196,6 +198,43 @@ class Calendario extends Component {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
+    }
+
+    addComentarioAxios = async () => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { form, evento } = this.state
+        await axios.post(URL_DEV + 'mercadotecnia/parrilla-contenido/comentario/' +evento.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert('Comentario agregado con éxito');
+                const { form } = this.state
+                form.comentario = ''
+                this.setState({
+                    ...this.state,
+                    form
+                })
+                this.getContentAxios()
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    onSumitParrilla = () => {
+        const { title } = this.state
+        if( title === 'Editar contenido' )
+            this.updateParrillaAxios()
+        else
+            this.sendParrillaAxios()
     }
 
     openModal = () => {
@@ -296,7 +335,8 @@ class Calendario extends Component {
             form.hora = aux[0].toString();
             form.minuto = aux[1].toString();
         }
-        form.fecha = new Date(event.fecha)
+        
+        form.fecha = new Date(moment(event.fecha))
 
         this.setState({
             ...this.state,
@@ -304,9 +344,9 @@ class Calendario extends Component {
             modal,
             formeditado: 1,
             activeKeyModal: "comments",
-            evento: event
+            evento: event,
+            title: 'Editar contenido'
         })
-        console.log(evento.event._def.extendedProps.evento, 'evento')
     }
 
     onChangeModalTab = key => {
@@ -395,7 +435,7 @@ class Calendario extends Component {
                 </Card>
                 <Modal size="xl" title={title} show={modal.form} handleClose={this.handleCloseForm}>
                     <ParrillaContenidoForm form = { form } formeditado = { formeditado }
-                        options = { options } onChange = { this.onChange } onSubmit = { this.sendParrillaAxios }
+                        options = { options } onChange = { this.onChange } onSubmit = { this.onSumitParrilla }
                         onChangeModalTab = { this.onChangeModalTab } activeKey =  { activeKeyModal }
                         addComentario = { this.addComentarioAxios } evento = { evento }
                     />
