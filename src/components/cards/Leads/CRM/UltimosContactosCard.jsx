@@ -101,23 +101,28 @@ export default class UltimosContactosCard extends Component {
                                             <a href="tel:+5500112233" className="text-dark-75 font-weight-bolder text-hover-primary mb-1">{contacto.prospecto.lead.nombre}</a>
                                             {
                                                 contacto.prospecto ?
-                                                    contacto.prospecto.tipo_proyecto ?
+                                                    contacto.prospecto.lead ?
                                                         <span>
                                                             <span>
-                                                                {contacto.empresa ? <span className="text-black-50 font-weight-bolder">- <u>{contacto.empresa.name}</u></span>: ''}
+                                                                {contacto.prospecto.lead.empresa ? <span className="text-black-50 font-weight-bolder">- <u>{contacto.prospecto.lead.empresa.name}</u></span>: ''}
                                                             </span>
                                                             &nbsp;
-                                                            - {contacto.prospecto.tipo_proyecto.tipo}
                                                         </span>
                                                     :''
-                                                :
-                                                    contacto.servicios.length > 0 ?
-                                                        contacto.servicios.map((servicio, key1) => {
-                                                            return (
-                                                                <span key={key1}> - {servicio.servicio}</span>
-                                                            )
-                                                        })
-                                                    :<span> - Sin servicio</span>
+                                                :''
+                                            }
+                                            {
+                                                contacto.prospecto ?
+                                                    contacto.prospecto.lead ?
+                                                        contacto.prospecto.lead.servicios.length > 0 ?
+                                                            contacto.prospecto.lead.servicios.map((servicio, key1) => {
+                                                                return (
+                                                                    <span key={key1}> - <span className={servicio.servicio==="Quiero ser proveedor"?"crm-proveedor":""}>{servicio.servicio}.</span></span>
+                                                                )
+                                                            })
+                                                        :<span> - Sin servicio</span>
+                                                    :''
+                                                :''
                                             }
                                         </div>
                                     </div>

@@ -90,27 +90,22 @@ export default class SinContacto extends Component {
                                         <div className="timeline-badge"><span className="bg-danger w-50 h-50"></span></div>
                                         <div className="timeline-content">
                                             <a href={`tel:+${contacto.telefono}`} className="text-dark-75 font-weight-bolder text-hover-danger mb-1">{contacto.nombre}</a>
-                                            {
-                                                contacto.prospecto ?
-                                                    contacto.prospecto.tipo_proyecto ?
-                                                        <span> 
-                                                            &nbsp;
-                                                            <span>
-                                                                {contacto.empresa ? <span className="text-black-50 font-weight-bolder">- <u>{contacto.empresa.name}</u> -</span> : ''}
-                                                            </span>
-                                                            &nbsp;
-                                                            {contacto.prospecto.tipo_proyecto.tipo}
+                                                <span> 
+                                                    &nbsp;
+                                                        <span>
+                                                            {contacto.empresa ? <span className="text-black-50 font-weight-bolder">- <u>{contacto.empresa.name}</u></span>: ''}
                                                         </span>
-                                                    :''
-                                                :
-                                                contacto.servicios.length > 0 ?
-                                                    contacto.servicios.map((servicio, key1) => {
-                                                        return (
-                                                            <span key={key1}> - {servicio.servicio}</span>
-                                                        )
-                                                    })
-                                                :<span> - Sin servicio</span>
-                                            }
+                                                    &nbsp;
+                                                </span>
+                                                {
+                                                    contacto.servicios.length > 0 ?
+                                                        contacto.servicios.map((servicio, key1) => {
+                                                            return (
+                                                                <span key={key1}> - <span className={servicio.servicio==="Quiero ser proveedor"?"crm-proveedor":""}>{servicio.servicio}.</span></span>
+                                                            )
+                                                        })
+                                                    :<span> - Sin servicio.</span>
+                                                }
                                         </div>
                                     </div>
                                 )

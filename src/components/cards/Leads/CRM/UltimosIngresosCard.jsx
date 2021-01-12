@@ -62,7 +62,7 @@ export default class UltimosContactosCard extends Component {
         return false;
     }
     render() {
-        const { ultimos_ingresados, onClick, onClickPrev} = this.props
+        const { ultimos_ingresados, onClick, onClickPrev, clickOneLead } = this.props
         return (
             <Card className="card-custom card-stretch gutter-b py-2">
                 <Card.Header className="align-items-center border-0">
@@ -85,34 +85,29 @@ export default class UltimosContactosCard extends Component {
                         {
                             ultimos_ingresados.data.map((contacto, key) => {
                                 return (
-                                    <div className="timeline-item" key={key}>
+                                    <div className = "timeline-item text-hover" key = { key } 
+                                        onClick = { ( e ) => { e.preventDefault(); clickOneLead(contacto.id) } } >
                                         <div className="timeline-label"> {this.diffCommentDate(contacto)}</div>
                                         <div className="timeline-badge"><span className="bg-primary w-50 h-50"></span></div>
                                         <div className="timeline-content text-justify">
                                             <a href={`tel:+${contacto.telefono}`} className="text-dark font-weight-bolder text-hover-primary mb-1">{contacto.nombre}</a>
+                                            <span> 
+                                                &nbsp;
+                                                    <span>
+                                                        {contacto.empresa ? <span className="text-black-50 font-weight-bolder">- <u>{contacto.empresa.name}</u></span>: ''}
+                                                    </span>
+                                                &nbsp;
+                                            </span>
                                             {
-                                                contacto.prospecto ?
-                                                    contacto.prospecto.tipo_proyecto ?
-                                                        <span> 
-                                                            &nbsp;
-                                                            <span>
-                                                                {contacto.empresa ? <span className="text-black-50 font-weight-bolder">- <u>{contacto.empresa.name}</u> -</span> : ''}
-                                                            </span>
-                                                            &nbsp;
-                                                            {contacto.prospecto.tipo_proyecto.tipo}
-                                                        </span>
-                                                    :''
-                                                :
                                                 contacto.servicios.length > 0 ?
                                                     contacto.servicios.map((servicio, key1) => {
                                                         return (
-                                                            <span key={key1}> - {servicio.servicio}</span>
+                                                            <span key={key1}> - <span className={servicio.servicio==="Quiero ser proveedor"?"crm-proveedor":""}>{servicio.servicio}.</span></span>
                                                         )
                                                     })
-                                                :<span> - Sin servicio</span>
+                                                :<span> - Sin servicio.</span>
                                             }
                                         </div>
-                                        
                                     </div>
                                 )
                             })
