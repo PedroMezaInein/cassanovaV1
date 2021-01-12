@@ -64,7 +64,7 @@ class FileItem extends Component {
         return (
             <tr>
                 <td className="pl-1">
-                    <a href={item.url} target='_blank'>
+                    <a href={item.url} target='_blank' rel="noopener noreferrer">
                         <div className="row mx-0 row-paddingless">
                             <div className="col-auto svg-icon svg-icon-3x mr-3">
                                 {this.getIcon()}
