@@ -1,60 +1,91 @@
 import React, { Component } from 'react'
-import { Extension } from 'typescript';
-
-class FileItem extends Component{
+import SVG from "react-inlinesvg";
+import { toAbsoluteUrl } from "../../functions/routers"
+import Moment from 'react-moment'
+class FileItem extends Component {
 
     getIcon = () => {
         const { item } = this.props
         let exten = item.name.split('.');
-        if(exten.length === 0)
+        if (exten.length === 0)
             return 'fas fa-file';
         exten = exten[exten.length - 1]
-        switch(exten.toUpperCase()){
+        switch (exten.toUpperCase()) {
             case 'PDF':
-                return 'fas fa-file-pdf'
-            case 'XLSX': case 'XLSM': case 'XLSB': case 'XLTX': case 'XLTM': case 'XLS':
-            case 'XLT': case 'XLAM': case 'XLA': case 'XLW': case 'XLR': case 'CSV':
-                return 'fas fa-file-excel'
+                return <SVG src={toAbsoluteUrl('/images/svg/Files/PDF.svg')} />;
+            case 'CSV':
+                return <SVG src={toAbsoluteUrl('/images/svg/Files/CSV.svg')} />;
+            case 'XLS':
+                return <SVG src={toAbsoluteUrl('/images/svg/Files/XLS.svg')} />;
+            case 'JPG':
+                return <SVG src={toAbsoluteUrl('/images/svg/Files/JPG.svg')} />;
+            case 'PNG':
+                return <SVG src={toAbsoluteUrl('/images/svg/Files/PNG.svg')} />;
+            case 'GIF':
+                return <SVG src={toAbsoluteUrl('/images/svg/Files/GIF.svg')} />;
+            case 'SVG':
+                return <SVG src={toAbsoluteUrl('/images/svg/Files/SVG.svg')} />;
+            case 'MOV':
+                return <SVG src={toAbsoluteUrl('/images/svg/Files/MOV.svg')} />;
+            case 'WAV':
+                return <SVG src={toAbsoluteUrl('/images/svg/Files/WAV.svg')} />;
+            case 'PSD':
+                return <SVG src={toAbsoluteUrl('/images/svg/Files/PSD.svg')} />;
+            case 'WMV':
+                return <SVG src={toAbsoluteUrl('/images/svg/Files/WMV.svg')} />;
+            case 'DWG':
+                return <SVG src={toAbsoluteUrl('/images/svg/Files/DWG.svg')} />;
+            case 'AI':
+                return <SVG src={toAbsoluteUrl('/images/svg/Files/AI.svg')} />;
+            case 'AVI':
+                return <SVG src={toAbsoluteUrl('/images/svg/Files/AVI.svg')} />;
             case 'DOC': case 'DOCX': case 'DOCM': case 'DOT': case 'DOTM': case 'DOTX':
-                return 'fas fa-file-word'
+                return <SVG src={toAbsoluteUrl('/images/svg/Files/DOC.svg')} />;
+            case 'XLSX': case 'XLSM': case 'XLSB': case 'XLTX': case 'XLTM':
+            case 'XLT': case 'XLAM': case 'XLA': case 'XLW': case 'XLR':
+                return <SVG src={toAbsoluteUrl('/images/svg/Files/XLS.svg')} />;
             case 'PPTX': case 'PPTM': case 'PPT': case 'POTX': case 'PPSX': case 'PPSM': case 'PPS':
-                return 'fas fa-file-powerpoint'
-            case 'MP3': case 'MID': case 'MIDI': case 'WAV': case 'WMA': case 'CDA': 
+                return <SVG src={toAbsoluteUrl('/images/svg/Files/PPT.svg')} />;
+            case 'MP3': case 'MID': case 'MIDI': case 'WMA': case 'CDA':
             case 'AAC': case 'AC3': case 'FLAC':
-                return 'fas fa-file-audio'
+                return <SVG src={toAbsoluteUrl('/images/svg/Files/MP3.svg')} />;
             case 'M1V': case 'MP2V': case 'MP4': case 'MPA': case 'MPE': case 'MPEG': case 'mpg': case 'MPV2':
-            case 'MOV': case 'QT': case 'QTL': case 'WM': case 'WMV': case 'AVI':
-                return 'fas fa-file-video'
-            case 'BMP': case 'GIF': case 'JPEG': case 'JPG': case 'PNG': case 'PSD': case 'AI':
-            case 'CDR': case 'DWG': case 'SVG': case 'RAW': case 'NEF':
-                return 'fas fa-file-image'
+            case 'QT': case 'QTL': case 'WM':
+                return <SVG src={toAbsoluteUrl('/images/svg/Files/MP4.svg')} />;
+            case 'BMP': case 'JPEG': case 'CDR': case 'RAW': case 'NEF':
+                return <SVG src={toAbsoluteUrl('/images/svg/Files/JPG.svg')} />;
             default:
-                return 'fas fa-file';
+                return <SVG src={toAbsoluteUrl('/images/svg/Files/FILE.svg')} />;
         }
     }
-    
-    render(){
+
+    render() {
         const { item, onClickDelete } = this.props
-        return(
-            <div className = 'text-center folder border' >
-                <div className = 'd-flex justify-content-center'>
-                    <div>
-                        <span className='btn btn-icon btn-s text-danger text-hover-danger my-2' onClick = { (e) => { e.preventDefault(); onClickDelete(item) } } >
-                            <i className="fas fa-trash icon-xs text-danger" />
-                        </span>
-                    </div>
-                </div>
-                <div className = 'position-relative d-flex justify-content-center'>
-                    <a href = { item.url } target = '_blank'>
-                        <i className = {`${this.getIcon()} text-primary hover-primary text-hover-primary font-xxx-large text-hover`} />
+        return (
+            <tr>
+                <td className="pl-1">
+                    <a href={item.url} target='_blank'>
+                        <div className="row mx-0 row-paddingless">
+                            <div className="col-auto svg-icon svg-icon-3x mr-3">
+                                {this.getIcon()}
+                            </div>
+                            <div className="col text-dark-75 font-weight-bolder text-hover-primary font-size-lg text-truncate align-self-center">{item.name}</div>
+                        </div>
                     </a>
-                </div>
-                <div className = 'mt-2'>
-                    <a href = { item.url } className = 'text-transform-none' target = '_blank'>
-                        {item.name}
-                    </a>
-                </div>
-            </div>
+                </td>
+                <td className="text-center">
+                    <span className="text-muted font-weight-bold">
+                        <Moment format="DD/MM/YYYY">
+                            {item.created_at}
+                        </Moment>
+                    </span>
+                </td>
+                <td className="pr-0 text-right">
+                    <span className='btn btn-icon btn-s text-danger text-hover-danger my-2' onClick={(e) => { e.preventDefault(); onClickDelete(item) }} >
+                        <i className="fas fa-trash icon-md text-muted text-hover-danger"></i>
+                    </span>
+                </td>
+            </tr>
         )
     }
 }

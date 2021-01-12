@@ -1415,3 +1415,40 @@ span.font-weight-bolder.text-hover-error:hover{
     top: -35px;
     z-index: 1;
 }
+
+.card-hover-shadow{
+    transition: .3s;
+}
+.card-box-shadow {
+    box-shadow: 0 6px 12px rgba(140,152,164,.075);
+}
+.card-hover-shadow:hover {
+    box-shadow: 0 6px 12px rgba(140,152,164,.25)!important;
+}
+.card-sm>.card-body, .card-sm>.collapse .card-body {
+    padding: 1rem 1rem;
+}
+.tio-xl {
+    font-size: 1.75rem;
+}
+.hs-unfold {
+    position: relative;
+    display: inline-block;
+}
+.font-size-14px{
+    font-size: 14px;
+}
+
+.input-folder{
+    background-color: #ffffff!important;
+    border-bottom: 2px solid #E5EAEE!important;
+    color: #464E5F!important;
+    font-size: 14px!important;
+    font-weight: 400!important;
+    padding-bottom: 1px!important;
+    text-align: center!important;
+}
+
+.list-group-item:last-child {
+    border-top-width: 0;
+}
