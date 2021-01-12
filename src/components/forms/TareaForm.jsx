@@ -66,7 +66,7 @@ class TareaForm extends Component {
                                     value = { form.descripcion === null ? '' : form.descripcion }
                                     name='descripcion'
                                     as="textarea"
-                                    rows="4"
+                                    rows="7"
                                     onBlur={(e) => { e.preventDefault(); changeValueSend(e) }}
                                     onChange={(e) => { e.preventDefault(); changeValue(e) }}
                                     messageinc="Incorrecto. Ingresa una descripción."
