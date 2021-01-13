@@ -7,8 +7,12 @@ import ItemSlider from '../../../components/singles/ItemSlider'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
 import FileItem from '../../singles/FileItem'
+import Pagination from "react-js-pagination";
 class ParrillaContenidoForm extends Component {
-
+    state = {
+        itemsPerPage: 10,
+        activePage: 1
+    }
     updateSocialNetworks = value => {
         const { onChange } = this.props
         onChange({ target: { value: value, name: 'socialNetwork' } })
@@ -68,12 +72,19 @@ class ParrillaContenidoForm extends Component {
                 }
             }
         }
-
     }
-
+    onChangePage(pageNumber) {
+        let { activePage } = this.state
+        activePage = pageNumber
+        this.setState({
+            ...this.state,
+            activePage
+        })
+    }
     render() {
         const { options, form, onChange, onSubmit, formeditado, activeKey, onChangeModalTab, addComentario, evento, handleChange, deleteContenido, 
             title, addAdjunto, handleChangeSubmit, onClickDelete, ...props } = this.props
+            const { itemsPerPage, activePage } = this.state
         return (
             <Tab.Container activeKey={activeKey} >
                 <Nav className="nav-tabs nav-bold nav-tabs-line nav-tabs-line-3x border-0 nav-tabs-line-primary mt-2 mb-4 d-flex justify-content-end">
@@ -185,7 +196,7 @@ class ParrillaContenidoForm extends Component {
                                                 messageinc="Incorrecto. Ingresa el título." spellCheck={true} letterCase={false} />
                                         </div>
                                         <div className="col-md-4">
-                                            <Input requirevalidation={0} formeditado={formeditado} name="cta"
+                                            <Input requirevalidation={1} formeditado={formeditado} name="cta"
                                                 value={form.cta} onChange={onChange} type="text"
                                                 placeholder="CTA" iconclass="fas fa-share-square"
                                                 messageinc="Incorrecto. Ingresa la cta." spellCheck={true} letterCase={false} />
@@ -377,7 +388,7 @@ class ParrillaContenidoForm extends Component {
                                                         <th className="pr-0 text-right" style={{ minWidth: "70px" }}></th>
                                                     </tr>
                                                 </thead>
-                                                <tbody >
+                                                <tbody>
                                                     {
                                                         evento ?
                                                             evento.adjuntos ?
@@ -398,15 +409,48 @@ class ParrillaContenidoForm extends Component {
                                                     {
                                                         evento ?
                                                             evento.adjuntos.map((adjunto, key) => {
-                                                                return (
-                                                                    <FileItem item={adjunto} onClickDelete={onClickDelete} key={key} />
-                                                                )
+                                                                let limiteInferior = (activePage - 1) * itemsPerPage
+                                                                let limiteSuperior = limiteInferior + (itemsPerPage - 1)
+                                                                if(adjunto.length < itemsPerPage || ( key >= limiteInferior && key <= limiteSuperior))
+                                                                    return (
+                                                                        <FileItem item={adjunto} onClickDelete={onClickDelete} key={key} />
+                                                                    )
+                                                                return false
                                                             })
                                                         : ''
                                                     }
                                                 </tbody>
                                             </table>
                                         </div >
+                                        {
+                                            evento ? 
+                                                evento.adjuntos ?
+                                                    evento.adjuntos.length > itemsPerPage ?
+                                                        <div className="d-flex justify-content-center mt-4">
+                                                            <Pagination
+                                                                itemClass="page-item"
+                                                                /* linkClass="page-link" */
+                                                                firstPageText = 'Primero'
+                                                                lastPageText = 'Último'
+                                                                activePage = { activePage }
+                                                                itemsCountPerPage = { itemsPerPage }
+                                                                totalItemsCount = { evento.adjuntos.length }
+                                                                pageRangeDisplayed = { 5 }
+                                                                onChange={this.onChangePage.bind(this)}
+                                                                itemClassLast="d-none"
+                                                                itemClassFirst="d-none"
+                                                                prevPageText={<i className='ki ki-bold-arrow-back icon-xs'/>}
+                                                                nextPageText={<i className='ki ki-bold-arrow-next icon-xs'/>}
+                                                                linkClassPrev="btn btn-icon btn-sm btn-light-primary mr-2 my-1 pagination"
+                                                                linkClassNext="btn btn-icon btn-sm btn-light-primary mr-2 my-1 pagination"
+                                                                linkClass="btn btn-icon btn-sm border-0 btn-hover-primary mr-2 my-1 pagination"
+                                                                activeLinkClass="btn btn-icon btn-sm border-0 btn-light btn-hover-primary active mr-2 my-1 pagination"
+                                                            />
+                                                        </div>
+                                                    : ''
+                                                : ''
+                                            : ''
+                                        }
                                     </Col>
                                 </Row>
                             </Form>
