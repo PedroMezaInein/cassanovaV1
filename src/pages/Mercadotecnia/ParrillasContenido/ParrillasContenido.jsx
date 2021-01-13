@@ -434,7 +434,7 @@ class Calendario extends Component {
         form.cta = event.cta
         form.comments = event.imagen
         form.typeContent = event.tipo_contenido
-        form.socialNetwork = event.red_social_id.toString()
+        form.socialNetwork = event.subarea_id.toString()
         form.empresa = event.empresa_id.toString()
         form.title = event.titulo
 
