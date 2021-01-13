@@ -4,7 +4,7 @@ import Layout from '../../../../components/layout/layout';
 import { Form } from 'react-bootstrap';
 import { InputGray, Button } from '../../../../components/form-components';
 import axios from 'axios'
-import { deleteAlert, doneAlert, errorAlert, forbiddenAccessAlert, validateAlert, waitAlert } from '../../../../functions/alert';
+import { doneAlert, errorAlert, forbiddenAccessAlert, validateAlert, waitAlert } from '../../../../functions/alert';
 import { URL_DEV } from '../../../../constants';
 import { Modal } from '../../../../components/singles'
 import { AgendaLlamada, AgendaLlamadaUbicacion} from '../../../../components/forms'

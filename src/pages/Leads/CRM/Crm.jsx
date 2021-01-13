@@ -5,7 +5,7 @@ import { URL_DEV } from '../../../constants'
 import Layout from '../../../components/layout/layout';
 import { Col, Row, Card, Form, Tab, Nav, DropdownButton, Dropdown } from 'react-bootstrap'
 import { setOptions, setDateTableLG } from '../../../functions/setters'
-import { UltimosContactosCard, SinContacto, UltimosIngresosCard, LeadCard } from '../../../components/cards'
+import { UltimosContactosCard, SinContacto, UltimosIngresosCard } from '../../../components/cards'
 import { forbiddenAccessAlert, errorAlert, waitAlert, doneAlert, questionAlert, questionAlert2, deleteAlert} from '../../../functions/alert'
 import LeadRhProveedor from '../../../components/tables/Lead/LeadRhProveedor'
 import LeadNuevo from '../../../components/tables/Lead/LeadNuevo'
@@ -450,6 +450,7 @@ class Crm extends Component {
                         value: origen.id.toString(),
                         text: origen.origen
                     })
+                    return ''
                 })
                 options.origenes = aux
                 this.setState({
@@ -1794,10 +1795,10 @@ class Crm extends Component {
                                                                             <div className="text-dark-75 font-weight-bold mb-2">
                                                                                 <div className="d-flex justify-content-between">
                                                                                     {contacto.tipo_contacto ? contacto.tipo_contacto.tipo : ''}
-                                                                                    <a className="text-muted text-hover-danger font-weight-bold a-hover"
+                                                                                    <span className="text-muted text-hover-danger font-weight-bold a-hover"
                                                                                         onClick={(e) => { deleteAlert('¿ESTÁS SEGURO QUE DESEAS ELIMINAR EL CONTACTO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.eliminarContacto(contacto)) }}>
                                                                                         <i className="flaticon2-cross icon-xs" />
-                                                                                    </a>
+                                                                                    </span>
                                                                                 </div>
                                                                             </div>
                                                                             {contacto.comentario}
@@ -1830,7 +1831,7 @@ class Crm extends Component {
                                             <div className="d-flex justify-content-center mt-4">
                                                 <Pagination
                                                     itemClass="page-item"
-                                                    linkClass="page-link"
+                                                    /* linkClass="page-link" */
                                                     firstPageText = 'Primero'
                                                     lastPageText = 'Último'
                                                     activePage = { activePage }
