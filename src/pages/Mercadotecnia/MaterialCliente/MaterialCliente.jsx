@@ -783,7 +783,7 @@ class MaterialCliente extends Component {
                                                                         icon=''
                                                                         className="btn btn-outline-secondary btn-icon btn-sm "
                                                                         onClick={(e) => { e.preventDefault(); this.newFolder() }}
-                                                                        only_icon="fas fa-folder-plus icon-15px text-success"
+                                                                        only_icon="fas fa-folder-plus icon-15px text-primary"
                                                                         tooltip={{ text: 'NUEVA CARPETA' }}
                                                                     />
                                                                     :
