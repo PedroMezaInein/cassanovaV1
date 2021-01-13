@@ -117,6 +117,12 @@ class Accesos extends Component {
         }
     }
 
+    setUrl = ( url ) => {
+        if(!url.includes('http'))
+            return 'https://' + url
+        return url
+    }
+
     render() {
         const { accesos } = this.state
         return (
@@ -155,7 +161,7 @@ class Accesos extends Component {
                                                 return (
                                                     <tr key={key}>
                                                         <td>
-                                                            <a href={acceso.url} className="font-weight-bolder text-dark text-hover-primary font-size-lg">{acceso.plataforma}</a>
+                                                            <a href = { this.setUrl(acceso.url) } className="font-weight-bolder text-dark text-hover-primary font-size-lg">{acceso.plataforma}</a>
                                                         </td>
                                                         <td>
                                                             <div className='text-hover' onClick={() => { navigator.clipboard.writeText(acceso.usuario) }}>
