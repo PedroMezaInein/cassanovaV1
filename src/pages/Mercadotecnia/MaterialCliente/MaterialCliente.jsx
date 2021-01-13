@@ -14,6 +14,7 @@ import { FileItem, Folder, Modal } from '../../../components/singles'
 import { Button, InputGray } from '../../../components/form-components'
 import Swal from 'sweetalert2'
 import NoFiles from '../../../components/Lottie/NoFiles'
+import Pagination from "react-js-pagination";
 class MaterialCliente extends Component {
 
     state = {
@@ -108,7 +109,9 @@ class MaterialCliente extends Component {
         },
         formeditado: 0,
         empresa: '',
-        activeTipo: ''
+        activeTipo: '',
+        itemsPerPage: 10,
+        activePage: 1
     };
 
     componentDidMount() {
@@ -637,10 +640,17 @@ class MaterialCliente extends Component {
             submenuactive: tipo.id
         })
     }
-
+    onChangePage(pageNumber) {
+        let { activePage } = this.state
+        activePage = pageNumber
+        this.setState({
+            ...this.state,
+            activePage
+        })
+    }
     render() {
 
-        const { form, data, opciones_adjuntos, empresa, submenuactive, newFolder, activeTipo, activeFolder, modal_add } = this.state
+        const { form, data, opciones_adjuntos, empresa, submenuactive, newFolder, activeTipo, activeFolder, modal_add, itemsPerPage, activePage } = this.state
         const sub_menu = (element) => {
             switch (element.tipo) {
                 case 4: return <Nav className="navi">
@@ -861,14 +871,46 @@ class MaterialCliente extends Component {
                                                                             <tbody >
                                                                                 {
                                                                                     activeFolder.adjuntos.map((adjunto, key) => {
-                                                                                        return (
-                                                                                            <FileItem item={adjunto} onClickDelete={this.onClickDelete} key={key} />
-                                                                                        )
+                                                                                        let limiteInferior = (activePage - 1) * itemsPerPage
+                                                                                        let limiteSuperior = limiteInferior + (itemsPerPage - 1)
+                                                                                        if(adjunto.length < itemsPerPage || ( key >= limiteInferior && key <= limiteSuperior))
+                                                                                            return (
+                                                                                                <FileItem item={adjunto} onClickDelete={this.onClickDelete} key={key} />
+                                                                                            )
+                                                                                        return false
                                                                                     })
                                                                                 }
                                                                             </tbody>
                                                                         </table>
                                                                     </div >
+                                                                    
+                                                        }
+                                                        {
+                                                            activeFolder.adjuntos ?
+                                                                activeFolder.adjuntos.length > itemsPerPage ?
+                                                                    <div className="col-md-12 d-flex justify-content-center mt-4">
+                                                                        <Pagination
+                                                                            itemClass="page-item"
+                                                                            /* linkClass="page-link" */
+                                                                            firstPageText='Primero'
+                                                                            lastPageText='Último'
+                                                                            activePage={activePage}
+                                                                            itemsCountPerPage={itemsPerPage}
+                                                                            totalItemsCount={activeFolder.adjuntos.length}
+                                                                            pageRangeDisplayed={5}
+                                                                            onChange={this.onChangePage.bind(this)}
+                                                                            itemClassLast="d-none"
+                                                                            itemClassFirst="d-none"
+                                                                            prevPageText={<i className='ki ki-bold-arrow-back icon-xs' />}
+                                                                            nextPageText={<i className='ki ki-bold-arrow-next icon-xs' />}
+                                                                            linkClassPrev="btn btn-icon btn-sm btn-light-primary mr-2 my-1 pagination"
+                                                                            linkClassNext="btn btn-icon btn-sm btn-light-primary mr-2 my-1 pagination"
+                                                                            linkClass="btn btn-icon btn-sm border-0 btn-hover-primary mr-2 my-1 pagination"
+                                                                            activeLinkClass="btn btn-icon btn-sm border-0 btn-light btn-hover-primary active mr-2 my-1 pagination"
+                                                                        />
+                                                                    </div>
+                                                                    : ''
+                                                                : ''
                                                         }
                                                     </div>
                                                 </div>
