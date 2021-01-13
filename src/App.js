@@ -170,6 +170,9 @@ const MaterialEmpresa = Loader( () => import('./pages/Mercadotecnia/MaterialEmpr
 const MaterialCliente = Loader( () => import('./pages/Mercadotecnia/MaterialCliente/MaterialCliente') )
 const ParrillasContenido = Loader( () => import('./pages/Mercadotecnia/ParrillasContenido/ParrillasContenido') )
 
+const MercaProveedores = Loader( () => import('./pages/Mercadotecnia/Proveedores/Proveedores') )
+const MercaProveedoresForm = Loader(() => import('./pages/Mercadotecnia/Proveedores/ProveedoresForm') )
+
 class App extends Component{
     async componentDidMount(){
         const { access_token } = this.props.authUser
@@ -416,6 +419,9 @@ class App extends Component{
                     <Route path = "/mercadotecnia/material-empresas" exact component ={ MaterialEmpresa } />
                     <Route path = "/mercadotecnia/material-clientes" exact component ={ MaterialCliente} />
                     <Route path = "/mercadotecnia/parrillas-de-contenido" exact component ={ ParrillasContenido} />
+                    
+                    <Route path = "/mercadotecnia/merca-proveedores" exact component = { MercaProveedores } />
+                    <Route path = "/mercadotecnia/merca-proveedores/:action" exact component = { MercaProveedoresForm } />
 
                     {/* ANCHOR Routes for user settings */}
 

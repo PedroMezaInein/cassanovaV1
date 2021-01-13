@@ -778,6 +778,37 @@ export const PROVEEDORES_COLUMNS = [
     },
 ]
 
+export const PROVEEDORES_MERCA_COLUMNS = [
+    {
+        Header: 'Opciones',
+        accessor: 'actions',
+    },
+    /* {
+        Header: 'Nombre',
+        accessor: 'nombre'
+    }, */
+    {
+        Header: 'Razón Social',
+        accessor: 'razonSocial'
+    },
+    {
+        Header: 'RFC',
+        accessor: 'rfc'
+    },
+    /* {
+        Header: 'Contacto',
+        accessor: 'contacto'
+    },
+    {
+        Header: 'Cuenta',
+        accessor: 'cuenta'
+    }, */
+    {
+        Header: 'Área',
+        accessor: 'subarea'
+    },
+]
+
 export const AREAS_COLUMNS = [
     {
         Header: 'OPCIONES',
