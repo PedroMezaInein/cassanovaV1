@@ -80,6 +80,7 @@ import mensajePrincipal from './leads/MensajePrincipal'
 import accesosForm from './usuarios/AccesosForm'
 import parrillaContenidoForm from './mercadotecnia/ParrillaContenidoForm'
 import mercadotecniaForm from './reportes/MercadotecniaForm'
+import mercaProveedoresForm from './mercadotecnia/MercaProveedoresForm'
 
 export const RegisterUserForm = registerUserForm
 export const EmpresaForm = empresaForm
@@ -163,3 +164,4 @@ export const MensajePrincipal = mensajePrincipal
 export const AccesosForm = accesosForm
 export const ParrillaContenidoForm = parrillaContenidoForm
 export const MercadotecniaForm = mercadotecniaForm
+export const MercaProveedoresForm = mercaProveedoresForm

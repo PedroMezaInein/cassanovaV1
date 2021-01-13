@@ -78,6 +78,7 @@ class Mercadotecnia extends Component {
         form.adjuntos.adjuntos.files.map(( adjunto) => {
             data.append(`files_name_adjunto[]`, adjunto.name)
             data.append(`files_adjunto[]`, adjunto.file)
+            return ''
         })
         data.append(`empresa`, form.empresa)
         data.append(`mes`, form.mes)
@@ -226,6 +227,7 @@ class Mercadotecnia extends Component {
                     form[element] = ''
                     break;
             }
+            return ''
         })
         return form;
     }
