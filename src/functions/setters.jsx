@@ -345,6 +345,14 @@ export function setFacturaTable(data) {
     }
 }
 
+export function setAdjuntoTable(adjunto) {
+    return (
+        <a href = { adjunto.url } target = "_blank" rel = "noopener noreferrer">
+            <Small> { adjunto.name } </Small>
+        </a>
+    )
+}
+
 export function setAdjuntosList(list) {
     let aux = true
     return (
