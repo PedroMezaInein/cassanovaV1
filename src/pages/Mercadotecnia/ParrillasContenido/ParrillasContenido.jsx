@@ -77,6 +77,60 @@ class Calendario extends Component {
             return pathname === url
         });
         this.getContentAxios()
+        let queryString = this.props.history.location.search
+        if (queryString) {
+            let params = new URLSearchParams(queryString)
+            let id = params.get("id")
+            if(id)
+                this.getParrillaAxios(id)
+        }
+    }
+
+    getParrillaAxios = async(id) => {
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'mercadotecnia/parrilla-contenido/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { parrilla } = response.data
+                const { form, modal } = this.state
+
+                modal.form = true
+
+                form.copy = parrilla.copy
+                form.cta = parrilla.cta
+                form.comments = parrilla.imagen
+                form.typeContent = parrilla.tipo_contenido
+                form.socialNetwork = parrilla.subarea_id.toString()
+                form.empresa = parrilla.empresa_id.toString()
+                form.title = parrilla.titulo
+
+                let aux = []
+                aux = parrilla.hora.split(":")
+                if (aux.length === 3) {
+                    form.hora = aux[0].toString();
+                    form.minuto = aux[1].toString();
+                }
+                
+                form.fecha = new Date(moment(parrilla.fecha))
+
+                this.setState({
+                    ...this.state,
+                    form,
+                    modal,
+                    formeditado: 1,
+                    activeKeyModal: "form",
+                    evento: parrilla,
+                    title: 'Editar contenido'
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) { forbiddenAccessAlert() } 
+                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
     }
 
     async getContentAxios() {
