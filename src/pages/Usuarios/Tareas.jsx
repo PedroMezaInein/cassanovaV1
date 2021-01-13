@@ -10,7 +10,7 @@ import { TareaForm } from '../../components/forms'
 import { Button } from '../../components/form-components'
 import moment from 'moment'
 import { Card, Nav, Tab, Row, Col, Form} from 'react-bootstrap'
-import { errorAlert, forbiddenAccessAlert, waitAlert, validateAlert, messageAlert, commentAlert } from '../../functions/alert'
+import { errorAlert, forbiddenAccessAlert, waitAlert, validateAlert, commentAlert } from '../../functions/alert'
 import { CaducadasCard, EnProcesoCard, ProximasCaducarCard } from '../../components/cards'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
@@ -18,7 +18,6 @@ import ItemSlider from '../../components/singles/ItemSlider'
 import InputGray from '../../components/form-components/Gray/InputGray'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../functions/routers"
-const MySwal = withReactContent(Swal)
 class Tareas extends Component {
 
     state = {
@@ -335,6 +334,7 @@ class Tareas extends Component {
                     tableros.map((tablero, key)=>{
                         if(tablero.nombre === subActiveKey)
                             auxiliar = key
+                        return ''
                     })
                 }
                 this.setState({

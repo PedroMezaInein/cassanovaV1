@@ -156,6 +156,7 @@ class ProspectosForm extends Component {
                     fondo: element.color_fondo
                 }
             )
+            return ''
         });
         return aux
     }
@@ -406,6 +407,7 @@ class ProspectosForm extends Component {
                                                             <Dropdown.Divider className="m-0" style={{ borderTop: '1px solid #fff' }} />
                                                         </>
                                                     )
+                                                    return ''
                                                 })
                                             }
                                         </Dropdown.Menu>

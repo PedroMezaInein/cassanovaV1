@@ -149,7 +149,7 @@ class LeadDetenido extends Component {
                                                                     <Dropdown.Header>
                                                                         <span className="font-size-sm">Elige una opción</span>
                                                                     </Dropdown.Header>
-                                                                    <Dropdown.Item href="#" className="p-0" className="p-0" onClick={(e) => { e.preventDefault(); changeEstatus('En proceso', lead.id) }}>
+                                                                    <Dropdown.Item href="#" className="p-0" onClick={(e) => { e.preventDefault(); changeEstatus('En proceso', lead.id) }}>
                                                                         <span className="navi-link w-100">
                                                                             <span className="navi-text">
                                                                                 <span className="label label-xl label-inline label-light-info rounded-0 w-100">EN PROCESO</span>
@@ -177,9 +177,9 @@ class LeadDetenido extends Component {
                                                 </td>
                                                 <td className="pr-0 text-center">
                                                     <OverlayTrigger overlay={<Tooltip>VER MÁS</Tooltip>}>
-                                                        <a onClick={(e) => { changePageDetails(lead) }} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-gray">
+                                                        <span onClick={(e) => { changePageDetails(lead) }} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-gray">
                                                             <i className="flaticon2-plus icon-nm"></i>
-                                                        </a>
+                                                        </span>
                                                     </OverlayTrigger>
                                                 </td>
                                             </tr>

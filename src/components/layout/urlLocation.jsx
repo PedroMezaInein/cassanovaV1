@@ -65,8 +65,6 @@ class UrlLocation extends Component {
             }
         }
 
-
-
         return (
             <>
                 {
@@ -119,11 +117,11 @@ class UrlLocation extends Component {
                                                     tooltip={{ text: 'TELÉFONO' }}
                                                 /> */}
                                                 <OverlayTrigger overlay={<Tooltip>LLAMADA ENTRANTE</Tooltip>}>
-                                                    <a onClick={() => { this.changePageAdd('telefono') }} className="btn btn-light btn-text-primary btn-hover-text-primary btn-sm">
+                                                    <span onClick={() => { this.changePageAdd('telefono') }} className="btn btn-light btn-text-primary btn-hover-text-primary btn-sm">
                                                         <span className="svg-icon svg-icon-md mr-0">
                                                             <SVG src={toAbsoluteUrl('/images/svg/Incoming-call.svg')} />
                                                         </span>
-                                                    </a>
+                                                    </span>
                                                 </OverlayTrigger>
                                             </>
                                             : ''

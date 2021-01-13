@@ -13,6 +13,7 @@ export default class ObraForm extends Component {
             if(element.name === tipo.name){
                 element.parametricos[name] = value
             }
+            return ''
         })
         onChange({target:{value:aux,name:'tipos'}})
     }
