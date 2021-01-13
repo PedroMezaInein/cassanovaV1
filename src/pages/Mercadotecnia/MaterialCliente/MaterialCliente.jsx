@@ -759,12 +759,12 @@ class MaterialCliente extends Component {
                                                             {
                                                                 activeFolder !== false ?
                                                                     <>
-                                                                        <Button 
+                                                                        <Button
                                                                             id="regresar"
                                                                             icon=''
                                                                             className="btn btn-outline-secondary btn-icon btn-sm "
                                                                             onClick={(e) => { e.preventDefault(); this.goBackFolder() }}
-                                                                            only_icon="fas fa-angle-left icon-md"
+                                                                            only_icon="fas fa-angle-left icon-md text-primary"
                                                                             tooltip={{ text: 'REGRESAR' }}
                                                                         />
                                                                         <span className="text-muted font-weight-bold mr-4 ml-2">
@@ -792,7 +792,7 @@ class MaterialCliente extends Component {
                                                                         icon=''
                                                                         className="btn btn-outline-secondary btn-icon btn-sm "
                                                                         onClick={(e) => { e.preventDefault(); this.openModalAddFiles() }}
-                                                                        only_icon="fas fa-upload icon-15px"
+                                                                        only_icon="fas fa-upload icon-15px text-primary"
                                                                         tooltip={{ text: 'SUBIR ARCHIVOS' }}
                                                                     />
                                                             }
@@ -861,8 +861,8 @@ class MaterialCliente extends Component {
                                                                     :
                                                                     <div className="table-responsive mt-4">
                                                                         <table className="table table-vertical-center">
-                                                                            <thead className="thead-light">
-                                                                                <tr className="text-left text-dark-75">
+                                                                            <thead className="bg-primary-o-30">
+                                                                                <tr className="text-left text-primary">
                                                                                     <th className="pl-2" style={{ minWidth: "150px" }}>Adjunto</th>
                                                                                     <th style={{ minWidth: "80px" }} className="text-center">Fecha</th>
                                                                                     <th className="pr-0 text-right" style={{ minWidth: "70px" }}></th>
@@ -873,7 +873,7 @@ class MaterialCliente extends Component {
                                                                                     activeFolder.adjuntos.map((adjunto, key) => {
                                                                                         let limiteInferior = (activePage - 1) * itemsPerPage
                                                                                         let limiteSuperior = limiteInferior + (itemsPerPage - 1)
-                                                                                        if(adjunto.length < itemsPerPage || ( key >= limiteInferior && key <= limiteSuperior))
+                                                                                        if (adjunto.length < itemsPerPage || (key >= limiteInferior && key <= limiteSuperior))
                                                                                             return (
                                                                                                 <FileItem item={adjunto} onClickDelete={this.onClickDelete} key={key} />
                                                                                             )
@@ -883,7 +883,7 @@ class MaterialCliente extends Component {
                                                                             </tbody>
                                                                         </table>
                                                                     </div >
-                                                                    
+
                                                         }
                                                         {
                                                             activeFolder.adjuntos ?
@@ -916,19 +916,32 @@ class MaterialCliente extends Component {
                                                 </div>
                                                 :
                                                 form.adjuntos.slider.menu === 0 ?
-                                                    <div className="col-md-12 d-flex justify-content-center">
-                                                        <div>
-                                                            <div className="text-center font-weight-bolder mb-2">
-                                                                {form.adjuntos.slider.placeholder}
-                                                            </div>
-                                                            <ItemSlider item='slider' items={form.adjuntos.slider.files}
-                                                                handleChange={this.handleChange} multiple={true}
-                                                                deleteFile={this.deleteFile}
+                                                    <>
+                                                        <div className="d-flex justify-content-end">
+                                                            <Button
+                                                                id="subir_archivos"
+                                                                icon=''
+                                                                className="btn btn-outline-secondary btn-icon btn-sm "
+                                                                onClick={(e) => { e.preventDefault(); this.openModalAddFiles() }}
+                                                                only_icon="fas fa-upload icon-15px"
+                                                                tooltip={{ text: 'SUBIR ARCHIVOS' }}
                                                             />
                                                         </div>
-                                                    </div>
+                                                        {/* <div className="col-md-12 d-flex justify-content-center">
+                                                            <div>
+                                                                <div className="text-center font-weight-bolder mb-2">
+                                                                    {form.adjuntos.slider.placeholder}
+                                                                </div>
+                                                                <ItemSlider item='slider' items={form.adjuntos.slider.files}
+                                                                    handleChange={this.handleChange} multiple={true}
+                                                                    deleteFile={this.deleteFile}
+                                                                />
+                                                            </div>
+                                                        </div> */}
+                                                    </>
                                                     :
                                                     submenuactive ?
+                                                        
                                                         <div className="col-md-12 d-flex justify-content-center">
                                                             <div className='row mx-0 justify-content-center'>
                                                                 <div className="col-md-6">
