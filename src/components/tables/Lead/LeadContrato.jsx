@@ -123,9 +123,9 @@ class LeadContrato extends Component {
                                                 </td>
                                                 <td className="pr-0 text-center">
                                                     <OverlayTrigger overlay={<Tooltip>VER MÁS</Tooltip>}>
-                                                        <a onClick={(e) => { changePageDetails(lead) }} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-success">
+                                                        <span onClick={(e) => { changePageDetails(lead) }} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-success">
                                                             <i className="flaticon2-plus icon-nm"></i>
-                                                        </a>
+                                                        </span>
                                                     </OverlayTrigger>
                                                 </td>
                                             </tr>

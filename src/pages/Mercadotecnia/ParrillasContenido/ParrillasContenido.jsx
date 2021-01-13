@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import moment from 'moment'
 import { URL_DEV } from '../../../constants';
-import { doneAlert, errorAlert, forbiddenAccessAlert, questionAlert, waitAlert } from '../../../functions/alert';
+import { doneAlert, errorAlert, forbiddenAccessAlert, questionAlert, waitAlert, deleteAlert } from '../../../functions/alert';
 import { connect } from 'react-redux';
 import Layout from '../../../components/layout/layout';
 import { Card, Nav, OverlayTrigger, Tooltip } from 'react-bootstrap'
@@ -506,6 +506,36 @@ class Calendario extends Component {
     handleChangeSubmit = (files, item) => {
         questionAlert('¿DESEAS ADJUNTAR EL ARCHIVO?', '', () => this.sendAdjuntoAxios(files, item))
     }
+
+    onClickDelete = element => {
+        deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', element.name, () => this.deleteAdjunto(element.id))
+    }
+    deleteAdjunto = async (id) => {
+        const { access_token } = this.props.authUser
+        const { empresa, activeFolder } = this.state
+        await axios.delete(URL_DEV + 'mercadotecnia/material-clientes/empresas/' + empresa.id + '/caso-exito/' + activeFolder.id + '/adjuntos/' + id,
+            { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
+                (response) => {
+                    const { empresa, empresas, carpeta } = response.data
+                    const { data } = this.state
+                    data.empresas = empresas
+                    doneAlert('Archivos eliminado con éxito')
+                    this.setState({
+                        ...this.state,
+                        empresa: empresa,
+                        data
+                    })
+                },
+                (error) => {
+                    console.log(error, 'error')
+                    if (error.response.status === 401) forbiddenAccessAlert()
+                    else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            ).catch((error) => {
+                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+                console.log(error, 'error')
+            })
+    }
     
     handleChange = (files, item) => {
         const { form } = this.state
@@ -586,7 +616,7 @@ class Calendario extends Component {
                         options={options} onChange={this.onChange} onSubmit={this.sendParrillaAxios}
                         onChangeModalTab={this.onChangeModalTab} activeKey={activeKeyModal}
                         addComentario={this.addComentarioAxios} evento={evento} handleChange={this.handleChange} 
-                        deleteContenido={this.deleteContenido} handleChangeSubmit = {this.handleChangeSubmit}
+                        deleteContenido={this.deleteContenido} handleChangeSubmit = {this.handleChangeSubmit} onClickDelete={this.onClickDelete} 
                     />
                 </Modal>
             </Layout>

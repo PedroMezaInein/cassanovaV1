@@ -1,21 +1,25 @@
 import React, { Component } from 'react'
-import { Card } from 'react-bootstrap'
 import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
-import Layout from '../../../components/layout/layout'
-import NewTableServerRender from '../../../components/tables/NewTableServerRender'
-import { REPORTE_MERCA_COLUMNS, URL_DEV } from '../../../constants'
-import { errorAlert, forbiddenAccessAlert, waitAlert } from '../../../functions/alert'
-import { setOptions, setTextTable } from '../../../functions/setters'
 import axios from 'axios'
+import { URL_DEV, REPORTE_MERCA_COLUMNS} from '../../../constants'
+import { setTextTable, setOptions} from '../../../functions/setters'
+import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
+import Layout from '../../../components/layout/layout'
+import { Modal, ModalDelete } from '../../../components/singles'
+import { MercadotecniaForm } from '../../../components/forms'
+import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import Swal from 'sweetalert2'
-import { Modal } from '../../../components/singles'
-
-class Mercadotecnia extends Component{
+const $ = require('jquery');
+class Mercadotecnia extends Component {
 
     state = {
+        formeditado:0,
         options: { empresas: [] },
-        modal: false,
+        modal:{
+            form: false,
+            delete: false
+        },
         title: 'Adjuntar reporte',
         form: {
             empresa: '',
@@ -28,7 +32,8 @@ class Mercadotecnia extends Component{
                     files: []
                 }
             }
-        }
+        },
+        reporte: '',
     }
 
     componentDidMount() {
@@ -44,54 +49,7 @@ class Mercadotecnia extends Component{
         this.getOptionsAxios()
     }
 
-    setReportes = reportes => {
-        let aux = []
-        reportes.map((reporte) => {
-            aux.push(
-                {
-                    actions: this.setActions(reporte),
-                    empresa: renderToString(setTextTable( reporte.empresa ? reporte.empresa.name : '' ) ),
-                    fecha: renderToString( setTextTable( reporte.mes + ' - ' + reporte.año) ),
-                    reporte: renderToString( setTextTable('') ),
-                    id: reporte.id
-                }
-            )
-            return false
-        })
-        return aux
-    }
-
-    setActions = () => {
-        let aux = []
-        aux.push(
-            {
-                text: 'Editar',
-                btnclass: 'success',
-                iconclass: 'flaticon2-pen',
-                action: 'edit',
-                tooltip: { id: 'edit', text: 'Editar' }
-            },
-            {
-                text: 'Eliminar',
-                btnclass: 'danger',
-                iconclass: 'flaticon2-rubbish-bin',
-                action: 'delete',
-                tooltip: { id: 'delete', text: 'Eliminar', type: 'error' }
-            }
-        )
-        return aux
-    }
-
-    openModal = () => {
-        this.setState({
-            ...this.state,
-            modal: true,
-            title: 'Adjuntar reporte'
-        })
-    }
-
     getOptionsAxios = async () => {
-        waitAlert()
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'reportes/reporte-mercadotecnia/options', { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -118,43 +76,330 @@ class Mercadotecnia extends Component{
         })
     }
 
-    render(){
-        const { title, modal } = this.state
-        return(
-            <Layout active = 'reportes' { ...this.props } >
-                <Card className = 'card-custom' >
-                    <Card.Header>
-                        <div className = 'card-title'>
-                            <h3 className = 'card-label'>
-                                Reporte de ventas
-                            </h3>
-                        </div>
-                    </Card.Header>
-                    <Card.Body>
-                        <NewTableServerRender columns = { REPORTE_MERCA_COLUMNS }
-                            title = 'Reporte de mercadotecnia' subtitle = 'Listado de reporte de mercadotecnia'
-                            mostrar_boton = { true } abrir_modal = { true } mostrar_acciones = { true }
-                            onClick = { this.openModal } idTable = 'table_reporte_merca'
-                            actions = {
-                                {
-                                    'edit': { function: this.openModalEdit },
-                                    'delete': { function: this.openModalDelete },
-                                }
-                            } accessToken = { this.props.authUser.access_token }
-                            setter = { this.setReportes } urlRender = { URL_DEV + 'reportes/reporte-mercadotecnia' }
-                            cardTable = 'card_table_reporte_merca' cardTableHeader = 'card_table_header_reporte_merca'
-                            cardBody = 'card_table_body'/>
-                    </Card.Body>
-                </Card>
-                <Modal size = 'xl' title = { title } show = { modal } >
+    setActions = () => {
+        let aux = []
+        aux.push(
+            {
+                text: 'Editar',
+                btnclass: 'success',
+                iconclass: 'flaticon2-pen',
+                action: 'edit',
+                tooltip: { id: 'edit', text: 'Editar' }
+            },
+            {
+                text: 'Eliminar',
+                btnclass: 'danger',
+                iconclass: 'flaticon2-rubbish-bin',
+                action: 'delete',
+                tooltip: { id: 'delete', text: 'Eliminar', type: 'error' }
+            }
+        )
+        return aux
+    }
 
+    setReportes = reportes => {
+        let aux = []
+        reportes.map((reporte) => {
+            aux.push(
+                {
+                    actions: this.setActions(reporte),
+                    empresa: renderToString(setTextTable(reporte.empresa ? reporte.empresa.name : '')),
+                    fecha: renderToString(setTextTable(reporte.mes + ' - ' + reporte.año)),
+                    reporte: renderToString(setTextTable('')),
+                    id: reporte.id
+                }
+            )
+            return false
+        })
+        return aux
+    }
+    openModal = () => {
+        const { modal } = this.state
+        modal.form = true
+        this.setState({
+            modal,
+            title: 'Nuevo reporte',
+            form: this.clearForm(),
+            formeditado:0
+        })
+    }
+    handleClose = () => {
+        const { modal } = this.state
+        modal.form = false
+        this.setState({
+            modal,
+            title: 'Nuevo reporte',
+            form: this.clearForm(),
+            reporte: ''
+        })
+    }
+    clearForm = () => {
+        const { form } = this.state
+        let aux = Object.keys(form)
+        aux.map((element) => {
+            switch (element) {
+                case 'adjuntos':
+                    form[element] = {
+                        adjuntos: {
+                            value: '',
+                            placeholder: 'Adjunto',
+                            files: []
+                        }
+                    }
+                    break;
+                default:
+                    form[element] = ''
+                    break;
+            }
+        })
+        return form;
+    }
+
+    async getReporteAxios() {
+        $('#kt_datatable_reporte_merca').DataTable().ajax.reload();
+    }
+
+    onChange = e => {
+        const { name, value } = e.target
+        const { form } = this.state
+        form[name] = value
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
+
+    handleChange = (files, item) => {
+        const { form } = this.state
+        let aux = []
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        form['adjuntos'][item].value = files
+        form['adjuntos'][item].files = aux
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
+
+    handleCloseDelete = () => {
+        const { modal } = this.state
+        modal.delete = false
+        this.setState({
+            modal,
+            reporte: ''
+        })
+    }
+
+    openModalDelete = reporte => {
+        const { modal } = this.state
+        modal.delete = true
+        this.setState({
+            modal,
+            reporte: reporte
+        })
+    }
+
+    openModalEdit = reporte => {
+        const { form, modal } = this.state
+        modal.form = true
+        
+        form.empresa = reporte.empresa.id.toString()
+        form.mes = reporte.mes
+        form.año = reporte.año
+        let aux = []
+        if (reporte.adjuntos) {
+            reporte.adjuntos.map((adj) => {
+                aux.push({
+                    url: adj.url,
+                    name: adj.name,
+                    id: adj.id
+                })
+                return false
+            })
+        }
+        form.adjuntos.adjuntos.files = aux
+        this.setState({
+            modal,
+            title: 'Editar reporte',
+            reporte: reporte,
+            form,
+            formeditado:1
+        })
+    }
+
+    onSubmit = e => {
+        e.preventDefault()
+        const { title } = this.state
+        if (title === 'Nuevo reporte')
+            this.addReporteAxios()
+        if (title === 'Editar reporte')
+            this.updateReporteAxios()
+    }
+
+    async addReporteAxios() {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        await axios.put(URL_DEV + 'reporte', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                
+                const { modal } = this.state
+                modal.form = false
+
+                this.getReporteAxios()
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Creaste con éxito una nueva reporte.')
+
+                this.setState({
+                    ...this.state,
+                    modal,
+                    form: this.clearForm(),
+                })
+
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async updateReporteAxios() {
+        const { access_token } = this.props.authUser
+        const { form, reporte } = this.state
+        await axios.put(URL_DEV + 'reporte/' + reporte.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { modal } = this.state
+                modal.form = false
+
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito el reporte.')
+
+                this.getReporteAxios()
+
+                this.setState({
+                    ...this.state,
+                    modal,
+                    form: this.clearForm(),
+                    reporte: ''
+                })
+
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async deleteReporteAxios() {
+        const { access_token } = this.props.authUser
+        const { reporte } = this.state
+        await axios.delete(URL_DEV + 'reporte/' + reporte.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { modal } = this.state
+                modal.delete = false
+                
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito el reporte.')
+                
+                this.getReporteAxios()
+
+                this.setState({
+                    ...this.state,
+                    modal,
+                    form: this.clearForm(),
+                    reporte: '',
+                })
+
+            },
+            (error) => {
+                console.log(error, 'error')
+                if(error.response.status === 401){
+                    forbiddenAccessAlert()
+                }else{
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    render() {
+        const { form, modal, title, formeditado, options} = this.state
+        return (
+            <Layout active={'reportes'}  {...this.props}>
+                <NewTableServerRender 
+                    columns = { REPORTE_MERCA_COLUMNS } 
+                    title = 'Reporte de mercadotecnia' 
+                    subtitle ='Listado de reporte de mercadotecnia'
+                    mostrar_boton = { true }
+                    abrir_modal = { true }
+                    mostrar_acciones = { true }
+                    onClick = { this.openModal }
+                    actions = {
+                        {
+                            'edit': { function: this.openModalEdit },
+                            'delete': { function: this.openModalDelete }
+                        }
+                    }
+                    idTable = 'kt_datatable_reporte_merca'
+                    cardTable='cardTable'
+                    cardTableHeader='cardTableHeader'
+                    cardBody='cardBody'
+                    accessToken = { this.props.authUser.access_token }
+                    setter =  {this.setReportes }
+                    // urlRender = { URL_DEV + 'partidas'}
+                    urlRender = { URL_DEV + 'reportes/reporte-mercadotecnia' }
+                />
+
+                <Modal size="xl" show={modal.form} title = {title} handleClose={this.handleClose}>
+                    <MercadotecniaForm
+                        form = { form } 
+                        onChange = { this.onChange }
+                        onSubmit = { this.onSubmit } 
+                        formeditado={formeditado}
+                        options={options}
+                        handleChange={this.handleChange}
+                    />
                 </Modal>
+                <ModalDelete title={"¿Estás seguro que deseas eliminar el reporte?"} show = { modal.delete } handleClose = { this.handleCloseDelete } onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteReporteAxios() }}>
+                </ModalDelete>
             </Layout>
         )
     }
 }
 
-const mapDispatchToProps = (dispatch) => ({})
-const mapStateToProps = (state) => { return { authUser: state.authUser } }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Mercadotecnia)
+const mapStateToProps = state => {
+    return {
+        authUser: state.authUser
+    }
+}
+
+const mapDispatchToProps = dispatch => ({
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(Mercadotecnia);
