@@ -4,7 +4,7 @@ import axios from 'axios'
 import { URL_DEV } from '../../../constants'
 import Layout from '../../../components/layout/layout';
 import { Col, Row, Card, Form, Tab, Nav, DropdownButton, Dropdown } from 'react-bootstrap'
-import { setOptions, setDateTableLG } from '../../../functions/setters'
+import { setOptions, setDateTableLG, setContactoIcon } from '../../../functions/setters'
 import { UltimosContactosCard, SinContacto, UltimosIngresosCard } from '../../../components/cards'
 import { forbiddenAccessAlert, errorAlert, waitAlert, doneAlert, questionAlert, questionAlert2, deleteAlert} from '../../../functions/alert'
 import LeadRhProveedor from '../../../components/tables/Lead/LeadRhProveedor'
@@ -1072,7 +1072,8 @@ class Crm extends Component {
                 this.setState({
                     ...this.state,
                     modal_one_lead: true,
-                    lead: lead
+                    lead: lead,
+                    activePage: 1
                 })
             },
             (error) => {
@@ -1442,6 +1443,52 @@ class Crm extends Component {
         $(".pagination").removeClass("page-link");
     }
 
+    printTimeLineContact = (contacto, key) => {
+        console.log(key, 'key')
+        return(
+            <div className = 'timeline timeline-6' key = { key }>
+                <div className = 'timeline-items'>
+                    <div className = 'timeline-item'>
+                        <div className = { contacto.success ? "timeline-media bg-light-success" : "timeline-media bg-light-danger" } >
+                            <span className = {contacto.success ? "svg-icon svg-icon-success svg-icon-md" : "svg-icon svg-icon-danger  svg-icon-md"}>
+                                { setContactoIcon(contacto) }
+                            </span>
+                        </div>
+                        <div className = { contacto.success ? "timeline-desc timeline-desc-light-success" : "timeline-desc timeline-desc-light-danger" } >
+                            <span className = {contacto.success ? "font-weight-bolder text-success" : "font-weight-bolder text-danger" } >
+                                { setDateTableLG(contacto.created_at) }
+                            </span>
+                            <div className="font-weight-light pb-2 text-justify position-relative mt-2 pr-3" 
+                                style={{ borderRadius: '0.42rem', padding: '1rem 1.5rem', backgroundColor: '#F3F6F9' }}>
+                                <div className = "text-dark-75 font-weight-bold mb-2">
+                                    <div className = "d-flex justify-content-between">
+                                        { contacto.tipo_contacto ? contacto.tipo_contacto.tipo : '' }
+                                        <span className="text-muted text-hover-danger font-weight-bold a-hover"
+                                            onClick={(e) => { deleteAlert('¿ESTÁS SEGURO QUE DESEAS ELIMINAR EL CONTACTO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.eliminarContacto(contacto)) }}>
+                                            <i className="flaticon2-cross icon-xs" />
+                                        </span>
+                                    </div>
+                                </div>
+                                { contacto.comentario }
+                                {
+                                    contacto.adjunto ?
+                                        <div className="d-flex justify-content-end">
+                                            <a href={contacto.adjunto.url} target='_blank' rel="noopener noreferrer" className="text-muted text-hover-primary font-weight-bold">
+                                                <span className="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
+                                                    <SVG src={toAbsoluteUrl('/images/svg/Attachment1.svg')} />
+                                                </span>VER ADJUNTO
+                                            </a>
+                                        </div>
+                                    : ''
+                                }
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+
     render() {
         const { ultimos_contactados, prospectos_sin_contactar, ultimos_ingresados, lead_web, activeTable, leads_en_contacto, leads_en_negociacion, modal_one_lead,
             leads_contratados, leads_cancelados, leads_detenidos, modal_agendar, form, lead, lead_rh_proveedores, options, modal_editar, formEditar, modal_historial, formHistorial, itemsPerPage, activePage} = this.state
@@ -1461,6 +1508,7 @@ class Crm extends Component {
                             prospectos_sin_contactar={prospectos_sin_contactar}
                             onClick={this.nextPageProspectosSinContactar}
                             onClickPrev={this.prevPageProspectosSinContactar}
+                            clickOneLead = { this.getOneLeadInfoAxios }
                         />
                     </Col>
                     <Col lg={4}>
@@ -1468,6 +1516,7 @@ class Crm extends Component {
                             ultimos_contactados={ultimos_contactados}
                             onClick={this.nextUltimosContactados}
                             onClickPrev={this.prevUltimosContactados}
+                            clickOneLead = { this.getOneLeadInfoAxios }
                         />
                     </Col>
                 </Row>
@@ -1760,65 +1809,7 @@ class Crm extends Component {
                                                 let limiteInferior = (activePage - 1) * itemsPerPage
                                                 let limiteSuperior = limiteInferior + (itemsPerPage - 1)
                                                 if(contacto.length < itemsPerPage || ( key >= limiteInferior && key <= limiteSuperior))
-                                                    return(
-                                                        <div className="timeline timeline-6" key={key}>
-                                                            <div className="timeline-items">
-                                                                <div className="timeline-item">
-                                                                    <div className={contacto.success ? "timeline-media bg-light-success" : "timeline-media bg-light-danger"}>
-                                                                        <span className={contacto.success ? "svg-icon svg-icon-success svg-icon-md" : "svg-icon svg-icon-danger  svg-icon-md"}>
-                                                                            {
-                                                                                contacto.tipo_contacto ?
-                                                                                    contacto.tipo_contacto.tipo === 'Llamada' ?
-                                                                                        <SVG src={toAbsoluteUrl('/images/svg/Outgoing-call.svg')} />
-                                                                                        : contacto.tipo_contacto.tipo === 'Correo' ?
-                                                                                            <SVG src={toAbsoluteUrl('/images/svg/Outgoing-mail.svg')} />
-                                                                                            : contacto.tipo_contacto.tipo === 'VIDEO LLAMADA' ?
-                                                                                                <SVG src={toAbsoluteUrl('/images/svg/Video-camera.svg')} />
-                                                                                                : contacto.tipo_contacto.tipo === 'Whatsapp' ?
-                                                                                                    <i className={contacto.success ? "socicon-whatsapp text-success icon-16px" : "socicon-whatsapp text-danger icon-16px"}></i>
-                                                                                                    : contacto.tipo_contacto.tipo === 'TAWK TO ADS' ?
-                                                                                                        <i className={contacto.success ? "fas fa-dove text-success icon-16px" : "fas fa-dove text-danger icon-16px"}></i>
-                                                                                                        : contacto.tipo_contacto.tipo === 'REUNIÓN PRESENCIAL' ?
-                                                                                                            <i className={contacto.success ? "fas fa-users text-success icon-16px" : "fas fa-users text-danger icon-16px"}></i>
-                                                                                                            : contacto.tipo_contacto.tipo === 'Visita' ?
-                                                                                                                <i className={contacto.success ? "fas fa-house-user text-success icon-16px" : "fas fa-house-user text-danger icon-16px"}></i>
-                                                                                                                    :contacto.tipo_contacto.tipo === 'TAWK TO ORGANICO' ?
-                                                                                                                        <i className={contacto.success ? "fas fa-dove text-success icon-16px" : "fas fa-dove text-danger icon-16px"}></i>
-                                                                                                                        : <i className={contacto.success ? "fas fa-mail-bulk text-success icon-16px" : "fas fa-mail-bulk text-danger icon-16px"}></i>
-                                                                                    : ''
-                                                                            }
-                                                                        </span>
-                                                                    </div>
-                                                                    <div className={contacto.success ? "timeline-desc timeline-desc-light-success" : "timeline-desc timeline-desc-light-danger"}>
-                                                                        <span className={contacto.success ? "font-weight-bolder text-success" : "font-weight-bolder text-danger"}>{setDateTableLG(contacto.created_at)}</span>
-                                                                        <div className="font-weight-light pb-2 text-justify position-relative mt-2 pr-3" style={{ borderRadius: '0.42rem', padding: '1rem 1.5rem', backgroundColor: '#F3F6F9' }}>
-                                                                            <div className="text-dark-75 font-weight-bold mb-2">
-                                                                                <div className="d-flex justify-content-between">
-                                                                                    {contacto.tipo_contacto ? contacto.tipo_contacto.tipo : ''}
-                                                                                    <span className="text-muted text-hover-danger font-weight-bold a-hover"
-                                                                                        onClick={(e) => { deleteAlert('¿ESTÁS SEGURO QUE DESEAS ELIMINAR EL CONTACTO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.eliminarContacto(contacto)) }}>
-                                                                                        <i className="flaticon2-cross icon-xs" />
-                                                                                    </span>
-                                                                                </div>
-                                                                            </div>
-                                                                            {contacto.comentario}
-                                                                            {
-                                                                                contacto.adjunto ?
-                                                                                    <div className="d-flex justify-content-end">
-                                                                                        <a href={contacto.adjunto.url} target='_blank' rel="noopener noreferrer" className="text-muted text-hover-primary font-weight-bold">
-                                                                                            <span className="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
-                                                                                                <SVG src={toAbsoluteUrl('/images/svg/Attachment1.svg')} />
-                                                                                            </span>VER ADJUNTO
-                                                                                        </a>
-                                                                                    </div>
-                                                                                    : ''
-                                                                            }
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    )  
+                                                    return this.printTimeLineContact(contacto, key)
                                                 return false
                                             })
                                         : <div className="text-center text-dark-75 font-weight-bolder font-size-lg">No se ha registrado ningún contacto</div>
@@ -1883,29 +1874,68 @@ class Crm extends Component {
                         </div>
                     </div>
                     <Tab.Container defaultActiveKey = 'info'>
-                        <Nav className="nav-tabs nav-bold nav-tabs-line nav-tabs-line-3x border-0 mb-4 justify-content-end">
-                            <Nav.Item className="nav-item">
-                                <Nav.Link eventKey="info">
-                                    <span className="nav-text font-weight-bold">INFORMACIÓN GENERAL</span>
-                                </Nav.Link>
-                            </Nav.Item>
-                            {
-                                lead.prospecto ?
-                                    lead.prospecto.contactos ?
-                                        lead.prospecto.contactos.length > 0 ?
+                        {
+                            lead.prospecto ?
+                                lead.prospecto.contactos ?
+                                    lead.prospecto.contactos.length > 0 ?
+                                        <Nav className="nav-tabs nav-bold nav-tabs-line nav-tabs-line-3x border-0 mb-4 justify-content-end">
+                                            <Nav.Item className="nav-item">
+                                                <Nav.Link eventKey="info">
+                                                    <span className="nav-text font-weight-bold">INFORMACIÓN GENERAL</span>
+                                                </Nav.Link>
+                                            </Nav.Item>
                                             <Nav.Item className="nav-item">
                                                 <Nav.Link eventKey="contactos">
                                                     <span className="nav-text font-weight-bold">HISTORIAL DE CONTACTO</span>
                                                 </Nav.Link>
-                                            </Nav.Item>                
-                                        : ''
+                                            </Nav.Item>
+                                        </Nav>
                                     : ''
                                 : ''
-                            }
-                        </Nav>
+                            : ''
+                        }
                         <Tab.Content>
                             <Tab.Pane eventKey = 'contactos'>
-                                
+                                <div className = "row mx-0 justify-content-center">
+                                    <div className="col-md-7 pt-4">
+                                        {
+                                            lead ?
+                                                lead.prospecto ?
+                                                    lead.prospecto.contactos.length === 0 ?
+                                                        <div className="text-center text-dark-75 font-weight-bolder font-size-lg">No se ha registrado ningún contacto</div>
+                                                    :
+                                                        lead.prospecto.contactos.map((contacto, key) => {
+                                                            let limiteInferior = (activePage - 1) * itemsPerPage
+                                                            let limiteSuperior = limiteInferior + (itemsPerPage - 1)
+                                                            if(contacto.length < itemsPerPage || ( key >= limiteInferior && key <= limiteSuperior))
+                                                                return this.printTimeLineContact(contacto, key)
+                                                            return false
+                                                        })
+                                                : <div className="text-center text-dark-75 font-weight-bolder font-size-lg">No se ha registrado ningún contacto</div>
+                                            : <div className="text-center text-dark-75 font-weight-bolder font-size-lg">No se ha registrado ningún contacto</div>
+                                        }
+                                        {
+                                            lead ? 
+                                                lead.prospecto ?
+                                                    lead.prospecto.contactos.length > itemsPerPage ?
+                                                        <div className="d-flex justify-content-center mt-4">
+                                                            <Pagination itemClass="page-item"  firstPageText = 'Primero' lastPageText = 'Último'
+                                                                activePage = { activePage } itemsCountPerPage = { itemsPerPage } totalItemsCount = { lead.prospecto.contactos.length }
+                                                                pageRangeDisplayed = { 5 } onChange={this.onChangePage.bind(this)} itemClassLast="d-none" 
+                                                                itemClassFirst="d-none" prevPageText={<i className='ki ki-bold-arrow-back icon-xs'/>}
+                                                                nextPageText={<i className='ki ki-bold-arrow-next icon-xs'/>}
+                                                                linkClassPrev="btn btn-icon btn-sm btn-light-primary mr-2 my-1 pagination"
+                                                                linkClassNext="btn btn-icon btn-sm btn-light-primary mr-2 my-1 pagination"
+                                                                linkClass="btn btn-icon btn-sm border-0 btn-hover-primary mr-2 my-1 pagination"
+                                                                activeLinkClass="btn btn-icon btn-sm border-0 btn-light btn-hover-primary active mr-2 my-1 pagination"
+                                                                />
+                                                        </div>
+                                                    : ''
+                                                : ''
+                                            : ''
+                                        }
+                                    </div>
+                                </div>
                             </Tab.Pane>
                             <Tab.Pane eventKey = 'info'>
                                 <div className = "row mx-0 px-lg-2">
