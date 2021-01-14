@@ -29,7 +29,7 @@ class EgresosForm extends Component {
             area: '',
             subarea: '',
             total: '',
-            comision: '',
+            comision: 0,
             descripcion: '',
             facturaObject: '',
             tipoPago: 0,
@@ -237,6 +237,7 @@ class EgresosForm extends Component {
                 case 'tipoImpuesto':
                 case 'tipoPago':
                 case 'estatusCompra':
+                case 'comision':
                     form[element] = 0
                     break;
                 case 'factura':
