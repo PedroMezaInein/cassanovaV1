@@ -27,7 +27,7 @@ export default class SolicitudEgresoCard extends Component {
                         <div className="row row-paddingless mb-4">
                             {
                                 data.monto ?
-                                    <div className="col-md-3">
+                                    <div className="col-md-4 mb-4">
                                         <div className="d-flex align-items-start mr-2">
                                             <SymbolIcon tipo = 'primary' urlIcon = '/images/svg/Money.svg' />
                                             <div>
@@ -46,7 +46,7 @@ export default class SolicitudEgresoCard extends Component {
                                     <>
                                         {
                                             data.subarea.area ?
-                                                <div className="col-md-3">
+                                                <div className="col-md-4 mb-4">
                                                     <div className="d-flex justify-content-start">
                                                         <SymbolIcon tipo ='info' urlIcon = '/images/svg/Layout-top-panel-6.svg' />
                                                         <div>
@@ -57,7 +57,7 @@ export default class SolicitudEgresoCard extends Component {
                                                 </div>
                                                 : ''
                                         }
-                                        <div className="col-md-3">
+                                        <div className="col-md-4 mb-4">
                                             <div className="d-flex align-items-start mr-2">
                                                 <SymbolIcon tipo = 'primary' urlIcon = '/images/svg/Folder-cloud.svg' />
                                                 <div>
@@ -71,7 +71,7 @@ export default class SolicitudEgresoCard extends Component {
                             }
                             {
                                 data.proveedor ?
-                                    <div className="col-md-3">
+                                    <div className="col-md-4 mb-4">
                                         <div className="d-flex align-items-start mr-2">
                                             <SymbolIcon tipo = 'primary' urlIcon = '/images/svg/User.svg' />
                                             <div>
@@ -82,9 +82,9 @@ export default class SolicitudEgresoCard extends Component {
                                     </div>
                                     : ''
                             }
-                        </div>
-                        <div className="row row-paddingless mb-4">
-                            <div className="col-md-3">
+                        {/* </div>
+                        <div className="row row-paddingless mb-4"> */}
+                            <div className="col-md-4 mb-4">
                                 <div className="d-flex align-items-center mr-2">
                                     <SymbolIcon tipo = 'info' urlIcon = '/images/svg/File.svg' />
                                     <div>
@@ -95,9 +95,9 @@ export default class SolicitudEgresoCard extends Component {
                             </div>
                             {
                                 data.tipo_pago ?
-                                    <div className="col-md-3">
+                                    <div className="col-md-4 mb-4">
                                         <div className="d-flex align-items-center mr-2">
-                                            <SymbolIcon tipo = 'primary' urlIcon = '/images/svg/Dollar.svg' />
+                                            <SymbolIcon tipo = 'primary' urlIcon = '/images/svg/dollar.svg' />
                                             <div>
                                                 <div className="font-size-h6 text-dark-75 font-weight-bolder">{data.tipo_pago.tipo}</div>
                                                 <div className="font-size-sm text-muted font-weight-bold mt-1">TIPO DE PAGO</div>
@@ -108,7 +108,7 @@ export default class SolicitudEgresoCard extends Component {
                             }
                             {
                                 data.fecha ?
-                                    <div className="col-md-3">
+                                    <div className="col-md-4 mb-4">
                                         <div className="d-flex justify-content-start mr-2">
                                             <SymbolIcon tipo = 'info' urlIcon = '/images/svg/Box1.svg' />
                                             <div>
@@ -121,7 +121,7 @@ export default class SolicitudEgresoCard extends Component {
                             }
                             {
                                 data.adjunto ?
-                                    <div className="col-md-3">
+                                    <div className="col-md-4">
                                         <div className="d-flex justify-content-start mr-2">
                                             <SymbolIcon tipo = 'primary' urlIcon = '/images/svg/Attachment1.svg' />
                                             <div>
@@ -131,7 +131,7 @@ export default class SolicitudEgresoCard extends Component {
                                         </div>
                                     </div>
                                     :
-                                    <div className="col-md-3">
+                                    <div className="col-md-4">
                                         <div className="d-flex justify-content-start mr-2">
                                             <SymbolIcon tipo = 'primary' urlIcon = '/images/svg/Attachment1.svg' />
                                             <div>
