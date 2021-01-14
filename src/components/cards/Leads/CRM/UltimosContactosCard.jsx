@@ -99,7 +99,7 @@ export default class UltimosContactosCard extends Component {
                                         <div className="timeline-label"> {this.diffCommentDate(contacto)}</div>
                                         <div className="timeline-badge"><span className="bg-primary w-50 h-50"></span></div>
                                         <div className="timeline-content">
-                                            <a href="tel:+5500112233" className="text-dark-75 font-weight-bolder text-hover-primary mb-1">{contacto.prospecto.lead.nombre}</a>
+                                            <a href={`tel:+${contacto.prospecto.lead.telefono}`} className="text-dark-75 font-weight-bolder text-hover-primary mb-1">{contacto.prospecto.lead.nombre}</a>
                                             {
                                                 contacto.prospecto ?
                                                     contacto.prospecto.lead ?
