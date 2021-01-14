@@ -651,6 +651,7 @@ class MaterialCliente extends Component {
     render() {
 
         const { form, data, opciones_adjuntos, empresa, submenuactive, newFolder, activeTipo, activeFolder, modal_add, itemsPerPage, activePage } = this.state
+        console.log(empresa)
         const sub_menu = (element) => {
             switch (element.tipo) {
                 case 4: return <Nav className="navi">
@@ -927,6 +928,14 @@ class MaterialCliente extends Component {
                                                                 tooltip={{ text: 'SUBIR ARCHIVOS' }}
                                                             />
                                                         </div>
+                                                        {
+                                                            empresa.adjuntos.map((adjunto, key) => {
+                                                                return(
+                                                                    // <div>{adjunto.url}</div>
+                                                                    <></>
+                                                                )
+                                                            })
+                                                        }
                                                         {/* <div className="col-md-12 d-flex justify-content-center">
                                                             <div>
                                                                 <div className="text-center font-weight-bolder mb-2">
