@@ -46,7 +46,6 @@
     background: #2171c1 !important;
 }
 
-
 .rdrDateRangePickerWrapper {
     @include down-screen($md) {
         display: block !important;
@@ -144,7 +143,6 @@
     }
 }
 
-
 // Inicio: Header opciones
 .rdrStaticRangeLabel {
     @include down-screen($xs) {
@@ -169,7 +167,6 @@ span.rdrDayStartPreview,
 //     background: red!important;
 // }
 
-
 .rdrPprevButton i {
     border-color: transparent rgb(53, 126, 199) transparent transparent !important;
 }
@@ -188,6 +185,16 @@ span.rdrDayStartPreview,
     span{
         color: #FFA800!important;
     }
+}
+
+.input-calendar{
+    .rdrDayDisabled{
+        background-color: rgba(102,102,102,0.75)!important;
+        border-radius: 0!important;
+        span{
+            color: white!important;
+        }
+    }   
 }
 .rdrMonthAndYearWrapper{
     height: 50px;
