@@ -36,6 +36,7 @@ class SolicitudEgresosForm extends Component {
             }
         }
     }
+
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
@@ -79,35 +80,6 @@ class SolicitudEgresosForm extends Component {
             history.push('/')
         this.getOptionsAxios()
     }
-    
-    async getOptionsAxios() {
-        const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'mercadotecnia/pagos/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { empresas, subareas, tipos, proveedores } = response.data
-                const { options } = this.state
-                options['empresas'] = setOptions(empresas, 'name', 'id')
-                options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
-                options['subareas'] = setOptions(subareas, 'nombre', 'id')
-                options['tiposPagos'] = setSelectOptions(tipos, 'tipo')
-                this.setState({
-                    ...this.state,
-                    options
-                })
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
 
     setSolicitud = solicitud => {
         const { form, options } = this.state
@@ -148,6 +120,28 @@ class SolicitudEgresosForm extends Component {
             form
         })
     }
+    
+    handleChange = (files, item) => {
+        const { form } = this.state
+        let aux = []
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        form['adjuntos'][item].value = files
+        form['adjuntos'][item].files = aux
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
+
     clearFiles = (name, key) => {
         const { form } = this.state
         let aux = []
@@ -165,6 +159,7 @@ class SolicitudEgresosForm extends Component {
             form
         })
     }
+
     onSubmit = e => {
         e.preventDefault()
         const { title } = this.state
@@ -174,6 +169,7 @@ class SolicitudEgresosForm extends Component {
         else
             this.addSolicitudEgresoAxios()
     }
+
     setOptions = (name, array) => {
         const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
@@ -182,6 +178,36 @@ class SolicitudEgresosForm extends Component {
             options
         })
     }
+    
+    async getOptionsAxios() {
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'mercadotecnia/pagos/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { empresas, subareas, tipos, proveedores } = response.data
+                const { options } = this.state
+                options['empresas'] = setOptions(empresas, 'name', 'id')
+                options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
+                options['subareas'] = setOptions(subareas, 'nombre', 'id')
+                options['tiposPagos'] = setSelectOptions(tipos, 'tipo')
+                this.setState({
+                    ...this.state,
+                    options
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    
     async addSolicitudEgresoAxios() {
         const { access_token } = this.props.authUser
         const { form } = this.state
@@ -211,21 +237,16 @@ class SolicitudEgresosForm extends Component {
             }
             return false
         })
-        await axios.post(URL_DEV + 'mercadotecnia', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(URL_DEV + 'mercadotecnia/pagos', data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.')
                 const { history } = this.props
-                history.push({
-                    pathname: '/mercadotecnia/pagos'
-                });
+                history.push({ pathname: '/mercadotecnia/pagos' });
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                if (error.response.status === 401) { forbiddenAccessAlert() } 
+                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -281,26 +302,7 @@ class SolicitudEgresosForm extends Component {
             console.log(error, 'error')
         })
     }
-    handleChange = (files, item) => {
-        const { form } = this.state
-        let aux = []
-        for (let counter = 0; counter < files.length; counter++) {
-            aux.push(
-                {
-                    name: files[counter].name,
-                    file: files[counter],
-                    url: URL.createObjectURL(files[counter]),
-                    key: counter
-                }
-            )
-        }
-        form['adjuntos'][item].value = files
-        form['adjuntos'][item].files = aux
-        this.setState({
-            ...this.state,
-            form
-        })
-    }
+
     render() {
         const { form, title, options, formeditado } = this.state
         return (
