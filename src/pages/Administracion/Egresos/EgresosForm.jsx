@@ -11,6 +11,7 @@ import { Card } from 'react-bootstrap'
 class EgresosForm extends Component {
     state = {
         title: 'Nuevo egreso',
+        solicitud: '',
         options: {
             empresas: [],
             cuentas: [],
@@ -350,6 +351,34 @@ class EgresosForm extends Component {
                 } else
                     history.push('/administracion/egresos')
                 break;
+            case 'convert':
+                const { form, options } = this.state
+                const { solicitud } = state
+                if(solicitud.proveedor)
+                    form.proveedor = solicitud.proveedor.id.toString()
+                if(solicitud.empresa){
+                    form.empresa = solicitud.empresa.id.toString()
+                    if(solicitud.empresa.cuentas)
+                        options.cuentas = setOptions(solicitud.empresa.cuentas, 'nombre', 'id')
+                }
+                if(solicitud.subarea){
+                    if(solicitud.subarea.area){
+                        form.area = solicitud.subarea.area.id.toString()
+                        options.subareas = setOptions(solicitud.subarea.area.subareas, 'nombre', 'id')
+                        form.subarea = solicitud.subarea.id.toString()
+                    }
+                }
+                if(solicitud.tipo_pago)
+                    form.tipoPago = solicitud.tipo_pago.id
+                form.total = solicitud.monto
+                form.descripcion = solicitud.descripcion
+                form.fecha = new Date(solicitud.fecha)
+                if(solicitud.factura)
+                    form.factura = 'Con factura'
+                else
+                    form.factura = 'Sin factura'
+                this.setState({...this.state, title: 'Convertir solicitud de egreso', solicitud: state.solicitud, form, options})
+                break;
             default:
                 break;
         }
@@ -402,7 +431,7 @@ class EgresosForm extends Component {
     }
     async addEgresoAxios() {
         const { access_token } = this.props.authUser
-        const { form } = this.state
+        const { form, solicitud } = this.state
         const data = new FormData();
         let aux = Object.keys(form)
         aux.map((element) => {
@@ -432,6 +461,9 @@ class EgresosForm extends Component {
             }
             return false
         })
+        if(solicitud !== ''){
+            data.append(`solicitud`, solicitud.id)
+        }
         await axios.post(URL_DEV + 'egresos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 this.setState({

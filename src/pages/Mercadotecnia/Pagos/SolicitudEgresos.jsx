@@ -106,6 +106,7 @@ class SolicitudEgresos extends Component {
     }
     
     setActions = () => {
+        const { user } = this.props.authUser
         let aux = []
         aux.push(
             {
@@ -137,6 +138,20 @@ class SolicitudEgresos extends Component {
                 tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
             }
         )
+        if(user.permisos)
+            if(user.permisos.length)
+                user.permisos.map((permiso) => {
+                    if(permiso.modulo)
+                        if(permiso.modulo.slug === 'egresos')
+                            aux.push({
+                                text: 'Convertir&nbsp;a&nbsp;solicitud&nbsp;de&nbsp;egresos',
+                                btnclass: 'success',
+                                iconclass: 'flaticon2-refresh',
+                                action: 'convert',
+                                tooltip: { id: 'convert', text: 'Convertir', type: 'success' },
+                            })
+                })
+
         return aux
     }
     
@@ -146,6 +161,16 @@ class SolicitudEgresos extends Component {
             pathname: '/mercadotecnia/pagos/edit',
             state: { solicitud: solicitud }
         });
+    }
+
+    changePageConvert = solicitud => {
+        const { history } = this.props        
+        questionAlert( '¿DESEAS CONVERTIR EN EGRESO?',  '',  () => {
+            history.push({
+                pathname: '/administracion/egresos/convert',
+                state: { solicitud: solicitud }
+            });
+        } )
     }
 
     deleteFile = element => {
@@ -276,6 +301,7 @@ class SolicitudEgresos extends Component {
                             'delete': { function: this.openModalDelete },
                             'see': { function: this.openModalSee },
                             'adjuntos': { function: this.openModalAdjuntos },
+                            'convert': { function: this.changePageConvert }
                         } 
                     }
                     cardTable = 'cardTable' cardTableHeader = 'cardTableHeader' cardBody = 'cardBody'
