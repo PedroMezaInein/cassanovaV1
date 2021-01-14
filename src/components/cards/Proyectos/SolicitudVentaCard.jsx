@@ -74,7 +74,7 @@ export default class SolicitudCompraCard extends Component {
                                     <div className="symbol symbol-35 symbol-light-info mr-4 flex-shrink-0">
                                         <div className="symbol-label">
                                             <span className="svg-icon svg-icon-lg svg-icon-info">
-                                                <SVG src={toAbsoluteUrl('/images/svg/Dollar.svg')} />
+                                                <SVG src={toAbsoluteUrl('/images/svg/dollar.svg')} />
                                             </span>
                                         </div>
                                     </div>
