@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV } from '../../../constants'
 import { setOptions, setSelectOptions } from '../../../functions/setters'
-import { errorAlert, forbiddenAccessAlert, doneAlert, waitAlert } from '../../../functions/alert'
+import { errorAlert, forbiddenAccessAlert, doneAlert, waitAlert, deleteAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { SolicitudEgresosForm as SolicitudEgresosFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
@@ -89,9 +89,8 @@ class SolicitudEgresosForm extends Component {
             form.tipoPago = solicitud.tipo_pago.id
         if (solicitud.proveedor)
             form.proveedor = solicitud.proveedor.id.toString()
-        if (solicitud.subarea) {
+        if (solicitud.subarea)
             form.subarea = solicitud.subarea ? solicitud.subarea.id.toString() : ''
-        }
         if (solicitud.factura)
             form.factura = 'Con factura'
         else
@@ -99,11 +98,11 @@ class SolicitudEgresosForm extends Component {
         form.descripcion = solicitud.descripcion
         form.fecha = new Date(solicitud.created_at)
         form.total = solicitud.monto
-        if (solicitud.adjunto) {
-            form.adjuntos.adjunto.files = [{
-                name: solicitud.adjunto.name,
-                url: solicitud.adjunto.url
-            }]
+        if (solicitud.adjunto)
+            form.adjuntos.adjunto.files = [ solicitud.adjunto ]
+        else {
+            form.adjuntos.adjunto.files = []
+            form.adjuntos.adjunto.value = ''
         }
         let aux = [];
         aux.form = form
@@ -115,10 +114,7 @@ class SolicitudEgresosForm extends Component {
         const { form } = this.state
         const { name, value } = e.target
         form[name] = value
-        this.setState({
-            ...this.state,
-            form
-        })
+        this.setState({ ...this.state, form })
     }
     
     handleChange = (files, item) => {
@@ -136,47 +132,37 @@ class SolicitudEgresosForm extends Component {
         }
         form['adjuntos'][item].value = files
         form['adjuntos'][item].files = aux
-        this.setState({
-            ...this.state,
-            form
-        })
+        this.setState({ ...this.state, form })
     }
 
     clearFiles = (name, key) => {
         const { form } = this.state
         let aux = []
         for (let counter = 0; counter < form['adjuntos'][name].files.length; counter++) {
-            if (counter !== key) {
-                aux.push(form['adjuntos'][name].files[counter])
-            }
+            if (counter !== key) aux.push(form['adjuntos'][name].files[counter])
         }
-        if (aux.length < 1) {
+        if (aux.length < 1)
             form['adjuntos'][name].value = ''
-        }
         form['adjuntos'][name].files = aux
-        this.setState({
-            ...this.state,
-            form
-        })
+        this.setState({ ...this.state, form })
     }
 
     onSubmit = e => {
         e.preventDefault()
         const { title } = this.state
         waitAlert()
-        if (title === 'Editar solicitud de egreso')
-            this.editSolicitudEgresoAxios()
-        else
-            this.addSolicitudEgresoAxios()
+        if (title === 'Editar solicitud de egreso') this.editSolicitudEgresoAxios()
+        else this.addSolicitudEgresoAxios()
+    }
+
+    deleteFile = element => {
+        deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', '', () => this.deleteAdjuntoAxios(element.id))
     }
 
     setOptions = (name, array) => {
         const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
-        this.setState({
-            ...this.state,
-            options
-        })
+        this.setState({ ...this.state, options })
     }
     
     async getOptionsAxios() {
@@ -189,18 +175,12 @@ class SolicitudEgresosForm extends Component {
                 options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
                 options['subareas'] = setOptions(subareas, 'nombre', 'id')
                 options['tiposPagos'] = setSelectOptions(tipos, 'tipo')
-                this.setState({
-                    ...this.state,
-                    options
-                })
+                this.setState({ ...this.state, options })
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                if (error.response.status === 401) { forbiddenAccessAlert() } 
+                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -281,21 +261,44 @@ class SolicitudEgresosForm extends Component {
             data.append('adjuntos[]', element)
             return false
         })
-        await axios.post(URL_DEV + 'mercadotecnia/update/' + solicitud.id, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(URL_DEV + 'mercadotecnia/pagos/update/' + solicitud.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.')
                 const { history } = this.props
-                history.push({
-                    pathname: '/mercadotecnia/pagos'
+                history.push({ pathname: '/mercadotecnia/pagos' });
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) { forbiddenAccessAlert() } 
+                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    deleteAdjuntoAxios = async(id) => {
+        const { access_token } = this.props.authUser
+        const { solicitud } = this.state
+        waitAlert();
+        await axios.delete(URL_DEV + 'mercadotecnia/pagos/adjuntos/'+solicitud.id+'/'+id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El archivo fue eliminado con éxito.')
+                const { solicitud } = response.data
+                let aux = this.setSolicitud(solicitud)
+                this.setState({
+                    ...this.state,
+                    form: aux.form,
+                    solicitud: solicitud,
+                    title: 'Editar solicitud de egreso',
+                    formeditado: 1,
                 });
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                if (error.response.status === 401) { forbiddenAccessAlert() } 
+                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -317,7 +320,7 @@ class SolicitudEgresosForm extends Component {
                         <SolicitudEgresosFormulario title = { title } form = { form } onChange = { this.onChange }
                             options = { options } setOptions = { this.setOptions } onSubmit = { this.onSubmit }
                             clearFiles = { this.clearFiles } formeditado = { formeditado } className = "px-3"
-                            handleChange = { this.handleChange } />
+                            handleChange = { this.handleChange } deleteFile = { this.deleteFile } />
                     </Card.Body>
                 </Card>
             </Layout>
@@ -325,13 +328,7 @@ class SolicitudEgresosForm extends Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        authUser: state.authUser
-    }
-}
-
-const mapDispatchToProps = dispatch => ({
-})
+const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapDispatchToProps = dispatch => ({ })
 
 export default connect(mapStateToProps, mapDispatchToProps)(SolicitudEgresosForm);
