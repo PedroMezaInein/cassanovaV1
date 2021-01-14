@@ -78,7 +78,7 @@ class Normas extends Component {
                         <Nav.Link className="navi-link px-2" eventKey="2">
                             <span className="navi-icon mr-2">
                                 <span className="svg-icon">
-                                    <SVG src={toAbsoluteUrl('/images/svg/Clock.svg')} />
+                                    <SVG src={toAbsoluteUrl('/images/svg/clock.svg')} />
                                 </span>
                             </span>
                             <div className="navi-text">
@@ -309,7 +309,6 @@ class Normas extends Component {
         )
     }
 }
-
 
 const mapStateToProps = state => {
     return {

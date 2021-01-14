@@ -81,7 +81,7 @@ export default class ConceptoCard extends Component {
                                             <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
                                                 <div className="symbol-label">
                                                     <span className="svg-icon svg-icon-lg svg-icon-primary">
-                                                        <SVG src={toAbsoluteUrl('/images/svg/Dollar.svg')} />
+                                                        <SVG src={toAbsoluteUrl('/images/svg/dollar.svg')} />
                                                     </span>
                                                 </div>
                                             </div>

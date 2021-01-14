@@ -145,7 +145,7 @@ class ActualizarPresupuestoForm extends Component {
                                             <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
                                                 <div className="symbol-label">
                                                     <span className="svg-icon svg-icon-primary svg-icon-lg">
-                                                        <SVG src={toAbsoluteUrl('/images/svg/Clock.svg')} />
+                                                        <SVG src={toAbsoluteUrl('/images/svg/clock.svg')} />
                                                     </span>
                                                 </div>
                                             </div>
