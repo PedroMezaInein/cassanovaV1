@@ -105,7 +105,8 @@ class MaterialCliente extends Component {
             empresas: []
         },
         data: {
-            empresas: []
+            empresas: [],
+            tipo:[]
         },
         formeditado: 0,
         empresa: '',
@@ -527,7 +528,6 @@ class MaterialCliente extends Component {
                             })
                     })
                 }
-
                 this.setState({
                     ...this.state,
                     form
@@ -547,8 +547,7 @@ class MaterialCliente extends Component {
         })
     }
 
-    openAccordion = (indiceClick, name) => {
-
+    openAccordion = (indiceClick, name) => { 
         const tipos = ['portafolio', 'como_trabajamos', 'servicios_generales', '', 'brokers', 'videos']
         let { opciones_adjuntos, form, empresa } = this.state
 
@@ -651,7 +650,37 @@ class MaterialCliente extends Component {
     render() {
 
         const { form, data, opciones_adjuntos, empresa, submenuactive, newFolder, activeTipo, activeFolder, modal_add, itemsPerPage, activePage } = this.state
-        console.log(empresa)
+        console.log( form, 'form')
+        console.log( empresa, 'empresa')
+        console.log(activeFolder,'activeFolder')
+        let carpetas = []; 
+        switch(form.adjuntos.slider.placeholder){
+            case "PORTAFOLIO":
+                carpetas=empresa.portafolio;
+                break;
+
+                case "COMO TRABAJAMOS (FASE 1 Y 2)":
+                    carpetas=empresa.como_trabajamos
+                    break;
+                case "SERVICIOS GENERALES":
+                    carpetas=empresa.servicios_generales;
+                    break;
+                case "SERVICIOS POR CATEGORIA":
+                    carpetas=empresa.servicios_categoria;
+                    break;
+                case "BROKERS":
+                    carpetas=empresa.brokers;
+                    break;
+                case "VIDEOS":
+                    carpetas=empresa.videos;
+                    break;
+                case "CASOS DE ÉXITO":
+                    carpetas=empresa.casos_exito;
+                    break; 
+        }
+        
+        carpetas = carpetas?carpetas:[]
+        
         const sub_menu = (element) => {
             switch (element.tipo) {
                 case 4: return <Nav className="navi">
@@ -753,7 +782,8 @@ class MaterialCliente extends Component {
                                 <Card.Body>
                                     {
                                         empresa !== '' ?
-                                            activeTipo === 6 ?
+                                        
+                                        form.adjuntos.slider.menu  === 0 ?
                                                 <div>
                                                     <div className='d-flex justify-content-between'>
                                                         <div className=''>
@@ -769,7 +799,7 @@ class MaterialCliente extends Component {
                                                                             tooltip={{ text: 'REGRESAR' }}
                                                                         />
                                                                         <span className="text-muted font-weight-bold mr-4 ml-2">
-                                                                            Casos de éxito | <span className="text-primary font-weight-bolder"> {activeFolder.tipo}</span>
+                                                                            {form.adjuntos.slider.placeholder} | <span className="text-primary font-weight-bolder"> {activeFolder.tipo}</span>
                                                                         </span>
                                                                     </>
                                                                     : ''
@@ -801,7 +831,7 @@ class MaterialCliente extends Component {
                                                     </div>
                                                     <div className='row mx-0 my-3'>
                                                         {
-                                                            newFolder && activeFolder === false &&
+                                                            newFolder && activeFolder === false?
                                                             <div className='col-md-3 col-lg-2'>
                                                                 <Folder text='' closeFunction={this.newFolder} >
                                                                     <div>
@@ -823,11 +853,12 @@ class MaterialCliente extends Component {
                                                                     </div>
                                                                 </Folder>
                                                             </div>
+                                                            :""
                                                         }
                                                         {
                                                             activeFolder === false ?
-                                                                empresa.casos_exito.length > 0 ?
-                                                                    empresa.casos_exito.map((element, index) => {
+                                                                carpetas.length > 0 ?
+                                                                carpetas.map((element, index) => {
                                                                         return (
                                                                             <div className='col-md-3 col-lg-2' key={index}>
                                                                                 <Folder
@@ -847,6 +878,7 @@ class MaterialCliente extends Component {
                                                                         </div>
                                                                         <div className='text-center my-2'>
                                                                             CARPETA VACIA
+                                                                            
                                                                         </div>
                                                                     </div>
                                                                 :
@@ -915,40 +947,7 @@ class MaterialCliente extends Component {
                                                         }
                                                     </div>
                                                 </div>
-                                                :
-                                                form.adjuntos.slider.menu === 0 ?
-                                                    <>
-                                                        <div className="d-flex justify-content-end">
-                                                            <Button
-                                                                id="subir_archivos"
-                                                                icon=''
-                                                                className="btn btn-outline-secondary btn-icon btn-sm "
-                                                                onClick={(e) => { e.preventDefault(); this.openModalAddFiles() }}
-                                                                only_icon="fas fa-upload icon-15px"
-                                                                tooltip={{ text: 'SUBIR ARCHIVOS' }}
-                                                            />
-                                                        </div>
-                                                        {
-                                                            empresa.adjuntos.map((adjunto, key) => {
-                                                                return(
-                                                                    // <div>{adjunto.url}</div>
-                                                                    <></>
-                                                                )
-                                                            })
-                                                        }
-                                                        {/* <div className="col-md-12 d-flex justify-content-center">
-                                                            <div>
-                                                                <div className="text-center font-weight-bolder mb-2">
-                                                                    {form.adjuntos.slider.placeholder}
-                                                                </div>
-                                                                <ItemSlider item='slider' items={form.adjuntos.slider.files}
-                                                                    handleChange={this.handleChange} multiple={true}
-                                                                    deleteFile={this.deleteFile}
-                                                                />
-                                                            </div>
-                                                        </div> */}
-                                                    </>
-                                                    :
+                                                : 
                                                     submenuactive ?
                                                         
                                                         <div className="col-md-12 d-flex justify-content-center">
