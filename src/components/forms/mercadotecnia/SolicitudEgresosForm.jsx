@@ -69,7 +69,7 @@ class SolicitudEgresosForm extends Component {
                             onSubmit={
                                 (e) => {
                                     e.preventDefault();
-                                    validateAlert(onSubmit, e, 'wizard-3-content')
+                                    validateAlert(onSubmit, e, 'for2-wizard-2-content')
                                 }
                             }
                             {...props}
@@ -226,7 +226,7 @@ class SolicitudEgresosForm extends Component {
                                             onClick={
                                                 (e) => {
                                                     e.preventDefault();
-                                                    validateAlert(onSubmit, e, 'wizard-3-content')
+                                                    validateAlert(onSubmit, e, 'for2-wizard-2-content')
                                                 }
                                             }
                                             text="ENVIAR" />

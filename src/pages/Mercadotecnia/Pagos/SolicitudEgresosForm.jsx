@@ -314,18 +314,10 @@ class SolicitudEgresosForm extends Component {
                         </div>
                     </Card.Header>
                     <Card.Body className="pt-0">
-                        <SolicitudEgresosFormulario
-                            title={title}
-                            form={form}
-                            onChange={this.onChange}
-                            options={options}
-                            setOptions={this.setOptions}
-                            onSubmit={this.onSubmit}
-                            clearFiles={this.clearFiles}
-                            formeditado={formeditado}
-                            className="px-3"
-                            handleChange={this.handleChange}
-                        />
+                        <SolicitudEgresosFormulario title = { title } form = { form } onChange = { this.onChange }
+                            options = { options } setOptions = { this.setOptions } onSubmit = { this.onSubmit }
+                            clearFiles = { this.clearFiles } formeditado = { formeditado } className = "px-3"
+                            handleChange = { this.handleChange } />
                     </Card.Body>
                 </Card>
             </Layout>
