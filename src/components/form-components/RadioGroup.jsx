@@ -6,7 +6,7 @@ class RadioGroup extends Component {
         const { options, placeholder, name, onChange, value } = this.props
         return (
             <div>
-                <Form.Label className="col-form-label">{placeholder}</Form.Label>
+                <Form.Label className="col-form-label font-weight-bolder">{placeholder}</Form.Label>
 
                 <Form.Group>
                     <div className="radio-inline">

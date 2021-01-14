@@ -1144,6 +1144,48 @@ export const SOLICITUD_COMPRA_COLUMNS = [
         accessor: 'adjunto'
     }
 ]
+export const SOLICITUD_EGRESO_COLUMNS = [
+    {
+        Header: 'OPCIONES',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Proveedor',
+        accessor: 'proveedor'
+    },
+    {
+        Header: 'Empresa',
+        accessor: 'empresa'
+    },
+    {
+        Header: 'Monto',
+        accessor: 'monto'
+    },
+    {
+        Header: 'Factura',
+        accessor: 'factura'
+    },
+    {
+        Header: 'Pago', //Cambié de Tipo de pago a Pago
+        accessor: 'tipoPago'
+    },   
+    {
+        Header: 'Fecha',
+        accessor: 'fecha',
+    },
+    {
+        Header: 'Sub-Área',
+        accessor: 'subarea'
+    },
+    {
+        Header: 'Adjunto',
+        accessor: 'adjunto'
+    },
+    {
+        Header: 'Descripción',
+        accessor: 'descripcion'
+    }
+]
 
 export const SOLICITUD_VENTA_COLUMNS = [
     {
