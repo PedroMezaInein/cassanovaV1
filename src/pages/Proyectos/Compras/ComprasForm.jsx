@@ -25,7 +25,7 @@ class ComprasForm extends Component {
             cuenta: '',
             area: '',
             subarea: '',
-            comision: '',
+            comision: 0,
             solicitud: '',
             //Factura
             formaPago: '',
@@ -275,6 +275,7 @@ class ComprasForm extends Component {
                 case 'tipoImpuesto':
                 case 'tipoPago':
                 case 'estatusCompra':
+                case 'comision':
                     form[element] = 0
                     break;
                 case 'factura':
