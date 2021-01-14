@@ -39,6 +39,15 @@ class SolicitudEgresos extends Component {
         });
         if (!solicitud)
             history.push('/')
+        let queryString = this.props.history.location.search
+        if (queryString) {
+            let params = new URLSearchParams(queryString)
+            let id = parseInt(params.get("id"))
+            if (id) {
+                this.getSolicitudEgresoAxios(id)
+                this.setState({ ...this.state, modalSee: true })
+            }
+        }
     }
     
     openModalDelete = solicitud => {
@@ -149,7 +158,7 @@ class SolicitudEgresos extends Component {
 
     async getSolicitudEgresoAxios(id) {
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'mercadotecnia/single/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(URL_DEV + 'mercadotecnia/pagos/single/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { solicitud } = response.data
                 this.setState({ ...this.state, solicitud: solicitud })
