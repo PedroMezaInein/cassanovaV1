@@ -21,12 +21,12 @@ import ingresosCard from './Administracion/IngresosCard'
 import contratoCard from './Administracion/ContratoCard'
 import facturacionCard from './Administracion/FacturacionCard'
 import documentosCard from './Administracion/DocumentosCard'
+import solicitudEgresoCard from './Administracion/SolicitudEgresoCard'
 
 //RecursosHumanos
 import empleadosCard from './RecursosHumanos/EmpleadosCard'
 import prestamosCard from './RecursosHumanos/PrestamosCard'
 import imssCard from './RecursosHumanos/ImssCard'
-
 
 //Bancos
 import traspasoCard from './Bancos/TraspasoCard'
@@ -53,14 +53,12 @@ import proximasCaducarCard from './Usuarios/Tareas/ProximasCaducarCard'
 
 //-------------------------------------------------------
 
-
 //Usuarios
 export const UsuarioCard = usuarioCard
 export const EmpresaCard = empresaCard
 //Presupuesto
 export const ConceptoCard = conceptoCard
 export const RendimientoCard = rendimientoCard
-
 
 //Proyectos
 export const SolicitudCompraCard = solicitudCompraCard
@@ -78,6 +76,7 @@ export const IngresosCard = ingresosCard
 export const ContratoCard = contratoCard
 export const FacturacionCard = facturacionCard
 export const DocumentosCard = documentosCard
+export const SolicitudEgresoCard = solicitudEgresoCard
 
 //RecursosHumanos
 export const EmpleadosCard = empleadosCard
