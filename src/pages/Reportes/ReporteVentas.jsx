@@ -669,7 +669,6 @@ class ReporteVentas extends Component {
                 })
                 let contador = 0
                 let contadorArray = []
-                // console.log(arrayDataSets, 'arraydatasets')
                 if(arrayDataSets.length){
                     arrayDataSets[0].data.map((element, index)=>{
                         contador = 0
@@ -798,7 +797,6 @@ class ReporteVentas extends Component {
                 })
                 contador = 0
                 contadorArray = []
-                // console.log(arrayDataSets, 'arraydatasets')
                 if(arrayDataSets.length){
                     arrayDataSets[0].data.map((element, index)=>{
                         contador = 0
@@ -1667,7 +1665,6 @@ class ReporteVentas extends Component {
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            { console.log(form.leads, 'LEADS') }
                                             {
                                                 form.leads.map((lead, index)=>{
                                                     if(lead.prospecto)
@@ -1877,8 +1874,6 @@ class ReporteVentas extends Component {
                         </div>
                         {
                             empresas.map((empresa)=>{
-                                console.log(empresaActive, 'active')
-                                console.log(empresa.id, 'id')
                                 if(empresaActive.toString() === empresa.id.toString())
                                     return(
                                         <div className="d-flex justify-content-center mt-2">

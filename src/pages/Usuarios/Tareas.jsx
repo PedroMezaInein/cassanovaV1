@@ -92,7 +92,6 @@ class Tareas extends Component {
             let params = new URLSearchParams(queryString)
             let id = params.get("depto")
             let tarea = parseInt(params.get("tarea"))
-            console.log(tarea, 'tarea')
             if(id)
                 this.setState({
                     ...this.state,
@@ -497,7 +496,6 @@ class Tareas extends Component {
     }
 
     async editTaskAxios(data) {
-        console.log(data, 'data')
         const { access_token } = this.props.authUser
         const { tarea } = this.state
         await axios.put(URL_DEV + 'user/tareas/edit/' + tarea.id, data, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
