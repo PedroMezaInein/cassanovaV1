@@ -10,6 +10,8 @@ import calendar from './Calendar'
 import emptyParkSlot from './EmptyParkSlot'
 import message from './Message'
 import noFiles from './NoFiles'
+import files from './Files'
+import build from './Build'
 
 export const Sending = sending
 export const Done = done
@@ -23,3 +25,5 @@ export const Calendar = calendar
 export const EmptyParkSlot = emptyParkSlot
 export const Message = message
 export const NoFiles = noFiles
+export const Files = files
+export const Build = build

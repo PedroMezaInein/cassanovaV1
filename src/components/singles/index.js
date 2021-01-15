@@ -11,6 +11,7 @@ import audioApp from './AudioApp'
 import folder from './Folder'
 import fileItem from './FileItem'
 import symbolIcon from './SymbolIcon'
+import folderStatic from './FolderStatic'
 
 export const Card = card;
 export const Modal = modal;
@@ -25,3 +26,4 @@ export const AudioApp = audioApp
 export const Folder = folder
 export const FileItem = fileItem
 export const SymbolIcon = symbolIcon
+export const FolderStatic = folderStatic
