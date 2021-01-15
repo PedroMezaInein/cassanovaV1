@@ -39,14 +39,26 @@ export default class CalendarDay extends Component {
         onChange({ target: { name: name, value: item } })
     }
     render() {
-        const { date, withformgroup} = this.props
+        const { date, withformgroup, disabledWeekends, className } = this.props
         return (
             <>
                 <div className={withformgroup?'form-group':''}>
                     <Calendar
+                        className = { className }
                         onChange={ (item) => { this.updateDate(item)} }
                         locale = { es }
                         date = { date }
+                        disabledDay = {
+                            (date) => {
+                                if(disabledWeekends){
+                                    let newDate = new Date(date);
+                                    newDate = newDate.getDay()
+                                    if(newDate === 0 || newDate === 6)
+                                        return true
+                                    return false
+                                } return false
+                            }
+                        }
                     />
                     <span className={ date ? "form-text text-danger hidden" : "form-text text-danger is-invalid" }>Incorrecto. Selecciona la fecha.</span>
                 </div>

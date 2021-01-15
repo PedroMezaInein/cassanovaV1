@@ -6,6 +6,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileAlt } from '@fortawesome/free-regular-svg-icons';
 import { faPhone, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { GOLD } from '../constants';
+import { SVG } from 'react-inlinesvg'
+import { toAbsoluteUrl } from './routers';
 
 function compare( a, b ) {
     if ( a.name < b.name ){
@@ -421,4 +423,32 @@ export function setContactoTable(contacto) {
             }
         </div>
     )
+}
+
+export function setContactoIcon(contacto){
+    if(contacto)
+        if(contacto.tipo_contacto)
+            if(contacto.tipo_contacto.tipo){
+                switch(contacto.tipo_contacto.tipo){
+                    case 'Llamada':
+                        return(<i className={contacto.success ? "fas fa-phone-volume text-success icon-16px" : "fas fa-phone-volume text-danger icon-16px"} />);
+                    case 'Correo':
+                        return(<i className={contacto.success ? "fas fa-envelope text-success icon-16px" : "fas fa-envelope text-danger icon-16px"} />);
+                    case 'VIDEO LLAMADA':
+                        return(<i className={contacto.success ? "fas fa-video text-success icon-16px" : "fas fa-video text-danger icon-16px"} />);
+                    case 'Whatsapp':
+                        return(<i className={contacto.success ? "socicon-whatsapp text-success icon-16px" : "socicon-whatsapp text-danger icon-16px"} />);
+                    case 'TAWK TO ADS':
+                        return(<i className={contacto.success ? "fas fa-dove text-success icon-16px" : "fas fa-dove text-danger icon-16px"} />);
+                    case 'REUNIÓN PRESENCIAL':
+                        return(<i className={contacto.success ? "fas fa-users text-success icon-16px" : "fas fa-users text-danger icon-16px"} />);
+                    case 'Visita':
+                        return(<i className={contacto.success ? "fas fa-house-user text-success icon-16px" : "fas fa-house-user text-danger icon-16px"} />);
+                    case 'TAWK TO ORGANICO':
+                        return(<i className={contacto.success ? "fas fa-dove text-success icon-16px" : "fas fa-dove text-danger icon-16px"} />);
+                    default:
+                        return(<i className={contacto.success ? "fas fa-mail-bulk text-success icon-16px" : "fas fa-mail-bulk text-danger icon-16px"} />);
+                }
+            }
+    return ''
 }

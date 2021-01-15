@@ -42,7 +42,7 @@ class SolicitudEgresosForm extends Component {
     }
 
     render() {
-        const { title, options, form, onChange, clearFiles, onSubmit, formeditado, handleChange,  ...props } = this.props
+        const { title, options, form, onChange, clearFiles, onSubmit, formeditado, handleChange, deleteFile,  ...props } = this.props
         return (
             <div className="wizard wizard-3" id="for2-wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
@@ -69,7 +69,7 @@ class SolicitudEgresosForm extends Component {
                             onSubmit={
                                 (e) => {
                                     e.preventDefault();
-                                    validateAlert(onSubmit, e, 'wizard-3-content')
+                                    validateAlert(onSubmit, e, 'for2-wizard-2-content')
                                 }
                             }
                             {...props}
@@ -209,12 +209,8 @@ class SolicitudEgresosForm extends Component {
                                     </div>
                                     <div className="col-md-4 text-center">
                                         <label className="col-form-label my-2 font-weight-bolder">{form.adjuntos.adjunto.placeholder}</label>
-                                        <ItemSlider
-                                            items={form.adjuntos.adjunto.files}
-                                            item='adjunto'
-                                            handleChange={handleChange}
-                                            multiple={true}
-                                        />
+                                        <ItemSlider items = { form.adjuntos.adjunto.files } item = 'adjunto' deleteFile = { deleteFile } 
+                                            handleChange = { form.adjuntos.adjunto.files.length ? null : handleChange } multiple = { false } />
                                     </div>
                                 </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
@@ -226,7 +222,7 @@ class SolicitudEgresosForm extends Component {
                                             onClick={
                                                 (e) => {
                                                     e.preventDefault();
-                                                    validateAlert(onSubmit, e, 'wizard-3-content')
+                                                    validateAlert(onSubmit, e, 'for2-wizard-2-content')
                                                 }
                                             }
                                             text="ENVIAR" />

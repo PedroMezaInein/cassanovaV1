@@ -213,13 +213,13 @@ class PermisosForm extends Component {
                                                     {
                                                         grupo.modulos.map((modulo, key) => {
                                                             return (
-                                                                <div key={key} className="col-md-2 pt-4 px-3">
+                                                                <div key={key} className="col-md-3 pt-4 px-3">
                                                                     <div className="text-center">
-                                                                        <p className="font-size-sm font-weight-bold">{modulo.nombre}</p>
+                                                                        <span className="font-size-sm font-weight-bold mb-1">{modulo.nombre}</span>
                                                                     </div>
                                                                     <div className="d-flex justify-content-center">
                                                                         <Form.Group>
-                                                                            <div className="checkbox-list pt-2">
+                                                                            <div className="checkbox-list">
                                                                                 <label className="checkbox checkbox-outline checkbox-outline-2x checkbox-primary">
                                                                                     <input
                                                                                         name={modulo.name}

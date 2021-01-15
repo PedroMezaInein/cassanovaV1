@@ -62,7 +62,7 @@ export default class SinContacto extends Component {
         return false;
     }
     render() {
-        const { prospectos_sin_contactar, onClick, onClickPrev } = this.props
+        const { prospectos_sin_contactar, onClick, onClickPrev, clickOneLead } = this.props
         return (
             <Card className="card-custom card-stretch gutter-b py-2">
                 <Card.Header className="align-items-center border-0">
@@ -85,7 +85,8 @@ export default class SinContacto extends Component {
                         {
                             prospectos_sin_contactar.data.map((contacto, key) => {
                                 return (
-                                    <div className="timeline-item" key={key}>
+                                    <div className="timeline-item text-hover" key={key}
+                                        onClick = { ( e ) => { e.preventDefault(); clickOneLead(contacto.id) } }>
                                         <div className="timeline-label"> {this.diffCommentDate(contacto)}</div>
                                         <div className="timeline-badge"><span className="bg-danger w-50 h-50"></span></div>
                                         <div className="timeline-content">
