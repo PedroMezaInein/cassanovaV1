@@ -1445,7 +1445,6 @@ class Crm extends Component {
     }
 
     printTimeLineContact = (contacto, key) => {
-        console.log(key, 'key')
         return(
             <div className = 'timeline timeline-6' key = { key }>
                 <div className = 'timeline-items'>

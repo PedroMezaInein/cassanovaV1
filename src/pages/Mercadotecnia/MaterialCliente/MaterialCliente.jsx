@@ -911,20 +911,47 @@ class MaterialCliente extends Component {
                                                 :
                                                 form.adjuntos.slider.menu === 0 ?
                                                     <>
-                                                        <div className="d-flex justify-content-end">
-                                                            <Button
-                                                                id="subir_archivos"
-                                                                icon=''
-                                                                className="btn btn-outline-secondary btn-icon btn-sm "
-                                                                onClick={(e) => { e.preventDefault(); this.openModalAddFiles() }}
-                                                                only_icon="fas fa-upload icon-15px text-primary"
-                                                                tooltip={{ text: 'SUBIR ARCHIVOS' }}
-                                                            />
-                                                        </div>
-                                                        <TablePagination
-                                                            adjuntos={form.adjuntos.slider.files}
-                                                            delete_onclick={this.deleteFile}
-                                                        />
+                                                        {
+                                                            form.adjuntos.slider.files.length===0?
+                                                                <>
+                                                                    <div className="d-flex justify-content-end">
+                                                                        <Button
+                                                                            id="subir_archivos"
+                                                                            icon=''
+                                                                            className="btn btn-outline-secondary btn-icon btn-sm "
+                                                                            onClick={(e) => { e.preventDefault(); this.openModalAddFiles() }}
+                                                                            only_icon="fas fa-upload icon-15px text-primary"
+                                                                            tooltip={{ text: 'SUBIR ARCHIVOS' }}
+                                                                    />
+                                                                    </div>
+                                                                    <div className='col-md-12 '>
+                                                                        <div>
+                                                                            <NoFiles />
+                                                                        </div>
+                                                                        <div className='text-center mt-5 font-weight-bolder font-size-h4 text-primary2'>
+                                                                            CARPETA VACÍA
+                                                                        </div>
+                                                                    </div>
+                                                                </>
+                                                                :
+                                                                <>
+                                                                    <div className="d-flex justify-content-end">
+                                                                        <Button
+                                                                            id="subir_archivos"
+                                                                            icon=''
+                                                                            className="btn btn-outline-secondary btn-icon btn-sm "
+                                                                            onClick={(e) => { e.preventDefault(); this.openModalAddFiles() }}
+                                                                            only_icon="fas fa-upload icon-15px text-primary"
+                                                                            tooltip={{ text: 'SUBIR ARCHIVOS' }}
+                                                                    />
+                                                                    </div>
+                                                                    <TablePagination
+                                                                        adjuntos={form.adjuntos.slider.files}
+                                                                        delete_onclick={this.deleteFile}
+                                                                    />
+                                                                </>
+                                                        }
+                                                        
                                                     </>
                                                     :
                                                     abiertoSubMenu ?
