@@ -60,7 +60,8 @@ class FileItem extends Component {
     }
 
     render() {
-        const { item, onClickDelete } = this.props
+        const { item, onClickDelete, anotherDate } = this.props
+        console.log(item, 'item')
         return (
             <tr>
                 <td className="pl-1">
@@ -80,11 +81,27 @@ class FileItem extends Component {
                         </Moment>
                     </span>
                 </td>
-                <td className="pr-0 text-right">
-                    <span className='btn btn-icon btn-s text-danger text-hover-danger my-2' onClick={(e) => { e.preventDefault(); onClickDelete(item) }} >
-                        <i className="fas fa-trash icon-md text-muted text-hover-danger"></i>
-                    </span>
-                </td>
+                {
+                    anotherDate ?
+                        <td className="text-center">
+                            <span className="text-muted font-weight-bold">
+                                <Moment format="DD/MM/YYYY">
+                                    {anotherDate}
+                                </Moment>
+                            </span>
+                        </td>
+                    : ''
+                }
+                {
+                    onClickDelete ?
+                        <td className="pr-0 text-right">
+                            <span className='btn btn-icon btn-s text-danger text-hover-danger my-2' onClick={(e) => { e.preventDefault(); onClickDelete(item) }} >
+                                <i className="fas fa-trash icon-md text-muted text-hover-danger"></i>
+                            </span>
+                        </td>
+                    : ''
+                }
+                
             </tr>
         )
     }
