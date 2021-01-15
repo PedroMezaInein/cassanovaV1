@@ -24,6 +24,7 @@ import { Button } from '../../../components/form-components';
 import Pagination from "react-js-pagination";
 import SymbolIcon from '../../../components/singles/SymbolIcon';
 import Moment from 'react-moment';
+import FileItem from '../../../components/singles/FileItem';
 const $ = require('jquery');
 class Crm extends Component {
 
@@ -1489,6 +1490,14 @@ class Crm extends Component {
         )
     }
 
+    noHayAdjuntos = () => {
+        return(
+            <tr className="text-center text-dark-75">
+                <th className="pl-2" colSpan = "3" >NO HAY ADJUNTOS</th>
+            </tr>
+        )
+    }
+
     render() {
         const { ultimos_contactados, prospectos_sin_contactar, ultimos_ingresados, lead_web, activeTable, leads_en_contacto, leads_en_negociacion, modal_one_lead,
             leads_contratados, leads_cancelados, leads_detenidos, modal_agendar, form, lead, lead_rh_proveedores, options, modal_editar, formEditar, modal_historial, formHistorial, itemsPerPage, activePage} = this.state
@@ -1889,12 +1898,57 @@ class Crm extends Component {
                                                     <span className="nav-text font-weight-bold">HISTORIAL DE CONTACTO</span>
                                                 </Nav.Link>
                                             </Nav.Item>
+                                            {
+                                                lead.presupuesto_diseño ?
+                                                    lead.presupuesto_diseño.pdfs ?
+                                                        lead.presupuesto_diseño.pdfs.length > 0 ?
+                                                            <Nav.Item className="nav-item">
+                                                                <Nav.Link eventKey="presupuesto">
+                                                                    <span className="nav-text font-weight-bold">Presupuesto</span>
+                                                                </Nav.Link>
+                                                            </Nav.Item>
+                                                        : ''
+                                                    : ''
+                                                : ''
+                                            }
                                         </Nav>
                                     : ''
                                 : ''
                             : ''
                         }
                         <Tab.Content>
+                            <Tab.Pane eventKey = 'presupuesto'>
+                                <div className="table-responsive mt-4">
+                                    <table className="table table-vertical-center">
+                                        <thead className="thead-light">
+                                            <tr className="text-left text-dark-75">
+                                                <th className="pl-2" style={{ minWidth: "150px" }}>Adjunto</th>
+                                                <th style={{ minWidth: "80px" }} className="text-center">Fecha</th>
+                                                <th style={{ minWidth: "80px" }} className="text-center">Fecha de envio</th>
+                                                {/* <th className="pr-0 text-right" style={{ minWidth: "70px" }}></th> */}
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {
+                                                lead ?
+                                                    lead.presupuesto_diseño ?
+                                                        lead.presupuesto_diseño.pdfs ?
+                                                            lead.presupuesto_diseño.pdfs.length > 0 ?
+                                                                lead.presupuesto_diseño.pdfs.map((pdf, key) => {
+                                                                    return(
+                                                                        <FileItem item = { pdf } key = { key }
+                                                                            anotherDate = { pdf ? pdf.pivot ? pdf.pivot.fecha_envio ? pdf.pivot.fecha_envio : '' : '' : '' } />
+                                                                    )
+                                                                })
+                                                            : this.noHayAdjuntos()
+                                                        : this.noHayAdjuntos()
+                                                    : this.noHayAdjuntos()
+                                                : this.noHayAdjuntos()           
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div >
+                            </Tab.Pane>
                             <Tab.Pane eventKey = 'contactos'>
                                 <div className = "row mx-0 justify-content-center">
                                     <div className="col-md-7 pt-4">

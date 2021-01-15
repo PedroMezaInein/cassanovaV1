@@ -39,6 +39,10 @@ import tagSelectSearchGray from './Gray/TagSelectSearchGray'
 import selectMinutos from './SelectMinutos'
 import selectHoras from './SelectHoras'
 import selectHorario from './SelectHorario'
+//Drive
+import btnBackUrl from './Drive/BtnBackUrl'
+import tablePagination from './Drive/TablePagination'
+import newFolderInput from './Drive/NewFolderInput'
 
 export const Button = button
 export const Input = input
@@ -81,3 +85,7 @@ export const TagSelectSearchGray = tagSelectSearchGray
 export const SelectMinutos = selectMinutos
 export const SelectHoras = selectHoras
 export const SelectHorario = selectHorario
+//Drive
+export const BtnBackUrl = btnBackUrl
+export const TablePagination = tablePagination
+export const NewFolderInput = newFolderInput
