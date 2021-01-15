@@ -1281,12 +1281,10 @@ class Proyectos extends Component {
         form.adjuntos_grupo[grupo].adjuntos[adjunto].files.map((file) => {
             data.append(`files_name_${form.adjuntos_grupo[grupo].adjuntos[adjunto].id}[]`, file.name)
             data.append(`files_${form.adjuntos_grupo[grupo].adjuntos[adjunto].id}[]`, file.file)
-            console.log(file.file.size, 'FILE')
-            console.log(data.getAll(`files_${form.adjuntos_grupo[grupo].adjuntos[adjunto].id}[]`), 'FORM DARTA')
             return false
         })
         
-        /* console.log(form.adjuntos_grupo[grupo].adjuntos[adjunto], 'files')
+        /*
         form.adjuntos_grupo[grupo].adjuntos[adjunto].files.map((file)=>{
             const params = {
                 ACL: 'public-read',
@@ -1296,9 +1294,7 @@ class Proyectos extends Component {
                 CrossOrigin: '*'
             }
             myBucket.putObject(params)
-                .on('httpUploadProgress', (evt) => {
-                    console.log(Math.round((evt.loaded / evt.total) *100), 'progress')
-                })
+                .on('httpUploadProgress', (evt) => {})
                 .send((err)=>{
                     if(err)
                         console.log(err, 'error')

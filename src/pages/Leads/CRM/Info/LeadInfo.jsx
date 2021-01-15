@@ -922,9 +922,6 @@ class LeadInfo extends Component {
         }else{
             api = 'crm/table/lead-detenido/';
         }
-        // console.log(api)
-        // console.log(lead, 'lead')
-        // console.log(lead.id, 'lead.id')
         await axios.get(URL_DEV + api + lead.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { lead } = response.data
@@ -1298,7 +1295,6 @@ class LeadInfo extends Component {
     }
     render() {
         const { lead, form, formHistorial, options, formAgenda, formDiseño, modal, formeditado, itemsPerPage, activePage } = this.state
-        // console.log(lead)
         return (
             <Layout active={'leads'}  {...this.props} botonHeader={this.botonHeader} >
                 <Tab.Container defaultActiveKey="2" className="p-5">

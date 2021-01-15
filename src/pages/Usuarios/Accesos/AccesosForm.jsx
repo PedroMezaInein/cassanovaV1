@@ -102,7 +102,6 @@ class AccesosForm extends Component {
             readXlsxFile(item.files[0].file).then((rows) => {
                 rows.map((row, index)=>{
                     if(index > 0){
-                        console.log(index + '.- ' + row[0])
                         arreglo.push({
                             empresas: row[0],
                             plataforma: row[1],
