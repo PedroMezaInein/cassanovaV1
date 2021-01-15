@@ -9,22 +9,21 @@ import { setSelectOptions } from '../../../functions/setters'
 import { waitAlert, questionAlert, errorAlert, forbiddenAccessAlert, doneAlert, deleteAlert } from '../../../functions/alert'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
-import { Nothing } from '../../../components/Lottie'
 import { Folder, FolderStatic, Modal } from '../../../components/singles'
 import { Button, BtnBackUrl, TablePagination, NewFolderInput } from '../../../components/form-components'
 import Swal from 'sweetalert2'
-import NoFiles from '../../../components/Lottie/NoFiles'
+import { NoFiles, Files, Build, Nothing } from '../../../components/Lottie'
 class MaterialCliente extends Component {
     state = {
         newFolder: false,
         activeFolder: false,
         modal_add: false,
         submenuactive: null,
-        abiertoSubMenu:false,
-        abiertoCarpetaRender:false,
-        adjuntosSubMenu:[], 
-        actualSubMenu:"",
-        actualSubMenuCarpeta:"", 
+        abiertoSubMenu: false,
+        abiertoCarpetaRender: false,
+        adjuntosSubMenu: [],
+        actualSubMenu: "",
+        actualSubMenuCarpeta: "",
         opciones_adjuntos: [
             {
                 nombre: 'PORTAFOLIO',
@@ -103,14 +102,14 @@ class MaterialCliente extends Component {
                     files: []
                 },
                 renders: {
-                    renderCarpeta1: {
+                    reales: {
                         value: '',
-                        placeholder: 'Carpeta Render 1',
+                        placeholder: 'Reales',
                         files: []
-                    },  
-                    renderCarpeta2: {
+                    },
+                    inventados: {
                         value: '',
-                        placeholder: 'Carpeta Render 2',
+                        placeholder: 'Inventados',
                         files: []
                     },
                     placeholder: 'RENDERS'
@@ -277,47 +276,42 @@ class MaterialCliente extends Component {
         })
     }
     goBackFolderSubmenu = () => {
-        let { abiertoSubMenu,actualSubMenuCarpeta, abiertoCarpetaRender } = this.state
-        if(abiertoCarpetaRender)
-        { 
-            abiertoSubMenu=true
-            actualSubMenuCarpeta="RENDERS"
-        } 
-        else
-        {
-            abiertoSubMenu=false
-            actualSubMenuCarpeta=""
+        let { abiertoSubMenu, actualSubMenuCarpeta, abiertoCarpetaRender } = this.state
+        if (abiertoCarpetaRender) {
+            abiertoSubMenu = true
+            actualSubMenuCarpeta = "RENDERS"
+        }
+        else {
+            abiertoSubMenu = false
+            actualSubMenuCarpeta = ""
         }
 
 
         this.setState({
             ...this.state,
-            abiertoCarpetaRender:false,
+            abiertoCarpetaRender: false,
             abiertoSubMenu,
-            adjuntosSubMenu:[],
+            adjuntosSubMenu: [],
             actualSubMenuCarpeta
 
         })
     }
-    onClickFolderSubMenu = (element) => { 
-        
-        console.log(element,"onClickFolderSubMenu")
+    onClickFolderSubMenu = (element) => {
         this.setState({
             ...this.state,
             adjuntosSubMenu: element.files,
-            actualSubMenuCarpeta:element.placeholder,
-            abiertoSubMenu:true
+            actualSubMenuCarpeta: element.placeholder,
+            abiertoSubMenu: true
         })
     }
 
-    onClickFolderRender = (element) => {  
-        console.log(element,"onClickFolderRender")
+    onClickFolderRender = (element) => {
         this.setState({
             ...this.state,
             adjuntosSubMenu: element.files,
-            actualSubMenuCarpeta:element.placeholder,
-            abiertoSubMenu:true,
-            abiertoCarpetaRender:true
+            actualSubMenuCarpeta: element.placeholder,
+            abiertoSubMenu: true,
+            abiertoCarpetaRender: true
         })
     }
     onClickFolder = (element) => {
@@ -361,8 +355,6 @@ class MaterialCliente extends Component {
     }
 
     updateDirectoryAxios = async (name, element) => {
-        console.log(name, 'name')
-        console.log(element, 'element')
         const { access_token } = this.props.authUser
         const { form, empresa } = this.state
         waitAlert()
@@ -695,32 +687,26 @@ class MaterialCliente extends Component {
                 case "ejemplo":
                     ejemplo.push(adjunto)
                     break;
-              //  case "renders":
+                //  case "renders":
                 //    renders.push(adjunto)
-                  //  break;
+                //  break;
             }
         })
         form.adjuntos.portada.files = portada
         form.adjuntos.subportafolio.files = subportafolio
         form.adjuntos.ejemplo.files = ejemplo
         //form.adjuntos.renders.files = renders
-        console.log(tipo,"tipo")
         this.setState({
             form,
-            abiertoSubMenu:false,
+            abiertoSubMenu: false,
             submenuactive: tipo.id,
-            actualSubMenu:tipo.tipo
+            actualSubMenu: tipo.tipo
         })
     }
     render() {
-        const { form, data, opciones_adjuntos, empresa, submenuactive, newFolder, activeTipo, activeFolder, modal_add, abiertoSubMenu, adjuntosSubMenu, actualSubMenu,actualSubMenuCarpeta,abiertoCarpetaRender} = this.state
-        console.log(activeFolder,'activeFolder')
-        console.log(submenuactive,'submenuactive') 
-        console.log(actualSubMenu,'actualSubMenu') 
-        console.log(empresa,'empresa')
-        let adjuntos = [];
-        console.log(form,"form") 
-        adjuntos = adjuntos?adjuntos:[]
+        const { form, data, opciones_adjuntos, empresa, submenuactive, newFolder, activeTipo, activeFolder, modal_add, abiertoSubMenu, adjuntosSubMenu, actualSubMenu, actualSubMenuCarpeta, abiertoCarpetaRender } = this.state
+        // let adjuntos = [];
+        // adjuntos = adjuntos ? adjuntos : []
         const sub_menu = (element) => {
             switch (element.tipo) {
                 case 4: return <Nav className="navi">
@@ -819,7 +805,7 @@ class MaterialCliente extends Component {
                                         </Nav>
                                     </div>
                                 </Card.Header>
-                                <Card.Body className={submenuactive ?"d-flex align-items-center":""}>
+                                <Card.Body className={""}>
                                     {
                                         empresa !== '' ?
                                             activeTipo === 6 ?
@@ -838,7 +824,7 @@ class MaterialCliente extends Component {
                                                                         url_1="Casos de éxito |"
                                                                         url_2={activeFolder.tipo}
                                                                     />
-                                                                : ''
+                                                                    : ''
                                                             }
                                                         </div>
                                                         <div>
@@ -871,7 +857,7 @@ class MaterialCliente extends Component {
                                                             <div className='col-md-3 col-lg-2'>
                                                                 <NewFolderInput
                                                                     newFolder={this.newFolder}
-                                                                    onSubmit={(e) => { e.preventDefault(); this.onSubmitNewDirectory() }} 
+                                                                    onSubmit={(e) => { e.preventDefault(); this.onSubmitNewDirectory() }}
                                                                     customclass={"input-folder"}
                                                                     name={'carpeta'}
                                                                     value={form.carpeta}
@@ -922,26 +908,26 @@ class MaterialCliente extends Component {
                                                         }
                                                     </div>
                                                 </div>
-                                            :
-                                            form.adjuntos.slider.menu === 0 ?
-                                                <>
-                                                    <div className="d-flex justify-content-end">
-                                                        <Button
-                                                            id="subir_archivos"
-                                                            icon=''
-                                                            className="btn btn-outline-secondary btn-icon btn-sm "
-                                                            onClick={(e) => { e.preventDefault(); this.openModalAddFiles() }}
-                                                            only_icon="fas fa-upload icon-15px text-primary"
-                                                            tooltip={{ text: 'SUBIR ARCHIVOS' }}
+                                                :
+                                                form.adjuntos.slider.menu === 0 ?
+                                                    <>
+                                                        <div className="d-flex justify-content-end">
+                                                            <Button
+                                                                id="subir_archivos"
+                                                                icon=''
+                                                                className="btn btn-outline-secondary btn-icon btn-sm "
+                                                                onClick={(e) => { e.preventDefault(); this.openModalAddFiles() }}
+                                                                only_icon="fas fa-upload icon-15px text-primary"
+                                                                tooltip={{ text: 'SUBIR ARCHIVOS' }}
+                                                            />
+                                                        </div>
+                                                        <TablePagination
+                                                            adjuntos={form.adjuntos.slider.files}
+                                                            delete_onclick={this.deleteFile}
                                                         />
-                                                    </div>
-                                                    <TablePagination
-                                                        adjuntos={form.adjuntos.slider.files}
-                                                        delete_onclick={this.deleteFile}
-                                                    />
-                                                </>
-                                            :
-                                            abiertoSubMenu ? 
+                                                    </>
+                                                    :
+                                                    abiertoSubMenu ?
                                                         <div>
                                                             <div className="d-flex justify-content-end">
                                                                 <Button
@@ -952,7 +938,7 @@ class MaterialCliente extends Component {
                                                                     only_icon="fas fa-upload icon-15px text-primary"
                                                                     tooltip={{ text: 'SUBIR ARCHIVOS' }}
                                                                 />
-                                                            </div> 
+                                                            </div>
                                                             <BtnBackUrl
                                                                 id_boton="regresar"
                                                                 icon=""
@@ -960,67 +946,84 @@ class MaterialCliente extends Component {
                                                                 onclick_boton={(e) => { e.preventDefault(); this.goBackFolderSubmenu() }}
                                                                 only_icon="fas fa-angle-left icon-md text-primary"
                                                                 tooltip={{ text: 'REGRESAR' }}
-                                                                url_1={actualSubMenu+"  |  "+   (abiertoCarpetaRender ? "RENDERS  |  ":"")}
-                                                                url_2={actualSubMenuCarpeta }
-
+                                                                url_1={actualSubMenu + "  |  " + (abiertoCarpetaRender ? "RENDERS  |  " : "")}
+                                                                url_2={actualSubMenuCarpeta}
                                                             />
                                                             {
-                                                                actualSubMenuCarpeta==="RENDERS"?
-                                                                <div className="row mx-0 col-md-12 row-paddingless px-0 d-flex justify-content-center">
-                                                                    <div className="col-md-12"> 
-                                                                    {   
-                                                                            Object.keys(form.adjuntos.renders).map((nombreRenderCarpeta, key) => { 
-                                                                                if(nombreRenderCarpeta!=="placeholder")
-                                                                                    return (
-                                                                                        
-                                                                                        <div className='col-md-12' key={key}>
-                                                                                            <FolderStatic
-                                                                                                text={form.adjuntos.renders[nombreRenderCarpeta].placeholder}
-                                                                                                onClick={this.onClickFolderRender}
-                                                                                                element={form.adjuntos.renders[nombreRenderCarpeta]}
-                                                                                            />
-                                                                                        </div>
-                                                                                    )
+                                                                actualSubMenuCarpeta === "RENDERS" ?
+                                                                    <div className="row mx-0 col-md-12 row-paddingless px-0 d-flex justify-content-center">
+                                                                        <div className="col-md-4">
+                                                                            {
+                                                                                Object.keys(form.adjuntos.renders).map((nombreRenderCarpeta, key) => {
+                                                                                    if (nombreRenderCarpeta !== "placeholder")
+                                                                                        return (
+                                                                                            <div className='col-md-12' key={key}>
+                                                                                                <FolderStatic
+                                                                                                    text={form.adjuntos.renders[nombreRenderCarpeta].placeholder}
+                                                                                                    onClick={this.onClickFolderRender}
+                                                                                                    element={form.adjuntos.renders[nombreRenderCarpeta]}
+                                                                                                />
+                                                                                            </div>
+                                                                                        )
                                                                                 })
-                                                                        }
-                                                                        
-                                                                    </div> 
-                                                                </div>
-                                                            :
-                                                            
-                                                                adjuntosSubMenu.length === 0 ?
-                                                                <div>NO hay Archivos</div>
-                                                                : 
+                                                                            }
+                                                                        </div>
+                                                                    </div>
+                                                                    :
+                                                                    adjuntosSubMenu.length === 0 ?
+                                                                        <div className='col-md-12 '>
+                                                                            <div className="mt-5 pt-4">
+                                                                                <NoFiles />
+                                                                            </div>
+                                                                            <div className='text-center mt-5 font-weight-bolder font-size-h4 text-primary'>
+                                                                                CARPETA VACÍA
+                                                                        </div>
+                                                                        </div>
+                                                                        :
                                                                         <TablePagination
                                                                             adjuntos={adjuntosSubMenu}
                                                                             delete_onclick={this.deleteFile}
                                                                         />
-                                                            } 
+                                                            }
                                                         </div>
-                                                :
-                                                submenuactive? 
-                                                        <div className="row mx-0 col-md-12 row-paddingless px-0 d-flex justify-content-center">
-                                                            <div className="col-md-3">
-                                                                {   
-                                                                    Object.keys(form.adjuntos).map((subcarpeta, key) => {
-                                                                        console.log(subcarpeta,"Map")
-                                                                        if(subcarpeta!=="slider")
-                                                                            return (
-                                                                                <div className='col-md-12' key={key}>
-                                                                                    <FolderStatic
-                                                                                        text={subcarpeta}
-                                                                                        onClick={this.onClickFolderSubMenu}
-                                                                                        element={form.adjuntos[subcarpeta]}
-                                                                                    />
-                                                                                </div>
-                                                                            )
+                                                        :
+                                                        submenuactive ?
+                                                            <div className="row mx-0 col-md-12 row-paddingless px-0 d-flex justify-content-center">
+                                                                <div className="col-md-3">
+                                                                    {
+                                                                        Object.keys(form.adjuntos).map((subcarpeta, key) => {
+                                                                            if (subcarpeta !== "slider")
+                                                                                return (
+                                                                                    <div className='col-md-12' key={key}>
+                                                                                        <FolderStatic
+                                                                                            text={subcarpeta}
+                                                                                            onClick={this.onClickFolderSubMenu}
+                                                                                            element={form.adjuntos[subcarpeta]}
+                                                                                        />
+                                                                                    </div>
+                                                                                )
                                                                         })
-                                                                }
-                                                            </div> 
-                                                        </div>
-                                                    :
-                                                        <div>Da clic a un submenu</div>         
-                                        : <Nothing />
+                                                                    }
+                                                                </div>
+                                                            </div>
+                                                            :
+                                                            <div className='col-md-12'>
+                                                                <div>
+                                                                    <Files />
+                                                                </div>
+                                                                <div className='text-center font-weight-bolder font-size-h3 text-primary'>
+                                                                    Da click a un submenú de <br />servicios por categoría
+                                                                </div>
+                                                            </div>
+                                            :
+                                            <div className='col-md-12'>
+                                                <div>
+                                                    <Build />
+                                                </div>
+                                                <div className='text-center mt-5 font-weight-bolder font-size-h3 text-primary'>
+                                                    Selecciona la empresa
+                                                </div>
+                                            </div>
                                     }
                                 </Card.Body>
                             </Card>
