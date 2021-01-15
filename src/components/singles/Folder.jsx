@@ -1,6 +1,5 @@
-import { elementType } from 'prop-types'
 import React, { Component } from 'react'
-import { InputGray, SelectSearchGray, InputPhoneGray, Button } from '../form-components'
+import { InputGray } from '../form-components'
 
 class Folder extends Component {
 
