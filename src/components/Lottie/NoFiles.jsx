@@ -16,7 +16,7 @@ class NoFiles extends Component{
             <div className="mx-auto">
                 <Lottie options={defaultOptions}
                     height={200}
-                    width={200}
+                    width={325}
                     isStopped={false}
                     isPaused={false}/>
             </div>
