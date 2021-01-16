@@ -12,7 +12,7 @@ import { toAbsoluteUrl } from "../../../functions/routers"
 import { Folder, FolderStatic, Modal } from '../../../components/singles'
 import { Button, BtnBackUrl, TablePagination, NewFolderInput } from '../../../components/form-components'
 import Swal from 'sweetalert2'
-import { NoFiles, Files, Build, Nothing } from '../../../components/Lottie'
+import { NoFiles, Files, Build } from '../../../components/Lottie'
 class MaterialCliente extends Component {
     state = {
         newFolder: false,
