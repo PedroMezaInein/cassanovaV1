@@ -182,8 +182,6 @@ class Calendario extends Component {
                     })
                 }
 
-                // console.log(evento, 'evento')
-
                 this.setState({
                     ... this.state,
                     options,
@@ -521,7 +519,6 @@ class Calendario extends Component {
 
     renderEventContent = (eventInfo) => {
         const { evento: event } = eventInfo.event._def.extendedProps
-        // console.log(event)
         let aux = ''
 
         if (event.red)

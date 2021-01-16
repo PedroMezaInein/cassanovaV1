@@ -61,7 +61,6 @@ class FileItem extends Component {
 
     render() {
         const { item, onClickDelete, anotherDate } = this.props
-        console.log(item, 'item')
         return (
             <tr>
                 <td className="pl-1">

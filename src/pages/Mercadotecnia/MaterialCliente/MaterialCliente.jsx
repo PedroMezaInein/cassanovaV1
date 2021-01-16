@@ -12,7 +12,9 @@ import { toAbsoluteUrl } from "../../../functions/routers"
 import { Folder, FolderStatic, Modal } from '../../../components/singles'
 import { Button, BtnBackUrl, TablePagination, NewFolderInput } from '../../../components/form-components'
 import Swal from 'sweetalert2'
-import { NoFiles, Files, Build } from '../../../components/Lottie'
+import { NoFiles, Files, Build, Nothing } from '../../../components/Lottie'
+
+const arrayOpcionesAdjuntos = ['portafolio', 'como_trabajamos', 'servicios_generales', '', 'brokers', 'videos'];
 class MaterialCliente extends Component {
     state = {
         newFolder: false,
@@ -140,6 +142,330 @@ class MaterialCliente extends Component {
         this.getOptionsAxios()
     }
 
+    /* ANCHOR AXIOS FUNCTIONS */
+
+    /* ANCHOR GET ALL EMPRESAS Y ADJUNTOS */
+    async getOptionsAxios() {
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'mercadotecnia/material-clientes', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { empresas } = response.data
+                const { options, data, form } = this.state
+                let { empresa } = this.state
+                data.empresas = empresas
+                options.empresas = setSelectOptions(empresas, 'name')
+                empresas.map((element) => {
+                    if(element.id === empresa.id)
+                        empresa = element
+                })
+                this.setState({ ...this.state, options, data, empresa, form, modal_add: false, abiertoCarpetaRender: false })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) { forbiddenAccessAlert() } 
+                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    /* ANCHOR NEW DIRECTORY FOR CASOS DE EXITO */
+    onSubmitNewDirectory = async () => {
+        const { access_token } = this.props.authUser
+        const { form, empresa } = this.state
+        waitAlert()
+        await axios.post(URL_DEV + 'mercadotecnia/material-clientes/empresas/' + empresa.id + '/caso-exito', { tipo: form.carpeta },
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                Swal.close()
+                const { empresa, empresas } = response.data
+                const { form, data } = this.state
+                data.empresas = empresas
+                form.carpeta = ''
+                this.setState({ ...this.state, empresa: empresa, newFolder: false, form, data })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) forbiddenAccessAlert()
+                else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    /* ANCHOR CHANGE NAME OF DIRECTORY IN CASOS DE EXITO */
+    updateDirectoryAxios = async (name, element) => {
+        const { access_token } = this.props.authUser
+        const { form, empresa } = this.state
+        waitAlert()
+        await axios.put(URL_DEV + 'mercadotecnia/material-clientes/empresas/' + empresa.id + '/caso-exito/' + element.id, { tipo: name },
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                Swal.close()
+                const { empresa, empresas } = response.data
+                const { form, data } = this.state
+                data.empresas = empresas
+                form.carpeta = ''
+                this.setState({ ...this.state, empresa: empresa, newFolder: false, form, data })
+                return true
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) forbiddenAccessAlert()
+                else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                return true
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+            return true
+        })
+    }
+
+    /* ANCHOR DELETE ADJUNTO FROM PORTAFOLIO COMO TRABAJAMOS SERVICIOS GENERALES BROKERS VIDEOS */
+    deleteAdjuntoAxios = async (id, tipo_adjunto) => {
+        console.log(id, 'ID')
+        console.log(tipo_adjunto, "TIPO ADJUNTO")
+        console.log('STATE', this.state)
+        const { access_token } = this.props.authUser
+        const { empresa, submenuactive } = this.state
+        await axios.delete(URL_DEV + 'mercadotecnia/material-clientes/' + empresa.id + '/adjunto/' + tipo_adjunto + '/' + id,
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { empresa: empresaResponse } = response.data
+                this.updateAllAdjuntos(empresaResponse, tipo_adjunto);
+                doneAlert('Archivo eliminado con éxito.')
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) forbiddenAccessAlert()
+                else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    /* ANCHOR DELETE ADJUNTO FROM FOLDER */
+    deleteAdjuntoFromFolder = async (id) => {
+        const { access_token } = this.props.authUser
+        const { empresa, activeFolder } = this.state
+        await axios.delete(URL_DEV + 'mercadotecnia/material-clientes/empresas/' + empresa.id + '/caso-exito/' + activeFolder.id + '/adjuntos/' + id,
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { empresa, empresas, carpeta } = response.data
+                const { data } = this.state
+                data.empresas = empresas
+                doneAlert('Archivos eliminado con éxito')
+                this.setState({ ...this.state, empresa: empresa, activeFolder: carpeta, data })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) forbiddenAccessAlert()
+                else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    /* ANCHOR DELETE FOLDERS */
+    deleteFolderAxios = async (id) => {
+        const { access_token } = this.props.authUser
+        const { empresa } = this.state
+        await axios.delete(URL_DEV + 'mercadotecnia/material-clientes/empresas/' + empresa.id + '/caso-exito/' + id,
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { empresa, empresas } = response.data
+                const { data } = this.state
+                data.empresas = empresas
+                doneAlert('Carpeta eliminada con éxito')
+                this.setState({ ...this.state, empresa: empresa, data })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) forbiddenAccessAlert()
+                else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    /* ANCHOR ADD ADJUNTO IN FOLDER */
+    async addAdjuntoInFolderAxios() {
+        const { form, empresa, activeFolder } = this.state
+        const { access_token } = this.props.authUser
+        const data = new FormData();
+        form.adjuntos.slider.files.map((file, key) => {
+            if (typeof file.id === 'undefined') {
+                data.append(`files_name[]`, file.name)
+                data.append(`files[]`, file.file)
+            }
+        })
+        data.append('tipo', activeFolder.id)
+        await axios.post(URL_DEV + 'mercadotecnia/material-clientes/empresas/' + empresa.id + '/caso-exito/adjuntos', data,
+            { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                Swal.close()
+                const { empresa, empresas, carpeta } = response.data
+                const { form, data } = this.state
+                data.empresas = empresas
+                form.adjuntos.slider.files = []
+                form.adjuntos.slider.value = ''
+                doneAlert('Archivos adjuntados con éxito')
+                this.setState({ ...this.state, empresa: empresa, modal_add: false, activeFolder: carpeta, form, data })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) forbiddenAccessAlert()
+                else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    /* ANCHOR ADD ADJUNTO IN REDERAXIOS */
+    addAdjuntoInRendersAxios = async(tipo) => {
+        console.log(tipo, 'tipo')
+        if(tipo === 'renders-reales'){
+            tipo = 'reales'
+        }
+        if(tipo === 'renders-inventados'){
+            tipo = 'inventados'
+        }
+        console.log(tipo, 'tipo2')
+        const { access_token } = this.props.authUser
+        const { form, empresa, submenuactive } = this.state
+        const data = new FormData();
+        waitAlert()
+        data.append('empresa', empresa.id)
+        form.adjuntos.renders[tipo].files.map((file, key) => {
+            if (typeof file.id === 'undefined') {
+                data.append(`files_name[]`, file.name)
+                data.append(`files[]`, file.file)
+            }
+        })
+        data.append('proyecto', submenuactive)
+        data.append('tipo', tipo === 'inventados' ? 'renders-inventados' : tipo === 'reales' ? 'renders-reales' : '')
+        await axios.post(URL_DEV + 'mercadotecnia/material-clientes', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { empresa: empresaResponse } = response.data
+                this.updateAllAdjuntos(empresaResponse,  tipo === 'inventados' ? 'renders-inventados' : tipo === 'reales' ? 'renders-reales' : '');
+                doneAlert('Archivo generado con éxito.')
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) forbiddenAccessAlert()
+                else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    updateAllAdjuntos = (empresaResponse, tipo_adjunto) => {
+        console.log(empresaResponse, 'empresaResponse')
+        const { data, activeTipo, form, submenuactive } = this.state
+        let { empresa, adjuntosSubMenu } = this.state
+        let aux = []
+        let subportafolio = []
+        let ejemplo = []
+        let portada = []
+        let rendersReales = []
+        let rendersInventados = []
+        data.empresas.map((element)=>{
+            if(empresa.id === element.id){
+                empresa = empresaResponse
+                aux.push(empresaResponse)
+            }else{
+                aux.push(element)
+            }
+        })
+        data.empresas = aux
+        switch(activeTipo){
+            case 0:
+            case 1:
+            case 2:
+            case 4:
+            case 5:
+                form.adjuntos.slider.files = []
+                empresa.adjuntos.map((adjunto)=>{
+                    if(adjunto.pivot.tipo === arrayOpcionesAdjuntos[activeTipo]){
+                        form.adjuntos.slider.files.push(adjunto)
+                    }
+                })
+            break;
+            case 3:
+                empresa.tipos.map((tipo)=>{
+                    if(submenuactive === tipo.id){
+                        tipo.adjuntos.map((adjunto, index) => {
+                            switch (adjunto.pivot.tipo) {
+                                case "portada":
+                                    portada.push(adjunto)
+                                    break;
+                                case "subportafolio":
+                                    subportafolio.push(adjunto)
+                                    break;
+                                case "ejemplo":
+                                    ejemplo.push(adjunto)
+                                    break;
+                                case "renders-reales":
+                                    rendersReales.push(adjunto)
+                                    break;
+                                case "renders-inventados":
+                                    rendersInventados.push(adjunto)
+                                    break;
+                            }
+                        })
+                        form.adjuntos.portada.files = portada
+                        form.adjuntos.subportafolio.files = subportafolio
+                        form.adjuntos.ejemplo.files = ejemplo
+                        form.adjuntos.renders.reales.files = rendersReales
+                        form.adjuntos.renders.inventados.files = rendersInventados
+                        switch(tipo_adjunto){
+                            case 'portada':
+                                adjuntosSubMenu = portada;
+                                break;
+                            case 'subportafolio':
+                                adjuntosSubMenu = subportafolio;
+                                break;
+                            case 'ejemplo':
+                                adjuntosSubMenu = ejemplo;
+                                break;
+                            case 'renders-reales':
+                                adjuntosSubMenu = rendersReales;
+                                break;
+                            case 'renders-inventados':
+                                adjuntosSubMenu = rendersInventados;
+                                break;
+                        }
+                    }
+                })
+                
+            case 6:
+            break;
+        }
+        this.setState({
+            ...this.state,
+            empresa,
+            data,
+            form,
+            adjuntosSubMenu,
+            modal_add: false
+        })
+    }
+
     openModalAddFiles = () => {
         this.setState({
             ...this.state,
@@ -154,66 +480,40 @@ class MaterialCliente extends Component {
         })
     }
 
-    async getOptionsAxios() {
-        const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'mercadotecnia/material-clientes', { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { empresas } = response.data
-                let { activeTipo } = response.data
-                const { options, data, form } = this.state
-                let { empresa } = this.state
-                data.empresas = empresas
-                options.empresas = setSelectOptions(empresas, 'name')
-                this.setState({
-                    ...this.state,
-                    options,
-                    data,
-                    empresa,
-                    form,
-                    activeTipo
-                })
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-
     handleChange = (files, item) => {
-        const { form, activeFolder } = this.state
+        const { form, activeFolder, actualSubMenuCarpeta } = this.state
         this.onChangeAdjuntos({ target: { name: item, value: files, files: files } })
-        if (form.adjuntos[item].value !== '') {
-            if (activeFolder === false)
-                questionAlert('ENVIAR ARCHIVO', '¿ESTÁS SEGURO QUE DESEAS ENVIARLO?', () => { waitAlert(); this.addAdjunto(item) })
-            else
-                questionAlert('ENVIAR ARCHIVO', '¿ESTÁS SEGURO QUE DESEAS ENVIARLO?', () => { waitAlert(); this.addAdjuntoInFolderAxios() })
+        if(actualSubMenuCarpeta === 'Reales' || actualSubMenuCarpeta === 'Inventados'){
+            questionAlert('ENVIAR ARCHIVO', '¿ESTÁS SEGURO QUE DESEAS ENVIARLO?', () => { waitAlert(); this.addAdjuntoInRendersAxios(actualSubMenuCarpeta === 'Reales' ? 'renders-reales' : 'renders-inventados') })
+        }else{
+            if (form.adjuntos[item].value !== '') {
+                if (activeFolder === false)
+                    questionAlert('ENVIAR ARCHIVO', '¿ESTÁS SEGURO QUE DESEAS ENVIARLO?', () => { waitAlert(); this.addAdjunto(item) })
+                else
+                    questionAlert('ENVIAR ARCHIVO', '¿ESTÁS SEGURO QUE DESEAS ENVIARLO?', () => { waitAlert(); this.addAdjuntoInFolderAxios() })
+            }
         }
     }
 
     onChangeAdjuntos = e => {
         const { form } = this.state
         const { files, value, name } = e.target
-        let aux = form.adjuntos[name].files
-        for (let counter = 0; counter < files.length; counter++) {
-            aux.push(
-                {
-                    name: files[counter].name,
-                    file: files[counter],
-                    url: URL.createObjectURL(files[counter]),
-                    key: counter
-                }
-            )
+        let aux = []
+        files.map((file, index) => {
+            aux.push({
+                name: file.name,
+                file: file,
+                url: URL.createObjectURL(file),
+                key: index
+            })
+        })
+        if(name === 'reales' || name === 'inventados'){
+            form.adjuntos.renders[name].value = value
+            form.adjuntos.renders[name].files = aux
+        }else{
+            form.adjuntos[name].value = value
+            form.adjuntos[name].files = aux
         }
-        form['adjuntos'][name].value = value
-        form['adjuntos'][name].files = aux
         this.setState({
             ...this.state,
             form
@@ -231,7 +531,7 @@ class MaterialCliente extends Component {
     }
 
     deleteFile = element => {
-        deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', element.name, () => this.deleteAdjuntoAxios(element.id, 'slider'))
+        deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', element.name, () => this.deleteAdjuntoAxios(element.id, element.pivot.tipo))
     }
 
     deleteFileSubportafolio = element => {
@@ -249,7 +549,6 @@ class MaterialCliente extends Component {
     deleteFileRenders = element => {
         deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', '', () => this.deleteAdjuntoAxios(element.id, 'renders'))
     }
-
 
     onClickDelete = element => {
         deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', element.name, () => this.deleteAdjuntoFromFolder(element.id))
@@ -286,7 +585,6 @@ class MaterialCliente extends Component {
             actualSubMenuCarpeta = ""
         }
 
-
         this.setState({
             ...this.state,
             abiertoCarpetaRender: false,
@@ -316,216 +614,10 @@ class MaterialCliente extends Component {
     }
     onClickFolder = (element) => {
 
-
         this.setState({
             ...this.state,
             activeFolder: element
         })
-    }
-
-    onSubmitNewDirectory = async () => {
-        const { access_token } = this.props.authUser
-        const { form, empresa } = this.state
-        waitAlert()
-        await axios.post(URL_DEV + 'mercadotecnia/material-clientes/empresas/' + empresa.id + '/caso-exito', { tipo: form.carpeta },
-            { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
-                (response) => {
-                    Swal.close()
-                    const { empresa, empresas } = response.data
-                    const { form, data } = this.state
-                    data.empresas = empresas
-                    form.carpeta = ''
-                    this.setState({
-                        ...this.state,
-                        empresa: empresa,
-                        newFolder: false,
-                        form,
-                        data
-                    })
-                },
-                (error) => {
-                    console.log(error, 'error')
-                    if (error.response.status === 401) forbiddenAccessAlert()
-                    else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            ).catch((error) => {
-                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-                console.log(error, 'error')
-            })
-    }
-
-    updateDirectoryAxios = async (name, element) => {
-        const { access_token } = this.props.authUser
-        const { form, empresa } = this.state
-        waitAlert()
-        await axios.put(URL_DEV + 'mercadotecnia/material-clientes/empresas/' + empresa.id + '/caso-exito/' + element.id, { tipo: name },
-            { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
-                (response) => {
-                    Swal.close()
-                    const { empresa, empresas } = response.data
-                    const { form, data } = this.state
-                    data.empresas = empresas
-                    form.carpeta = ''
-                    this.setState({
-                        ...this.state,
-                        empresa: empresa,
-                        newFolder: false,
-                        form,
-                        data
-                    })
-                    return true
-                },
-                (error) => {
-                    console.log(error, 'error')
-                    if (error.response.status === 401) forbiddenAccessAlert()
-                    else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                    return true
-                }
-            ).catch((error) => {
-                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-                console.log(error, 'error')
-                return true
-            })
-    }
-
-    deleteAdjuntoAxios = async (id, tipo_adjunto) => {
-        const { access_token } = this.props.authUser
-        const { empresa, submenuactive } = this.state
-        await axios.delete(URL_DEV + 'mercadotecnia/material-clientes/' + empresa.id + '/adjunto/' + tipo_adjunto + '/' + id,
-            { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
-                (response) => {
-                    const { empresa, tipo } = response.data
-                    const { form } = this.state
-                    if (tipo_adjunto === 'slider') {
-                        form.adjuntos.slider.files = []
-                        empresa.adjuntos.map((adjunto, key) => {
-                            if (adjunto.pivot.tipo === tipo)
-                                form.adjuntos.slider.files.push(adjunto)
-                        })
-                    } else {
-                        form.adjuntos[tipo].files = []
-                        empresa.tipos.map((element, key) => {
-                            if (element.id === submenuactive)
-                                element.adjuntos.map((adjunto) => {
-                                    if (adjunto.pivot.tipo === tipo)
-                                        form.adjuntos[tipo].files.push(adjunto)
-                                })
-                        })
-                    }
-
-                    this.setState({
-                        ...this.state,
-                        form
-                    })
-
-                    this.getOptionsAxios()
-                    doneAlert('Archivo eliminado con éxito.')
-                },
-                (error) => {
-                    console.log(error, 'error')
-                    if (error.response.status === 401) forbiddenAccessAlert()
-                    else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            ).catch((error) => {
-                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-                console.log(error, 'error')
-            })
-    }
-
-    deleteAdjuntoFromFolder = async (id) => {
-        const { access_token } = this.props.authUser
-        const { empresa, activeFolder } = this.state
-        await axios.delete(URL_DEV + 'mercadotecnia/material-clientes/empresas/' + empresa.id + '/caso-exito/' + activeFolder.id + '/adjuntos/' + id,
-            { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
-                (response) => {
-                    const { empresa, empresas, carpeta } = response.data
-                    const { data } = this.state
-                    data.empresas = empresas
-                    doneAlert('Archivos eliminado con éxito')
-                    this.setState({
-                        ...this.state,
-                        empresa: empresa,
-                        activeFolder: carpeta,
-                        data
-                    })
-                },
-                (error) => {
-                    console.log(error, 'error')
-                    if (error.response.status === 401) forbiddenAccessAlert()
-                    else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            ).catch((error) => {
-                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-                console.log(error, 'error')
-            })
-    }
-
-    deleteFolderAxios = async (id) => {
-        const { access_token } = this.props.authUser
-        const { empresa } = this.state
-        await axios.delete(URL_DEV + 'mercadotecnia/material-clientes/empresas/' + empresa.id + '/caso-exito/' + id,
-            { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
-                (response) => {
-                    const { empresa, empresas } = response.data
-                    const { data } = this.state
-                    data.empresas = empresas
-                    doneAlert('Carpeta eliminada con éxito')
-                    this.setState({
-                        ...this.state,
-                        empresa: empresa,
-                        data
-                    })
-                },
-                (error) => {
-                    console.log(error, 'error')
-                    if (error.response.status === 401) forbiddenAccessAlert()
-                    else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            ).catch((error) => {
-                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-                console.log(error, 'error')
-            })
-    }
-
-    async addAdjuntoInFolderAxios() {
-        const { form, empresa, activeFolder } = this.state
-        const { access_token } = this.props.authUser
-        const data = new FormData();
-        form.adjuntos.slider.files.map((file, key) => {
-            if (typeof file.id === 'undefined') {
-                data.append(`files_name[]`, file.name)
-                data.append(`files[]`, file.file)
-            }
-        })
-        data.append('tipo', activeFolder.id)
-        await axios.post(URL_DEV + 'mercadotecnia/material-clientes/empresas/' + empresa.id + '/caso-exito/adjuntos', data,
-            { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
-                (response) => {
-                    Swal.close()
-                    const { empresa, empresas, carpeta } = response.data
-                    const { form, data } = this.state
-                    data.empresas = empresas
-                    form.adjuntos.slider.files = []
-                    form.adjuntos.slider.value = ''
-                    doneAlert('Archivos adjuntados con éxito')
-                    this.setState({
-                        ...this.state,
-                        empresa: empresa,
-                        modal_add: false,
-                        activeFolder: carpeta,
-                        form,
-                        data
-                    })
-                },
-                (error) => {
-                    console.log(error, 'error')
-                    if (error.response.status === 401) forbiddenAccessAlert()
-                    else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            ).catch((error) => {
-                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-                console.log(error, 'error')
-            })
     }
 
     async addAdjunto(name) {
@@ -564,32 +656,70 @@ class MaterialCliente extends Component {
 
         await axios.post(URL_DEV + 'mercadotecnia/material-clientes', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { empresa, tipo } = response.data
-                const { form } = this.state
+                const { empresa: empresaResponse, empresas, tipo } = response.data
+                const { form, data } = this.state
+                let { submenuactive, actualSubMenu } = this.state
 
                 if (name === 'slider') {
                     form.adjuntos.slider.files = []
-                    empresa.adjuntos.map((adjunto, key) => {
+                    empresaResponse.adjuntos.map((adjunto, key) => {
                         if (adjunto.pivot.tipo === tipo)
                             form.adjuntos.slider.files.push(adjunto)
                     })
                 } else {
-                    form.adjuntos[tipo].files = []
-                    empresa.tipos.map((element, key) => {
-                        if (element.id === submenuactive)
-                            element.adjuntos.map((adjunto) => {
-                                if (adjunto.pivot.tipo === tipo)
-                                    form.adjuntos[tipo].files.push(adjunto)
+                    
+                    empresaResponse.tipos.map((element, key) => {
+                        if (element.id === submenuactive){
+                            let subportafolio = []
+                            let ejemplo = []
+                            let portada = []
+                            let rendersReales = []
+                            let rendersInventados = []
+                            element.adjuntos.map((adjunto, index) => {
+                                switch (adjunto.pivot.tipo) {
+                                    case "portada":
+                                        portada.push(adjunto)
+                                        break;
+                                    case "subportafolio":
+                                        subportafolio.push(adjunto)
+                                        break;
+                                    case "ejemplo":
+                                        ejemplo.push(adjunto)
+                                        break;
+                                    case "renders-reales":
+                                        rendersReales.push(adjunto)
+                                        break;
+                                    case "renders-inventados":
+                                        rendersInventados.push(adjunto)
+                                        break;
+                                }
                             })
+                            form.adjuntos.portada.files = portada
+                            form.adjuntos.subportafolio.files = subportafolio
+                            form.adjuntos.ejemplo.files = ejemplo
+                            form.adjuntos.renders.reales.files = rendersReales
+                            form.adjuntos.renders.inventados.files = rendersInventados
+                            actualSubMenu = element.tipo
+                            submenuactive = element.id
+                        }
                     })
                 }
 
+                data.empresas = empresas
+
                 this.setState({
                     ...this.state,
-                    form
+                    form,
+                    empresa: empresaResponse,
+                    empresas: empresas,
+                    data,
+                    modal_add: false,
+                    abiertoSubMenu: false,
+                    submenuactive,
+                    actualSubMenu,
+                    abiertoCarpetaRender: false
                 })
 
-                this.getOptionsAxios()
                 doneAlert('Archivo adjuntado con éxito.')
             },
             (error) => {
@@ -635,7 +765,8 @@ class MaterialCliente extends Component {
             opciones_adjuntos: opciones_adjuntos,
             form,
             submenuactive: '',
-            activeTipo: indiceClick
+            activeTipo: indiceClick,
+            abiertoCarpetaRender: false
         });
     }
 
@@ -665,7 +796,8 @@ class MaterialCliente extends Component {
             empresa: empresa,
             opciones_adjuntos: opciones_adjuntos,
             form,
-            submenuactive: ''
+            submenuactive: '',
+            abiertoCarpetaRender: false
         });
     }
 
@@ -675,7 +807,8 @@ class MaterialCliente extends Component {
         let subportafolio = []
         let ejemplo = []
         let portada = []
-        let renders = []
+        let rendersReales = []
+        let rendersInventados = []
         adjuntos.forEach(adjunto => {
             switch (adjunto.pivot.tipo) {
                 case "portada":
@@ -687,6 +820,12 @@ class MaterialCliente extends Component {
                 case "ejemplo":
                     ejemplo.push(adjunto)
                     break;
+                case "renders-reales":
+                    rendersReales.push(adjunto)
+                    break;
+                case "renders-inventados":
+                    rendersInventados.push(adjunto)
+                    break;
                 //  case "renders":
                 //    renders.push(adjunto)
                 //  break;
@@ -695,14 +834,105 @@ class MaterialCliente extends Component {
         form.adjuntos.portada.files = portada
         form.adjuntos.subportafolio.files = subportafolio
         form.adjuntos.ejemplo.files = ejemplo
-        //form.adjuntos.renders.files = renders
+        form.adjuntos.renders.reales.files = rendersReales
+        form.adjuntos.renders.inventados.files = rendersInventados
         this.setState({
             form,
             abiertoSubMenu: false,
             submenuactive: tipo.id,
-            actualSubMenu: tipo.tipo
+            actualSubMenu: tipo.tipo,
+            abiertoCarpetaRender: false
         })
     }
+
+    renderCarpetaVacia = () => {
+        return(
+            <div className='col-md-12 '>
+                <div>
+                    <NoFiles />
+                </div>
+                <div className='text-center mt-5 font-weight-bolder font-size-h4 text-primary'>
+                    CARPETA VACÍA
+                </div>
+            </div>
+        )
+    }
+
+    getNameSlider = () => {
+        const { activeTipo, actualSubMenuCarpeta } = this.state
+        if(activeTipo !== 3)
+            return 'slider'
+        else{
+            switch(actualSubMenuCarpeta.toUpperCase()){
+                case 'SUBPORTAFOLIO':
+                    return 'subportafolio'
+                case 'EJEMPLO':
+                    return 'ejemplo'
+                case 'PORTADA':
+                    return 'portada'
+                case 'REALES':
+                    return 'reales'
+                case 'INVENTADOS':
+                    return 'inventados'
+                default:
+                    break;
+            }
+        }
+    }
+
+    getFilesSlider = () => {
+        const { form, activeTipo, actualSubMenuCarpeta } = this.state
+        let aux = []
+        if(activeTipo !== 3){
+            form.adjuntos.slider.files.map((file)=>{
+                if(!file.id){
+                    aux.push(file)
+                }
+            })
+        }else{
+            switch(actualSubMenuCarpeta.toUpperCase()){
+                case 'SUBPORTAFOLIO':
+                    form.adjuntos.subportafolio.files.map((file)=>{
+                        if(!file.id){
+                            aux.push(file)
+                        }
+                    })
+                    break;
+                case 'EJEMPLO':
+                    form.adjuntos.ejemplo.files.map((file)=>{
+                        if(!file.id){
+                            aux.push(file)
+                        }
+                    })
+                    break;
+                case 'PORTADA':
+                    form.adjuntos.portada.files.map((file)=>{
+                        if(!file.id){
+                            aux.push(file)
+                        }
+                    })
+                    break;
+                case 'REALES':
+                    form.adjuntos.renders.reales.files.map((file)=>{
+                        if(!file.id){
+                            aux.push(file)
+                        }
+                    })
+                    break;
+                case 'INVENTADOS':
+                    form.adjuntos.renders.inventados.files.map((file)=>{
+                        if(!file.id){
+                            aux.push(file)
+                        }
+                    })
+                    break;
+                default:
+                    break;
+            }
+        }
+        return aux
+    }
+    
     render() {
         const { form, data, opciones_adjuntos, empresa, submenuactive, newFolder, activeTipo, activeFolder, modal_add, abiertoSubMenu, adjuntosSubMenu, actualSubMenu, actualSubMenuCarpeta, abiertoCarpetaRender } = this.state
         // let adjuntos = [];
@@ -831,39 +1061,34 @@ class MaterialCliente extends Component {
                                                             {
                                                                 activeFolder === false ?
                                                                     newFolder === false &&
-                                                                    <Button
-                                                                        id="nueva_carpeta"
-                                                                        icon=''
-                                                                        className="btn btn-outline-secondary btn-icon btn-sm "
-                                                                        onClick={(e) => { e.preventDefault(); this.newFolder() }}
-                                                                        only_icon="fas fa-folder-plus icon-15px text-primary"
-                                                                        tooltip={{ text: 'NUEVA CARPETA' }}
-                                                                    />
-                                                                    :
-                                                                    <Button
-                                                                        id="subir_archivos"
-                                                                        icon=''
+                                                                        /* Entra en casos de éxito no está en un folder activo y no está el modal newFolder */
+                                                                        <Button id="nueva_carpeta" icon='' 
+                                                                            className="btn btn-outline-secondary btn-icon btn-sm "
+                                                                            onClick={(e) => { e.preventDefault(); this.newFolder() }}
+                                                                            only_icon="fas fa-folder-plus icon-15px text-primary"
+                                                                            tooltip={{ text: 'NUEVA CARPETA' }} />
+                                                                :
+                                                                    <Button id="subir_archivos" icon=''
                                                                         className="btn btn-outline-secondary btn-icon btn-sm "
                                                                         onClick={(e) => { e.preventDefault(); this.openModalAddFiles() }}
                                                                         only_icon="fas fa-upload icon-15px text-primary"
-                                                                        tooltip={{ text: 'SUBIR ARCHIVOS' }}
-                                                                    />
+                                                                        tooltip={{ text: 'SUBIR ARCHIVOS' }} />
                                                             }
                                                         </div>
                                                     </div>
                                                     <div className='row mx-0 my-3'>
                                                         {
                                                             newFolder && activeFolder === false &&
-                                                            <div className='col-md-3 col-lg-2'>
-                                                                <NewFolderInput
-                                                                    newFolder={this.newFolder}
-                                                                    onSubmit={(e) => { e.preventDefault(); this.onSubmitNewDirectory() }}
-                                                                    customclass={"input-folder"}
-                                                                    name={'carpeta'}
-                                                                    value={form.carpeta}
-                                                                    onChange={this.onChange}
-                                                                />
-                                                            </div>
+                                                                <div className='col-md-3 col-lg-2'>
+                                                                    <NewFolderInput
+                                                                        newFolder={this.newFolder}
+                                                                        onSubmit={(e) => { e.preventDefault(); this.onSubmitNewDirectory() }}
+                                                                        customclass={"input-folder"}
+                                                                        name={'carpeta'}
+                                                                        value={form.carpeta}
+                                                                        onChange={this.onChange}
+                                                                    />
+                                                                </div>
                                                         }
                                                         {
                                                             activeFolder === false ?
@@ -881,100 +1106,67 @@ class MaterialCliente extends Component {
                                                                             </div>
                                                                         )
                                                                     })
-                                                                    :
-                                                                    <div className='col-md-12 '>
-                                                                        <div>
-                                                                            <NoFiles />
-                                                                        </div>
-                                                                        <div className='text-center mt-5 font-weight-bolder font-size-h4 text-primary2'>
-                                                                            CARPETA VACÍA
-                                                                        </div>
-                                                                    </div>
                                                                 :
+                                                                    this.renderCarpetaVacia()
+                                                            :
                                                                 activeFolder.adjuntos.length === 0 ?
-                                                                    <div className='col-md-12 '>
-                                                                        <div>
-                                                                            <NoFiles />
-                                                                        </div>
-                                                                        <div className='text-center mt-5 font-weight-bolder font-size-h4 text-primary'>
-                                                                            CARPETA VACÍA
-                                                                        </div>
-                                                                    </div>
-                                                                    :
+                                                                    this.renderCarpetaVacia()
+                                                                :
                                                                     <TablePagination
                                                                         adjuntos={activeFolder.adjuntos}
-                                                                        delete_onclick={this.onClickDelete}
-                                                                    />
+                                                                        delete_onclick={this.onClickDelete} />
                                                         }
                                                     </div>
                                                 </div>
-                                                :
+                                            :
                                                 form.adjuntos.slider.menu === 0 ?
                                                     <>
                                                         {
-                                                            form.adjuntos.slider.files.length===0?
+                                                            form.adjuntos.slider.files.length === 0 ?
                                                                 <>
                                                                     <div className="d-flex justify-content-end">
-                                                                        <Button
-                                                                            id="subir_archivos"
-                                                                            icon=''
+                                                                        <Button id="subir_archivos" icon=''
                                                                             className="btn btn-outline-secondary btn-icon btn-sm "
                                                                             onClick={(e) => { e.preventDefault(); this.openModalAddFiles() }}
                                                                             only_icon="fas fa-upload icon-15px text-primary"
-                                                                            tooltip={{ text: 'SUBIR ARCHIVOS' }}
-                                                                    />
+                                                                            tooltip={{ text: 'SUBIR ARCHIVOS' }} />
                                                                     </div>
-                                                                    <div className='col-md-12 '>
-                                                                        <div>
-                                                                            <NoFiles />
-                                                                        </div>
-                                                                        <div className='text-center mt-5 font-weight-bolder font-size-h4 text-primary2'>
-                                                                            CARPETA VACÍA
-                                                                        </div>
-                                                                    </div>
+                                                                    { this.renderCarpetaVacia() }
                                                                 </>
-                                                                :
+                                                            :
                                                                 <>
                                                                     <div className="d-flex justify-content-end">
-                                                                        <Button
-                                                                            id="subir_archivos"
-                                                                            icon=''
+                                                                        <Button id="subir_archivos" icon=''
                                                                             className="btn btn-outline-secondary btn-icon btn-sm "
                                                                             onClick={(e) => { e.preventDefault(); this.openModalAddFiles() }}
                                                                             only_icon="fas fa-upload icon-15px text-primary"
-                                                                            tooltip={{ text: 'SUBIR ARCHIVOS' }}
-                                                                    />
+                                                                            tooltip={{ text: 'SUBIR ARCHIVOS' }} />
                                                                     </div>
                                                                     <TablePagination
-                                                                        adjuntos={form.adjuntos.slider.files}
-                                                                        delete_onclick={this.deleteFile}
-                                                                    />
+                                                                        adjuntos={form.adjuntos.slider.files} delete_onclick={this.deleteFile} />
                                                                 </>
                                                         }
-                                                        
                                                     </>
-                                                    :
+                                                :
                                                     abiertoSubMenu ?
                                                         <div>
                                                             <div className="d-flex justify-content-end">
-                                                                <Button
-                                                                    id="subir_archivos"
-                                                                    icon=''
-                                                                    className="btn btn-outline-secondary btn-icon btn-sm "
-                                                                    onClick={(e) => { e.preventDefault(); this.openModalAddFiles() }}
-                                                                    only_icon="fas fa-upload icon-15px text-primary"
-                                                                    tooltip={{ text: 'SUBIR ARCHIVOS' }}
-                                                                />
+                                                                {
+                                                                    actualSubMenuCarpeta !== 'RENDERS' ?
+                                                                        <Button id="subir_archivos" icon=''
+                                                                            className="btn btn-outline-secondary btn-icon btn-sm "
+                                                                            onClick={(e) => { e.preventDefault(); this.openModalAddFiles() }}
+                                                                            only_icon="fas fa-upload icon-15px text-primary"
+                                                                            tooltip={{ text: 'SUBIR ARCHIVOS' }} />
+                                                                    : ''
+                                                                }
                                                             </div>
-                                                            <BtnBackUrl
-                                                                id_boton="regresar"
-                                                                icon=""
+                                                            <BtnBackUrl id_boton="regresar" icon=""
                                                                 classname_boton="btn btn-outline-secondary btn-icon btn-sm"
                                                                 onclick_boton={(e) => { e.preventDefault(); this.goBackFolderSubmenu() }}
-                                                                only_icon="fas fa-angle-left icon-md text-primary"
-                                                                tooltip={{ text: 'REGRESAR' }}
-                                                                url_1={actualSubMenu + "  |  " + (abiertoCarpetaRender ? "RENDERS  |  " : "")}
-                                                                url_2={actualSubMenuCarpeta}
+                                                                only_icon="fas fa-angle-left icon-md text-primary" tooltip={{ text: 'REGRESAR' }}
+                                                                url_1 = { actualSubMenu + "  |  " + (abiertoCarpetaRender ? "RENDERS  |  " : "")}
+                                                                url_2 = { actualSubMenuCarpeta }
                                                             />
                                                             {
                                                                 actualSubMenuCarpeta === "RENDERS" ?
@@ -996,19 +1188,9 @@ class MaterialCliente extends Component {
                                                                     </div>
                                                                     :
                                                                     adjuntosSubMenu.length === 0 ?
-                                                                        <div className='col-md-12 '>
-                                                                            <div className="mt-5 pt-4">
-                                                                                <NoFiles />
-                                                                            </div>
-                                                                            <div className='text-center mt-5 font-weight-bolder font-size-h4 text-primary'>
-                                                                                CARPETA VACÍA
-                                                                        </div>
-                                                                        </div>
-                                                                        :
-                                                                        <TablePagination
-                                                                            adjuntos={adjuntosSubMenu}
-                                                                            delete_onclick={this.deleteFile}
-                                                                        />
+                                                                        this.renderCarpetaVacia()
+                                                                    :
+                                                                        <TablePagination adjuntos={adjuntosSubMenu} delete_onclick={this.deleteFile} />
                                                             }
                                                         </div>
                                                         :
@@ -1056,9 +1238,9 @@ class MaterialCliente extends Component {
                 <Modal show={modal_add} title='Agregar adjuntos' handleClose={this.handleCloseModalAdd} size='lg' >
                     <div className=''>
                         <div className="text-center font-weight-bolder my-2 pt-3">
-                            {activeTipo === 6 ? activeFolder.tipo : form.adjuntos.slider.placeholder}
+                            {activeTipo === 6 ? activeFolder.tipo : activeTipo === 3 ? actualSubMenuCarpeta : form.adjuntos.slider.placeholder}
                         </div>
-                        <ItemSlider item='slider' items={form.adjuntos.slider.files}
+                        <ItemSlider item={this.getNameSlider()} items = { this.getFilesSlider() }
                             handleChange={this.handleChange} multiple={true} />
                     </div>
                 </Modal>

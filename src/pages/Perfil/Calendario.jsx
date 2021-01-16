@@ -364,8 +364,6 @@ class Calendario extends Component {
                     return false
                 })
 
-                console.log(aux, 'aux')
-
                 this.setState({
                     ...this.state,
                     events: aux,
