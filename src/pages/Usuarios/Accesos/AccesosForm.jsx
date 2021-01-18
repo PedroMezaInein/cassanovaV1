@@ -19,6 +19,7 @@ class AccesosForm extends Component {
             plataforma: '',
             url: '',
             usuario: '',
+            responsable: '',
             contraseña: '',
             usuarios: [],
             correo: '',
