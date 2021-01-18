@@ -6,14 +6,16 @@ import { connect } from 'react-redux'
 import ItemSlider from '../../../components/singles/ItemSlider'
 import { Tab, Nav, Col, Row, Card, Accordion, } from 'react-bootstrap'
 import { setSelectOptions } from '../../../functions/setters'
-import { waitAlert, questionAlert, errorAdjuntos, errorAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
-import { Nothing } from '../../../components/Lottie'
-
+import { waitAlert, questionAlert, errorAdjuntos, errorAlert, forbiddenAccessAlert, doneAlert, deleteAlert} from '../../../functions/alert'
+import { Build, NoFiles} from '../../../components/Lottie'
+import { Button, TablePagination } from '../../../components/form-components'
+import { Modal } from '../../../components/singles'
 const tiposArray = ['logo', 'carta_membretada', 'firmas_electronicas', 'tarjetas_presentacion', 'imagenes_personal']
 const placeholderArray = ['LOGOS', 'CARTA MEMBRETADA', 'FIRMAS ELECTRÓNICAS', 'TARJETAS DE PRESENTACIÓN', 'IMÁGENES DEL PERSONAL']
 class MaterialEmpresa extends Component {
 
     state = {
+        modal_add: false,
         opciones_adjuntos: [
             {
                 nombre: 'LOGOS',
@@ -275,8 +277,56 @@ class MaterialEmpresa extends Component {
         })
     }
 
+    openModalAddFiles = () => {
+        this.setState({
+            ...this.state,
+            modal_add: true
+        })
+    }
+
+    handleCloseModalAdd = () => {
+        this.setState({
+            ...this.state,
+            modal_add: false
+        })
+    }
+    deleteFile = element => {
+        deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', element.name, () => this.deleteAdjuntoAxios(element.id, 'slider'))
+    }
+    deleteAdjuntoAxios = async (id, tipo_adjunto) => {
+        const { access_token } = this.props.authUser
+        const { empresa } = this.state
+        await axios.delete(URL_DEV + 'mercadotecnia/material-clientes/' + empresa.id + '/adjunto/' + tipo_adjunto + '/' + id,
+            { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+                (response) => {
+                    // const { empresa, tipo } = response.data
+                    // const { form } = this.state
+                    //     form.adjuntos.slider.files = []
+                    //     empresa.adjuntos.map((adjunto, key) => {
+                    //         if (adjunto.pivot.tipo === tipo)
+                    //             form.adjuntos.slider.files.push(adjunto)
+                    //     })
+                    this.setState({
+                        ...this.state,
+                        // form
+                    })
+
+                    this.getOptionsAxios()
+                    doneAlert('Archivo eliminado con éxito.')
+                },
+                (error) => {
+                    console.log(error, 'error')
+                    if (error.response.status === 401) forbiddenAccessAlert()
+                    else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            ).catch((error) => {
+                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+                console.log(error, 'error')
+            })
+    }
+
     render() {
-        const { form, data, opciones_adjuntos, empresa } = this.state
+        const { form, data, opciones_adjuntos, empresa, modal_add} = this.state
         return (
             <Layout active = 'mercadotecnia' {...this.props}>
                 <Tab.Container className="p-5">
@@ -333,26 +383,73 @@ class MaterialEmpresa extends Component {
                                 <Card.Body>
                                     {
                                         empresa !== '' ?
-                                            <div className="col-md-12 d-flex justify-content-center">
-                                                <div>
-                                                    <div className="text-center font-weight-bolder mb-2">
-                                                        {form.adjuntos.slider.placeholder}
-                                                    </div>
-                                                    <ItemSlider
-                                                        item='slider'
-                                                        items={form.adjuntos.slider.files}
-                                                        handleChange={this.handleChange}
-                                                        multiple={true}
+                                        <>
+                                        {
+                                            form.adjuntos.slider.files.length===0?
+                                                <>
+                                                    <div className="d-flex justify-content-end">
+                                                        <Button
+                                                            id="subir_archivos"
+                                                            icon=''
+                                                            className="btn btn-outline-secondary btn-icon btn-sm "
+                                                            onClick={(e) => { e.preventDefault(); this.openModalAddFiles() }}
+                                                            only_icon="fas fa-upload icon-15px text-primary"
+                                                            tooltip={{ text: 'SUBIR ARCHIVOS' }}
                                                     />
+                                                    </div>
+                                                    <div className='col-md-12 '>
+                                                        <div>
+                                                            <NoFiles />
+                                                        </div>
+                                                        <div className='text-center mt-5 font-weight-bolder font-size-h4 text-primary2'>
+                                                            CARPETA VACÍA
+                                                        </div>
+                                                    </div>
+                                                </>
+                                                :
+                                                <>
+                                                    <div className="d-flex justify-content-end">
+                                                        <Button
+                                                            id="subir_archivos"
+                                                            icon=''
+                                                            className="btn btn-outline-secondary btn-icon btn-sm "
+                                                            onClick={(e) => { e.preventDefault(); this.openModalAddFiles() }}
+                                                            only_icon="fas fa-upload icon-15px text-primary"
+                                                            tooltip={{ text: 'SUBIR ARCHIVOS' }}
+                                                    />
+                                                    </div>
+                                                    <TablePagination
+                                                        adjuntos={form.adjuntos.slider.files}
+                                                        delete_onclick={this.deleteFile}
+                                                    />
+                                                </>
+                                        }
+                                        
+                                    </>
+                                        :
+                                        <div className='col-md-12'>
+                                                <div>
+                                                    <Build />
+                                                </div>
+                                                <div className='text-center mt-5 font-weight-bolder font-size-h3 text-primary'>
+                                                    Selecciona la empresa
                                                 </div>
                                             </div>
-                                        : <Nothing />
                                     }
                                 </Card.Body>
                             </Card>
                         </Col>
                     </Row>
                 </Tab.Container>
+                <Modal show={modal_add} title='Agregar adjuntos' handleClose={this.handleCloseModalAdd} size='lg' >
+                    <div className=''>
+                        <div className="text-center font-weight-bolder my-2 pt-3">
+                            {form.adjuntos.slider.placeholder}
+                        </div>
+                        <ItemSlider item='slider' items={form.adjuntos.slider.files}
+                            handleChange={this.handleChange} multiple={true} />
+                    </div>
+                </Modal>
             </Layout >
         )
     }

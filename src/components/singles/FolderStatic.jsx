@@ -9,25 +9,21 @@ class FolderFijo extends Component {
         const { hover } = this.state
         return (
             <>
-                <div className="mt-4 text-center folder"
+                <div class="card card-box-shadow card-hover-shadow card-custom  wave wave-animate-slower shadow-none border border-light"   onClick={(e) => { e.preventDefault(); onClick(element) }}
                     onMouseEnter={() => this.setState({ ...this.state, hover: true })}
                     onMouseLeave={() => this.setState({ ...this.state, hover: false })}
                 >
-                    <div className="card card-box-shadow card-sm card-hover-shadow h-auto" onClick={(e) => { e.preventDefault(); onClick(element) }}>
-                        <div className="card-body">
-                            <div className="d-flex align-items-center">
-                                <div>
-                                    {
-                                        hover ?
-                                            <i className="fas fa-folder-open text-primary hover-primary text-hover-primary icon-md text-hover mr-2"></i>
-                                            :
-                                            <i className="fas fa-folder text-primary hover-primary text-hover-primary icon-md text-hover mr-2"></i>
-                                    }
-                                </div>
-                                <div className="text-truncate font-size-14px m-auto">
-                                    {text}
-                                </div>
-                            </div>
+                    <div class="card-body">
+                        <div class="mr-6 text-center">
+                            {
+                                hover ?
+                                    <i className="fas fa-folder-open text-primary hover-primary text-hover-primary icon-4x text-hover mr-2"></i>
+                                    :
+                                    <i className="fas fa-folder text-primary hover-primary text-hover-primary icon-4x text-hover mr-2"></i>
+                            }
+                        </div>
+                        <div class="d-flex flex-column">
+                            <div class="text-dark font-weight-bold font-size-h4 text-center mt-3">{text}</div>
                         </div>
                     </div>
                 </div>
