@@ -169,6 +169,7 @@ const CalidadForm = Loader(() => import('./pages/Calidad/CalidadForm') )
 const MaterialEmpresa = Loader( () => import('./pages/Mercadotecnia/MaterialEmpresa/MaterialEmpresa') )
 const MaterialCliente = Loader( () => import('./pages/Mercadotecnia/MaterialCliente/MaterialCliente') )
 const ParrillasContenido = Loader( () => import('./pages/Mercadotecnia/ParrillasContenido/ParrillasContenido') )
+const PlanTrabajo = Loader( () => import('./pages/Mercadotecnia/PlanTrabajo/PlanTrabajo') )
 
 const MercaProveedores = Loader( () => import('./pages/Mercadotecnia/Proveedores/Proveedores') )
 const MercaProveedoresForm = Loader(() => import('./pages/Mercadotecnia/Proveedores/ProveedoresForm') )
@@ -422,6 +423,7 @@ class App extends Component{
                     <Route path = "/mercadotecnia/material-empresas" exact component ={ MaterialEmpresa } />
                     <Route path = "/mercadotecnia/material-clientes" exact component ={ MaterialCliente} />
                     <Route path = "/mercadotecnia/parrillas-de-contenido" exact component ={ ParrillasContenido} />
+                    <Route path = "/mercadotecnia/plan-trabajo" exact component = { PlanTrabajo } />
                     
                     <Route path = "/mercadotecnia/merca-proveedores" exact component = { MercaProveedores } />
                     <Route path = "/mercadotecnia/merca-proveedores/:action" exact component = { MercaProveedoresForm } />
