@@ -3,6 +3,7 @@ import { Form } from 'react-bootstrap'
 import { Input, Button, TagSelectSearch, InputPhone } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 import { EMAIL, TEL } from '../../../constants'
+import InputPassword from '../../form-components/InputPassword'
 const $ = require('jquery');
 
 class AccesosForm extends Component {
@@ -26,10 +27,10 @@ class AccesosForm extends Component {
         const { onChange, onChangeAndAdd, options } = this.props
         options.usuarios.map((user) => {
             if (user.value === value)
-                onChangeAndAdd({ target: { value: user.value, name: 'usuario' } }, 'usuarios')
+                onChangeAndAdd({ target: { value: user.value, name: 'responsable' } }, 'usuarios')
             return false
         })
-        onChange({ target: { value: value, name: 'usuario' } })
+        onChange({ target: { value: value, name: 'responsable' } })
     }
 
     transformarOptions = options => {
@@ -98,10 +99,12 @@ class AccesosForm extends Component {
                         />
                     </div>
                     <div className="col-md-4">
-                        <Input formeditado = { formeditado } name = "contraseña" value = { form.contraseña }
-                            placeholder = "CONTRASEÑA" onChange = { onChange } iconclass = "fab fa-diaspora"
-                            messageinc = "Incorrecto. Ingresa la contraseña." letterCase = { false } 
-                            requirevalidation = { 0 } />
+                        {/* Contraseña */}
+                        {/* <Input  */}
+                        <InputPassword formeditado = { formeditado } name = "contraseña" value = { form.contraseña }
+                        placeholder = "CONTRASEÑA" onChange = { onChange } iconclass = "fab fa-diaspora"
+                        messageinc = "Incorrecto. Ingresa la contraseña." letterCase = { false } 
+                        requirevalidation = { 0 } />
                     </div>
                     <div className="col-md-4">
                         <TagSelectSearch placeholder = "SELECCIONA LO(S) RESPONSABLE(S)"

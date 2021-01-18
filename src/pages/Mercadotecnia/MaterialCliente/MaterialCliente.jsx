@@ -1170,13 +1170,12 @@ class MaterialCliente extends Component {
                                                             />
                                                             {
                                                                 actualSubMenuCarpeta === "RENDERS" ?
-                                                                    <div className="row mx-0 col-md-12 row-paddingless px-0 d-flex justify-content-center">
-                                                                        <div className="col-md-4">
+                                                                    <div className="row mx-0 px-0 d-flex justify-content-center col-md-12">
                                                                             {
                                                                                 Object.keys(form.adjuntos.renders).map((nombreRenderCarpeta, key) => {
                                                                                     if (nombreRenderCarpeta !== "placeholder")
                                                                                         return (
-                                                                                            <div className='col-md-12' key={key}>
+                                                                                            <div className='col-md-3' key={key}>
                                                                                                 <FolderStatic
                                                                                                     text={form.adjuntos.renders[nombreRenderCarpeta].placeholder}
                                                                                                     onClick={this.onClickFolderRender}
@@ -1186,7 +1185,6 @@ class MaterialCliente extends Component {
                                                                                         )
                                                                                 })
                                                                             }
-                                                                        </div>
                                                                     </div>
                                                                     :
                                                                     adjuntosSubMenu.length === 0 ?
@@ -1197,13 +1195,12 @@ class MaterialCliente extends Component {
                                                         </div>
                                                         :
                                                         submenuactive ?
-                                                            <div className="row mx-0 col-md-12 row-paddingless px-0 d-flex justify-content-center">
-                                                                <div className="col-md-3">
+                                                            <div className="row mx-0 px-0 d-flex justify-content-center">
                                                                     {
                                                                         Object.keys(form.adjuntos).map((subcarpeta, key) => {
                                                                             if (subcarpeta !== "slider")
                                                                                 return (
-                                                                                    <div className='col-md-12' key={key}>
+                                                                                    <div className='col-md-3' key={key}>
                                                                                         <FolderStatic
                                                                                             text={subcarpeta}
                                                                                             onClick={this.onClickFolderSubMenu}
@@ -1213,7 +1210,6 @@ class MaterialCliente extends Component {
                                                                                 )
                                                                         })
                                                                     }
-                                                                </div>
                                                             </div>
                                                             :
                                                             <div className='col-md-12'>
