@@ -161,7 +161,10 @@ class Accesos extends Component {
                                                 return (
                                                     <tr key={key}>
                                                         <td>
-                                                            <a href = { this.setUrl(acceso.url) } className="font-weight-bolder text-dark text-hover-primary font-size-lg">{acceso.plataforma}</a>
+                                                            <a href = { this.setUrl(acceso.url) } target = "_blank"
+                                                                className="font-weight-bolder text-dark text-hover-primary font-size-lg">
+                                                                {acceso.plataforma}
+                                                            </a>
                                                         </td>
                                                         <td>
                                                             <div className='text-hover' onClick={() => { navigator.clipboard.writeText(acceso.usuario) }}>
