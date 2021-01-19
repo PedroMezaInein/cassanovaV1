@@ -8,7 +8,7 @@ import interactionPlugin from "@fullcalendar/interaction"; // needed for dayClic
 import esLocale from '@fullcalendar/core/locales/es';
 import { Modal } from '../../components/singles'
 import { SolicitarVacacionesForm, EstatusForm } from "../../components/forms";
-import { errorAlert, forbiddenAccessAlert, waitAlert, doneAlert, questionAlert } from '../../functions/alert';
+import { errorAlert, forbiddenAccessAlert, waitAlert, doneAlert, questionAlert, deleteAlert } from '../../functions/alert';
 import { countDaysWithoutWeekend } from '../../functions/functions';
 import { URL_DEV } from '../../constants';
 import bootstrapPlugin from '@fullcalendar/bootstrap'
@@ -272,6 +272,26 @@ class Calendario extends Component {
         }
         else
             return contador
+    }
+
+    deleteEventoAxios = async(gEvent) => {
+        const { access_token } = this.props.authUser
+        const { id } = gEvent.googleEvent
+        await axios.delete(`${URL_DEV}vacaciones/google-calendar/${id}`, { headers: { Authorization: `Bearer ${access_token}` } } ).then(
+            (response) => {
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Vacaciones solicitadas con éxito.')
+                this.getVacacionesAxios()
+                this.handleCloseDate()
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) { forbiddenAccessAlert() } 
+                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
     }
 
     async askVacationAxios() {
@@ -706,6 +726,20 @@ class Calendario extends Component {
 
         return horaStart + " - " + horaEnd
     }
+
+    isActiveButton = (gEvent) => {
+        const { authUser } = this.props
+        const { googleEvent } = gEvent
+        let bandera = false
+        if(googleEvent.attendees)
+            if(googleEvent.attendees.length)
+                googleEvent.attendees.map((participante) => {
+                    if(participante.email === authUser.user.email)
+                        bandera = true
+                })
+        return bandera
+    }
+
     printEventos = () => {
         const { eventos } = this.state
         return (
@@ -716,6 +750,7 @@ class Calendario extends Component {
                     <table className="table table-head-custom table-head-bg table-borderless table-vertical-center">
                         <thead>
                             <tr className="text-center text-uppercase">
+                                <th style={{ minWidth: "50px" }} className=""></th>
                                 <th style={{ minWidth: "100px" }} className="pl-7">
                                     <span className="text-dark-75">Nombre de la reunión</span>
                                 </th>
@@ -728,6 +763,14 @@ class Calendario extends Component {
                                 eventos.eventos.map((gEvent, key) => {
                                     return (
                                         <tr className="text-center" key={key}>
+                                            <th style={{ minWidth: "50px" }} className="">
+                                                {
+                                                    this.isActiveButton(gEvent) ?
+                                                        <i className="fas fa-trash text-danger text-hover-danger text-hover" 
+                                                            onClick = { (e) => { e.preventDefault(); deleteAlert('¿SEGURO DESEAS ELIMINAR EL EVENTO?','', () => this.deleteEventoAxios(gEvent)) } } />
+                                                    : ''
+                                                }
+                                            </th>
                                             <td>
                                                 <div className="text-dark-75 font-weight-bolder mb-1 font-size-lg">{gEvent.googleEvent.summary}</div>
                                             </td>
