@@ -4,7 +4,8 @@ import axios from 'axios'
 import Layout from '../../../components/layout/layout'
 import { Card } from 'react-bootstrap'
 import { URL_DEV } from '../../../constants'
-import { Button, SelectSearch } from '../../../components/form-components'
+import { Button, SelectSearchGray } from '../../../components/form-components'
+// import SelectSearchGray from '../../../components/form-components/Gray/SelectSearchGray'
 
 const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
 class PlanTrabajo extends Component{
@@ -92,12 +93,12 @@ class PlanTrabajo extends Component{
                         </div>
                         <div className="card-toolbar align-items-center">
                             <div className = 'mr-3 d-flex'>
-                                <SelectSearch name = 'mes' options = { this.getMeses() } value = { form.mes }
+                                <SelectSearchGray name = 'mes' options = { this.getMeses() } value = { form.mes }
                                     onChange = { this.updateMes } iconclass = "fas fa-calendar-day"
                                     messageinc = "Incorrecto. Selecciona el mes." requirevalidation={1}/>
                             </div>
                             <div className = 'mr-3 d-flex'>
-                                <SelectSearch
+                                <SelectSearchGray
                                     name = 'año'
                                     options = { this.getAños() }
                                     value = { form.año }
