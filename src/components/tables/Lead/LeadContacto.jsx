@@ -180,21 +180,28 @@ class LeadContacto extends Component {
                                                                     <Dropdown.Header>
                                                                         <span className="font-size-sm">Elige una opción</span>
                                                                     </Dropdown.Header>
-                                                                    <Dropdown.Item href="#" className="p-0" onClick={(e) => { e.preventDefault(); changeEstatus('Detenido', lead.id) }} >
+                                                                    <Dropdown.Item className="p-0" onClick={(e) => { e.preventDefault(); changeEstatus('Detenido', lead.id) }} >
                                                                         <span className="navi-link w-100">
                                                                             <span className="navi-text">
                                                                                 <span className="label label-xl label-inline bg-light-gray text-gray rounded-0 w-100">DETENIDO</span>
                                                                             </span>
                                                                         </span>
                                                                     </Dropdown.Item>
-                                                                    <Dropdown.Item href="#" className="p-0" onClick={(e) => { e.preventDefault(); openModalWithInput('Cancelado', lead.id) }} >
+                                                                    <Dropdown.Item className="p-0" onClick={(e) => { e.preventDefault(); changeEstatus('En negociación', lead.id) }} >
+                                                                        <span className="navi-link w-100">
+                                                                            <span className="navi-text">
+                                                                                <span className="label label-xl label-inline bg-light-info text-info rounded-0 w-100">En negociación</span>
+                                                                            </span>
+                                                                        </span>
+                                                                    </Dropdown.Item>
+                                                                    <Dropdown.Item className="p-0" onClick={(e) => { e.preventDefault(); openModalWithInput('Cancelado', lead.id) }} >
                                                                         <span className="navi-link w-100">
                                                                             <span className="navi-text">
                                                                                 <span className="label label-xl label-inline label-light-danger rounded-0 w-100">CANCELADO</span>
                                                                             </span>
                                                                         </span>
                                                                     </Dropdown.Item>
-                                                                    <Dropdown.Item href="#" className="p-0" onClick={(e) => { e.preventDefault(); openModalWithInput('Rechazado', lead.id) }} >
+                                                                    <Dropdown.Item className="p-0" onClick={(e) => { e.preventDefault(); openModalWithInput('Rechazado', lead.id) }} >
                                                                         <span className="navi-link w-100">
                                                                             <span className="navi-text">
                                                                                 <span className="label label-xl label-inline label-light-danger rounded-0 w-100">RECHAZADO</span>

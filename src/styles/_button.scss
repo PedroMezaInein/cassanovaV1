@@ -149,6 +149,9 @@
 }
 
 .btn {
+    &.disabled{
+        cursor: not-allowed;
+    }
     &.btn-bg-blue {
         background-color: $blue-plataforma;
         border-color: $blue-plataforma;
@@ -800,7 +803,6 @@
         font-size: 20px;
     }
 }
-
 
 .btn.btn-light-pinterest {
     color: #e60023;
