@@ -91,6 +91,43 @@ class Leads extends Component {
         })
     }
 
+    openModalRechazar = async lead => {
+        console.log(lead, 'lead')
+        const { access_token } = this.props.authUser
+        await axios.put(URL_DEV + 'lead/' + lead.id + '/rechazar', {}, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                this.getLeadAxios()
+                doneAlert('Lead rechazado.')
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) { forbiddenAccessAlert() } 
+                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    openModalCancelar = async lead => {
+        const { access_token } = this.props.authUser
+        await axios.put(URL_DEV + 'lead/' + lead.id + '/cancelar', {}, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                this.getLeadAxios()
+                doneAlert('Lead cancelado.')
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) { forbiddenAccessAlert() } 
+                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     handleClose = () => {
         this.setState({
             ...this.state,
@@ -196,6 +233,20 @@ class Leads extends Component {
                     iconclass: 'flaticon2-lorry',
                     action: 'proveedor',
                     tooltip: {id:'proveedor', text:'Convertir en proveedor'}
+                },
+                {
+                    text: 'Rechazar',
+                    btnclass: 'danger',
+                    iconclass: 'flaticon2-delete',
+                    action: 'rechazar',
+                    tooltip: {id:'rechazar', text:'Rechazar'}
+                },
+                {
+                    text: 'Cancelar',
+                    btnclass: 'warning',
+                    iconclass: 'flaticon-signs-2',
+                    action: 'cancelar',
+                    tooltip: {id:'cancelar', text:'Cancelar'}
                 }
             )
         }else
@@ -305,7 +356,9 @@ class Leads extends Component {
                         'delete': {function: this.openModalSafeDelete},
                         'prospecto': {function: this.openModalSafeConvert},
                         'proveedor': {function: this.openModalSafeConvertProveedor},
-                        'see': { function: this.openModalSee }
+                        'see': { function: this.openModalSee },
+                        'rechazar':  { function: this.openModalRechazar },
+                        'cancelar': { function: this.openModalCancelar }
                     }}
                     exportar_boton = { true }
                     onClickExport = { () => this.openModalExport() }
