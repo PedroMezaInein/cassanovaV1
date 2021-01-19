@@ -22,8 +22,8 @@ class PlanTrabajo extends Component{
             { type: 'string', label: 'Task Name' },
             { type: 'string', label: 'Resource' },
             { type: 'date', label: 'Start Date' },
-            { type: 'date', label: 'End Date' },
-            { type: 'number', label: 'Duration' },
+            { type: 'date', label: 'Fecha fin' },
+            { type: 'number', label: 'Duración' },
             { type: 'number', label: 'Percent Complete' },
             { type: 'string', label: 'Dependencies' },
         ]
@@ -52,7 +52,7 @@ class PlanTrabajo extends Component{
                         '1',
                         'Junta con cliente',
                         'ventas',
-                        new Date(2021, 0, 3),
+                        new Date(2021, 0, 1),
                         null,
                         1 * 24 * 60 * 60 * 1000,
                         100,
@@ -62,9 +62,9 @@ class PlanTrabajo extends Component{
                         '2',
                         'Presupuesto de obra',
                         'obra',
-                        new Date(2021, 0, 4),
+                        new Date(2021, 0, 2),
                         null,
-                        2 * 24 * 60 * 60 * 1000,
+                        4 * 24 * 60 * 60 * 1000,
                         100,
                         '1'
                     ],
@@ -149,14 +149,40 @@ class PlanTrabajo extends Component{
                     <Card.Body>
                         <div className = ''>
                             <Chart width = '100%' height = '400px' chartType = 'Gantt' loader = { <div>Cargando</div>}
+                                chartLanguage = 'es'
                                 data = { data } options = { 
                                     {
                                         gantt: {
                                             criticalPathEnabled: false,
-                                            defaultStartDateMillis: new Date(2021,0,1)
+                                            defaultStartDateMillis: new Date(2021,0,1),
                                         }
                                     }
-                                } />
+                                } 
+                                chartEvents = { [
+                                    {
+                                        eventName: 'select',
+                                        callback: ({ chartWrapper }) => {
+                                            const chart = chartWrapper.getChart()
+                                            const selection = chart.getSelection()
+                                            if (selection.length === 1) {
+                                                const [selectedItem] = selection
+                                                const dataTable = chartWrapper.getDataTable()
+                                                const { row } = selectedItem
+                                                alert(
+                                                    'You selected : ' +
+                                                    JSON.stringify({
+                                                        row,
+                                                        value: dataTable.getValue(row, 0),
+                                                    }),
+                                                    null,
+                                                    2,
+                                                )
+                                            }
+                                            console.log(selection, chart)
+                                        },
+                                    },
+                                ]}
+                                />
                         </div>
                     </Card.Body>
                 </Card>
