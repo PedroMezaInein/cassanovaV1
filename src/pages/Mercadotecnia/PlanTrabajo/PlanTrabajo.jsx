@@ -4,20 +4,21 @@ import axios from 'axios'
 import Layout from '../../../components/layout/layout'
 import { Card } from 'react-bootstrap'
 import { URL_DEV } from '../../../constants'
-import { Button, SelectSearch } from '../../../components/form-components'
-import { errorAlert, forbiddenAccessAlert } from '../../../functions/alert'
-import { getAños, getMeses } from '../../../functions/setters'
+import { Button, SelectSearchGray } from '../../../components/form-components'
+// import SelectSearchGray from '../../../components/form-components/Gray/SelectSearchGray'
 
 const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
 class PlanTrabajo extends Component{
 
     state = {
-        mes: meses[new Date().getMonth()],
-        año: new Date().getFullYear().toString(),
         form:{
-            mes: meses[new Date().getMonth()],
+            mes: '',
+            año: new Date().getFullYear(),
         },
         data: [],
+        options: [
+            
+        ]
     }
 
     componentDidMount(){
@@ -27,75 +28,58 @@ class PlanTrabajo extends Component{
             const { modulo: { url } } = element
             return pathname === url
         });
-        this.getContentAxios()
     }
 
-    updateAño = value => {
-        this.setState({...this.state, año: value })
+    getMeses = () => {
+        return [
+            { name: 'Enero', value: 'Enero' },
+            { name: 'Febrero', value: 'Febrero' },
+            { name: 'Marzo', value: 'Marzo' },
+            { name: 'Abril', value: 'Abril' },
+            { name: 'Mayo', value: 'Mayo' },
+            { name: 'Junio', value: 'Junio' },
+            { name: 'Julio', value: 'Julio' },
+            { name: 'Agosto', value: 'Agosto' },
+            { name: 'Septiembre', value: 'Septiembre' },
+            { name: 'Octubre', value: 'Octubre' },
+            { name: 'Noviembre', value: 'Noviembre' },
+            { name: 'Diciembre', value: 'Diciembre' }
+        ]
     }
-
+    onChange = event => {
+        const { name, value } = event.target
+        const { form } = this.state
+        form[name] = value
+        this.setState({
+            ...this.setState({
+                form
+            })
+        })
+    }
+    diasEnUnMes(mes, año) {
+        var meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+        return new Date(año, meses.indexOf(mes) + 1, 0).getDate();
+    }
     updateMes = value => {
-        this.setState({...this.state, mes: value})
+        this.onChange({ target: { value: value, name: 'mes' } })
     }
-
-    isActiveNextButton = () => {
-        const { mes, año } = this.state
-        let esteAño = new Date().getFullYear()
-        let esteMes = new Date().getMonth()
-        if(esteMes > 9){
-            if((esteAño + 1).toString() === año )
-                if(mes === 'Diciembre')
-                    return 'disabled'
-        }else{
-            if((esteAño).toString() === año )
-                if(mes === 'Diciembre')
-                    return 'disabled'
-        }
-        return 'enabled'
+    getAños = ()  => {
+        var fecha = new Date().getFullYear()
+        var arreglo = [];
+        for(let i = 0; i < 10; i++)
+            arreglo.push(
+                {
+                    name: fecha - i,
+                    value: fecha - i
+                }
+            );
+        return arreglo
     }
-
-    isActiveBackButton = () => {
-        const { mes, año } = this.state
-        let esteAño = new Date().getFullYear()
-        let esteMes = new Date().getMonth()
-        if(esteMes > 9){
-            if((esteAño + 1).toString() === año )
-                if(mes === 'Diciembre')
-                    return 'disabled'
-        }else{
-            if((esteAño).toString() === año )
-                if(mes === 'Diciembre')
-                    return 'disabled'
-        }
-        return 'enabled'
+    updateAño = value => {
+        this.onChange({ target: { value: value, name: 'año' } })
     }
-
-    nextMonth = () => {
-        const { mes } = this.state
-    }
-
-    // ANCHOR ASYNC CALL TO GET CONTENT
-    getContentAxios = async() => {
-        const { access_token } = this.props.authUser
-        const { mes } = this.state
-        console.log(URL_DEV, "URL_DEV")
-        await axios.get(`${URL_DEV}mercadotecnia/plan-trabajo/${mes}`, { headers: {Authorization: `Bearer ${access_token}`} } ).then(
-            (response) => {
-                
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) { forbiddenAccessAlert() } 
-                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        }) 
-    }
-    
     render(){
-        const { mes, año } = this.state
+        const { form } = this.state
         return(
             <Layout active = 'mercadotecnia' { ... this.props}>
                 <Card className = 'card-custom'>
@@ -109,33 +93,63 @@ class PlanTrabajo extends Component{
                         </div>
                         <div className="card-toolbar align-items-center">
                             <div className = 'mr-3 d-flex'>
-                                <SelectSearch name = 'mes' options = { getMeses() } value = { mes }
+                                <SelectSearchGray name = 'mes' options = { this.getMeses() } value = { form.mes }
                                     onChange = { this.updateMes } iconclass = "fas fa-calendar-day"
-                                    messageinc = "Incorrecto. Selecciona el mes." />
+                                    messageinc = "Incorrecto. Selecciona el mes." requirevalidation={1}/>
                             </div>
-                            <div className = 'd-flex'>
-                                <SelectSearch name = 'mes' options = { getAños() } value = { año }
-                                    onChange = { this.updateAño } iconclass = "fas fa-calendar-day"
-                                    messageinc = "Incorrecto. Selecciona el año." />
+                            <div className = 'mr-3 d-flex'>
+                                <SelectSearchGray
+                                    name = 'año'
+                                    options = { this.getAños() }
+                                    value = { form.año }
+                                    onChange = { this.updateAño }
+                                    iconclass = "fas fa-calendar-day"
+                                />
                             </div>
+                            <Button icon = '' className = 'btn btn-light-success btn-sm font-weight-bold' 
+                                only_icon = 'flaticon2-writing pr-0 mr-2' text = 'Agendar plan'
+                                onClick = { console.log('Parrilla de contenido') } />
                         </div>
                     </Card.Header>
                     <Card.Body>
-                        <div className = 'd-flex justify-content-between'>
-                            <div>
-                                {`${mes} ${año}`}
-                            </div>
-                            <div>
-                                <div class="btn-group">
-                                    <button class={`fc-prev-button btn btn-primary ${this.isActiveBackButton()}`} type="button" aria-label="prev">
-                                        <span class="fa fa-chevron-left"></span>
-                                    </button>
-                                    <button class={`fc-next-button btn btn-primary ${this.isActiveNextButton()}`} type="button" aria-label="next"
-                                        onClick = { this.nextMonth }>
-                                        <span class="fa fa-chevron-right"></span>
-                                    </button>
-                                </div>
-                            </div>
+                        <div className="table-responsive-xl">
+                            <table className="table table-responsive">
+                                <thead className="text-center">
+                                    <tr>
+                                        <th>Empresa</th>
+                                        {
+                                            (
+                                                () => {
+                                                    const th = [];
+
+                                                    for (let i = 1; i <= this.diasEnUnMes(form.mes,form.año); i++) {
+                                                        th.push(<th key={i}>{i}</th>);
+                                                    }
+                                                    return th;
+                                                }
+                                            )
+                                            ()
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th>Inein</th>
+                                        {
+                                            (
+                                                () => {
+                                                    const td = [];
+                                                    for (let i = 1; i <= this.diasEnUnMes(form.mes, form.año); i++) {
+                                                        td.push(<td key={i}></td>);
+                                                    }
+                                                    return td;
+                                                }
+                                            )
+                                            ()
+                                        }
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </Card.Body>
                 </Card>
