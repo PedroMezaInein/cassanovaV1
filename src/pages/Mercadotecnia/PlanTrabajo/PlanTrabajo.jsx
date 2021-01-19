@@ -5,27 +5,18 @@ import Layout from '../../../components/layout/layout'
 import { Card } from 'react-bootstrap'
 import { URL_DEV } from '../../../constants'
 import { Button, SelectSearch } from '../../../components/form-components'
-import { errorAlert, forbiddenAccessAlert } from '../../../functions/alert'
-import Chart from 'react-google-charts'
 
 const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
 class PlanTrabajo extends Component{
 
     state = {
-        mes: meses[new Date().getMonth()],
         form:{
-            mes: meses[new Date().getMonth()],
+            mes: '',
+            año: new Date().getFullYear(),
         },
         data: [],
         options: [
-            { type: 'string', label: 'Task ID' },
-            { type: 'string', label: 'Task Name' },
-            { type: 'string', label: 'Resource' },
-            { type: 'date', label: 'Start Date' },
-            { type: 'date', label: 'Fecha fin' },
-            { type: 'number', label: 'Duración' },
-            { type: 'number', label: 'Percent Complete' },
-            { type: 'string', label: 'Dependencies' },
+            
         ]
     }
 
@@ -36,73 +27,6 @@ class PlanTrabajo extends Component{
             const { modulo: { url } } = element
             return pathname === url
         });
-        this.getContentAxios()
-    }
-
-    // ANCHOR ASYNC CALL TO GET CONTENT
-    getContentAxios = async() => {
-        const { access_token } = this.props.authUser
-        const { mes } = this.state
-        console.log(URL_DEV, "URL_DEV")
-        await axios.get(`${URL_DEV}mercadotecnia/plan-trabajo/${mes}`, { headers: {Authorization: `Bearer ${access_token}`} } ).then(
-            (response) => {
-                const { options } = this.state
-                let data = [ options, 
-                    [
-                        '1',
-                        'Junta con cliente',
-                        'ventas',
-                        new Date(2021, 0, 1),
-                        null,
-                        1 * 24 * 60 * 60 * 1000,
-                        100,
-                        null
-                    ],
-                    [
-                        '2',
-                        'Presupuesto de obra',
-                        'obra',
-                        new Date(2021, 0, 2),
-                        null,
-                        4 * 24 * 60 * 60 * 1000,
-                        100,
-                        '1'
-                    ],
-                    [
-                        '3',
-                        'Compra de materiales',
-                        'ventas',
-                        new Date(2021, 0, 4),
-                        null,
-                        2 * 24 * 60 * 60 * 1000,
-                        100,
-                        '1'
-                    ],
-                    [
-                        '4',
-                        'Ejecución de obra',
-                        'obra',
-                        new Date(2021, 0, 6),
-                        null,
-                        25 * 24 * 60 * 60 * 1000,
-                        100,
-                        '2,3'
-                    ]
-                ]
-                this.setState({
-                    ...this.state,
-                    data: data
-                })
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) { forbiddenAccessAlert() } 
-                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        }) 
     }
 
     getMeses = () => {
@@ -121,9 +45,40 @@ class PlanTrabajo extends Component{
             { name: 'Diciembre', value: 'Diciembre' }
         ]
     }
-    
+    onChange = event => {
+        const { name, value } = event.target
+        const { form } = this.state
+        form[name] = value
+        this.setState({
+            ...this.setState({
+                form
+            })
+        })
+    }
+    diasEnUnMes(mes, año) {
+        var meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+        return new Date(año, meses.indexOf(mes) + 1, 0).getDate();
+    }
+    updateMes = value => {
+        this.onChange({ target: { value: value, name: 'mes' } })
+    }
+    getAños = ()  => {
+        var fecha = new Date().getFullYear()
+        var arreglo = [];
+        for(let i = 0; i < 10; i++)
+            arreglo.push(
+                {
+                    name: fecha - i,
+                    value: fecha - i
+                }
+            );
+        return arreglo
+    }
+    updateAño = value => {
+        this.onChange({ target: { value: value, name: 'año' } })
+    }
     render(){
-        const { form, mes, options, data } = this.state
+        const { form } = this.state
         return(
             <Layout active = 'mercadotecnia' { ... this.props}>
                 <Card className = 'card-custom'>
@@ -131,15 +86,24 @@ class PlanTrabajo extends Component{
                         <div className="d-flex align-items-center">
                             <h3 className="card-title align-items-start flex-column">
                                 <span className="font-weight-bolder text-dark">
-                                    Plan de trabajo {meses[mes]}
+                                    Plan de trabajo
                                 </span>
                             </h3>
                         </div>
                         <div className="card-toolbar align-items-center">
                             <div className = 'mr-3 d-flex'>
-                                <SelectSearch name = 'mes' options = { this.getMeses() } value = { mes }
+                                <SelectSearch name = 'mes' options = { this.getMeses() } value = { form.mes }
                                     onChange = { this.updateMes } iconclass = "fas fa-calendar-day"
-                                    messageinc = "Incorrecto. Selecciona el mes." />
+                                    messageinc = "Incorrecto. Selecciona el mes." requirevalidation={1}/>
+                            </div>
+                            <div className = 'mr-3 d-flex'>
+                                <SelectSearch
+                                    name = 'año'
+                                    options = { this.getAños() }
+                                    value = { form.año }
+                                    onChange = { this.updateAño }
+                                    iconclass = "fas fa-calendar-day"
+                                />
                             </div>
                             <Button icon = '' className = 'btn btn-light-success btn-sm font-weight-bold' 
                                 only_icon = 'flaticon2-writing pr-0 mr-2' text = 'Agendar plan'
@@ -147,42 +111,44 @@ class PlanTrabajo extends Component{
                         </div>
                     </Card.Header>
                     <Card.Body>
-                        <div className = ''>
-                            <Chart width = '100%' height = '400px' chartType = 'Gantt' loader = { <div>Cargando</div>}
-                                chartLanguage = 'es'
-                                data = { data } options = { 
-                                    {
-                                        gantt: {
-                                            criticalPathEnabled: false,
-                                            defaultStartDateMillis: new Date(2021,0,1),
+                        <div className="table-responsive-xl">
+                            <table className="table table-responsive">
+                                <thead className="text-center">
+                                    <tr>
+                                        <th>Empresa</th>
+                                        {
+                                            (
+                                                () => {
+                                                    const th = [];
+
+                                                    for (let i = 1; i <= this.diasEnUnMes(form.mes,form.año); i++) {
+                                                        th.push(<th key={i}>{i}</th>);
+                                                    }
+                                                    return th;
+                                                }
+                                            )
+                                            ()
                                         }
-                                    }
-                                } 
-                                chartEvents = { [
-                                    {
-                                        eventName: 'select',
-                                        callback: ({ chartWrapper }) => {
-                                            const chart = chartWrapper.getChart()
-                                            const selection = chart.getSelection()
-                                            if (selection.length === 1) {
-                                                const [selectedItem] = selection
-                                                const dataTable = chartWrapper.getDataTable()
-                                                const { row } = selectedItem
-                                                alert(
-                                                    'You selected : ' +
-                                                    JSON.stringify({
-                                                        row,
-                                                        value: dataTable.getValue(row, 0),
-                                                    }),
-                                                    null,
-                                                    2,
-                                                )
-                                            }
-                                            console.log(selection, chart)
-                                        },
-                                    },
-                                ]}
-                                />
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th>Inein</th>
+                                        {
+                                            (
+                                                () => {
+                                                    const td = [];
+                                                    for (let i = 1; i <= this.diasEnUnMes(form.mes, form.año); i++) {
+                                                        td.push(<td key={i}></td>);
+                                                    }
+                                                    return td;
+                                                }
+                                            )
+                                            ()
+                                        }
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </Card.Body>
                 </Card>
