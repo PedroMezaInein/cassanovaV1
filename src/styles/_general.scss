@@ -1459,3 +1459,9 @@ span.font-weight-bolder.text-hover-error:hover{
 .line-height-0{
     line-height: 0!important;
 }
+
+.custom-item-red{
+    .bar{
+        fill: red!important;
+    }
+}

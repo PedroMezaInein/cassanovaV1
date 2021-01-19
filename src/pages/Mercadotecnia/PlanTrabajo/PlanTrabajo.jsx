@@ -1,25 +1,24 @@
-import { connect } from 'react-redux'
 import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import axios from 'axios'
 import Layout from '../../../components/layout/layout'
 import { Card } from 'react-bootstrap'
-import { Button } from '../../../components/form-components'
-import FullCalendar from '@fullcalendar/react'
-import dayGridPlugin from '@fullcalendar/daygrid'
-import interactionPlugin from "@fullcalendar/interaction";
-import bootstrapPlugin from '@fullcalendar/bootstrap'
-import esLocale from '@fullcalendar/core/locales/es';
-import Axios from 'axios'
-import { errorAlert, forbiddenAccessAlert } from '../../../functions/alert'
 import { URL_DEV } from '../../../constants'
+import { Button, SelectSearchGray } from '../../../components/form-components'
+// import SelectSearchGray from '../../../components/form-components/Gray/SelectSearchGray'
 
+const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
 class PlanTrabajo extends Component{
 
     state = {
-        data: {
-            empresas: []
+        form:{
+            mes: '',
+            año: new Date().getFullYear(),
         },
-        content: [],
-        empresa: ''
+        data: [],
+        options: [
+            
+        ]
     }
 
     componentDidMount(){
@@ -29,33 +28,61 @@ class PlanTrabajo extends Component{
             const { modulo: { url } } = element
             return pathname === url
         });
-        this.getContentAxios()
     }
 
-    getContentAxios = async() => {
-        const { access_token } = this.props.authUser
-        await Axios.get(URL_DEV + 'mercadotecnia/plan-trabajo', { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { empresas } = response.data
-                const { data } = this.state
-                data.empresas = empresas
-                this.setState({ ...this.state, data })
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) { forbiddenAccessAlert() } 
-                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+    getMeses = () => {
+        return [
+            { name: 'Enero', value: 'Enero' },
+            { name: 'Febrero', value: 'Febrero' },
+            { name: 'Marzo', value: 'Marzo' },
+            { name: 'Abril', value: 'Abril' },
+            { name: 'Mayo', value: 'Mayo' },
+            { name: 'Junio', value: 'Junio' },
+            { name: 'Julio', value: 'Julio' },
+            { name: 'Agosto', value: 'Agosto' },
+            { name: 'Septiembre', value: 'Septiembre' },
+            { name: 'Octubre', value: 'Octubre' },
+            { name: 'Noviembre', value: 'Noviembre' },
+            { name: 'Diciembre', value: 'Diciembre' }
+        ]
+    }
+    onChange = event => {
+        const { name, value } = event.target
+        const { form } = this.state
+        form[name] = value
+        this.setState({
+            ...this.setState({
+                form
+            })
         })
     }
-
+    diasEnUnMes(mes, año) {
+        var meses = ["Enero", "Febrero", "Marzo", "Abril", "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"];
+        return new Date(año, meses.indexOf(mes) + 1, 0).getDate();
+    }
+    updateMes = value => {
+        this.onChange({ target: { value: value, name: 'mes' } })
+    }
+    getAños = ()  => {
+        var fecha = new Date().getFullYear()
+        var arreglo = [];
+        for(let i = 0; i < 10; i++)
+            arreglo.push(
+                {
+                    name: fecha - i,
+                    value: fecha - i
+                }
+            );
+        return arreglo
+    }
+    updateAño = value => {
+        this.onChange({ target: { value: value, name: 'año' } })
+    }
     render(){
+        const { form } = this.state
         return(
-            <Layout active = 'mercadotecnia' { ...this.props }>
-                <Card className="card-custom">
+            <Layout active = 'mercadotecnia' { ... this.props}>
+                <Card className = 'card-custom'>
                     <Card.Header>
                         <div className="d-flex align-items-center">
                             <h3 className="card-title align-items-start flex-column">
@@ -64,39 +91,72 @@ class PlanTrabajo extends Component{
                                 </span>
                             </h3>
                         </div>
-                        <div className="card-toolbar">
+                        <div className="card-toolbar align-items-center">
+                            <div className = 'mr-3 d-flex'>
+                                <SelectSearchGray name = 'mes' options = { this.getMeses() } value = { form.mes }
+                                    onChange = { this.updateMes } iconclass = "fas fa-calendar-day"
+                                    messageinc = "Incorrecto. Selecciona el mes." requirevalidation={1}/>
+                            </div>
+                            <div className = 'mr-3 d-flex'>
+                                <SelectSearchGray
+                                    name = 'año'
+                                    options = { this.getAños() }
+                                    value = { form.año }
+                                    onChange = { this.updateAño }
+                                    iconclass = "fas fa-calendar-day"
+                                />
+                            </div>
                             <Button icon = '' className = 'btn btn-light-success btn-sm font-weight-bold' 
                                 only_icon = 'flaticon2-writing pr-0 mr-2' text = 'Agendar plan'
                                 onClick = { console.log('Parrilla de contenido') } />
                         </div>
                     </Card.Header>
                     <Card.Body>
-                        <div className='parrilla'>
-                            {/* <div className='d-flex justify-content-end mb-4'>
-                                <Nav className="nav-tabs nav-bold nav-tabs-line nav-tabs-line-3x border-0"
-                                    activeKey = { empresa.id } >
-                                    {
-                                        data.empresas.map((item, key) => {
-                                            return (
-                                                <Nav.Item key={key} onClick={(e) => { e.preventDefault(); this.handleClickEmpresa(item) }} >
-                                                    <Nav.Link eventKey={item.id}>
-                                                        {item.name}
-                                                    </Nav.Link>
-                                                </Nav.Item>
+                        <div className="table-responsive-xl">
+                            <table className="table table-responsive">
+                                <thead className="text-center">
+                                    <tr>
+                                        <th>Empresa</th>
+                                        {
+                                            (
+                                                () => {
+                                                    const th = [];
+
+                                                    for (let i = 1; i <= this.diasEnUnMes(form.mes,form.año); i++) {
+                                                        th.push(<th key={i}>{i}</th>);
+                                                    }
+                                                    return th;
+                                                }
                                             )
-                                        })
-                                    }
-                                </Nav>
-                            </div> */}
-                            <FullCalendar locale = { esLocale } plugins = { [ dayGridPlugin, interactionPlugin, bootstrapPlugin ] }
-                                eventContent = { this.renderEventContent } initialView = 'dayGridMonth' weekends = { false } firstDay = { 1 }
-                                themeSystem = 'bootstrap' events = { /* content */[] } />
+                                            ()
+                                        }
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <th>Inein</th>
+                                        {
+                                            (
+                                                () => {
+                                                    const td = [];
+                                                    for (let i = 1; i <= this.diasEnUnMes(form.mes, form.año); i++) {
+                                                        td.push(<td key={i}></td>);
+                                                    }
+                                                    return td;
+                                                }
+                                            )
+                                            ()
+                                        }
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </Card.Body>
                 </Card>
             </Layout>
         )
     }
+
 }
 
 const mapStateToProps = (state) => { return { authUser: state.authUser } }
