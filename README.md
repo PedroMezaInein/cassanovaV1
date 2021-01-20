@@ -26,3 +26,8 @@ Instalar las dependecias necesarias via __npm__ o __yarn__
 ## Producción
 
 Solamente es necesario hacer un push del material a subir a la rama _production_, es recomendable hacer pruebas en rama _master_ que generará una liga de prueba disponible en [vercel](https://vercel.com/omar6/adminproyectos)
+
+## Creadores
+
+* Omar Abaroa _omar@inein.mx_
+* Carina Jiménez _carina@inein.mx_
