@@ -6,8 +6,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileAlt } from '@fortawesome/free-regular-svg-icons';
 import { faPhone, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { GOLD } from '../constants';
-import { SVG } from 'react-inlinesvg'
-import { toAbsoluteUrl } from './routers';
 
 function compare( a, b ) {
     if ( a.name < b.name ){

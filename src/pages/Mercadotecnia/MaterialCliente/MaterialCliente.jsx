@@ -12,7 +12,7 @@ import { toAbsoluteUrl } from "../../../functions/routers"
 import { Folder, FolderStatic, Modal } from '../../../components/singles'
 import { Button, BtnBackUrl, TablePagination, NewFolderInput } from '../../../components/form-components'
 import Swal from 'sweetalert2'
-import { NoFiles, Files, Build, Nothing } from '../../../components/Lottie'
+import { NoFiles, Files, Build } from '../../../components/Lottie'
 
 const arrayOpcionesAdjuntos = ['portafolio', 'como_trabajamos', 'servicios_generales', '', 'brokers', 'videos'];
 class MaterialCliente extends Component {
@@ -157,6 +157,7 @@ class MaterialCliente extends Component {
                 empresas.map((element) => {
                     if(element.id === empresa.id)
                         empresa = element
+                    return ''
                 })
                 this.setState({ ...this.state, options, data, empresa, form, modal_add: false, abiertoCarpetaRender: false })
             },
@@ -200,7 +201,7 @@ class MaterialCliente extends Component {
     /* ANCHOR CHANGE NAME OF DIRECTORY IN CASOS DE EXITO */
     updateDirectoryAxios = async (name, element) => {
         const { access_token } = this.props.authUser
-        const { form, empresa } = this.state
+        const { empresa } = this.state
         waitAlert()
         await axios.put(URL_DEV + 'mercadotecnia/material-clientes/empresas/' + empresa.id + '/caso-exito/' + element.id, { tipo: name },
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -232,7 +233,7 @@ class MaterialCliente extends Component {
         console.log(tipo_adjunto, "TIPO ADJUNTO")
         console.log('STATE', this.state)
         const { access_token } = this.props.authUser
-        const { empresa, submenuactive } = this.state
+        const { empresa } = this.state
         await axios.delete(URL_DEV + 'mercadotecnia/material-clientes/' + empresa.id + '/adjunto/' + tipo_adjunto + '/' + id,
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -309,6 +310,7 @@ class MaterialCliente extends Component {
                 data.append(`files_name[]`, file.name)
                 data.append(`files[]`, file.file)
             }
+            return ''
         })
         data.append('tipo', activeFolder.id)
         await axios.post(URL_DEV + 'mercadotecnia/material-clientes/empresas/' + empresa.id + '/caso-exito/adjuntos', data,
@@ -354,6 +356,7 @@ class MaterialCliente extends Component {
                 data.append(`files_name[]`, file.name)
                 data.append(`files[]`, file.file)
             }
+            return ''
         })
         data.append('proyecto', submenuactive)
         data.append('tipo', tipo === 'inventados' ? 'renders-inventados' : tipo === 'reales' ? 'renders-reales' : '')
@@ -391,6 +394,7 @@ class MaterialCliente extends Component {
             }else{
                 aux.push(element)
             }
+            return ''
         })
         data.empresas = aux
         switch(activeTipo){
@@ -404,6 +408,7 @@ class MaterialCliente extends Component {
                     if(adjunto.pivot.tipo === arrayOpcionesAdjuntos[activeTipo]){
                         form.adjuntos.slider.files.push(adjunto)
                     }
+                    return ''
                 })
             break;
             case 3:
@@ -426,7 +431,9 @@ class MaterialCliente extends Component {
                                 case "renders-inventados":
                                     rendersInventados.push(adjunto)
                                     break;
+                                default: break;
                             }
+                            return ''
                         })
                         form.adjuntos.portada.files = portada
                         form.adjuntos.subportafolio.files = subportafolio
@@ -449,12 +456,15 @@ class MaterialCliente extends Component {
                             case 'renders-inventados':
                                 adjuntosSubMenu = rendersInventados;
                                 break;
+                            default: break;
                         }
                     }
+                    return ''
                 })
-                
+                break;
             case 6:
             break;
+            default: break;
         }
         this.setState({
             ...this.state,
@@ -506,6 +516,7 @@ class MaterialCliente extends Component {
                 url: URL.createObjectURL(file),
                 key: index
             })
+            return ''
         })
         if(name === 'reales' || name === 'inventados'){
             form.adjuntos.renders[name].value = value
@@ -641,6 +652,7 @@ class MaterialCliente extends Component {
                     data.append(`files_name[]`, file.name)
                     data.append(`files[]`, file.file)
                 }
+                return ''
             })
             data.append('tipo', tipos[form.adjuntos.slider.eventKey])
         } else {
@@ -649,6 +661,7 @@ class MaterialCliente extends Component {
                     data.append(`files_name[]`, file.name)
                     data.append(`files[]`, file.file)
                 }
+                return ''
             })
             data.append('proyecto', submenuactive)
             data.append('tipo', name)
@@ -665,6 +678,7 @@ class MaterialCliente extends Component {
                     empresaResponse.adjuntos.map((adjunto, key) => {
                         if (adjunto.pivot.tipo === tipo)
                             form.adjuntos.slider.files.push(adjunto)
+                        return ''
                     })
                 } else {
                     
@@ -692,7 +706,9 @@ class MaterialCliente extends Component {
                                     case "renders-inventados":
                                         rendersInventados.push(adjunto)
                                         break;
+                                    default: break;
                                 }
+                                return ''
                             })
                             form.adjuntos.portada.files = portada
                             form.adjuntos.subportafolio.files = subportafolio
@@ -702,6 +718,7 @@ class MaterialCliente extends Component {
                             actualSubMenu = element.tipo
                             submenuactive = element.id
                         }
+                        return ''
                     })
                 }
 
@@ -748,6 +765,7 @@ class MaterialCliente extends Component {
                 empresa.adjuntos.map((adjunto, key) => {
                     if (tipos[indiceClick] === adjunto.pivot.tipo)
                         form.adjuntos.slider.files.push(adjunto)
+                    return ''
                 })
         }
 
@@ -783,6 +801,7 @@ class MaterialCliente extends Component {
             if (aux !== 3)
                 if (adjunto.pivot.tipo === tipos[aux])
                     form.adjuntos.slider.files.push(adjunto)
+            return ''
         })
         form.adjuntos.slider.menu = aux === 3 ? 1 : 0
         form.adjuntos.slider.eventKey = aux
@@ -791,6 +810,7 @@ class MaterialCliente extends Component {
                 opciones_adjuntos[aux].isActive = true
             else
                 opciones_adjuntos[key].isActive = false
+            return ''
         })
         this.setState({
             empresa: empresa,
@@ -826,6 +846,7 @@ class MaterialCliente extends Component {
                 case "renders-inventados":
                     rendersInventados.push(adjunto)
                     break;
+                default: break;
                 //  case "renders":
                 //    renders.push(adjunto)
                 //  break;
@@ -888,46 +909,41 @@ class MaterialCliente extends Component {
                 if(!file.id){
                     aux.push(file)
                 }
+                return '';
             })
         }else{
             switch(actualSubMenuCarpeta.toUpperCase()){
                 case 'SUBPORTAFOLIO':
                     form.adjuntos.subportafolio.files.map((file)=>{
-                        if(!file.id){
-                            aux.push(file)
-                        }
+                        if(!file.id){ aux.push(file) }
+                        return ''
                     })
                     break;
                 case 'EJEMPLO':
                     form.adjuntos.ejemplo.files.map((file)=>{
-                        if(!file.id){
-                            aux.push(file)
-                        }
+                        if(!file.id){ aux.push(file) }
+                        return ''
                     })
                     break;
                 case 'PORTADA':
                     form.adjuntos.portada.files.map((file)=>{
-                        if(!file.id){
-                            aux.push(file)
-                        }
+                        if(!file.id){ aux.push(file) }
+                        return ''
                     })
                     break;
                 case 'REALES':
                     form.adjuntos.renders.reales.files.map((file)=>{
-                        if(!file.id){
-                            aux.push(file)
-                        }
+                        if(!file.id){ aux.push(file) }
+                        return ''
                     })
                     break;
                 case 'INVENTADOS':
                     form.adjuntos.renders.inventados.files.map((file)=>{
-                        if(!file.id){
-                            aux.push(file)
-                        }
+                        if(!file.id){ aux.push(file) }
+                        return ''
                     })
                     break;
-                default:
-                    break;
+                default: break;
             }
         }
         return aux
@@ -1183,6 +1199,7 @@ class MaterialCliente extends Component {
                                                                                                 />
                                                                                             </div>
                                                                                         )
+                                                                                    return ''
                                                                                 })
                                                                             }
                                                                     </div>
@@ -1208,6 +1225,7 @@ class MaterialCliente extends Component {
                                                                                         />
                                                                                     </div>
                                                                                 )
+                                                                            return ''
                                                                         })
                                                                     }
                                                             </div>

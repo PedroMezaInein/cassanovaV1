@@ -69,7 +69,6 @@ class Folder extends Component {
                                                     withicon={0}
                                                     requirevalidation={0}
                                                     withformgroup={0}
-                                                    withformgroup={0}
                                                     customclass="input-folder"
                                                     name='name'
                                                     value={name}

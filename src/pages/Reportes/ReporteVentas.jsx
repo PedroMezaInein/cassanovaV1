@@ -407,6 +407,7 @@ class ReporteVentas extends Component {
                 leads.map((element)=>{
                     arrayLabels.push(element.label.toUpperCase());
                     arrayData.push(element.leads)
+                    return ''
                 })
 
                 colors = this.getBG(arrayData.length);
@@ -436,6 +437,7 @@ class ReporteVentas extends Component {
                         arrayLabels.push(element.toUpperCase())
                         arrayData.push(origenes[element][0].leads)
                     }
+                    return ''
                 })
 
                 colors = this.getBG(arrayData.length);
@@ -464,6 +466,7 @@ class ReporteVentas extends Component {
                         arrayLabels.push(element.toUpperCase())
                         arrayData.push(servicios[element][0].leads)
                     }
+                    return ''
                 })
 
                 colors = this.getBG(arrayData.length);
@@ -492,6 +495,7 @@ class ReporteVentas extends Component {
                         arrayLabels.push(element.toUpperCase())
                         arrayData.push(tipos[element][0].leads)
                     }
+                    return ''
                 })
 
                 colors = this.getBG(arrayData.length);
@@ -517,6 +521,7 @@ class ReporteVentas extends Component {
                 tipos['Basura'].map((tipo) => {
                     arrayLabels.push(tipo.label.toUpperCase())
                     arrayData.push(tipo.leads)
+                    return ''
                 })
 
                 arrayDataSets.push(
@@ -532,6 +537,7 @@ class ReporteVentas extends Component {
                 arrayData = []
                 tipos['Potencial'].map((element)=>{
                     arrayData.push(element.leads)
+                    return ''
                 })
 
                 arrayDataSets.push(
@@ -651,8 +657,10 @@ class ReporteVentas extends Component {
                                         backgroundColor: '',
                                     }
                                 )
+                            return ''
                         })
                     }
+                    return ''
                 })
 
                 colors = this.getBG(arrayDataSets.length);
@@ -661,11 +669,13 @@ class ReporteVentas extends Component {
                     arrayData = []
                     keys.map((origen) => {
                         arrayData.push(origenes[origen][key].leads)
+                        return ''
                     })
                     element.data = arrayData
                     element.backgroundColor = colors[key]+'B3'
                     element.hoverBackgroundColor = colors[key]+'BF'
                     element.borderWidth=3
+                    return ''
                 })
                 let contador = 0
                 let contadorArray = []
@@ -674,17 +684,21 @@ class ReporteVentas extends Component {
                         contador = 0
                         arrayDataSets.map((newElement, key)=>{
                             contador += newElement.data[index]
+                            return ''
                         })
                         if(contador === 0 )
                             contadorArray.push(index)
+                        return ''
                     })
                 }
 
                 contadorArray.map((element)=>{
                     arrayDataSets.map((newElement)=>{
                         newElement.data.splice(element, 1)
+                        return ''
                     })
                     arrayLabels.splice(element, 1)
+                    return ''
                 })
 
                 data.origenesComparativa = {
@@ -711,8 +725,10 @@ class ReporteVentas extends Component {
                                         backgroundColor: '',
                                     }
                                 )
+                            return ''
                         })
                     }
+                    return ''
                 })
 
                 colors = this.getBG(arrayDataSets.length);
@@ -721,11 +737,13 @@ class ReporteVentas extends Component {
                     arrayData = []
                     keys.map((servicio) => {
                         arrayData.push(servicios[servicio][key].leads)
+                        return ''
                     })
                     element.data = arrayData
                     element.backgroundColor = colors[key]+'B3'
                     element.hoverBackgroundColor = colors[key]+'BF'
                     element.borderWidth=3
+                    return ''
                 })
 
                 data.serviciosComparativa = {
@@ -744,6 +762,7 @@ class ReporteVentas extends Component {
                         arrayLabels.push(element.toUpperCase())
                         arrayData.push(estatus[element][0].leads)
                     }
+                    return ''
                 })
 
                 colors = this.getBG(arrayData.length);
@@ -779,8 +798,10 @@ class ReporteVentas extends Component {
                                         backgroundColor: '',
                                     }
                                 )
+                            return ''
                         })
                     }
+                    return ''
                 })
 
                 colors = this.getBG(arrayDataSets.length);
@@ -789,11 +810,13 @@ class ReporteVentas extends Component {
                     arrayData = []
                     keys.map((origen) => {
                         arrayData.push(estatus[origen][key].leads)
+                        return ''
                     })
                     element.data = arrayData
                     element.backgroundColor = colors[key]+'B3'
                     element.hoverBackgroundColor = colors[key]+'BF'
                     element.borderWidth=3
+                    return ''
                 })
                 contador = 0
                 contadorArray = []
@@ -802,17 +825,21 @@ class ReporteVentas extends Component {
                         contador = 0
                         arrayDataSets.map((newElement, key)=>{
                             contador += newElement.data[index]
+                            return ''
                         })
                         if(contador === 0 )
                             contadorArray.push(index)
+                        return ''
                     })
                 }
 
                 contadorArray.map((element)=>{
                     arrayDataSets.map((newElement)=>{
                         newElement.data.splice(element, 1)
+                        return ''
                     })
                     arrayLabels.splice(element, 1)
+                    return ''
                 })
 
                 data.estatusComparativa = {
@@ -903,6 +930,7 @@ class ReporteVentas extends Component {
         
         lista.blocks.map((element)=>{
             _lista.push(element.text.toUpperCase())
+            return ''
         })
         
         const blob = await pdf((
@@ -940,7 +968,7 @@ class ReporteVentas extends Component {
                 <span className="text-dark-50 font-weight-bolder">
                     ¿DESEAS GUARDAR EL 
                         <u>
-                            <a href = { form.adjuntos.reportes.files[0].url } target='_blank' className='text-primary mx-2'>
+                            <a rel="noopener noreferrer" href = { form.adjuntos.reportes.files[0].url } target='_blank' className='text-primary mx-2'>
                                 REPORTE DE VENTAS
                             </a>
                         </u>
@@ -1074,6 +1102,7 @@ class ReporteVentas extends Component {
                                     case 'SERVICIO DE INTERÉS':
                                         auxiliar = ['SERVICIO DE', 'INTERÉS']
                                         break;
+                                    default: break;
                                 }
                                 if(auxiliar !== '')
                                     return auxiliar
@@ -1145,6 +1174,7 @@ class ReporteVentas extends Component {
                                     case 'SERVICIO DE INTERÉS':
                                         auxiliar = ['SERVICIO DE', 'INTERÉS']
                                         break;
+                                    default: break;
                                 }
                                 if(auxiliar !== '')
                                     return auxiliar
@@ -1174,11 +1204,10 @@ class ReporteVentas extends Component {
             },
         }
 
-        const optionsBarStacked = {
+        /* const optionsBarStacked = {
             scales: {
                 yAxes: [
                     {
-                        /* stacked: true, */
                         ticks: {
                             beginAtZero: true,
                             fontColor: '#000'
@@ -1215,7 +1244,7 @@ class ReporteVentas extends Component {
                     fontSize: 20,
                 }
             },
-        }
+        } */
 
         const optionsLine = {
             scales: {
@@ -1923,6 +1952,7 @@ class ReporteVentas extends Component {
                                         </div>
                                         
                                     )
+                                return ''
                             })
                         }
                     </Tab.Container>

@@ -18,7 +18,7 @@ import { toAbsoluteUrl } from "../functions/routers"
 import { Modal, ItemSlider } from '../components/singles'
 import Swal from 'sweetalert2'
 import WOW from 'wowjs';
-import ModalVideo from 'react-modal-video'
+/* import ModalVideo from 'react-modal-video' */
 class MiProyecto extends Component {
 
     state = {
@@ -738,7 +738,8 @@ class MiProyecto extends Component {
     }
 
     render() {
-        const { options, proyecto, form, adjuntos, showadjuntos, primeravista, defaultactivekey, subActiveKey, formeditado, tickets, data, modal, ticket, modalDetalles, openModalVideo} = this.state
+        const { options, proyecto, form, adjuntos, showadjuntos, primeravista, defaultactivekey, subActiveKey, formeditado, tickets, data, 
+            modal, ticket, modalDetalles, /* openModalVideo */ } = this.state
         return (
 
             <Layout {...this.props}>
@@ -753,7 +754,7 @@ class MiProyecto extends Component {
                                         <div className="container wow fadeIn" data-wow-delay="1.7s" data-wow-duration="1.5s">
                                             <Navbar expand="lg">
                                                 <Navbar.Brand href={proyecto.empresa?proyecto.empresa.pagina_web:''} className="overflow-hidden pr-3">
-                                                    <img src={proyecto.empresa?proyecto.empresa.logos[0].url:''} width="120" />
+                                                    <img alt = 'empresa-logo' src={proyecto.empresa?proyecto.empresa.logos[0].url:''} width="120" />
                                                 </Navbar.Brand>
                                                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                                                 <Navbar.Collapse className="text-center mt-3">
@@ -793,11 +794,11 @@ class MiProyecto extends Component {
                                     </div>
                                     <div className="overflow-hidden">
                                         <div className="mt-3">
-                                            <React.Fragment>
-                                                // ANCHOR Ver video comentario
-                                                {/* <ModalVideo channel='custom' isOpen={openModalVideo} url='https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4' autoplay={1} onClose={() => this.setState({openModalVideo: false})} />
-                                                    <a className="btn btn-outline-white font-weight-bolder rounded-0 font-size-lg letter-spacing-1" onClick={() => this.setState({openModalVideo: true})}>Ver video</a> */}
-                                            </React.Fragment>
+                                            {/* ANCHOR Ver video comentario */}
+                                            {/* <React.Fragment>
+                                                <ModalVideo channel='custom' isOpen={openModalVideo} url='https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4' autoplay={1} onClose={() => this.setState({openModalVideo: false})} />
+                                                    <a className="btn btn-outline-white font-weight-bolder rounded-0 font-size-lg letter-spacing-1" onClick={() => this.setState({openModalVideo: true})}>Ver video</a>
+                                            </React.Fragment> */}
                                         </div>
                                     </div>
                                 </div>

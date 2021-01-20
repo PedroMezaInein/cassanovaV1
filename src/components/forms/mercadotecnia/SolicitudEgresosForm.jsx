@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Form, Col, Row  } from 'react-bootstrap' 
-import { Input, Select, SelectSearch, Button, Calendar, InputMoney, RadioGroup, CalendarDay } from '../../form-components'
+import { Input, Select, SelectSearch, Button, InputMoney, RadioGroup, CalendarDay } from '../../form-components'
 import { openWizard1_for2_wizard, openWizard2_for2_wizard } from '../../../functions/wizard'
 import { validateAlert } from '../../../functions/alert'
 import { ItemSlider } from '../../../components/singles';

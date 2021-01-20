@@ -13,7 +13,6 @@ import { Card, Nav, Tab, Row, Col, Form} from 'react-bootstrap'
 import { errorAlert, forbiddenAccessAlert, waitAlert, validateAlert, commentAlert } from '../../functions/alert'
 import { CaducadasCard, EnProcesoCard, ProximasCaducarCard } from '../../components/cards'
 import Swal from 'sweetalert2'
-import withReactContent from 'sweetalert2-react-content'
 import ItemSlider from '../../components/singles/ItemSlider'
 import InputGray from '../../components/form-components/Gray/InputGray'
 import SVG from "react-inlinesvg";
@@ -985,20 +984,11 @@ class Tareas extends Component {
                                     >
                                     <div className="form-group row form-group-marginless mt-3 d-flex justify-content-center">
                                         <div className="col-md-11 align-self-center">
-                                            <InputGray
-                                                withtaglabel={1}
-                                                withtextlabel={1}
-                                                withplaceholder={1}
-                                                withicon={0}
-                                                requirevalidation={0}
-                                                withformgroup={1}
-                                                placeholder='COMENTARIO'
-                                                value={comentario}
-                                                name='comentario'
-                                                onChange={this.onChangeComentario}
-                                                as="textarea"
-                                                rows="3"
-                                            />
+                                            <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 }
+                                                withicon = { 0 } requirevalidation = { 0 } withformgroup = { 1 }
+                                                placeholder = 'COMENTARIO' value = { comentario } name = 'comentario'
+                                                onChange = { this.onChangeComentario } as = "textarea" rows = "3"
+                                                letterCase = { false } spellCheck = { true } />
                                         </div>
                                         <div className="col-md-12 d-flex justify-content-center align-self-center">
                                             <div>

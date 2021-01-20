@@ -26,7 +26,7 @@ class PresupuestoGenerado extends Component {
                                         <td>
                                             <div className="d-flex align-items-center">
                                                 <div>
-                                                    <a target="_blank" href={pdf.url} className="text-dark-primary font-weight-bolder text-hover-success mb-1 font-size-lg">{pdf.name}</a>
+                                                    <a rel="noopener noreferrer" target="_blank" href={pdf.url} className="text-dark-primary font-weight-bolder text-hover-success mb-1 font-size-lg">{pdf.name}</a>
                                                     <span className="text-muted font-weight-bold d-block">
                                                         {
                                                             setDateTableLG(pdf.created_at)

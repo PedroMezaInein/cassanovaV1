@@ -33,6 +33,7 @@ class LeadNuevo extends Component {
                         if (contacto.comentario === 'SE ENVIÓ CORREO PARA SOLICITAR UNA PRIMERA LLAMADA.') {
                             aux = false
                         }
+                        return ''
                     })
                     return aux
                 }
@@ -243,11 +244,11 @@ class LeadNuevo extends Component {
                                                                 </span>
                                                             </OverlayTrigger>
                                                             <OverlayTrigger overlay={<Tooltip>SEGUIMIENTO (SCRIPT)</Tooltip>}>
-                                                                <a onClick={(e) => { changePageLlamadaSalida(lead) }} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-info" id="seg-script">
+                                                                <span onClick={(e) => { changePageLlamadaSalida(lead) }} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-info" id="seg-script">
                                                                     <span className="svg-icon svg-icon-md">
                                                                         <SVG src={toAbsoluteUrl('/images/svg/File.svg')} />
                                                                     </span>
-                                                                </a>
+                                                                </span>
                                                             </OverlayTrigger>
                                                             <OverlayTrigger overlay={<Tooltip>HISTORIAL DE CONTACTO</Tooltip>}>
                                                                 <span onClick={(e) => { openModalHistorial(lead) }}

@@ -28,8 +28,8 @@ class TareaForm extends Component {
                                 <label className="text-center font-weight-bolder">Fecha de entrega</label>
                             </div>
                             <CalendarDay
-                                date={(form.fecha_limite === null || form.fecha_limite === undefined || form.fecha_limite === NaN) ? '' : new Date(form.fecha_limite)}
-                                value={(form.fecha_limite === null || form.fecha_limite === undefined || form.fecha_limite === NaN) ? '' : new Date(form.fecha_limite)}
+                                date={(form.fecha_limite === null || form.fecha_limite === undefined || isNaN(form.fecha_limite) ) ? '' : new Date(form.fecha_limite)}
+                                value={(form.fecha_limite === null || form.fecha_limite === undefined || isNaN(form.fecha_limite) ) ? '' : new Date(form.fecha_limite)}
                                 onChange={this.onChangeCalendar}
                                 name='fecha_limite'
                             />
