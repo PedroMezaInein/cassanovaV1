@@ -10,14 +10,13 @@ import { PARTIDAS_DISEÑO_COLUMNS } from '../../../constants'
 import { save, deleteForm } from '../../../redux/reducers/formulario'
 import { setTextTable } from '../../../functions/setters'
 import { renderToString } from 'react-dom/server'
-import { Tabs, Tab } from 'react-bootstrap' 
+import { Tabs, Tab, Card, Nav } from 'react-bootstrap' 
 
 const $ = require('jquery');
 
 class PartidasDiseño extends Component {
 
     state = {
-        key: 'inein',
         partidas: [],
         partida: '',
         modal: {
@@ -30,7 +29,9 @@ class PartidasDiseño extends Component {
         },
         data:{
             partidas:[],
-        }
+            empresas: []
+        },
+        empresa: ''
     }
 
     componentDidMount() {
@@ -43,98 +44,15 @@ class PartidasDiseño extends Component {
         });
         if (!partidas)
             history.push('/')
+        this.getPartidasDiseño()
     }
 
-    changePageEdit = partida => {
-        const { history } = this.props
-        history.push({
-            pathname: '/catalogos/partidas-diseño/edit',
-            state: { partida: partida}
-        });
+    handleClickEmpresa = empresa => {
+        this.setState({...this.state,empresa: empresa})
+        this.getPartidas(empresa)
     }
 
-    openModalDelete = (partida) => {
-        const { modal } = this.state
-        modal.delete = true
-        this.setState({
-            ...this.state,
-            modal,
-            partida: partida
-        })
-    }
-
-    async deletePartidaDiseñoAxios() {
-        const { access_token } = this.props.authUser
-        const { partida } = this.state
-        await axios.delete(URL_DEV + 'partidas-diseño/' + partida.id, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
-            (response) => {
-                
-                const { modal, key } = this.state
-
-                if(key === 'inein'){
-                    this.getIneinAxios()
-                }
-                if(key === 'im'){
-                    this.getImAxios()
-                }
-
-                modal.delete = false
-                
-                this.setState({
-                    ...this.state,
-                    modal,
-                    form: this.clearForm(),
-                    partida: ''
-                })
-
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito al usuario.')
-                
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-
-    handleCloseDelete = () => {
-        const { modal } = this.state
-        modal.delete = false
-        this.setState({
-            ...this.state,
-            modal,
-            partida: ''
-        })
-    }
-    
-    clearForm = () => {
-        const { form, key} = this.state
-        let aux = Object.keys(form)
-        aux.map((element) => {
-            switch (element) {
-                    case 'empresa':
-                        if(key === 'inein')
-                        form[element] = 'inein'
-                        else
-                        form[element] = 'im'
-                        break;
-                default:
-                    form[element] = ''
-                    break;
-            }
-            return false
-        })
-        return form;
-    }
-
-    setPartidaDiseño = ( partidas ) => {
+    setPartidasDiseño = ( partidas ) => {
         let aux = []
         partidas.map((partida) => {
             aux.push({
@@ -168,107 +86,99 @@ class PartidasDiseño extends Component {
         return aux 
     }
 
-    onChange = (e) => {
-        const { name, value } = e.target
-        const { form } = this.state
-        form[name] = value
-        this.setState({
-            ...this.state,
-            form
+    printTable = empresa => {
+        let url = `${URL_DEV}partidas-diseño/${empresa.id}`
+        const { access_token } = this.props.authUser
+        console.log(empresa, 'empresa print')
+        if(empresa){
+            return(
+                <NewTableServerRender columns = { PARTIDAS_DISEÑO_COLUMNS } title = { `Partidas de diseño ${empresa.name}` } 
+                    subtitle = { `Listado de partidas ${empresa.name}` } mostrar_boton = { true } abrir_modal = { false }
+                    url = {`/catalogos/partidas-diseño/add?empresa=${empresa.id}`} mostrar_acciones = { true } 
+                    actions = { {
+                        'edit': { function: this.changePageEdit },
+                        'delete': { function: this.openModalDelete }
+                    } }
+                    accessToken = { access_token } setter = { this.setPartidasDiseño } 
+                    urlRender = { url } idTable = {`kt_datatable_partida_${empresa.id}`}
+                    cardTable = {`cardTable_partidas_${empresa.id}`} cardTableHeader = {`cardTableHeader_partidas_${empresa.id}`}
+                    cardBody = {`cardBody_partidas_${empresa.id}`} isTab = { true } />
+            )
+        }
+        return ''
+    }
+
+    getPartidas = async(empresa) => {
+        $(`#kt_datatable_partida_${empresa.id}`).DataTable().ajax.reload();
+    }
+
+    getPartidasDiseño = async() => {
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}partidas-diseño`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { data } = this.state
+                const { empresas } = response.data
+                let { empresa } = this.state
+                data.empresas = empresas
+                if(empresas.length)
+                    empresa = empresas[0]
+                this.setState({...this.state,data,empresa})
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) { forbiddenAccessAlert() } 
+                else{ errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
+            }
+        ).catch((error)=>{
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
-
-    onSubmit = e => {
-        e.preventDefault();
-        waitAlert()
-        const { title } = this.state
-        if (title === 'Editar partida')
-            this.updatePartidaDiseñoAxios()
-        else
-            this.addPartidaDiseñoAxios()
-    }
-
-    async getIneinAxios() {
-        $('#kt_datatable_partida_inein').DataTable().ajax.reload();
-    }
-
-    async getImAxios() {
-        $('#kt_datatable_partida_im').DataTable().ajax.reload();
-    }
-
-    controlledTab = value => {
-        const { form } = this.state
-        if(value === 'inein'){
-            this.getIneinAxios()
-            // form.empresa = 'inein'
-        }
-        if(value === 'im'){
-            this.getImAxios()
-            form.empresa = 'im'
-        }
-        this.setState({
-            ...this.state,
-            key: value,
-            form
-        })
-    }
-
 
     render(){
-        const { modal, key} = this.state
+        const { modal, empresa, data } = this.state
         return (
             <Layout active = { 'catalogos' }  { ...this.props } >
-                <Tabs defaultActiveKey="inein" activeKey={key} onSelect = { (value) =>  { this.controlledTab(value)} }>
-                    <Tab eventKey="inein" title="INEIN">
-                        <NewTableServerRender
-                            columns={PARTIDAS_DISEÑO_COLUMNS}
-                            title='Partida de diseño'
-                            subtitle='Listado de partidas'
-                            mostrar_boton={true}
-                            abrir_modal={false}
-                            url = '/catalogos/partidas-diseño/add'
-                            mostrar_acciones={true}
-                            actions={
+                <Card className = 'card-custom'>
+                    <Card.Header>
+                        <div className = 'd-flex align-items-center'>
+                            <h3 className = 'card-title align-items-start flex-column'>
+                                <span className="font-weight-bolder text-dark">
+                                    Partidas de diseño
+                                </span>
+                            </h3>
+                        </div>
+                        <div className="card-toolbar">
+                            <Nav className = 'nav-tabs nav-bold nav-tabs-line nav-tabs-line-3x border-0' activeKey = { empresa.id } >
                                 {
-                                    'edit': { function:this.changePageEdit},
-                                    'delete': { function: this.openModalDelete }
+                                    data.empresas.map((element, key) => {
+                                        return(
+                                            <Nav.Item key = { key } onClick = { (e) => { e.preventDefault(); this.handleClickEmpresa(element) } } >
+                                                <Nav.Link eventKey = { element.id } >
+                                                    { element.name }
+                                                </Nav.Link>
+                                            </Nav.Item>
+                                        )
+                                    })
                                 }
-                            }
-                            accessToken={this.props.authUser.access_token}
-                            setter={this.setPartidaDiseño}
-                            urlRender={URL_DEV + 'partidas-diseño/inein'}
-                            idTable='kt_datatable_partida_inein'
-                            cardTable='cardTable_partida_INEIN'
-                            cardTableHeader='cardTableHeader_partida_INEIN'
-                            cardBody='cardBody_partida_INEIN'
-                            isTab={true}
-                        />
-                    </Tab>
-                    <Tab eventKey="im" title="IM">
-                        <NewTableServerRender
-                            columns={PARTIDAS_DISEÑO_COLUMNS}
-                            title='Partida de diseño'
-                            subtitle='Listado de partidas'
-                            mostrar_boton={true}
-                            abrir_modal={false}
-                            url = '/catalogos/partidas-diseño/add'
-                            mostrar_acciones={true}
-                            actions={{
-                                'edit': { function:this.changePageEdit},
-                                'delete': { function: this.openModalDelete }
-                            }}
-                            accessToken={this.props.authUser.access_token}
-                            setter={this.setPartidaDiseño}
-                            urlRender={URL_DEV + 'partidas-diseño/im'}
-                            idTable='kt_datatable_partida_im'
-                            cardTable='cardTable_partida_IM'
-                            cardTableHeader='cardTableHeader_partida_IM'
-                            cardBody='cardBody_partida_IM'
-                            isTab={true}
-                        />
-                    </Tab>
-                </Tabs>
-
+                            </Nav>
+                        </div>
+                    </Card.Header>
+                </Card>
+                <Tab.Container activeKey = { empresa.id} >
+                    <Tab.Content>
+                        {
+                            data.empresas.map((empresa, key) => {
+                                console.log(empresa, 'EMPRESA')
+                                return(
+                                    <Tab.Pane eventKey = { empresa.id } key = { key } >
+                                        {this.printTable(empresa)}
+                                    </Tab.Pane>
+                                )
+                            })
+                        }
+                    </Tab.Content>
+                </Tab.Container>
                 <ModalDelete 
                     title =  "¿Estás seguro que deseas eliminar la partida?"
                     show = { modal.delete } handleClose = { this.handleCloseDelete } 
