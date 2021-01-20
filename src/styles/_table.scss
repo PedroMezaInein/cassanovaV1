@@ -190,3 +190,12 @@ tr.selected{
         }
     }
 }
+.text-plan {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    background-color: #F64E60;
+}
