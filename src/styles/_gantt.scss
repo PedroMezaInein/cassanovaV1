@@ -1,0 +1,21 @@
+.gantt-container{
+    padding-top: 0.15rem;
+    padding-bottom: 0.15rem;
+    padding-right: 0.5rem;
+    padding-left: 0.5rem;
+    background-color: red;
+    &__middle{
+
+    }
+    &__start{
+        border-top-left-radius: 8px;
+        border-bottom-left-radius: 8px;
+    }
+    &__end{
+        border-top-right-radius: 8px;
+        border-bottom-right-radius: 8px;
+    }
+    &__full{
+        border-radius: 8px;
+    }
+}

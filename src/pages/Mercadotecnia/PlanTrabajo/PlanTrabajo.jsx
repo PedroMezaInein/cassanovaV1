@@ -47,12 +47,16 @@ class PlanTrabajo extends Component{
                                 fechaFin: '2021-01-13',
                                 duration: 1,
                                 nombre: 'IDENTIDAD',
+                                color: '#eee5ff',
+                                textColor: '#8950fc'
                             },
                             {
                                 fechaInicio: '2021-01-06',
                                 fechaFin: '2021-01-09',
                                 duration: 4,
                                 nombre: 'CONSTRUCCIÓN',
+                                color: '#eee5ff',
+                                textColor: '#8950fc'
                             }
                         ]
                     }else{
@@ -163,13 +167,12 @@ class PlanTrabajo extends Component{
                 if(dato.duration === 1){
                     dato.position = 'full'
                 }else{
-                    let _from = from.startOf('day')
-                    let _to = to.startOf('day')
-                    let _fecha = fecha.startOf('day')
-                    if( _from === _fecha)
+                    console.log('DURARTION FROM', moment.duration(fecha.diff(from))._milliseconds)
+                    console.log('DURARTION TO', moment.duration(fecha.diff(to))._milliseconds)
+                    if(moment.duration(fecha.diff(from))._milliseconds === 0)
                         dato.position = 'start'
                     else{
-                        if( _to === _fecha){
+                        if(moment.duration(fecha.diff(to))._milliseconds === 0){
                             dato.position = 'end'
                         }else{
                             dato.position = 'middle'
@@ -184,10 +187,9 @@ class PlanTrabajo extends Component{
                 {
                     variables.map((dato, index)=>{
                         return(
-                            <div key = { index } >
+                            <div className = {`gantt-container gantt-container__${dato.position}`} key = { index } 
+                                style = {{ backgroundColor: dato.color }}>
                                 {dato.nombre}
-                                <br />
-                                {dato.position}
                             </div>
                         )
                     })
@@ -277,7 +279,7 @@ class PlanTrabajo extends Component{
                                                     </td>            
                                                     {
                                                         [...Array(this.diasEnUnMes(mes, año))].map((element, key) => {
-                                                            return( <td key = {key}>
+                                                            return( <td className ='p-0 pt-2' key = {key}>
                                                                 {
                                                                     this.printGantt(empresa, key+1)
                                                                 }
