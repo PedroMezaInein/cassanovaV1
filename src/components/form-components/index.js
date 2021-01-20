@@ -22,6 +22,7 @@ import tagInput from './TagInput'
 import tagSelectSearch from './TagSelectSearch'
 import video from './Video'
 import datePickerMulti from './DatePickerMulti'
+import circleColor from './CircleColor'
 // Validado, pero sin texto de error
 import inputMoneySinText from './SinText/InputMoneySinText'
 import selectSearchSinText from './SinText/SelectSearchSinText'
@@ -69,6 +70,7 @@ export const TagInput = tagInput
 export const TagSelectSearch = tagSelectSearch
 export const Video = video
 export const DatePickerMulti = datePickerMulti
+export const CircleColor = circleColor
 // Validado, pero sin texto de error
 export const InputMoneySinText = inputMoneySinText
 export const SelectSearchSinText = selectSearchSinText
