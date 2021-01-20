@@ -188,7 +188,7 @@ class PlanTrabajo extends Component{
                     variables.map((dato, index)=>{
                         return(
                             <div className = {`gantt-container gantt-container__${dato.position}`} key = { index } 
-                                style = {{ backgroundColor: dato.color }}>
+                                style = {{ backgroundColor: dato.color, color: dato.textColor }}>
                                 {dato.nombre}
                             </div>
                         )
