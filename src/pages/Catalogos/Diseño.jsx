@@ -352,7 +352,8 @@ class Diseño extends Component {
         if(aux2.length){
             let html = ''
             aux2.map((element)=>{
-                html += '<div class="mb-2 text-dark-50">'+ '&bull;&nbsp;'+element +'<br/>'+'</div>'
+                html += '<div class="mb-2 text-dark-50">&bull;&nbsp;'+element +'<br/></div>'
+                return ''
             })
             // html
             errorAdjuntos(
@@ -409,6 +410,7 @@ class Diseño extends Component {
                         element.adjuntos.map((adjunto)=>{
                             if(adjunto.pivot.tipo === name)
                                 arregloAuxiliar.push(adjunto)
+                            return ''
                         })
                     }
                     return ''

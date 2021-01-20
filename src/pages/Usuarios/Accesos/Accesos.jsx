@@ -161,7 +161,7 @@ class Accesos extends Component {
                                                 return (
                                                     <tr key={key}>
                                                         <td>
-                                                            <a href = { this.setUrl(acceso.url) } target = "_blank"
+                                                            <a href = { this.setUrl(acceso.url) } target = "_blank" rel="noopener noreferrer"
                                                                 className="font-weight-bolder text-dark text-hover-primary font-size-lg">
                                                                 {acceso.plataforma}
                                                             </a>
@@ -185,7 +185,7 @@ class Accesos extends Component {
                                                                 {
                                                                     acceso.correo ?
                                                                         <OverlayTrigger overlay={<Tooltip>{acceso.correo}</Tooltip>}>
-                                                                            <a className="text-dark-75 font-weight-bolder d-block font-size-lg text-hover-primary text-transform-none">{this.substrCadena(acceso.correo)}</a>
+                                                                            <span className="text-dark-75 font-weight-bolder d-block font-size-lg text-hover-primary text-transform-none">{this.substrCadena(acceso.correo)}</span>
                                                                         </OverlayTrigger>
                                                                         : <div className="text-dark-75 font-weight-bolder d-block font-size-lg text-hover-primary">-</div>
                                                                 }
@@ -193,7 +193,7 @@ class Accesos extends Component {
                                                             <div className='text-hover' onClick={() => { navigator.clipboard.writeText(acceso.numero) }}>
                                                                 {
                                                                     acceso.numero ?
-                                                                        <a className="text-muted font-weight-bold">{acceso.numero}</a>
+                                                                        <span className="text-muted font-weight-bold">{acceso.numero}</span>
                                                                         : <div className="text-muted font-weight-bold">-</div>
                                                                 }
                                                             </div>

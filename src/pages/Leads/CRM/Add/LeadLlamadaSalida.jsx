@@ -436,7 +436,6 @@ class LeadLlamadaSalida extends Component {
                 return <>
                     {this.caseDiseñoObra()}
                 </>;
-                break;
             case 'email':
                 if (lead.empresa.name === 'INFRAESTRUCTURA MÉDICA') {
                     return <>
@@ -452,10 +451,8 @@ class LeadLlamadaSalida extends Component {
             case'telefono':
             case'comentario':
             return <></>;
-            break;
             default:
                 return <></>;
-            break;
         }
     }
     showMessages = (boton) => {

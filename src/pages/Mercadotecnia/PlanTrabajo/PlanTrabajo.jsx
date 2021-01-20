@@ -8,17 +8,32 @@ import { Button, SelectSearchGray } from '../../../components/form-components'
 import { getMeses, getAños } from '../../../functions/setters'
 import { errorAlert, forbiddenAccessAlert } from '../../../functions/alert'
 import moment from 'moment'
-import { data } from 'jquery'
+import { Modal } from '../../../components/singles'
+import PlanTrabajoForm from '../../../components/forms/mercadotecnia/PlanTrabajoForm';
 
 const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
 class PlanTrabajo extends Component{
 
     state = {
+        modal: {
+            form: false
+        },
+        form:{
+            fechaInicio: new Date(),
+            fechaFin: new Date(),
+            nombre:'',
+            responsable:'',
+            rol:'',
+            color:''
+        },
         mes: meses[new Date().getMonth()],
         año: new Date().getFullYear(),
         data: {
             empresas: []
-        }
+        },
+        options: [
+            
+        ]
     }
 
     componentDidMount(){
@@ -47,17 +62,22 @@ class PlanTrabajo extends Component{
                                 fechaFin: '2021-01-13',
                                 duration: 1,
                                 nombre: 'IDENTIDAD',
+                                color: '#eee5ff',
+                                textColor: '#8950fc'
                             },
                             {
                                 fechaInicio: '2021-01-06',
                                 fechaFin: '2021-01-09',
                                 duration: 4,
                                 nombre: 'CONSTRUCCIÓN',
+                                color: '#eee5ff',
+                                textColor: '#8950fc'
                             }
                         ]
                     }else{
                         empresa.datos = []
                     }
+                    return ''
                 })
                 this.setState({...this.state, data})
             },
@@ -163,13 +183,12 @@ class PlanTrabajo extends Component{
                 if(dato.duration === 1){
                     dato.position = 'full'
                 }else{
-                    let _from = from.startOf('day')
-                    let _to = to.startOf('day')
-                    let _fecha = fecha.startOf('day')
-                    if( _from === _fecha)
+                    console.log('DURARTION FROM', moment.duration(fecha.diff(from))._milliseconds)
+                    console.log('DURARTION TO', moment.duration(fecha.diff(to))._milliseconds)
+                    if(moment.duration(fecha.diff(from))._milliseconds === 0)
                         dato.position = 'start'
                     else{
-                        if( _to === _fecha){
+                        if(moment.duration(fecha.diff(to))._milliseconds === 0){
                             dato.position = 'end'
                         }else{
                             dato.position = 'middle'
@@ -178,16 +197,16 @@ class PlanTrabajo extends Component{
                 }
                 variables.push(dato)
             }
+            return ''
         })
         return(
             <div>
                 {
                     variables.map((dato, index)=>{
                         return(
-                            <div key = { index } >
+                            <div className = {`gantt-container gantt-container__${dato.position}`} key = { index } 
+                                style = {{ backgroundColor: dato.color, color: dato.textColor }}>
                                 {dato.nombre}
-                                <br />
-                                {dato.position}
                             </div>
                         )
                     })
@@ -195,9 +214,53 @@ class PlanTrabajo extends Component{
             </div>
         )
     }
+    openModal = () => {
+        const { modal } = this.state
+        modal.form = true
+        this.setState({
+            ...this.state,
+            modal,
+            title: 'Agengar plan',
+            form: this.clearForm(),
+        })
+    }
 
+    clearForm = () => {
+        const { form } = this.state
+        let aux = Object.keys(form)
+        aux.map((element) => {
+            switch (element) {
+                default:
+                    form[element] = '';
+                    break;
+            }
+            return ''
+        })
+        return form
+    }
+
+    handleCloseForm = () => {
+        const { modal } = this.state
+        modal.form = false
+        this.setState({
+            ...this.state,
+            modal,
+            empresa: '',
+            form: this.clearForm(),
+        })
+    }
+    onChange = event => {
+        const { name, value } = event.target
+        const { form } = this.state
+        form[name] = value
+        this.setState({
+            ...this.setState({
+                form
+            })
+        })
+    }
     render(){
-        const { mes, año, data } = this.state
+        const { mes, año, data, form, modal, title,options } = this.state
         return(
             <Layout active = 'mercadotecnia' { ... this.props}>
                 <Card className = 'card-custom'>
@@ -221,8 +284,8 @@ class PlanTrabajo extends Component{
                                     iconclass = "fas fa-calendar-day" />
                             </div>
                             <Button icon = '' className = 'btn btn-light-success btn-sm font-weight-bold' 
-                                only_icon = 'flaticon2-writing pr-0 mr-2' text = 'Agendar plan'
-                                onClick = { console.log('Parrilla de contenido') } />
+                                only_icon = 'flaticon2-writing pr-0 mr-2' text = 'AGENDAR PLAN'
+                                onClick={this.openModal} />
                         </div>
                     </Card.Header>
                     <Card.Body>
@@ -277,7 +340,7 @@ class PlanTrabajo extends Component{
                                                     </td>            
                                                     {
                                                         [...Array(this.diasEnUnMes(mes, año))].map((element, key) => {
-                                                            return( <td key = {key}>
+                                                            return( <td className ='p-0 pt-2' key = {key}>
                                                                 {
                                                                     this.printGantt(empresa, key+1)
                                                                 }
@@ -294,6 +357,13 @@ class PlanTrabajo extends Component{
                         </div>
                     </Card.Body>
                 </Card>
+                <Modal size="xl" title={title} show={modal.form} handleClose={this.handleCloseForm}>
+                    <PlanTrabajoForm
+                        form={form}
+                        onChange={this.onChange}
+                        options={options}
+                    />
+                </Modal>
             </Layout>
         )
     }

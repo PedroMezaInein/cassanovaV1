@@ -8,7 +8,7 @@ import { errorAlert, forbiddenAccessAlert, doneAlert, waitAlert, deleteAlert, qu
 import Layout from '../../../components/layout/layout'
 import { ModalDelete, Modal, ItemSlider } from '../../../components/singles'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
-import { SolicitudCompraCard, SolicitudEgresoCard } from '../../../components/cards'
+import { SolicitudEgresoCard } from '../../../components/cards'
 const $ = require('jquery');
 class SolicitudEgresos extends Component {
 
@@ -150,6 +150,7 @@ class SolicitudEgresos extends Component {
                                 action: 'convert',
                                 tooltip: { id: 'convert', text: 'Convertir', type: 'success' },
                             })
+                    return ''
                 })
 
         return aux
@@ -258,6 +259,7 @@ class SolicitudEgresos extends Component {
         files.map((file) => {
             data.append(`files_name_adjunto[]`, file.name)
             data.append(`files_adjunto[]`, file)
+            return ''
         })
         waitAlert()
         await axios.post(URL_DEV + 'mercadotecnia/pagos/adjuntos/'+solicitud.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(

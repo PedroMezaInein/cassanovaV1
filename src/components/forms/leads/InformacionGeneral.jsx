@@ -16,76 +16,33 @@ class InformacionGeneral extends Component {
                 <Form>
                     <div className="form-group row form-group-marginless mb-0 justify-content-center">
                         <div className={lead.estatus? lead.estatus.estatus!=="En espera" ?"col-md-3":"col-md-4":"col-md-4"}>
-                            <InputGray
-                                withtaglabel={1}
-                                withtextlabel={1}
-                                withplaceholder={1}
-                                withicon={1}
-                                withformgroup={1}
-                                requirevalidation = { formeditado === false ? 0 : 1 }
-                                placeholder='NOMBRE DEL LEAD'
-                                iconclass="far fa-user"
-                                name='name'
-                                value={form.name}
-                                onChange={onChange}
-                                messageinc="Incorrecto. Ingresa el nombre del lead."
-                            />
+                            <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 }
+                                withicon = { 1 } withformgroup = { 1 } requirevalidation = { formeditado === false ? 0 : 1 }
+                                placeholder = 'NOMBRE DEL LEAD' iconclass = "far fa-user" name = 'name'
+                                value = { form.name } onChange = { onChange } messageinc="Incorrecto. Ingresa el nombre del lead." />
                         </div>
                         <div className={lead.estatus? lead.estatus.estatus!=="En espera" ?"col-md-3":"col-md-4":"col-md-4"}>
-                            <InputGray
-                                withtaglabel={1}
-                                withtextlabel={1}
-                                withplaceholder={1}
-                                withicon={1}
-                                withformgroup={1}
-                                requirevalidation = { formeditado === false ? 0 : 1 }
-                                placeholder="CORREO ELECTRÓNICO"
-                                iconclass="fas fa-envelope"
-                                type="email"
-                                name="email"
-                                value={form.email}
-                                onChange={onChange}
-                                patterns={EMAIL}
-                                messageinc="Incorrecto. Ingresa el correo electrónico."
-                            />
+                            <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 1 }
+                                withformgroup = { 1 } requirevalidation = { formeditado === false ? 0 : 1 } placeholder = "CORREO ELECTRÓNICO"
+                                iconclass = "fas fa-envelope" type = "email" name = "email" value = { form.email } onChange = { onChange }
+                                patterns = { EMAIL } messageinc="Incorrecto. Ingresa el correo electrónico." letterCase = { false }/>
                         </div>
                         <div className={lead.estatus? lead.estatus.estatus!=="En espera" ?"col-md-3":"col-md-4":"col-md-4"}>
-                            <InputPhoneGray
-                                withtaglabel={1}
-                                withtextlabel={1}
-                                withplaceholder={1}
-                                withicon={1}
-                                requirevalidation = { formeditado === false ? 0 : 1 }
-                                placeholder="TELÉFONO DE CONTACTO"
-                                iconclass="fas fa-mobile-alt"
-                                name="telefono"
-                                value={form.telefono}
-                                onChange={onChange}
-                                patterns={TEL}
-                                thousandseparator={false}
-                                prefix=''
-                                messageinc="Incorrecto. Ingresa el teléfono de contacto."
-                            />
+                            <InputPhoneGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 1 }
+                                requirevalidation = { formeditado === false ? 0 : 1 } placeholder = "TELÉFONO DE CONTACTO"
+                                iconclass = "fas fa-mobile-alt" name = "telefono" value = { form.telefono }
+                                onChange = { onChange } patterns = { TEL } thousandseparator = { false } prefix = ''
+                                messageinc = "Incorrecto. Ingresa el teléfono de contacto." />
                         </div>
                         {
-                            lead.estatus?
-                                lead.estatus.estatus!=="En espera"  ?
+                            lead.estatus ?
+                                lead.estatus.estatus !== "En espera"  ?
                                     <div className="col-md-3">
-                                        <InputGray
-                                            withtaglabel={1}
-                                            withtextlabel={1}
-                                            withplaceholder={1}
-                                            withicon={1}
-                                            requirevalidation={1}
-                                            withformgroup={1}
-                                            formeditado={formeditado}
-                                            placeholder='NOMBRE DEL PROYECTO'
-                                            iconclass="far fa-folder-open"
-                                            name='proyecto'
-                                            value={form.proyecto}
-                                            onChange={onChange}
-                                            messageinc="Incorrecto. Ingresa el nombre del proyecto."
-                                        />
+                                        <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 1 } 
+                                            requirevalidation = { 1 } withformgroup = { 1 } formeditado = { formeditado }
+                                            placeholder = 'NOMBRE DEL PROYECTO' iconclass = "far fa-folder-open" name = 'proyecto'
+                                            value = { form.proyecto } onChange = { onChange }
+                                            messageinc = "Incorrecto. Ingresa el nombre del proyecto." />
                                     </div>
                                 : ''
                             : ''
@@ -98,13 +55,8 @@ class InformacionGeneral extends Component {
                             <div className="d-flex justify-content-center" style={{ height: '1px' }}>
                                 <label className="text-center font-weight-bold text-dark-60">Fecha de ingreso</label>
                             </div>
-                            <CalendarDay
-                                value={form.fecha}
-                                date = { form.fecha }
-                                onChange={onChange}
-                                name='fecha'
-                                withformgroup={1}
-                            />
+                            <CalendarDay value = { form.fecha } date = { form.fecha } onChange = { onChange }
+                                name = 'fecha' withformgroup = { 1 } />
                         </div>
                     </div>
                     <div className="card-footer px-2 py-3">

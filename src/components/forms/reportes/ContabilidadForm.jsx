@@ -44,8 +44,9 @@ class ContabilidadForm extends Component {
     }
     transformarOptions = options => {
         options = options?options:[]
-        options.map(value=>{
+        options.map((value)=>{
             value.label = value.text 
+            return ''
         } );
     
         return options

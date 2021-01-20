@@ -378,7 +378,6 @@ export default class ReporteVentasInein extends Component {
     }
 
     render() {
-        let bandera = false
         const { lista, images, form, anteriores, mes, data } = this.props
         return (
             <Document style = {{ fontFamily: 'Poppins', color: '#525252' }}>
@@ -705,6 +704,7 @@ export default class ReporteVentasInein extends Component {
                                                 </View>
                                             )
                                         }
+                                        return ''
                                     })
                                 }
                             </View>

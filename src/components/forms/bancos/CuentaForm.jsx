@@ -31,6 +31,7 @@ export default class CuentaForm extends Component {
         options.map(value=>{
             value.label = value.name?value.name:value.text
             value.value = value.value ?value.value.toString():value.id.toString()
+            return ''
         } );
         return options
     }
