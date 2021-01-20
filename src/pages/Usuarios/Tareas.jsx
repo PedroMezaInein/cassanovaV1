@@ -13,7 +13,6 @@ import { Card, Nav, Tab, Row, Col, Form} from 'react-bootstrap'
 import { errorAlert, forbiddenAccessAlert, waitAlert, validateAlert, commentAlert } from '../../functions/alert'
 import { CaducadasCard, EnProcesoCard, ProximasCaducarCard } from '../../components/cards'
 import Swal from 'sweetalert2'
-import withReactContent from 'sweetalert2-react-content'
 import ItemSlider from '../../components/singles/ItemSlider'
 import InputGray from '../../components/form-components/Gray/InputGray'
 import SVG from "react-inlinesvg";

@@ -184,9 +184,9 @@ class PresupuestoDiseño extends Component {
         let aux = []
         cotizaciones.map((cotizacion) => {
             aux.push({ numero: cotizacion })
+            return ''
         })
         return setListTable(aux, 'numero')
-        
     }
 
     setActions = presupuesto => {

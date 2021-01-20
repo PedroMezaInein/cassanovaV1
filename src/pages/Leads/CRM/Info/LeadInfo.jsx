@@ -313,6 +313,7 @@ class LeadInfo extends Component {
                     empresa.planos.map((plano) => {
                         if (plano[formDiseño.esquema])
                             planos.push(plano)
+                        return ''
                     })
 
                 formDiseño.planos = this.setOptionsCheckboxes(planos, true)
@@ -403,6 +404,7 @@ class LeadInfo extends Component {
                     data.empresa.planos.map((plano) => {
                         if (plano[formDiseño.esquema])
                             planos.push(plano)
+                        return ''
                     })
                 formDiseño.planos = this.setOptionsCheckboxes(planos, true)
 
@@ -703,7 +705,6 @@ class LeadInfo extends Component {
 
         let precio_inicial = 0
         let incremento = 0
-        let aux = false
         let limiteInf = 0.0
         let limiteSup = 0.0
         let m2Aux = parseInt(m2)
@@ -758,6 +759,7 @@ class LeadInfo extends Component {
                     if (m2Aux >= parseInt(variacion.inferior) && m2Aux <= parseInt(variacion.superior))
                         total = parseFloat(acumulado) * parseFloat(m2)
                 }
+                return ''
             })
 
             return total = total * (1 + incremento)
@@ -957,6 +959,7 @@ class LeadInfo extends Component {
                         data.empresa.planos.map((plano) => {
                             if (plano[lead.presupuesto_diseño.esquema])
                                 planos.push(plano)
+                            return ''
                         })
                     formDiseño.planos = this.setOptionsCheckboxes(planos, true)
 
@@ -969,7 +972,9 @@ class LeadInfo extends Component {
                                     plano.checked = true
                                 else
                                     plano.checked = false
+                                return ''
                             })
+                            return ''
                         })
                     }
 
@@ -981,8 +986,10 @@ class LeadInfo extends Component {
                             aux.map((element) => {
                                 if (plano.id.toString() === element.toString())
                                     bandera = true
+                                return ;
                             })
                             plano.checked = bandera
+                            return ''
                         })
                     }
 
@@ -994,8 +1001,10 @@ class LeadInfo extends Component {
                             aux.map((element) => {
                                 if (partida.id.toString() === element.toString())
                                     bandera = true
+                                return ''
                             })
                             partida.checked = bandera
+                            return ''
                         })
                     }
 
@@ -1200,7 +1209,7 @@ class LeadInfo extends Component {
                 <span className="text-dark-50 font-weight-bolder">
                     ¿Deseas mandar el
                     <u>
-                        <a href={url} target='_blank' className='text-primary mx-2'>
+                        <a rel="noopener noreferrer" href={url} target='_blank' className='text-primary mx-2'>
                             presupuesto
                         </a>
                     </u>
@@ -1560,10 +1569,10 @@ class LeadInfo extends Component {
                                                                                                 <div className="text-dark-75 font-weight-bold mb-2">
                                                                                                     <div className="d-flex justify-content-between">
                                                                                                         {contacto.tipo_contacto ? contacto.tipo_contacto.tipo : ''}
-                                                                                                        <a className="text-muted text-hover-danger font-weight-bold a-hover"
+                                                                                                        <span className="text-muted text-hover-danger font-weight-bold a-hover"
                                                                                                             onClick={(e) => { deleteAlert('¿ESTÁS SEGURO QUE DESEAS ELIMINAR EL CONTACTO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.eliminarContacto(contacto)) }}>
                                                                                                             <i className="flaticon2-cross icon-xs" />
-                                                                                                        </a>
+                                                                                                        </span>
                                                                                                     </div>
                                                                                                 </div>
                                                                                                 {contacto.comentario}
@@ -1595,8 +1604,9 @@ class LeadInfo extends Component {
                                                             lead.prospecto.contactos.length > itemsPerPage ?
                                                                 <div className="d-flex justify-content-center mt-4">
                                                                     <Pagination
+                                                                        itemClassLast="d-none"
+                                                                        itemClassFirst="d-none"
                                                                         itemClass="page-item"
-                                                                        linkClass="page-link"
                                                                         firstPageText = 'Primero'
                                                                         lastPageText = 'Último'
                                                                         activePage = { activePage }
@@ -1604,8 +1614,6 @@ class LeadInfo extends Component {
                                                                         totalItemsCount = { lead.prospecto.contactos.length }
                                                                         pageRangeDisplayed = { 5 }
                                                                         onChange={this.onChangePage.bind(this)}
-                                                                        itemClassLast="d-none"
-                                                                        itemClassFirst="d-none"
                                                                         prevPageText={<i className='ki ki-bold-arrow-back icon-xs'/>}
                                                                         nextPageText={<i className='ki ki-bold-arrow-next icon-xs'/>}
                                                                         linkClassPrev="btn btn-icon btn-sm btn-light-primary mr-2 my-1 pagination"

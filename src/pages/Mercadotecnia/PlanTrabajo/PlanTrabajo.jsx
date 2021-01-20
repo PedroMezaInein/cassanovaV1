@@ -10,7 +10,6 @@ import { errorAlert, forbiddenAccessAlert } from '../../../functions/alert'
 import moment from 'moment'
 import { Modal } from '../../../components/singles'
 import PlanTrabajoForm from '../../../components/forms/mercadotecnia/PlanTrabajoForm';
-import { data } from 'jquery'
 
 const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
 class PlanTrabajo extends Component{
@@ -78,6 +77,7 @@ class PlanTrabajo extends Component{
                     }else{
                         empresa.datos = []
                     }
+                    return ''
                 })
                 this.setState({...this.state, data})
             },
@@ -197,6 +197,7 @@ class PlanTrabajo extends Component{
                 }
                 variables.push(dato)
             }
+            return ''
         })
         return(
             <div>
@@ -229,11 +230,11 @@ class PlanTrabajo extends Component{
         let aux = Object.keys(form)
         aux.map((element) => {
             switch (element) {
-                
                 default:
                     form[element] = '';
                     break;
             }
+            return ''
         })
         return form
     }

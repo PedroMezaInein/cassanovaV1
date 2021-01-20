@@ -197,7 +197,7 @@ class MaterialEmpresa extends Component {
         if (aux2.length) {
             let html = ''
             aux2.map((element) => {
-                html += '<div class="mb-2 text-dark-50">' + '&bull;&nbsp;' + element + '<br/>' + '</div>'
+                html += '<div class="mb-2 text-dark-50">&bull;&nbsp;' + element + '<br/></div>'
                 return ''
             })
             // html
@@ -239,6 +239,7 @@ class MaterialEmpresa extends Component {
             empresa.adjuntos.map( ( adjunto ) => {
                 if( tiposArray[indiceClick] === adjunto.pivot.tipo )
                     form.adjuntos.slider.files.push(adjunto)
+                return ''
             })
         
         this.setState({
@@ -259,6 +260,7 @@ class MaterialEmpresa extends Component {
         empresa.adjuntos.map( ( adjunto ) => {
             if( adjunto.pivot.tipo === tiposArray[aux] )
                 form.adjuntos.slider.files.push( adjunto )
+            return ''
         })
         form.adjuntos.slider.eventKey = aux
 
@@ -267,6 +269,7 @@ class MaterialEmpresa extends Component {
                 opciones_adjuntos[aux].isActive = true
             else
                 opciones_adjuntos[key].isActive = false
+            return ''
         })
 
         this.setState({

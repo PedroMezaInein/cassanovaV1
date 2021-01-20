@@ -15,7 +15,6 @@ import { Button } from '../../../components/form-components'
 import { Modal } from '../../../components/singles'
 import ParrillaContenidoForm from '../../../components/forms/mercadotecnia/ParrillaContenidoForm';
 import { setOptions } from '../../../functions/setters';
-const $ = require('jquery');
 class Calendario extends Component {
     state = {
         content: [],
@@ -148,13 +147,13 @@ class Calendario extends Component {
 
                 let bandera = false
                 let aux = []
-                let aux2 = ''
 
                 if (empresa === '') {
                     empresas.map((item) => {
                         if (item.parrillas.length > 0 && bandera === false) {
                             bandera = item;
                         }
+                        return ''
                     })
                 } else {
                     empresas.map((item) => {
@@ -164,8 +163,10 @@ class Calendario extends Component {
                                 if (parrilla.id === evento.id) {
                                     evento = parrilla
                                 }
+                                return ''
                             })
                         }
+                        return ''
                     })
                 }
 
@@ -179,11 +180,12 @@ class Calendario extends Component {
                                 evento: parrilla
                             }
                         )
+                        return ''
                     })
                 }
 
                 this.setState({
-                    ... this.state,
+                    ...this.state,
                     options,
                     data,
                     empresa: bandera === false ? '' : bandera,
@@ -272,6 +274,7 @@ class Calendario extends Component {
         form.adjuntos.adjunto_comentario.files.map(( adjunto) => {
             data.append(`files_name_adjunto[]`, adjunto.name)
             data.append(`files_adjunto[]`, adjunto.file)
+            return ''
         })
 
         data.append(`comentario`, form.comentario)
@@ -450,6 +453,7 @@ class Calendario extends Component {
                     form[element] = '';
                     break;
             }
+            return ''
         })
         return form
     }
@@ -567,7 +571,7 @@ class Calendario extends Component {
         await axios.delete(URL_DEV + 'mercadotecnia/material-clientes/empresas/' + empresa.id + '/caso-exito/' + activeFolder.id + '/adjuntos/' + id,
             { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}` } }).then(
                 (response) => {
-                    const { empresa, empresas, carpeta } = response.data
+                    const { empresa, empresas } = response.data
                     const { data } = this.state
                     data.empresas = empresas
                     doneAlert('Archivos eliminado con éxito')

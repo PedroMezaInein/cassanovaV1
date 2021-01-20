@@ -258,11 +258,13 @@ class PresupuestoDiseñoForm extends Component {
                         case 'INFRAESTRUCTURA MÉDICA':
                             cadena = 'im'
                             break;
+                        default: break;
                     }
                     let partidas = [];
                     data.partidas.map((partida)=>{
                         if(partida.empresa === cadena)                    
                             partidas.push(partida)
+                        return ''
                     })
                     form.partidas = this.setOptionsCheckboxes(partidas, true)
                 }
@@ -282,6 +284,7 @@ class PresupuestoDiseñoForm extends Component {
                     data.empresa.planos.map((plano) => {
                         if (plano[presupuesto.esquema])
                             planos.push(plano)
+                        return ''
                     })
                 form.planos = this.setOptionsCheckboxes(planos, true)
                 aux = JSON.parse(presupuesto.planos)
@@ -293,7 +296,9 @@ class PresupuestoDiseñoForm extends Component {
                                 plano.checked = true
                             else
                                 plano.checked = false
+                            return ''
                         })
+                        return ''
                     })
                 }
                 aux = JSON.parse(presupuesto.planos)
@@ -304,8 +309,10 @@ class PresupuestoDiseñoForm extends Component {
                         aux.map((element) => {
                             if (plano.id.toString() === element.toString())
                                 bandera = true
+                            return ''
                         })
                         plano.checked = bandera
+                        return ''
                     })
                 }
                 aux = JSON.parse(presupuesto.partidas)
@@ -316,14 +323,15 @@ class PresupuestoDiseñoForm extends Component {
                         aux.map((element) => {
                             if (partida.id.toString() === element.toString())
                                 bandera = true
+                            return ''
                         })
                         partida.checked = bandera
+                        return ''
                     })
                 }
 
                 if(presupuesto.lead){
                     if(presupuesto.lead.prospecto){
-                        console.log(presupuesto.lead.prospecto, 'pros')
                         form.proyecto = presupuesto.lead.prospecto.nombre_proyecto
                         if(presupuesto.lead.prospecto.tipo_proyecto)
                             form.tipoProyecto = presupuesto.lead.prospecto.tipo_proyecto.id.toString()
@@ -424,7 +432,6 @@ class PresupuestoDiseñoForm extends Component {
                             document.body.removeChild(link);
                         }
                     }
-                const { history } = this.props
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La presupuesto fue eliminada con éxito.',)
                 /* history.push({
                     pathname: '/presupuesto/presupuesto-diseño'
@@ -549,6 +556,7 @@ class PresupuestoDiseñoForm extends Component {
                         empresa.planos.map((plano)=>{
                             if(plano[form.esquema])
                                 planos.push(plano)
+                            return ''
                         })
                         form.planos = this.setOptionsCheckboxes(planos, true)
                         data.empresa = empresa
@@ -566,9 +574,11 @@ class PresupuestoDiseñoForm extends Component {
                         data.partidas.map((partida)=>{
                             if(partida.empresa === cadena)                    
                                 partidas.push(partida)
+                            return ''
                         })
                         form.partidas = this.setOptionsCheckboxes(partidas, true)
                     }
+                    return ''
                 })
                 break;
             case 'esquema':
@@ -591,6 +601,7 @@ class PresupuestoDiseñoForm extends Component {
                 data.planos.map((plano)=>{
                     if(plano[form.esquema])
                         planos.push(plano)
+                    return ''
                 })
                 form.planos = this.setOptionsCheckboxes(planos, true)
                 form.conceptos.map((concepto) => {
@@ -716,6 +727,7 @@ class PresupuestoDiseñoForm extends Component {
                         form.mobiliario_inf = tipo.mobiliario_inf
                         form.mobiliario_sup = tipo.mobiliario_sup
                     }
+                    return ''
                 })
                 break;
             default:
@@ -872,6 +884,7 @@ class PresupuestoDiseñoForm extends Component {
                     if (m2Aux >= parseInt(variacion.inferior) && m2Aux <= parseInt(variacion.superior))
                         total = parseFloat(acumulado) * parseFloat(m2)
                 }
+                return ''
             })
 
             return total = total * (1 + incremento)

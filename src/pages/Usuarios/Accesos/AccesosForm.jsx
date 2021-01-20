@@ -170,6 +170,7 @@ class AccesosForm extends Component {
                     editables.usuarios.map((usuario)=>{
                         if(element.value.toString() === usuario.id.toString())
                             bandera = usuario
+                        return ''
                     })
                     if(bandera !== false){
                         form.usuarios.push(
@@ -192,6 +193,7 @@ class AccesosForm extends Component {
                     editables.empresas.map((empresa)=>{
                         if(element.value.toString() === empresa.id.toString())
                             bandera = empresa
+                        return ''
                     })
                     if(bandera !== false){
                         form.empresas.push(

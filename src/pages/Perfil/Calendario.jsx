@@ -12,16 +12,15 @@ import { errorAlert, forbiddenAccessAlert, waitAlert, doneAlert, questionAlert, 
 import { countDaysWithoutWeekend } from '../../functions/functions';
 import { URL_DEV } from '../../constants';
 import bootstrapPlugin from '@fullcalendar/bootstrap'
-import { DropdownButton, Dropdown, Card, OverlayTrigger, Tooltip, Nav, Tab } from 'react-bootstrap'
+import { DropdownButton, Dropdown, Card, OverlayTrigger, Tooltip, Nav } from 'react-bootstrap'
 import moment from 'moment'
 import AVATAR from '../../assets/images/icons/avatar.png'
 import Swal from 'sweetalert2'
 import { Parking, ParkingRed, PassportTravel, HappyBirthday, Calendar, EmptyParkSlot } from '../../components/Lottie';
-import { Button, DatePickerMulti } from '../../components/form-components'
+import { Button } from '../../components/form-components'
 
 const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
 const dias = ['DOMINGO', 'LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO']
-const $ = require('jquery');
 class Calendario extends Component {
 
     state = {
@@ -421,6 +420,7 @@ class Calendario extends Component {
                 Object.keys(eventos).map((evento, key) => {
                     if (eventos[evento].length && bandera === false && evento !== 'feriados')
                         bandera = evento
+                    return ''
                 })
                 if (bandera === false)
                     bandera = 'estacionamiento'
@@ -671,6 +671,7 @@ class Calendario extends Component {
                 nombre = 'VACACIONES'
                 icon = 'fas fa-umbrella-beach'
                 break;
+            default: break;
             // case 'estacionamiento':
             //     nombre = 'ESTACIONAMIENTO'
             //     icon = 'fas fa-car'
@@ -702,19 +703,15 @@ class Calendario extends Component {
         switch (activeKey) {
             case 'eventos':
                 return this.printEventos()
-                break;
             case 'cumpleaños':
                 return this.printCumpleaños()
-                break;
             case 'vacaciones':
                 return this.printVacaciones()
-                break;
             // case 'estacionamiento':
             //     return this.prinEstacionamiento()
             //     break
             default:
                 return <></>
-                break;
         }
     }
     getHours(dateTimeStart, dateTimeEnd) {
@@ -736,6 +733,7 @@ class Calendario extends Component {
                 googleEvent.attendees.map((participante) => {
                     if(participante.email === authUser.user.email)
                         bandera = true
+                    return ''
                 })
         return bandera
     }
@@ -938,6 +936,7 @@ class Calendario extends Component {
                         if (auto.empleado.usuario)
                             if (auto.empleado.usuario.id.toString() === user.id.toString())
                                 bandera = true
+                    return ''
                 })
             } else
                 bandera = true
@@ -952,7 +951,7 @@ class Calendario extends Component {
         })
     }
     render() {
-        const { events, form, title, formeditado, modal, modal_status, estatus, disponibles, disabledDates, modal_date, date, eventos, activeKey, activeKeyTab, tab, modal_estacionamiento } = this.state
+        const { events, form, title, formeditado, modal, modal_status, estatus, disponibles, disabledDates, modal_date, date, eventos, activeKey } = this.state
         return (
             <Layout {...this.props}>
                 {/* <Tab.Container defaultActiveKey={activeKeyTab} activeKey={activeKeyTab} className="p-5"> */}
@@ -1099,6 +1098,7 @@ class Calendario extends Component {
                                                     </Nav.Item>
                                                 )
                                             }
+                                            return ''
                                         })
                                     }
                                 </Nav>
