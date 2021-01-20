@@ -452,3 +452,35 @@ export function setContactoIcon(contacto){
             }
     return ''
 }
+
+export function getMeses(){
+    return [
+        { name: 'Enero', value: 'Enero' },
+        { name: 'Febrero', value: 'Febrero' },
+        { name: 'Marzo', value: 'Marzo' },
+        { name: 'Abril', value: 'Abril' },
+        { name: 'Mayo', value: 'Mayo' },
+        { name: 'Junio', value: 'Junio' },
+        { name: 'Julio', value: 'Julio' },
+        { name: 'Agosto', value: 'Agosto' },
+        { name: 'Septiembre', value: 'Septiembre' },
+        { name: 'Octubre', value: 'Octubre' },
+        { name: 'Noviembre', value: 'Noviembre' },
+        { name: 'Diciembre', value: 'Diciembre' }
+    ]
+}
+
+export const getAños = () => {
+    let fecha = new Date().getFullYear()
+    let mes = new Date().getMonth()
+    let arreglo = [];
+    let limite = mes > 9 ? 4 : 5
+    for (let i = mes > 9 ? -1 : 0; i < limite; i++)
+        arreglo.push(
+            {
+                name: fecha - i,
+                value: (fecha - i).toString()
+            }
+        );
+    return arreglo
+}
