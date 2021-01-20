@@ -8,17 +8,33 @@ import { Button, SelectSearchGray } from '../../../components/form-components'
 import { getMeses, getAños } from '../../../functions/setters'
 import { errorAlert, forbiddenAccessAlert } from '../../../functions/alert'
 import moment from 'moment'
+import { Modal } from '../../../components/singles'
+import PlanTrabajoForm from '../../../components/forms/mercadotecnia/PlanTrabajoForm';
 import { data } from 'jquery'
 
 const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
 class PlanTrabajo extends Component{
 
     state = {
+        modal: {
+            form: false
+        },
+        form:{
+            fechaInicio: new Date(),
+            fechaFin: new Date(),
+            nombre:'',
+            responsable:'',
+            rol:'',
+            color:''
+        },
         mes: meses[new Date().getMonth()],
         año: new Date().getFullYear(),
         data: {
             empresas: []
-        }
+        },
+        options: [
+            
+        ]
     }
 
     componentDidMount(){
@@ -195,9 +211,53 @@ class PlanTrabajo extends Component{
             </div>
         )
     }
+    openModal = () => {
+        const { modal } = this.state
+        modal.form = true
+        this.setState({
+            ...this.state,
+            modal,
+            title: 'Agengar plan',
+            form: this.clearForm(),
+        })
+    }
 
+    clearForm = () => {
+        const { form } = this.state
+        let aux = Object.keys(form)
+        aux.map((element) => {
+            switch (element) {
+                
+                default:
+                    form[element] = '';
+                    break;
+            }
+        })
+        return form
+    }
+
+    handleCloseForm = () => {
+        const { modal } = this.state
+        modal.form = false
+        this.setState({
+            ...this.state,
+            modal,
+            empresa: '',
+            form: this.clearForm(),
+        })
+    }
+    onChange = event => {
+        const { name, value } = event.target
+        const { form } = this.state
+        form[name] = value
+        this.setState({
+            ...this.setState({
+                form
+            })
+        })
+    }
     render(){
-        const { mes, año, data } = this.state
+        const { mes, año, data, form, modal, title,options } = this.state
         return(
             <Layout active = 'mercadotecnia' { ... this.props}>
                 <Card className = 'card-custom'>
@@ -221,8 +281,8 @@ class PlanTrabajo extends Component{
                                     iconclass = "fas fa-calendar-day" />
                             </div>
                             <Button icon = '' className = 'btn btn-light-success btn-sm font-weight-bold' 
-                                only_icon = 'flaticon2-writing pr-0 mr-2' text = 'Agendar plan'
-                                onClick = { console.log('Parrilla de contenido') } />
+                                only_icon = 'flaticon2-writing pr-0 mr-2' text = 'AGENDAR PLAN'
+                                onClick={this.openModal} />
                         </div>
                     </Card.Header>
                     <Card.Body>
@@ -294,6 +354,13 @@ class PlanTrabajo extends Component{
                         </div>
                     </Card.Body>
                 </Card>
+                <Modal size="xl" title={title} show={modal.form} handleClose={this.handleCloseForm}>
+                    <PlanTrabajoForm
+                        form={form}
+                        onChange={this.onChange}
+                        options={options}
+                    />
+                </Modal>
             </Layout>
         )
     }
