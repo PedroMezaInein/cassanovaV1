@@ -986,7 +986,7 @@ class LeadInfo extends Component {
                             aux.map((element) => {
                                 if (plano.id.toString() === element.toString())
                                     bandera = true
-                                return ;
+                                return '';
                             })
                             plano.checked = bandera
                             return ''

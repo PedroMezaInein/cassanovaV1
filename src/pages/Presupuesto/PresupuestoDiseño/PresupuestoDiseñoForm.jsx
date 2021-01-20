@@ -829,7 +829,6 @@ class PresupuestoDiseñoForm extends Component {
 
         let precio_inicial = 0
         let incremento = 0
-        let aux = false
         let limiteInf = 0.0
         let limiteSup = 0.0
         let m2Aux = parseInt(m2)

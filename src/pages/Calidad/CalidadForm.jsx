@@ -395,6 +395,7 @@ class CalidadForm extends Component {
                     fondo: element.fondo
                 }
             )
+            return ''
         });
         return aux
     }

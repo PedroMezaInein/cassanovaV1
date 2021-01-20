@@ -794,7 +794,7 @@ class MiProyecto extends Component {
                                     </div>
                                     <div className="overflow-hidden">
                                         <div className="mt-3">
-                                            // ANCHOR Ver video comentario
+                                            {/* ANCHOR Ver video comentario */}
                                             {/* <React.Fragment>
                                                 <ModalVideo channel='custom' isOpen={openModalVideo} url='https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4' autoplay={1} onClose={() => this.setState({openModalVideo: false})} />
                                                     <a className="btn btn-outline-white font-weight-bolder rounded-0 font-size-lg letter-spacing-1" onClick={() => this.setState({openModalVideo: true})}>Ver video</a>

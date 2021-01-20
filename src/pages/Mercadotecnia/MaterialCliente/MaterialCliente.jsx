@@ -431,6 +431,7 @@ class MaterialCliente extends Component {
                                 case "renders-inventados":
                                     rendersInventados.push(adjunto)
                                     break;
+                                default: break;
                             }
                             return ''
                         })
@@ -455,13 +456,15 @@ class MaterialCliente extends Component {
                             case 'renders-inventados':
                                 adjuntosSubMenu = rendersInventados;
                                 break;
+                            default: break;
                         }
                     }
                     return ''
                 })
-                
+                break;
             case 6:
             break;
+            default: break;
         }
         this.setState({
             ...this.state,
@@ -703,7 +706,9 @@ class MaterialCliente extends Component {
                                     case "renders-inventados":
                                         rendersInventados.push(adjunto)
                                         break;
+                                    default: break;
                                 }
+                                return ''
                             })
                             form.adjuntos.portada.files = portada
                             form.adjuntos.subportafolio.files = subportafolio
@@ -841,6 +846,7 @@ class MaterialCliente extends Component {
                 case "renders-inventados":
                     rendersInventados.push(adjunto)
                     break;
+                default: break;
                 //  case "renders":
                 //    renders.push(adjunto)
                 //  break;
@@ -903,46 +909,41 @@ class MaterialCliente extends Component {
                 if(!file.id){
                     aux.push(file)
                 }
+                return '';
             })
         }else{
             switch(actualSubMenuCarpeta.toUpperCase()){
                 case 'SUBPORTAFOLIO':
                     form.adjuntos.subportafolio.files.map((file)=>{
-                        if(!file.id){
-                            aux.push(file)
-                        }
+                        if(!file.id){ aux.push(file) }
+                        return ''
                     })
                     break;
                 case 'EJEMPLO':
                     form.adjuntos.ejemplo.files.map((file)=>{
-                        if(!file.id){
-                            aux.push(file)
-                        }
+                        if(!file.id){ aux.push(file) }
+                        return ''
                     })
                     break;
                 case 'PORTADA':
                     form.adjuntos.portada.files.map((file)=>{
-                        if(!file.id){
-                            aux.push(file)
-                        }
+                        if(!file.id){ aux.push(file) }
+                        return ''
                     })
                     break;
                 case 'REALES':
                     form.adjuntos.renders.reales.files.map((file)=>{
-                        if(!file.id){
-                            aux.push(file)
-                        }
+                        if(!file.id){ aux.push(file) }
+                        return ''
                     })
                     break;
                 case 'INVENTADOS':
                     form.adjuntos.renders.inventados.files.map((file)=>{
-                        if(!file.id){
-                            aux.push(file)
-                        }
+                        if(!file.id){ aux.push(file) }
+                        return ''
                     })
                     break;
-                default:
-                    break;
+                default: break;
             }
         }
         return aux
@@ -1198,6 +1199,7 @@ class MaterialCliente extends Component {
                                                                                                 />
                                                                                             </div>
                                                                                         )
+                                                                                    return ''
                                                                                 })
                                                                             }
                                                                     </div>
@@ -1223,6 +1225,7 @@ class MaterialCliente extends Component {
                                                                                         />
                                                                                     </div>
                                                                                 )
+                                                                            return ''
                                                                         })
                                                                     }
                                                             </div>

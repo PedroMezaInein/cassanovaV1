@@ -463,14 +463,13 @@ class Calendario extends Component {
         let aux = []
 
         item.parrillas.map((parrilla) => {
-            aux.push(
-                {
+            aux.push({
                     title: parrilla.titulo,
                     start: parrilla.fecha,
                     end: parrilla.fecha,
                     evento: parrilla
-                }
-            )
+                } )
+            return ''
         })
 
         this.setState({
