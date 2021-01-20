@@ -14,9 +14,10 @@ import { Modal } from '../../../components/singles'
 import { RangeCalendar, Button } from '../../../components/form-components';
 
 // Functions
-import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert, createAlertSA2} from '../../../functions/alert'
+import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert, createAlertSA2, questionAlert2} from '../../../functions/alert'
 import { setTextTable, setContactoTable, setListTable, setDateTable, setLabelTable } from '../../../functions/setters';
 import { LeadCard } from '../../../components/cards';
+import { Form } from 'react-bootstrap';
 
 const $ = require('jquery');
 
@@ -91,10 +92,50 @@ class Leads extends Component {
         })
     }
 
-    openModalRechazar = async lead => {
-        console.log(lead, 'lead')
+    openModalRechazar = lead => {
+        questionAlert2(
+            'SELECCIONA EL MOTIVO DE RECHAZO', '',
+            () => this.rechazarLeadAxios(lead),
+            <Form.Group >
+                <Form.Check
+                    type="radio"
+                    label="Recursos Humanos"
+                    name="motivo"
+                    id="recursos-humanos" />
+                <Form.Check
+                    type="radio"
+                    label="Proveedor"
+                    name="motivo"
+                    id="proveedor" />
+                <Form.Check
+                    type="radio"
+                    label="No potencial"
+                    name="motivo"
+                    id="no-potencial" />
+            </Form.Group>
+        )
+        
+    }
+
+    rechazarLeadAxios = async (lead) => {
+        let rh = ''
+        let proveedor = ''
+        let no_potencial = ''
+        let motivo = ''
+        if(document.getElementById('recursos-humanos'))
+            rh = document.getElementById('recursos-humanos').checked
+        if(document.getElementById('proveedor'))
+            proveedor = document.getElementById('proveedor').checked
+        if(document.getElementById('no-potencial'))
+            no_potencial = document.getElementById('no-potencial').checked
+        if(rh)
+            motivo = 'rh'
+        if(proveedor)
+            motivo = 'proveedor'
+        if(no_potencial)
+            motivo = 'no_potencial'
         const { access_token } = this.props.authUser
-        await axios.put(URL_DEV + 'lead/' + lead.id + '/rechazar', {}, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.put(URL_DEV + 'lead/' + lead.id + '/rechazar', {motivo: motivo}, { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 this.getLeadAxios()
                 doneAlert('Lead rechazado.')
@@ -179,7 +220,7 @@ class Leads extends Component {
         leads.map((lead)=>{
             aux.push({
                 actions: this.setActions(lead),
-                nombre: renderToString(setTextTable(lead.nombre)),
+                nombre: renderToString(setTextTable(lead.nombre +' - '+lead.id)),
                 contacto: renderToString(setContactoTable(lead)),
                 comentario: renderToString(setTextTable(lead.comentario)),
                 servicios: renderToString(setListTable(lead.servicios, 'servicio')),
