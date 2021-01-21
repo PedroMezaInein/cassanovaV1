@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Form, Row, Col } from 'react-bootstrap'
 import { validateAlert } from '../../../functions/alert';
-import { Button, Input, RangeCalendar, TagSelectSearch, CircleColor } from '../../form-components';
+import { Button, Input, RangeCalendar, TagSelectSearch, CircleColor, SelectCreate } from '../../form-components';
 const $ = require('jquery');
 
 const colors = ["#20ACE9", "#EE4C9E", "#62D270 ", "#E63850", "#A962E2", "#E4C127", "#1D69E1", "#8C5E4D", "##737373"];
@@ -55,9 +55,10 @@ class PlanTrabajoForm extends Component{
         return(
             <Form id="form-plan" {...props} onSubmit={(e) => { e.preventDefault(); validateAlert(onSubmit, e, 'form-plan') }}>
                 <Row>
-                    <Col md={6}>
+                    <Col md={5} className="d-flex align-items-center justify-content-center">
                         <div className="form-group row form-group-marginless mt-4">
-                            <div className="col-md-12 d-flex justify-content-center">
+                            <div className="col-md-12 text-center">
+                                <label className="col-form-label my-2 font-weight-bolder">Fecha de inicio - Fecha final</label><br/>
                                 <RangeCalendar
                                     onChange={this.updateRangeCalendar}
                                     start={form.fechaInicio}
@@ -66,9 +67,9 @@ class PlanTrabajoForm extends Component{
                             </div>
                         </div>
                     </Col>
-                    <Col md={6}>
+                    <Col md={7}>
                         <div className="form-group row form-group-marginless mt-4">
-                            <div className="col-md-12">
+                            <div className="col-md-6">
                                 <Input
                                     requirevalidation={1}
                                     name="nombre"
@@ -76,21 +77,25 @@ class PlanTrabajoForm extends Component{
                                     onChange={onChange}
                                     placeholder="NOMBRE DEL PLAN"
                                     formeditado={formeditado}
-                                    iconclass="far fa-building"
+                                    iconclass="fas fa-tasks"
                                     messageinc="Incorrecto. Ingresa el nombre del plan."
                                 />
                             </div>
-                            <div className="col-md-12 mt-3">
+                            <div className="col-md-6">
                                 <TagSelectSearch 
                                     placeholder = "SELECCIONA LO(S) RESPONSABLE(S)"
                                     options = { this.transformarOptions(options.usuarios) }
                                     defaultvalue = { this.transformarOptions(form.usuarios) }
                                     onChange = { this.nuevoUpdateUsuarios }
-                                    requirevalidation = { 0 } iconclass = "far fa-user"
+                                    requirevalidation = { 0 }
+                                    iconclass = "far fa-user"
                                     messageinc = "Incorrecto. Selecciona lo(s) responsable(s)"
                                 />
                             </div>
-                            <div className="col-md-12 mt-3">
+                        </div>
+                        <div className="separator separator-dashed mt-1 mb-2"></div>
+                        <div className="form-group row form-group-marginless">
+                            <div className="col-md-6">
                                 <Input
                                     requirevalidation={1}
                                     name="rol"
@@ -98,12 +103,44 @@ class PlanTrabajoForm extends Component{
                                     onChange={onChange}
                                     placeholder="NOMBRE DEL ROL"
                                     formeditado={formeditado}
-                                    iconclass="far fa-building"
+                                    iconclass="far fa-file-alt"
                                     messageinc="Incorrecto. Ingresa el nombre del rol."
                                 />
                             </div>
+                            <div className="col-md-6">
+                                <SelectCreate
+                                    // Falta cambiar el nombre de placeholder
+                                    placeholder="SELECCIONA El USUARIOS"
+                                    iconclass={"far fa-user"}
+                                    requirevalidation={1}
+                                    messageinc="Incorrecto. Selecciona el usuario."
+                                    options={options.usuarios}
+                                />
+                            </div>
+                        </div>
+                        <div className="separator separator-dashed mt-1 mb-2"></div>
+                        <div className="form-group row form-group-marginless">
+                            <div className="col-md-12">
+                                <Input
+                                    requirevalidation={0}
+                                    formeditado={formeditado}
+                                    rows="3"
+                                    as="textarea"
+                                    placeholder="DESCRIPCIÓN"
+                                    name="descripcion"
+                                    value={form.descripcion}
+                                    onChange={onChange}
+                                    style={{ paddingLeft: "10px" }}
+                                    messageinc="Incorrecto. Ingresa la descripción."
+                                />
+                            </div>
+                        </div>
+                        <div className="separator separator-dashed mt-1 mb-2"></div>
+                        <div className="form-group row form-group-marginless mb-2">
                             <div className="col-md-12 d-flex justify-content-start">
                                 <CircleColor
+                                    circlesize={23}
+                                    width="auto"
                                     onChange={ this.handleChangeColor }
                                     placeholder="SELECCIONA EL COLOR DEL ROL"
                                     colors={colors}
