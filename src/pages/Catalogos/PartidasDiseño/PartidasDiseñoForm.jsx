@@ -23,6 +23,7 @@ class PartidasDiseñoForm extends Component {
             rubro: '',
             partidas: []
         },
+        type: 'add',
         data:{
             partidas:[],
         },
@@ -31,13 +32,13 @@ class PartidasDiseñoForm extends Component {
             rubro:
             [
                 {
-                    name: "ACABADOS E INSTALACIONES", value: "1", label: "ACABADOS E INSTALACIONES"
+                    name: "ACABADOS E INSTALACIONES", value: "Acabados e instalaciones", label: "ACABADOS E INSTALACIONES"
                 },
                 {
-                    name: "OBRA CIVIL", value: "2", label: "OBRA CIVIL"
+                    name: "OBRA CIVIL", value: "Obra civil", label: "OBRA CIVIL"
                 },
                 {
-                    name: "MOBILIARIO", value: "3", label: "MOBILIARIO"
+                    name: "MOBILIARIO", value: "Mobiliario", label: "MOBILIARIO"
                 },
             ],
             empresas: [],
@@ -45,6 +46,13 @@ class PartidasDiseñoForm extends Component {
     }
 
     componentDidMount(){
+        let queryString = this.props.history.location.search
+        let _empresa = ''
+        if (queryString) {
+            let params = new URLSearchParams(queryString)
+            if (params.get("empresa"))
+                _empresa = params.get("empresa")
+        }
         const { authUser: { user : { permisos  } } } = this.props
         const { history : { location: { pathname } } } = this.props
         const { match : { params: { action } } } = this.props
@@ -55,10 +63,14 @@ class PartidasDiseñoForm extends Component {
         });
         switch(action){
             case 'add':
+                const { form } = this.state
+                form.empresa = _empresa.toString()
                 this.setState({
                     ...this.state,
                     title: 'Nueva partida',
-                    formeditado:0
+                    formeditado:0,
+                    form,
+                    type: 'add'
                 })
                 break;
             case 'edit':
@@ -67,16 +79,16 @@ class PartidasDiseñoForm extends Component {
                     {
                         const { form,  } = this.state
                         const { partida } = state
-                        
                         form.nombre = partida.nombre
-                        form.empresa = partida.empresa
-
+                        form.empresa = partida.empresa.id.toString()
+                        form.rubro = partida.tipo
                         this.setState({
                             ...this.state,
                             form,
                             partida: partida,
                             title: 'Editar partida',
-                            formeditado:1
+                            formeditado:1,
+                            type: 'edit'
                         })
                     }
                     else
@@ -95,24 +107,18 @@ class PartidasDiseñoForm extends Component {
     async getOptionsAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'contratos/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(URL_DEV + 'partidas-diseño', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 Swal.close()
                 const { empresas } = response.data
                 const { options } = this.state
                 options.empresas = setOptions(empresas, 'name', 'id')
-                this.setState({
-                    ...this.state,
-                    options
-                })
+                this.setState({ ...this.state, options })
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                if (error.response.status === 401) { forbiddenAccessAlert() } 
+                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -122,44 +128,17 @@ class PartidasDiseñoForm extends Component {
 
     async addPartidaDiseñoAxios() {
         const { access_token } = this.props.authUser
-        const { deleteForm} = this.props
         const { form} = this.state
-
         await axios.post(URL_DEV + 'partidas-diseño', form,  { headers: { Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
-
-                deleteForm()
-
-                const { partidas } = response.data
-                const { key} = this.state
-
-                if(key === 'inein'){
-                    this.getIneinAxios()
-                }
-                if(key === 'im'){
-                    this.getImAxios()
-                }
-                
-                this.setState({
-                    ...this.state,
-                    form: this.clearForm(),
-                    partidas: partidas                 
-                })
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Agregaste con éxito al usuario.')
-
                 const { history } = this.props
-                    history.push({
-                    pathname: '/catalogos/partidas-diseño'
-                });
+                history.push({ pathname: '/catalogos/partidas-diseño' });
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                if (error.response.status === 401) { forbiddenAccessAlert() } 
+                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -169,43 +148,17 @@ class PartidasDiseñoForm extends Component {
 
     async updatePartidaDiseñoAxios() {
         const { access_token } = this.props.authUser
-        const { deleteForm } = this.props
         const { form, partida } = this.state
         await axios.put(URL_DEV + 'partidas-diseño/' + partida.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                
-                deleteForm()
-
-                const { partidas } = response.data
-                const { key } = this.state
-
-                if(key === 'inein'){
-                    this.getIneinAxios()
-                }
-                if(key === 'im'){
-                    this.getImAxios()
-                }
-                
-                this.setState({
-                    ...this.state,
-                    partidas: partidas,
-                    partida: ''
-                })
-
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Actualizaste con éxito al usuario.')
-                
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Agregaste con éxito al usuario.')
                 const { history } = this.props
-                    history.push({
-                    pathname: '/catalogos/partidas-diseño'
-                });
+                history.push({ pathname: '/catalogos/partidas-diseño' });
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                if (error.response.status === 401) { forbiddenAccessAlert() } 
+                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -213,35 +166,11 @@ class PartidasDiseñoForm extends Component {
         })
     }
 
-    
-    clearForm = () => {
-        const { form, key } = this.state
-        let aux = Object.keys(form)
-        aux.map((element) => {
-            switch (element) {
-                case 'empresa':
-                    if(key === 'inein')
-                    form[element] = 'inein'
-                    else
-                    form[element] = 'im'
-                    break;
-                default:
-                    form[element] = ''
-                    break;
-            }
-            return false
-        })
-        return form;
-    }
-
     onChange = (e) => {
         const { name, value } = e.target
         const { form } = this.state
         form[name] = value
-        this.setState({
-            ...this.state,
-            form
-        })
+        this.setState({ ...this.state, form })
     }
 
     onSubmit = e => {
@@ -254,54 +183,6 @@ class PartidasDiseñoForm extends Component {
             this.addPartidaDiseñoAxios()
     }
 
-    async getIneinAxios() {
-        $('#kt_datatable_partida_inein').DataTable().ajax.reload();
-    }
-
-    async getImAxios() {
-        $('#kt_datatable_partida_im').DataTable().ajax.reload();
-    }
-
-    controlledTab = value => {
-        const { form } = this.state
-        if(value === 'inein'){
-            this.getIneinAxios()
-        }
-        if(value === 'im'){
-            this.getImAxios()
-            form.empresa = 'im'
-        }
-        this.setState({
-            ...this.state,
-            key: value,
-            form
-        })
-    }
-
-    save = () => {
-        const { form } = this.state
-        const { save } = this.props
-        let auxObject = {}
-        let aux = Object.keys(form)
-        aux.map((element) => {
-            auxObject[element] = form[element]
-            return false
-        })
-        save({
-            form: auxObject,
-            page: '/catalogos/partidas-diseño'
-        })
-    }
-
-    recover = () => {
-        const { formulario, deleteForm } = this.props
-        this.setState({
-            ...this.state,
-            form: formulario.form
-        })
-        deleteForm()
-    }
-
     tagInputChange = (nuevasPartidas) => {
         const uppercased = nuevasPartidas.map(tipo => tipo.toUpperCase());
         const { form } = this.state
@@ -310,14 +191,11 @@ class PartidasDiseñoForm extends Component {
             if (!unico[i]) { unico[i] = true }
         })
         form.partidas = uppercased ? Object.keys(unico) : [];
-        this.setState({
-            form
-        })
+        this.setState({ form })
     }
     
-
     render(){
-        const { title, form, formeditado, options} = this.state
+        const { title, form, formeditado, options, type } = this.state
         return (
             <Layout active = { 'catalogos' }  { ...this.props } >
                 <Card className="card-custom">
@@ -327,14 +205,8 @@ class PartidasDiseñoForm extends Component {
                         </div>
                     </Card.Header>
                     <Card.Body>
-                        <PartidasDiseoFormulario
-                            form={form}
-                            formeditado={formeditado}   
-                            onSubmit = { this.onSubmit } 
-                            onChange = { this.onChange }
-                            options = {options}
-                            tagInputChange={(e) => this.tagInputChange(e)}
-                        />
+                        <PartidasDiseoFormulario type = { type } form = { form } formeditado = { formeditado } onSubmit = { this.onSubmit } 
+                            onChange = { this.onChange } options = { options } tagInputChange={(e) => this.tagInputChange(e)} />
                     </Card.Body>
                 </Card>
             </Layout>
