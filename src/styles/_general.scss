@@ -1473,3 +1473,20 @@ span.font-weight-bolder.text-hover-error:hover{
 .top-20 {
     top:20%;
 }
+
+.hidden-subtitle{
+    @include down-screen($sm) {
+        visibility:hidden
+    }
+}
+.show-lista{
+    visibility:hidden;
+    @include down-screen($sm) {
+        visibility: visible;
+    }
+}
+.hidden-label{
+    @include down-screen($sm) {
+        display: none;
+    }
+}

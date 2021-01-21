@@ -121,17 +121,30 @@ class PartidasDiseño extends Component {
         console.log(empresa, 'empresa print')
         if(empresa){
             return(
-                <NewTableServerRender columns = { PARTIDAS_DISEÑO_COLUMNS } title = { `Partidas de diseño ${empresa.name}` } 
-                    subtitle = { `Listado de partidas ${empresa.name}` } mostrar_boton = { true } abrir_modal = { false }
-                    url = {`/catalogos/partidas-diseño/add?empresa=${empresa.id}`} mostrar_acciones = { true } 
+                <NewTableServerRender 
+                    columns = { PARTIDAS_DISEÑO_COLUMNS }
+                    // title = { `Partidas de diseño ${empresa.name}` } 
+                    subtitle = { `Listado de partidas ${empresa.name}` }
+                    mostrar_boton = { true }
+                    abrir_modal = { false }
+                    url = {`/catalogos/partidas-diseño/add?empresa=${empresa.id}`}
+                    mostrar_acciones = { true } 
                     actions = { {
                         'edit': { function: this.changePageEdit },
                         'delete': { function: this.openModalDelete }
                     } }
                     accessToken = { access_token } setter = { this.setPartidasDiseño } 
                     urlRender = { url } idTable = {`kt_datatable_partida_${empresa.id}`}
-                    cardTable = {`cardTable_partidas_${empresa.id}`} cardTableHeader = {`cardTableHeader_partidas_${empresa.id}`}
-                    cardBody = {`cardBody_partidas_${empresa.id}`} isTab = { true } />
+                    cardTable = {`cardTable_partidas_${empresa.id}`}
+                    cardTableHeader = {`cardTableHeader_partidas_${empresa.id}`}
+                    cardBody = {`cardBody_partidas_${empresa.id}`}
+                    isNav = { true }
+                    customcard={'card-without-box-shadown'}
+                    customheader={'rounded-0'}
+                    customtitle={'d-flex align-items-start mt-0 '}
+                    customsubtitle={'pt-0 hidden-subtitle'}
+                    customlabel={'hidden-label'}
+                />
             )
         }
         return ''
@@ -190,14 +203,14 @@ class PartidasDiseño extends Component {
         const { modal, empresa, data } = this.state
         return (
             <Layout active = { 'catalogos' }  { ...this.props } >
-                <Card className = 'card-custom'>
-                    <Card.Header>
-                        <div className = 'd-flex align-items-center'>
-                            <h3 className = 'card-title align-items-start flex-column'>
-                                <span className="font-weight-bolder text-dark">
-                                    Partidas de diseño
-                                </span>
-                            </h3>
+                <Card className = 'card-custom rounded-0'>
+                    <Card.Header className="border-bottom-0">
+                        <div className = 'd-flex align-items-end'>
+                            <div class="card-title mb-0">
+                                <h3 class="card-label font-weight-bolder font-size-h3">Partidas de diseño {empresa.name}
+                                </h3>
+                                <div className="d-block text-muted pt-2 font-size-sm show-lista"> Listado de partidas {empresa.name}</div>
+                            </div>
                         </div>
                         <div className="card-toolbar">
                             <Nav className = 'nav-tabs nav-bold nav-tabs-line nav-tabs-line-3x border-0' activeKey = { empresa.id } >
