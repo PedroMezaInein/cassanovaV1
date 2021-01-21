@@ -851,6 +851,10 @@ export const PARTIDAS_DISEÑO_COLUMNS = [
     {
         Header: 'Partida',
         accessor: 'partida'
+    },
+    {
+        Header: 'Tipo',
+        accessor: 'tipo'
     }
 ]
 
