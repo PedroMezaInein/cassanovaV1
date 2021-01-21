@@ -10,7 +10,6 @@ import { errorAlert, forbiddenAccessAlert } from '../../../functions/alert'
 import moment from 'moment'
 import { Modal } from '../../../components/singles'
 import PlanTrabajoForm from '../../../components/forms/mercadotecnia/PlanTrabajoForm';
-import { data } from 'jquery'
 
 const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
 class PlanTrabajo extends Component{
@@ -63,12 +62,24 @@ class PlanTrabajo extends Component{
                                 fechaFin: '2021-01-13',
                                 duration: 1,
                                 nombre: 'MANTENIMIENTO DE CAMPAÑA',
+                                color: '#eee5ff',
+                                textColor: '#8950fc'
                             },
                             {
                                 fechaInicio: '2021-01-06',
                                 fechaFin: '2021-01-09',
                                 duration: 4,
                                 nombre: 'ANÁLISIS DE KEYWORDS',
+                                color: '#eee5ff',
+                                textColor: '#8950fc'
+                            },
+                            {
+                                fechaInicio: '2021-01-06',
+                                fechaFin: '2021-01-08',
+                                duration: 3,
+                                nombre: 'ENTRADA DE BLOGS',
+                                color: '#E8F5E9',
+                                textColor: '#388E3C'
                             }
                         ]
                     }else if(empresa.name === 'INFRAESTRUCTURA MÉDICA'){
@@ -105,6 +116,7 @@ class PlanTrabajo extends Component{
                     else{
                         empresa.datos = []
                     }
+                    return ''
                 })
                 this.setState({...this.state, data})
             },
@@ -211,16 +223,12 @@ class PlanTrabajo extends Component{
                 if(dato.duration === 1){
                     dato.position = 'full'
                 }else{
-                    let _from = from.startOf('day')
-                    let _to = to.startOf('day')
-                    let _fecha = fecha.startOf('day')
-                    // console.log(_from,'_from')
-                    // console.log(_to,'_to')
-                    // console.log(_fecha,'_fecha')
-                    if( _from === _fecha)
+                    console.log('DURARTION FROM', moment.duration(fecha.diff(from))._milliseconds)
+                    console.log('DURARTION TO', moment.duration(fecha.diff(to))._milliseconds)
+                    if(moment.duration(fecha.diff(from))._milliseconds === 0)
                         dato.position = 'start'
                     else{
-                        if( _to === _fecha){
+                        if(moment.duration(fecha.diff(to))._milliseconds === 0){
                             dato.position = 'end'
                         }else{
                             dato.position = 'middle'
@@ -230,6 +238,7 @@ class PlanTrabajo extends Component{
                 variables.push(dato)
                 // console.log(variables)
             }
+            return ''
         })
         return(
             <>
@@ -250,11 +259,15 @@ class PlanTrabajo extends Component{
                                     </span>
                                 </Tooltip>}>
                                     <div className="position-relative">
-                                        <span className="text-plan">
+                                        <span className="text-plan" style = {{ backgroundColor: dato.color, color: dato.textColor }}>
                                             {dato.nombre}
                                         </span>
                                     </div>
                             </OverlayTrigger>
+                            // <div className = {`gantt-container gantt-container__${dato.position}`} key = { index } 
+                            //     >
+                            //     {dato.nombre}
+                            // </div>
                         )
                     })
                 }
@@ -277,11 +290,11 @@ class PlanTrabajo extends Component{
         let aux = Object.keys(form)
         aux.map((element) => {
             switch (element) {
-                
                 default:
                     form[element] = '';
                     break;
             }
+            return ''
         })
         return form
     }

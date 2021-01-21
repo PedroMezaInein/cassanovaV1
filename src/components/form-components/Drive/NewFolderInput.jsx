@@ -10,19 +10,10 @@ class NewFolderInput extends Component {
                 <Folder text='' closeFunction={newFolder} >
                     <div>
                         <form onSubmit={onSubmit} >
-                            <InputGray
-                                withtaglabel={0}
-                                withtextlabel={0}
-                                withplaceholder={0}
-                                withicon={0}
-                                requirevalidation={0}
-                                withformgroup={0}
-                                withformgroup={0}
-                                customclass={customclass}
-                                name={name}
-                                value={value}
-                                onChange={onChange}
-                            />
+                            <InputGray withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 }
+                                withicon = { 0 } requirevalidation = { 0 } withformgroup = { 0 }
+                                customclass = { customclass } name = { name } value = { value }
+                                onChange = { onChange } />
                         </form>
                     </div>
                 </Folder>

@@ -28,6 +28,7 @@ class LeadRhProveedor extends Component {
                         if (contacto.comentario === 'SE ENVIÓ CORREO PARA SOLICITAR UNA PRIMERA LLAMADA.') {
                             aux = false
                         }
+                        return ''
                     })
                     return aux
                 }

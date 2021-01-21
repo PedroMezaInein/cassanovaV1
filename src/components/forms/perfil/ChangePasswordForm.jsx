@@ -15,6 +15,7 @@ class ChangePasswordFrom extends Component {
 		empresas.map((empresa) => {
 			if (empresa.id.toString() === activeKey)
 				aux = empresa.name
+			return ''
 		})
 		return ' ' + aux
 	}
@@ -32,7 +33,7 @@ class ChangePasswordFrom extends Component {
 										<div className="row mx-0 px-0 col-md-12">
 											<div className="col-md-4 d-flex justify-content-center pb-2">
 												<span className="symbol symbol-circle symbol-xxl-100">
-													<img className="symbol-label p-1 font-size-h5 font-weight-bold bg-transparent" src={user.avatar ? user.avatar : "/default.jpg"} />
+													<img alt = 'avatar' className="symbol-label p-1 font-size-h5 font-weight-bold bg-transparent" src={user.avatar ? user.avatar : "/default.jpg"} />
 												</span>
 											</div>
 											<div className="col d-flex justify-content-center align-items-center">

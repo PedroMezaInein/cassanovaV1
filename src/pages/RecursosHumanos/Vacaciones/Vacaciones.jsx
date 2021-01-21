@@ -21,7 +21,7 @@ import readXlsxFile from 'read-excel-file'
 import moment from 'moment'
 import Swal from 'sweetalert2'
 import { Nav } from 'react-bootstrap'
-import { Parking, ParkingRed, PassportTravel, HappyBirthday, Calendar, EmptyParkSlot } from '../../../components/Lottie';
+import { /* Parking, ParkingRed, */ PassportTravel, HappyBirthday, Calendar /* , EmptyParkSlot */ } from '../../../components/Lottie';
 
 const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
 const dias = ['DOMINGO', 'LUNES', 'MARTES', 'MIÉRCOLES', 'JUEVES', 'VIERNES', 'SÁBADO']
@@ -301,7 +301,6 @@ class Vacaciones extends Component {
     }
     prinEstacionamiento = () => {
         const { eventos, options, form, formeditado } = this.state
-        let size = 3
         return (
             <>
                 {
