@@ -205,7 +205,7 @@ class PlanTrabajo extends Component{
         }
     }
 
-    printGantt = (empresa, dia) => {
+    printGantt = (empresa, dia, dato) => {
         const { año, mes } = this.state
         let actualMonth = (meses.indexOf(mes) + 1).toString()
         let _dia = dia
@@ -216,7 +216,7 @@ class PlanTrabajo extends Component{
         let variables = []
 
         let fecha = moment(`${año}-${actualMonth}-${_dia}`)
-        empresa.datos.map((dato)=>{
+        
             let from = moment(dato.fechaInicio)
             let to = moment(dato.fechaFin)
             if(fecha <= to && fecha >= from){
@@ -238,35 +238,34 @@ class PlanTrabajo extends Component{
                 variables.push(dato)
                 // console.log(variables)
             }
-            return ''
-        })
         return(
             <>
                 {
-                    variables.map((dato, index)=>{
+                    variables.map((dato1, index)=>{
                         return(
+                            // <p>{index}</p>
                             <OverlayTrigger key={index} overlay={
                                 <Tooltip>
                                     <span>
                                         <span className="mt-3 font-weight-bolder">
-                                            {dato.nombre}
+                                            {dato1.nombre}
                                         </span>
                                         <div>
                                             <div>
-                                                {dato.position}
+                                                {dato1.position}
                                             </div>
                                         </div>
                                     </span>
                                 </Tooltip>}>
-                                    <div className="position-relative">
-                                        <span className="text-plan" style = {{ backgroundColor: dato.color, color: dato.textColor }}>
-                                            {dato.nombre}
+                                    <div className= "">
+                                        <span className="text-plan" style = {{ backgroundColor: dato1.color, color: dato1.textColor }}>
+                                            {dato1.nombre}
                                         </span>
                                     </div>
                             </OverlayTrigger>
-                            // <div className = {`gantt-container gantt-container__${dato.position}`} key = { index } 
+                            // <div className = {`gantt-container gantt-container__${dato1.position}`} key = { index } 
                             //     >
-                            //     {dato.nombre}
+                            //     {dato1.nombre}
                             // </div>
                         )
                     })
@@ -379,7 +378,7 @@ class PlanTrabajo extends Component{
                             </div>
                         </div>
                         <div className="table-responsive-xl">
-                            <table className="table table-responsive table-bordered">
+                            <table className="table table-responsive table-bordered table-vertical-center">
                                 <thead className="text-center">
                                     <tr>
                                         <th>Empresa</th>
@@ -392,24 +391,61 @@ class PlanTrabajo extends Component{
                                 </thead>
                                 <tbody>
                                     {
-                                        data.empresas.map((empresa, index) => {
-                                            return(
-                                                <tr key = { index } >
-                                                    <td className="text-center">
-                                                        {empresa.name}    
-                                                    </td>            
-                                                    {
-                                                        [...Array(this.diasEnUnMes(mes, año))].map((element, key) => {
-                                                            return( 
-                                                                <td key = {key}>
-                                                                    {
-                                                                        this.printGantt(empresa, key+1)
-                                                                    }
-                                                                </td>
-                                                            )
-                                                        })
-                                                    }   
-                                                </tr>
+                                        
+                                        data.empresas.map((empresa, index) => { 
+                                            return( 
+                                                empresa.datos.map((dato,index1)=>{ 
+                                                    let fechaInicio = moment(dato.fechaInicio);
+                                                    let fechaFin = moment(dato.fechaFin); 
+                                                    let duracion = fechaFin.diff(fechaInicio, 'days') + 1; 
+                                                    let diaInicio = fechaInicio.date()
+                                                    let diaFin = fechaFin.date()
+                                                    console.log(diaInicio,diaFin)
+                                                    return( 
+                                                        <tr key = { index } class="h-30px">
+                                                            {
+                                                                (index1 == 0) ?
+                                                                    <td className="text-center" rowSpan={empresa.datos.length}>
+                                                                        {empresa.name}
+                                                                    </td> : ""
+                                                            }
+                                                            {
+                                                            [...Array(this.diasEnUnMes(mes, año))].map((element, diaActual) => {
+                                                                return( 
+                                                                    (diaActual+1>=diaInicio && diaActual+1<=diaFin)?
+                                                                        (diaActual+1===diaInicio)?
+                                                                        <td key = {diaActual} colSpan={duracion} class="text-center position-relative p-0"  > 
+                                                                            {
+                                                                                <OverlayTrigger key={diaActual} overlay={
+                                                                                    <Tooltip>
+                                                                                        <span>
+                                                                                            <span className="mt-3 font-weight-bolder">
+                                                                                                {dato.nombre}
+                                                                                            </span>
+                                                                                            <div>
+                                                                                                <div>
+                                                                                                    {dato.position}
+                                                                                                </div>
+                                                                                            </div>
+                                                                                        </span>
+                                                                                    </Tooltip>}>
+                                                                                        <div className= "text-truncate w-100 position-absolute  px-1 top-20"  style = {{ backgroundColor: dato.color, color: dato.textColor }}>
+                                                                                            <span className="  ">
+                                                                                                {dato.nombre}
+                                                                                            </span>
+                                                                                        </div>
+                                                                                </OverlayTrigger>
+                                                                            }
+                                                                        </td>
+                                                                        :""
+                                                                    :
+                                                                    <td></td>
+                                                                )
+                                                            })
+                                                        }
+                                                    </tr>
+                                                    )
+                                                    } )
                                                 
                                             )
                                         })
