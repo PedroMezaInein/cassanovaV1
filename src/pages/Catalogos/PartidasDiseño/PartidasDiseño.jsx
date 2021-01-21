@@ -58,6 +58,7 @@ class PartidasDiseño extends Component {
             aux.push({
                 actions: this.setActions(partida),
                 partida: renderToString(setTextTable(partida.nombre)),
+                tipo: renderToString(setTextTable(partida.tipo)),
                 id: partida.id
             })
             return false
@@ -84,6 +85,34 @@ class PartidasDiseño extends Component {
                 }       
         ) 
         return aux 
+    }
+
+    changePageEdit = partida => {
+        const { history } = this.props
+        history.push({
+            pathname: '/catalogos/partidas-diseño/edit',
+            state: { partida: partida}
+        });
+    }
+
+    openModalDelete = (partida) => {
+        const { modal } = this.state
+        modal.delete = true
+        this.setState({
+            ...this.state,
+            modal,
+            partida: partida
+        })
+    }
+
+    handleCloseDelete = () => {
+        const { modal } = this.state
+        modal.delete = false
+        this.setState({
+            ...this.state,
+            modal,
+            partida: ''
+        })
     }
 
     printTable = empresa => {
@@ -130,6 +159,28 @@ class PartidasDiseño extends Component {
                 else{ errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
             }
         ).catch((error)=>{
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async deletePartidaDiseñoAxios() {
+        const { access_token } = this.props.authUser
+        const { partida } = this.state
+        await axios.delete(URL_DEV + 'partidas-diseño/' + partida.id, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
+            (response) => {
+                const { modal, empresa } = this.state
+                modal.delete = false
+                this.setState({ ...this.state, modal, partida: '' })
+                this.getPartidas(empresa)
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito al usuario.')
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) { forbiddenAccessAlert() } 
+                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
+            }
+        ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
