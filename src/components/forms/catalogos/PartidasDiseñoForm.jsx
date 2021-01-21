@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
-import { TagInput, Button, SelectSearch } from '../../form-components'
+import { TagInput, Button, SelectSearch, Input } from '../../form-components'
 import { validateAlert } from '../../../functions/alert'
 class PartidasDiseñoForm extends Component {
 
@@ -14,7 +14,7 @@ class PartidasDiseñoForm extends Component {
     }
 
     render() {
-        const { options, form, onChange, onSubmit, formeditado, tagInputChange, ...props } = this.props
+        const { options, form, onChange, onSubmit, formeditado, tagInputChange, type, ...props } = this.props
         return (
             <Form id="form-partida"
                 onSubmit={
@@ -52,12 +52,15 @@ class PartidasDiseñoForm extends Component {
                         />
                     </div>
                     <div className="col-md-6">
-                        <TagInput
-                            tags={form.partidas} 
-                            onChange={tagInputChange} 
-                            placeholder={"NOMBRE DE LA PARTIDA"}
-                            iconclass={"far fa-folder-open"}
-                        />
+                        {
+                            type === 'add' ?
+                                <TagInput tags = { form.partidas } onChange = { tagInputChange }
+                                    placeholder= "NOMBRE DE LA PARTIDA" iconclass = "far fa-folder-open" />
+                            : 
+                                <Input requirevalidation = { 1 } formeditado = { formeditado } onChange = { onChange }
+                                    name = "nombre" type = "text" value = { form.nombre } placeholder = "NOMBRE DE LA PARTIDA"
+                                    iconclass = "far fa-folder-open" messageinc = "Incorrecto. Ingresa el nombre de la partida."/>
+                        }
                     </div>
                 </div>
                 <div className="card-footer py-3 pr-1">
