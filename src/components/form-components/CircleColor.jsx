@@ -3,12 +3,13 @@ import { CirclePicker } from 'react-color';
 
 class CircleColor extends Component {
     render() {
-        const {onChange, placeholder,colors} = this.props
+        const {onChange, placeholder, colors, width, circlesize } = this.props
         return (
             <div className="">
                 <div className="col-form-label">{placeholder}</div>
                 <CirclePicker
-                    // circleSize={20}
+                    circleSize={circlesize} 
+                    width={width}
                     colors={colors}
                     onChange={ onChange }
                 />
