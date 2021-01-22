@@ -258,14 +258,14 @@ class PlanTrabajo extends Component {
                 }
             }
         }
-        console.log(arregloOfCalendars, 'ARREGLO OF CALENDARS')
+        // console.log(arregloOfCalendars, 'ARREGLO OF CALENDARS')
         return { calendars: arregloOfCalendars, size: arregloOfCalendars.length}
     }
 
     printTd = (empresa, conteo, diaActual) => {
 
         if(empresa.name === 'INEIN')
-            console.log(empresa.calendars[conteo][diaActual], conteo, diaActual, "INEIN")
+            // console.log(empresa.calendars[conteo][diaActual], conteo, diaActual, "INEIN")
         
         if(empresa.calendars[conteo][diaActual] === null)
             return (
