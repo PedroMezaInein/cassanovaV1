@@ -2,17 +2,16 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import Layout from '../../../components/layout/layout'
-import { Card, FormText, OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { URL_DEV } from '../../../constants'
 import { Button, SelectSearchGray } from '../../../components/form-components'
-import { getMeses, getAños } from '../../../functions/setters'
+import { getMeses, getAños, setOptions } from '../../../functions/setters'
 import { errorAlert, forbiddenAccessAlert, waitAlert } from '../../../functions/alert'
 import moment from 'moment'
 import { Modal } from '../../../components/singles'
 import PlanTrabajoForm from '../../../components/forms/mercadotecnia/PlanTrabajoForm';
-import { isSet } from 'immutable'
-import { element } from 'prop-types'
 import Swal from 'sweetalert2'
+import { P } from '../../../components/texts'
 
 const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
 
@@ -29,7 +28,8 @@ class PlanTrabajo extends Component {
             responsable: '',
             rol: '',
             descripcion: '',
-            color: ''
+            color: '',
+            usuarios: []
         },
         mes: meses[new Date().getMonth()],
         año: new Date().getFullYear(),
@@ -39,6 +39,7 @@ class PlanTrabajo extends Component {
         },
         options: {
             empresas:[],
+            usuarios: []
         }
     }
 
@@ -58,8 +59,8 @@ class PlanTrabajo extends Component {
         const { access_token } = this.props.authUser
         await axios.get(`${URL_DEV}mercadotecnia/plan-trabajo?mes=${mes}&anio=${año}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { empresas } = response.data
-                const { data, modal } = this.state
+                const { empresas, users, roles } = response.data
+                const { data, modal, options } = this.state
                 modal.form = false
 
                 empresas.map((empresa) => {
@@ -68,10 +69,18 @@ class PlanTrabajo extends Component {
                     empresa.rowSpanSize = response.size
                     empresa.calendars = response.calendars
                 })
-                
+                options.usuarios = []
+                options.empresas = setOptions(empresas, 'name', 'id')
+                users.map((user) => {
+                    options.usuarios.push({
+                        text: user.name,
+                        value: user.id.toString(),
+                        label: user.name
+                    })
+                })
                 data.empresas = empresas
                 Swal.close()
-                this.setState({ ...this.state, data, mes: mes, año: año, dias: this.diasEnUnMes(mes, año), modal, form: this.clearForm() })
+                this.setState({ ...this.state, data, mes: mes, año: año, dias: this.diasEnUnMes(mes, año), modal, form: this.clearForm(), options })
             },
             (error) => {
                 console.log(error, 'error')
@@ -189,6 +198,9 @@ class PlanTrabajo extends Component {
         let aux = Object.keys(form)
         aux.map((element) => {
             switch (element) {
+                case 'usuarios':
+                    form[element] = [];
+                    break;
                 default:
                     form[element] = '';
                     break;
@@ -217,6 +229,26 @@ class PlanTrabajo extends Component {
             ...this.setState({
                 form
             })
+        })
+    }
+
+    onChangeAndAdd = (e, arreglo) => {
+        const { value } = e.target
+        const { options, form } = this.state
+        let auxArray = form[arreglo]
+        let aux = []
+        options[arreglo].find(function (_aux) {
+            if (_aux.value.toString() === value.toString())
+                auxArray.push(_aux)
+            else
+                aux.push(_aux)
+            return false
+        })
+        form[arreglo] = auxArray
+        this.setState({
+            ...this.state,
+            form,
+            options
         })
     }
 
@@ -405,7 +437,8 @@ class PlanTrabajo extends Component {
                     </Card.Body>
                 </Card>
                 <Modal size="xl" title={title} show={modal.form} handleClose={this.handleCloseForm}>
-                    <PlanTrabajoForm form = { form } onChange = { this.onChange } options = { options } onSubmit = { this.onSubmit }/>
+                    <PlanTrabajoForm form = { form } onChange = { this.onChange } options = { options } onSubmit = { this.onSubmit }
+                        onChangeAndAdd = { this.onChangeAndAdd } />
                 </Modal>
             </Layout>
         )
