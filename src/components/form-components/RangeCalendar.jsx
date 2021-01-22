@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { DateRangePicker } from 'react-date-range';
+import { DateRange  } from 'react-date-range';
 import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 // import { addDays } from 'date-fns';
@@ -105,7 +105,7 @@ class RangeCalendar extends Component {
         
         return (
             
-            <DateRangePicker
+            <DateRange 
                 disabledDates = { disabledDates }
                 onChange={ (item) => { this.updateRange(item)} }
                 showSelectionPreview = { true }

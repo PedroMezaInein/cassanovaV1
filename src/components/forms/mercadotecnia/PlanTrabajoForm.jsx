@@ -1,12 +1,18 @@
 import React, { Component } from 'react'
 import { Form, Row, Col } from 'react-bootstrap'
 import { validateAlert } from '../../../functions/alert';
-import { Button, Input, RangeCalendar, TagSelectSearch, CircleColor } from '../../form-components';
+import { Button, Input, RangeCalendar, TagSelectSearch, CircleColor, SelectCreate, SelectSearch } from '../../form-components';
 const $ = require('jquery');
 
-const colors = ["#f44336", "#e91e63", "#9c27b0", "#673ab7", "#3f51b5", "#2196f3", "#03a9f4", "#00bcd4", "#009688", "#4caf50", "#8bc34a", "#cddc39", "#ffeb3b", "#ffc107", "#ff9800", "#ff5722", "#795548", "#607d8b"];
+const colors = ["#20ACE9", "#EE4C9E", "#62D270 ", "#E63850", "#A962E2", "#E4C127", "#1D69E1", "#8C5E4D", "##737373"];
 
 class PlanTrabajoForm extends Component{
+    state = {
+        optionsCreate: [{"label":"label", "value":"value"}],
+        elementoActual: {"label":"label", "value":"value"},
+        mostrarColor:false
+    };
+
     updateRangeCalendar = range => {
         const { startDate, endDate } = range
         const { onChange } = this.props
@@ -46,18 +52,59 @@ class PlanTrabajoForm extends Component{
         onChange({ target: { value: value, name: 'responsable' } })
     }
 
-    handleChangeColor(color,event) {
-        console.log(color, 'color')
-        // console.log(event, 'event')
+    handleChangeColor = (color) => {
+        const { onChange } = this.props
+        let {elementoActual} = this.state
+
+        onChange({ target: { value: color.hex, name: 'color' } })
+        elementoActual["color"] = color.hex;
+        
+        this.setState({
+            elementoActual
+        });
+    }
+
+    handleChangeCreate = (newValue) => {
+        let nuevoValue ={
+            "label":newValue,
+            "value":newValue,
+            "color":""
+        }
+        this.setState({
+            elementoActual: nuevoValue,
+        });
+    };
+    handleCreateOption = (inputValue) => {
+        let {optionsCreate, mostrarColor} = this.state
+        let newOption = {
+            "label":inputValue,
+            "value":inputValue,
+            "color":""
+        }
+        optionsCreate.push( newOption )
+        mostrarColor=true
+        this.setState({
+            optionsCreate,
+            elementoActual: newOption,
+            mostrarColor
+        });
+        
+    };
+    updateEmpresa = value => {
+        const { onChange } = this.props
+        onChange({ target: { value: value, name: 'empresa' } })
     }
     render(){
+        const {  elementoActual, optionsCreate,mostrarColor } = this.state
         const { title, options, form, onChange, onSubmit, formeditado, ...props } = this.props
+        console.log(mostrarColor)
         return(
             <Form id="form-plan" {...props} onSubmit={(e) => { e.preventDefault(); validateAlert(onSubmit, e, 'form-plan') }}>
                 <Row>
-                    <Col md={6}>
+                    <Col md={5} className="d-flex align-items-center justify-content-center">
                         <div className="form-group row form-group-marginless mt-4">
-                            <div className="col-md-12 d-flex justify-content-center">
+                            <div className="col-md-12 text-center">
+                                <label className="col-form-label my-2 font-weight-bolder">Fecha de inicio - Fecha final</label><br/>
                                 <RangeCalendar
                                     onChange={this.updateRangeCalendar}
                                     start={form.fechaInicio}
@@ -66,9 +113,9 @@ class PlanTrabajoForm extends Component{
                             </div>
                         </div>
                     </Col>
-                    <Col md={6}>
+                    <Col md={7}>
                         <div className="form-group row form-group-marginless mt-4">
-                            <div className="col-md-12">
+                            <div className="col-md-6">
                                 <Input
                                     requirevalidation={1}
                                     name="nombre"
@@ -76,43 +123,87 @@ class PlanTrabajoForm extends Component{
                                     onChange={onChange}
                                     placeholder="NOMBRE DEL PLAN"
                                     formeditado={formeditado}
-                                    iconclass="far fa-building"
+                                    iconclass="fas fa-tasks"
                                     messageinc="Incorrecto. Ingresa el nombre del plan."
                                 />
                             </div>
-                            <div className="col-md-12 mt-3">
+                            <div className="col-md-6">
                                 <TagSelectSearch 
                                     placeholder = "SELECCIONA LO(S) RESPONSABLE(S)"
                                     options = { this.transformarOptions(options.usuarios) }
                                     defaultvalue = { this.transformarOptions(form.usuarios) }
                                     onChange = { this.nuevoUpdateUsuarios }
-                                    requirevalidation = { 0 } iconclass = "far fa-user"
+                                    requirevalidation = { 0 }
+                                    iconclass = "far fa-user"
                                     messageinc = "Incorrecto. Selecciona lo(s) responsable(s)"
                                 />
                             </div>
-                            <div className="col-md-12 mt-3">
-                                <Input
-                                    requirevalidation={1}
-                                    name="rol"
-                                    value={form.rol}
-                                    onChange={onChange}
-                                    placeholder="NOMBRE DEL ROL"
+                        </div>
+                        <div className="separator separator-dashed mt-1 mb-2"></div>
+                        <div className="form-group row form-group-marginless">
+                            <div className="col-md-6">
+                                <SelectSearch
                                     formeditado={formeditado}
-                                    iconclass="far fa-building"
-                                    messageinc="Incorrecto. Ingresa el nombre del rol."
+                                    options={options.empresas}
+                                    placeholder='EMPRESA'
+                                    name='empresa'
+                                    value={form.empresa}
+                                    onChange={this.updateEmpresa}
+                                    iconclass={"far fa-building"}
+                                    messageinc="Incorrecto. Selecciona la empresa"
                                 />
                             </div>
-                            <div className="col-md-12 d-flex justify-content-start">
-                                <CircleColor
-                                    onChange={ this.handleChangeColor }
-                                    placeholder="SELECCIONA EL COLOR DEL ROL"
-                                    colors={colors}
+                            <div className="col-md-6">
+                                <SelectCreate
+                                    placeholder="SELECCIONA/AGREGA EL ROL"
+                                    iconclass={"far fa-file-alt"}
+                                    requirevalidation={1}
+                                    messageinc="Incorrecto. Selecciona/agrega el rol."
+                                    onChange={this.handleChangeCreate}
+                                    onCreateOption={this.handleCreateOption}
+                                    elementoactual={elementoActual}
+                                    options = { optionsCreate }
                                 />
                             </div>
                         </div>
+                        <div className="separator separator-dashed mt-1 mb-2"></div>
+                        <div className="form-group row form-group-marginless">
+                            <div className="col-md-12">
+                                <Input
+                                    requirevalidation={0}
+                                    formeditado={formeditado}
+                                    rows="3"
+                                    as="textarea"
+                                    placeholder="DESCRIPCIÓN"
+                                    name="descripcion"
+                                    value={form.descripcion}
+                                    onChange={onChange}
+                                    style={{ paddingLeft: "10px" }}
+                                    messageinc="Incorrecto. Ingresa la descripción."
+                                />
+                            </div>
+                        </div>
+                        {
+                            mostrarColor ?
+                            <>
+                                <div className="separator separator-dashed mt-1 mb-2"></div>
+                                <div className="form-group row form-group-marginless">
+                                    <div className="col-md-12">
+                                            <CircleColor
+                                                circlesize={23}
+                                                width="auto"
+                                                onChange={ this.handleChangeColor }
+                                                placeholder="SELECCIONA EL COLOR DEL ROL"
+                                                colors={colors}
+                                        />
+                                    </div>
+                                </div>
+                            </>
+                            :""
+                        }
+                        
                     </Col>
                 </Row>
-                
                 <div className="card-footer py-3 pr-1 text-right">
                     <Button icon='' className="btn btn-primary" text="ENVIAR"
                         onClick={(e) => { e.preventDefault(); validateAlert(onSubmit, e, 'form-plan') }} />

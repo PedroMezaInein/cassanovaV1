@@ -1251,6 +1251,9 @@ div#znav-container {
 .letter-spacing-1 {
     letter-spacing: 1px !important;
 }
+.letter-spacing-0-4 {
+    letter-spacing: 0.4px !important;
+}
 
 // .z{
 //     opacity: 1;
@@ -1464,5 +1467,26 @@ span.font-weight-bolder.text-hover-error:hover{
 .custom-item-red{
     .bar{
         fill: red!important;
+    }
+}
+
+.top-20 {
+    top:20%;
+}
+
+.hidden-subtitle{
+    @include down-screen($sm) {
+        visibility:hidden
+    }
+}
+.show-lista{
+    visibility:hidden;
+    @include down-screen($sm) {
+        visibility: visible;
+    }
+}
+.hidden-label{
+    @include down-screen($sm) {
+        display: none;
     }
 }
