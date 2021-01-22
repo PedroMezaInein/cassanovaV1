@@ -8,8 +8,9 @@ const colors = ["#20ACE9", "#EE4C9E", "#62D270 ", "#E63850", "#A962E2", "#E4C127
 
 class PlanTrabajoForm extends Component{
     state = {
-        optionsCreate: [],
-        elementoActual: {},
+        optionsCreate: [{"label":"label", "value":"value"}],
+        elementoActual: {"label":"label", "value":"value"},
+        mostrarColor:false
     };
 
     updateRangeCalendar = range => {
@@ -64,25 +65,28 @@ class PlanTrabajoForm extends Component{
     }
 
     handleChangeCreate = (newValue) => {
+        let nuevoValue ={
+            "label":newValue,
+            "value":newValue,
+            "color":""
+        }
         this.setState({
-            elementoActual: {
-                "label":newValue,
-                "value":newValue,
-                "color":""
-            }
+            elementoActual: nuevoValue,
         });
     };
     handleCreateOption = (inputValue) => {
-        let {optionsCreate} = this.state
+        let {optionsCreate, mostrarColor} = this.state
         let newOption = {
             "label":inputValue,
             "value":inputValue,
             "color":""
         }
         optionsCreate.push( newOption )
+        mostrarColor=true
         this.setState({
             optionsCreate,
-            elementoActual: newOption
+            elementoActual: newOption,
+            mostrarColor
         });
         
     };
@@ -91,9 +95,9 @@ class PlanTrabajoForm extends Component{
         onChange({ target: { value: value, name: 'empresa' } })
     }
     render(){
-        const {  elementoActual, optionsCreate } = this.state
+        const {  elementoActual, optionsCreate,mostrarColor } = this.state
         const { title, options, form, onChange, onSubmit, formeditado, ...props } = this.props
-        console.log(elementoActual)
+        console.log(mostrarColor)
         return(
             <Form id="form-plan" {...props} onSubmit={(e) => { e.preventDefault(); validateAlert(onSubmit, e, 'form-plan') }}>
                 <Row>
@@ -179,18 +183,25 @@ class PlanTrabajoForm extends Component{
                                 />
                             </div>
                         </div>
-                        <div className="separator separator-dashed mt-1 mb-2"></div>
-                        <div className="form-group row form-group-marginless">
-                            <div className="col-md-12">
-                                <CircleColor
-                                    circlesize={23}
-                                    width="auto"
-                                    onChange={ this.handleChangeColor }
-                                    placeholder="SELECCIONA EL COLOR DEL ROL"
-                                    colors={colors}
-                                />
-                            </div>
-                        </div>
+                        {
+                            mostrarColor ?
+                            <>
+                                <div className="separator separator-dashed mt-1 mb-2"></div>
+                                <div className="form-group row form-group-marginless">
+                                    <div className="col-md-12">
+                                            <CircleColor
+                                                circlesize={23}
+                                                width="auto"
+                                                onChange={ this.handleChangeColor }
+                                                placeholder="SELECCIONA EL COLOR DEL ROL"
+                                                colors={colors}
+                                        />
+                                    </div>
+                                </div>
+                            </>
+                            :""
+                        }
+                        
                     </Col>
                 </Row>
                 <div className="card-footer py-3 pr-1 text-right">
