@@ -72,21 +72,21 @@ class PlanTrabajoForm extends Component{
         }
         this.setState({
             elementoActual: nuevoValue,
+            mostrarColor:false
         });
     };
     handleCreateOption = (inputValue) => {
-        let {optionsCreate, mostrarColor} = this.state
+        let {optionsCreate} = this.state
         let newOption = {
             "label":inputValue,
             "value":inputValue,
             "color":""
         }
         optionsCreate.push( newOption )
-        mostrarColor=true
         this.setState({
             optionsCreate,
             elementoActual: newOption,
-            mostrarColor
+            mostrarColor:true
         });
         
     };
@@ -97,7 +97,7 @@ class PlanTrabajoForm extends Component{
     render(){
         const {  elementoActual, optionsCreate,mostrarColor } = this.state
         const { title, options, form, onChange, onSubmit, formeditado, ...props } = this.props
-        console.log(mostrarColor)
+        console.log(elementoActual)
         return(
             <Form id="form-plan" {...props} onSubmit={(e) => { e.preventDefault(); validateAlert(onSubmit, e, 'form-plan') }}>
                 <Row>
