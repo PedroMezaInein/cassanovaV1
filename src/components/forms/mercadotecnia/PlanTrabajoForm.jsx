@@ -51,9 +51,16 @@ class PlanTrabajoForm extends Component{
         onChange({ target: { value: value, name: 'responsable' } })
     }
 
-    handleChangeColor(color) {
+    handleChangeColor = (color) => {
         const { onChange } = this.props
+        let {elementoActual} = this.state
+
         onChange({ target: { value: color.hex, name: 'color' } })
+        elementoActual["color"] = color.hex;
+        
+        this.setState({
+            elementoActual
+        });
     }
 
     handleChangeCreate = (newValue) => {
@@ -86,6 +93,7 @@ class PlanTrabajoForm extends Component{
     render(){
         const {  elementoActual, optionsCreate } = this.state
         const { title, options, form, onChange, onSubmit, formeditado, ...props } = this.props
+        console.log(elementoActual)
         return(
             <Form id="form-plan" {...props} onSubmit={(e) => { e.preventDefault(); validateAlert(onSubmit, e, 'form-plan') }}>
                 <Row>
