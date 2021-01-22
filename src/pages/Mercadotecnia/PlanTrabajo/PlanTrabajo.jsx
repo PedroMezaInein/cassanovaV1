@@ -327,7 +327,23 @@ class PlanTrabajo extends Component {
             }
         }
     }
-
+    deleteOption = (option, arreglo) => {
+        const { form, options } = this.state
+        let aux = []
+        form[arreglo].map((element, key) => {
+            if (option.value.toString() !== element.value.toString())
+                aux.push(element)
+            else
+                options[arreglo].push(element)
+            return false
+        })
+        form[arreglo] = aux
+        this.setState({
+            ...this.state,
+            options,
+            form
+        })
+    }
     render() {
         const { mes, año, data, form, modal, title, options, dias } = this.state
         return (
@@ -438,7 +454,7 @@ class PlanTrabajo extends Component {
                 </Card>
                 <Modal size="xl" title={title} show={modal.form} handleClose={this.handleCloseForm}>
                     <PlanTrabajoForm form = { form } onChange = { this.onChange } options = { options } onSubmit = { this.onSubmit }
-                        onChangeAndAdd = { this.onChangeAndAdd } />
+                        onChangeAndAdd = { this.onChangeAndAdd } deleteOption = { this.deleteOption } />
                 </Modal>
             </Layout>
         )
