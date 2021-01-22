@@ -2,26 +2,10 @@ import React, { Component } from 'react';
 import CreatableSelect from 'react-select/creatable';
 
 class SelectCreate extends Component {
-    state = {
-        isLoading: false,
-        value: undefined,
-    }
 
-    handleChange = (newValue, actionMeta) => {
-        // console.group('Value Changed');
-        // console.log(newValue, "newValue");
-        // console.log(`action: ${actionMeta.action}`);
-        // console.groupEnd();
-    };
-    handleInputChange = (inputValue, actionMeta) => {
-        // console.group('Input Changed');
-        // console.log(inputValue);
-        // console.log(`action: ${actionMeta.action}`);
-        // console.groupEnd();
-    };
+    
     render() {
-        const {options} = this.state
-        const { placeholder, onChange, defaultvalue, iconclass, requirevalidation, messageinc} = this.props
+        const { placeholder, onChange, onCreateOption, iconclass, requirevalidation, messageinc, options, elementoactual} = this.props
         const customStyles = {
             indicatorSeparator: () => ({ 
                 backgroundColor:'transparent !important'
@@ -56,17 +40,17 @@ class SelectCreate extends Component {
                 position:'relative',
                 transition:'all 100ms',
                 boxSizing:'border-box',
-                // borderColor: requirevalidation?(defaultvalue.length>0?'#388E3C !important':'#F64E60!important'):'#388E3C !important',
+                borderColor: requirevalidation?(elementoactual.value !== undefined && elementoactual.value !== null ?'#388E3C !important':'#F64E60!important'):'#388E3C !important',
                 paddingLeft:'calc(1.5em + 1.3rem + 2px) !important'
             }),
             dropdownIndicator: () => ({ 
-                // color:requirevalidation?(defaultvalue.length>0?'#388E3C !important':'#F64E60!important'):'#388E3C !important',
+                color:requirevalidation?(elementoactual.value !== undefined && elementoactual.value !== null ?'#388E3C !important':'#F64E60!important'):'#388E3C !important',
                 display: 'flex',
                 padding: '8px',
                 boxSizing:'border-box',
             }),
             clearIndicator: () => ({ 
-                // color:requirevalidation?(defaultvalue.length>0?'#388E3C !important':'#F64E60!important'):'#388E3C !important',
+                color:requirevalidation?(elementoactual.value !== undefined && elementoactual.value !== null ?'#388E3C !important':'#F64E60!important'):'#388E3C !important',
                 display: 'flex',
                 padding: '8px',
                 boxSizing:'border-box'
@@ -87,18 +71,19 @@ class SelectCreate extends Component {
                         <i className={iconclass + " m-0 kt-font-boldest text-primary zindex-2"} ></i>
                     </span>
                     <CreatableSelect
+                        noOptionsMessage={() => "NO HAY OPCIONES"}
                         isClearable
-                        onChange={this.handleChange}
-                        onInputChange={this.handleInputChange}
+                        onChange={onChange}
+                        onCreateOption={onCreateOption}
                         options={options}
+                        value={elementoactual}
                         styles={customStyles}
                         placeholder={placeholder}
-                        noOptionsMessage={() => "NO HAY MÁS OPCIONES"}
                     />
                 </div>
-                {/* {
-                    requirevalidation ? (defaultvalue.length > 0 ? '' : <span className={"form-text text-danger"}> {messageinc} </span>) : ''
-                } */}
+                {
+                    requirevalidation ? (elementoactual.value !== undefined && elementoactual.value !== null ? '' : <span className={"form-text text-danger"}> {messageinc} </span>) : ''
+                }
             </div>
         )
     }
