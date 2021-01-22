@@ -96,25 +96,21 @@ class PlanTrabajoForm extends Component{
                         <div className="separator separator-dashed mt-1 mb-2"></div>
                         <div className="form-group row form-group-marginless">
                             <div className="col-md-6">
-                                <Input
+                                <SelectCreate
+                                    placeholder="SELECCIONA/AGREGA EL ROL"
+                                    iconclass={"far fa-file-alt"}
                                     requirevalidation={1}
-                                    name="rol"
-                                    value={form.rol}
-                                    onChange={onChange}
-                                    placeholder="NOMBRE DEL ROL"
-                                    formeditado={formeditado}
-                                    iconclass="far fa-file-alt"
-                                    messageinc="Incorrecto. Ingresa el nombre del rol."
+                                    messageinc="Incorrecto. Selecciona/agrega el rol."
+                                    options={options.rol}
                                 />
                             </div>
                             <div className="col-md-6">
-                                <SelectCreate
-                                    // Falta cambiar el nombre de placeholder
-                                    placeholder="SELECCIONA El USUARIOS"
-                                    iconclass={"far fa-user"}
-                                    requirevalidation={1}
-                                    messageinc="Incorrecto. Selecciona el usuario."
-                                    options={options.usuarios}
+                                <CircleColor
+                                    circlesize={23}
+                                    width="auto"
+                                    onChange={ this.handleChangeColor }
+                                    placeholder="SELECCIONA EL COLOR DEL ROL"
+                                    colors={colors}
                                 />
                             </div>
                         </div>
@@ -132,18 +128,6 @@ class PlanTrabajoForm extends Component{
                                     onChange={onChange}
                                     style={{ paddingLeft: "10px" }}
                                     messageinc="Incorrecto. Ingresa la descripción."
-                                />
-                            </div>
-                        </div>
-                        <div className="separator separator-dashed mt-1 mb-2"></div>
-                        <div className="form-group row form-group-marginless mb-2">
-                            <div className="col-md-12 d-flex justify-content-start">
-                                <CircleColor
-                                    circlesize={23}
-                                    width="auto"
-                                    onChange={ this.handleChangeColor }
-                                    placeholder="SELECCIONA EL COLOR DEL ROL"
-                                    colors={colors}
                                 />
                             </div>
                         </div>
