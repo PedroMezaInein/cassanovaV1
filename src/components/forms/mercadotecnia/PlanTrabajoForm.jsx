@@ -1,12 +1,17 @@
 import React, { Component } from 'react'
 import { Form, Row, Col } from 'react-bootstrap'
 import { validateAlert } from '../../../functions/alert';
-import { Button, Input, RangeCalendar, TagSelectSearch, CircleColor, SelectCreate } from '../../form-components';
+import { Button, Input, RangeCalendar, TagSelectSearch, CircleColor, SelectCreate, SelectSearch } from '../../form-components';
 const $ = require('jquery');
 
 const colors = ["#20ACE9", "#EE4C9E", "#62D270 ", "#E63850", "#A962E2", "#E4C127", "#1D69E1", "#8C5E4D", "##737373"];
 
 class PlanTrabajoForm extends Component{
+    state = {
+        optionsCreate: [],
+        elementoActual: {},
+    };
+
     updateRangeCalendar = range => {
         const { startDate, endDate } = range
         const { onChange } = this.props
@@ -46,11 +51,44 @@ class PlanTrabajoForm extends Component{
         onChange({ target: { value: value, name: 'responsable' } })
     }
 
-    handleChangeColor(color,event) {
-        console.log(color, 'color')
-        // console.log(event, 'event')
+    handleChangeColor(color) {
+        // const { elementoActual } = this.state
+        // console.log(elementoActual)
+        console.log(color.hex, 'color')
+        // elementoActual.map((value) => {
+        //     value.color = color.hex
+        // });
+    }
+
+    handleChangeCreate = (newValue) => {
+        this.setState({
+            elementoActual: {
+                "label":newValue,
+                "value":newValue,
+                "color":""
+            }
+        });
+    };
+    handleCreateOption = (inputValue) => {
+        let {optionsCreate} = this.state
+        let newOption = {
+            "label":inputValue,
+            "value":inputValue,
+            "color":""
+        }
+        optionsCreate.push( newOption )
+        this.setState({
+            optionsCreate,
+            elementoActual: newOption
+        });
+        
+    };
+    updateEmpresa = value => {
+        const { onChange } = this.props
+        onChange({ target: { value: value, name: 'empresa' } })
     }
     render(){
+        const {  elementoActual, optionsCreate } = this.state
         const { title, options, form, onChange, onSubmit, formeditado, ...props } = this.props
         return(
             <Form id="form-plan" {...props} onSubmit={(e) => { e.preventDefault(); validateAlert(onSubmit, e, 'form-plan') }}>
@@ -96,21 +134,27 @@ class PlanTrabajoForm extends Component{
                         <div className="separator separator-dashed mt-1 mb-2"></div>
                         <div className="form-group row form-group-marginless">
                             <div className="col-md-6">
+                                <SelectSearch
+                                    formeditado={formeditado}
+                                    options={options.empresas}
+                                    placeholder='EMPRESA'
+                                    name='empresa'
+                                    value={form.empresa}
+                                    onChange={this.updateEmpresa}
+                                    iconclass={"far fa-building"}
+                                    messageinc="Incorrecto. Selecciona la empresa"
+                                />
+                            </div>
+                            <div className="col-md-6">
                                 <SelectCreate
                                     placeholder="SELECCIONA/AGREGA EL ROL"
                                     iconclass={"far fa-file-alt"}
                                     requirevalidation={1}
                                     messageinc="Incorrecto. Selecciona/agrega el rol."
-                                    options={options.rol}
-                                />
-                            </div>
-                            <div className="col-md-6">
-                                <CircleColor
-                                    circlesize={23}
-                                    width="auto"
-                                    onChange={ this.handleChangeColor }
-                                    placeholder="SELECCIONA EL COLOR DEL ROL"
-                                    colors={colors}
+                                    onChange={this.handleChangeCreate}
+                                    onCreateOption={this.handleCreateOption}
+                                    elementoactual={elementoActual}
+                                    options = { optionsCreate }
                                 />
                             </div>
                         </div>
@@ -131,9 +175,20 @@ class PlanTrabajoForm extends Component{
                                 />
                             </div>
                         </div>
+                        <div className="separator separator-dashed mt-1 mb-2"></div>
+                        <div className="form-group row form-group-marginless">
+                            <div className="col-md-12">
+                                <CircleColor
+                                    circlesize={23}
+                                    width="auto"
+                                    onChange={ this.handleChangeColor }
+                                    placeholder="SELECCIONA EL COLOR DEL ROL"
+                                    colors={colors}
+                                />
+                            </div>
+                        </div>
                     </Col>
                 </Row>
-                
                 <div className="card-footer py-3 pr-1 text-right">
                     <Button icon='' className="btn btn-primary" text="ENVIAR"
                         onClick={(e) => { e.preventDefault(); validateAlert(onSubmit, e, 'form-plan') }} />
