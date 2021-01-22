@@ -2,155 +2,140 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import Layout from '../../../components/layout/layout'
-import { Card, OverlayTrigger, Tooltip} from 'react-bootstrap'
+import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { URL_DEV } from '../../../constants'
 import { Button, SelectSearchGray } from '../../../components/form-components'
-import { getMeses, getAños } from '../../../functions/setters'
-import { errorAlert, forbiddenAccessAlert } from '../../../functions/alert'
+import { getMeses, getAños, setOptions } from '../../../functions/setters'
+import { errorAlert, forbiddenAccessAlert, waitAlert } from '../../../functions/alert'
 import moment from 'moment'
 import { Modal } from '../../../components/singles'
 import PlanTrabajoForm from '../../../components/forms/mercadotecnia/PlanTrabajoForm';
+import Swal from 'sweetalert2'
+import { P } from '../../../components/texts'
 
 const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
-class PlanTrabajo extends Component{
+
+class PlanTrabajo extends Component {
 
     state = {
         modal: {
             form: false
         },
-        form:{
+        form: {
             fechaInicio: new Date(),
             fechaFin: new Date(),
-            nombre:'',
-            responsable:'',
-            rol:'',
-            color:''
+            nombre: '',
+            responsable: '',
+            rol: '',
+            descripcion: '',
+            color: '',
+            usuarios: []
         },
         mes: meses[new Date().getMonth()],
         año: new Date().getFullYear(),
+        dias: this.diasEnUnMes(meses[new Date().getMonth()],new Date().getFullYear()),
         data: {
             empresas: []
         },
-        options: [
-            
-        ]
+        options: {
+            empresas:[],
+            usuarios: []
+        }
     }
 
-    componentDidMount(){
+    componentDidMount() {
+        const { mes, año } = this.state
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
         permisos.find(function (element, index) {
             const { modulo: { url } } = element
             return pathname === url
         });
-        this.getContentAxios()
+        this.getContentAxios(mes, año)
     }
 
-    getContentAxios = async() => {
+    getContentAxios = async (mes, año) => {
+        waitAlert()
         const { access_token } = this.props.authUser
-        const { mes, año } = this.state
-        await axios.get(`${URL_DEV}mercadotecnia/plan-trabajo?mes=${mes}&anio=${año}`, { headers: { Authorization: `Bearer ${access_token}`}  }).then(
+        await axios.get(`${URL_DEV}mercadotecnia/plan-trabajo?mes=${mes}&anio=${año}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { empresas } = response.data
-                const { data } = this.state
-                data.empresas = empresas
-                data.empresas.map((empresa) => {
-                    if(empresa.name === 'INEIN'){
-                        empresa.datos = [
-                            {
-                                fechaInicio: '2021-01-13',
-                                fechaFin: '2021-01-13',
-                                duration: 1,
-                                nombre: 'MANTENIMIENTO DE CAMPAÑA',
-                                color: '#eee5ff',
-                                textColor: '#8950fc'
-                            },
-                            {
-                                fechaInicio: '2021-01-06',
-                                fechaFin: '2021-01-09',
-                                duration: 4,
-                                nombre: 'ANÁLISIS DE KEYWORDS',
-                                color: '#eee5ff',
-                                textColor: '#8950fc'
-                            },
-                            {
-                                fechaInicio: '2021-01-06',
-                                fechaFin: '2021-01-08',
-                                duration: 3,
-                                nombre: 'ENTRADA DE BLOGS',
-                                color: '#E8F5E9',
-                                textColor: '#388E3C'
-                            }
-                        ]
-                    }else if(empresa.name === 'INFRAESTRUCTURA MÉDICA'){
-                        empresa.datos = [
-                            {
-                                fechaInicio: '2021-01-11',
-                                fechaFin: '2021-01-11',
-                                duration: 1,
-                                nombre: 'CAMBIOS DE SITIO',
-                            },
-                            {
-                                fechaInicio: '2021-01-04',
-                                fechaFin: '2021-01-06',
-                                duration: 3,
-                                nombre: 'ESTRATEGIA SEO',
-                            }
-                        ]
-                    }else if(empresa.name === 'VITARA'){
-                        empresa.datos = [
-                            {
-                                fechaInicio: '2021-01-03',
-                                fechaFin: '2021-01-05',
-                                duration: 3,
-                                nombre: 'CREACIÓN DE REPORTES',
-                            },
-                            {
-                                fechaInicio: '2021-01-11',
-                                fechaFin: '2021-01-12',
-                                duration: 2,
-                                nombre: 'FOTOGRAFÍAS',
-                            }
-                        ]
-                    }
-                    else{
-                        empresa.datos = []
-                    }
-                    return ''
+                const { empresas, users, roles } = response.data
+                const { data, modal, options } = this.state
+                modal.form = false
+
+                empresas.map((empresa) => {
+                    empresa.datos = empresa.planes
+                    let response = this.getRowspan(empresa.datos)
+                    empresa.rowSpanSize = response.size
+                    empresa.calendars = response.calendars
                 })
-                this.setState({...this.state, data})
+                options.usuarios = []
+                options.empresas = setOptions(empresas, 'name', 'id')
+                users.map((user) => {
+                    options.usuarios.push({
+                        text: user.name,
+                        value: user.id.toString(),
+                        label: user.name
+                    })
+                })
+                data.empresas = empresas
+                Swal.close()
+                this.setState({ ...this.state, data, mes: mes, año: año, dias: this.diasEnUnMes(mes, año), modal, form: this.clearForm(), options })
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) { forbiddenAccessAlert() } 
+                if (error.response.status === 401) { forbiddenAccessAlert() }
                 else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
             }
-        ).catch((error)=>{
+        ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
 
-    diasEnUnMes(mes, año) {
-        return new Date(año, meses.indexOf(mes) + 1, 0).getDate(); 
+    addPlanAxios = async() => {
+        const { form } = this.state
+        const { access_token } = this.props.authUser
+        await axios.post(`${URL_DEV}mercadotecnia/plan-trabajo`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { mes, año } = this.state
+                this.getContentAxios( mes, año )
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) { forbiddenAccessAlert() }
+                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
     }
 
-    updateMes = value => { this.setState({ ...this.state, mes: value }) }
-    
-    updateAño = value => { this.setState({...this.state, año: value}) }
+    diasEnUnMes(mes, año) { return new Date(año, meses.indexOf(mes) + 1, 0).getDate(); }
+
+    updateMes = value => { 
+        const { año } = this.state
+        this.getContentAxios( value, año )
+    }
+
+    updateAño = value => { 
+        const { mes } = this.state
+        this.getContentAxios( mes, value )
+    }
 
     isActiveBackButton = () => {
         const { mes, año } = this.state
         let actualMonth = meses.indexOf(mes)
-        if(actualMonth === 0 ){
+        if (actualMonth === 0) {
             let _mes = new Date().getMonth()
             let _año = new Date().getFullYear()
             let minimoAño = _año
-            if(_mes > 9)
+            if (_mes > 9)
                 minimoAño = _año - 3;
             else
                 minimoAño = _año - 4;
-            if(año.toString() === minimoAño.toString())
+            if (año.toString() === minimoAño.toString())
                 return false
         }
         return true
@@ -159,15 +144,15 @@ class PlanTrabajo extends Component{
     isActiveForwardButton = () => {
         const { mes, año } = this.state
         let actualMonth = meses.indexOf(mes)
-        if(actualMonth === 11 ){
+        if (actualMonth === 11) {
             let _mes = new Date().getMonth()
             let _año = new Date().getFullYear()
             let maximoAño = _año
-            if(_mes > 9)
+            if (_mes > 9)
                 maximoAño = _año + 1;
             else
                 maximoAño = _año;
-            if(año.toString() === maximoAño.toString())
+            if (año.toString() === maximoAño.toString())
                 return false
         }
         return true
@@ -176,103 +161,27 @@ class PlanTrabajo extends Component{
     changeMonth = (direction) => {
         const { mes, año } = this.state
         let actualMonth = meses.indexOf(mes)
-        if(direction === 'back'){
-            if(actualMonth === 0){
-                this.setState({
-                    ...this.state,
-                    mes: meses[11],
-                    año: (año - 1).toString()
-                })
-            }else{
-                this.setState({
-                    ...this.state,
-                    mes: meses[actualMonth - 1],
-                })
+        let newMonth = meses[actualMonth]
+        let newYear = año
+        if (direction === 'back') {
+            if (actualMonth === 0) {
+                newMonth = meses[11]
+                newYear = (año - 1).toString() 
+            } else {
+                newMonth = meses[actualMonth - 1]
             }
-        }else{
-            if(actualMonth === 11){
-                this.setState({
-                    ...this.state,
-                    mes: meses[0],
-                    año: (año + 1).toString()
-                })
-            }else{
-                this.setState({
-                    ...this.state,
-                    mes: meses[actualMonth + 1],
-                })
+        } else {
+            if (actualMonth === 11) {
+                newMonth = meses[0]
+                newYear = (parseInt(año) + 1).toString() 
+            } else {
+                newMonth = meses[actualMonth + 1]
             }
         }
+
+        this.getContentAxios(newMonth, newYear)
     }
 
-    printGantt = (empresa, dia, dato) => {
-        const { año, mes } = this.state
-        let actualMonth = (meses.indexOf(mes) + 1).toString()
-        let _dia = dia
-        if(actualMonth.length === 1)
-            actualMonth = '0'+actualMonth.toString();
-        if(_dia.toString().length === 1)
-            _dia = '0'+_dia.toString()
-        let variables = []
-
-        let fecha = moment(`${año}-${actualMonth}-${_dia}`)
-        
-            let from = moment(dato.fechaInicio)
-            let to = moment(dato.fechaFin)
-            if(fecha <= to && fecha >= from){
-                if(dato.duration === 1){
-                    dato.position = 'full'
-                }else{
-                    console.log('DURARTION FROM', moment.duration(fecha.diff(from))._milliseconds)
-                    console.log('DURARTION TO', moment.duration(fecha.diff(to))._milliseconds)
-                    if(moment.duration(fecha.diff(from))._milliseconds === 0)
-                        dato.position = 'start'
-                    else{
-                        if(moment.duration(fecha.diff(to))._milliseconds === 0){
-                            dato.position = 'end'
-                        }else{
-                            dato.position = 'middle'
-                        }
-                    }
-                }
-                variables.push(dato)
-                // console.log(variables)
-            }
-        return(
-            <>
-                {
-                    variables.map((dato1, index)=>{
-                        return(
-                            // <p>{index}</p>
-                            <OverlayTrigger key={index} overlay={
-                                <Tooltip>
-                                    <span>
-                                        <span className="mt-3 font-weight-bolder">
-                                            {dato1.nombre}
-                                        </span>
-                                        <div>
-                                            <div>
-                                                {dato1.position}
-                                            </div>
-                                        </div>
-                                    </span>
-                                </Tooltip>}>
-                                    <div className= "">
-                                        <span className="text-plan" style = {{ backgroundColor: dato1.color, color: dato1.textColor }}>
-                                            {dato1.nombre}
-                                        </span>
-                                    </div>
-                            </OverlayTrigger>
-                            // <div className = {`gantt-container gantt-container__${dato1.position}`} key = { index } 
-                            //     >
-                            //     {dato1.nombre}
-                            // </div>
-                        )
-                    })
-                }
-            </>
-        )
-    }
     openModal = () => {
         const { modal } = this.state
         modal.form = true
@@ -289,6 +198,9 @@ class PlanTrabajo extends Component{
         let aux = Object.keys(form)
         aux.map((element) => {
             switch (element) {
+                case 'usuarios':
+                    form[element] = [];
+                    break;
                 default:
                     form[element] = '';
                     break;
@@ -308,6 +220,7 @@ class PlanTrabajo extends Component{
             form: this.clearForm(),
         })
     }
+
     onChange = event => {
         const { name, value } = event.target
         const { form } = this.state
@@ -318,11 +231,108 @@ class PlanTrabajo extends Component{
             })
         })
     }
-    render(){
-        const { mes, año, data, form, modal, title,options } = this.state
-        return(
-            <Layout active = 'mercadotecnia' { ... this.props}>
-                <Card className = 'card-custom'>
+
+    onChangeAndAdd = (e, arreglo) => {
+        const { value } = e.target
+        const { options, form } = this.state
+        let auxArray = form[arreglo]
+        let aux = []
+        options[arreglo].find(function (_aux) {
+            if (_aux.value.toString() === value.toString())
+                auxArray.push(_aux)
+            else
+                aux.push(_aux)
+            return false
+        })
+        form[arreglo] = auxArray
+        this.setState({
+            ...this.state,
+            form,
+            options
+        })
+    }
+
+    onSubmit = e => {
+        this.addPlanAxios()
+    }
+
+    getRowspan = datos => {
+        const { dias } = this.state
+        let arregloOfCalendars = [];
+        let _arreglo = [];
+        [...Array(dias)].map((unusedElement, key) => {
+            _arreglo.push(null)
+        })
+        arregloOfCalendars.push(_arreglo)
+        for(let z = 0; z < datos.length; z++){
+            let dato = datos[z];
+            let numeroFechaInicio = moment(datos[z].fechaInicio).date() - 1
+            let numeroFechaFin = moment(datos[z].fechaFin).date() - 1
+            let bandera = false;
+            for(let x = 0; x < arregloOfCalendars.length; x++){
+                if(arregloOfCalendars[x][numeroFechaInicio] === null){
+                    arregloOfCalendars[x][numeroFechaInicio] = datos[z]
+                    for(let y = numeroFechaInicio + 1; y <= numeroFechaFin; y++)
+                        arregloOfCalendars[x][y] = 'filled';
+                    bandera = true
+                    x = arregloOfCalendars.length
+                }
+            }
+            if(bandera === false){
+                _arreglo = [];
+                [...Array(dias)].map((unusedElement, key) => {
+                    _arreglo.push(null)
+                })
+                arregloOfCalendars.push(_arreglo)
+                arregloOfCalendars[arregloOfCalendars.length - 1][numeroFechaInicio] = dato
+                for(let y = numeroFechaInicio + 1; y <= numeroFechaFin; y++) {
+                    arregloOfCalendars[arregloOfCalendars.length - 1][y] = 'filled';
+                }
+            }
+        }
+        // console.log(arregloOfCalendars, 'ARREGLO OF CALENDARS')
+        return { calendars: arregloOfCalendars, size: arregloOfCalendars.length}
+    }
+
+    printTd = (empresa, conteo, diaActual) => {
+
+        if(empresa.name === 'INEIN')
+            // console.log(empresa.calendars[conteo][diaActual], conteo, diaActual, "INEIN")
+        
+        if(empresa.calendars[conteo][diaActual] === null)
+            return (
+                <td>{/* diaActual + 1 */}</td>
+            )
+        else{
+            if(empresa.calendars[conteo][diaActual] === 'filled'){
+                return (<></>)
+            }else{
+                return (
+                    <td colSpan = {empresa.calendars[conteo][diaActual].duracion} className = 'text-center position-relative p-0'>
+                        <OverlayTrigger key={diaActual} overlay={
+                            <Tooltip>
+                                <span>
+                                    <span className="mt-3 font-weight-bolder">
+                                        {empresa.calendars[conteo][diaActual].nombre}
+                                    </span>
+                                </span>
+                            </Tooltip>}>
+                            <div className="text-truncate w-100 position-absolute text-white px-1 top-20" 
+                                style={{ backgroundColor: empresa.calendars[conteo][diaActual].rol.color, color: 'white' }}>
+                                <span className="font-weight-bold"> {empresa.calendars[conteo][diaActual].nombre} </span>
+                            </div>
+                        </OverlayTrigger>
+                    </td>
+                )
+            }
+        }
+    }
+
+    render() {
+        const { mes, año, data, form, modal, title, options, dias } = this.state
+        return (
+            <Layout active='mercadotecnia' {... this.props}>
+                <Card className='card-custom'>
                     <Card.Header>
                         <div className="d-flex align-items-center">
                             <h3 className="card-title align-items-start flex-column">
@@ -332,43 +342,43 @@ class PlanTrabajo extends Component{
                             </h3>
                         </div>
                         <div className="card-toolbar align-items-center">
-                            <div className = 'mr-3 d-flex'>
-                                <SelectSearchGray name = 'mes' options = { getMeses() } value = { mes } customdiv = 'mb-0'
-                                    onChange = { this.updateMes } iconclass = "fas fa-calendar-day"
-                                    messageinc = "Incorrecto. Selecciona el mes." requirevalidation={1}/>
+                            <div className='mr-3 d-flex'>
+                                <SelectSearchGray name='mes' options={getMeses()} value={mes} customdiv='mb-0'
+                                    onChange={this.updateMes} iconclass="fas fa-calendar-day"
+                                    messageinc="Incorrecto. Selecciona el mes." requirevalidation={1} />
                             </div>
-                            <div className = 'mr-3 d-flex'>
-                                <SelectSearchGray name = 'año' options = { getAños() } customdiv = 'mb-0'
-                                    value = { año } onChange = { this.updateAño } 
-                                    iconclass = "fas fa-calendar-day" />
+                            <div className='mr-3 d-flex'>
+                                <SelectSearchGray name='año' options={getAños()} customdiv='mb-0'
+                                    value={año} onChange={this.updateAño}
+                                    iconclass="fas fa-calendar-day" />
                             </div>
-                            <Button icon = '' className = 'btn btn-light-success btn-sm font-weight-bold' 
-                                only_icon = 'flaticon2-writing pr-0 mr-2' text = 'AGENDAR PLAN'
+                            <Button icon='' className='btn btn-light-success btn-sm font-weight-bold'
+                                only_icon='flaticon2-writing pr-0 mr-2' text='AGENDAR PLAN'
                                 onClick={this.openModal} />
                         </div>
                     </Card.Header>
                     <Card.Body>
-                        <div className = 'd-flex justify-content-between'>
-                            <div className = ''>
+                        <div className='d-flex justify-content-between'>
+                            <div className=''>
                                 <h2 className="font-weight-bolder text-dark">{`${mes} ${año}`}</h2>
                             </div>
-                            <div className = ''>
+                            <div className=''>
                                 <div className="btn-group">
-                                    <span className = {`btn btn-icon btn-xs btn-light-primary mr-2 my-1 ${this.isActiveBackButton() ? 'enabled' : 'disabled' }`}
-                                        onClick = {
+                                    <span className={`btn btn-icon btn-xs btn-light-primary mr-2 my-1 ${this.isActiveBackButton() ? 'enabled' : 'disabled'}`}
+                                        onClick={
                                             (e) => {
                                                 e.preventDefault();
-                                                if(this.isActiveBackButton())
+                                                if (this.isActiveBackButton())
                                                     this.changeMonth('back')
                                             }
                                         }>
                                         <i className="fa fa-chevron-left icon-xs" />
                                     </span>
-                                    <span className = {`btn btn-icon btn-xs btn-light-primary mr-2 my-1 ${this.isActiveForwardButton() ? 'enabled' : 'disabled' }`}
-                                        onClick = {
+                                    <span className={`btn btn-icon btn-xs btn-light-primary mr-2 my-1 ${this.isActiveForwardButton() ? 'enabled' : 'disabled'}`}
+                                        onClick={
                                             (e) => {
                                                 e.preventDefault();
-                                                if(this.isActiveForwardButton())
+                                                if (this.isActiveForwardButton())
                                                     this.changeMonth('forward')
                                             }
                                         }>
@@ -383,70 +393,41 @@ class PlanTrabajo extends Component{
                                     <tr>
                                         <th>Empresa</th>
                                         {
-                                            [...Array(this.diasEnUnMes(mes, año))].map((element, key) => {
-                                                return( <th key = {key}>{key<=8?"0"+(key+1):key+1}</th> )
+                                            [...Array(dias)].map((element, key) => {
+                                                return (<th key={key}>{key <= 8 ? "0" + (key + 1) : key + 1}</th>)
                                             })
                                         }
                                     </tr>
                                 </thead>
                                 <tbody>
                                     {
-                                        
-                                        data.empresas.map((empresa, index) => { 
-                                            return( 
-                                                empresa.datos.map((dato,index1)=>{ 
-                                                    let fechaInicio = moment(dato.fechaInicio);
-                                                    let fechaFin = moment(dato.fechaFin); 
-                                                    let duracion = fechaFin.diff(fechaInicio, 'days') + 1; 
-                                                    let diaInicio = fechaInicio.date()
-                                                    let diaFin = fechaFin.date()
-                                                    console.log(diaInicio,diaFin)
-                                                    return( 
-                                                        <tr key = { index } class="h-30px">
-                                                            {
-                                                                (index1 == 0) ?
-                                                                    <td className="text-center" rowSpan={empresa.datos.length}>
-                                                                        {empresa.name}
-                                                                    </td> : ""
-                                                            }
-                                                            {
-                                                            [...Array(this.diasEnUnMes(mes, año))].map((element, diaActual) => {
-                                                                return( 
-                                                                    (diaActual+1>=diaInicio && diaActual+1<=diaFin)?
-                                                                        (diaActual+1===diaInicio)?
-                                                                        <td key = {diaActual} colSpan={duracion} class="text-center position-relative p-0"  > 
-                                                                            {
-                                                                                <OverlayTrigger key={diaActual} overlay={
-                                                                                    <Tooltip>
-                                                                                        <span>
-                                                                                            <span className="mt-3 font-weight-bolder">
-                                                                                                {dato.nombre}
-                                                                                            </span>
-                                                                                            <div>
-                                                                                                <div>
-                                                                                                    {dato.position}
-                                                                                                </div>
-                                                                                            </div>
-                                                                                        </span>
-                                                                                    </Tooltip>}>
-                                                                                        <div className= "text-truncate w-100 position-absolute  px-1 top-20"  style = {{ backgroundColor: dato.color, color: dato.textColor }}>
-                                                                                            <span className="  ">
-                                                                                                {dato.nombre}
-                                                                                            </span>
-                                                                                        </div>
-                                                                                </OverlayTrigger>
-                                                                            }
-                                                                        </td>
-                                                                        :""
-                                                                    :
-                                                                    <td></td>
-                                                                )
-                                                            })
-                                                        }
-                                                    </tr>
-                                                    )
-                                                    } )
-                                                
+                                        data.empresas.map((empresa, index) => {
+                                            return(
+                                                <>
+                                                    {
+                                                        [...Array(empresa.rowSpanSize)].map((element, conteo) => {
+                                                            return(
+                                                                <tr key = { `${conteo}-index-row-${empresa.name}` } className = 'h-30px'>
+                                                                    {
+                                                                        conteo === 0 ?
+                                                                            <td rowSpan = { empresa.rowSpanSize} >{empresa.name}</td>
+                                                                        : <></>
+                                                                    }
+                                                                    {
+                                                                        [...Array(dias)].map((element, diaActual) => {
+                                                                            return(
+                                                                                <>
+                                                                                    {this.printTd(empresa, conteo, diaActual)}
+                                                                                </>
+                                                                            )
+                                                                            
+                                                                        })
+                                                                    }
+                                                                </tr>
+                                                            )
+                                                        })
+                                                    }
+                                                </>
                                             )
                                         })
                                     }
@@ -456,11 +437,8 @@ class PlanTrabajo extends Component{
                     </Card.Body>
                 </Card>
                 <Modal size="xl" title={title} show={modal.form} handleClose={this.handleCloseForm}>
-                    <PlanTrabajoForm
-                        form={form}
-                        onChange={this.onChange}
-                        options={options}
-                    />
+                    <PlanTrabajoForm form = { form } onChange = { this.onChange } options = { options } onSubmit = { this.onSubmit }
+                        onChangeAndAdd = { this.onChangeAndAdd } />
                 </Modal>
             </Layout>
         )

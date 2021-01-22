@@ -44,7 +44,7 @@ class NewTableServerRender extends Component {
     }
 
     componentDidUpdate() {
-        const { cardTable, cardTableHeader, cardBody, isTab } = this.props
+        const { cardTable, cardTableHeader, cardBody, isTab, isNav} = this.props
         $("body").addClass("card-sticky-on")
             .css("overflow-y", "scroll")
 
@@ -73,6 +73,15 @@ class NewTableServerRender extends Component {
                     else {
                         $("#" + cardTableHeader).css("margin-top", "-" + limite + "px").css("box-shadow", "0px 1px 5px 1px rgba(69, 65, 78, 0.1)")
                     }
+                } else if (isNav) {
+                    let pantalla = $(this).width()
+                    let limite = pantalla > 992 ? 95 : 208
+                    if (pos < limite) {
+                        $("#" + cardTableHeader).css("margin-top", "-" + pos + "px").css("box-shadow", "0px 1px 15px 1px rgba(69, 65, 78, 0)")
+                    }
+                    else {
+                        $("#" + cardTableHeader).css("margin-top", "-" + limite + "px").css("box-shadow", "0px 1px 5px 1px rgba(69, 65, 78, 0.1)")
+                    }
                 } else {
                     let pantalla = $(this).width()
                     let limite = pantalla > 992 ? 25 : 58
@@ -88,7 +97,7 @@ class NewTableServerRender extends Component {
     }
     componentDidMount() {
         const { actions, mostrar_acciones, elementClass, accessToken, setter, urlRender, tipo_validacion, cardTable,
-            cardTableHeader, cardBody, isTab, checkbox } = this.props
+            cardTableHeader, cardBody, isTab, checkbox, isNav } = this.props
         global_variable["mostrar_acciones"] = mostrar_acciones;
 
         $("body").addClass("card-sticky-on")
@@ -113,6 +122,15 @@ class NewTableServerRender extends Component {
                 if (isTab) {
                     let pantalla = $(this).width()
                     let limite = pantalla > 992 ? 68 : 96
+                    if (pos < limite) {
+                        $("#" + cardTableHeader).css("margin-top", "-" + pos + "px").css("box-shadow", "0px 1px 15px 1px rgba(69, 65, 78, 0)")
+                    }
+                    else {
+                        $("#" + cardTableHeader).css("margin-top", "-" + limite + "px").css("box-shadow", "0px 1px 5px 1px rgba(69, 65, 78, 0.1)")
+                    }
+                }else if (isNav) {
+                    let pantalla = $(this).width()
+                    let limite = pantalla > 992 ? 95 : 208
                     if (pos < limite) {
                         $("#" + cardTableHeader).css("margin-top", "-" + pos + "px").css("box-shadow", "0px 1px 15px 1px rgba(69, 65, 78, 0)")
                     }
@@ -358,17 +376,17 @@ class NewTableServerRender extends Component {
     }
     render() {
 
-        const { title, subtitle, url, mostrar_boton, abrir_modal, exportar_boton, cardTable, cardTableHeader, cardBody, restante_empresa, inhabilitar_empresa } = this.props
+        const { title, subtitle, url, mostrar_boton, abrir_modal, exportar_boton, cardTable, cardTableHeader, cardBody, restante_empresa, inhabilitar_empresa, customcard, customheader, customtitle, customsubtitle, customlabel} = this.props
         return (
             <>
-                <Card id={cardTable} className="card-custom card-sticky">
-                    <Card.Header id={cardTableHeader}>
-                        <div className="card-title">
-                            <h3 className="card-label font-weight-bolder font-size-h3">
+                <Card id={cardTable} className={`card-custom card-sticky ${customcard}`}>
+                    <Card.Header id={cardTableHeader} className={`${customheader}`}>
+                        <div className={`card-title ${customtitle}`}>
+                            <h3 className={`card-label font-weight-bolder ${customlabel}`}>
                                 {
                                     title ? title : ''
                                 }
-                                <span className="d-block text-muted pt-2 font-size-sm">
+                                <span className={`d-block text-muted pt-2 font-size-sm ${customsubtitle}`}>
                                     {
                                         subtitle ? subtitle : ''
                                     }
