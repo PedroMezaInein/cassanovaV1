@@ -2,16 +2,20 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import Layout from '../../../components/layout/layout'
-import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { Card, FormText, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { URL_DEV } from '../../../constants'
 import { Button, SelectSearchGray } from '../../../components/form-components'
 import { getMeses, getAños } from '../../../functions/setters'
-import { errorAlert, forbiddenAccessAlert } from '../../../functions/alert'
+import { errorAlert, forbiddenAccessAlert, waitAlert } from '../../../functions/alert'
 import moment from 'moment'
 import { Modal } from '../../../components/singles'
 import PlanTrabajoForm from '../../../components/forms/mercadotecnia/PlanTrabajoForm';
+import { isSet } from 'immutable'
+import { element } from 'prop-types'
+import Swal from 'sweetalert2'
 
 const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+
 class PlanTrabajo extends Component {
 
     state = {
@@ -24,10 +28,12 @@ class PlanTrabajo extends Component {
             nombre: '',
             responsable: '',
             rol: '',
+            descripcion: '',
             color: ''
         },
         mes: meses[new Date().getMonth()],
         año: new Date().getFullYear(),
+        dias: this.diasEnUnMes(meses[new Date().getMonth()],new Date().getFullYear()),
         data: {
             empresas: []
         },
@@ -37,96 +43,35 @@ class PlanTrabajo extends Component {
     }
 
     componentDidMount() {
+        const { mes, año } = this.state
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
         permisos.find(function (element, index) {
             const { modulo: { url } } = element
             return pathname === url
         });
-        this.getContentAxios()
+        this.getContentAxios(mes, año)
     }
 
-    getContentAxios = async () => {
+    getContentAxios = async (mes, año) => {
+        waitAlert()
         const { access_token } = this.props.authUser
-        const { mes, año } = this.state
         await axios.get(`${URL_DEV}mercadotecnia/plan-trabajo?mes=${mes}&anio=${año}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { empresas } = response.data
-                const { data } = this.state
-                data.empresas = empresas
-                data.empresas.map((empresa) => {
-                    if (empresa.name === 'INEIN') {
-                        empresa.datos = [
-                            {
-                                fechaInicio: '2021-01-13',
-                                fechaFin: '2021-01-13',
-                                duration: 1,
-                                nombre: 'MANTENIMIENTO DE CAMPAÑA',
-                                color: '#20ACE9'
-                            },
-                            {
-                                fechaInicio: '2021-01-06',
-                                fechaFin: '2021-01-09',
-                                duration: 4,
-                                nombre: 'ANÁLISIS DE KEYWORDS',
-                                color: '#EE4C9E'
-                            },
-                            {
-                                fechaInicio: '2021-01-06',
-                                fechaFin: '2021-01-08',
-                                duration: 3,
-                                nombre: 'ENTRADA DE BLOGS',
-                                color: '#62D270'
-                            }
-                        ]
-                    } else if (empresa.name === 'INFRAESTRUCTURA MÉDICA') {
-                        empresa.datos = [
-                            {
-                                fechaInicio: '2021-01-1',
-                                fechaFin: '2021-01-1',
-                                duration: 1,
-                                nombre: 'CAMBIOS DE SITIO',
-                                color: '#e4c127'
-                            },
-                            {
-                                fechaInicio: '2021-01-11',
-                                fechaFin: '2021-01-11',
-                                duration: 1,
-                                nombre: 'CAMBIOS DE SITIO',
-                                color: '#A962E2'
-                            },
-                            {
-                                fechaInicio: '2021-01-04',
-                                fechaFin: '2021-01-06',
-                                duration: 3,
-                                nombre: 'ESTRATEGIA SEO',
-                                color: '#E63850'
-                            }
-                        ]
-                    } else if (empresa.name === 'VITARA') {
-                        empresa.datos = [
-                            {
-                                fechaInicio: '2021-01-03',
-                                fechaFin: '2021-01-05',
-                                duration: 3,
-                                nombre: 'CREACIÓN DE REPORTES',
-                                color: '#FF9319'
-                            },
-                            {
-                                fechaInicio: '2021-01-11',
-                                fechaFin: '2021-01-12',
-                                duration: 2,
-                                nombre: 'FOTOGRAFÍAS',
-                                color: '#279E7D'
-                            }
-                        ]
-                    }
-                    else {
-                        empresa.datos = []
-                    }
-                    return ''
+                const { data, modal } = this.state
+                modal.form = false
+
+                empresas.map((empresa) => {
+                    empresa.datos = empresa.planes
+                    let response = this.getRowspan(empresa.datos)
+                    empresa.rowSpanSize = response.size
+                    empresa.calendars = response.calendars
                 })
-                this.setState({ ...this.state, data })
+                
+                data.empresas = empresas
+                Swal.close()
+                this.setState({ ...this.state, data, mes: mes, año: año, dias: this.diasEnUnMes(mes, año), modal, form: this.clearForm() })
             },
             (error) => {
                 console.log(error, 'error')
@@ -139,13 +84,36 @@ class PlanTrabajo extends Component {
         })
     }
 
-    diasEnUnMes(mes, año) {
-        return new Date(año, meses.indexOf(mes) + 1, 0).getDate();
+    addPlanAxios = async() => {
+        const { form } = this.state
+        const { access_token } = this.props.authUser
+        await axios.post(`${URL_DEV}mercadotecnia/plan-trabajo`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { mes, año } = this.state
+                this.getContentAxios( mes, año )
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) { forbiddenAccessAlert() }
+                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
     }
 
-    updateMes = value => { this.setState({ ...this.state, mes: value }) }
+    diasEnUnMes(mes, año) { return new Date(año, meses.indexOf(mes) + 1, 0).getDate(); }
 
-    updateAño = value => { this.setState({ ...this.state, año: value }) }
+    updateMes = value => { 
+        const { año } = this.state
+        this.getContentAxios( value, año )
+    }
+
+    updateAño = value => { 
+        const { mes } = this.state
+        this.getContentAxios( mes, value )
+    }
 
     isActiveBackButton = () => {
         const { mes, año } = this.state
@@ -184,33 +152,25 @@ class PlanTrabajo extends Component {
     changeMonth = (direction) => {
         const { mes, año } = this.state
         let actualMonth = meses.indexOf(mes)
+        let newMonth = meses[actualMonth]
+        let newYear = año
         if (direction === 'back') {
             if (actualMonth === 0) {
-                this.setState({
-                    ...this.state,
-                    mes: meses[11],
-                    año: (año - 1).toString()
-                })
+                newMonth = meses[11]
+                newYear = (año - 1).toString() 
             } else {
-                this.setState({
-                    ...this.state,
-                    mes: meses[actualMonth - 1],
-                })
+                newMonth = meses[actualMonth - 1]
             }
         } else {
             if (actualMonth === 11) {
-                this.setState({
-                    ...this.state,
-                    mes: meses[0],
-                    año: (año + 1).toString()
-                })
+                newMonth = meses[0]
+                newYear = (parseInt(año) + 1).toString() 
             } else {
-                this.setState({
-                    ...this.state,
-                    mes: meses[actualMonth + 1],
-                })
+                newMonth = meses[actualMonth + 1]
             }
         }
+
+        this.getContentAxios(newMonth, newYear)
     }
 
     openModal = () => {
@@ -248,6 +208,7 @@ class PlanTrabajo extends Component {
             form: this.clearForm(),
         })
     }
+
     onChange = event => {
         const { name, value } = event.target
         const { form } = this.state
@@ -258,8 +219,85 @@ class PlanTrabajo extends Component {
             })
         })
     }
+
+    onSubmit = e => {
+        this.addPlanAxios()
+    }
+
+    getRowspan = datos => {
+        const { dias } = this.state
+        let arregloOfCalendars = [];
+        let _arreglo = [];
+        [...Array(dias)].map((unusedElement, key) => {
+            _arreglo.push(null)
+        })
+        arregloOfCalendars.push(_arreglo)
+        for(let z = 0; z < datos.length; z++){
+            let dato = datos[z];
+            let numeroFechaInicio = moment(datos[z].fechaInicio).date() - 1
+            let numeroFechaFin = moment(datos[z].fechaFin).date() - 1
+            let bandera = false;
+            for(let x = 0; x < arregloOfCalendars.length; x++){
+                if(arregloOfCalendars[x][numeroFechaInicio] === null){
+                    arregloOfCalendars[x][numeroFechaInicio] = datos[z]
+                    for(let y = numeroFechaInicio + 1; y <= numeroFechaFin; y++)
+                        arregloOfCalendars[x][y] = 'filled';
+                    bandera = true
+                    x = arregloOfCalendars.length
+                }
+            }
+            if(bandera === false){
+                _arreglo = [];
+                [...Array(dias)].map((unusedElement, key) => {
+                    _arreglo.push(null)
+                })
+                arregloOfCalendars.push(_arreglo)
+                arregloOfCalendars[arregloOfCalendars.length - 1][numeroFechaInicio] = dato
+                for(let y = numeroFechaInicio + 1; y <= numeroFechaFin; y++) {
+                    arregloOfCalendars[arregloOfCalendars.length - 1][y] = 'filled';
+                }
+            }
+        }
+        console.log(arregloOfCalendars, 'ARREGLO OF CALENDARS')
+        return { calendars: arregloOfCalendars, size: arregloOfCalendars.length}
+    }
+
+    printTd = (empresa, conteo, diaActual) => {
+
+        if(empresa.name === 'INEIN')
+            console.log(empresa.calendars[conteo][diaActual], conteo, diaActual, "INEIN")
+        
+        if(empresa.calendars[conteo][diaActual] === null)
+            return (
+                <td>{/* diaActual + 1 */}</td>
+            )
+        else{
+            if(empresa.calendars[conteo][diaActual] === 'filled'){
+                return (<></>)
+            }else{
+                return (
+                    <td colSpan = {empresa.calendars[conteo][diaActual].duracion} className = 'text-center position-relative p-0'>
+                        <OverlayTrigger key={diaActual} overlay={
+                            <Tooltip>
+                                <span>
+                                    <span className="mt-3 font-weight-bolder">
+                                        {empresa.calendars[conteo][diaActual].nombre}
+                                    </span>
+                                </span>
+                            </Tooltip>}>
+                            <div className="text-truncate w-100 position-absolute text-white px-1 top-20" 
+                                style={{ backgroundColor: empresa.calendars[conteo][diaActual].rol.color, color: 'white' }}>
+                                <span className="font-weight-bold"> {empresa.calendars[conteo][diaActual].nombre} </span>
+                            </div>
+                        </OverlayTrigger>
+                    </td>
+                )
+            }
+        }
+    }
+
     render() {
-        const { mes, año, data, form, modal, title, options } = this.state
+        const { mes, año, data, form, modal, title, options, dias } = this.state
         return (
             <Layout active='mercadotecnia' {... this.props}>
                 <Card className='card-custom'>
@@ -323,7 +361,7 @@ class PlanTrabajo extends Component {
                                     <tr>
                                         <th>Empresa</th>
                                         {
-                                            [...Array(this.diasEnUnMes(mes, año))].map((element, key) => {
+                                            [...Array(dias)].map((element, key) => {
                                                 return (<th key={key}>{key <= 8 ? "0" + (key + 1) : key + 1}</th>)
                                             })
                                         }
@@ -332,58 +370,32 @@ class PlanTrabajo extends Component {
                                 <tbody>
                                     {
                                         data.empresas.map((empresa, index) => {
-                                            return (
-                                                empresa.datos.map((dato, index1) => {
-                                                    let fechaInicio = moment(dato.fechaInicio);
-                                                    let fechaFin = moment(dato.fechaFin);
-                                                    let duracion = fechaFin.diff(fechaInicio, 'days') + 1;
-                                                    let diaInicio = fechaInicio.date()
-                                                    let diaFin = fechaFin.date()
-                                                    return (
-                                                        <tr key={index} className="h-30px">
-                                                            {
-                                                                (index1 == 0) ?
-                                                                    <td className="text-center font-weight-bolder" rowSpan={empresa.datos.length}>
-                                                                        {empresa.name}
-                                                                    </td> : ""
-                                                            }
-                                                            {
-                                                                [...Array(this.diasEnUnMes(mes, año))].map((element, diaActual) => {
-                                                                    return (
-                                                                        (diaActual + 1 >= diaInicio && diaActual + 1 <= diaFin) ?
-                                                                            (diaActual + 1 === diaInicio) ?
-                                                                                <td key={diaActual} colSpan={duracion} className="text-center position-relative p-0"  >
-                                                                                    {
-                                                                                        <OverlayTrigger key={diaActual} overlay={
-                                                                                            <Tooltip>
-                                                                                                <span>
-                                                                                                    <span className="mt-3 font-weight-bolder">
-                                                                                                        {dato.nombre}
-                                                                                                    </span>
-                                                                                                    <div>
-                                                                                                        <div>
-                                                                                                            {dato.position}
-                                                                                                        </div>
-                                                                                                    </div>
-                                                                                                </span>
-                                                                                            </Tooltip>}>
-                                                                                            <div className="text-truncate w-100 position-absolute text-white px-1 top-20" style={{ backgroundColor: dato.color, color: dato.textColor }}>
-                                                                                                <span className="font-weight-bold">
-                                                                                                    {dato.nombre}
-                                                                                                </span>
-                                                                                            </div>
-                                                                                        </OverlayTrigger>
-                                                                                    }
-                                                                                </td>
-                                                                                : ""
-                                                                            :
-                                                                            <td></td>
-                                                                    )
-                                                                })
-                                                            }
-                                                        </tr>
-                                                    )
-                                                })
+                                            return(
+                                                <>
+                                                    {
+                                                        [...Array(empresa.rowSpanSize)].map((element, conteo) => {
+                                                            return(
+                                                                <tr key = { `${conteo}-index-row-${empresa.name}` } className = 'h-30px'>
+                                                                    {
+                                                                        conteo === 0 ?
+                                                                            <td rowSpan = { empresa.rowSpanSize} >{empresa.name}</td>
+                                                                        : <></>
+                                                                    }
+                                                                    {
+                                                                        [...Array(dias)].map((element, diaActual) => {
+                                                                            return(
+                                                                                <>
+                                                                                    {this.printTd(empresa, conteo, diaActual)}
+                                                                                </>
+                                                                            )
+                                                                            
+                                                                        })
+                                                                    }
+                                                                </tr>
+                                                            )
+                                                        })
+                                                    }
+                                                </>
                                             )
                                         })
                                     }
@@ -393,11 +405,7 @@ class PlanTrabajo extends Component {
                     </Card.Body>
                 </Card>
                 <Modal size="xl" title={title} show={modal.form} handleClose={this.handleCloseForm}>
-                    <PlanTrabajoForm
-                        form={form}
-                        onChange={this.onChange}
-                        options={options}
-                    />
+                    <PlanTrabajoForm form = { form } onChange = { this.onChange } options = { options } onSubmit = { this.onSubmit }/>
                 </Modal>
             </Layout>
         )

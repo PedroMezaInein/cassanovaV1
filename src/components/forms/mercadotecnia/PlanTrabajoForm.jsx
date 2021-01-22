@@ -52,12 +52,8 @@ class PlanTrabajoForm extends Component{
     }
 
     handleChangeColor(color) {
-        // const { elementoActual } = this.state
-        // console.log(elementoActual)
-        console.log(color.hex, 'color')
-        // elementoActual.map((value) => {
-        //     value.color = color.hex
-        // });
+        const { onChange } = this.props
+        onChange({ target: { value: color.hex, name: 'color' } })
     }
 
     handleChangeCreate = (newValue) => {
