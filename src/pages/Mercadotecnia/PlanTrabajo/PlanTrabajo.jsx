@@ -31,9 +31,9 @@ class PlanTrabajo extends Component {
         data: {
             empresas: []
         },
-        options: [
-
-        ]
+        options: {
+            empresas:[],
+        }
     }
 
     componentDidMount() {
