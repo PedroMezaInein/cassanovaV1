@@ -310,16 +310,32 @@ class PlanTrabajo extends Component {
                 return (
                     <td colSpan = {empresa.calendars[conteo][diaActual].duracion} className = 'text-center position-relative p-0'>
                         <OverlayTrigger key={diaActual} overlay={
-                            <Tooltip>
-                                <span>
-                                    <span className="mt-3 font-weight-bolder">
-                                        {empresa.calendars[conteo][diaActual].nombre}
-                                    </span>
-                                </span>
+                            <Tooltip className="tool-calendar">
+                                <div className="tool-titulo text-white font-weight-bolder letter-spacing-0-4"style={{ backgroundColor: empresa.calendars[conteo][diaActual].rol.color }}>
+                                    {empresa.calendars[conteo][diaActual].nombre}
+                                </div>
+                                <div className="p-2">
+                                    <div className="tool-horario">
+                                        <div className="p-3 text-justify">
+                                            Many desktop publishing packages and web page editors now use.
+                                        </div>
+                                    </div>
+                                    <div class="d-flex align-items-center justify-content-center flex-lg-fill my-1">
+                                        <div class="symbol-group symbol-hover">
+                                            <div class="symbol symbol-30 symbol-circle" data-toggle="tooltip">
+                                                <img alt="Pic" src="/default.jpg" />
+                                            </div>
+                                            <div class="symbol symbol-30 symbol-circle" data-toggle="tooltip">
+                                                <img alt="Pic" src="/default.jpg" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </Tooltip>}>
-                            <div className="text-truncate w-100 position-absolute text-white px-1 top-20" 
-                                style={{ backgroundColor: empresa.calendars[conteo][diaActual].rol.color, color: 'white' }}>
-                                <span className="font-weight-bold"> {empresa.calendars[conteo][diaActual].nombre} </span>
+                            <div className="text-truncate w-100 position-absolute text-white px-1 top-20" style={{ backgroundColor: empresa.calendars[conteo][diaActual].rol.color }}>
+                                <span className="font-weight-bold letter-spacing-0-4 ">
+                                    {empresa.calendars[conteo][diaActual].nombre}
+                                </span>
                             </div>
                         </OverlayTrigger>
                     </td>
