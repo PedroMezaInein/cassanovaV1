@@ -65,15 +65,20 @@ class PlanTrabajoForm extends Component{
     }
 
     handleChangeCreate = (newValue) => {
-        let nuevoValue ={
-            "label":newValue,
-            "value":newValue,
-            "color":""
+        if(newValue==null){
+            newValue={"label":"","value":""}
         }
-        this.setState({
-            elementoActual: nuevoValue,
-            mostrarColor:false
-        });
+            let nuevoValue ={
+                "label":newValue.label,
+                "value":newValue.value,
+                "color":""
+            }
+            
+            this.setState({
+                elementoActual: nuevoValue,
+                mostrarColor:false
+            })
+        
     };
     handleCreateOption = (inputValue) => {
         let {optionsCreate} = this.state
@@ -89,6 +94,7 @@ class PlanTrabajoForm extends Component{
             mostrarColor:true
         });
         
+        
     };
     updateEmpresa = value => {
         const { onChange } = this.props
@@ -97,7 +103,6 @@ class PlanTrabajoForm extends Component{
     render(){
         const {  elementoActual, optionsCreate,mostrarColor } = this.state
         const { title, options, form, onChange, onSubmit, formeditado, ...props } = this.props
-        console.log(elementoActual)
         return(
             <Form id="form-plan" {...props} onSubmit={(e) => { e.preventDefault(); validateAlert(onSubmit, e, 'form-plan') }}>
                 <Row>
