@@ -220,7 +220,7 @@ class PlanTrabajo extends Component {
         this.setState({
             ...this.state,
             modal,
-            title: 'Agengar plan',
+            title: 'Agendar plan',
             form: this.clearForm(),
         })
     }
@@ -343,7 +343,7 @@ class PlanTrabajo extends Component {
 
     onSubmit = e => {
         const { title } = this.state
-        if(title === 'AGENDAR PLAN')
+        if(title === 'Agendar plan')
             this.addPlanAxios()
         else
             this.updatePlanoAxios()
