@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Form, Row, Col } from 'react-bootstrap'
-import { validateAlert } from '../../../functions/alert';
+import { deleteAlert, validateAlert } from '../../../functions/alert';
 import { Button, Input, RangeCalendar, TagSelectSearch, CircleColor, SelectCreate, SelectSearch } from '../../form-components';
 const $ = require('jquery');
 
@@ -61,7 +61,7 @@ class PlanTrabajoForm extends Component{
     }
 
     render(){
-        const { title, options, form, onChange, onSubmit, formeditado, handleChangeCreate, handleCreateOption, ...props } = this.props
+        const { title, options, form, onChange, onSubmit, formeditado, handleChangeCreate, handleCreateOption, deletePlanAlert, ...props } = this.props
         return(
             <Form id="form-plan" {...props} onSubmit={(e) => { e.preventDefault(); validateAlert(onSubmit, e, 'form-plan') }}>
                 <Row>
@@ -129,6 +129,11 @@ class PlanTrabajoForm extends Component{
                     </Col>
                 </Row>
                 <div className="card-footer py-3 pr-1 text-right">
+                    {
+                        title !== 'Agendar plan' ?
+                            <Button icon='' className="btn btn-danger mr-3" text="ELIMINAR" onClick = { deletePlanAlert } />
+                        : ''
+                    }
                     <Button icon='' className="btn btn-primary" text="ENVIAR"
                         onClick={(e) => { e.preventDefault(); validateAlert(onSubmit, e, 'form-plan') }} />
                 </div>
