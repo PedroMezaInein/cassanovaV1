@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Form, Col, Row } from 'react-bootstrap'
+import { Form, Col, Row, Tab, Nav} from 'react-bootstrap'
 import { InputGray, SelectSearchGray, Button, InputNumberGray, OptionsCheckbox,OptionsCheckboxHeaders, InputMoneyGray, CalendarDay } from '../../../form-components'
 import { openWizard1, openWizard2, openWizard3 } from '../../../../functions/wizard'
 import { validateAlert } from '../../../../functions/alert'
@@ -432,15 +432,6 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                     messageinc="Incorrecto. Ingresa el precio de constr. de interiores sup." thousandseparator = { true } />
                                             </div>
                                         </div>
-                                        <div className="separator separator-dashed mt-1 mb-2"></div>
-                                        <div className="form-group row form-group-marginless">
-                                            <div className="col-md-12">
-                                                <OptionsCheckbox requirevalidation = { 0 } formeditado = { formeditado }
-                                                    placeholder = "SELECCIONA LAS PARTIDAS" options = { formDiseño.partidas }
-                                                    name = 'partidas'  value = { formDiseño.partidas }
-                                                    onChange = { this.handleChangeCheckboxPartidas } />
-                                            </div>
-                                        </div>
                                     </div>
                                     <div className="col-md-4">
                                         <div className = 'row mx-0'>
@@ -457,15 +448,6 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                     name = "mobiliario_sup" onChange = { onChange }
                                                     messageinc = "Incorrecto. Ingresa el precio de mobiliario sup."
                                                     iconclass = "fas fa-dollar-sign" thousandseparator = { true } />
-                                            </div>
-                                        </div>
-                                        <div className="separator separator-dashed mt-1 mb-2"></div>
-                                        <div className="form-group row form-group-marginless">
-                                            <div className="col-md-12">
-                                                <OptionsCheckbox requirevalidation = { 0 } formeditado = { formeditado }
-                                                    placeholder = "SELECCIONA LAS PARTIDAS" options = { formDiseño.partidas }
-                                                    name = 'partidas'  value = { formDiseño.partidas }
-                                                    onChange = { this.handleChangeCheckboxPartidas } />
                                             </div>
                                         </div>
                                     </div>
@@ -486,15 +468,65 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                     iconclass = "fas fa-dollar-sign" thousandseparator = { true } />
                                             </div>
                                         </div>
-                                        <div className="separator separator-dashed mt-1 mb-2"></div>
-                                        <div className="form-group row form-group-marginless">
-                                            <div className="col-md-12">
-                                                <OptionsCheckbox requirevalidation = { 0 } formeditado = { formeditado }
-                                                    placeholder = "SELECCIONA LAS PARTIDAS" options = { formDiseño.partidas }
-                                                    name = 'partidas'  value = { formDiseño.partidas }
-                                                    onChange = { this.handleChangeCheckboxPartidas } />
-                                            </div>
-                                        </div>
+                                    </div>
+                                </div>
+                                <div className="separator separator-dashed mt-1 mb-2"></div>
+                                <div className="form-group row form-group-marginless">
+                                    <div className="col-md-12">
+                                        <Tab.Container defaultActiveKey="options1">
+                                            <Nav className="nav nav-pills justify-content-center">
+                                                <Nav.Item>
+                                                    <Nav.Link eventKey="options1" className="btn btn-text-primary btn-hover-light-primary font-weight-bolder mr-2">Opción partida 1</Nav.Link>
+                                                </Nav.Item>
+                                                <Nav.Item>
+                                                    <Nav.Link eventKey="options2" className="btn btn-text-primary btn-hover-light-primary font-weight-bolder mr-2">Opción partida 2</Nav.Link>
+                                                </Nav.Item>
+                                                <Nav.Item>
+                                                    <Nav.Link eventKey="options3" className="btn btn-text-primary btn-hover-light-primary font-weight-bolder mr-2">Opción partida 3</Nav.Link>
+                                                </Nav.Item>
+                                            </Nav>
+                                            <Tab.Content>
+                                                <Tab.Pane eventKey="options1">
+                                                    <OptionsCheckbox
+                                                        requirevalidation={0}
+                                                        formeditado={formeditado}
+                                                        // placeholder="SELECCIONA LAS PARTIDAS"
+                                                        options={formDiseño.partidas}
+                                                        name='partidas'
+                                                        value={formDiseño.partidas}
+                                                        onChange={this.handleChangeCheckboxPartidas}
+                                                        customgroup="columns-2"
+                                                        customlist="px-3"
+                                                    />
+                                                </Tab.Pane>
+                                                <Tab.Pane eventKey="options2">
+                                                    <OptionsCheckbox
+                                                        requirevalidation={0}
+                                                        formeditado={formeditado}
+                                                        // placeholder="SELECCIONA LAS PARTIDAS"
+                                                        options={formDiseño.partidas}
+                                                        name='partidas'
+                                                        value={formDiseño.partidas}
+                                                        onChange={this.handleChangeCheckboxPartidas}
+                                                        customgroup="columns-2"
+                                                        customlist="px-3"
+                                                    />
+                                                </Tab.Pane>
+                                                <Tab.Pane eventKey="options3">
+                                                    <OptionsCheckbox
+                                                        requirevalidation={0}
+                                                        formeditado={formeditado}
+                                                        // placeholder="SELECCIONA LAS PARTIDAS"
+                                                        options={formDiseño.partidas}
+                                                        name='partidas'
+                                                        value={formDiseño.partidas}
+                                                        onChange={this.handleChangeCheckboxPartidas}
+                                                        customgroup="columns-2"
+                                                        customlist="px-3"
+                                                    />
+                                                </Tab.Pane>
+                                            </Tab.Content>
+                                        </Tab.Container>
                                     </div>
                                 </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
