@@ -317,15 +317,15 @@ class PlanTrabajo extends Component {
                                 <div className="p-2">
                                     <div className="tool-horario">
                                         <div className="p-3 text-justify">
-                                            Many desktop publishing packages and web page editors now use.
+                                            {empresa.calendars[conteo][diaActual].descripcion}
                                         </div>
                                     </div>
-                                    <div class="d-flex align-items-center justify-content-center flex-lg-fill my-1">
-                                        <div class="symbol-group symbol-hover">
-                                            <div class="symbol symbol-30 symbol-circle" data-toggle="tooltip">
+                                    <div className="d-flex align-items-center justify-content-center flex-lg-fill my-1">
+                                        <div className="symbol-group symbol-hover">
+                                            <div className="symbol symbol-30 symbol-circle" data-toggle="tooltip">
                                                 <img alt="Pic" src="/default.jpg" />
                                             </div>
-                                            <div class="symbol symbol-30 symbol-circle" data-toggle="tooltip">
+                                            <div className="symbol symbol-30 symbol-circle" data-toggle="tooltip">
                                                 <img alt="Pic" src="/default.jpg" />
                                             </div>
                                         </div>
