@@ -96,23 +96,29 @@ class Leads extends Component {
         questionAlert2(
             'SELECCIONA EL MOTIVO DE RECHAZO', '',
             () => this.rechazarLeadAxios(lead),
-            <Form.Group >
+            <div>
                 <Form.Check
                     type="radio"
                     label="Recursos Humanos"
                     name="motivo"
-                    id="recursos-humanos" />
-                <Form.Check
-                    type="radio"
-                    label="Proveedor"
-                    name="motivo"
-                    id="proveedor" />
+                    id="recursos-humanos"
+                    className="px-0 mb-2"
+                />
                 <Form.Check
                     type="radio"
                     label="No potencial"
                     name="motivo"
-                    id="no-potencial" />
-            </Form.Group>
+                    id="no-potencial"
+                    className="px-0 mb-2"
+                />
+                <Form.Check
+                    type="radio"
+                    label="Proveedor"
+                    name="motivo"
+                    id="proveedor"
+                    className="px-0"
+                />
+            </div>
         )
         
     }

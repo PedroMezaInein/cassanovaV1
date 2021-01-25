@@ -4,7 +4,7 @@ import Layout from '../../../../components/layout/layout';
 import { Form } from 'react-bootstrap';
 import { InputGray, SelectSearchGray, InputPhoneGray, Button } from '../../../../components/form-components';
 import axios from 'axios'
-import { doneAlert, errorAlert, forbiddenAccessAlert, validateAlert, waitAlert } from '../../../../functions/alert';
+import { doneAlert, errorAlert, forbiddenAccessAlert, validateAlert, waitAlert, questionAlert2} from '../../../../functions/alert';
 import Swal from 'sweetalert2'
 import { setOptions } from '../../../../functions/setters';
 import { TEL, URL_DEV, EMAIL } from '../../../../constants';
@@ -186,6 +186,36 @@ class LeadTelefono extends Component {
                     forbiddenAccessAlert();
                 else
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    onSubmitCorreo = async () => {
+        let si = ''
+        let no = ''
+        let respuesta_correo = ''
+        if(document.getElementById('si'))
+            si = document.getElementById('si').checked
+        if(document.getElementById('no'))
+            no = document.getElementById('no').checked
+        if(si)
+            respuesta_correo = 'si'
+        if(no)
+            respuesta_correo = 'no'
+        const { access_token } = this.props.authUser
+        // await axios.put(URL_DEV + 'lead/' + lead.id + '/rechazar', {respuesta_correo: respuesta_correo}, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            await axios.put(URL_DEV + 'lead/' , {respuesta_correo: respuesta_correo}, { headers: {Authorization:`Bearer ${access_token}`}}).then(
+            (response) => {
+                this.getLeadAxios()
+                doneAlert('Lead rechazado.')
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) { forbiddenAccessAlert() } 
+                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -387,13 +417,33 @@ class LeadTelefono extends Component {
                             {
                                 form.telefono ?
                                     <div className="card-footer py-3 pr-1 text-right">
-                                        <Button text='ENVIAR' type='submit' className="btn btn-primary mr-2" icon=''
-                                            onClick={
-                                                (e) => {
-                                                    e.preventDefault();
-                                                    validateAlert(this.onSubmit, e, 'form-lead-telefono')
-                                                }
-                                            } />
+                                        <Button
+                                            icon=''
+                                            className="btn btn-primary mr-2"
+                                            onClick={(e) => { 
+                                                questionAlert2(
+                                                    '¿EL FORMULARIO SE LLENO POR MEDIO DE UNA LLAMADA?', '',
+                                                    () => this.onSubmitCorreo(),
+                                                    <div>
+                                                        <Form.Check
+                                                            type="radio"
+                                                            label="SI"
+                                                            name="respuesta_correo"
+                                                            id="si"
+                                                            className="px-0 mb-2"
+                                                        />
+                                                        <Form.Check
+                                                            type="radio"
+                                                            label="NO"
+                                                            name="respuesta_correo"
+                                                            id="no"
+                                                            className="px-0 mb-2"
+                                                        />
+                                                    </div>
+                                                )
+                                            }}
+                                            text='ENVIAR'
+                                        />
                                     </div>
                                     : ''
                             }
