@@ -3,14 +3,12 @@ import Layout from '../../../components/layout/layout'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV } from '../../../constants'
-import { forbiddenAccessAlert, errorAlert, waitAlert, doneAlert } from '../../../functions/alert'
+import { forbiddenAccessAlert, errorAlert } from '../../../functions/alert'
 import { save, deleteForm } from '../../../redux/reducers/formulario'
 import { Card } from 'react-bootstrap'
 import { PartidasDiseñoForm as PartidasDiseoFormulario } from '../../../components/forms'
 import Swal from 'sweetalert2'
 import { setOptions } from '../../../functions/setters'
-const $ = require('jquery');
-
 class PartidasDiseñoForm extends Component {
 
     state = {
