@@ -6,7 +6,7 @@ import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { URL_DEV } from '../../../constants'
 import { Button, SelectSearchGray } from '../../../components/form-components'
 import { getMeses, getAños, setOptions } from '../../../functions/setters'
-import { errorAlert, forbiddenAccessAlert, waitAlert } from '../../../functions/alert'
+import { deleteAlert, errorAlert, forbiddenAccessAlert, waitAlert } from '../../../functions/alert'
 import moment from 'moment'
 import { Modal } from '../../../components/singles'
 import PlanTrabajoForm from '../../../components/forms/mercadotecnia/PlanTrabajoForm';
@@ -144,6 +144,25 @@ class PlanTrabajo extends Component {
         })
     }
 
+    deletePlanAxios = async() => {
+        const { evento } = this.state
+        const { access_token } = this.props.authUser
+        await axios.delete(`${URL_DEV}mercadotecnia/plan-trabajo/${evento.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { mes, año } = this.state
+                this.getContentAxios( mes, año )
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) { forbiddenAccessAlert() }
+                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     diasEnUnMes(mes, año) { return new Date(año, meses.indexOf(mes) + 1, 0).getDate(); }
 
     updateMes = value => { 
@@ -224,6 +243,8 @@ class PlanTrabajo extends Component {
             form: this.clearForm(),
         })
     }
+
+    deletePlanAlert = () => { deleteAlert( 'DESEAS ELIMINAR EL ELEMENTO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.deletePlanAxios() ) }
 
     clickedEvent = evento => {
         const { modal, form } = this.state
@@ -560,7 +581,8 @@ class PlanTrabajo extends Component {
                 <Modal size="xl" title={title} show={modal.form} handleClose={this.handleCloseForm}>
                     <PlanTrabajoForm form = { form } onChange = { this.onChange } options = { options } onSubmit = { this.onSubmit }
                         onChangeAndAdd = { this.onChangeAndAdd } deleteOption = { this.deleteOption } formeditado = { formeditado }
-                        handleChangeCreate = { this.handleChangeCreate } handleCreateOption = { this.handleCreateOption } />
+                        handleChangeCreate = { this.handleChangeCreate } handleCreateOption = { this.handleCreateOption } 
+                        title = { title } deletePlanAlert = { this.deletePlanAlert } />
                 </Modal>
             </Layout>
         )
