@@ -296,12 +296,9 @@ class PlanTrabajo extends Component {
 
     printTd = (empresa, conteo, diaActual) => {
 
-        if(empresa.name === 'INEIN')
-            // console.log(empresa.calendars[conteo][diaActual], conteo, diaActual, "INEIN")
-        
         if(empresa.calendars[conteo][diaActual] === null)
             return (
-                <td>{/* diaActual + 1 */}</td>
+                <td></td>
             )
         else{
             if(empresa.calendars[conteo][diaActual] === 'filled'){
