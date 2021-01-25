@@ -29,7 +29,9 @@ class PlanTrabajo extends Component {
             rol: '',
             descripcion: '',
             color: '',
-            usuarios: []
+            usuarios: [],
+            rolTarget: {taget: '', value: ''},
+            mostrarColor: false
         },
         mes: meses[new Date().getMonth()],
         año: new Date().getFullYear(),
@@ -39,8 +41,11 @@ class PlanTrabajo extends Component {
         },
         options: {
             empresas:[],
-            usuarios: []
-        }
+            usuarios: [],
+            roles: []
+        },
+        formeditado: false,
+        evento: ''
     }
 
     componentDidMount() {
@@ -70,6 +75,7 @@ class PlanTrabajo extends Component {
                     empresa.calendars = response.calendars
                 })
                 options.usuarios = []
+                options.roles = []
                 options.empresas = setOptions(empresas, 'name', 'id')
                 users.map((user) => {
                     options.usuarios.push({
@@ -78,9 +84,16 @@ class PlanTrabajo extends Component {
                         label: user.name
                     })
                 })
+                roles.map((rol) => {
+                    options.roles.push({
+                        text: rol.nombre,
+                        value: rol.id,
+                        label: rol.nombre
+                    })
+                })
                 data.empresas = empresas
                 Swal.close()
-                this.setState({ ...this.state, data, mes: mes, año: año, dias: this.diasEnUnMes(mes, año), modal, form: this.clearForm(), options })
+                this.setState({ ...this.state, data, mes: mes, año: año, dias: this.diasEnUnMes(mes, año), modal, form: this.clearForm(), options, evento: '' })
             },
             (error) => {
                 console.log(error, 'error')
@@ -97,6 +110,25 @@ class PlanTrabajo extends Component {
         const { form } = this.state
         const { access_token } = this.props.authUser
         await axios.post(`${URL_DEV}mercadotecnia/plan-trabajo`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { mes, año } = this.state
+                this.getContentAxios( mes, año )
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) { forbiddenAccessAlert() }
+                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    updatePlanoAxios = async() => {
+        const { form, evento } = this.state
+        const { access_token } = this.props.authUser
+        await axios.put(`${URL_DEV}mercadotecnia/plan-trabajo/${evento.id}`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { mes, año } = this.state
                 this.getContentAxios( mes, año )
@@ -193,11 +225,38 @@ class PlanTrabajo extends Component {
         })
     }
 
+    clickedEvent = evento => {
+        const { modal, form } = this.state
+        modal.form = true
+        form.fechaInicio = moment(evento.fechaInicio)
+        form.fechaFin = moment(evento.fechaFin)
+        form.descripcion = evento.descripcion
+        form.nombre = evento.nombre
+        form.empresa = evento.empresa_id.toString()
+        form.rol = evento.rol ? evento.rol.id : ''
+        form.rolTarget = evento.rol ? { value: evento.rol.id.toString(), label: evento.rol.nombre, text: evento.rol.nombre } : { value: '', label: '', text: ''}
+        form.usuarios = []
+        evento.usuarios.map((user)=>{
+            form.usuarios.push({
+                value: user.id.toString(),
+                text: user.name,
+                target: user.name
+            })
+        })
+        this.setState({...this.state,modal, form, formeditado: true, title: 'EDITAR PLAN DE TRABAJO', evento: evento })
+    }
+
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
         aux.map((element) => {
             switch (element) {
+                case ' mostrarColor':
+                    form[element] = false;
+                    break;
+                case 'rolTarget':
+                    form[element] = { target: '', value: ''}
+                    break;
                 case 'usuarios':
                     form[element] = [];
                     break;
@@ -218,6 +277,7 @@ class PlanTrabajo extends Component {
             modal,
             empresa: '',
             form: this.clearForm(),
+            formeditado: false
         })
     }
 
@@ -252,8 +312,41 @@ class PlanTrabajo extends Component {
         })
     }
 
+    handleChangeCreate = newValue => {
+        const { form } = this.state
+        if(newValue == null){
+            newValue = { "label":"","value":"" }
+        }
+        let nuevoValue = {
+            "label":newValue.label,
+            "value":newValue.value,
+            "color":""
+        }
+        form.rol = newValue.value
+        form.rolTarget = nuevoValue
+        this.setState({...this.state, form})
+    }
+
+    handleCreateOption = inputValue => {
+        let { options, form } = this.state
+        let newOption = {
+            'label': inputValue,
+            'value': inputValue,
+            'text': inputValue,
+        }
+        options.roles.push(newOption)
+        form.rolTarget = newOption
+        form.rol = inputValue
+        form.mostrarColor = true
+        this.setState({ ...this.state, form, options });
+    }
+
     onSubmit = e => {
-        this.addPlanAxios()
+        const { title } = this.state
+        if(title === 'AGENDAR PLAN')
+            this.addPlanAxios()
+        else
+            this.updatePlanoAxios()
     }
 
     getRowspan = datos => {
@@ -290,7 +383,6 @@ class PlanTrabajo extends Component {
                 }
             }
         }
-        // console.log(arregloOfCalendars, 'ARREGLO OF CALENDARS')
         return { calendars: arregloOfCalendars, size: arregloOfCalendars.length}
     }
 
@@ -298,14 +390,16 @@ class PlanTrabajo extends Component {
 
         if(empresa.calendars[conteo][diaActual] === null)
             return (
-                <td></td>
+                <td key = {`td-${empresa.name}-conteo`}></td>
             )
         else{
             if(empresa.calendars[conteo][diaActual] === 'filled'){
                 return (<></>)
             }else{
                 return (
-                    <td colSpan = {empresa.calendars[conteo][diaActual].duracion} className = 'text-center position-relative p-0'>
+                    <td key = {`td-${empresa.name}-conteo`} colSpan = {empresa.calendars[conteo][diaActual].duracion} 
+                        className = 'text-center position-relative p-0 text-hover' 
+                        onClick = { (e) => { e.preventDefault(); this.clickedEvent(empresa.calendars[conteo][diaActual]) } } >
                         <OverlayTrigger key={diaActual} overlay={
                             <Tooltip className="tool-calendar">
                                 <div className="tool-titulo text-white font-weight-bolder letter-spacing-0-4"style={{ backgroundColor: empresa.calendars[conteo][diaActual].rol.color }}>
@@ -319,17 +413,21 @@ class PlanTrabajo extends Component {
                                     </div>
                                     <div className="d-flex align-items-center justify-content-center flex-lg-fill my-1">
                                         <div className="symbol-group symbol-hover">
-                                            <div className="symbol symbol-30 symbol-circle" data-toggle="tooltip">
-                                                <img alt="Pic" src="/default.jpg" />
-                                            </div>
-                                            <div className="symbol symbol-30 symbol-circle" data-toggle="tooltip">
-                                                <img alt="Pic" src="/default.jpg" />
-                                            </div>
+                                            {
+                                                empresa.calendars[conteo][diaActual].usuarios.map((user, index) => {
+                                                    return(
+                                                        <div className="symbol symbol-30 symbol-circle" data-toggle="tooltip">
+                                                            <img alt="Pic" src = { user.avatar ? user.avatar : "/default.jpg" } />
+                                                        </div> 
+                                                    )       
+                                                })
+                                            }
                                         </div>
                                     </div>
                                 </div>
                             </Tooltip>}>
-                            <div className="text-truncate w-100 position-absolute text-white px-1 top-20" style={{ backgroundColor: empresa.calendars[conteo][diaActual].rol.color }}>
+                            <div className="text-truncate w-100 position-absolute text-white px-1 top-20 " 
+                                style={{ backgroundColor: empresa.calendars[conteo][diaActual].rol.color, borderRadius: '4px' }}>
                                 <span className="font-weight-bold letter-spacing-0-4 ">
                                     {empresa.calendars[conteo][diaActual].nombre}
                                 </span>
@@ -340,6 +438,7 @@ class PlanTrabajo extends Component {
             }
         }
     }
+
     deleteOption = (option, arreglo) => {
         const { form, options } = this.state
         let aux = []
@@ -357,8 +456,9 @@ class PlanTrabajo extends Component {
             form
         })
     }
+
     render() {
-        const { mes, año, data, form, modal, title, options, dias } = this.state
+        const { mes, año, data, form, modal, title, options, dias, formeditado } = this.state
         return (
             <Layout active='mercadotecnia' {... this.props}>
                 <Card className='card-custom'>
@@ -432,31 +532,23 @@ class PlanTrabajo extends Component {
                                     {
                                         data.empresas.map((empresa, index) => {
                                             return(
-                                                <>
-                                                    {
-                                                        [...Array(empresa.rowSpanSize)].map((element, conteo) => {
-                                                            return(
-                                                                <tr key = { `${conteo}-index-row-${empresa.name}` } className = 'h-30px'>
-                                                                    {
-                                                                        conteo === 0 ?
-                                                                            <td rowSpan = { empresa.rowSpanSize} >{empresa.name}</td>
-                                                                        : <></>
-                                                                    }
-                                                                    {
-                                                                        [...Array(dias)].map((element, diaActual) => {
-                                                                            return(
-                                                                                <>
-                                                                                    {this.printTd(empresa, conteo, diaActual)}
-                                                                                </>
-                                                                            )
-                                                                            
-                                                                        })
-                                                                    }
-                                                                </tr>
-                                                            )
-                                                        })
-                                                    }
-                                                </>
+                                                [...Array(empresa.rowSpanSize)].map((element, conteo) => {
+                                                    return(
+                                                        <tr key = { `${index}-${conteo}-index-row-${empresa.name}` } className = 'h-30px'>
+                                                            {
+                                                                conteo === 0 ?
+                                                                    <td key = { `rowspan-${index}-${conteo}-index-row-${empresa.name}` }
+                                                                        rowSpan = { empresa.rowSpanSize} >{empresa.name}</td>
+                                                                : <></>
+                                                            }
+                                                            {
+                                                                [...Array(dias)].map((element, diaActual) => {
+                                                                    return( <> {this.printTd(empresa, conteo, diaActual)} </> )
+                                                                })
+                                                            }
+                                                        </tr>
+                                                    )
+                                                })
                                             )
                                         })
                                     }
@@ -467,7 +559,8 @@ class PlanTrabajo extends Component {
                 </Card>
                 <Modal size="xl" title={title} show={modal.form} handleClose={this.handleCloseForm}>
                     <PlanTrabajoForm form = { form } onChange = { this.onChange } options = { options } onSubmit = { this.onSubmit }
-                        onChangeAndAdd = { this.onChangeAndAdd } deleteOption = { this.deleteOption } />
+                        onChangeAndAdd = { this.onChangeAndAdd } deleteOption = { this.deleteOption } formeditado = { formeditado }
+                        handleChangeCreate = { this.handleChangeCreate } handleCreateOption = { this.handleCreateOption } />
                 </Modal>
             </Layout>
         )
