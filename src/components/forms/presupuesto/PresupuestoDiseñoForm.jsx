@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Form, Col, Row } from 'react-bootstrap'
+import { Form, Col, Row, Nav, Tab } from 'react-bootstrap'
 import { SelectSearch, Button, Input, InputSinText, InputNumber, InputMoney, CalendarDay, OptionsCheckboxHeaders,OptionsCheckbox} from '../../form-components'
 import { openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
 import { validateAlert } from '../../../functions/alert'
@@ -102,7 +102,7 @@ class PresupuestoDiseñoForm extends Component {
                     </div>
                 </div>
                 <div className="row justify-content-center">
-                    <div className="col-md-12">
+                    <div className="col-md-12 mx-0 px-0">
                         <Form
                             onSubmit={
                                 (e) => {
@@ -140,7 +140,7 @@ class PresupuestoDiseñoForm extends Component {
                                                     value={form.empresa}
                                                     onChange={this.updateEmpresa}
                                                     iconclass={"far fa-building"}
-                                                    messageinc="Incorrecto. Selecciona la empresa"
+                                                    messageinc="Selecciona la empresa"
                                                 />
                                             </div>
                                             <div className="col-md-4">
@@ -152,7 +152,7 @@ class PresupuestoDiseñoForm extends Component {
                                                     value = { form.tipoProyecto }
                                                     onChange = { this.updateTipoProyecto }
                                                     iconclass = "far fa-building"
-                                                    messageinc = "Incorrecto. Selecciona el tipo de proyecto"
+                                                    messageinc = "Selecciona el tipo de proyecto"
                                                 />
                                             </div>
                                             <div className="col-md-4">
@@ -178,7 +178,7 @@ class PresupuestoDiseñoForm extends Component {
                                                     name="m2"
                                                     onChange={onChange}
                                                     iconclass={"fas fa-ruler-combined"}
-                                                    messageinc="Incorrecto. Ingresa los m²."
+                                                    messageinc="Ingresa los m²."
                                                 />
                                             </div>
                                             <div className="col-md-4">
@@ -190,7 +190,7 @@ class PresupuestoDiseñoForm extends Component {
                                                     value={form.esquema}
                                                     onChange={this.updateEsquema}
                                                     iconclass={"flaticon2-sheet"}
-                                                    messageinc="Incorrecto. Selecciona el esquema"
+                                                    messageinc="Selecciona el esquema"
                                                 />
                                             </div>
                                             <div className="col-md-4">
@@ -203,7 +203,7 @@ class PresupuestoDiseñoForm extends Component {
                                                     thousandseparator={true}
                                                     onChange={onChange}
                                                     prefix={'%'}
-                                                    messageinc="Incorrecto. Ingresa el porcentaje."
+                                                    messageinc="Ingresa el porcentaje."
                                                     formeditado={formeditado}                                            
                                                     name="descuento"
                                                 />
@@ -220,7 +220,7 @@ class PresupuestoDiseñoForm extends Component {
                                                     name="tiempo_ejecucion_diseno"
                                                     onChange={onChange}
                                                     iconclass={"flaticon-calendar-with-a-clock-time-tools"}
-                                                    messageinc="Incorrecto. Ingresa los días de ejecución."
+                                                    messageinc="Ingresa los días de ejecución."
                                                 />
                                             </div>
                                             <div className="col-md-4">
@@ -245,7 +245,7 @@ class PresupuestoDiseñoForm extends Component {
                                                     thousandseparator={true}
                                                     onChange={onChange}
                                                     name="renders"
-                                                    messageinc="Incorrecto. Ingresa los números de renders."
+                                                    messageinc="Ingresa los números de renders."
                                                 />
                                             </div>
                                         </div>
@@ -455,129 +455,186 @@ class PresupuestoDiseñoForm extends Component {
                                 </div>
                             </div>
                             <div id="wizard-3-content" className="pb-3" data-wizard-type="step-content">
-                                <h5 className="mb-4 font-weight-bold text-dark">INGRESA LOS PRECIOS PARAMÉTRICOS Y EL TIEMPO DE EJECUCIÓN</h5>
-                                <div className="form-group row form-group-marginless">
-                                    <div className="col-md-3">
-                                        <InputNumber
-                                            requirevalidation={1}
-                                            formeditado={formeditado}
-                                            placeholder="CONSTR. INTERIOR INF."
-                                            value={form.construccion_interiores_inf}
-                                            name="construccion_interiores_inf"
-                                            onChange={onChange}
-                                            messageinc="Incorrecto. Ingresa el precio de constr. interior inf."
-                                            iconclass={"fas fa-dollar-sign"}
-                                            thousandseparator={true}
-                                        />
+                                <Tab.Container defaultActiveKey="options1">
+                                    <h5 className="mb-4 font-weight-bold text-dark">INGRESA LOS PRECIOS PARAMÉTRICOS Y EL TIEMPO DE EJECUCIÓN</h5>
+                                    <div className="form-group row form-group-marginless">
+                                        <div className="col-md-3">
+                                            <Input
+                                                requirevalidation={1}
+                                                formeditado={formeditado}
+                                                placeholder="TIEMPO DE EJECUCIÓN (SEMANAS)"
+                                                value={form.tiempo_ejecucion_construccion}
+                                                name="tiempo_ejecucion_construccion"
+                                                onChange={onChange}
+                                                iconclass={"flaticon-calendar-with-a-clock-time-tools"}
+                                                messageinc="Ingresa el tiempo de ejecución."
+                                                formgroup="mb-1"
+                                            />
+                                        </div>
+                                        <div className="col-md-9 d-flex justify-content-center align-items-center">
+                                            <Nav className="nav nav-pills col-md-12">
+                                                <div className="col-md-4 pt-4 align-self-end">
+                                                    <Nav.Item>
+                                                        <Nav.Link eventKey="options1" className="btn btn-text-primary btn-hover-light-primary font-weight-bolder mr-2 d-flex justify-content-center">Acabados e instalaciones</Nav.Link>
+                                                    </Nav.Item>
+                                                </div>
+                                                <div className="col-md-4 pt-4 align-self-end">
+                                                    <Nav.Item>
+                                                        <Nav.Link eventKey="options2" className="btn btn-text-primary btn-hover-light-primary font-weight-bolder mr-2 d-flex justify-content-center ">Mobiliario</Nav.Link>
+                                                    </Nav.Item>
+                                                </div>
+                                                <div className="col-md-4 pt-4 align-self-end">
+                                                    <Nav.Item>
+                                                        <Nav.Link eventKey="options3" className="btn btn-text-primary btn-hover-light-primary font-weight-bolder mr-2 d-flex justify-content-center">Obra civil</Nav.Link>
+                                                    </Nav.Item>
+                                                </div>
+                                            </Nav>
+                                        </div>
                                     </div>
-                                    <div className="col-md-3">
-                                        <InputNumber
-                                            requirevalidation={1}
-                                            formeditado={formeditado}
-                                            placeholder="CONSTR. INTERIOR SUP."
-                                            value={form.construccion_interiores_sup}
-                                            name="construccion_interiores_sup"
-                                            onChange={onChange}
-                                            messageinc="Incorrecto. Ingresa el precio de constr. de interiores sup."
-                                            iconclass={"fas fa-dollar-sign"}
-                                            thousandseparator={true}
-                                        />
+                                    <div className="separator separator-dashed mt-1 mb-2"></div>
+                                    <div className="form-group row form-group-marginless">
+                                        <div className="col-md-12">
+                                            <Tab.Content>
+                                                <Tab.Pane eventKey="options1">
+                                                    <div className="col-md-12">
+                                                        <div className='row mx-0 d-flex justify-content-center'>
+                                                            <div className="col-md-3">
+                                                                <InputNumber
+                                                                    requirevalidation={1}
+                                                                    formeditado={formeditado}
+                                                                    placeholder="CONSTR. INTERIOR INF."
+                                                                    value={form.construccion_interiores_inf}
+                                                                    name="construccion_interiores_inf"
+                                                                    onChange={onChange}
+                                                                    messageinc="Ingresa el precio de constr. interior inf."
+                                                                    iconclass={"fas fa-dollar-sign"}
+                                                                    thousandseparator={true}
+                                                                    formgroup={"mb-1"}
+                                                                />
+                                                            </div>
+                                                            <div className="col-md-3">
+                                                                <InputNumber
+                                                                    requirevalidation={1}
+                                                                    formeditado={formeditado}
+                                                                    placeholder="CONSTR. INTERIOR SUP."
+                                                                    value={form.construccion_interiores_sup}
+                                                                    name="construccion_interiores_sup"
+                                                                    onChange={onChange}
+                                                                    messageinc="Ingresa el precio de constr. de interiores sup."
+                                                                    iconclass={"fas fa-dollar-sign"}
+                                                                    thousandseparator={true}
+                                                                    formgroup={"mb-1"}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <OptionsCheckbox
+                                                        requirevalidation = { 0 }
+                                                        formeditado = { formeditado }
+                                                        // placeholder = "SELECCIONA LAS PARTIDAS"
+                                                        options = { form.partidas }
+                                                        name = 'partidas' 
+                                                        value = { form.partidas }
+                                                        onChange = { this.handleChangeCheckboxPartidas }
+                                                        customgroup="columns-2"
+                                                        customlist="px-3"
+                                                    />
+                                                </Tab.Pane>
+                                                <Tab.Pane eventKey="options2">
+                                                    <div className="col-md-12">
+                                                        <div className='row mx-0 d-flex justify-content-center'>
+                                                            <div className="col-md-3">
+                                                                <InputNumber
+                                                                    requirevalidation={1}
+                                                                    formeditado={formeditado}
+                                                                    placeholder="MOBILIARIO INF."
+                                                                    value={form.mobiliario_inf}
+                                                                    name="mobiliario_inf"
+                                                                    onChange={onChange}
+                                                                    messageinc="Ingresa el precio de mobiliario inf."
+                                                                    iconclass={"fas fa-dollar-sign"}
+                                                                    thousandseparator={true}
+                                                                    formgroup={"mb-1"}
+                                                                />
+                                                            </div>
+                                                            <div className="col-md-3">
+                                                                <InputNumber
+                                                                    requirevalidation={1}
+                                                                    formeditado={formeditado}
+                                                                    placeholder="MOBILIARIO SUP."
+                                                                    value={form.mobiliario_sup}
+                                                                    name="mobiliario_sup"
+                                                                    onChange={onChange}
+                                                                    messageinc="Ingresa el precio de mobiliario sup."
+                                                                    iconclass={"fas fa-dollar-sign"}
+                                                                    thousandseparator={true}
+                                                                    formgroup={"mb-1"}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <OptionsCheckbox
+                                                        requirevalidation = { 0 }
+                                                        formeditado = { formeditado }
+                                                        // placeholder = "SELECCIONA LAS PARTIDAS"
+                                                        options = { form.partidas }
+                                                        name = 'partidas' 
+                                                        value = { form.partidas }
+                                                        onChange = { this.handleChangeCheckboxPartidas }
+                                                        customgroup="columns-2"
+                                                        customlist="px-3"
+                                                    />
+                                                </Tab.Pane>
+                                                <Tab.Pane eventKey="options3">
+                                                    <div className="col-md-12">
+                                                        <div className='row mx-0 d-flex justify-content-center'>
+                                                            <div className="col-md-3">
+                                                                <InputNumber
+                                                                    requirevalidation={1}
+                                                                    formeditado={formeditado}
+                                                                    placeholder="CONST. CIVIL INF."
+                                                                    value={form.construccion_civil_inf}
+                                                                    name="construccion_civil_inf"
+                                                                    onChange={onChange}
+                                                                    messageinc="Ingresa el precio de const. civil inf."
+                                                                    iconclass={"fas fa-dollar-sign"}
+                                                                    thousandseparator={true}
+                                                                    formgroup={"mb-1"}
+                                                                />
+                                                            </div>
+                                                            <div className="col-md-3">
+                                                                <InputNumber
+                                                                    requirevalidation={1}
+                                                                    formeditado={formeditado}
+                                                                    placeholder="CONST. CIVIL SUP."
+                                                                    value={form.construccion_civil_sup}
+                                                                    name="construccion_civil_sup"
+                                                                    onChange={onChange}
+                                                                    messageinc="Ingresa el precio de const. civil sup."
+                                                                    iconclass={"fas fa-dollar-sign"}
+                                                                    thousandseparator={true}
+                                                                    formgroup={"mb-1"}
+                                                                />
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <OptionsCheckbox
+                                                        requirevalidation = { 0 }
+                                                        formeditado = { formeditado }
+                                                        // placeholder = "SELECCIONA LAS PARTIDAS"
+                                                        options = { form.partidas }
+                                                        name = 'partidas' 
+                                                        value = { form.partidas }
+                                                        onChange = { this.handleChangeCheckboxPartidas }
+                                                        customgroup="columns-2"
+                                                        customlist="px-3"
+                                                    />
+                                                </Tab.Pane>
+                                            </Tab.Content>
+                                        </div>
                                     </div>
-                                    <div className="col-md-3">
-                                        <InputNumber
-                                            requirevalidation={1}
-                                            formeditado={formeditado}
-                                            placeholder="MOBILIARIO INF."
-                                            value={form.mobiliario_inf}
-                                            name="mobiliario_inf"
-                                            onChange={onChange}
-                                            messageinc="Incorrecto. Ingresa el precio de mobiliario inf."
-                                            iconclass={"fas fa-dollar-sign"}
-                                            thousandseparator={true}
-                                        />
-                                    </div>
-                                    <div className="col-md-3">
-                                        <InputNumber
-                                            requirevalidation={1}
-                                            formeditado={formeditado}
-                                            placeholder="MOBILIARIO SUP."
-                                            value={form.mobiliario_sup}
-                                            name="mobiliario_sup"
-                                            onChange={onChange}
-                                            messageinc="Incorrecto. Ingresa el precio de mobiliario sup."
-                                            iconclass={"fas fa-dollar-sign"}
-                                            thousandseparator={true}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="separator separator-dashed mt-1 mb-2"></div>
-                                <div className="form-group row form-group-marginless">
-                                    <div className="col-md-3">
-                                        <InputNumber
-                                            requirevalidation={1}
-                                            formeditado={formeditado}
-                                            placeholder="CONST. CIVIL INF."
-                                            value={form.construccion_civil_inf}
-                                            name="construccion_civil_inf"
-                                            onChange={onChange}
-                                            messageinc="Incorrecto. Ingresa el precio de const. civil inf."
-                                            iconclass={"fas fa-dollar-sign"}
-                                            thousandseparator={true}
-                                        />
-                                    </div>
-                                    <div className="col-md-3">
-                                        <InputNumber
-                                            requirevalidation={1}
-                                            formeditado={formeditado}
-                                            placeholder="CONST. CIVIL SUP."
-                                            value={form.construccion_civil_sup}
-                                            name="construccion_civil_sup"
-                                            onChange={onChange}
-                                            messageinc="Incorrecto. Ingresa el precio de const. civil sup."
-                                            iconclass={"fas fa-dollar-sign"}
-                                            thousandseparator={true}
-                                        />
-                                    </div>
-                                    <div className="col-md-3">
-                                        <Input
-                                            requirevalidation={1}
-                                            formeditado={formeditado}
-                                            placeholder="TIEMPO DE EJECUCIÓN (SEMANAS)"
-                                            value={form.tiempo_ejecucion_construccion}
-                                            name="tiempo_ejecucion_construccion"
-                                            onChange={onChange}
-                                            iconclass={"flaticon-calendar-with-a-clock-time-tools"}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="form-group row form-group-marginless">
-                                    <div className="col-md-12">
-                                        <OptionsCheckbox
-                                            requirevalidation = { 0 }
-                                            formeditado = { formeditado }
-                                            placeholder = "SELECCIONA LAS PARTIDAS"
-                                            options = { form.partidas }
-                                            name = 'partidas' 
-                                            value = { form.partidas }
-                                            onChange = { this.handleChangeCheckboxPartidas }
-                                        />
-                                    </div>
-                                </div>
-                                {/* <div className="separator separator-dashed mt-1 mb-2"></div>
-                                <div className="form-group row form-group-marginless">
-                                    <div className="col-md-12">
-                                        <OptionsCheckbox
-                                            requirevalidation={0}
-                                            formeditado={formeditado}
-                                            placeholder="SELECCIONA LAS PARTIDAS"
-                                            options={form.tipo_partida === "partidasInein" ? form.partidasInein : form.partidasIm}
-                                            name={form.tipo_partida}
-                                            value={form.tipo_partida === "partidasInein" ? form.partidasInein : form.partidasIm}
-                                            onChange={this.handleChangeCheckbox}
-                                        />
-                                    </div>
-                                </div> */}
-                                <div className="d-flex justify-content-between border-top mt-3 pt-3">
+                                </Tab.Container>
+                                    <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2">
                                         <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase" onClick={() => { openWizard2() }} data-wizard-type="action-prev">Anterior</button>
                                     </div>
