@@ -65,10 +65,10 @@ class InputNumber extends Component {
     }
 
     render() {
-        const { error, onChange, placeholder, iconclass, messageinc, typeformat, thousandseparator, ...props } = this.props
+        const { error, onChange, placeholder, iconclass, messageinc, typeformat, thousandseparator, formgroup, ...props } = this.props
         const { inputValido } = this.state
         return (
-            <div >
+            <div className={`${formgroup}`}>
                 <label className="col-form-label">{placeholder}</label>
                 <div className="input-icon">
                     <span className="input-icon input-icon-right">
