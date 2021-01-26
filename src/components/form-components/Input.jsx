@@ -47,7 +47,7 @@ class Input extends Component {
     }
 
     render() {
-        const { error, onChange, placeholder, iconclass, messageinc, letterCase,customlabel,spellcheck, customicon, ...props } = this.props 
+        const { error, onChange, placeholder, iconclass, messageinc, letterCase,customlabel,spellcheck, customicon, formgroup, ...props } = this.props 
         const { inputValido } =  this.state  
         
         const toInputUppercase = e => {
@@ -62,7 +62,7 @@ class Input extends Component {
         }
 
         return (
-            <div >
+            <div className={`${formgroup}`}>
                 <label className = {`col-form-label ${customlabel}`}>{placeholder}</label>
                     <div className="input-icon">       
                         <span className={`input-icon input-icon-right ${customicon}`}>

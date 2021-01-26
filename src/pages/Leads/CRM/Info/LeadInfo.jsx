@@ -135,6 +135,9 @@ class LeadInfo extends Component {
             ],
             partidas: [],
             planos: [],
+            partidasAcabados: [],
+            partidasMobiliario: [],
+            partidasObra: [],
             subtotal: 0.0,
             fase1: true,
             fase2: true,
@@ -318,6 +321,28 @@ class LeadInfo extends Component {
 
                 formDiseño.planos = this.setOptionsCheckboxes(planos, true)
 
+                let auxPartidasAcabados = []
+                let auxPartidasMobiliario = []
+                let auxPartidasObra = []
+                partidas.map( (partida) => {
+                    switch(partida.tipo){
+                        case 'Acabados e instalaciones':
+                            auxPartidasAcabados.push(partida)
+                            break;
+                        case 'Mobiliario':
+                            auxPartidasMobiliario.push(partida)
+                            break;
+                        case 'Obra civil':
+                            auxPartidasObra.push(partida)
+                            break;
+                        default: break;
+                    }
+                })
+
+                formDiseño.partidasAcabados = this.setOptionsCheckboxes(auxPartidasAcabados, true)
+                formDiseño.partidasMobiliario = this.setOptionsCheckboxes(auxPartidasMobiliario, true)
+                formDiseño.partidasObra = this.setOptionsCheckboxes(auxPartidasObra, true)
+
                 this.setState({
                     ...this.state,
                     data,
@@ -368,10 +393,8 @@ class LeadInfo extends Component {
     handleChangeCheckbox = (array, type) => {
         const { formDiseño } = this.state
         formDiseño[type] = array
-        this.setState({
-            ...this.state,
-            formDiseño: formDiseño
-        })
+        console.log('FORM DISEÑO TYPE', formDiseño[type])
+        this.setState({ ...this.state, formDiseño: formDiseño })
     }
 
     onChangePresupuesto = e => {
@@ -982,29 +1005,36 @@ class LeadInfo extends Component {
                     if (aux) {
                         aux = aux.planos
                         formDiseño.planos.map((plano) => {
-                            let bandera = false
-                            aux.map((element) => {
-                                if (plano.id.toString() === element.toString())
-                                    bandera = true
-                                return '';
-                            })
-                            plano.checked = bandera
-                            return ''
+                            if(aux.indexOf(plano.id) >= 0)
+                                plano.checked = true
+                            else
+                                plano.checked = false
                         })
                     }
 
                     aux = JSON.parse(lead.presupuesto_diseño.partidas)
                     if (aux) {
                         aux = aux.partidas
-                        formDiseño.partidas.map((partida) => {
-                            let bandera = false
-                            aux.map((element) => {
-                                if (partida.id.toString() === element.toString())
-                                    bandera = true
-                                return ''
-                            })
-                            partida.checked = bandera
-                            return ''
+
+                        formDiseño.partidasAcabados.map((partida) => {
+                            if(aux.indexOf(partida.id) >= 0)
+                                partida.checked = true
+                            else
+                                partida.checked = false
+                        })
+
+                        formDiseño.partidasMobiliario.map((partida) => {
+                            if(aux.indexOf(partida.id) >= 0)
+                                partida.checked = true
+                            else
+                                partida.checked = false
+                        })
+
+                        formDiseño.partidasObra.map((partida) => {
+                            if(aux.indexOf(partida.id) >= 0)
+                                partida.checked = true
+                            else
+                                partida.checked = false
                         })
                     }
 

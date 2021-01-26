@@ -55,10 +55,10 @@ class InputNumberGray extends Component {
         }
     }
     render() {
-        const { error, onChange, placeholder, iconclass, messageinc, typeformat, customlabel, customclass, customstyle, thousandseparator,...props } = this.props
+        const { error, onChange, placeholder, iconclass, messageinc, typeformat, customlabel, customclass, customstyle, thousandseparator, formgroup, ...props } = this.props
         const { inputValido } = this.state
         return (
-            <div className="form-group">
+            <div className={`form-group ${formgroup}`}>
                 <label className={`col-form-label font-weight-bold text-dark-60  ${customlabel}`}>{placeholder}</label>
                 <div className="input-group input-group-solid rounded-0">
                     <div className="input-group-prepend">

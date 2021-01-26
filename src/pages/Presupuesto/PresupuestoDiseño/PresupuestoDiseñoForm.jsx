@@ -949,11 +949,13 @@ class PresupuestoDiseñoForm extends Component {
                                     presupuesto.pdfs ?
                                         presupuesto.pdfs.length ?
                                             <div>
-                                                <Button icon =''
-                                                    className = "btn btn-icon btn-xs p-3 btn-light-primary mr-2"
-                                                    onClick = { () => { this.openModalPresupuesto() } }
-                                                    only_icon = "far fa-file-pdf icon-15px"
-                                                    tooltip = { { text: 'COTIZACIONES GENERADAS' } }/>
+                                                <Button
+                                                    icon=''
+                                                    className={"btn btn-icon btn-xs w-auto p-3 btn-light-gray"}
+                                                    onClick={() => { this.openModalPresupuesto() }}
+                                                    only_icon={"far fa-file-pdf icon-15px mr-2"}
+                                                    text='COTIZACIONES GENERADAS'
+                                                    />
                                             </div>
                                         : ''
                                     : ''
