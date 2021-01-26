@@ -3,6 +3,7 @@ import { OverlayTrigger, Tooltip, Dropdown } from 'react-bootstrap'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
 import { setDateTableLG } from '../../../functions/setters'
+import { questionAlert } from '../../../functions/alert'
 class LeadNegociacion extends Component {
 
     isActiveButton(direction) {
@@ -36,8 +37,21 @@ class LeadNegociacion extends Component {
         return aux
     }
 
+    getActionEmail = lead => {
+        let bandera = true
+        if(lead.prospecto)
+            if(lead.prospecto.contactos)
+                if(lead.prospecto.contactos.length)
+                    lead.prospecto.contactos.map((contacto, index)=>{
+                        if(contacto.comentario === 'CORREO DE CONFIRMACIÓN DE DATOS RECIBIDOS PARA EL LLENADO DE CONTRATO.')
+                            bandera = false
+                        return ''
+                    })
+        return bandera
+    }
+
     render() {
-        const { leads, onClickNext, onClickPrev, openModalWithInput, changeEstatus, changePageDetails, changePageCierreVenta, changePageContratar } = this.props
+        const { leads, onClickNext, onClickPrev, openModalWithInput, changeEstatus, changePageDetails, changePageCierreVenta, changePageContratar, sendEmail } = this.props
         return (
             <div className="tab-content">
                 <div className="table-responsive-lg">
@@ -196,34 +210,48 @@ class LeadNegociacion extends Component {
                                                             <i className="flaticon2-plus icon-nm"></i>
                                                         </span>
                                                     </OverlayTrigger>
-                                                    {/* {
+                                                    {
                                                         this.actionsButton(lead) ?
-                                                            <OverlayTrigger overlay={<Tooltip>CONTRATAR</Tooltip>}>
-                                                                <span onClick={(e) => { changePageContratar(lead) }} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-brown">
-                                                                    <i className="fas fa-file-signature icon-14px"></i>
-                                                                </span>
-                                                            </OverlayTrigger>
+                                                            <>
+                                                                {
+                                                                    this.getActionEmail(lead) ?
+                                                                        <OverlayTrigger overlay={<Tooltip>ENVIAR CORREO DATOS RECIBIDOS</Tooltip>}>
+                                                                            <span onClick={(e) => { questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => sendEmail(lead)) }}
+                                                                                className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-brown">
+                                                                                <span className="svg-icon svg-icon-md">
+                                                                                    <SVG src={toAbsoluteUrl('/images/svg/Outgoing-mail.svg')} />
+                                                                                </span>
+                                                                            </span>
+                                                                        </OverlayTrigger>
+                                                                    : ''
+                                                                }
+                                                                <OverlayTrigger overlay={<Tooltip>CONTRATAR</Tooltip>}>
+                                                                    <span onClick={(e) => { changePageContratar(lead) }} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-brown">
+                                                                        <i className="fas fa-file-signature icon-14px"></i>
+                                                                    </span>
+                                                                </OverlayTrigger>
+                                                            </>
                                                         :
                                                             <OverlayTrigger overlay={<Tooltip>SEGUIMIENTO DE VENTA</Tooltip>}>
-                                                                <a onClick={(e) => { changePageCierreVenta(lead) }} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-brown">
+                                                                <span onClick={(e) => { changePageCierreVenta(lead) }} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-brown">
                                                                     <span className="svg-icon svg-icon-md">
                                                                         <SVG src={toAbsoluteUrl('/images/svg/File.svg')} />
                                                                     </span>
-                                                                </a>
+                                                                </span>
                                                             </OverlayTrigger>
-                                                    } */}
-                                                    <OverlayTrigger overlay={<Tooltip>SEGUIMIENTO DE VENTA</Tooltip>}>
+                                                    }
+                                                    {/* <OverlayTrigger overlay={<Tooltip>SEGUIMIENTO DE VENTA</Tooltip>}>
                                                         <span onClick={(e) => { changePageCierreVenta(lead) }} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-brown">
                                                             <span className="svg-icon svg-icon-md">
                                                                 <SVG src={toAbsoluteUrl('/images/svg/File.svg')} />
                                                             </span>
                                                         </span>
-                                                    </OverlayTrigger>
-                                                    <OverlayTrigger overlay={<Tooltip>CONTRATAR</Tooltip>}>
+                                                    </OverlayTrigger> */}
+                                                    {/* <OverlayTrigger overlay={<Tooltip>CONTRATAR</Tooltip>}>
                                                         <span onClick={(e) => { changePageContratar(lead) }} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-brown">
                                                             <i className="fas fa-file-signature icon-14px"></i>
                                                         </span>
-                                                    </OverlayTrigger>
+                                                    </OverlayTrigger> */}
                                                 </td>
                                             </tr>
                                         )
