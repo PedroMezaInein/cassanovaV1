@@ -830,6 +830,29 @@ class Crm extends Component {
         })
     }
 
+    /* ANCHOR CRM CONFIRMAR RECEPCIÓN DE DATOS */
+    sendEmailLeadNegociacion = async lead => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.put(URL_DEV + 'crm/email/confirmacion-datos-contrato/' + lead.id, {}, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert('Correo enviado con éxito');
+                this.getSinContactar()
+                this.getUltimosIngresados()
+                this.getUltimosIngresados()
+                this.getLeadsEnNegociacion()
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) { forbiddenAccessAlert() } 
+                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     /* ANCHOR CRM AGENDAR LLAMADA */
     agendarLlamada = async () => {
         const { lead, form } = this.state
@@ -1728,6 +1751,7 @@ class Crm extends Component {
                                             onClickNext={this.nextPageLeadEnNegociacion}
                                             onClickPrev={this.prevPageLeadEnNegociacion}
                                             changeEstatus={this.changeEstatus}
+                                            sendEmail = { this.sendEmailLeadNegociacion }
                                             openModalWithInput={this.openModalWithInput}
                                             changePageDetails={this.changePageDetailsNegociacion}
                                             changePageContratar={this.changePageContratar}
