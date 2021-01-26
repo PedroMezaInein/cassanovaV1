@@ -88,6 +88,9 @@ class PresupuestoDiseñoForm extends Component {
                 }
             ],
             partidas: [],
+            partidasAcabados: [],
+            partidasMobiliario: [],
+            partidasObra: [],
             planos: [],
             subtotal: 0.0,
             fase1: true,
@@ -250,23 +253,52 @@ class PresupuestoDiseñoForm extends Component {
                     form.empresa = presupuesto.empresa.id.toString()
                     data.tipos = presupuesto.empresa.tipos
                     options.tipos = setOptions(presupuesto.empresa.tipos, 'tipo', 'id')
-                    let cadena = ''
-                    switch(presupuesto.empresa.name){
-                        case 'INEIN':
-                            cadena = 'inein'
-                            break;
-                        case 'INFRAESTRUCTURA MÉDICA':
-                            cadena = 'im'
-                            break;
-                        default: break;
+                    aux = JSON.parse(presupuesto.partidas)
+                    if (aux) {
+                        aux = aux.partidas
+                        let auxPartidasAcabados = []
+                        let auxPartidasMobiliario = []
+                        let auxPartidasObra = []
+                        
+                        presupuesto.empresa.partidas_diseño.map((partida) => {
+                            switch(partida.tipo){
+                                case 'Acabados e instalaciones':
+                                    auxPartidasAcabados.push(partida)
+                                    break;
+                                case 'Mobiliario':
+                                    auxPartidasMobiliario.push(partida)
+                                    break;
+                                case 'Obra civil':
+                                    auxPartidasObra.push(partida)
+                                    break;
+                            }
+                        })
+
+                        form.partidasAcabados = this.setOptionsCheckboxes(auxPartidasAcabados, true)
+                        form.partidasMobiliario = this.setOptionsCheckboxes(auxPartidasMobiliario, true)
+                        form.partidasObra = this.setOptionsCheckboxes(auxPartidasObra, true)
+
+                        form.partidasAcabados.map((partida) => {
+                            if(aux.indexOf(partida.id) >= 0)
+                                partida.checked = true
+                            else
+                                partida.checked = false
+                        })
+
+                        form.partidasMobiliario.map((partida) => {
+                            if(aux.indexOf(partida.id) >= 0)
+                                partida.checked = true
+                            else
+                                partida.checked = false
+                        })
+
+                        form.partidasObra.map((partida) => {
+                            if(aux.indexOf(partida.id) >= 0)
+                                partida.checked = true
+                            else
+                                partida.checked = false
+                        })
                     }
-                    let partidas = [];
-                    data.partidas.map((partida)=>{
-                        if(partida.empresa === cadena)                    
-                            partidas.push(partida)
-                        return ''
-                    })
-                    form.partidas = this.setOptionsCheckboxes(partidas, true)
                 }
 
                 let aux = JSON.parse(presupuesto.actividades)
@@ -315,22 +347,9 @@ class PresupuestoDiseñoForm extends Component {
                         return ''
                     })
                 }
-                aux = JSON.parse(presupuesto.partidas)
-                if (aux) {
-                    aux = aux.partidas
-                    form.partidas.map((partida) => {
-                        let bandera = false
-                        aux.map((element) => {
-                            if (partida.id.toString() === element.toString())
-                                bandera = true
-                            return ''
-                        })
-                        partida.checked = bandera
-                        return ''
-                    })
-                }
 
                 if(presupuesto.lead){
+                    console.log(presupuesto.lead, 'LEAD')
                     if(presupuesto.lead.prospecto){
                         form.proyecto = presupuesto.lead.prospecto.nombre_proyecto
                         if(presupuesto.lead.prospecto.tipo_proyecto)
@@ -342,7 +361,7 @@ class PresupuestoDiseñoForm extends Component {
                     if(presupuesto.tipo_proyecto_id)
                         form.tipoProyecto = presupuesto.tipo_proyecto_id.toString()
 
-                if( form.proyecto === '' )
+                if( form.proyecto === '' || form.proyecto === null )
                     form.proyecto = presupuesto.nombre_proyecto
 
                 this.setState({
@@ -370,14 +389,12 @@ class PresupuestoDiseñoForm extends Component {
     async getOptionsAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'presupuestos-diseño/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(`${URL_DEV}presupuestos-diseño/options`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 Swal.close()
-                const { empresas, partidas } = response.data
+                const { empresas } = response.data
                 const { options, data, form } = this.state
                 data.empresas = empresas
-                data.partidas = partidas
-                data.partidas = partidas
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options.esquemas = setOptions([
                     { name: 'Esquema 1', value: 'esquema_1' },
@@ -412,13 +429,12 @@ class PresupuestoDiseñoForm extends Component {
 
         form.pdf = pdf
 
-        await axios.post(URL_DEV + 'presupuestos-diseño', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}presupuestos-diseño`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-
                 const { presupuesto } = response.data
                 const { form } = this.state
                 form.presupuesto = presupuesto
-                if (pdf)
+                if (pdf){
                     if (presupuesto.pdfs) {
                         var win = window.open(presupuesto.pdfs[0].url, '_blank');
                         if(win)
@@ -432,6 +448,7 @@ class PresupuestoDiseñoForm extends Component {
                             document.body.removeChild(link);
                         }
                     }
+                }
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La presupuesto fue eliminada con éxito.',)
                 /* history.push({
                     pathname: '/presupuesto/presupuesto-diseño'
@@ -560,23 +577,30 @@ class PresupuestoDiseñoForm extends Component {
                         })
                         form.planos = this.setOptionsCheckboxes(planos, true)
                         data.empresa = empresa
-                        let cadena = ''
-                        switch(empresa.name){
-                            case 'INEIN':
-                                cadena = 'inein'
-                                break;
-                            case 'INFRAESTRUCTURA MÉDICA':
-                                cadena = 'im'
-                                break;
-                            default:
-                                break;
-                        }
-                        data.partidas.map((partida)=>{
-                            if(partida.empresa === cadena)                    
-                                partidas.push(partida)
-                            return ''
+                        let auxPartidasAcabados = []
+                        let auxPartidasMobiliario = []
+                        let auxPartidasObra = []
+
+                        empresa.partidas_diseño.map((partida) => {
+                            switch(partida.tipo){
+                                case 'Acabados e instalaciones':
+                                    auxPartidasAcabados.push(partida)
+                                    break;
+                                case 'Mobiliario':
+                                    auxPartidasMobiliario.push(partida)
+                                    break;
+                                case 'Obra civil':
+                                    auxPartidasObra.push(partida)
+                                    break;
+                            }
                         })
-                        form.partidas = this.setOptionsCheckboxes(partidas, true)
+
+                        form.partidasAcabados = this.setOptionsCheckboxes(auxPartidasAcabados, true)
+                        form.partidasMobiliario = this.setOptionsCheckboxes(auxPartidasMobiliario, true)
+                        form.partidasObra = this.setOptionsCheckboxes(auxPartidasObra, true)
+
+                        console.log('FORM', form)
+
                     }
                     return ''
                 })
