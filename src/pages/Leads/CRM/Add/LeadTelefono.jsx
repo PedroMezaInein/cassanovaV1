@@ -4,7 +4,7 @@ import Layout from '../../../../components/layout/layout';
 import { Form } from 'react-bootstrap';
 import { InputGray, SelectSearchGray, InputPhoneGray, Button } from '../../../../components/form-components';
 import axios from 'axios'
-import { doneAlert, errorAlert, forbiddenAccessAlert, validateAlert, waitAlert } from '../../../../functions/alert';
+import { doneAlert, errorAlert, forbiddenAccessAlert, validateAlert, waitAlert, questionAlert2} from '../../../../functions/alert';
 import Swal from 'sweetalert2'
 import { setOptions } from '../../../../functions/setters';
 import { TEL, URL_DEV, EMAIL } from '../../../../constants';
@@ -168,9 +168,13 @@ class LeadTelefono extends Component {
     }
 
     onSubmit = async (e) => {
-        waitAlert();
         const { form } = this.state
         const { access_token } = this.props.authUser
+        if(document.getElementById('radio-si').checked)
+            form.llamada = true
+        if(document.getElementById('radio-no').checked)
+            form.llamada = false
+        waitAlert();
         await axios.post(URL_DEV + 'crm/add/lead/telefono', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Actualizaste los permisos.',)
@@ -192,6 +196,7 @@ class LeadTelefono extends Component {
             console.log(error, 'error')
         })
     }
+
     render() {
         const { messages, form, options } = this.state
         return (
@@ -387,13 +392,20 @@ class LeadTelefono extends Component {
                             {
                                 form.telefono ?
                                     <div className="card-footer py-3 pr-1 text-right">
-                                        <Button text='ENVIAR' type='submit' className="btn btn-primary mr-2" icon=''
-                                            onClick={
-                                                (e) => {
-                                                    e.preventDefault();
-                                                    validateAlert(this.onSubmit, e, 'form-lead-telefono')
-                                                }
-                                            } />
+                                        <Button icon='' className="btn btn-primary mr-2" text='ENVIAR'
+                                            onClick = { (e) => { 
+                                                e.preventDefault();
+                                                questionAlert2(
+                                                    '¿EL FORMULARIO SE LLENÓ POR MEDIO DE UNA LLAMADA?', '',
+                                                    () => this.onSubmit(),
+                                                    <div>
+                                                        <Form.Check type="radio" label="SI" name="respuesta_correo"
+                                                            className="px-0 mb-2" id = 'radio-si' />
+                                                        <Form.Check type="radio" label="NO" name="respuesta_correo"
+                                                            className="px-0 mb-2" id = 'radio-no'  />
+                                                    </div>
+                                                )
+                                            }} />
                                     </div>
                                     : ''
                             }
