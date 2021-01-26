@@ -4,7 +4,7 @@ import { deleteAlert, validateAlert } from '../../../functions/alert';
 import { Button, Input, RangeCalendar, TagSelectSearch, CircleColor, SelectCreate, SelectSearch } from '../../form-components';
 const $ = require('jquery');
 
-const colors = ["#20ACE9", "#EE4C9E", "#62D270 ", "#E63850", "#A962E2", "#E4C127", "#1D69E1", "#8C5E4D", "##737373"];
+const colors = ["#20ACE9", "#EE4C9E", "#62D270 ", "#E63850", "#A962E2", "#E4C127", "#1D69E1", "#8C5E4D", "#737373"];
 
 class PlanTrabajoForm extends Component{
 
@@ -74,7 +74,7 @@ class PlanTrabajoForm extends Component{
                             </div>
                         </div>
                     </Col>
-                    <Col md = { 7 }>
+                    <Col md = { 7 } className="align-self-center">
                         <div className="form-group row form-group-marginless mt-4">
                             <div className="col-md-6">
                                 <Input requirevalidation = { 1 } name = "nombre" value = { form.nombre }
@@ -111,7 +111,7 @@ class PlanTrabajoForm extends Component{
                                     <div className="form-group row form-group-marginless">
                                         <div className="col-md-12">
                                             <CircleColor circlesize = { 23 } width = "auto" onChange = { this.handleChangeColor }
-                                                placeholder = "SELECCIONA EL COLOR DEL ROL" colors = { colors } />
+                                                placeholder = "SELECCIONA EL COLOR DEL ROL" colors = { colors } classlabel="text-center" classname="d-flex justify-content-center"/>
                                         </div>
                                     </div>
                                 </>
