@@ -10,12 +10,12 @@ class Input extends Component{
                 <Form.Label className="font-weight-bolder">{placeholder}</Form.Label>
 
                 <Form.Group className={customgroup}> 
-                        <div className={`checkbox-list ${customlist}`}>
+                        <div className={`checkbox-list ${customlist}`} >
                         {
                             
                             options.map((option, key) => {
                                 return(  
-                                        <label key = {key} className="checkbox checkbox-outline checkbox-outline-2x checkbox-primary font-weight-light text-justify">
+                                        <label key = {key} className="checkbox checkbox-outline checkbox-outline-2x checkbox-primary font-weight-light text-justify pb-2px">
                                             <input 
                                             type="checkbox" 
                                             onChange={ (e) => { onChange(e)} } 

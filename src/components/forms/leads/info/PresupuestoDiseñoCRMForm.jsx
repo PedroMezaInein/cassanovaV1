@@ -144,7 +144,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                     name="m2"
                                                     onChange={onChange}
                                                     iconclass={"fas fa-ruler-combined"}
-                                                    messageinc="Incorrecto. Ingresa los m²."
+                                                    messageinc="Ingresa los m²."
                                                 />
                                             </div>
                                             <div className="col-md-4">
@@ -157,7 +157,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                     value = { formDiseño.esquema }
                                                     onChange = { this.updateEsquema }
                                                     iconclass = "flaticon2-sheet"
-                                                    messageinc="Incorrecto. Ingresa selecciona el esquema."
+                                                    messageinc="Ingresa selecciona el esquema."
                                                     withtaglabel={1}
                                                     withtextlabel={1}
                                                 />
@@ -187,7 +187,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                     name="tiempo_ejecucion_diseno"
                                                     onChange={onChange}
                                                     iconclass={"flaticon-calendar-with-a-clock-time-tools"}
-                                                    messageinc="Incorrecto. Ingresa los días de ejecución."
+                                                    messageinc="Ingresa los días de ejecución."
                                                 />
                                             </div>
                                             <div className="col-md-4">
@@ -212,7 +212,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                     thousandseparator={true}
                                                     onChange={onChange}
                                                     name="renders"
-                                                    messageinc="Incorrecto. Ingresa los números de renders."
+                                                    messageinc="Ingresa los números de renders."
                                                 />
                                             </div>
                                         </div>
@@ -430,110 +430,115 @@ class PresupuestoDiseñoCRMForm extends Component {
                                 </div>
                             </div>
                             <div id="wizard-3-content" className="pb-3" data-wizard-type="step-content">
-                                <h5 className="mb-4 font-weight-bold text-dark">INGRESA LOS PRECIOS PARAMÉTRICOS Y EL TIEMPO DE EJECUCIÓN</h5>
-                                <div className="form-group row form-group-marginless">
-                                    <div className="col-md-4">
-                                        <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 }
-                                            withicon = { 1 } requirevalidation = { 1 } withformgroup = { 1 } formeditado = { formeditado }
-                                            placeholder = "TIEMPO DE EJECUCIÓN(SEMANAS)" value = { formDiseño.tiempo_ejecucion_construccion }
-                                            name = "tiempo_ejecucion_construccion" onChange = { onChange }
-                                            iconclass = "flaticon-calendar-with-a-clock-time-tools" 
-                                            messageinc = "Incorrecto. Ingresa un tiempo de ejecución." />
-                                    </div>
-                                </div>
-                                <div className="separator separator-dashed mt-1 mb-2"></div>
-                                <div className="form-group row form-group-marginless">
-                                    <div className="col-md-4">
-                                        <div className = 'row mx-0'>
-                                            <div className = 'col-md-6'>
-                                                <InputNumberGray requirevalidation = { 1 } formeditado = { formeditado }
-                                                    placeholder="CONSTR. INTERIOR INF." value = { formDiseño.construccion_interiores_inf }
-                                                    name = "construccion_interiores_inf" onChange = { onChange } iconclass = "fas fa-dollar-sign"
-                                                    messageinc = "Incorrecto. Ingresa el precio de constr. interior inf." thousandseparator = { true } />
-                                            </div>
-                                            <div className = 'col-md-6'>
-                                                <InputNumberGray requirevalidation = { 1 } formeditado = { formeditado }
-                                                    placeholder = "CONSTR. INTERIOR SUP." value = { formDiseño.construccion_interiores_sup }
-                                                    name = "construccion_interiores_sup" onChange = { onChange } iconclass = "fas fa-dollar-sign"
-                                                    messageinc="Incorrecto. Ingresa el precio de constr. de interiores sup." thousandseparator = { true } />
-                                            </div>
+                                <Tab.Container defaultActiveKey="options1">
+                                    <h5 className="mb-4 font-weight-bold text-dark">INGRESA LOS PRECIOS PARAMÉTRICOS Y EL TIEMPO DE EJECUCIÓN</h5>
+                                    <div className="form-group row form-group-marginless">
+                                        <div className="col-md-3" >
+                                            <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1}
+                                                withicon={1} requirevalidation={1} withformgroup={1} formeditado={formeditado}
+                                                placeholder="TIEMPO DE EJECUCIÓN(SEMANAS)" value={formDiseño.tiempo_ejecucion_construccion}
+                                                name="tiempo_ejecucion_construccion" onChange={onChange}
+                                                iconclass="flaticon-calendar-with-a-clock-time-tools"
+                                                messageinc="Ingresa el tiempo de ejecución." />
                                         </div>
-                                    </div>
-                                    <div className="col-md-4">
-                                        <div className = 'row mx-0'>
-                                            <div className = 'col-md-6'>
-                                                <InputNumberGray requirevalidation = { 1 } formeditado = { formeditado }
-                                                    placeholder = "MOBILIARIO INF." value={formDiseño.mobiliario_inf}
-                                                    name = "mobiliario_inf" onChange = { onChange }
-                                                    messageinc = "Incorrecto. Ingresa el precio de mobiliario inf."
-                                                    iconclass = "fas fa-dollar-sign" thousandseparator = { true } />
-                                            </div>
-                                            <div className = 'col-md-6'>
-                                                <InputNumberGray requirevalidation = { 1 } formeditado = { formeditado }
-                                                    placeholder = "MOBILIARIO SUP." value={formDiseño.mobiliario_sup}
-                                                    name = "mobiliario_sup" onChange = { onChange }
-                                                    messageinc = "Incorrecto. Ingresa el precio de mobiliario sup."
-                                                    iconclass = "fas fa-dollar-sign" thousandseparator = { true } />
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="col-md-4">
-                                        <div className = 'row mx-0'>
-                                            <div className = 'col-md-6'>
-                                                <InputNumberGray requirevalidation={1} formeditado = { formeditado }
-                                                    placeholder = "CONST. CIVIL INF." value = { formDiseño.construccion_civil_inf }
-                                                    name = "construccion_civil_inf" onChange = { onChange }
-                                                    messageinc = "Incorrecto. Ingresa el precio de const. civil inf."
-                                                    iconclass = "fas fa-dollar-sign" thousandseparator = { true } />
-                                            </div>
-                                            <div className = 'col-md-6'>
-                                                <InputNumberGray requirevalidation = { 1 } formeditado = { formeditado }
-                                                    placeholder = "CONST. CIVIL SUP." value = { formDiseño.construccion_civil_sup }
-                                                    name = "construccion_civil_sup" onChange = { onChange }
-                                                    messageinc = "Incorrecto. Ingresa el precio de const. civil sup."
-                                                    iconclass = "fas fa-dollar-sign" thousandseparator = { true } />
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="separator separator-dashed mt-1 mb-2"></div>
-                                <div className="form-group row form-group-marginless">
-                                    <div className="col-md-12">
-                                        <Tab.Container defaultActiveKey="options1">
-                                            <Nav className="nav nav-pills justify-content-center">
-                                                <Nav.Item>
-                                                    <Nav.Link eventKey="options1" className="btn btn-text-primary btn-hover-light-primary font-weight-bolder mr-2">Opción partida 1</Nav.Link>
-                                                </Nav.Item>
-                                                <Nav.Item>
-                                                    <Nav.Link eventKey="options2" className="btn btn-text-primary btn-hover-light-primary font-weight-bolder mr-2">Opción partida 2</Nav.Link>
-                                                </Nav.Item>
-                                                <Nav.Item>
-                                                    <Nav.Link eventKey="options3" className="btn btn-text-primary btn-hover-light-primary font-weight-bolder mr-2">Opción partida 3</Nav.Link>
-                                                </Nav.Item>
+                                        <div className="col-md-9 d-flex justify-content-center align-items-center">
+                                            <Nav className="nav nav-pills col-md-12">
+                                                <div className="col-md-4">
+                                                    <Nav.Item>
+                                                        <Nav.Link eventKey="options1" className="btn btn-text-primary btn-hover-light-primary font-weight-bolder mr-2 d-flex justify-content-center">Acabados e instalaciones</Nav.Link>
+                                                    </Nav.Item>
+                                                </div>
+                                                <div className="col-md-4">
+                                                    <Nav.Item>
+                                                        <Nav.Link eventKey="options2" className="btn btn-text-primary btn-hover-light-primary font-weight-bolder mr-2 d-flex justify-content-center ">Mobiliario</Nav.Link>
+                                                    </Nav.Item>
+                                                </div>
+                                                <div className="col-md-4">
+                                                    <Nav.Item>
+                                                        <Nav.Link eventKey="options3" className="btn btn-text-primary btn-hover-light-primary font-weight-bolder mr-2 d-flex justify-content-center">Obra civil</Nav.Link>
+                                                    </Nav.Item>
+                                                </div>
                                             </Nav>
+                                        </div>
+                                    </div>
+                                    <div className="separator separator-dashed mt-1 mb-2"></div>
+                                    <div className="form-group row form-group-marginless">
+                                        <div className="col-md-12">
                                             <Tab.Content>
                                                 <Tab.Pane eventKey="options1">
+                                                    <div className="col-md-12">
+                                                        <div className='row mx-0 d-flex justify-content-center'>
+                                                            <div className='col-md-3'>
+                                                                <InputNumberGray requirevalidation={1} formeditado={formeditado}
+                                                                    placeholder="CONSTR. INTERIOR INF." value={formDiseño.construccion_interiores_inf}
+                                                                    name="construccion_interiores_inf" onChange={onChange} iconclass="fas fa-dollar-sign"
+                                                                    messageinc="Ingresa el precio de constr. interior inf." thousandseparator={true} formgroup={"mb-1"}/>
+                                                            </div>
+                                                            <div className='col-md-3'>
+                                                                <InputNumberGray requirevalidation={1} formeditado={formeditado}
+                                                                    placeholder="CONSTR. INTERIOR SUP." value={formDiseño.construccion_interiores_sup}
+                                                                    name="construccion_interiores_sup" onChange={onChange} iconclass="fas fa-dollar-sign"
+                                                                    messageinc="Ingresa el precio de constr. de interiores sup." thousandseparator={true} formgroup={"mb-1"}/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                     <OptionsCheckbox requirevalidation = { 0 } formeditado = { formeditado }
                                                         options = { formDiseño.partidasAcabados } name = 'partidasAcabados'
                                                         value = { formDiseño.partidasAcabados } onChange = { this.handleChangeCheckboxPartidasAcabados }
                                                         customgroup = "columns-2" customlist = "px-3" />
                                                 </Tab.Pane>
                                                 <Tab.Pane eventKey="options2">
+                                                    <div className="col-md-12">
+                                                        <div className='row mx-0 d-flex justify-content-center'>
+                                                            <div className='col-md-3'>
+                                                                <InputNumberGray requirevalidation={1} formeditado={formeditado}
+                                                                    placeholder="MOBILIARIO INF." value={formDiseño.mobiliario_inf}
+                                                                    name="mobiliario_inf" onChange={onChange}
+                                                                    messageinc="Ingresa el precio de mobiliario inf."
+                                                                    iconclass="fas fa-dollar-sign" thousandseparator={true} formgroup={"mb-1"}/>
+                                                            </div>
+                                                            <div className='col-md-3'>
+                                                                <InputNumberGray requirevalidation={1} formeditado={formeditado}
+                                                                    placeholder="MOBILIARIO SUP." value={formDiseño.mobiliario_sup}
+                                                                    name="mobiliario_sup" onChange={onChange}
+                                                                    messageinc="Ingresa el precio de mobiliario sup."
+                                                                    iconclass="fas fa-dollar-sign" thousandseparator={true} formgroup={"mb-1"}/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                     <OptionsCheckbox requirevalidation = { 0 } formeditado = { formeditado }
                                                         options = { formDiseño.partidasMobiliario } name = 'partidasMobiliario'
-                                                        value = { formDiseño.partidasMobiliario } onChange = { this.handleChangeCheckboxPartidasMobiliario }
-                                                        customgroup = "columns-2" customlist = "px-3" />
+                                                        value = { formDiseño.partidasMobiliario } customgroup = "columns-2"
+                                                        onChange = { this.handleChangeCheckboxPartidasMobiliario } customlist = "px-3" />
                                                 </Tab.Pane>
                                                 <Tab.Pane eventKey="options3">
+                                                    <div className="col-md-12">
+                                                        <div className='row mx-0 d-flex justify-content-center'>
+                                                            <div className='col-md-3'>
+                                                                <InputNumberGray requirevalidation={1} formeditado={formeditado}
+                                                                    placeholder="CONST. CIVIL INF." value={formDiseño.construccion_civil_inf}
+                                                                    name="construccion_civil_inf" onChange={onChange}
+                                                                    messageinc="Ingresa el precio de const. civil inf."
+                                                                    iconclass="fas fa-dollar-sign" thousandseparator={true} formgroup={"mb-1"}/>
+                                                            </div>
+                                                            <div className='col-md-3'>
+                                                                <InputNumberGray requirevalidation={1} formeditado={formeditado}
+                                                                    placeholder="CONST. CIVIL SUP." value={formDiseño.construccion_civil_sup}
+                                                                    name="construccion_civil_sup" onChange={onChange}
+                                                                    messageinc="Ingresa el precio de const. civil sup."
+                                                                    iconclass="fas fa-dollar-sign" thousandseparator={true} formgroup={"mb-1"}/>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                     <OptionsCheckbox requirevalidation = { 0 } formeditado = { formeditado }
                                                         options = { formDiseño.partidasObra } name = 'partidasObra'
-                                                        value = { formDiseño.partidasObra } onChange = { this.handleChangeCheckboxPartidasObra }
-                                                        customgroup = "columns-2" customlist = "px-3" />
+                                                        value = { formDiseño.partidasObra } customgroup = "columns-2"
+                                                        onChange = { this.handleChangeCheckboxPartidasObra } customlist = "px-3" />
                                                 </Tab.Pane>
                                             </Tab.Content>
-                                        </Tab.Container>
+                                        </div>
                                     </div>
-                                </div>
+                                </Tab.Container>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2">
                                         <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase" onClick={() => { openWizard2() }} data-wizard-type="action-prev">Anterior</button>
