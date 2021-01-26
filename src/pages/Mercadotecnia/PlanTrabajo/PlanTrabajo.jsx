@@ -325,6 +325,7 @@ class PlanTrabajo extends Component {
                 aux.push(_aux)
             return false
         })
+        options[arreglo] = aux
         form[arreglo] = auxArray
         this.setState({
             ...this.state,
