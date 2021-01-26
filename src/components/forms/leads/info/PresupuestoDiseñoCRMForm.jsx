@@ -18,17 +18,43 @@ class PresupuestoDiseñoCRMForm extends Component {
         onChange({ target: { value: value, name: 'esquema' } })
     }
 
-    handleChangeCheckboxPartidas = e => {
+    handleChangeCheckboxPartidasAcabados = e => {
         const { name, checked } = e.target
         const { formDiseño, onChangeCheckboxes } = this.props
-        let aux = formDiseño.partidas
+        let aux = formDiseño.partidasAcabados
         aux.find(function (_aux, index) {
             if (_aux.id.toString() === name.toString()) {
                 _aux.checked = checked
             }
             return false
         });
-        onChangeCheckboxes(aux, 'partidas')
+        onChangeCheckboxes(aux, 'partidasAcabados')
+    }
+
+    handleChangeCheckboxPartidasMobiliario = e => {
+        const { name, checked } = e.target
+        const { formDiseño, onChangeCheckboxes } = this.props
+        let aux = formDiseño.partidasMobiliario
+        aux.find(function (_aux, index) {
+            if (_aux.id.toString() === name.toString()) {
+                _aux.checked = checked
+            }
+            return false
+        });
+        onChangeCheckboxes(aux, 'partidasMobiliario')
+    }
+
+    handleChangeCheckboxPartidasObra = e => {
+        const { name, checked } = e.target
+        const { formDiseño, onChangeCheckboxes } = this.props
+        let aux = formDiseño.partidasObra
+        aux.find(function (_aux, index) {
+            if (_aux.id.toString() === name.toString()) {
+                _aux.checked = checked
+            }
+            return false
+        });
+        onChangeCheckboxes(aux, 'partidasObra')
     }
     
     handleChangeCheckboxPlanos = e => {
@@ -487,43 +513,22 @@ class PresupuestoDiseñoCRMForm extends Component {
                                             </Nav>
                                             <Tab.Content>
                                                 <Tab.Pane eventKey="options1">
-                                                    <OptionsCheckbox
-                                                        requirevalidation={0}
-                                                        formeditado={formeditado}
-                                                        // placeholder="SELECCIONA LAS PARTIDAS"
-                                                        options={formDiseño.partidas}
-                                                        name='partidas'
-                                                        value={formDiseño.partidas}
-                                                        onChange={this.handleChangeCheckboxPartidas}
-                                                        customgroup="columns-2"
-                                                        customlist="px-3"
-                                                    />
+                                                    <OptionsCheckbox requirevalidation = { 0 } formeditado = { formeditado }
+                                                        options = { formDiseño.partidasAcabados } name = 'partidasAcabados'
+                                                        value = { formDiseño.partidasAcabados } onChange = { this.handleChangeCheckboxPartidasAcabados }
+                                                        customgroup = "columns-2" customlist = "px-3" />
                                                 </Tab.Pane>
                                                 <Tab.Pane eventKey="options2">
-                                                    <OptionsCheckbox
-                                                        requirevalidation={0}
-                                                        formeditado={formeditado}
-                                                        // placeholder="SELECCIONA LAS PARTIDAS"
-                                                        options={formDiseño.partidas}
-                                                        name='partidas'
-                                                        value={formDiseño.partidas}
-                                                        onChange={this.handleChangeCheckboxPartidas}
-                                                        customgroup="columns-2"
-                                                        customlist="px-3"
-                                                    />
+                                                    <OptionsCheckbox requirevalidation = { 0 } formeditado = { formeditado }
+                                                        options = { formDiseño.partidasMobiliario } name = 'partidasMobiliario'
+                                                        value = { formDiseño.partidasMobiliario } onChange = { this.handleChangeCheckboxPartidasMobiliario }
+                                                        customgroup = "columns-2" customlist = "px-3" />
                                                 </Tab.Pane>
                                                 <Tab.Pane eventKey="options3">
-                                                    <OptionsCheckbox
-                                                        requirevalidation={0}
-                                                        formeditado={formeditado}
-                                                        // placeholder="SELECCIONA LAS PARTIDAS"
-                                                        options={formDiseño.partidas}
-                                                        name='partidas'
-                                                        value={formDiseño.partidas}
-                                                        onChange={this.handleChangeCheckboxPartidas}
-                                                        customgroup="columns-2"
-                                                        customlist="px-3"
-                                                    />
+                                                    <OptionsCheckbox requirevalidation = { 0 } formeditado = { formeditado }
+                                                        options = { formDiseño.partidasObra } name = 'partidasObra'
+                                                        value = { formDiseño.partidasObra } onChange = { this.handleChangeCheckboxPartidasObra }
+                                                        customgroup = "columns-2" customlist = "px-3" />
                                                 </Tab.Pane>
                                             </Tab.Content>
                                         </Tab.Container>
