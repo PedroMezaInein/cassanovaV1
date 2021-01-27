@@ -59,7 +59,12 @@ class TagSelectSearch extends Component {
                 position:'absolute',
                 boxSizing:'border-box'
             }),
-            // option: () => ({
+            // menuList: () => ({
+            //     zIndex: "99!important",
+            // }),
+            // option: (provided) => ({
+            //     ...provided,
+            //     zIndex: "99!important",
             // }),
         }
         return (

@@ -10,7 +10,7 @@ import { PARTIDAS_DISEÑO_COLUMNS } from '../../../constants'
 import { save, deleteForm } from '../../../redux/reducers/formulario'
 import { setTextTable } from '../../../functions/setters'
 import { renderToString } from 'react-dom/server'
-import { Tabs, Tab, Card, Nav } from 'react-bootstrap' 
+import { Tab, Card, Nav } from 'react-bootstrap' 
 
 const $ = require('jquery');
 
