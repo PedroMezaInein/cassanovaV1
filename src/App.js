@@ -131,6 +131,7 @@ const AdjuntosEmpresaForm = Loader( () => import('./pages/Catalogos/AdjuntosEmpr
 const Diseño = Loader( () => import('./pages/Catalogos/Diseño') )
 const OrigenesLeads = Loader( () => import('./pages/Catalogos/OrigenesLeads') )
 const RedesSociales = Loader( () => import('./pages/Catalogos/RedesSociales') )
+const RolesMercadotecnia = Loader( () => import('./pages/Catalogos/RolesMercadotecnia') )
 
 const Contabilidad = Loader( () => import('./pages/Reportes/Contabilidad') )
 const ReporteVentas = Loader( () => import('./pages/Reportes/ReporteVentas') )
@@ -368,6 +369,7 @@ class App extends Component{
                     <Route path = "/catalogos/unidades" exact component ={ Unidades } />
                     <Route path = "/catalogos/tipos-contratos" exact component ={ TiposContratos } />
                     <Route path = "/catalogos/bancos" exact component ={ Bancos } />
+                    <Route path = "/catalogos/roles-mercadotecnia" exact component ={ RolesMercadotecnia } />
                     
                     <Route path = "/catalogos/precio-diseno" exact component ={ PrecioDiseño } />
                     <Route path = "/catalogos/precio-diseno/:action" exact component ={ PrecioDiseñoForm } />
