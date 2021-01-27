@@ -22,19 +22,6 @@ class PresupuestoDiseñoForm extends Component {
         const { onChange } = this.props
         onChange({ target: { value: value, name: 'esquema' } })
     }
-
-    // handleChangeCheckbox = e => {
-    //     const { name, checked } = e.target
-    //     const { form, onChangeCheckboxes } = this.props
-    //     let aux = form[form.tipo_partida]
-    //     aux.find(function (_aux, index) {
-    //         if (_aux.id.toString() === name.toString()) {
-    //             _aux.checked = checked
-    //         }
-    //         return false
-    //     });
-    //     onChangeCheckboxes(aux)
-    // }
     
     updateTipoProyecto = value => {
         const { onChange } = this.props
@@ -54,17 +41,43 @@ class PresupuestoDiseñoForm extends Component {
         onChangeCheckboxes(aux, 'planos')
     }
 
-    handleChangeCheckboxPartidas = e => {
+    handleChangeCheckboxPartidasAcabados = e => {
         const { name, checked } = e.target
         const { form, onChangeCheckboxes } = this.props
-        let aux = form.partidas
+        let aux = form.partidasAcabados
         aux.find(function (_aux, index) {
             if (_aux.id.toString() === name.toString()) {
                 _aux.checked = checked
             }
             return false
         });
-        onChangeCheckboxes(aux, 'partidas')
+        onChangeCheckboxes(aux, 'partidasAcabados')
+    }
+
+    handleChangeCheckboxPartidasMobiliario = e => {
+        const { name, checked } = e.target
+        const { form, onChangeCheckboxes } = this.props
+        let aux = form.partidasMobiliario
+        aux.find(function (_aux, index) {
+            if (_aux.id.toString() === name.toString()) {
+                _aux.checked = checked
+            }
+            return false
+        });
+        onChangeCheckboxes(aux, 'partidasMobiliario')
+    }
+
+    handleChangeCheckboxPartidasObra = e => {
+        const { name, checked } = e.target
+        const { form, onChangeCheckboxes } = this.props
+        let aux = form.partidasObra
+        aux.find(function (_aux, index) {
+            if (_aux.id.toString() === name.toString()) {
+                _aux.checked = checked
+            }
+            return false
+        });
+        onChangeCheckboxes(aux, 'partidasObra')
     }
 
     render() {
@@ -113,176 +126,87 @@ class PresupuestoDiseñoForm extends Component {
                             {...props}
                         >
                             <div id="wizard-1-content" className="pb-3 px-2" data-wizard-type="step-content" data-wizard-state="current">
-                                {/* <h5 className="mb-4 font-weight-bold text-dark">Ingresa los datos del presupuesto de diseño</h5> */}
                                 <Row>
                                     <Col md={4} className="px-0">
                                         <div className="col-md-12 text-center px-0" style={{ height: '14px' }}>
                                             <label className="text-center font-weight-bolder text-dark-60">Fecha</label>
                                         </div>
                                         <div className="col-md-12 text-center px-0">
-                                            <CalendarDay
-                                                value = { form.fecha }
-                                                date = { form.fecha }
-                                                onChange = { onChange }
-                                                name = 'fecha'
-                                                withformgroup={1}
-                                            />
+                                            <CalendarDay value = { form.fecha } date = { form.fecha } onChange = { onChange }
+                                                name = 'fecha' withformgroup={1} />
                                         </div>
                                     </Col>
                                     <Col md={8} className="align-self-center">
                                         <div className="form-group row form-group-marginless">
                                             <div className="col-md-4">
-                                                <SelectSearch
-                                                    formeditado={formeditado}
-                                                    options={options.empresas}
-                                                    placeholder="SELECCIONA LA EMPRESA"
-                                                    name="empresa"
-                                                    value={form.empresa}
-                                                    onChange={this.updateEmpresa}
-                                                    iconclass={"far fa-building"}
-                                                    messageinc="Selecciona la empresa"
-                                                />
+                                                <SelectSearch formeditado = { formeditado } options = { options.empresas } placeholder = "SELECCIONA LA EMPRESA"
+                                                    name = "empresa" value = { form.empresa } onChange = { this.updateEmpresa }
+                                                    iconclass = "far fa-building" messageinc = "Selecciona la empresa" />
                                             </div>
                                             <div className="col-md-4">
-                                                <SelectSearch
-                                                    formeditado = { formeditado }
-                                                    options = { options.tipos }
-                                                    placeholder = "SELECCIONA EL TIPO DE PROYECTO"
-                                                    name = "tipoProyecto"
-                                                    value = { form.tipoProyecto }
-                                                    onChange = { this.updateTipoProyecto }
-                                                    iconclass = "far fa-building"
-                                                    messageinc = "Selecciona el tipo de proyecto"
-                                                />
+                                                <SelectSearch formeditado = { formeditado } options = { options.tipos } placeholder = "SELECCIONA EL TIPO DE PROYECTO"
+                                                    name = "tipoProyecto" value = { form.tipoProyecto } onChange = { this.updateTipoProyecto } 
+                                                    iconclass = "far fa-building" messageinc = "Selecciona el tipo de proyecto" />
                                             </div>
                                             <div className="col-md-4">
-                                                <Input
-                                                    requirevalidation={1}
-                                                    formeditado={formeditado}
-                                                    placeholder="NOMBRE DEL PROYECTO"
-                                                    value={form.proyecto}
-                                                    name="proyecto"
-                                                    onChange={onChange}
-                                                    iconclass={"far fa-folder-open"}
-                                                />
+                                                <Input requirevalidation = { 1 } formeditado = { formeditado } placeholder = "NOMBRE DEL PROYECTO"
+                                                    value = { form.proyecto } name = "proyecto" onChange = { onChange } iconclass = "far fa-folder-open"/>
                                             </div>
                                         </div>
                                         <div className="separator separator-dashed mt-1 mb-2"></div>
                                         <div className="form-group row form-group-marginless">
                                             <div className="col-md-4">
-                                                <InputNumber
-                                                    requirevalidation={1}
-                                                    formeditado={formeditado}
-                                                    placeholder="M²"
-                                                    value={form.m2}
-                                                    name="m2"
-                                                    onChange={onChange}
-                                                    iconclass={"fas fa-ruler-combined"}
-                                                    messageinc="Ingresa los m²."
-                                                />
+                                                <InputNumber requirevalidation = { 1 } formeditado = { formeditado } placeholder = "m²"
+                                                    value = { form.m2 } name = "m2" onChange = { onChange } iconclass = "fas fa-ruler-combined"
+                                                    messageinc = "Ingresa los m²."/>
                                             </div>
                                             <div className="col-md-4">
-                                                <SelectSearch
-                                                    formeditado={formeditado}
-                                                    options={options.esquemas}
-                                                    placeholder="ESQUEMA"
-                                                    name="esquema"
-                                                    value={form.esquema}
-                                                    onChange={this.updateEsquema}
-                                                    iconclass={"flaticon2-sheet"}
-                                                    messageinc="Selecciona el esquema"
-                                                />
+                                                <SelectSearch formeditado = { formeditado } options = { options.esquemas } placeholder = "ESQUEMA"
+                                                    name = "esquema" value = { form.esquema } onChange = { this.updateEsquema } iconclass = "flaticon2-sheet"
+                                                    messageinc = "Selecciona el esquema" />
                                             </div>
                                             <div className="col-md-4">
-                                                <InputMoney
-                                                    requirevalidation={0}
-                                                    type="text"
-                                                    placeholder="DESCUENTO"
-                                                    value={form.descuento}
-                                                    iconclass={"fas fa-percentage"}
-                                                    thousandseparator={true}
-                                                    onChange={onChange}
-                                                    prefix={'%'}
-                                                    messageinc="Ingresa el porcentaje."
-                                                    formeditado={formeditado}                                            
-                                                    name="descuento"
-                                                />
+                                                <InputMoney requirevalidation = { 0 } type = "text" placeholder = "DESCUENTO" value = { form.descuento }
+                                                    iconclass = "fas fa-percentage" thousandseparator = { true } onChange = { onChange } prefix = '%'
+                                                    messageinc = "Ingresa el porcentaje." formeditado = { formeditado }  name = "descuento"/>
                                             </div>
                                         </div>
                                         <div className="separator separator-dashed mt-1 mb-2"></div>
                                         <div className="form-group row form-group-marginless">
                                             <div className="col-md-4">
-                                                <InputNumber
-                                                    requirevalidation={1}
-                                                    formeditado={formeditado}
-                                                    placeholder="DÍAS DE EJECUCIÓN"
-                                                    value={form.tiempo_ejecucion_diseno}
-                                                    name="tiempo_ejecucion_diseno"
-                                                    onChange={onChange}
-                                                    iconclass={"flaticon-calendar-with-a-clock-time-tools"}
-                                                    messageinc="Ingresa los días de ejecución."
-                                                />
+                                                <InputNumber requirevalidation = { 1 } formeditado = { formeditado } placeholder = "DÍAS DE EJECUCIÓN"
+                                                    value = { form.tiempo_ejecucion_diseno } name = "tiempo_ejecucion_diseno" onChange = { onChange }
+                                                    iconclass = "flaticon-calendar-with-a-clock-time-tools" messageinc = "Ingresa los días de ejecución." />
                                             </div>
                                             <div className="col-md-4">
-                                                <InputNumber
-                                                    formeditado={formeditado}
-                                                    requirevalidation={0}
-                                                    placeholder="TOTAL"
-                                                    value={form.total}
-                                                    iconclass={"fas fa-dollar-sign"}
-                                                    thousandseparator={true}
-                                                    disabled={true}
-                                                    name="total"
-                                                />
+                                                <InputNumber formeditado = { formeditado } requirevalidation = { 0 } placeholder = "TOTAL"
+                                                    value = { form.total } iconclass = "fas fa-dollar-sign" thousandseparator = { true }
+                                                    disabled = { true } name = "total" />
                                             </div>
                                             <div className="col-md-4">
-                                                <InputNumber
-                                                    formeditado={formeditado}
-                                                    requirevalidation={1}
-                                                    placeholder="NÚMERO DE RENDERS"
-                                                    value={form.renders}
-                                                    iconclass={"fas fa-photo-video"}
-                                                    thousandseparator={true}
-                                                    onChange={onChange}
-                                                    name="renders"
-                                                    messageinc="Ingresa los números de renders."
-                                                />
+                                                <InputNumber formeditado = { formeditado } requirevalidation = { 1 } placeholder = "NÚMERO DE RENDERS"
+                                                    value = { form.renders } iconclass = "fas fa-photo-video" thousandseparator = { true }
+                                                    onChange = { onChange } name = "renders" messageinc = "Ingresa los números de renders."/>
                                             </div>
                                         </div>
                                     </Col>
                                 </Row>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-6 mb-2">
-                                        <OptionsCheckboxHeaders
-                                            requirevalidation = { 0 }
-                                            formeditado = { formeditado }
-                                            placeholder = "SELECCIONA LOS PLANOS"
-                                            options = { form.planos }
-                                            name = 'planos' 
-                                            value = { form.planos }
-                                            onChange = { this.handleChangeCheckboxPlanos }
-                                            />
+                                        <OptionsCheckboxHeaders requirevalidation = { 0 } formeditado = { formeditado } placeholder = "SELECCIONA LOS PLANOS"
+                                            options = { form.planos } name = 'planos'  value = { form.planos } onChange = { this.handleChangeCheckboxPlanos } />
                                     </div>
                                     <div className="col-md-6">
                                         <div className="form-group">
                                             <label className="font-weight-bolder m-0">Fases</label>
                                             <div className="checkbox-list pt-2">
                                                 <label className="checkbox font-weight-light">
-                                                    <input
-                                                        name = 'fase1'
-                                                        type="checkbox"
-                                                        checked = { form.fase1 }
-                                                        onChange={onChange} 
-                                                    /> Fase 1
+                                                    <input name = 'fase1' type = "checkbox" checked = { form.fase1 } onChange = { onChange } /> 
+                                                    Fase 1
                                                     <span></span>
                                                 </label>
                                                 <label className="checkbox font-weight-light">
-                                                    <input 
-                                                        name = 'fase2'
-                                                        type="checkbox"
-                                                        checked = { form.fase2 }
-                                                        onChange={onChange}
-                                                    /> 
+                                                    <input  name = 'fase2' type = "checkbox" checked = { form.fase2 } onChange = { onChange } /> 
                                                     Fase 2
                                                     <span></span>
                                                 </label>  
@@ -314,14 +238,9 @@ class PresupuestoDiseñoForm extends Component {
                                                         return (
                                                             <tr key={key}>
                                                                 <td className="dia">
-                                                                    <InputSinText
-                                                                        placeholder='DÍA'
-                                                                        requirevalidation={0}
-                                                                        formeditado={formeditado}
-                                                                        name='concepto1'
-                                                                        value={concepto.value}
-                                                                        onChange={(e) => { onChangeConceptos(e, key) }}
-                                                                    />
+                                                                    <InputSinText placeholder = 'DÍA' requirevalidation = { 0 }
+                                                                        formeditado = { formeditado } name = 'concepto1' value = { concepto.value }
+                                                                        onChange = { (e) => { onChangeConceptos(e, key) } } />
                                                                 </td>
                                                                 <td className="">
                                                                     <div className="font-weight-bold text-dark-75">
@@ -408,10 +327,7 @@ class PresupuestoDiseñoForm extends Component {
                                             </table>
                                         </div>
                                         <div className="d-flex justify-content-center">
-                                            <Calendar
-                                                locale={es}
-                                                date={date}
-                                            />
+                                            <Calendar locale={es} date={date} />
                                         </div>
                                     </div>
                                 </div>
@@ -426,30 +342,22 @@ class PresupuestoDiseñoForm extends Component {
                                             </div>
                                         :
                                         <div>
-                                            <Button 
-                                                icon=''
-                                                className="btn btn-light-primary btn-sm mr-2"
-                                                only_icon="far fa-save pr-0"
-                                                tooltip={{ text: 'GUARDAR' }}
-                                                onClick={
+                                            <Button icon = '' className = "btn btn-light-primary btn-sm mr-2" only_icon = "far fa-save pr-0"
+                                                tooltip = { { text: 'GUARDAR' } }
+                                                onClick = {
                                                     (e) => {
                                                         e.preventDefault();
                                                         validateAlert(onSubmit, e, 'wizard-2-content')
                                                     }
-                                                }
-                                            />
-                                            <Button 
-                                                icon=''
-                                                className="btn btn-light-success btn-sm mr-2"
-                                                only_icon="far fa-file-pdf pr-0"
-                                                tooltip={{ text: 'GENERAR PDF' }}
-                                                onClick={
+                                                } />
+                                            <Button icon ='' className = "btn btn-light-success btn-sm mr-2" only_icon = "far fa-file-pdf pr-0"
+                                                tooltip = { { text: 'GENERAR PDF' } }
+                                                onClick = {
                                                     (e) => {
                                                         e.preventDefault();
                                                         validateAlert(submitPDF, e, 'wizard-2-content')
                                                     }
-                                                }                                            
-                                            />
+                                                } />
                                         </div>
                                     }
                                 </div>
@@ -459,17 +367,10 @@ class PresupuestoDiseñoForm extends Component {
                                     <h5 className="mb-4 font-weight-bold text-dark">INGRESA LOS PRECIOS PARAMÉTRICOS Y EL TIEMPO DE EJECUCIÓN</h5>
                                     <div className="form-group row form-group-marginless">
                                         <div className="col-md-3">
-                                            <Input
-                                                requirevalidation={1}
-                                                formeditado={formeditado}
-                                                placeholder="TIEMPO DE EJECUCIÓN (SEMANAS)"
-                                                value={form.tiempo_ejecucion_construccion}
-                                                name="tiempo_ejecucion_construccion"
-                                                onChange={onChange}
-                                                iconclass={"flaticon-calendar-with-a-clock-time-tools"}
-                                                messageinc="Ingresa el tiempo de ejecución."
-                                                formgroup="mb-1"
-                                            />
+                                            <Input requirevalidation = { 1 } formeditado = { formeditado } placeholder = "TIEMPO DE EJECUCIÓN (SEMANAS)"
+                                                value = { form.tiempo_ejecucion_construccion } name = "tiempo_ejecucion_construccion" onChange = { onChange }
+                                                iconclass = "flaticon-calendar-with-a-clock-time-tools" messageinc = "Ingresa el tiempo de ejecución."
+                                                formgroup = "mb-1" />
                                         </div>
                                         <div className="col-md-9 d-flex justify-content-center align-items-center">
                                             <Nav className="nav nav-pills col-md-12">
@@ -499,136 +400,65 @@ class PresupuestoDiseñoForm extends Component {
                                                     <div className="col-md-12">
                                                         <div className='row mx-0 d-flex justify-content-center'>
                                                             <div className="col-md-3">
-                                                                <InputNumber
-                                                                    requirevalidation={1}
-                                                                    formeditado={formeditado}
-                                                                    placeholder="CONSTR. INTERIOR INF."
-                                                                    value={form.construccion_interiores_inf}
-                                                                    name="construccion_interiores_inf"
-                                                                    onChange={onChange}
-                                                                    messageinc="Ingresa el precio de constr. interior inf."
-                                                                    iconclass={"fas fa-dollar-sign"}
-                                                                    thousandseparator={true}
-                                                                    formgroup={"mb-1"}
-                                                                />
+                                                                <InputNumber requirevalidation = { 1 } formeditado = { formeditado } placeholder = "CONSTR. INTERIOR INF."
+                                                                    value = { form.construccion_interiores_inf } name = "construccion_interiores_inf" onChange = { onChange }
+                                                                    messageinc = "Ingresa el precio de constr. interior inf." iconclass = "fas fa-dollar-sign"
+                                                                    thousandseparator = { true } formgroup = "mb-1" />
                                                             </div>
                                                             <div className="col-md-3">
-                                                                <InputNumber
-                                                                    requirevalidation={1}
-                                                                    formeditado={formeditado}
-                                                                    placeholder="CONSTR. INTERIOR SUP."
-                                                                    value={form.construccion_interiores_sup}
-                                                                    name="construccion_interiores_sup"
-                                                                    onChange={onChange}
-                                                                    messageinc="Ingresa el precio de constr. de interiores sup."
-                                                                    iconclass={"fas fa-dollar-sign"}
-                                                                    thousandseparator={true}
-                                                                    formgroup={"mb-1"}
-                                                                />
+                                                                <InputNumber requirevalidation = { 1 } formeditado = { formeditado } placeholder = "CONSTR. INTERIOR SUP."
+                                                                    value = { form.construccion_interiores_sup } name = "construccion_interiores_sup" onChange = { onChange }
+                                                                    messageinc = "Ingresa el precio de constr. de interiores sup." iconclass = "fas fa-dollar-sign"
+                                                                    thousandseparator = { true } formgroup = "mb-1" />
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <OptionsCheckbox
-                                                        requirevalidation = { 0 }
-                                                        formeditado = { formeditado }
-                                                        // placeholder = "SELECCIONA LAS PARTIDAS"
-                                                        options = { form.partidas }
-                                                        name = 'partidas' 
-                                                        value = { form.partidas }
-                                                        onChange = { this.handleChangeCheckboxPartidas }
-                                                        customgroup="columns-2"
-                                                        customlist="px-3"
-                                                    />
+                                                    <OptionsCheckbox requirevalidation = { 0 } formeditado = { formeditado }
+                                                        options = { form.partidasAcabados } name = 'partidasAcabados'  value = { form.partidasAcabados }
+                                                        onChange = { this.handleChangeCheckboxPartidasAcabados } customgroup="columns-2"
+                                                        customlist="px-3" />
                                                 </Tab.Pane>
                                                 <Tab.Pane eventKey="options2">
                                                     <div className="col-md-12">
                                                         <div className='row mx-0 d-flex justify-content-center'>
                                                             <div className="col-md-3">
-                                                                <InputNumber
-                                                                    requirevalidation={1}
-                                                                    formeditado={formeditado}
-                                                                    placeholder="MOBILIARIO INF."
-                                                                    value={form.mobiliario_inf}
-                                                                    name="mobiliario_inf"
-                                                                    onChange={onChange}
-                                                                    messageinc="Ingresa el precio de mobiliario inf."
-                                                                    iconclass={"fas fa-dollar-sign"}
-                                                                    thousandseparator={true}
-                                                                    formgroup={"mb-1"}
-                                                                />
+                                                                <InputNumber requirevalidation = { 1 } formeditado = { formeditado } placeholder = "MOBILIARIO INF."
+                                                                    value = { form.mobiliario_inf } name = "mobiliario_inf" onChange = { onChange }
+                                                                    messageinc = "Ingresa el precio de mobiliario inf." iconclass = "fas fa-dollar-sign"
+                                                                    thousandseparator = { true } formgroup = "mb-1" />
                                                             </div>
                                                             <div className="col-md-3">
-                                                                <InputNumber
-                                                                    requirevalidation={1}
-                                                                    formeditado={formeditado}
-                                                                    placeholder="MOBILIARIO SUP."
-                                                                    value={form.mobiliario_sup}
-                                                                    name="mobiliario_sup"
-                                                                    onChange={onChange}
-                                                                    messageinc="Ingresa el precio de mobiliario sup."
-                                                                    iconclass={"fas fa-dollar-sign"}
-                                                                    thousandseparator={true}
-                                                                    formgroup={"mb-1"}
-                                                                />
+                                                                <InputNumber requirevalidation = { 1 } formeditado = { formeditado } placeholder = "MOBILIARIO SUP."
+                                                                    value = { form.mobiliario_sup } name = "mobiliario_sup" onChange = { onChange }
+                                                                    messageinc = "Ingresa el precio de mobiliario sup." iconclass = "fas fa-dollar-sign"
+                                                                    thousandseparator = { true } formgroup = "mb-1" />
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <OptionsCheckbox
-                                                        requirevalidation = { 0 }
-                                                        formeditado = { formeditado }
-                                                        // placeholder = "SELECCIONA LAS PARTIDAS"
-                                                        options = { form.partidas }
-                                                        name = 'partidas' 
-                                                        value = { form.partidas }
-                                                        onChange = { this.handleChangeCheckboxPartidas }
-                                                        customgroup="columns-2"
-                                                        customlist="px-3"
-                                                    />
+                                                    <OptionsCheckbox requirevalidation = { 0 } formeditado = { formeditado } options = { form.partidasMobiliario }
+                                                        name = 'partidasMobiliario' value = { form.partidasMobiliario } customgroup = "columns-2"
+                                                        onChange = { this.handleChangeCheckboxPartidasMobiliario } customlist="px-3" />
                                                 </Tab.Pane>
                                                 <Tab.Pane eventKey="options3">
                                                     <div className="col-md-12">
                                                         <div className='row mx-0 d-flex justify-content-center'>
                                                             <div className="col-md-3">
-                                                                <InputNumber
-                                                                    requirevalidation={1}
-                                                                    formeditado={formeditado}
-                                                                    placeholder="CONST. CIVIL INF."
-                                                                    value={form.construccion_civil_inf}
-                                                                    name="construccion_civil_inf"
-                                                                    onChange={onChange}
-                                                                    messageinc="Ingresa el precio de const. civil inf."
-                                                                    iconclass={"fas fa-dollar-sign"}
-                                                                    thousandseparator={true}
-                                                                    formgroup={"mb-1"}
-                                                                />
+                                                                <InputNumber requirevalidation = { 1 } formeditado = { formeditado } placeholder = "CONST. CIVIL INF."
+                                                                    value = { form.construccion_civil_inf } name = "construccion_civil_inf" onChange = { onChange }
+                                                                    messageinc = "Ingresa el precio de const. civil inf." iconclass = "fas fa-dollar-sign" 
+                                                                    thousandseparator = { true } formgroup = "mb-1" />
                                                             </div>
                                                             <div className="col-md-3">
-                                                                <InputNumber
-                                                                    requirevalidation={1}
-                                                                    formeditado={formeditado}
-                                                                    placeholder="CONST. CIVIL SUP."
-                                                                    value={form.construccion_civil_sup}
-                                                                    name="construccion_civil_sup"
-                                                                    onChange={onChange}
-                                                                    messageinc="Ingresa el precio de const. civil sup."
-                                                                    iconclass={"fas fa-dollar-sign"}
-                                                                    thousandseparator={true}
-                                                                    formgroup={"mb-1"}
-                                                                />
+                                                                <InputNumber requirevalidation = { 1 } formeditado = { formeditado } placeholder = "CONST. CIVIL SUP."
+                                                                    value = { form.construccion_civil_sup } name = "construccion_civil_sup" onChange = { onChange }
+                                                                    messageinc = "Ingresa el precio de const. civil sup." iconclass = "fas fa-dollar-sign"
+                                                                    thousandseparator = { true } formgroup = "mb-1" />
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <OptionsCheckbox
-                                                        requirevalidation = { 0 }
-                                                        formeditado = { formeditado }
-                                                        // placeholder = "SELECCIONA LAS PARTIDAS"
-                                                        options = { form.partidas }
-                                                        name = 'partidas' 
-                                                        value = { form.partidas }
-                                                        onChange = { this.handleChangeCheckboxPartidas }
-                                                        customgroup="columns-2"
-                                                        customlist="px-3"
-                                                    />
+                                                    <OptionsCheckbox requirevalidation = { 0 } formeditado = { formeditado } name = 'partidasObra' 
+                                                        options = { form.partidasObra } value = { form.partidasObra } customlist = "px-3"
+                                                        onChange = { this.handleChangeCheckboxPartidasObra } customgroup = "columns-2"/>
                                                 </Tab.Pane>
                                             </Tab.Content>
                                         </div>
@@ -639,30 +469,22 @@ class PresupuestoDiseñoForm extends Component {
                                         <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase" onClick={() => { openWizard2() }} data-wizard-type="action-prev">Anterior</button>
                                     </div>
                                     <div>
-                                        <Button 
-                                            icon=''
-                                            className="btn btn-light-primary btn-sm mr-2"
-                                            only_icon="far fa-save pr-0"
-                                            tooltip={{ text: 'GUARDAR' }}
-                                            onClick={
+                                        <Button icon='' className="btn btn-light-primary btn-sm mr-2" only_icon="far fa-save pr-0" 
+                                            tooltip = { { text: 'GUARDAR' } }
+                                            onClick = {
                                                 (e) => {
                                                     e.preventDefault();
                                                     validateAlert(onSubmit, e, 'wizard-3-content')
                                                 }
-                                            }
-                                            />
-                                        <Button 
-                                            icon=''
-                                            className="btn btn-light-success btn-sm mr-2"
-                                            only_icon="far fa-file-pdf pr-0"
-                                            tooltip={{ text: 'GENERAR PDF' }}
-                                            onClick={
+                                            }/>
+                                        <Button icon = '' className = "btn btn-light-success btn-sm mr-2" only_icon = "far fa-file-pdf pr-0"
+                                            tooltip = { { text: 'GENERAR PDF' } }
+                                            onClick = {
                                                 (e) => {
                                                     e.preventDefault();
                                                     validateAlert(submitPDF, e, 'wizard-3-content')
                                                 }
-                                            }                                            
-                                            />
+                                            } />
                                     </div>
                                 </div>
                             </div>
