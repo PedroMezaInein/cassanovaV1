@@ -175,7 +175,7 @@ class CuentaForm extends Component {
         await axios.get(URL_DEV + 'cuentas/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 Swal.close()
-                const { bancos, estatus, tipos, empresas } = response.data
+                const { bancos, estatus, tipos, empresas, users } = response.data
                 const { options, cuenta } = this.state
                 let aux = []
                 if (tipo === 'bancos') {
@@ -228,6 +228,13 @@ class CuentaForm extends Component {
                 options.tipos = setOptions(tipos, 'tipo', 'id')
                 options.empresas = setOptions(empresas, 'name', 'id')
                 options.estatus = setSelectOptions(estatus, 'estatus')
+                users.map((user) => {
+                    options.usuarios.push({
+                        text: user.name,
+                        value: user.id.toString(),
+                        label: user.name
+                    })
+                })
                 this.setState({
                     ...this.state,
                     options,
@@ -297,6 +304,26 @@ class CuentaForm extends Component {
             console.log(error, 'error')
         })
     }
+    onChangeAndAdd = (e, arreglo) => {
+        const { value } = e.target
+        const { options, form } = this.state
+        let auxArray = form[arreglo]
+        let aux = []
+        options[arreglo].find(function (_aux) {
+            if (_aux.value.toString() === value.toString())
+                auxArray.push(_aux)
+            else
+                aux.push(_aux)
+            return false
+        })
+        options[arreglo] = aux
+        form[arreglo] = auxArray
+        this.setState({
+            ...this.state,
+            form,
+            options
+        })
+    }
     render() {
         const { title, tipo, options, form, formeditado } = this.state
         return (
@@ -319,6 +346,7 @@ class CuentaForm extends Component {
                             onSubmit={this.onSubmit}
                             tipo={tipo} 
                             deleteOption={this.deleteOption}
+                            onChangeAndAdd={this.onChangeAndAdd}
                         />
                     </Card.Body>
                 </Card>
