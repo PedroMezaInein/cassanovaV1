@@ -327,7 +327,17 @@ class MaterialEmpresa extends Component {
                 console.log(error, 'error')
             })
     }
-
+    getFilesSlider = () => {
+        const { form } = this.state
+        let aux = []
+        form.adjuntos.slider.files.map((file)=>{
+            if(!file.id){
+                aux.push(file)
+            }
+            return '';
+        })
+        return aux
+    }
     render() {
         const { form, data, opciones_adjuntos, empresa, modal_add} = this.state
         return (
@@ -449,7 +459,7 @@ class MaterialEmpresa extends Component {
                         <div className="text-center font-weight-bolder my-2 pt-3">
                             {form.adjuntos.slider.placeholder}
                         </div>
-                        <ItemSlider item='slider' items={form.adjuntos.slider.files}
+                        <ItemSlider item='slider' items = { this.getFilesSlider()}
                             handleChange={this.handleChange} multiple={true} />
                     </div>
                 </Modal>
