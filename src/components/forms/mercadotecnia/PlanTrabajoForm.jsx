@@ -80,20 +80,21 @@ class PlanTrabajoForm extends Component{
                                     iconclass = "fas fa-tasks" messageinc = "Incorrecto. Ingresa el nombre del plan." />
                             </div>
                             <div className="col-md-6">
-                                <TagSelectSearch  placeholder = "SELECCIONA LO(S) RESPONSABLE(S)"
-                                    options = { this.transformarOptions(options.usuarios) }
-                                    defaultvalue = { this.transformarOptions(form.usuarios) }
-                                    onChange = { this.nuevoUpdateUsuarios } requirevalidation = { 0 } 
-                                    iconclass = "far fa-user"  messageinc = "Incorrecto. Selecciona lo(s) responsable(s)" />
+                                <SelectSearch formeditado = { formeditado } options = { options.empresas }
+                                    placeholder = 'EMPRESA' name = 'empresa' value = { form.empresa }
+                                    onChange = { this.updateEmpresa } iconclass = "far fa-building"
+                                    messageinc="Incorrecto. Selecciona la empresa" />
                             </div>
                         </div>
                         <div className="separator separator-dashed mt-1 mb-2"></div>
                         <div className="form-group row form-group-marginless">
                             <div className="col-md-6">
-                                <SelectSearch formeditado = { formeditado } options = { options.empresas }
-                                    placeholder = 'EMPRESA' name = 'empresa' value = { form.empresa }
-                                    onChange = { this.updateEmpresa } iconclass = "far fa-building"
-                                    messageinc="Incorrecto. Selecciona la empresa" />
+                                <TagSelectSearch  placeholder = "SELECCIONA LO(S) RESPONSABLE(S)"
+                                    options = { this.transformarOptions(options.usuarios) }
+                                    defaultvalue = { this.transformarOptions(form.usuarios) }
+                                    onChange = { this.nuevoUpdateUsuarios } requirevalidation = { 0 } 
+                                    iconclass = "far fa-user"  messageinc = "Incorrecto. Selecciona lo(s) responsable(s)" />
+                                
                             </div>
                             <div className="col-md-6">
                                 <SelectCreate placeholder = "SELECCIONA/AGREGA EL ROL" iconclass = "far fa-file-alt"
