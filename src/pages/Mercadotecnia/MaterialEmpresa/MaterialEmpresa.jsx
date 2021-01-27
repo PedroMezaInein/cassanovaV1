@@ -299,19 +299,19 @@ class MaterialEmpresa extends Component {
     deleteAdjuntoAxios = async (id, tipo_adjunto) => {
         const { access_token } = this.props.authUser
         const { empresa } = this.state
-        await axios.delete(URL_DEV + 'mercadotecnia/material-clientes/' + empresa.id + '/adjunto/' + tipo_adjunto + '/' + id,
+        await axios.delete(URL_DEV + 'mercadotecnia/material-empresas/' + empresa.id + '/adjunto/' + tipo_adjunto + '/' + id,
             { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
                 (response) => {
-                    // const { empresa, tipo } = response.data
-                    // const { form } = this.state
-                    //     form.adjuntos.slider.files = []
-                    //     empresa.adjuntos.map((adjunto, key) => {
-                    //         if (adjunto.pivot.tipo === tipo)
-                    //             form.adjuntos.slider.files.push(adjunto)
-                    //     })
+                    const { empresa, tipo } = response.data
+                    const { form } = this.state
+                        form.adjuntos.slider.files = []
+                        empresa.adjuntos.map((adjunto, key) => {
+                            if (adjunto.pivot.tipo === tipo)
+                                form.adjuntos.slider.files.push(adjunto)
+                        })
                     this.setState({
                         ...this.state,
-                        // form
+                        form
                     })
 
                     this.getOptionsAxios()
@@ -327,7 +327,17 @@ class MaterialEmpresa extends Component {
                 console.log(error, 'error')
             })
     }
-
+    getFilesSlider = () => {
+        const { form } = this.state
+        let aux = []
+        form.adjuntos.slider.files.map((file)=>{
+            if(!file.id){
+                aux.push(file)
+            }
+            return '';
+        })
+        return aux
+    }
     render() {
         const { form, data, opciones_adjuntos, empresa, modal_add} = this.state
         return (
@@ -449,7 +459,7 @@ class MaterialEmpresa extends Component {
                         <div className="text-center font-weight-bolder my-2 pt-3">
                             {form.adjuntos.slider.placeholder}
                         </div>
-                        <ItemSlider item='slider' items={form.adjuntos.slider.files}
+                        <ItemSlider item='slider' items = { this.getFilesSlider()}
                             handleChange={this.handleChange} multiple={true} />
                     </div>
                 </Modal>
