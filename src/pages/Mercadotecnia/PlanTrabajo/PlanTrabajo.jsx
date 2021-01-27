@@ -418,45 +418,48 @@ class PlanTrabajo extends Component {
             if(empresa.calendars[conteo][diaActual] === 'filled'){
                 return (<></>)
             }else{
-                return (
-                    <td key = {`td-${empresa.name}-conteo`} colSpan = {empresa.calendars[conteo][diaActual].duracion} 
-                        className = 'text-center position-relative p-0 text-hover' 
-                        onClick = { (e) => { e.preventDefault(); this.clickedEvent(empresa.calendars[conteo][diaActual]) } } >
-                        <OverlayTrigger key={diaActual} overlay={
-                            <Tooltip className="tool-calendar">
-                                <div className="tool-titulo text-white font-weight-bolder letter-spacing-0-4"style={{ backgroundColor: empresa.calendars[conteo][diaActual].rol.color }}>
-                                    {empresa.calendars[conteo][diaActual].nombre}
-                                </div>
-                                <div className="p-2">
-                                    <div className="tool-horario">
-                                        <div className="p-3 text-justify">
-                                            {empresa.calendars[conteo][diaActual].descripcion}
+                if(empresa.calendars[conteo][diaActual]){
+                    return (
+                        <td key = {`td-${empresa.name}-conteo`} colSpan = {empresa.calendars[conteo][diaActual].duracion} 
+                            className = 'text-center position-relative p-0 text-hover' 
+                            onClick = { (e) => { e.preventDefault(); this.clickedEvent(empresa.calendars[conteo][diaActual]) } } 
+                            >
+                            <OverlayTrigger key={diaActual} overlay={
+                                <Tooltip className="tool-calendar">
+                                    <div className="tool-titulo text-white font-weight-bolder letter-spacing-0-4"style={{ backgroundColor: empresa.calendars[conteo][diaActual].rol.color }}>
+                                        {empresa.calendars[conteo][diaActual].nombre}
+                                    </div>
+                                    <div className="p-2">
+                                        <div className="tool-horario">
+                                            <div className="p-3 text-justify">
+                                                {empresa.calendars[conteo][diaActual].descripcion}
+                                            </div>
+                                        </div>
+                                        <div className="d-flex align-items-center justify-content-center flex-lg-fill my-1">
+                                            <div className="symbol-group symbol-hover">
+                                                {
+                                                    empresa.calendars[conteo][diaActual].usuarios.map((user, index) => {
+                                                        return(
+                                                            <div className="symbol symbol-30 symbol-circle" data-toggle="tooltip">
+                                                                <img alt="Pic" src = { user.avatar ? user.avatar : "/default.jpg" } />
+                                                            </div> 
+                                                        )       
+                                                    })
+                                                }
+                                            </div>
                                         </div>
                                     </div>
-                                    <div className="d-flex align-items-center justify-content-center flex-lg-fill my-1">
-                                        <div className="symbol-group symbol-hover">
-                                            {
-                                                empresa.calendars[conteo][diaActual].usuarios.map((user, index) => {
-                                                    return(
-                                                        <div className="symbol symbol-30 symbol-circle" data-toggle="tooltip">
-                                                            <img alt="Pic" src = { user.avatar ? user.avatar : "/default.jpg" } />
-                                                        </div> 
-                                                    )       
-                                                })
-                                            }
-                                        </div>
-                                    </div>
+                                </Tooltip>}>
+                                <div className="text-truncate w-100 position-absolute text-white px-1 top-20 " 
+                                    style={{ backgroundColor: empresa.calendars[conteo][diaActual].rol.color, borderRadius: '4px' }}>
+                                    <span className="font-weight-bold letter-spacing-0-4 ">
+                                        {empresa.calendars[conteo][diaActual].nombre}
+                                    </span>
                                 </div>
-                            </Tooltip>}>
-                            <div className="text-truncate w-100 position-absolute text-white px-1 top-20 " 
-                                style={{ backgroundColor: empresa.calendars[conteo][diaActual].rol.color, borderRadius: '4px' }}>
-                                <span className="font-weight-bold letter-spacing-0-4 ">
-                                    {empresa.calendars[conteo][diaActual].nombre}
-                                </span>
-                            </div>
-                        </OverlayTrigger>
-                    </td>
-                )
+                            </OverlayTrigger>
+                        </td>
+                    )
+                }
             }
         }
     }
