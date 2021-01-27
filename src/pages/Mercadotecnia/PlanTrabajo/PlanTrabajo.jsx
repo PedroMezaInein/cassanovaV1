@@ -11,7 +11,6 @@ import moment from 'moment'
 import { Modal } from '../../../components/singles'
 import PlanTrabajoForm from '../../../components/forms/mercadotecnia/PlanTrabajoForm';
 import Swal from 'sweetalert2'
-import { P } from '../../../components/texts'
 
 const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
 
@@ -44,7 +43,7 @@ class PlanTrabajo extends Component {
             usuarios: [],
             roles: []
         },
-        formeditado: false,
+        formeditado: 0,
         evento: ''
     }
 
@@ -264,7 +263,7 @@ class PlanTrabajo extends Component {
                 target: user.name
             })
         })
-        this.setState({...this.state,modal, form, formeditado: true, title: 'EDITAR PLAN DE TRABAJO', evento: evento })
+        this.setState({...this.state,modal, form, formeditado: 1, title: 'EDITAR PLAN DE TRABAJO', evento: evento })
     }
 
     clearForm = () => {
@@ -298,7 +297,7 @@ class PlanTrabajo extends Component {
             modal,
             empresa: '',
             form: this.clearForm(),
-            formeditado: false
+            formeditado: 0
         })
     }
 
@@ -418,45 +417,48 @@ class PlanTrabajo extends Component {
             if(empresa.calendars[conteo][diaActual] === 'filled'){
                 return (<></>)
             }else{
-                return (
-                    <td key = {`td-${empresa.name}-conteo`} colSpan = {empresa.calendars[conteo][diaActual].duracion} 
-                        className = 'text-center position-relative p-0 text-hover' 
-                        onClick = { (e) => { e.preventDefault(); this.clickedEvent(empresa.calendars[conteo][diaActual]) } } >
-                        <OverlayTrigger key={diaActual} overlay={
-                            <Tooltip className="tool-calendar">
-                                <div className="tool-titulo text-white font-weight-bolder letter-spacing-0-4"style={{ backgroundColor: empresa.calendars[conteo][diaActual].rol.color }}>
-                                    {empresa.calendars[conteo][diaActual].nombre}
-                                </div>
-                                <div className="p-2">
-                                    <div className="tool-horario">
-                                        <div className="p-3 text-justify">
-                                            {empresa.calendars[conteo][diaActual].descripcion}
+                if(empresa.calendars[conteo][diaActual]){
+                    return (
+                        <td key = {`td-${empresa.name}-conteo`} colSpan = {empresa.calendars[conteo][diaActual].duracion} 
+                            className = 'text-center position-relative p-0 text-hover' 
+                            onClick = { (e) => { e.preventDefault(); this.clickedEvent(empresa.calendars[conteo][diaActual]) } } 
+                            >
+                            <OverlayTrigger key={diaActual} overlay={
+                                <Tooltip className="tool-calendar">
+                                    <div className="tool-titulo text-white font-weight-bolder letter-spacing-0-4"style={{ backgroundColor: empresa.calendars[conteo][diaActual].rol.color }}>
+                                        {empresa.calendars[conteo][diaActual].nombre}
+                                    </div>
+                                    <div className="p-2">
+                                        <div className="tool-horario">
+                                            <div className="p-3 text-justify">
+                                                {empresa.calendars[conteo][diaActual].descripcion}
+                                            </div>
+                                        </div>
+                                        <div className="d-flex align-items-center justify-content-center flex-lg-fill my-1">
+                                            <div className="symbol-group symbol-hover">
+                                                {
+                                                    empresa.calendars[conteo][diaActual].usuarios.map((user, key) => {
+                                                        return(
+                                                            <div key={key} className="symbol symbol-30 symbol-circle" data-toggle="tooltip">
+                                                                <img alt="Pic" src = { user.avatar ? user.avatar : "/default.jpg" } />
+                                                            </div> 
+                                                        )       
+                                                    })
+                                                }
+                                            </div>
                                         </div>
                                     </div>
-                                    <div className="d-flex align-items-center justify-content-center flex-lg-fill my-1">
-                                        <div className="symbol-group symbol-hover">
-                                            {
-                                                empresa.calendars[conteo][diaActual].usuarios.map((user, index) => {
-                                                    return(
-                                                        <div className="symbol symbol-30 symbol-circle" data-toggle="tooltip">
-                                                            <img alt="Pic" src = { user.avatar ? user.avatar : "/default.jpg" } />
-                                                        </div> 
-                                                    )       
-                                                })
-                                            }
-                                        </div>
-                                    </div>
+                                </Tooltip>}>
+                                <div className="text-truncate w-100 position-absolute text-white px-1 top-20 " 
+                                    style={{ backgroundColor: empresa.calendars[conteo][diaActual].rol.color, borderRadius: '4px' }}>
+                                    <span className="font-weight-bold letter-spacing-0-4 ">
+                                        {empresa.calendars[conteo][diaActual].nombre}
+                                    </span>
                                 </div>
-                            </Tooltip>}>
-                            <div className="text-truncate w-100 position-absolute text-white px-1 top-20 " 
-                                style={{ backgroundColor: empresa.calendars[conteo][diaActual].rol.color, borderRadius: '4px' }}>
-                                <span className="font-weight-bold letter-spacing-0-4 ">
-                                    {empresa.calendars[conteo][diaActual].nombre}
-                                </span>
-                            </div>
-                        </OverlayTrigger>
-                    </td>
-                )
+                            </OverlayTrigger>
+                        </td>
+                    )
+                }
             }
         }
     }
@@ -556,7 +558,7 @@ class PlanTrabajo extends Component {
                                             return(
                                                 [...Array(empresa.rowSpanSize)].map((element, conteo) => {
                                                     return(
-                                                        <tr key = { `${index}-${conteo}-index-row-${empresa.name}` } className = 'h-30px'>
+                                                        <tr key={`${index}-${conteo}-index-row-${empresa.name}`} className = 'h-30px'>
                                                             {
                                                                 conteo === 0 ?
                                                                     <td key = { `rowspan-${index}-${conteo}-index-row-${empresa.name}` }
@@ -565,7 +567,7 @@ class PlanTrabajo extends Component {
                                                             }
                                                             {
                                                                 [...Array(dias)].map((element, diaActual) => {
-                                                                    return( <> {this.printTd(empresa, conteo, diaActual)} </> )
+                                                                    return(<>{this.printTd(empresa, conteo, diaActual)}</>)
                                                                 })
                                                             }
                                                         </tr>
