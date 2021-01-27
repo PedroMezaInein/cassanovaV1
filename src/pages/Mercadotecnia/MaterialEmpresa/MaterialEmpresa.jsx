@@ -299,19 +299,19 @@ class MaterialEmpresa extends Component {
     deleteAdjuntoAxios = async (id, tipo_adjunto) => {
         const { access_token } = this.props.authUser
         const { empresa } = this.state
-        await axios.delete(URL_DEV + 'mercadotecnia/material-clientes/' + empresa.id + '/adjunto/' + tipo_adjunto + '/' + id,
+        await axios.delete(URL_DEV + 'mercadotecnia/material-empresas/' + empresa.id + '/adjunto/' + tipo_adjunto + '/' + id,
             { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
                 (response) => {
-                    // const { empresa, tipo } = response.data
-                    // const { form } = this.state
-                    //     form.adjuntos.slider.files = []
-                    //     empresa.adjuntos.map((adjunto, key) => {
-                    //         if (adjunto.pivot.tipo === tipo)
-                    //             form.adjuntos.slider.files.push(adjunto)
-                    //     })
+                    const { empresa, tipo } = response.data
+                    const { form } = this.state
+                        form.adjuntos.slider.files = []
+                        empresa.adjuntos.map((adjunto, key) => {
+                            if (adjunto.pivot.tipo === tipo)
+                                form.adjuntos.slider.files.push(adjunto)
+                        })
                     this.setState({
                         ...this.state,
-                        // form
+                        form
                     })
 
                     this.getOptionsAxios()
