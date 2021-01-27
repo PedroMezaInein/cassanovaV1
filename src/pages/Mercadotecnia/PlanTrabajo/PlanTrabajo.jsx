@@ -11,7 +11,6 @@ import moment from 'moment'
 import { Modal } from '../../../components/singles'
 import PlanTrabajoForm from '../../../components/forms/mercadotecnia/PlanTrabajoForm';
 import Swal from 'sweetalert2'
-import { P } from '../../../components/texts'
 
 const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
 
@@ -44,7 +43,7 @@ class PlanTrabajo extends Component {
             usuarios: [],
             roles: []
         },
-        formeditado: false,
+        formeditado: 0,
         evento: ''
     }
 
@@ -264,7 +263,7 @@ class PlanTrabajo extends Component {
                 target: user.name
             })
         })
-        this.setState({...this.state,modal, form, formeditado: true, title: 'EDITAR PLAN DE TRABAJO', evento: evento })
+        this.setState({...this.state,modal, form, formeditado: 1, title: 'EDITAR PLAN DE TRABAJO', evento: evento })
     }
 
     clearForm = () => {
@@ -298,7 +297,7 @@ class PlanTrabajo extends Component {
             modal,
             empresa: '',
             form: this.clearForm(),
-            formeditado: false
+            formeditado: 0
         })
     }
 
@@ -438,9 +437,9 @@ class PlanTrabajo extends Component {
                                         <div className="d-flex align-items-center justify-content-center flex-lg-fill my-1">
                                             <div className="symbol-group symbol-hover">
                                                 {
-                                                    empresa.calendars[conteo][diaActual].usuarios.map((user, index) => {
+                                                    empresa.calendars[conteo][diaActual].usuarios.map((user, key) => {
                                                         return(
-                                                            <div className="symbol symbol-30 symbol-circle" data-toggle="tooltip">
+                                                            <div key={key} className="symbol symbol-30 symbol-circle" data-toggle="tooltip">
                                                                 <img alt="Pic" src = { user.avatar ? user.avatar : "/default.jpg" } />
                                                             </div> 
                                                         )       
@@ -559,7 +558,7 @@ class PlanTrabajo extends Component {
                                             return(
                                                 [...Array(empresa.rowSpanSize)].map((element, conteo) => {
                                                     return(
-                                                        <tr key = { `${index}-${conteo}-index-row-${empresa.name}` } className = 'h-30px'>
+                                                        <tr key={`${index}-${conteo}-index-row-${empresa.name}`} className = 'h-30px'>
                                                             {
                                                                 conteo === 0 ?
                                                                     <td key = { `rowspan-${index}-${conteo}-index-row-${empresa.name}` }
@@ -568,7 +567,7 @@ class PlanTrabajo extends Component {
                                                             }
                                                             {
                                                                 [...Array(dias)].map((element, diaActual) => {
-                                                                    return( <> {this.printTd(empresa, conteo, diaActual)} </> )
+                                                                    return(<>{this.printTd(empresa, conteo, diaActual)}</>)
                                                                 })
                                                             }
                                                         </tr>
