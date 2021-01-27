@@ -16,7 +16,8 @@ class CuentaForm extends Component {
             empresas: [],
             bancos: [],
             estatus: [],
-            tipos: []
+            tipos: [],
+            usuarios:[]
         },
         tipo: '',
         form: {
@@ -28,7 +29,8 @@ class CuentaForm extends Component {
             empresa_principal: '',
             empresa: '',
             empresas: [],
-            descripcion: ''
+            descripcion: '',
+            usuarios: [],
         }
     }
     componentDidMount() {
@@ -147,6 +149,23 @@ class CuentaForm extends Component {
         form.empresas = aux
         this.setState({
             ...this.state,
+            form
+        })
+    }
+    deleteOption = (option, arreglo) => {
+        const { form, options } = this.state
+        let aux = []
+        form[arreglo].map((element, key) => {
+            if (option.value.toString() !== element.value.toString())
+                aux.push(element)
+            else
+                options[arreglo].push(element)
+            return false
+        })
+        form[arreglo] = aux
+        this.setState({
+            ...this.state,
+            options,
             form
         })
     }
@@ -299,6 +318,7 @@ class CuentaForm extends Component {
                             removeEmpresa={this.removeEmpresa}
                             onSubmit={this.onSubmit}
                             tipo={tipo} 
+                            deleteOption={this.deleteOption}
                         />
                     </Card.Body>
                 </Card>
