@@ -667,7 +667,7 @@ class Calendario extends Component {
                 </Card>
                 <Modal size="xl" title={title} show={modal.form} handleClose={this.handleCloseForm}>
                     <ParrillaContenidoForm form={form} formeditado={formeditado} title = { title }
-                        options={options} onChange={this.onChange} onSubmit={this.sendParrillaAxios}
+                        options={options} onChange={this.onChange} onSubmit={this.onSumitParrilla}
                         onChangeModalTab={this.onChangeModalTab} activeKey={activeKeyModal}
                         addComentario={this.addComentarioAxios} evento={evento} handleChange={this.handleChange} 
                         deleteContenido={this.deleteContenido} handleChangeSubmit = {this.handleChangeSubmit} onClickDelete={this.onClickDelete} 
