@@ -705,7 +705,7 @@ table#esquemas {
 div#asideMenuScroll {
     min-height: 100%;
     @include screen($xxl) {
-        height: 989px !important;
+        max-height: 989px;
     }
 }
 
