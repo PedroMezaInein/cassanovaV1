@@ -42,10 +42,18 @@ export default class CuentaForm extends Component {
         }
     }
     updateUsuarios = value => {
-        const { onChange, onChangeAndAdd, options } = this.props
-        options.usuarios.map((user) => {
-            if (user.value === value)
-                onChangeAndAdd({ target: { value: user.value, name: 'usuario' } }, 'usuarios')
+        const { onChange, options, onChangeOptions, form } = this.props
+        options.usuarios.map((usuario) => {
+            if (usuario.value === value) {
+                let aux = false;
+                form.usuarios.map((element) => {
+                    if (element.value === value)
+                        aux = true
+                    return false
+                })
+                if (!aux)
+                    onChangeOptions({ target: { value: usuario.value, name: 'usuario' } }, 'usuarios')
+            }
             return false
         })
         onChange({ target: { value: value, name: 'usuario' } })
