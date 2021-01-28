@@ -17,7 +17,7 @@ class DiseñoForm extends Component {
                     }
                     {...props}
                 >
-                    <div class="col-md-12 text-center">
+                    <div className="col-md-12 text-center">
                         <div className="d-flex justify-content-center">
                             <div className="col-md-3">
                                 <InputMoneySinText

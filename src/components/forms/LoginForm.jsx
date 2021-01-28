@@ -155,7 +155,7 @@ class LoginForm extends React.Component {
                     }
                 </div>
                 <div className="form-group">
-                    <div class="input-group">
+                    <div className="input-group">
                         <input className={"form-control h-auto text-white bg-white-o-9 rounded-pill border-0 py-3 pl-4 font-size-sm"}
                             type={showPassword ? 'text' : 'password'}
                             placeholder="INGRESA TU CONTRASEÑA"
@@ -163,8 +163,8 @@ class LoginForm extends React.Component {
                             value={form.password}
                             onChange={this.handleChange}
                             name="password" />
-                        <div class="input-group-prepend text-hover text-white bg-white-o-9" onClick = { (e) => { e.preventDefault(); this.setState({...this.state, showPassword: !showPassword }) }  }>
-                            <div class="input-group-text text-white bg-white-o-9 border-0">
+                        <div className="input-group-prepend text-hover text-white bg-white-o-9" onClick = { (e) => { e.preventDefault(); this.setState({...this.state, showPassword: !showPassword }) }  }>
+                            <div className="input-group-text text-white bg-white-o-9 border-0">
                                 {
                                     !showPassword ?
                                         <i className="fas fa-eye"></i>

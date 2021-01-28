@@ -206,8 +206,8 @@ class PartidasDiseño extends Component {
                 <Card className = 'card-custom rounded-0'>
                     <Card.Header className="border-bottom-0">
                         <div className = 'd-flex align-items-end'>
-                            <div class="card-title mb-0">
-                                <h3 class="card-label font-weight-bolder font-size-h3">Partidas de diseño {empresa.name}
+                            <div className="card-title mb-0">
+                                <h3 className="card-label font-weight-bolder font-size-h3">Partidas de diseño {empresa.name}
                                 </h3>
                                 <div className="d-block text-muted pt-2 font-size-sm show-lista"> Listado de partidas {empresa.name}</div>
                             </div>
