@@ -87,6 +87,11 @@ export function setTextTable(text) {
     )
 }
 
+export function setColor(text) {
+    return (
+        <div className="dot" style={{backgroundColor: `${text}`}} ></div>
+    )
+}
 export function setLabelTable(text) {
     return (
         <>

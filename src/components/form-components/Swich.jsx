@@ -25,7 +25,7 @@ class RadioGroup extends Component{
                     {
                         options.map((option, key) => {
                             return( 
-                                    <span class="switch switch-outline switch-icon switch-primary">
+                                    <span className="switch switch-outline switch-icon switch-primary">
                                         <Form.Check 
                                             key={key}
                                             type={'switch'}

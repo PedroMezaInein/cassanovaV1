@@ -83,6 +83,7 @@ import mercadotecniaForm from './reportes/MercadotecniaForm'
 import mercaProveedoresForm from './mercadotecnia/MercaProveedoresForm'
 import solicitudEgresosForm from './mercadotecnia/SolicitudEgresosForm'
 import planTrabajoForm from './mercadotecnia/PlanTrabajoForm'
+import rolesMercadotecniaForm from './catalogos/RolesMercadotecniaForm'
 
 export const RegisterUserForm = registerUserForm
 export const EmpresaForm = empresaForm
@@ -169,3 +170,4 @@ export const MercadotecniaForm = mercadotecniaForm
 export const MercaProveedoresForm = mercaProveedoresForm
 export const SolicitudEgresosForm = solicitudEgresosForm
 export const PlanTrabajoForm = planTrabajoForm
+export const RolesMercadotecniaForm = rolesMercadotecniaForm

@@ -2,10 +2,8 @@ import React, { Component } from 'react'
 import { Form, Row, Col } from 'react-bootstrap'
 import { validateAlert } from '../../../functions/alert';
 import { Button, Input, RangeCalendar, TagSelectSearch, CircleColor, SelectCreate, SelectSearch } from '../../form-components';
+import { COLORS } from '../../../constants'
 const $ = require('jquery');
-
-const colors = ["#20ACE9", "#EE4C9E", "#62D270 ", "#E63850", "#A962E2", "#E4C127", "#1D69E1", "#8C5E4D", "#737373"];
-
 class PlanTrabajoForm extends Component{
 
     updateRangeCalendar = range => {
@@ -82,20 +80,21 @@ class PlanTrabajoForm extends Component{
                                     iconclass = "fas fa-tasks" messageinc = "Incorrecto. Ingresa el nombre del plan." />
                             </div>
                             <div className="col-md-6">
-                                <TagSelectSearch  placeholder = "SELECCIONA LO(S) RESPONSABLE(S)"
-                                    options = { this.transformarOptions(options.usuarios) }
-                                    defaultvalue = { this.transformarOptions(form.usuarios) }
-                                    onChange = { this.nuevoUpdateUsuarios } requirevalidation = { 0 } 
-                                    iconclass = "far fa-user"  messageinc = "Incorrecto. Selecciona lo(s) responsable(s)" />
+                                <SelectSearch formeditado = { formeditado } options = { options.empresas }
+                                    placeholder = 'EMPRESA' name = 'empresa' value = { form.empresa }
+                                    onChange = { this.updateEmpresa } iconclass = "far fa-building"
+                                    messageinc="Incorrecto. Selecciona la empresa" />
                             </div>
                         </div>
                         <div className="separator separator-dashed mt-1 mb-2"></div>
                         <div className="form-group row form-group-marginless">
                             <div className="col-md-6">
-                                <SelectSearch formeditado = { formeditado } options = { options.empresas }
-                                    placeholder = 'EMPRESA' name = 'empresa' value = { form.empresa }
-                                    onChange = { this.updateEmpresa } iconclass = "far fa-building"
-                                    messageinc="Incorrecto. Selecciona la empresa" />
+                                <TagSelectSearch  placeholder = "SELECCIONA LO(S) RESPONSABLE(S)"
+                                    options = { this.transformarOptions(options.usuarios) }
+                                    defaultvalue = { this.transformarOptions(form.usuarios) }
+                                    onChange = { this.nuevoUpdateUsuarios } requirevalidation = { 0 } 
+                                    iconclass = "far fa-user"  messageinc = "Incorrecto. Selecciona lo(s) responsable(s)" />
+                                
                             </div>
                             <div className="col-md-6">
                                 <SelectCreate placeholder = "SELECCIONA/AGREGA EL ROL" iconclass = "far fa-file-alt"
@@ -111,7 +110,7 @@ class PlanTrabajoForm extends Component{
                                     <div className="form-group row form-group-marginless">
                                         <div className="col-md-12">
                                             <CircleColor circlesize = { 23 } width = "auto" onChange = { this.handleChangeColor }
-                                                placeholder = "SELECCIONA EL COLOR DEL ROL" colors = { colors } classlabel="text-center" classname="d-flex justify-content-center"/>
+                                                placeholder = "SELECCIONA EL COLOR DEL ROL" colors = { COLORS } classlabel="text-center" classname="d-flex justify-content-center"/>
                                         </div>
                                     </div>
                                 </>

@@ -16,7 +16,8 @@ class CuentaForm extends Component {
             empresas: [],
             bancos: [],
             estatus: [],
-            tipos: []
+            tipos: [],
+            usuarios:[]
         },
         tipo: '',
         form: {
@@ -28,7 +29,8 @@ class CuentaForm extends Component {
             empresa_principal: '',
             empresa: '',
             empresas: [],
-            descripcion: ''
+            descripcion: '',
+            usuarios: [],
         }
     }
     componentDidMount() {
@@ -150,13 +152,30 @@ class CuentaForm extends Component {
             form
         })
     }
+    deleteOption = (option, arreglo) => {
+        const { form, options } = this.state
+        let aux = []
+        form[arreglo].map((element, key) => {
+            if (option.value.toString() !== element.value.toString())
+                aux.push(element)
+            else
+                options[arreglo].push(element)
+            return false
+        })
+        form[arreglo] = aux
+        this.setState({
+            ...this.state,
+            options,
+            form
+        })
+    }
     async getOptionsAxios(tipo) {
         waitAlert()
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'cuentas/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 Swal.close()
-                const { bancos, estatus, tipos, empresas } = response.data
+                const { bancos, estatus, tipos, empresas, users } = response.data
                 const { options, cuenta } = this.state
                 let aux = []
                 if (tipo === 'bancos') {
@@ -209,6 +228,13 @@ class CuentaForm extends Component {
                 options.tipos = setOptions(tipos, 'tipo', 'id')
                 options.empresas = setOptions(empresas, 'name', 'id')
                 options.estatus = setSelectOptions(estatus, 'estatus')
+                users.map((user) => {
+                    options.usuarios.push({
+                        text: user.name,
+                        value: user.id.toString(),
+                        label: user.name
+                    })
+                })
                 this.setState({
                     ...this.state,
                     options,
@@ -278,6 +304,26 @@ class CuentaForm extends Component {
             console.log(error, 'error')
         })
     }
+    onChangeAndAdd = (e, arreglo) => {
+        const { value } = e.target
+        const { options, form } = this.state
+        let auxArray = form[arreglo]
+        let aux = []
+        options[arreglo].find(function (_aux) {
+            if (_aux.value.toString() === value.toString())
+                auxArray.push(_aux)
+            else
+                aux.push(_aux)
+            return false
+        })
+        options[arreglo] = aux
+        form[arreglo] = auxArray
+        this.setState({
+            ...this.state,
+            form,
+            options
+        })
+    }
     render() {
         const { title, tipo, options, form, formeditado } = this.state
         return (
@@ -299,6 +345,8 @@ class CuentaForm extends Component {
                             removeEmpresa={this.removeEmpresa}
                             onSubmit={this.onSubmit}
                             tipo={tipo} 
+                            deleteOption={this.deleteOption}
+                            onChangeAndAdd={this.onChangeAndAdd}
                         />
                     </Card.Body>
                 </Card>

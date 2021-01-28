@@ -754,7 +754,7 @@ class MiProyecto extends Component {
                                         <div className="container wow fadeIn" data-wow-delay="1.7s" data-wow-duration="1.5s">
                                             <Navbar expand="lg">
                                                 <Navbar.Brand href={proyecto.empresa?proyecto.empresa.pagina_web:''} className="overflow-hidden pr-3">
-                                                    <img alt = 'empresa-logo' src={proyecto.empresa?proyecto.empresa.logos[0].url:''} width="120" />
+                                                    <img src={proyecto.empresa?proyecto.empresa.logos[0].url:''} width="120" />
                                                 </Navbar.Brand>
                                                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
                                                 <Navbar.Collapse className="text-center mt-3">

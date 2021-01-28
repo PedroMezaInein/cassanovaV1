@@ -89,7 +89,7 @@ class ProveedoresForm extends Component{
     onSubmit = e => {
         e.preventDefault()
         const { title } = this.state
-        waitAlert()
+        // waitAlert()
         if (title === 'Editar proveedor')
             this.updateProveedorAxios()
         else
@@ -98,7 +98,7 @@ class ProveedoresForm extends Component{
 
     async getOptionsAxios() {
         const { access_token } = this.props.authUser
-        waitAlert()
+        // waitAlert()
         await axios.get(URL_DEV + 'mercadotecnia/proveedores/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 Swal.close()
@@ -125,7 +125,7 @@ class ProveedoresForm extends Component{
         const { form } = this.state
         await axios.post(URL_DEV + 'mercadotecnia/proveedores', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El provedor fue registrado con éxito.')
+                // doneAlert(response.data.message !== undefined ? response.data.message : 'El provedor fue registrado con éxito.')
                 const { history } = this.props
                 history.push({ pathname: '/mercadotecnia/merca-proveedores' });
             },
@@ -145,7 +145,7 @@ class ProveedoresForm extends Component{
         const { form, proveedor } = this.state
         await axios.put(URL_DEV + 'mercadotecnia/proveedores/' + proveedor.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El provedor fue registrado con éxito.')
+                // doneAlert(response.data.message !== undefined ? response.data.message : 'El provedor fue registrado con éxito.')
                 const { history } = this.props
                 history.push({ pathname: '/mercadotecnia/merca-proveedores' });
             },
