@@ -156,6 +156,7 @@ class Crm extends Component {
     }
 
     componentDidMount() {
+        $("body").removeClass('bg-white d-flex justify-content-center');
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
         const { history } = this.props

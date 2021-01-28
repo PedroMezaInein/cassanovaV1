@@ -105,6 +105,9 @@ export const ICONS_MODULES = {
     'faGavel':faGavel,
     'faAtlas':faAtlas, 'faCubes':faCubes
 }
+//Paleta de colores
+export const COLORS = ["#20ACE9", "#EE4C9E", "#62D270 ", "#E63850", "#A962E2", "#E4C127", "#1D69E1", "#8C5E4D", "#737373"];
+
 //Expresiones Regulares
 
     //export const RFC = '^([A-ZÑ\x26]{3,4}([0-9]{2})(0[1-9]|1[0-2])(0[1-9]|1[0-9]|2[0-9]|3[0-1]))([A-Z\d]{3})?$'  (Expresión original)
@@ -866,6 +869,20 @@ export const UNIDADES_COLUMNS = [
     {
         Header: 'Unidad',
         accessor: 'unidad'
+    }
+]
+export const ROLES_COLUMNS = [
+    {
+        Header: 'OPCIONES',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Rol',
+        accessor: 'rol'
+    },
+    {
+        Header: 'Color',
+        accessor: 'color'
     }
 ]
 

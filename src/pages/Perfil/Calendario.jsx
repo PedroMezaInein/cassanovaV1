@@ -958,7 +958,7 @@ class Calendario extends Component {
                     <Card className="card-custom">
                         <Card.Header>
                             <div className="d-flex align-items-center">
-                                <h3 class="card-title align-items-start flex-column"><span class="font-weight-bolder text-dark">Calendario</span></h3>
+                                <h3 className="card-title align-items-start flex-column"><span className="font-weight-bolder text-dark">Calendario</span></h3>
                                 {/* <Nav className="navi navi-bold navi-hover navi-active navi-link-rounded d-inline-flex d-flex justify-content-center navi-info navi-accent">
                                     {
                                         tab.map((tab, key) => {

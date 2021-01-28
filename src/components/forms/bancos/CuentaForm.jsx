@@ -26,6 +26,31 @@ export default class CuentaForm extends Component {
         onChange({ target: { value: value, name: name } })
     }
 
+    nuevoUpdateUsuarios = seleccionados => {
+        const { form, deleteOption } = this.props
+        seleccionados = seleccionados ? seleccionados : [];
+        if (seleccionados.length > form.usuarios.length) {
+            let diferencia = $(seleccionados).not(form.usuarios).get();
+            let val_diferencia = diferencia[0].value
+            this.updateUsuarios(val_diferencia)
+        }
+        else {
+            let diferencia = $(form.usuarios).not(seleccionados).get();
+            diferencia.forEach(borrar => {
+                deleteOption(borrar, "usuarios")
+            })
+        }
+    }
+    updateUsuarios = value => {
+        const { onChange, onChangeAndAdd, options } = this.props
+        options.usuarios.map((user) => {
+            if (user.value === value)
+                onChangeAndAdd({ target: { value: user.value, name: 'usuario' } }, 'usuarios')
+            return false
+        })
+        onChange({ target: { value: value, name: 'usuario' } })
+    }
+    
     transformarOptions = options => {
         options = options?options:[]
         options.map(value=>{
@@ -129,7 +154,7 @@ export default class CuentaForm extends Component {
                 </div>
                 <div className="separator separator-dashed mt-1 mb-2"></div>
                 <div className="form-group row form-group-marginless">
-                    <div className="col-md-12">
+                    <div className="col-md-6">
                         <TagSelectSearch
                             placeholder="SELECCIONA LA EMPRESA"
                             options={this.transformarOptions(options.empresas)}
@@ -138,6 +163,16 @@ export default class CuentaForm extends Component {
                             iconclass={"far fa-building"}
                             requirevalidation={0}
                             messageinc="Incorrecto. Selecciona la(s) empresas."
+                        />
+                    </div>
+                    <div className="col-md-6">
+                        <TagSelectSearch
+                            placeholder="SELECCIONA LO(S) USUARIO(S)"
+                            options={this.transformarOptions(options.usuarios)}
+                            defaultvalue={this.transformarOptions(form.usuarios)}
+                            onChange={this.nuevoUpdateUsuarios}
+                            requirevalidation={0} iconclass="far fa-user"
+                            messageinc= "Incorrecto. Selecciona lo(s) responsable(s)"
                         />
                     </div>
                 </div>

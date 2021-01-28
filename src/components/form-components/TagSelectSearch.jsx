@@ -59,13 +59,21 @@ class TagSelectSearch extends Component {
                 position:'absolute',
                 boxSizing:'border-box'
             }),
-            // menuList: () => ({
-            //     zIndex: "99!important",
-            // }),
+            menu: (provided) => ({
+                ...provided,
+                top:"95%",
+                zIndex: 3 ,
+                borderRadius:'0px!important',
+                width:"99.5%",
+                left:"1px",
+            }),
             // option: (provided) => ({
             //     ...provided,
-            //     zIndex: "99!important",
             // }),
+            noOptionsMessage: (provided) => ({
+                ...provided,
+                color:"#464E5F"
+            }),
         }
         return (
             <div>

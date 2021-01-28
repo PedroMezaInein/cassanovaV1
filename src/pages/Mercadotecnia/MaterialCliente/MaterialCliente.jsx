@@ -948,6 +948,58 @@ class MaterialCliente extends Component {
         }
         return aux
     }
+
+    getTipo = () => {
+        const { empresa, submenuactive } = this.state
+        let _tipo = ''
+        empresa.tipos.map((tipo) => {
+            if(tipo.id.toString() === submenuactive.toString()){
+                _tipo = tipo
+            }
+        })
+        return _tipo
+    }
+
+    getSingleAdjuntos = (activeMenu) => {
+        console.log(activeMenu, 'activeMenu')
+        console.log(this.state, 'STATE')
+        return []
+    }
+
+    printFiles = () => {
+        const { activeTipo } = this.state
+        let adjuntos = this.getSingleAdjuntos(activeTipo)
+        switch(activeTipo){
+            case 3:
+                console.log(3)
+                break;
+            case 6:
+                console.log(6)
+                break;
+            default:
+                return(
+                    <div>
+                        <div className='d-flex justify-content-between'>
+                            <div className=''></div>
+                            <div>
+                                <Button id="subir_archivos" icon='' className="btn btn-outline-secondary btn-icon btn-sm "
+                                    onClick={(e) => { e.preventDefault(); this.openModalAddFiles() }} only_icon="fas fa-upload icon-15px text-primary"
+                                    tooltip={{ text: 'SUBIR ARCHIVOS' }} />
+                            </div>
+                        </div>
+                        <div className='row mx-0 my-3'>
+                            {
+                                adjuntos.length === 0 ?
+                                    this.renderCarpetaVacia()     
+                                : 
+                                    <TablePagination adjuntos = { adjuntos } delete_onclick = { this.onClickDelete } />
+                            }
+                        </div>
+                    </div>
+                )
+                break;
+        }
+    }
     
     render() {
         const { form, data, opciones_adjuntos, empresa, submenuactive, newFolder, activeTipo, activeFolder, modal_add, abiertoSubMenu, adjuntosSubMenu, actualSubMenu, actualSubMenuCarpeta, abiertoCarpetaRender } = this.state
@@ -1051,7 +1103,20 @@ class MaterialCliente extends Component {
                                         </Nav>
                                     </div>
                                 </Card.Header>
-                                <Card.Body className={""}>
+                                <Card.Body className="">
+                                    {/* {
+                                        empresa !== '' ?
+                                            this.printFiles()
+                                        :
+                                            <div className='col-md-12'>
+                                                <div>
+                                                    <Build />
+                                                </div>
+                                                <div className='text-center mt-5 font-weight-bolder font-size-h3 text-primary'>
+                                                    Selecciona la empresa
+                                                </div>
+                                            </div>
+                                    } */}
                                     {
                                         empresa !== '' ?
                                             activeTipo === 6 ?
@@ -1188,18 +1253,16 @@ class MaterialCliente extends Component {
                                                                 actualSubMenuCarpeta === "RENDERS" ?
                                                                     <div className="row mx-0 px-0 d-flex justify-content-center col-md-12">
                                                                             {
-                                                                                Object.keys(form.adjuntos.renders).map((nombreRenderCarpeta, key) => {
-                                                                                    if (nombreRenderCarpeta !== "placeholder")
-                                                                                        return (
-                                                                                            <div className='col-md-3' key={key}>
-                                                                                                <FolderStatic
-                                                                                                    text={form.adjuntos.renders[nombreRenderCarpeta].placeholder}
-                                                                                                    onClick={this.onClickFolderRender}
-                                                                                                    element={form.adjuntos.renders[nombreRenderCarpeta]}
-                                                                                                />
-                                                                                            </div>
-                                                                                        )
-                                                                                    return ''
+                                                                                this.getTipo().renders.map((render, key) => {
+                                                                                    return (
+                                                                                        <div className='col-md-3' key={key}>
+                                                                                            <FolderStatic
+                                                                                                text={render.nombre}
+                                                                                                onClick={this.onClickFolderRender}
+                                                                                                element={render.carpertas}
+                                                                                            />
+                                                                                        </div>
+                                                                                    )
                                                                                 })
                                                                             }
                                                                     </div>
