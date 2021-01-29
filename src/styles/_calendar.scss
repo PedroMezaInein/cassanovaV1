@@ -158,7 +158,11 @@ a.fc-col-header-cell-cushion {
         }
     }
     .tooltip-inner {
-        width: 200px;
+        min-width: 200px;
+        width: auto;
+        @include screen ($lg) {
+            max-width: 30vw;
+        }
         padding: 0;
     }
     .calendar-avatar{
