@@ -84,6 +84,18 @@ class CuentaForm extends Component {
                                 })
                                 return false
                             })
+                        if(cuenta.usuarios){ 
+                            let aux = []
+                            cuenta.usuarios.map((usuario) => {
+                                this.onChange({ target: { value: usuario.id.toString(), name: 'usuario' } })
+                                aux.push({
+                                    id: usuario.id,
+                                    text: usuario.name,
+                                })
+                                return false
+                            })
+                            form.usuarios = aux
+                        }
                         form.descripcion = cuenta.descripcion
                         this.setState({
                             /* ...this.state, */
@@ -152,21 +164,39 @@ class CuentaForm extends Component {
             form
         })
     }
-    deleteOption = (option, arreglo) => {
-        const { form, options } = this.state
-        let aux = []
-        form[arreglo].map((element, key) => {
-            if (option.value.toString() !== element.value.toString())
-                aux.push(element)
-            else
-                options[arreglo].push(element)
+    deleteOption = (element, array) => {
+        let { form } = this.state
+        let auxForm = []
+        form[array].map((elemento, key) => {
+            if (element !== elemento) {
+                auxForm.push(elemento)
+            }
             return false
         })
-        form[arreglo] = aux
+        form[array] = auxForm
         this.setState({
             ...this.state,
-            options,
             form
+        })
+    }
+    onChangeOptions = (e, arreglo) => {
+        const { value } = e.target
+        const { form, options } = this.state
+        let auxArray = form[arreglo]
+        let aux = []
+        options[arreglo].find(function (_aux) {
+            if (_aux.value.toString() === value.toString()) {
+                auxArray.push(_aux)
+            } else {
+                aux.push(_aux)
+            }
+            return false
+        })
+        form[arreglo] = auxArray
+        this.setState({
+            ...this.state,
+            form,
+            options
         })
     }
     async getOptionsAxios(tipo) {
@@ -228,13 +258,7 @@ class CuentaForm extends Component {
                 options.tipos = setOptions(tipos, 'tipo', 'id')
                 options.empresas = setOptions(empresas, 'name', 'id')
                 options.estatus = setSelectOptions(estatus, 'estatus')
-                users.map((user) => {
-                    options.usuarios.push({
-                        text: user.name,
-                        value: user.id.toString(),
-                        label: user.name
-                    })
-                })
+                options.usuarios =  setOptions(users, 'name', 'id')
                 this.setState({
                     ...this.state,
                     options,
@@ -304,26 +328,6 @@ class CuentaForm extends Component {
             console.log(error, 'error')
         })
     }
-    onChangeAndAdd = (e, arreglo) => {
-        const { value } = e.target
-        const { options, form } = this.state
-        let auxArray = form[arreglo]
-        let aux = []
-        options[arreglo].find(function (_aux) {
-            if (_aux.value.toString() === value.toString())
-                auxArray.push(_aux)
-            else
-                aux.push(_aux)
-            return false
-        })
-        options[arreglo] = aux
-        form[arreglo] = auxArray
-        this.setState({
-            ...this.state,
-            form,
-            options
-        })
-    }
     render() {
         const { title, tipo, options, form, formeditado } = this.state
         return (
@@ -346,7 +350,7 @@ class CuentaForm extends Component {
                             onSubmit={this.onSubmit}
                             tipo={tipo} 
                             deleteOption={this.deleteOption}
-                            onChangeAndAdd={this.onChangeAndAdd}
+                            onChangeOptions={this.onChangeOptions}
                         />
                     </Card.Body>
                 </Card>

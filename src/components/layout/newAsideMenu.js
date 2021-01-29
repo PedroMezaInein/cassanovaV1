@@ -1,7 +1,7 @@
 import React from 'react';
 import {AsideMenuList} from "./AsideMenuList";
-import ScrollBar from "react-perfect-scrollbar";
-import "react-perfect-scrollbar/dist/css/styles.css";
+import Scrollbar from 'perfect-scrollbar-react';
+import 'perfect-scrollbar-react/dist/style.min.css';
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../functions/routers"
 
@@ -53,11 +53,11 @@ export default function NewAsideMenu({props}) {
             </div>
 
             <div className="aside-menu-wrapper flex-column-fluid">     
-              <div className="aside-menu my-4 scroll ps" id="asideMenuScroll" style={{height:'629px'}} data-menu-scroll="1" data-menu-dropdown-timeout="500">
-              <ScrollBar>
-                <AsideMenuList  props = {props}/>
-              </ScrollBar>            
-              </div>              
+              <div className="aside-menu my-4" id="asideMenuScroll" style={{ display: 'flex', maxHeight: '629px'}}>
+                <Scrollbar>
+                  <AsideMenuList  props = {props}/>
+                </Scrollbar>
+              </div>
             </div>
         </div> 
       </>
