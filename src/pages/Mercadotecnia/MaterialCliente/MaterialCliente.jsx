@@ -310,7 +310,7 @@ class MaterialCliente extends Component {
         })
     }
 
-    /* ANCHOR delete single file */
+    /* ANCHOR DELETE SINGLE FILE */
     deleteAdjunto = async (id, tipo) => {
         const { access_token } = this.props.authUser
         const { empresa } = this.state
