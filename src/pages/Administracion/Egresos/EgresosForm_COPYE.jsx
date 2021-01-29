@@ -4,12 +4,11 @@ import axios from 'axios'
 import Swal from 'sweetalert2'
 import { URL_DEV } from '../../../constants'
 import { setOptions, setSelectOptions } from '../../../functions/setters'
-import { errorAlert, waitAlert, forbiddenAccessAlert, createAlert, doneAlert, deleteAlert } from '../../../functions/alert'
+import { errorAlert, waitAlert, forbiddenAccessAlert, createAlert, doneAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { EgresosForm as EgresosFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
 class EgresosForm extends Component {
-    
     state = {
         title: 'Nuevo egreso',
         solicitud: '',
@@ -62,7 +61,6 @@ class EgresosForm extends Component {
         },
         formeditado: 0
     }
-
     onChange = e => {
         const { form } = this.state
         const { name, value } = e.target
@@ -72,65 +70,46 @@ class EgresosForm extends Component {
             form
         })
     }
-
     onChangeAdjunto = e => {
-        const { form } = this.state
+        const { form, data, options } = this.state
         const { files, value, name } = e.target
         let aux = []
         for (let counter = 0; counter < files.length; counter++) {
-            aux.push(
-                {
-                    name: files[counter].name,
-                    file: files[counter],
-                    url: URL.createObjectURL(files[counter]),
-                    key: counter
-                }
-            )
-        }
-        form['adjuntos'][name].value = value
-        form['adjuntos'][name].files = aux
-        this.setState({ ...this.state, form })
-    }
-
-    onChangeFactura = e => {
-        const { files, value, name } = e.target
-        const { data, form, options } = this.state
-        let aux = []
-        for(let x = 0; x < files.length; x++){
-            let file = files[x];
-            let extension = file.name.slice((Math.max(0, file.name.lastIndexOf(".")) || Infinity) + 1);
-            if (extension.toUpperCase() === 'XML') {
-                const reader = new FileReader()
-                reader.onload = async (e) => {
-                    const text = (e.target.result)
-                    let XMLParser = require('react-xml-parser');
-                    let xml = new XMLParser().parseFromString(text);
-                    const emisor = xml.getElementsByTagName('cfdi:Emisor')[0]
-                    const receptor = xml.getElementsByTagName('cfdi:Receptor')[0]
-                    const timbreFiscalDigital = xml.getElementsByTagName('tfd:TimbreFiscalDigital')[0]
-                    const concepto = xml.getElementsByTagName('cfdi:Concepto')[0]
-                    let relacionados = xml.getElementsByTagName('cfdi:CfdiRelacionados')
-                    let obj = {
-                        rfc_receptor: receptor.attributes.Rfc ? receptor.attributes.Rfc : '',
-                        nombre_receptor: receptor.attributes.Nombre ? receptor.attributes.Nombre : '',
-                        uso_cfdi: receptor.attributes.UsoCFDI ? receptor.attributes.UsoCFDI : '',
-                        rfc_emisor: emisor.attributes.Rfc ? emisor.attributes.Rfc : '',
-                        nombre_emisor: emisor.attributes.Nombre ? emisor.attributes.Nombre : '',
-                        regimen_fiscal: emisor.attributes.RegimenFiscal ? emisor.attributes.RegimenFiscal : '',
-                        lugar_expedicion: xml.attributes.LugarExpedicion ? xml.attributes.LugarExpedicion : '',
-                        fecha: xml.attributes.Fecha ? new Date(xml.attributes.Fecha) : '',
-                        metodo_pago: xml.attributes.MetodoPago ? xml.attributes.MetodoPago : '',
-                        tipo_de_comprobante: xml.attributes.TipoDeComprobante ? xml.attributes.TipoDeComprobante : '',
-                        total: xml.attributes.Total ? xml.attributes.Total : '',
-                        subtotal: xml.attributes.SubTotal ? xml.attributes.SubTotal : '',
-                        tipo_cambio: xml.attributes.TipoCambio ? xml.attributes.TipoCambio : '',
-                        moneda: xml.attributes.Moneda ? xml.attributes.Moneda : '',
-                        numero_certificado: timbreFiscalDigital.attributes.UUID ? timbreFiscalDigital.attributes.UUID : '',
-                        descripcion: concepto.attributes.Descripcion,
-                        folio: xml.attributes.Folio ? xml.attributes.Folio : '',
-                        serie: xml.attributes.Serie ? xml.attributes.Serie : '',
-                    }
-                    let tipoRelacion = ''
+            if (name === 'factura') {
+                let extension = files[counter].name.slice((Math.max(0, files[counter].name.lastIndexOf(".")) || Infinity) + 1);
+                if (extension.toUpperCase() === 'XML') {
+                    waitAlert()
+                    const reader = new FileReader()
+                    reader.onload = async (e) => {
+                        const text = (e.target.result)
+                        var XMLParser = require('react-xml-parser');
+                        var xml = new XMLParser().parseFromString(text);
+                        const emisor = xml.getElementsByTagName('cfdi:Emisor')[0]
+                        const receptor = xml.getElementsByTagName('cfdi:Receptor')[0]
+                        const timbreFiscalDigital = xml.getElementsByTagName('tfd:TimbreFiscalDigital')[0]
+                        const concepto = xml.getElementsByTagName('cfdi:Concepto')[0]
+                        let relacionados = xml.getElementsByTagName('cfdi:CfdiRelacionados')
+                        let obj = {
+                            rfc_receptor: receptor.attributes.Rfc ? receptor.attributes.Rfc : '',
+                            nombre_receptor: receptor.attributes.Nombre ? receptor.attributes.Nombre : '',
+                            uso_cfdi: receptor.attributes.UsoCFDI ? receptor.attributes.UsoCFDI : '',
+                            rfc_emisor: emisor.attributes.Rfc ? emisor.attributes.Rfc : '',
+                            nombre_emisor: emisor.attributes.Nombre ? emisor.attributes.Nombre : '',
+                            regimen_fiscal: emisor.attributes.RegimenFiscal ? emisor.attributes.RegimenFiscal : '',
+                            lugar_expedicion: xml.attributes.LugarExpedicion ? xml.attributes.LugarExpedicion : '',
+                            fecha: xml.attributes.Fecha ? new Date(xml.attributes.Fecha) : '',
+                            metodo_pago: xml.attributes.MetodoPago ? xml.attributes.MetodoPago : '',
+                            tipo_de_comprobante: xml.attributes.TipoDeComprobante ? xml.attributes.TipoDeComprobante : '',
+                            total: xml.attributes.Total ? xml.attributes.Total : '',
+                            subtotal: xml.attributes.SubTotal ? xml.attributes.SubTotal : '',
+                            tipo_cambio: xml.attributes.TipoCambio ? xml.attributes.TipoCambio : '',
+                            moneda: xml.attributes.Moneda ? xml.attributes.Moneda : '',
+                            numero_certificado: timbreFiscalDigital.attributes.UUID ? timbreFiscalDigital.attributes.UUID : '',
+                            descripcion: concepto.attributes.Descripcion,
+                            folio: xml.attributes.Folio ? xml.attributes.Folio : '',
+                            serie: xml.attributes.Serie ? xml.attributes.Serie : '',
+                        }
+                        let tipoRelacion = ''
                         if (relacionados) {
                             if (relacionados.length) {
                                 relacionados = relacionados[0]
@@ -185,25 +164,26 @@ class EgresosForm extends Component {
                             cadena = cadena.replace(',S.A.', ' SA').toUpperCase()
                             cadena = cadena.replace(/,/g, '').toUpperCase()
                             cadena = cadena.replace(/\./g, '').toUpperCase()
-                            if(element.rfc)
-                                if (element.rfc.toUpperCase() === obj.rfc_emisor.toUpperCase() ||
-                                    element.razon_social.toUpperCase() === cadena) {
-                                    auxProveedor = element
-                                }
+                            if (element.razon_social.toUpperCase() === obj.nombre_emisor.toUpperCase() ||
+                                element.razon_social.toUpperCase() === cadena) {
+                                auxProveedor = element
+                            }
                             return false
                         });
                         if (auxEmpresa) {
                             options['cuentas'] = setOptions(auxEmpresa.cuentas, 'nombre', 'id')
                             form.empresa = auxEmpresa.name
-                        } else { errorAlert('No existe la empresa') }
-                        if (auxProveedor) { form.proveedor = auxProveedor.id.toString() } 
-                        else {
-                            if(obj.nombre_emisor === ''){
-                                errorAlert('LA FACTURA NO TIENE RAZÓN SOCIAL, CREA EL PROVEEDOR DESDE LA SECCIÓN DE PROVEEDORES EN LEADS.')
-                            }else
-                                createAlert('NO EXISTE EL PROVEEDOR', '¿LO QUIERES CREAR?', () => this.addProveedorAxios(obj))
+                        } else {
+                            errorAlert('No existe la empresa')
                         }
-                        if (auxEmpresa && auxProveedor) { Swal.close() }
+                        if (auxProveedor) {
+                            form.proveedor = auxProveedor.id.toString()
+                        } else {
+                            createAlert('NO EXISTE EL PROVEEDOR', '¿LO QUIERES CREAR?', () => this.addProveedorAxios(obj))
+                        }
+                        if (auxEmpresa && auxProveedor) {
+                            Swal.close()
+                        }
                         form.facturaObject = obj
                         form.rfc = obj.rfc_emisor
                         this.setState({
@@ -211,15 +191,16 @@ class EgresosForm extends Component {
                             options,
                             form
                         })
+                    }
+                    reader.readAsText(files[counter])
                 }
-                reader.readAsText(file)
             }
             aux.push(
                 {
-                    name: file.name,
-                    file: file,
-                    url: URL.createObjectURL(file),
-                    key: x
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
                 }
             )
         }
@@ -230,7 +211,6 @@ class EgresosForm extends Component {
             form
         })
     }
-
     clearFiles = (name, key) => {
         const { form } = this.state
         let aux = []
@@ -250,7 +230,6 @@ class EgresosForm extends Component {
             form
         })
     }
-
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
@@ -295,7 +274,6 @@ class EgresosForm extends Component {
         })
         return form;
     }
-
     onSubmit = e => {
         e.preventDefault()
         const { title } = this.state
@@ -305,7 +283,6 @@ class EgresosForm extends Component {
         } else
             this.addEgresoAxios()
     }
-
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
@@ -409,7 +386,6 @@ class EgresosForm extends Component {
             history.push('/')
         this.getEgresosAxios()
     }
-
     setOptions = (name, array) => {
         const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
@@ -418,7 +394,6 @@ class EgresosForm extends Component {
             options
         })
     }
-
     async getEgresosAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -454,7 +429,6 @@ class EgresosForm extends Component {
             console.log(error, 'error')
         })
     }
-
     async addEgresoAxios() {
         const { access_token } = this.props.authUser
         const { form, solicitud } = this.state
@@ -516,7 +490,6 @@ class EgresosForm extends Component {
             console.log(error, 'error')
         })
     }
-
     async editEgresoAxios() {
         const { access_token } = this.props.authUser
         const { form, egreso } = this.state
@@ -571,7 +544,6 @@ class EgresosForm extends Component {
             console.log(error, 'error')
         })
     }
-
     async addProveedorAxios(obj) {
         const { access_token } = this.props.authUser
         const data = new FormData();
@@ -627,10 +599,19 @@ class EgresosForm extends Component {
                         </div>
                     </Card.Header>
                     <Card.Body className="pt-0">
-                        <EgresosFormulario className = "px-3" formeditado = { formeditado } title = { title } form = { form }
-                            onChange = { this.onChange } onChangeAdjunto = { this.onChangeAdjunto } onChangeFactura = { this.onChangeFactura }
-                            clearFiles = { this.clearFiles } options = { options } setOptions = { this.setOptions } onSubmit = { this.onSubmit }
-                            data = { data }/>
+                        <EgresosFormulario
+                            className="px-3"
+                            formeditado={formeditado}
+                            title={title}
+                            form={form}
+                            onChange={this.onChange}
+                            onChangeAdjunto={this.onChangeAdjunto}
+                            clearFiles={this.clearFiles}
+                            options={options}
+                            setOptions={this.setOptions}
+                            onSubmit={this.onSubmit}
+                            data={data} 
+                        />
                     </Card.Body>
                 </Card>
             </Layout>

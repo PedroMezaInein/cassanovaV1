@@ -97,7 +97,7 @@ class EgresosForm extends Component {
     }
 
     render() {
-        const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, onSubmit, formeditado, ...props } = this.props
+        const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, onSubmit, formeditado, onChangeFactura, onChangeCalendar, ...props } = this.props
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
@@ -165,7 +165,7 @@ class EgresosForm extends Component {
                                                 <FileInput
                                                     requirevalidation={0}
                                                     formeditado={formeditado}
-                                                    onChangeAdjunto={onChangeAdjunto}
+                                                    onChangeAdjunto={onChangeFactura}
                                                     placeholder={form['adjuntos']['factura']['placeholder']}
                                                     value={form['adjuntos']['factura']['value']}
                                                     name={'factura'} id={'factura'}
