@@ -13,120 +13,83 @@ import { Folder, FolderStatic, Modal } from '../../../components/singles'
 import { Button, BtnBackUrl, TablePagination, NewFolderInput } from '../../../components/form-components'
 import Swal from 'sweetalert2'
 import { NoFiles, Files, Build } from '../../../components/Lottie'
+import { element } from 'prop-types'
 
 const arrayOpcionesAdjuntos = ['portafolio', 'como_trabajamos', 'servicios_generales', '', 'brokers', 'videos'];
 class MaterialCliente extends Component {
     state = {
+        data: {
+            empresas: []
+        },
+        empresa: '',
+        submenuactive: '',
+        menuactive: '',
+        level: 0,
+        levelName: '',
+        levelItem: [],
+        url: [],
         newFolder: false,
-        activeFolder: false,
-        modal_add: false,
-        submenuactive: null,
-        abiertoSubMenu: false,
-        abiertoCarpetaRender: false,
-        adjuntosSubMenu: [],
-        actualSubMenu: "",
-        actualSubMenuCarpeta: "",
+        modal: false,
+        form: {
+            carpeta: '',
+            adjuntos: {
+                adjuntos: {
+                    name: '',
+                    value: '',
+                    placeholder: '',
+                    files: [],
+                },
+            }
+        },
         opciones_adjuntos: [
             {
                 nombre: 'PORTAFOLIO',
+                slug: 'portafolio',
                 icono: 'fas fa-briefcase',
-                tipo: 1,
                 isActive: false,
                 subMenu: false
             },
             {
                 nombre: 'COMO TRABAJAMOS (FASE 1 Y 2)',
                 icono: 'flaticon2-file',
-                tipo: 2,
+                slug: 'como_trabajamos',
                 isActive: false,
                 subMenu: false
             },
             {
                 nombre: 'SERVICIOS GENERALES',
                 icono: 'flaticon2-settings',
-                tipo: 3,
+                slug: 'servicios_generales',
                 isActive: false,
                 subMenu: false
             },
             {
                 nombre: 'SERVICIOS POR CATEGORIA',
                 icono: 'fas fa-tag',
-                tipo: 4,
                 isActive: false,
                 subMenu: true
             },
             {
                 nombre: 'BROKERS',
+                slug: 'brokers',
                 icono: 'fas fa-user-tie',
-                tipo: 5,
                 isActive: false,
                 subMenu: false
             },
             {
                 nombre: 'VIDEOS',
+                slug: 'videos',
                 icono: 'fas fa-video',
-                tipo: 6,
                 isActive: false,
                 subMenu: false
             },
             {
                 nombre: 'CASOS DE ÉXITO',
                 icono: 'fas fa-folder-open',
-                tipo: 7,
                 isActive: false,
                 subMenu: false
             }
         ],
-        form: {
-            empresa: 'inein',
-            carpeta: '',
-            adjuntos: {
-                slider: {
-                    name: '',
-                    value: '',
-                    placeholder: 'PORTAFOLIO',
-                    files: [],
-                    menu: 0
-                },
-                subportafolio: {
-                    value: '',
-                    placeholder: 'SUBPORTAFOLIO',
-                    files: []
-                },
-                ejemplo: {
-                    value: '',
-                    placeholder: 'EJEMPLOS',
-                    files: []
-                },
-                portada: {
-                    value: '',
-                    placeholder: 'PORTADA',
-                    files: []
-                },
-                renders: {
-                    reales: {
-                        value: '',
-                        placeholder: 'Reales',
-                        files: []
-                    },
-                    inventados: {
-                        value: '',
-                        placeholder: 'Inventados',
-                        files: []
-                    },
-                    placeholder: 'RENDERS'
-                }
-            }
-        },
-        options: {
-            empresas: []
-        },
-        data: {
-            empresas: []
-        },
-        formeditado: 0,
-        empresa: '',
-        activeTipo: ''
     };
 
     componentDidMount() {
@@ -145,21 +108,14 @@ class MaterialCliente extends Component {
     /* ANCHOR AXIOS FUNCTIONS */
 
     /* ANCHOR GET ALL EMPRESAS Y ADJUNTOS */
-    async getOptionsAxios() {
+    getOptionsAxios = async () => {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'mercadotecnia/material-clientes', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { empresas } = response.data
-                const { options, data, form } = this.state
-                let { empresa } = this.state
+                const { data } = this.state
                 data.empresas = empresas
-                options.empresas = setSelectOptions(empresas, 'name')
-                empresas.map((element) => {
-                    if(element.id === empresa.id)
-                        empresa = element
-                    return ''
-                })
-                this.setState({ ...this.state, options, data, empresa, form, modal_add: false, abiertoCarpetaRender: false })
+                this.setState({ ...this.state, data })
             },
             (error) => {
                 console.log(error, 'error')
@@ -172,20 +128,48 @@ class MaterialCliente extends Component {
         })
     }
 
-    /* ANCHOR NEW DIRECTORY FOR CASOS DE EXITO */
-    onSubmitNewDirectory = async () => {
-        const { access_token } = this.props.authUser
-        const { form, empresa } = this.state
+    /* ANCHOR GET ADJUNTOS POR EMPRESA */
+    getAdjuntoEmpresaAxios = async (id) => {
         waitAlert()
-        await axios.post(URL_DEV + 'mercadotecnia/material-clientes/empresas/' + empresa.id + '/caso-exito', { tipo: form.carpeta },
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}mercadotecnia/material-clientes/empresa/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        (response) => {
+                Swal.close()
+                const { empresa } = response.data
+                const { opciones_adjuntos } = this.state
+                opciones_adjuntos.map((element, index)=>{
+                    if(index === 0)
+                        element.isActive = true
+                    else 
+                        element.isActive = false
+                })
+                this.setState({...this.state, empresa, opciones_adjuntos, submenuactive: '', menuactive: 0, level: 0})
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) { forbiddenAccessAlert() } 
+                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    /* ANCHOR AGREGANDO NUEVA CARPETA EN LOS RENDERS */
+    onSubmitNewDirectoryRender = async () => {
+        const { access_token } = this.props.authUser
+        const { form, empresa, url, submenuactive } = this.state
+        waitAlert()
+        await axios.post(`${URL_DEV}mercadotecnia/material-clientes/empresas/${empresa.id}/renders`, 
+            { carpeta: form.carpeta, tipo: url[url.length - 1], categoria: submenuactive },
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 Swal.close()
-                const { empresa, empresas } = response.data
-                const { form, data } = this.state
-                data.empresas = empresas
+                const { empresa } = response.data
+                const { form } = this.state
                 form.carpeta = ''
-                this.setState({ ...this.state, empresa: empresa, newFolder: false, form, data })
+                this.setState({...this.state, empresa: empresa, form, newFolder: false})
             },
             (error) => {
                 console.log(error, 'error')
@@ -198,21 +182,216 @@ class MaterialCliente extends Component {
         })
     }
 
-    /* ANCHOR CHANGE NAME OF DIRECTORY IN CASOS DE EXITO */
-    updateDirectoryAxios = async (name, element) => {
+    /* ANCHOR NEW DIRECTORY FOR CASOS DE EXITO */
+    onSubmitNewDirectoryCasosExito = async () => {
         const { access_token } = this.props.authUser
-        const { empresa } = this.state
+        const { form, empresa } = this.state
         waitAlert()
-        await axios.put(URL_DEV + 'mercadotecnia/material-clientes/empresas/' + empresa.id + '/caso-exito/' + element.id, { tipo: name },
+        await axios.post(`${URL_DEV}mercadotecnia/material-clientes/empresas/${empresa.id}/caso-exito`, { tipo: form.carpeta },
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 Swal.close()
-                const { empresa, empresas } = response.data
-                const { form, data } = this.state
-                data.empresas = empresas
+                const { empresa } = response.data
+                const { form } = this.state
                 form.carpeta = ''
-                this.setState({ ...this.state, empresa: empresa, newFolder: false, form, data })
-                return true
+                this.setState({...this.state, empresa: empresa, form, newFolder: false})
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) forbiddenAccessAlert()
+                else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    /* ANCHOR ADD ADJUNTO SINGLE */
+    addAdjunto = async() => {
+        const { access_token } = this.props.authUser
+        const data = new FormData();
+        const { form, menuactive, opciones_adjuntos, empresa, submenuactive, levelName  } = this.state
+        if(menuactive === 3){
+            data.append('proyecto', submenuactive)
+            data.append('tipo', levelName)
+        }else{
+            if(opciones_adjuntos.length >= menuactive + 1)
+                data.append('tipo', opciones_adjuntos[menuactive].slug)
+        }
+        form.adjuntos.adjuntos.files.map((file)=>{
+            data.append(`files_name[]`, file.name)
+            data.append(`files[]`, file.file)
+        })
+        data.append('empresa', empresa.id)
+        await axios.post(`${URL_DEV}mercadotecnia/material-clientes`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                Swal.close()
+                const { empresa } = response.data
+                form.adjuntos.adjuntos.files = []
+                form.adjuntos.adjuntos.value = ''
+                this.setState({...this.state,modal:false,form,empresa:empresa})
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) forbiddenAccessAlert()
+                else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    /* ANCHOR ADD ADJUNTO RENDER */
+    addAdjuntoInRender = async() => {
+        const { url, levelItem, form, submenuactive, empresa } = this.state
+        const { access_token } = this.props.authUser
+        const data = new FormData();
+        let tipo = ''
+        if(url.length > 2)
+            tipo = url[url.length - 2]
+        data.append('empresa', empresa.id)
+        form.adjuntos.adjuntos.files.map((file)=>{
+            data.append(`files_name[]`, file.name)
+            data.append(`files[]`, file.file)
+        })
+        data.append('tipo', tipo)
+        data.append('categoria', submenuactive)
+        await axios.post(`${URL_DEV}mercadotecnia/material-clientes/renders/carpeta/${levelItem.id}`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                Swal.close()
+                const { empresa, carpeta } = response.data
+                let { levelItem } = this.state
+                form.adjuntos.adjuntos.files = []
+                form.adjuntos.adjuntos.value = ''
+                levelItem = carpeta
+                this.setState({...this.state, modal:false, form, empresa:empresa, levelItem})
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) forbiddenAccessAlert()
+                else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    
+    /* ANCHOR ADD ADJUNTO CASOS EXITO */
+    addAdjuntoInCasoExito = async() => {
+        const { url, levelItem, form, empresa } = this.state
+        const { access_token } = this.props.authUser
+        const data = new FormData();
+        form.adjuntos.adjuntos.files.map((file)=>{
+            data.append(`files_name[]`, file.name)
+            data.append(`files[]`, file.file)
+        })
+        data.append('tipo', levelItem.id)
+        await axios.post(`${URL_DEV}mercadotecnia/material-clientes/empresas/${empresa.id}/caso-exito/adjuntos`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                Swal.close()
+                const { empresa, carpeta } = response.data
+                let { levelItem } = this.state
+                form.adjuntos.adjuntos.files = []
+                form.adjuntos.adjuntos.value = ''
+                levelItem = carpeta
+                this.setState({...this.state, modal:false, form, empresa:empresa, levelItem})
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) forbiddenAccessAlert()
+                else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    /* ANCHOR delete single file */
+    deleteAdjunto = async (id, tipo) => {
+        const { access_token } = this.props.authUser
+        const { empresa } = this.state
+        await axios.delete(`${URL_DEV}mercadotecnia/material-clientes/${empresa.id}/adjunto/${tipo}/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert('ADJUNTO ELIMINADO CON ÉXITO')
+                const { empresa } = response.data
+                this.setState({...this.state,empresa:empresa})
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) forbiddenAccessAlert()
+                else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    /* ANCHOR DELETE ADJUNTO IN RENDER */
+    deleteAdjuntoInRender = async element => {
+        const { access_token } = this.props.authUser
+        const { empresa, submenuactive, url } = this.state
+        let tipo = ''
+        if(url.length > 2){
+            tipo = url[url.length - 2]
+        }
+        await axios.delete(`${URL_DEV}mercadotecnia/material-clientes/empresas/${empresa.id}/tipo/${submenuactive}/renders/${tipo}/adjuntos/${element.id}`, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert('ADJUNTO ELIMINADO CON ÉXITO')
+                const { empresa, carpeta } = response.data
+                this.setState({...this.state,empresa:empresa, levelItem: carpeta})
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) forbiddenAccessAlert()
+                else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    /* ANCHOR DELETE ADJUNTO IN CASO EXITO */
+    deleteAdjuntoInCasoExito = async element => {
+        const { access_token } = this.props.authUser
+        const { empresa, levelItem } = this.state
+        await axios.delete(`${URL_DEV}mercadotecnia/material-clientes/empresas/${empresa.id}/caso-exito/${levelItem.id}/adjuntos/${element.id}`, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert('ADJUNTO ELIMINADO CON ÉXITO')
+                const { empresa, carpeta } = response.data
+                this.setState({...this.state,empresa:empresa, levelItem: carpeta})
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) forbiddenAccessAlert()
+                else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    /* ANCHOR CHANGE NAME OF DIRECTORY IN RENDERS */
+    updateDirectoryInRender = async (name, element) => {
+        const { access_token } = this.props.authUser
+        const { empresa } = this.state
+        waitAlert()
+        await axios.put(`${URL_DEV}mercadotecnia/material-clientes/empresas/${empresa.id}/renders/carpeta/${element.id}`, { name: name },
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                Swal.close()
+                const { empresa, carpeta } = response.data
+                const { form } = this.state
+                form.carpeta = ''
+                this.setState({ ...this.state, empresa: empresa, levelItem: carpeta, newFolder: false, form })
             },
             (error) => {
                 console.log(error, 'error')
@@ -227,281 +406,171 @@ class MaterialCliente extends Component {
         })
     }
 
-    /* ANCHOR DELETE ADJUNTO FROM PORTAFOLIO COMO TRABAJAMOS SERVICIOS GENERALES BROKERS VIDEOS */
-    deleteAdjuntoAxios = async (id, tipo_adjunto) => {
-        console.log(id, 'ID')
-        console.log(tipo_adjunto, "TIPO ADJUNTO")
-        console.log('STATE', this.state)
+    /* ANCHOR CHANGE NAME OF DIREC IN CASO DE EXITO */
+    updateDirectoryInCasoExito = async (name, element) => {
         const { access_token } = this.props.authUser
         const { empresa } = this.state
-        await axios.delete(URL_DEV + 'mercadotecnia/material-clientes/' + empresa.id + '/adjunto/' + tipo_adjunto + '/' + id,
+        waitAlert()
+        await axios.put(`${URL_DEV}mercadotecnia/material-clientes/empresas/${empresa.id}/caso-exito/${element.id}`, { tipo: name },
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { empresa: empresaResponse } = response.data
-                this.updateAllAdjuntos(empresaResponse, tipo_adjunto);
-                doneAlert('Archivo eliminado con éxito.')
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) forbiddenAccessAlert()
-                else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-
-    /* ANCHOR DELETE ADJUNTO FROM FOLDER */
-    deleteAdjuntoFromFolder = async (id) => {
-        const { access_token } = this.props.authUser
-        const { empresa, activeFolder } = this.state
-        await axios.delete(URL_DEV + 'mercadotecnia/material-clientes/empresas/' + empresa.id + '/caso-exito/' + activeFolder.id + '/adjuntos/' + id,
-            { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { empresa, empresas, carpeta } = response.data
-                const { data } = this.state
-                data.empresas = empresas
-                doneAlert('Archivos eliminado con éxito')
-                this.setState({ ...this.state, empresa: empresa, activeFolder: carpeta, data })
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) forbiddenAccessAlert()
-                else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-
-    /* ANCHOR DELETE FOLDERS */
-    deleteFolderAxios = async (id) => {
-        const { access_token } = this.props.authUser
-        const { empresa } = this.state
-        await axios.delete(URL_DEV + 'mercadotecnia/material-clientes/empresas/' + empresa.id + '/caso-exito/' + id,
-            { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { empresa, empresas } = response.data
-                const { data } = this.state
-                data.empresas = empresas
-                doneAlert('Carpeta eliminada con éxito')
-                this.setState({ ...this.state, empresa: empresa, data })
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) forbiddenAccessAlert()
-                else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-
-    /* ANCHOR ADD ADJUNTO IN FOLDER */
-    async addAdjuntoInFolderAxios() {
-        const { form, empresa, activeFolder } = this.state
-        const { access_token } = this.props.authUser
-        const data = new FormData();
-        form.adjuntos.slider.files.map((file, key) => {
-            if (typeof file.id === 'undefined') {
-                data.append(`files_name[]`, file.name)
-                data.append(`files[]`, file.file)
-            }
-            return ''
-        })
-        data.append('tipo', activeFolder.id)
-        await axios.post(URL_DEV + 'mercadotecnia/material-clientes/empresas/' + empresa.id + '/caso-exito/adjuntos', data,
-            { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 Swal.close()
-                const { empresa, empresas, carpeta } = response.data
-                const { form, data } = this.state
-                data.empresas = empresas
-                form.adjuntos.slider.files = []
-                form.adjuntos.slider.value = ''
-                doneAlert('Archivos adjuntados con éxito')
-                this.setState({ ...this.state, empresa: empresa, modal_add: false, activeFolder: carpeta, form, data })
+                const { empresa, carpeta } = response.data
+                const { form } = this.state
+                form.carpeta = ''
+                this.setState({ ...this.state, empresa: empresa, levelItem: carpeta, newFolder: false, form })
             },
             (error) => {
                 console.log(error, 'error')
                 if (error.response.status === 401) forbiddenAccessAlert()
                 else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                return true
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
+            return true
         })
     }
 
-    /* ANCHOR ADD ADJUNTO IN REDERAXIOS */
-    addAdjuntoInRendersAxios = async(tipo) => {
-        console.log(tipo, 'tipo')
-        if(tipo === 'renders-reales'){
-            tipo = 'reales'
-        }
-        if(tipo === 'renders-inventados'){
-            tipo = 'inventados'
-        }
-        console.log(tipo, 'tipo2')
+    /* ANCHOR DELETE FOLDER IN RENDERS */
+    deleteFolderInRenderAxios = async(id) => {
         const { access_token } = this.props.authUser
-        const { form, empresa, submenuactive } = this.state
-        const data = new FormData();
+        const { empresa } = this.state
         waitAlert()
-        data.append('empresa', empresa.id)
-        form.adjuntos.renders[tipo].files.map((file, key) => {
-            if (typeof file.id === 'undefined') {
-                data.append(`files_name[]`, file.name)
-                data.append(`files[]`, file.file)
-            }
-            return ''
-        })
-        data.append('proyecto', submenuactive)
-        data.append('tipo', tipo === 'inventados' ? 'renders-inventados' : tipo === 'reales' ? 'renders-reales' : '')
-        await axios.post(URL_DEV + 'mercadotecnia/material-clientes', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.delete(`${URL_DEV}mercadotecnia/material-clientes/empresas/${empresa.id}/renders/carpeta/${id}`, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { empresa: empresaResponse } = response.data
-                this.updateAllAdjuntos(empresaResponse,  tipo === 'inventados' ? 'renders-inventados' : tipo === 'reales' ? 'renders-reales' : '');
-                doneAlert('Archivo generado con éxito.')
+                Swal.close()
+                const { empresa } = response.data
+                this.setState({ ...this.state, empresa: empresa })
             },
             (error) => {
                 console.log(error, 'error')
                 if (error.response.status === 401) forbiddenAccessAlert()
                 else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                return true
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
+            return true
         })
     }
 
-    updateAllAdjuntos = (empresaResponse, tipo_adjunto) => {
-        console.log(empresaResponse, 'empresaResponse')
-        const { data, activeTipo, form, submenuactive } = this.state
-        let { empresa, adjuntosSubMenu } = this.state
-        let aux = []
-        let subportafolio = []
-        let ejemplo = []
-        let portada = []
-        let rendersReales = []
-        let rendersInventados = []
-        data.empresas.map((element)=>{
-            if(empresa.id === element.id){
-                empresa = empresaResponse
-                aux.push(empresaResponse)
-            }else{
-                aux.push(element)
+    /* ANCHOR DELETE FOLDER IN CASO EXITO */
+    deleteFolderInCasoExitoAxios = async(id) => {
+        const { access_token } = this.props.authUser
+        const { empresa } = this.state
+        waitAlert()
+        await axios.delete(`${URL_DEV}mercadotecnia/material-clientes/empresas/${empresa.id}/caso-exito/${id}`, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                Swal.close()
+                const { empresa } = response.data
+                this.setState({ ...this.state, empresa: empresa })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) forbiddenAccessAlert()
+                else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                return true
             }
-            return ''
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+            return true
         })
-        data.empresas = aux
-        switch(activeTipo){
-            case 0:
-            case 1:
-            case 2:
-            case 4:
-            case 5:
-                form.adjuntos.slider.files = []
-                empresa.adjuntos.map((adjunto)=>{
-                    if(adjunto.pivot.tipo === arrayOpcionesAdjuntos[activeTipo]){
-                        form.adjuntos.slider.files.push(adjunto)
-                    }
-                    return ''
-                })
-            break;
-            case 3:
-                empresa.tipos.map((tipo)=>{
-                    if(submenuactive === tipo.id){
-                        tipo.adjuntos.map((adjunto, index) => {
-                            switch (adjunto.pivot.tipo) {
-                                case "portada":
-                                    portada.push(adjunto)
-                                    break;
-                                case "subportafolio":
-                                    subportafolio.push(adjunto)
-                                    break;
-                                case "ejemplo":
-                                    ejemplo.push(adjunto)
-                                    break;
-                                case "renders-reales":
-                                    rendersReales.push(adjunto)
-                                    break;
-                                case "renders-inventados":
-                                    rendersInventados.push(adjunto)
-                                    break;
-                                default: break;
-                            }
-                            return ''
-                        })
-                        form.adjuntos.portada.files = portada
-                        form.adjuntos.subportafolio.files = subportafolio
-                        form.adjuntos.ejemplo.files = ejemplo
-                        form.adjuntos.renders.reales.files = rendersReales
-                        form.adjuntos.renders.inventados.files = rendersInventados
-                        switch(tipo_adjunto){
-                            case 'portada':
-                                adjuntosSubMenu = portada;
-                                break;
-                            case 'subportafolio':
-                                adjuntosSubMenu = subportafolio;
-                                break;
-                            case 'ejemplo':
-                                adjuntosSubMenu = ejemplo;
-                                break;
-                            case 'renders-reales':
-                                adjuntosSubMenu = rendersReales;
-                                break;
-                            case 'renders-inventados':
-                                adjuntosSubMenu = rendersInventados;
-                                break;
-                            default: break;
-                        }
-                    }
-                    return ''
-                })
-                break;
-            case 6:
-            break;
-            default: break;
+    }
+
+    getUrl = () => {
+        const { url } = this.state
+        let aux = ''
+        url.map((element, index)=>{
+            if(index < url.length - 1 ){aux += element + ' | '}
+        })
+        return aux
+    }
+
+    openAccordion = (key) => {
+        const { opciones_adjuntos } = this.state
+        let { url } = this.state
+        url = []
+        if(opciones_adjuntos.length >= key+1){
+            opciones_adjuntos.map((adjunto)=>{
+                adjunto.isActive = false
+            })
+            opciones_adjuntos[key].isActive = true
         }
+        this.setState({...this.state, opciones_adjuntos, submenuactive: '', level: 0, url, menuactive: key})
+    }
+
+    openSubmenu = (tipo) => {
+        let { url } = this.state
+        url = []
+        url.push(tipo.tipo)
+        this.setState({...this.state, submenuactive: tipo.id, level: 0, url})
+    }
+
+    onClickFolder = element => {
+        const { level, url } = this.state
+        let { levelName } = this.state
+        if(element.nombre){
+            levelName = element.nombre
+            url.push(element.nombre)
+        }else{
+            if(element.tipo){
+                levelName = element.tipo
+                url.push(element.tipo)
+            }else{
+                levelName = element
+                url.push(element)
+            }
+        }
+        this.setState({...this.state, levelName, level: level+1, url, levelItem: element})
+    }
+
+    goBackFolderSubmenu = () => {
+        const { url, level } = this.state
+        url.pop()
+        this.setState({...this.state, levelName: url[url.length - 1], level: level-1, url})
+    }
+
+    addCarpeta = () => { this.setState({...this.state, newFolder: true}) }
+    
+    newFolder = () => {
+        const { form, newFolder } = this.state
+        form.carpeta = ''
         this.setState({
             ...this.state,
-            empresa,
-            data,
-            form,
-            adjuntosSubMenu,
-            modal_add: false
+            newFolder: !newFolder,
+            form
         })
     }
 
-    openModalAddFiles = () => {
-        this.setState({
-            ...this.state,
-            modal_add: true
-        })
-    }
-
-    handleCloseModalAdd = () => {
-        this.setState({
-            ...this.state,
-            modal_add: false
-        })
+    onChange = e => {
+        const { value, name } = e.target
+        const { form } = this.state
+        form[name] = value
+        this.setState({...this.state,form})
     }
 
     handleChange = (files, item) => {
-        const { form, activeFolder, actualSubMenuCarpeta } = this.state
+        const { menuactive, level } = this.state
         this.onChangeAdjuntos({ target: { name: item, value: files, files: files } })
-        if(actualSubMenuCarpeta === 'Reales' || actualSubMenuCarpeta === 'Inventados'){
-            questionAlert('ENVIAR ARCHIVO', '¿ESTÁS SEGURO QUE DESEAS ENVIARLO?', () => { waitAlert(); this.addAdjuntoInRendersAxios(actualSubMenuCarpeta === 'Reales' ? 'renders-reales' : 'renders-inventados') })
-        }else{
-            if (form.adjuntos[item].value !== '') {
-                if (activeFolder === false)
-                    questionAlert('ENVIAR ARCHIVO', '¿ESTÁS SEGURO QUE DESEAS ENVIARLO?', () => { waitAlert(); this.addAdjunto(item) })
+        switch(menuactive){
+            case 3:
+                if(level === 1)
+                    questionAlert('ENVIAR ARCHIVO', '¿ESTÁS SEGURO QUE DESEAS ENVIARLO?', () => { waitAlert(); this.addAdjunto() })
                 else
-                    questionAlert('ENVIAR ARCHIVO', '¿ESTÁS SEGURO QUE DESEAS ENVIARLO?', () => { waitAlert(); this.addAdjuntoInFolderAxios() })
-            }
+                    questionAlert('ENVIAR ARCHIVO', '¿ESTÁS SEGURO QUE DESEAS ENVIARLO?', () => { waitAlert(); this.addAdjuntoInRender() })
+                break;
+            case 6:
+                questionAlert('ENVIAR ARCHIVO', '¿ESTÁS SEGURO QUE DESEAS ENVIARLO?', () => { waitAlert(); this.addAdjuntoInCasoExito() })
+                break;
+            default:
+                questionAlert('ENVIAR ARCHIVO', '¿ESTÁS SEGURO QUE DESEAS ENVIARLO?', () => { waitAlert(); this.addAdjunto() })
+                break
         }
     }
 
@@ -518,352 +587,352 @@ class MaterialCliente extends Component {
             })
             return ''
         })
-        if(name === 'reales' || name === 'inventados'){
-            form.adjuntos.renders[name].value = value
-            form.adjuntos.renders[name].files = aux
-        }else{
-            form.adjuntos[name].value = value
-            form.adjuntos[name].files = aux
-        }
-        this.setState({
-            ...this.state,
-            form
-        })
+        form.adjuntos[name].value = value
+        form.adjuntos[name].files = aux
+        this.setState({ ...this.state, form })
     }
 
-    onChange = e => {
-        const { name, value } = e.target
+    printCarpetasRender = () => {
+        const { submenuactive, url, empresa } = this.state
+        let carpetas = []
+        empresa.tipos.map((tipo) => {
+            if(tipo.id === submenuactive){
+                tipo.renders.map((render)=>{
+                    if(render.nombre === url[url.length - 1]){
+                        render.carpetas.map((carpeta)=>{
+                            carpetas.push(carpeta)
+                        })
+                    }
+                })
+            }
+        })
+        return carpetas
+    }
+
+    openModalAddFiles = type => {
+        const { form, opciones_adjuntos, levelName, level, url } = this.state
+        switch(type){
+            case 3:
+                if(level === 1)
+                    form.adjuntos.adjuntos.placeholder = levelName
+                else
+                    form.adjuntos.adjuntos.placeholder = url[url.length - 1]
+                break;
+            case 6:
+                form.adjuntos.adjuntos.placeholder = levelName
+                break;
+            default:
+                if(opciones_adjuntos.length >= type + 1)
+                    form.adjuntos.adjuntos.placeholder = opciones_adjuntos.nombre
+                break;
+        }
+        form.adjuntos.adjuntos.value = ''
+        form.adjuntos.adjuntos.files = []
+        this.setState({...this.state,modal:true, form})
+    }
+
+    handleCloseModal = () => {
         const { form } = this.state
-        form[name] = value
-        this.setState({
-            ...this.state,
-            form
-        })
+        form.adjuntos.adjuntos.value = ''
+        form.adjuntos.adjuntos.files = []
+        this.setState({...this.state,modal:false, form})
     }
 
-    deleteFile = element => {
-        deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', element.name, () => this.deleteAdjuntoAxios(element.id, element.pivot.tipo))
-    }
-
-    deleteFileSubportafolio = element => {
-        deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', '', () => this.deleteAdjuntoAxios(element.id, 'subportafolio'))
-    }
-
-    deleteFileEjemplo = element => {
-        deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', '', () => this.deleteAdjuntoAxios(element.id, 'ejemplo'))
-    }
-
-    deleteFilePortada = element => {
-        deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', '', () => this.deleteAdjuntoAxios(element.id, 'portada'))
-    }
-
-    deleteFileRenders = element => {
-        deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', '', () => this.deleteAdjuntoAxios(element.id, 'renders'))
-    }
-
-    onClickDelete = element => {
-        deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', element.name, () => this.deleteAdjuntoFromFolder(element.id))
-    }
-
-    onClickDeleteFolder = element => {
-        deleteAlert('¿DESEAS ELIMINAR LA CARPETA?', element.tipo, () => this.deleteFolderAxios(element.id))
-    }
-
-    newFolder = () => {
-        const { form, newFolder } = this.state
-        form.carpeta = ''
-        this.setState({
-            ...this.state,
-            newFolder: !newFolder,
-            form
-        })
-    }
-
-    goBackFolder = () => {
-        this.setState({
-            ...this.state,
-            activeFolder: false
-        })
-    }
-    goBackFolderSubmenu = () => {
-        let { abiertoSubMenu, actualSubMenuCarpeta, abiertoCarpetaRender } = this.state
-        if (abiertoCarpetaRender) {
-            abiertoSubMenu = true
-            actualSubMenuCarpeta = "RENDERS"
-        }
-        else {
-            abiertoSubMenu = false
-            actualSubMenuCarpeta = ""
-        }
-
-        this.setState({
-            ...this.state,
-            abiertoCarpetaRender: false,
-            abiertoSubMenu,
-            adjuntosSubMenu: [],
-            actualSubMenuCarpeta
-
-        })
-    }
-    onClickFolderSubMenu = (element) => {
-        this.setState({
-            ...this.state,
-            adjuntosSubMenu: element.files,
-            actualSubMenuCarpeta: element.placeholder,
-            abiertoSubMenu: true
-        })
-    }
-
-    onClickFolderRender = (element) => {
-        this.setState({
-            ...this.state,
-            adjuntosSubMenu: element.files,
-            actualSubMenuCarpeta: element.placeholder,
-            abiertoSubMenu: true,
-            abiertoCarpetaRender: true
-        })
-    }
-    onClickFolder = (element) => {
-
-        this.setState({
-            ...this.state,
-            activeFolder: element
-        })
-    }
-
-    async addAdjunto(name) {
-        const { access_token } = this.props.authUser
-        const { form, empresa, submenuactive } = this.state
-        const data = new FormData();
-        const tipos = [
-            'portafolio',
-            'como_trabajamos',
-            'servicios_generales',
-            '',
-            'brokers',
-            'videos'
-        ]
-
-        data.append('empresa', empresa.id)
-
-        if (name === 'slider') {
-            form.adjuntos.slider.files.map((file, key) => {
-                if (typeof file.id === 'undefined') {
-                    data.append(`files_name[]`, file.name)
-                    data.append(`files[]`, file.file)
+    onClickDelete = (element) => {
+        const { menuactive, level } = this.state
+        switch(menuactive){
+            case 3:
+                if(level === 1){
+                    deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', element.name, () => this.deleteAdjunto(element.id, element.pivot.tipo))
+                }else{
+                    deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', element.name, () => this.deleteAdjuntoInRender(element))
                 }
-                return ''
-            })
-            data.append('tipo', tipos[form.adjuntos.slider.eventKey])
-        } else {
-            form.adjuntos[name].files.map((file, key) => {
-                if (typeof file.id === 'undefined') {
-                    data.append(`files_name[]`, file.name)
-                    data.append(`files[]`, file.file)
-                }
-                return ''
-            })
-            data.append('proyecto', submenuactive)
-            data.append('tipo', name)
+                break;
+            case 6:
+                deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', element.name, () => this.deleteAdjuntoInCasoExito(element))
+                break;
+            default:
+                deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', element.name, () => this.deleteAdjunto(element.id, element.pivot.tipo))
+                break;
         }
+    }
 
-        await axios.post(URL_DEV + 'mercadotecnia/material-clientes', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { empresa: empresaResponse, empresas, tipo } = response.data
-                const { form, data } = this.state
-                let { submenuactive, actualSubMenu } = this.state
+    onClickDeleteFolder = async (element) => {
+        const { menuactive } = this.state
+        switch(menuactive){
+            case 3:
+                deleteAlert('¿DESEAS ELIMINAR LA CARPETA?', element.nombre, () => this.deleteFolderInRenderAxios(element.id))
+                break;
+            case 6:
+                deleteAlert('¿DESEAS ELIMINAR LA CARPETA?', element.tipo, () => this.deleteFolderInCasoExitoAxios(element.id))
+                break;
+            default:
+                break;
+        }
+    }
 
-                if (name === 'slider') {
-                    form.adjuntos.slider.files = []
-                    empresaResponse.adjuntos.map((adjunto, key) => {
-                        if (adjunto.pivot.tipo === tipo)
-                            form.adjuntos.slider.files.push(adjunto)
-                        return ''
-                    })
-                } else {
-                    
-                    empresaResponse.tipos.map((element, key) => {
-                        if (element.id === submenuactive){
-                            let subportafolio = []
-                            let ejemplo = []
-                            let portada = []
-                            let rendersReales = []
-                            let rendersInventados = []
-                            element.adjuntos.map((adjunto, index) => {
-                                switch (adjunto.pivot.tipo) {
-                                    case "portada":
-                                        portada.push(adjunto)
-                                        break;
-                                    case "subportafolio":
-                                        subportafolio.push(adjunto)
-                                        break;
-                                    case "ejemplo":
-                                        ejemplo.push(adjunto)
-                                        break;
-                                    case "renders-reales":
-                                        rendersReales.push(adjunto)
-                                        break;
-                                    case "renders-inventados":
-                                        rendersInventados.push(adjunto)
-                                        break;
-                                    default: break;
+    printFiles = () => {
+        const { opciones_adjuntos, empresa, level, submenuactive, levelName, url, newFolder, form, levelItem } = this.state
+        let active = ''
+        let index = 0
+        let adjuntos = []
+        opciones_adjuntos.map((adjunto, key)=>{
+            if(adjunto.isActive){
+                active = adjunto
+                index = key
+            }
+        })
+        switch(index){
+            case 3:
+                if(submenuactive === ''){
+                    return(
+                        <div>
+                            <div className='row mx-0 my-3'>
+                                <div className='col-md-12'>
+                                    <div> <Files /> </div>
+                                    <div className='text-center font-weight-bolder font-size-h3 text-primary'>
+                                        Da click a un submenú de <br />servicios por categoría
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )
+                }
+                switch(level){
+                    case 0:
+                        return(
+                            <div>
+                                <div className='row mx-0 my-3'>
+                                    <div className='col-md-3'>
+                                        <FolderStatic text = "SUBPORTAFOLIO" onClick = { this.onClickFolder} element = 'subportafolio' />
+                                    </div>
+                                    <div className='col-md-3'>
+                                        <FolderStatic text = "EJEMPLO" onClick = { this.onClickFolder } element = 'ejemplo' />
+                                    </div>
+                                    <div className='col-md-3'>
+                                        <FolderStatic text = "PORTADA" onClick = { this.onClickFolder } element = 'portada' />
+                                    </div>
+                                    <div className='col-md-3'>
+                                        <FolderStatic text = "RENDERS" onClick = { this.onClickFolder } element = 'renders' />
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    case 1:
+                        if(levelName !== 'renders'){
+                            empresa.tipos.map((tipo)=>{
+                                if(tipo.id === submenuactive){
+                                    tipo.adjuntos.map((adjunto)=>{
+                                        if(adjunto.pivot.tipo === levelName){
+                                            adjuntos.push(adjunto)
+                                        }
+                                    })
                                 }
-                                return ''
                             })
-                            form.adjuntos.portada.files = portada
-                            form.adjuntos.subportafolio.files = subportafolio
-                            form.adjuntos.ejemplo.files = ejemplo
-                            form.adjuntos.renders.reales.files = rendersReales
-                            form.adjuntos.renders.inventados.files = rendersInventados
-                            actualSubMenu = element.tipo
-                            submenuactive = element.id
+                            return(
+                                <div>
+                                    <div className='d-flex justify-content-between'>
+                                        <div className=''>
+                                            <BtnBackUrl id_boton = "regresar" icon = "" classname_boton = "btn btn-outline-secondary btn-icon btn-sm"
+                                                onclick_boton={(e) => { e.preventDefault(); this.goBackFolderSubmenu() }}
+                                                only_icon="fas fa-angle-left icon-md text-primary" tooltip={{ text: 'REGRESAR' }}
+                                                url_1 = { this.getUrl() } url_2 = { url[url.length - 1] } />
+                                        </div>
+                                        <div>
+                                            <Button id="subir_archivos" icon='' className="btn btn-outline-secondary btn-icon btn-sm "
+                                                onClick={(e) => { e.preventDefault(); this.openModalAddFiles(index) }} only_icon="fas fa-upload icon-15px text-primary"
+                                                tooltip={{ text: 'SUBIR ARCHIVOS' }} />
+                                        </div>
+                                    </div>
+                                    <div className='row mx-0 my-3'>
+                                    {
+                                        adjuntos.length === 0 ?
+                                            this.renderCarpetaVacia()     
+                                        : 
+                                            <TablePagination adjuntos = { adjuntos } delete_onclick = { this.onClickDelete } />
+                                    }
+                                    </div>
+                                </div>
+                            )
+                        }else{
+                            return(
+                                <div>
+                                    <div className='d-flex justify-content-between'>
+                                        <div className=''>
+                                            <BtnBackUrl id_boton = "regresar" icon = "" classname_boton = "btn btn-outline-secondary btn-icon btn-sm"
+                                                onclick_boton={(e) => { e.preventDefault(); this.goBackFolderSubmenu() }}
+                                                only_icon="fas fa-angle-left icon-md text-primary" tooltip={{ text: 'REGRESAR' }}
+                                                url_1 = { this.getUrl() } url_2 = { url[url.length - 1] } />
+                                        </div>
+                                        <div></div>
+                                    </div>
+                                    <div className='row mx-0 my-3 justify-content-center'>
+                                        <div className='col-md-3'>
+                                            <FolderStatic text = 'reales' onClick = { this.onClickFolder } element = 'reales' />
+                                        </div>
+                                        <div className='col-md-3'>
+                                            <FolderStatic text = 'inventados' onClick = { this.onClickFolder } element = 'inventados' />
+                                        </div>
+                                    </div>
+                                </div>
+                            )
                         }
-                        return ''
-                    })
+                    case 2:
+                        return(
+                            <div>
+                                <div className='d-flex justify-content-between'>
+                                    <div className=''>
+                                        <BtnBackUrl id_boton = "regresar" icon = "" classname_boton = "btn btn-outline-secondary btn-icon btn-sm"
+                                            onclick_boton={(e) => { e.preventDefault(); this.goBackFolderSubmenu() }}
+                                            only_icon="fas fa-angle-left icon-md text-primary" tooltip={{ text: 'REGRESAR' }}
+                                            url_1 = { this.getUrl() } url_2 = { url[url.length - 1] } />
+                                    </div>
+                                    <div>
+                                        <Button id = "nueva_carpeta" icon='' className="btn btn-outline-secondary btn-icon btn-sm "
+                                            onClick={(e) => { e.preventDefault(); this.addCarpeta() }} only_icon="fas fa-folder-plus icon-15px text-primary"
+                                            tooltip={{ text: 'NUEVA CARPETA' }} />
+                                    </div>
+                                </div>
+                                <div className='row mx-0 my-3 justify-content-center'>
+                                    {
+                                        newFolder &&
+                                        <div className='col-md-3 col-lg-2'>
+                                            <NewFolderInput
+                                                newFolder = { this.newFolder } onSubmit={(e) => { e.preventDefault(); this.onSubmitNewDirectoryRender() }}
+                                                customclass = "input-folder" name = 'carpeta' value = { form.carpeta } onChange = { this.onChange } />
+                                        </div>
+                                    }
+                                    { 
+                                        this.printCarpetasRender().map((carpeta, index) =>{
+                                            return(
+                                                <div className='col-md-3 col-lg-2' key = { index } >
+                                                    <Folder text = { carpeta.nombre } onClick = { this.onClickFolder }
+                                                        onClickDelete = { this.onClickDeleteFolder } element = { carpeta }
+                                                        updateDirectory = { this.updateDirectoryInRender } />
+                                                </div>
+                                            )
+                                        }) 
+                                    }
+                                </div>
+                            </div>
+                        )
+                    case 3:
+                        return(
+                            <div>
+                                <div className='d-flex justify-content-between'>
+                                    <div className=''>
+                                        <BtnBackUrl id_boton = "regresar" icon = "" classname_boton = "btn btn-outline-secondary btn-icon btn-sm"
+                                            onclick_boton={(e) => { e.preventDefault(); this.goBackFolderSubmenu() }}
+                                            only_icon="fas fa-angle-left icon-md text-primary" tooltip={{ text: 'REGRESAR' }}
+                                            url_1 = { this.getUrl() } url_2 = { url[url.length - 1] } />
+                                    </div>
+                                    <div>
+                                        <Button id="subir_archivos" icon='' className="btn btn-outline-secondary btn-icon btn-sm "
+                                            onClick={(e) => { e.preventDefault(); this.openModalAddFiles(index) }} only_icon="fas fa-upload icon-15px text-primary"
+                                            tooltip={{ text: 'SUBIR ARCHIVOS' }} />
+                                    </div>
+                                </div>
+                                <div className='row mx-0 my-3 justify-content-center'>
+                                    {
+                                        levelItem.adjuntos.length === 0 ?
+                                            this.renderCarpetaVacia()     
+                                        : 
+                                            <TablePagination adjuntos = { levelItem.adjuntos } delete_onclick = { this.onClickDelete } />
+                                    }
+                                </div>
+                            </div>
+                        )
                 }
-
-                data.empresas = empresas
-
-                this.setState({
-                    ...this.state,
-                    form,
-                    empresa: empresaResponse,
-                    empresas: empresas,
-                    data,
-                    modal_add: false,
-                    abiertoSubMenu: false,
-                    submenuactive,
-                    actualSubMenu,
-                    abiertoCarpetaRender: false
+                break
+            case 6:
+                switch(level){
+                    case 0:
+                        return(
+                            <div>
+                                <div className='d-flex justify-content-between'>
+                                    <div className=''></div>
+                                    <div>
+                                        <Button id = "nueva_carpeta" icon='' className="btn btn-outline-secondary btn-icon btn-sm "
+                                            onClick={(e) => { e.preventDefault(); this.addCarpeta() }} only_icon="fas fa-folder-plus icon-15px text-primary"
+                                            tooltip={{ text: 'NUEVA CARPETA' }} />
+                                    </div>
+                                </div>
+                                <div className='row mx-0 my-3 justify-content-center'>
+                                    {
+                                        newFolder &&
+                                        <div className='col-md-3 col-lg-2'>
+                                            <NewFolderInput
+                                                newFolder = { this.newFolder } onSubmit={(e) => { e.preventDefault(); this.onSubmitNewDirectoryCasosExito() }}
+                                                customclass = "input-folder" name = 'carpeta' value = { form.carpeta } onChange = { this.onChange } />
+                                        </div>
+                                    }
+                                    {
+                                        empresa.casos_exito.map((caso, index) =>{
+                                            return(
+                                                <div className='col-md-3 col-lg-2' key = { index } >
+                                                    <Folder text = { caso.tipo } onClick = { this.onClickFolder }
+                                                        onClickDelete = { this.onClickDeleteFolder } element = { caso }
+                                                        updateDirectory={this.updateDirectoryInCasoExito} />
+                                                </div>
+                                            )
+                                        })
+                                    }
+                                </div>
+                            </div>
+                        )
+                    case 1:
+                        return(
+                            <div>
+                                <div className='d-flex justify-content-between'>
+                                    <div className=''>
+                                        <BtnBackUrl id_boton = "regresar" icon = "" classname_boton = "btn btn-outline-secondary btn-icon btn-sm"
+                                            onclick_boton={(e) => { e.preventDefault(); this.goBackFolderSubmenu() }}
+                                            only_icon="fas fa-angle-left icon-md text-primary" tooltip={{ text: 'REGRESAR' }}
+                                            url_1 = { this.getUrl() } url_2 = { url[url.length - 1] } />
+                                    </div>
+                                    <div>
+                                        <Button id="subir_archivos" icon='' className="btn btn-outline-secondary btn-icon btn-sm "
+                                            onClick={(e) => { e.preventDefault(); this.openModalAddFiles(index) }} only_icon="fas fa-upload icon-15px text-primary"
+                                            tooltip={{ text: 'SUBIR ARCHIVOS' }} />
+                                    </div>
+                                </div>
+                                <div className='row mx-0 my-3 justify-content-center'>
+                                    {
+                                        levelItem.adjuntos.length === 0 ?
+                                            this.renderCarpetaVacia()     
+                                        : 
+                                            <TablePagination adjuntos = { levelItem.adjuntos } delete_onclick = { this.onClickDelete } />
+                                    }
+                                </div>
+                            </div>
+                        )
+                }
+            default:
+                empresa.adjuntos.map((adjunto)=>{
+                    if(adjunto.pivot.tipo === active.slug)
+                        adjuntos.push(adjunto)
                 })
-
-                doneAlert('Archivo adjuntado con éxito.')
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) forbiddenAccessAlert()
-                else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-
-    openAccordion = (indiceClick, name) => {
-
-        const tipos = ['portafolio', 'como_trabajamos', 'servicios_generales', '', 'brokers', 'videos']
-        let { opciones_adjuntos, form, empresa } = this.state
-
-        form.adjuntos.slider.placeholder = name
-        form.adjuntos.slider.files = []
-        form.adjuntos.slider.menu = indiceClick === 3 ? 1 : 0
-        form.adjuntos.slider.eventKey = indiceClick
-
-        if (indiceClick !== 3) {
-            if (empresa.adjuntos)
-                empresa.adjuntos.map((adjunto, key) => {
-                    if (tipos[indiceClick] === adjunto.pivot.tipo)
-                        form.adjuntos.slider.files.push(adjunto)
-                    return ''
-                })
+                return(
+                    <div>
+                        <div className='d-flex justify-content-between'>
+                            <div className=''></div>
+                            <div>
+                                <Button id="subir_archivos" icon='' className="btn btn-outline-secondary btn-icon btn-sm "
+                                    onClick={(e) => { e.preventDefault(); this.openModalAddFiles(index) }} only_icon="fas fa-upload icon-15px text-primary"
+                                    tooltip={{ text: 'SUBIR ARCHIVOS' }} />
+                            </div>
+                        </div>
+                        <div className='row mx-0 my-3'>
+                            {
+                                adjuntos.length === 0 ?
+                                    this.renderCarpetaVacia()     
+                                : 
+                                    <TablePagination adjuntos = { adjuntos } delete_onclick = { this.onClickDelete } />
+                            }
+                        </div>
+                    </div>
+                )
         }
-
-        opciones_adjuntos.map((element, key) => {
-            if (indiceClick === key) {
-                element.isActive = element.isActive ? false : true
-            }
-            else {
-                element.isActive = false
-            }
-            return false
-        })
-
-        this.setState({
-            opciones_adjuntos: opciones_adjuntos,
-            form,
-            submenuactive: '',
-            activeTipo: indiceClick,
-            abiertoCarpetaRender: false
-        });
-    }
-
-    changeActiveKey = empresa => {
-
-        let { opciones_adjuntos, form, activeTipo } = this.state
-        let aux = activeTipo === undefined ? 0 : activeTipo
-        const tipos = ['portafolio', 'como_trabajamos', 'servicios_generales', '', 'brokers', 'videos']
-        const placeholder = ['PORTAFOLIO', 'COMO TRABAJAMOS (FASE 1 Y 2)', 'SERVICIOS GENERALES', 'SERVICIOS POR CATEGORIA', 'BROKERS', 'VIDEOS']
-
-        form.adjuntos.slider.placeholder = placeholder[aux]
-        form.adjuntos.slider.files = []
-        empresa.adjuntos.map((adjunto, key) => {
-            if (aux !== 3)
-                if (adjunto.pivot.tipo === tipos[aux])
-                    form.adjuntos.slider.files.push(adjunto)
-            return ''
-        })
-        form.adjuntos.slider.menu = aux === 3 ? 1 : 0
-        form.adjuntos.slider.eventKey = aux
-        opciones_adjuntos.map((element, key) => {
-            if (key === aux)
-                opciones_adjuntos[aux].isActive = true
-            else
-                opciones_adjuntos[key].isActive = false
-            return ''
-        })
-        this.setState({
-            empresa: empresa,
-            opciones_adjuntos: opciones_adjuntos,
-            form,
-            submenuactive: '',
-            abiertoCarpetaRender: false
-        });
-    }
-
-    loadAdjuntos = tipo => {
-        const { adjuntos } = tipo
-        let { form } = this.state
-        let subportafolio = []
-        let ejemplo = []
-        let portada = []
-        let rendersReales = []
-        let rendersInventados = []
-        adjuntos.forEach(adjunto => {
-            switch (adjunto.pivot.tipo) {
-                case "portada":
-                    portada.push(adjunto)
-                    break;
-                case "subportafolio":
-                    subportafolio.push(adjunto)
-                    break;
-                case "ejemplo":
-                    ejemplo.push(adjunto)
-                    break;
-                case "renders-reales":
-                    rendersReales.push(adjunto)
-                    break;
-                case "renders-inventados":
-                    rendersInventados.push(adjunto)
-                    break;
-                default: break;
-                //  case "renders":
-                //    renders.push(adjunto)
-                //  break;
-            }
-        })
-        form.adjuntos.portada.files = portada
-        form.adjuntos.subportafolio.files = subportafolio
-        form.adjuntos.ejemplo.files = ejemplo
-        form.adjuntos.renders.reales.files = rendersReales
-        form.adjuntos.renders.inventados.files = rendersInventados
-        this.setState({
-            form,
-            abiertoSubMenu: false,
-            submenuactive: tipo.id,
-            actualSubMenu: tipo.tipo,
-            abiertoCarpetaRender: false
-        })
     }
 
     renderCarpetaVacia = () => {
@@ -878,181 +947,29 @@ class MaterialCliente extends Component {
             </div>
         )
     }
-
-    getNameSlider = () => {
-        const { activeTipo, actualSubMenuCarpeta } = this.state
-        if(activeTipo !== 3)
-            return 'slider'
-        else{
-            switch(actualSubMenuCarpeta.toUpperCase()){
-                case 'SUBPORTAFOLIO':
-                    return 'subportafolio'
-                case 'EJEMPLO':
-                    return 'ejemplo'
-                case 'PORTADA':
-                    return 'portada'
-                case 'REALES':
-                    return 'reales'
-                case 'INVENTADOS':
-                    return 'inventados'
-                default:
-                    break;
-            }
-        }
-    }
-
-    getFilesSlider = () => {
-        const { form, activeTipo, actualSubMenuCarpeta } = this.state
-        let aux = []
-        if(activeTipo !== 3){
-            form.adjuntos.slider.files.map((file)=>{
-                if(!file.id){
-                    aux.push(file)
-                }
-                return '';
-            })
-        }else{
-            switch(actualSubMenuCarpeta.toUpperCase()){
-                case 'SUBPORTAFOLIO':
-                    form.adjuntos.subportafolio.files.map((file)=>{
-                        if(!file.id){ aux.push(file) }
-                        return ''
-                    })
-                    break;
-                case 'EJEMPLO':
-                    form.adjuntos.ejemplo.files.map((file)=>{
-                        if(!file.id){ aux.push(file) }
-                        return ''
-                    })
-                    break;
-                case 'PORTADA':
-                    form.adjuntos.portada.files.map((file)=>{
-                        if(!file.id){ aux.push(file) }
-                        return ''
-                    })
-                    break;
-                case 'REALES':
-                    form.adjuntos.renders.reales.files.map((file)=>{
-                        if(!file.id){ aux.push(file) }
-                        return ''
-                    })
-                    break;
-                case 'INVENTADOS':
-                    form.adjuntos.renders.inventados.files.map((file)=>{
-                        if(!file.id){ aux.push(file) }
-                        return ''
-                    })
-                    break;
-                default: break;
-            }
-        }
-        return aux
-    }
-
-    getTipo = () => {
-        const { empresa, submenuactive } = this.state
-        let _tipo = ''
-        empresa.tipos.map((tipo) => {
-            if(tipo.id.toString() === submenuactive.toString()){
-                _tipo = tipo
-            }
-        })
-        return _tipo
-    }
-
-    getSingleAdjuntos = (activeMenu) => {
-        console.log(activeMenu, 'activeMenu')
-        console.log(this.state, 'STATE')
-        return []
-    }
-
-    printFiles = () => {
-        const { activeTipo } = this.state
-        let adjuntos = this.getSingleAdjuntos(activeTipo)
-        switch(activeTipo){
-            case 3:
-                console.log(3)
-                break;
-            case 6:
-                console.log(6)
-                break;
-            default:
-                return(
-                    <div>
-                        <div className='d-flex justify-content-between'>
-                            <div className=''></div>
-                            <div>
-                                <Button id="subir_archivos" icon='' className="btn btn-outline-secondary btn-icon btn-sm "
-                                    onClick={(e) => { e.preventDefault(); this.openModalAddFiles() }} only_icon="fas fa-upload icon-15px text-primary"
-                                    tooltip={{ text: 'SUBIR ARCHIVOS' }} />
-                            </div>
-                        </div>
-                        <div className='row mx-0 my-3'>
-                            {
-                                adjuntos.length === 0 ?
-                                    this.renderCarpetaVacia()     
-                                : 
-                                    <TablePagination adjuntos = { adjuntos } delete_onclick = { this.onClickDelete } />
-                            }
-                        </div>
-                    </div>
-                )
-                break;
-        }
-    }
     
     render() {
-        const { form, data, opciones_adjuntos, empresa, submenuactive, newFolder, activeTipo, activeFolder, modal_add, abiertoSubMenu, adjuntosSubMenu, actualSubMenu, actualSubMenuCarpeta, abiertoCarpetaRender } = this.state
-        // let adjuntos = [];
-        // adjuntos = adjuntos ? adjuntos : []
-        const sub_menu = (element) => {
-            switch (element.tipo) {
-                case 4: return <Nav className="navi">
-                    {
-                        empresa ?
-                            empresa.tipos.map((tipo, key) => {
-                                return (
-                                    <Nav.Item className='navi-item' key={key} onClick={(e) => { e.preventDefault(); this.loadAdjuntos(tipo) }}>
-                                        <Nav.Link className="navi-link p-2" eventKey={tipo.id}>
-                                            <span className={submenuactive === tipo.id ? "navi-icon text-primary" : "navi-icon"}>
-                                                <span className="navi-bullet">
-                                                    <i className="bullet bullet-dot"></i>
-                                                </span>
-                                            </span>
-                                            <div className={submenuactive === tipo.id ? "navi-text text-primary" : "navi-text"}>
-                                                <span className="d-block font-weight-bolder" >{tipo.tipo}</span>
-                                            </div>
-                                        </Nav.Link>
-                                    </Nav.Item>
-                                )
-                            })
-                            : ''
-                    }
-                </Nav>;
-                default:
-                    return <></>
-            }
-        }
-
+        const { data, opciones_adjuntos, empresa, submenuactive, modal, form } = this.state
         return (
-            <Layout active={'mercadotecnia'} {...this.props}>
-                <Tab.Container className="p-5">
+            <Layout active = 'mercadotecnia' {...this.props}>
+                <Tab.Container className = "p-5" >
                     <Row>
-                        <Col sm={3}>
-                            <Card className="card-custom card-stretch gutter-b">
-                                <div className="card-header">
-                                    <div className="card-title">
-                                        <h3 className="card-label">Adjuntos</h3>
+                        <Col sm = { 3 } >
+                            <Card className = "card-custom card-stretch gutter-b">
+                                <div className = "card-header">
+                                    <div className = "card-title">
+                                        <h3 className = "card-label">Adjuntos</h3>
                                     </div>
                                 </div>
                                 <div className="card-body px-3">
-                                    <Accordion id="accordion-material" className="accordion-light accordion-svg-toggle">
+                                    <Accordion id = "accordion-material" className = "accordion-light accordion-svg-toggle">
                                         {
                                             opciones_adjuntos.map((element, key) => {
                                                 return (
                                                     <Card className="w-auto border-0 mb-2" key={key}>
                                                         <Card.Header>
-                                                            <div className={(element.isActive) ? 'card-title text-primary collapsed rounded-0 ' : 'card-title text-dark-50 rounded-0'} onClick={() => { this.openAccordion(key, element.nombre) }}>
+                                                            <div className = { (element.isActive) ? 'card-title text-primary collapsed rounded-0 ' : 'card-title text-dark-50 rounded-0' } 
+                                                                onClick = { () => { this.openAccordion(key) } } >
                                                                 <div className="card-label">
                                                                     <i className={(element.isActive) ? element.icono + ' text-primary mr-3' : element.icono + ' text-dark-50 mr-3'}>
                                                                     </i>{element.nombre}
@@ -1066,35 +983,59 @@ class MaterialCliente extends Component {
                                                                 }
                                                             </div>
                                                         </Card.Header>
-                                                        <div className={(element.isActive) ? 'collapse show' : 'collapse'} >
-                                                            {
-                                                                element.subMenu ?
+                                                        {
+                                                            element.subMenu ?
+                                                                <div className = { element.isActive  ? 'collapse-now' : 'collapse' }>
                                                                     <Card.Body>
-                                                                        <div>{sub_menu(element)}</div>
+                                                                        <Nav className="navi">
+                                                                            {
+                                                                                empresa ?
+                                                                                    empresa.tipos.map( (tipo, key) => {
+                                                                                        return (
+                                                                                            <Nav.Item className='navi-item' key = { key } 
+                                                                                                onClick = { (e) => { e.preventDefault(); this.openSubmenu(tipo) }}>
+                                                                                                <Nav.Link className = "navi-link p-2" eventKey = { tipo.id }>
+                                                                                                    <span className = 
+                                                                                                        { submenuactive === tipo.id ? "navi-icon text-primary" : "navi-icon"}>
+                                                                                                        <span className="navi-bullet">
+                                                                                                            <i className="bullet bullet-dot"></i>
+                                                                                                        </span>
+                                                                                                    </span>
+                                                                                                    <div className = 
+                                                                                                        { submenuactive === tipo.id ? "navi-text text-primary" : "navi-text"}>
+                                                                                                        <span className="d-block font-weight-bolder" >{tipo.tipo}</span>
+                                                                                                    </div>
+                                                                                                </Nav.Link>
+                                                                                            </Nav.Item>
+                                                                                        )
+                                                                                    })
+                                                                                : ''
+                                                                            }
+                                                                        </Nav>
                                                                     </Card.Body>
-                                                                    : ''
-                                                            }
-                                                        </div>
+                                                                </div>
+                                                            : ''
+                                                        }
                                                     </Card>
                                                 )
-                                            }
-                                            )
+                                            })
                                         }
                                     </Accordion>
                                 </div>
                             </Card>
                         </Col>
-                        <Col sm={9}>
+                        <Col sm = { 9 } >
                             <Card className="card-custom card-stretch gutter-b" >
-                                <Card.Header className="">
-                                    <div className="card-toolbar">
-                                        <Nav className="nav nav-pills nav-pills-sm nav-light-primary font-weight-bolder">
+                                <Card.Header className = "">
+                                    <div className = "card-toolbar">
+                                        <Nav className = "nav nav-pills nav-pills-sm nav-light-primary font-weight-bolder">
                                             {
                                                 data.empresas.map((empresa, index) => {
                                                     return (
-                                                        <Nav.Item key={index}>
-                                                            <Nav.Link eventKey={empresa.id} className="py-2 px-4" onClick={(e) => { e.preventDefault(); this.changeActiveKey(empresa) }} >
-                                                                {empresa.name}
+                                                        <Nav.Item key = { index } >
+                                                            <Nav.Link eventKey = { empresa.id } className = "py-2 px-4" 
+                                                                onClick = { (e) => { e.preventDefault(); this.getAdjuntoEmpresaAxios(empresa.id) }} >
+                                                                { empresa.name }
                                                             </Nav.Link>
                                                         </Nav.Item>
                                                     )
@@ -1103,205 +1044,11 @@ class MaterialCliente extends Component {
                                         </Nav>
                                     </div>
                                 </Card.Header>
-                                <Card.Body className="">
-                                    {/* {
+                                <Card.Body>
+                                    {
                                         empresa !== '' ?
                                             this.printFiles()
                                         :
-                                            <div className='col-md-12'>
-                                                <div>
-                                                    <Build />
-                                                </div>
-                                                <div className='text-center mt-5 font-weight-bolder font-size-h3 text-primary'>
-                                                    Selecciona la empresa
-                                                </div>
-                                            </div>
-                                    } */}
-                                    {
-                                        empresa !== '' ?
-                                            activeTipo === 6 ?
-                                                <div>
-                                                    <div className='d-flex justify-content-between'>
-                                                        <div className=''>
-                                                            {
-                                                                activeFolder !== false ?
-                                                                    <BtnBackUrl
-                                                                        id_boton="regresar"
-                                                                        icon=""
-                                                                        classname_boton="btn btn-outline-secondary btn-icon btn-sm"
-                                                                        onclick_boton={(e) => { e.preventDefault(); this.goBackFolder() }}
-                                                                        only_icon="fas fa-angle-left icon-md text-primary"
-                                                                        tooltip={{ text: 'REGRESAR' }}
-                                                                        url_1="Casos de éxito |"
-                                                                        url_2={activeFolder.tipo}
-                                                                    />
-                                                                    : ''
-                                                            }
-                                                        </div>
-                                                        <div>
-                                                            {
-                                                                activeFolder === false ?
-                                                                    newFolder === false &&
-                                                                        /* Entra en casos de éxito no está en un folder activo y no está el modal newFolder */
-                                                                        <Button id="nueva_carpeta" icon='' 
-                                                                            className="btn btn-outline-secondary btn-icon btn-sm "
-                                                                            onClick={(e) => { e.preventDefault(); this.newFolder() }}
-                                                                            only_icon="fas fa-folder-plus icon-15px text-primary"
-                                                                            tooltip={{ text: 'NUEVA CARPETA' }} />
-                                                                :
-                                                                    <Button id="subir_archivos" icon=''
-                                                                        className="btn btn-outline-secondary btn-icon btn-sm "
-                                                                        onClick={(e) => { e.preventDefault(); this.openModalAddFiles() }}
-                                                                        only_icon="fas fa-upload icon-15px text-primary"
-                                                                        tooltip={{ text: 'SUBIR ARCHIVOS' }} />
-                                                            }
-                                                        </div>
-                                                    </div>
-                                                    <div className='row mx-0 my-3'>
-                                                        {
-                                                            newFolder && activeFolder === false &&
-                                                                <div className='col-md-3 col-lg-2'>
-                                                                    <NewFolderInput
-                                                                        newFolder={this.newFolder}
-                                                                        onSubmit={(e) => { e.preventDefault(); this.onSubmitNewDirectory() }}
-                                                                        customclass={"input-folder"}
-                                                                        name={'carpeta'}
-                                                                        value={form.carpeta}
-                                                                        onChange={this.onChange}
-                                                                    />
-                                                                </div>
-                                                        }
-                                                        {
-                                                            activeFolder === false ?
-                                                                empresa.casos_exito.length > 0 ?
-                                                                    empresa.casos_exito.map((element, index) => {
-                                                                        return (
-                                                                            <div className='col-md-3 col-lg-2' key={index}>
-                                                                                <Folder
-                                                                                    text={element.tipo}
-                                                                                    onClick={this.onClickFolder}
-                                                                                    onClickDelete={this.onClickDeleteFolder}
-                                                                                    element={element}
-                                                                                    updateDirectory={this.updateDirectoryAxios}
-                                                                                />
-                                                                            </div>
-                                                                        )
-                                                                    })
-                                                                :
-                                                                    this.renderCarpetaVacia()
-                                                            :
-                                                                activeFolder.adjuntos.length === 0 ?
-                                                                    this.renderCarpetaVacia()
-                                                                :
-                                                                    <TablePagination
-                                                                        adjuntos={activeFolder.adjuntos}
-                                                                        delete_onclick={this.onClickDelete} />
-                                                        }
-                                                    </div>
-                                                </div>
-                                            :
-                                                form.adjuntos.slider.menu === 0 ?
-                                                    <>
-                                                        {
-                                                            form.adjuntos.slider.files.length === 0 ?
-                                                                <>
-                                                                    <div className="d-flex justify-content-end">
-                                                                        <Button id="subir_archivos" icon=''
-                                                                            className="btn btn-outline-secondary btn-icon btn-sm "
-                                                                            onClick={(e) => { e.preventDefault(); this.openModalAddFiles() }}
-                                                                            only_icon="fas fa-upload icon-15px text-primary"
-                                                                            tooltip={{ text: 'SUBIR ARCHIVOS' }} />
-                                                                    </div>
-                                                                    { this.renderCarpetaVacia() }
-                                                                </>
-                                                            :
-                                                                <>
-                                                                    <div className="d-flex justify-content-end">
-                                                                        <Button id="subir_archivos" icon=''
-                                                                            className="btn btn-outline-secondary btn-icon btn-sm "
-                                                                            onClick={(e) => { e.preventDefault(); this.openModalAddFiles() }}
-                                                                            only_icon="fas fa-upload icon-15px text-primary"
-                                                                            tooltip={{ text: 'SUBIR ARCHIVOS' }} />
-                                                                    </div>
-                                                                    <TablePagination
-                                                                        adjuntos={form.adjuntos.slider.files} delete_onclick={this.deleteFile} />
-                                                                </>
-                                                        }
-                                                    </>
-                                                :
-                                                    abiertoSubMenu ?
-                                                        <div>
-                                                            <div className="d-flex justify-content-end">
-                                                                {
-                                                                    actualSubMenuCarpeta !== 'RENDERS' ?
-                                                                        <Button id="subir_archivos" icon=''
-                                                                            className="btn btn-outline-secondary btn-icon btn-sm "
-                                                                            onClick={(e) => { e.preventDefault(); this.openModalAddFiles() }}
-                                                                            only_icon="fas fa-upload icon-15px text-primary"
-                                                                            tooltip={{ text: 'SUBIR ARCHIVOS' }} />
-                                                                    : ''
-                                                                }
-                                                            </div>
-                                                            <BtnBackUrl id_boton="regresar" icon=""
-                                                                classname_boton="btn btn-outline-secondary btn-icon btn-sm"
-                                                                onclick_boton={(e) => { e.preventDefault(); this.goBackFolderSubmenu() }}
-                                                                only_icon="fas fa-angle-left icon-md text-primary" tooltip={{ text: 'REGRESAR' }}
-                                                                url_1 = { actualSubMenu + "  |  " + (abiertoCarpetaRender ? "RENDERS  |  " : "")}
-                                                                url_2 = { actualSubMenuCarpeta }
-                                                            />
-                                                            {
-                                                                actualSubMenuCarpeta === "RENDERS" ?
-                                                                    <div className="row mx-0 px-0 d-flex justify-content-center col-md-12">
-                                                                            {
-                                                                                this.getTipo().renders.map((render, key) => {
-                                                                                    return (
-                                                                                        <div className='col-md-3' key={key}>
-                                                                                            <FolderStatic
-                                                                                                text={render.nombre}
-                                                                                                onClick={this.onClickFolderRender}
-                                                                                                element={render.carpertas}
-                                                                                            />
-                                                                                        </div>
-                                                                                    )
-                                                                                })
-                                                                            }
-                                                                    </div>
-                                                                    :
-                                                                    adjuntosSubMenu.length === 0 ?
-                                                                        this.renderCarpetaVacia()
-                                                                    :
-                                                                        <TablePagination adjuntos={adjuntosSubMenu} delete_onclick={this.deleteFile} />
-                                                            }
-                                                        </div>
-                                                        :
-                                                        submenuactive ?
-                                                            <div className="row mx-0 px-0 d-flex justify-content-center">
-                                                                    {
-                                                                        Object.keys(form.adjuntos).map((subcarpeta, key) => {
-                                                                            if (subcarpeta !== "slider")
-                                                                                return (
-                                                                                    <div className='col-md-3' key={key}>
-                                                                                        <FolderStatic
-                                                                                            text={subcarpeta}
-                                                                                            onClick={this.onClickFolderSubMenu}
-                                                                                            element={form.adjuntos[subcarpeta]}
-                                                                                        />
-                                                                                    </div>
-                                                                                )
-                                                                            return ''
-                                                                        })
-                                                                    }
-                                                            </div>
-                                                            :
-                                                            <div className='col-md-12'>
-                                                                <div>
-                                                                    <Files />
-                                                                </div>
-                                                                <div className='text-center font-weight-bolder font-size-h3 text-primary'>
-                                                                    Da click a un submenú de <br />servicios por categoría
-                                                                </div>
-                                                            </div>
-                                            :
                                             <div className='col-md-12'>
                                                 <div>
                                                     <Build />
@@ -1316,13 +1063,12 @@ class MaterialCliente extends Component {
                         </Col>
                     </Row>
                 </Tab.Container>
-                <Modal show={modal_add} title='Agregar adjuntos' handleClose={this.handleCloseModalAdd} size='lg' >
-                    <div className=''>
+                <Modal show = { modal } title = 'Agregar adjuntos' handleClose = { this.handleCloseModal } size = 'lg' >
+                    <div className = ''>
                         <div className="text-center font-weight-bolder my-2 pt-3">
-                            {activeTipo === 6 ? activeFolder.tipo : activeTipo === 3 ? actualSubMenuCarpeta : form.adjuntos.slider.placeholder}
+                            {form.adjuntos.adjuntos.placeholder}
                         </div>
-                        <ItemSlider item={this.getNameSlider()} items = { this.getFilesSlider() }
-                            handleChange={this.handleChange} multiple={true} />
+                        <ItemSlider item = 'adjuntos' items = { form.adjuntos.adjuntos.files } handleChange = { this.handleChange } multiple={true} />
                     </div>
                 </Modal>
             </Layout >
