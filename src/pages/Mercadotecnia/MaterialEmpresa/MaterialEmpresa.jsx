@@ -5,71 +5,65 @@ import { URL_DEV } from '../../../constants'
 import { connect } from 'react-redux'
 import ItemSlider from '../../../components/singles/ItemSlider'
 import { Tab, Nav, Col, Row, Card, Accordion, } from 'react-bootstrap'
-import { setSelectOptions } from '../../../functions/setters'
-import { waitAlert, questionAlert, errorAdjuntos, errorAlert, forbiddenAccessAlert, doneAlert, deleteAlert} from '../../../functions/alert'
+import { waitAlert, questionAlert, errorAlert, forbiddenAccessAlert, doneAlert, deleteAlert} from '../../../functions/alert'
 import { Build, NoFiles} from '../../../components/Lottie'
 import { Button, TablePagination } from '../../../components/form-components'
 import { Modal } from '../../../components/singles'
-const tiposArray = ['logo', 'carta_membretada', 'firmas_electronicas', 'tarjetas_presentacion', 'imagenes_personal']
-const placeholderArray = ['LOGOS', 'CARTA MEMBRETADA', 'FIRMAS ELECTRÓNICAS', 'TARJETAS DE PRESENTACIÓN', 'IMÁGENES DEL PERSONAL']
+import Swal from 'sweetalert2'
+
 class MaterialEmpresa extends Component {
 
     state = {
-        modal_add: false,
+        modal: false,
         opciones_adjuntos: [
             {
                 nombre: 'LOGOS',
                 icono: 'fas fa-image',
-                tipo: 1,
-                isActive: false
+                isActive: false,
+                slug: 'logos'
             },
             {
                 nombre: 'CARTA MEMBRETADA',
                 icono: 'far fa-file-alt',
-                tipo: 2,
-                isActive: false
+                isActive: false,
+                slug: 'carta_membretada'
             },
             {
                 nombre: 'FIRMAS ELECTRÓNICAS',
                 icono: 'fas fa-file-signature',
-                tipo: 3,
-                isActive: false
+                isActive: false,
+                slug: 'firmas_electronicas'
             },
             {
                 nombre: 'TARJETAS DE PRESENTACIÓN',
                 icono: 'far fa-id-card',
-                tipo: 4,
-                isActive: false
+                isActive: false,
+                slug: 'tarjetas_presentacion'
             },
             {
                 nombre: 'IMÁGENES DEL PERSONAL',
                 icono: 'fas fa-user-tie',
-                tipo: 5,
-                isActive: false
+                isActive: false,
+                slug: 'imagenes_personal'
             }
         ],
         form: {
-            empresa: 'inein',
             adjuntos: {
-                slider: {
+                adjuntos: {
                     name: '',
                     value: '',
                     placeholder: 'LOGOS',
-                    files: [],
-                    menu: 0
+                    files: []
                 },
             }
-        },
-        options: {
-            empresas: []
         },
         data: {
             empresas: []
         },
         formeditado: 0,
         empresa: '',
-        activeTipo: ''
     };
+
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
@@ -83,32 +77,22 @@ class MaterialEmpresa extends Component {
         this.getOptionsAxios()
     }
 
-    async getOptionsAxios() {
+    /* ANCHOR AXIOS FUNCTIONS */
+
+    /* ANCHOR GET ALL EMPRESAS Y ADJUNTOS */
+    getOptionsAxios = async () => {
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'mercadotecnia/material-empresas', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(`${URL_DEV}mercadotecnia/material-empresas`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { empresas } = response.data
-                let { activeTipo } = response.data
-                const { options, data, form } = this.state
-                let { empresa } = this.state
+                const { data } = this.state
                 data.empresas = empresas
-                options.empresas = setSelectOptions(empresas, 'name')
-                this.setState({
-                    ...this.state,
-                    options,
-                    data,
-                    empresa,
-                    form,
-                    activeTipo
-                })
+                this.setState({ ...this.state, data })
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                if (error.response.status === 401) { forbiddenAccessAlert() } 
+                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -116,43 +100,52 @@ class MaterialEmpresa extends Component {
         })
     }
 
-    async addAdjunto(name) {
-
+    /* ANCHOR GET ADJUNTOS POR EMPRESA */
+    getAdjuntoEmpresaAxios = async (id) => {
+        waitAlert()
         const { access_token } = this.props.authUser
-        const { form, empresa } = this.state
-        const data = new FormData();
-
-        data.append('empresa', empresa.id)
-        
-        form.adjuntos.slider.files.map((file, key) => {
-            if (typeof file.id === 'undefined') {
-                data.append(`files_name[]`, file.name)
-                data.append(`files[]`, file.file)
+        await axios.get(`${URL_DEV}mercadotecnia/material-empresas/empresa/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        (response) => {
+                Swal.close()
+                const { empresa } = response.data
+                const { opciones_adjuntos } = this.state
+                opciones_adjuntos.map((element, index)=>{
+                    if(index === 0)
+                        element.isActive = true
+                    else 
+                        element.isActive = false
+                })
+                this.setState({...this.state, empresa, opciones_adjuntos, submenuactive: '', menuactive: 0 })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) { forbiddenAccessAlert() } 
+                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
             }
-            return ''
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
-
-        data.append('tipo', tiposArray[form.adjuntos.slider.eventKey])
-
-        await axios.post(URL_DEV + 'mercadotecnia/material-empresas', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+    }
+    
+    /* ANCHOR ADD ADJUNTO SINGLE */
+    addAdjunto = async() => {
+        const { access_token } = this.props.authUser
+        const data = new FormData();
+        const { form, menuactive, opciones_adjuntos, empresa, submenuactive, levelName  } = this.state
+        data.append('tipo', opciones_adjuntos[menuactive].slug)
+        form.adjuntos.adjuntos.files.map((file)=>{
+            data.append(`files_name[]`, file.name)
+            data.append(`files[]`, file.file)
+        })
+        data.append('empresa', empresa.id)
+        await axios.post(`${URL_DEV}mercadotecnia/material-empresas`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { empresa, tipo } = response.data
-                const { form } = this.state
-                
-                form.adjuntos.slider.files = []
-                empresa.adjuntos.map((adjunto, key) => {
-                    if(adjunto.pivot.tipo === tipo)
-                        form.adjuntos.slider.files.push(adjunto)
-                    return ''
-                })
-
-                this.setState({
-                    ...this.state,
-                    form
-                })
-
-                this.getOptionsAxios()
-                doneAlert('Archivo adjuntado con éxito.')
+                Swal.close()
+                const { empresa } = response.data
+                form.adjuntos.adjuntos.files = []
+                form.adjuntos.adjuntos.value = ''
+                this.setState({...this.state,modal:false,form,empresa:empresa})
             },
             (error) => {
                 console.log(error, 'error')
@@ -163,202 +156,155 @@ class MaterialEmpresa extends Component {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
+    }
 
+    /* ANCHOR DELETE SINGLE FILE */
+    deleteAdjunto = async (id, tipo) => {
+        const { access_token } = this.props.authUser
+        const { empresa } = this.state
+        await axios.delete(`${URL_DEV}mercadotecnia/material-empresas/${empresa.id}/adjunto/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert('ADJUNTO ELIMINADO CON ÉXITO')
+                const { empresa } = response.data
+                this.setState({...this.state,empresa:empresa})
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) forbiddenAccessAlert()
+                else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    openAccordion = (key) => {
+        const { opciones_adjuntos } = this.state
+        if(opciones_adjuntos.length >= key+1){
+            opciones_adjuntos.map((adjunto)=>{
+                adjunto.isActive = false
+            })
+            opciones_adjuntos[key].isActive = true
+        }
+        this.setState({...this.state, opciones_adjuntos, menuactive: key})
+    }
+
+    openModalAddFiles = type => {
+        const { form, opciones_adjuntos } = this.state
+        form.adjuntos.adjuntos.placeholder = opciones_adjuntos[type].nombre
+        form.adjuntos.adjuntos.value = ''
+        form.adjuntos.adjuntos.files = []
+        this.setState({...this.state,modal:true, form})
+    }
+
+    handleCloseModal = () => {
+        const { form } = this.state
+        form.adjuntos.adjuntos.value = ''
+        form.adjuntos.adjuntos.files = []
+        this.setState({...this.state,modal:false, form})
     }
 
     handleChange = (files, item) => {
-        const { form } = this.state
+        const { menuactive, level } = this.state
         this.onChangeAdjuntos({ target: { name: item, value: files, files: files } })
-        if (form.adjuntos[item].value !== '')
-            questionAlert('ENVIAR ARCHIVO', '¿ESTÁS SEGURO QUE DESEAS ENVIARLO?', () => { waitAlert(); this.addAdjunto(item) })
+        questionAlert('ENVIAR ARCHIVO', '¿ESTÁS SEGURO QUE DESEAS ENVIARLO?', () => { waitAlert(); this.addAdjunto() })
     }
-    
+
+    onClickDelete = element => {
+        deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', element.name, () => this.deleteAdjunto(element.id, element.pivot.tipo))
+    }
+
     onChangeAdjuntos = e => {
         const { form } = this.state
         const { files, value, name } = e.target
         let aux = []
-        let aux2 = []
-        let size = 0
-        for (let counter = 0; counter < files.length; counter++) {
-            size = files[counter].size;
-            size = size / (Math.pow(2, 20))
-            if (size <= 2)
-                aux.push(
+        files.map((file, index) => {
+            aux.push({
+                name: file.name,
+                file: file,
+                url: URL.createObjectURL(file),
+                key: index
+            })
+            return ''
+        })
+        form.adjuntos[name].value = value
+        form.adjuntos[name].files = aux
+        this.setState({ ...this.state, form })
+    }
+
+    printFiles = () => {
+        const { empresa, opciones_adjuntos } = this.state
+        let active = ''
+        let index = 0
+        let adjuntos = []
+        opciones_adjuntos.map((adjunto, key)=>{
+            if(adjunto.isActive){
+                active = adjunto
+                index = key
+            }
+        })
+        empresa.adjuntos.map((adjunto)=>{
+            if(adjunto.pivot.tipo === active.slug)
+                adjuntos.push(adjunto)
+        })
+        return(
+            <div>
+                <div className='d-flex justify-content-between'>
+                    <div className=''></div>
+                    <div>
+                        <Button id="subir_archivos" icon='' className="btn btn-outline-secondary btn-icon btn-sm "
+                            onClick={(e) => { e.preventDefault(); this.openModalAddFiles(index) }} only_icon="fas fa-upload icon-15px text-primary"
+                            tooltip={{ text: 'SUBIR ARCHIVOS' }} />
+                    </div>
+                </div>
+                <div className='row mx-0 my-3'>
                     {
-                        name: files[counter].name,
-                        file: files[counter],
-                        url: URL.createObjectURL(files[counter]),
-                        key: counter
+                        adjuntos.length === 0 ?
+                            this.renderCarpetaVacia()     
+                        : 
+                            <TablePagination adjuntos = { adjuntos } delete_onclick = { this.onClickDelete } />
                     }
-                )
-            else
-                aux2.push(files[counter].name)
-        }
-        if (aux2.length) {
-            let html = ''
-            aux2.map((element) => {
-                html += '<div class="mb-2 text-dark-50">&bull;&nbsp;' + element + '<br/></div>'
-                return ''
-            })
-            // html
-            errorAdjuntos(
-                'OCURRIÓ UN ERROR',
-                'LOS SIGUIENTES ARCHIVOS NO SE PUDIERON ADJUNTAR, PESAN MÁS DE 2M',
-                html
-            )
-            form['adjuntos'][name].value = ''
-        } else {
-            form['adjuntos'][name].value = value
-            form['adjuntos'][name].files = aux
-        }
-        this.setState({
-            ...this.state,
-            form
-        })
+                </div>
+            </div>
+        )
     }
 
-    openAccordion = (indiceClick, name) => {
-
-        let { opciones_adjuntos, form, empresa } = this.state
-
-        form.adjuntos.slider.placeholder = name
-        form.adjuntos.slider.files = []
-        form.adjuntos.slider.eventKey = indiceClick
-
-        opciones_adjuntos.map((element, key) => {
-            if (indiceClick === key) {
-                element.isActive = element.isActive ? false : true
-            }
-            else {
-                element.isActive = false
-            }
-            return false
-        })
-
-        if(empresa.adjuntos)
-            empresa.adjuntos.map( ( adjunto ) => {
-                if( tiposArray[indiceClick] === adjunto.pivot.tipo )
-                    form.adjuntos.slider.files.push(adjunto)
-                return ''
-            })
-        
-        this.setState({
-            opciones_adjuntos: opciones_adjuntos,
-            form,
-            activeTipo: indiceClick
-        });
+    renderCarpetaVacia = () => {
+        return(
+            <div className='col-md-12 '>
+                <div>
+                    <NoFiles />
+                </div>
+                <div className='text-center mt-5 font-weight-bolder font-size-h4 text-primary'>
+                    CARPETA VACÍA
+                </div>
+            </div>
+        )
     }
 
-    changeActiveKey = empresa => {
-
-        // Seleccionar la empresa en el superior
-        let { opciones_adjuntos, form, activeTipo } = this.state
-        let aux = activeTipo === undefined ? 0 : activeTipo
-        
-        form.adjuntos.slider.placeholder = placeholderArray[aux]
-        form.adjuntos.slider.files = []
-        empresa.adjuntos.map( ( adjunto ) => {
-            if( adjunto.pivot.tipo === tiposArray[aux] )
-                form.adjuntos.slider.files.push( adjunto )
-            return ''
-        })
-        form.adjuntos.slider.eventKey = aux
-
-        opciones_adjuntos.map((element, key) => {
-            if(key === aux)
-                opciones_adjuntos[aux].isActive = true
-            else
-                opciones_adjuntos[key].isActive = false
-            return ''
-        })
-
-        this.setState({
-            empresa: empresa,
-            opciones_adjuntos: opciones_adjuntos,
-            form,
-            activeTipo: aux
-        })
-    }
-
-    openModalAddFiles = () => {
-        this.setState({
-            ...this.state,
-            modal_add: true
-        })
-    }
-
-    handleCloseModalAdd = () => {
-        this.setState({
-            ...this.state,
-            modal_add: false
-        })
-    }
-    deleteFile = element => {
-        deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', element.name, () => this.deleteAdjuntoAxios(element.id, 'slider'))
-    }
-    deleteAdjuntoAxios = async (id, tipo_adjunto) => {
-        const { access_token } = this.props.authUser
-        const { empresa } = this.state
-        await axios.delete(URL_DEV + 'mercadotecnia/material-empresas/' + empresa.id + '/adjunto/' + tipo_adjunto + '/' + id,
-            { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
-                (response) => {
-                    const { empresa, tipo } = response.data
-                    const { form } = this.state
-                        form.adjuntos.slider.files = []
-                        empresa.adjuntos.map((adjunto, key) => {
-                            if (adjunto.pivot.tipo === tipo)
-                                form.adjuntos.slider.files.push(adjunto)
-                        })
-                    this.setState({
-                        ...this.state,
-                        form
-                    })
-
-                    this.getOptionsAxios()
-                    doneAlert('Archivo eliminado con éxito.')
-                },
-                (error) => {
-                    console.log(error, 'error')
-                    if (error.response.status === 401) forbiddenAccessAlert()
-                    else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            ).catch((error) => {
-                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-                console.log(error, 'error')
-            })
-    }
-    getFilesSlider = () => {
-        const { form } = this.state
-        let aux = []
-        form.adjuntos.slider.files.map((file)=>{
-            if(!file.id){
-                aux.push(file)
-            }
-            return '';
-        })
-        return aux
-    }
     render() {
-        const { form, data, opciones_adjuntos, empresa, modal_add} = this.state
+        const { data, opciones_adjuntos, empresa, modal, form } = this.state
         return (
             <Layout active = 'mercadotecnia' {...this.props}>
-                <Tab.Container className="p-5">
+                <Tab.Container className = "p-5">
                     <Row>
-                        <Col sm={3}>
-                            <Card className="card-custom card-stretch gutter-b">
-                                <div className="card-header">
-                                    <div className="card-title">
-                                        <h3 className="card-label">Adjuntos</h3>
+                        <Col sm = { 3 } >
+                            <Card className = "card-custom card-stretch gutter-b">
+                                <div className = "card-header">
+                                    <div className = "card-title">
+                                        <h3 className = "card-label">Adjuntos</h3>
                                     </div>
                                 </div>
                                 <div className="card-body px-3">
                                     <Accordion id="accordion-material" className="accordion-light accordion-svg-toggle">
                                         {
-                                            opciones_adjuntos.map((element, key) => {
+                                            opciones_adjuntos.map((element, key)=>{
                                                 return (
                                                     <Card className="w-auto border-0 mb-2" key={key}>
                                                         <Card.Header>
-                                                            <div className={(element.isActive) ? 'card-title text-primary collapsed rounded-0 ' : 'card-title text-dark-50 rounded-0'} onClick={() => { this.openAccordion(key, element.nombre) }}>
+                                                            <div className={(element.isActive) ? 'card-title text-primary collapsed rounded-0 ' : 'card-title text-dark-50 rounded-0'} 
+                                                                onClick={() => { this.openAccordion(key, element.nombre) }}>
                                                                 <div className="card-label">
                                                                     <i className={(element.isActive) ? element.icono + ' text-primary mr-3' : element.icono + ' text-dark-50 mr-3'}>
                                                                     </i>{element.nombre}
@@ -367,14 +313,13 @@ class MaterialEmpresa extends Component {
                                                         </Card.Header>
                                                     </Card>
                                                 )
-                                            }
-                                            )
+                                            })
                                         }
                                     </Accordion>
                                 </div>
                             </Card>
                         </Col>
-                        <Col sm={9}>
+                        <Col sm = { 9 }>
                             <Card className="card-custom card-stretch gutter-b" >
                                 <Card.Header className="">
                                     <div className="card-toolbar">
@@ -383,8 +328,9 @@ class MaterialEmpresa extends Component {
                                                 data.empresas.map((empresa, index) => {
                                                     return (
                                                         <Nav.Item key={index}>
-                                                            <Nav.Link eventKey={index} className="py-2 px-4" onClick={(e) => { e.preventDefault(); this.changeActiveKey(empresa) }} >
-                                                                {empresa.name}
+                                                            <Nav.Link eventKey = { index } className = "py-2 px-4" 
+                                                                onClick = { (e) => { e.preventDefault(); this.getAdjuntoEmpresaAxios(empresa.id) } } >
+                                                                { empresa.name }
                                                             </Nav.Link>
                                                         </Nav.Item>
                                                     )
@@ -396,51 +342,9 @@ class MaterialEmpresa extends Component {
                                 <Card.Body>
                                     {
                                         empresa !== '' ?
-                                        <>
-                                        {
-                                            form.adjuntos.slider.files.length===0?
-                                                <>
-                                                    <div className="d-flex justify-content-end">
-                                                        <Button
-                                                            id="subir_archivos"
-                                                            icon=''
-                                                            className="btn btn-outline-secondary btn-icon btn-sm "
-                                                            onClick={(e) => { e.preventDefault(); this.openModalAddFiles() }}
-                                                            only_icon="fas fa-upload icon-15px text-primary"
-                                                            tooltip={{ text: 'SUBIR ARCHIVOS' }}
-                                                    />
-                                                    </div>
-                                                    <div className='col-md-12 '>
-                                                        <div>
-                                                            <NoFiles />
-                                                        </div>
-                                                        <div className='text-center mt-5 font-weight-bolder font-size-h4 text-primary2'>
-                                                            CARPETA VACÍA
-                                                        </div>
-                                                    </div>
-                                                </>
-                                                :
-                                                <>
-                                                    <div className="d-flex justify-content-end">
-                                                        <Button
-                                                            id="subir_archivos"
-                                                            icon=''
-                                                            className="btn btn-outline-secondary btn-icon btn-sm "
-                                                            onClick={(e) => { e.preventDefault(); this.openModalAddFiles() }}
-                                                            only_icon="fas fa-upload icon-15px text-primary"
-                                                            tooltip={{ text: 'SUBIR ARCHIVOS' }}
-                                                    />
-                                                    </div>
-                                                    <TablePagination
-                                                        adjuntos={form.adjuntos.slider.files}
-                                                        delete_onclick={this.deleteFile}
-                                                    />
-                                                </>
-                                        }
-                                        
-                                    </>
-                                        :
-                                        <div className='col-md-12'>
+                                            this.printFiles()
+                                        : 
+                                            <div className='col-md-12'>
                                                 <div>
                                                     <Build />
                                                 </div>
@@ -454,13 +358,12 @@ class MaterialEmpresa extends Component {
                         </Col>
                     </Row>
                 </Tab.Container>
-                <Modal show={modal_add} title='Agregar adjuntos' handleClose={this.handleCloseModalAdd} size='lg' >
-                    <div className=''>
+                <Modal show = { modal } title = 'Agregar adjuntos' handleClose = { this.handleCloseModal } size = 'lg' >
+                    <div className = ''>
                         <div className="text-center font-weight-bolder my-2 pt-3">
-                            {form.adjuntos.slider.placeholder}
+                            {form.adjuntos.adjuntos.placeholder}
                         </div>
-                        <ItemSlider item='slider' items = { this.getFilesSlider()}
-                            handleChange={this.handleChange} multiple={true} />
+                        <ItemSlider item = 'adjuntos' items = { form.adjuntos.adjuntos.files } handleChange = { this.handleChange } multiple={true} />
                     </div>
                 </Modal>
             </Layout >
