@@ -93,6 +93,7 @@ class FormWhatsapp extends Component {
                                 value={form.email}
                                 onChange={onChange}
                                 patterns={EMAIL}
+                                letterCase = { false }
                             />
                         </div>
                         <div className="col-md-12">
