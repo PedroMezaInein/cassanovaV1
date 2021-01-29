@@ -508,6 +508,25 @@ class PlanTrabajo extends Component {
         return { calendars: arregloOfCalendars, size: arregloOfCalendars.length, datos: datos }
     }
 
+    printDates = dato => {
+        let fechaInicio = moment(dato.fechaInicio)
+        let fechaFin = moment(dato.fechaFin)
+        let diffFechas = fechaFin.diff(fechaInicio, 'days')
+        
+        if(diffFechas === 0){
+            return(
+                <span>
+                    {fechaInicio.format('D')}/{fechaInicio.format('MM')}/{fechaInicio.format('YYYY')}
+                </span>
+            )
+        }else
+            return(
+                <span>
+                    {fechaInicio.format('D')}/{fechaInicio.format('MM')}/{fechaInicio.format('YYYY')}  - {fechaFin.format('D')}/{fechaFin.format('MM')}/{fechaFin.format('YYYY')}
+                </span>
+            )
+    }
+
     printTd = (empresa, conteo, diaActual) => {
 
         if(empresa.calendars[conteo][diaActual] === null)
@@ -528,6 +547,8 @@ class PlanTrabajo extends Component {
                                 <Tooltip className="tool-calendar">
                                     <div className="tool-titulo text-white font-weight-bolder letter-spacing-0-4"style={{ backgroundColor: empresa.calendars[conteo][diaActual].rol.color }}>
                                         {empresa.calendars[conteo][diaActual].nombre}
+                                        <br />
+                                        {this.printDates(empresa.calendars[conteo][diaActual])}
                                     </div>
                                     <div className="p-2">
                                         <div className="tool-horario">
