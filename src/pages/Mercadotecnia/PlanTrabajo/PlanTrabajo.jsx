@@ -69,9 +69,10 @@ class PlanTrabajo extends Component {
 
                 empresas.map((empresa) => {
                     empresa.datos = empresa.planes
-                    let response = this.getRowspan(empresa.datos)
+                    let response = this.getRowspan(empresa.datos, año, mes, this.diasEnUnMes(mes, año))
                     empresa.rowSpanSize = response.size
                     empresa.calendars = response.calendars
+                    empresa.datos = response.datos
                 })
                 options.usuarios = []
                 options.roles = []
@@ -370,8 +371,9 @@ class PlanTrabajo extends Component {
             this.updatePlanoAxios()
     }
 
-    getRowspan = datos => {
-        const { dias } = this.state
+    getRowspan = (datos, año, mes, dias ) => {
+        let mesActualInicio = moment([año, meses.indexOf(mes), 1])
+        let mesActualFin = moment([año, meses.indexOf(mes), dias])
         let arregloOfCalendars = [];
         let _arreglo = [];
         [...Array(dias)].map((unusedElement, key) => {
@@ -380,17 +382,116 @@ class PlanTrabajo extends Component {
         arregloOfCalendars.push(_arreglo)
         for(let z = 0; z < datos.length; z++){
             let dato = datos[z];
-            let numeroFechaInicio = moment(datos[z].fechaInicio).date() - 1
-            let numeroFechaFin = moment(datos[z].fechaFin).date() - 1
+            let numeroFechaInicio = moment(dato.fechaInicio).date() - 1
+            let numeroFechaFin = moment(dato.fechaFin).date() - 1
+            let fechaInicio = moment(dato.fechaInicio)
+            let fechaFin = moment(dato.fechaFin)
             let bandera = false;
-            for(let x = 0; x < arregloOfCalendars.length; x++){
-                if(arregloOfCalendars[x][numeroFechaInicio] === null){
-                    arregloOfCalendars[x][numeroFechaInicio] = datos[z]
-                    for(let y = numeroFechaInicio + 1; y <= numeroFechaFin; y++)
-                        arregloOfCalendars[x][y] = 'filled';
-                    bandera = true
-                    x = arregloOfCalendars.length
+            let diffInf = fechaInicio.diff(mesActualInicio, 'days')
+            let diffSup = mesActualFin.diff(fechaFin, 'days')
+            if(diffInf >= 0 && diffSup >= 0){
+                for(let x = 0; x < arregloOfCalendars.length; x++){
+                    if(arregloOfCalendars[x][numeroFechaInicio] === null){
+                        arregloOfCalendars[x][numeroFechaInicio] = dato
+                        for(let y = numeroFechaInicio + 1; y <= numeroFechaFin; y++)
+                            arregloOfCalendars[x][y] = 'filled';
+                        bandera = true
+                        x = arregloOfCalendars.length
+                    }
                 }
+            }else{
+                if(diffInf < 0 && diffSup < 0){
+                    bandera = false;
+                    for(let x = 0; x < arregloOfCalendars.length; x++){
+                        bandera = false;
+                        for(let y = 0; y < dias; y++){
+                            if(arregloOfCalendars[x][y] !== null){
+                                bandera = true
+                                y = dias
+                            }
+                        }
+                        if(bandera === false){
+                            dato.duracion = dias
+                            arregloOfCalendars[x][0] = dato
+                            for(let y = 1; y < dias; y++)
+                                arregloOfCalendars[x][y] = 'filled'
+                            x = arregloOfCalendars.length
+                        }
+                    }
+                    if(bandera){
+                        _arreglo = [];
+                        [...Array(dias)].map((unusedElement, key) => {
+                            if(key === 0){
+                                dato.duracion = dias
+                                _arreglo.push(dato)
+                            }else{ _arreglo.push('filled') }
+                        })
+                        arregloOfCalendars.push(_arreglo)        
+                    }
+                }else{
+                    if(diffInf >= 0 && diffSup < 0){
+                        bandera = false;
+                        for(let x = 0; x < arregloOfCalendars.length; x++){
+                            bandera = false;
+                            for(let y = numeroFechaInicio; y < dias; y++){
+                                if(arregloOfCalendars[x][y] !== null){
+                                    bandera = true
+                                    y = dias
+                                }
+                            }
+                            if(bandera === false){
+                                dato.duracion = mesActualFin.diff(fechaInicio) + 1
+                                arregloOfCalendars[x][numeroFechaInicio] = dato
+                                for(let y = numeroFechaInicio + 1; y < dias; y++)
+                                    arregloOfCalendars[x][y] = 'filled'
+                                x = arregloOfCalendars.length
+                            }
+                        }
+                        if(bandera){
+                            _arreglo = [];
+                            [...Array(dias)].map((unusedElement, key) => {
+                                _arreglo.push(null)
+                            })
+                            arregloOfCalendars.push(_arreglo)
+                            dato.duracion = mesActualFin.diff(fechaInicio) + 1
+                            arregloOfCalendars[arregloOfCalendars.length - 1][numeroFechaInicio] = dato
+                            for(let y = numeroFechaInicio + 1; y < dias; y++) {
+                                arregloOfCalendars[arregloOfCalendars.length - 1][y] = 'filled';
+                            }
+                        }
+                    }else{
+                        bandera = false;
+                        for(let x = 0; x < arregloOfCalendars.length; x++){
+                            bandera = false;
+                            for(let y = 0; y <= numeroFechaFin; y++){
+                                if(arregloOfCalendars[x][y] !== null){
+                                    bandera = true
+                                    y = numeroFechaFin
+                                }
+                            }
+                            if(bandera === false){
+                                dato.duracion = numeroFechaFin + 1
+                                arregloOfCalendars[x][0] = dato
+                                for(let y = 1; y <= numeroFechaFin; y++)
+                                    arregloOfCalendars[x][y] = 'filled'
+                                x = arregloOfCalendars.length
+                            }
+                        }
+                        if(bandera){
+                            _arreglo = [];
+                            [...Array(dias)].map((unusedElement, key) => {
+                                _arreglo.push(null)
+                            })
+                            arregloOfCalendars.push(_arreglo)
+                            dato.duracion = numeroFechaFin + 1
+                            arregloOfCalendars[arregloOfCalendars.length - 1][0] = dato
+                            for(let y = 1; y <= numeroFechaFin; y++) {
+                                arregloOfCalendars[arregloOfCalendars.length - 1][y] = 'filled';
+                            }
+                        }
+                    }
+                }
+                bandera = true
             }
             if(bandera === false){
                 _arreglo = [];
@@ -404,7 +505,7 @@ class PlanTrabajo extends Component {
                 }
             }
         }
-        return { calendars: arregloOfCalendars, size: arregloOfCalendars.length}
+        return { calendars: arregloOfCalendars, size: arregloOfCalendars.length, datos: datos }
     }
 
     printTd = (empresa, conteo, diaActual) => {
