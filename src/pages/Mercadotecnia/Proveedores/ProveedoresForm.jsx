@@ -59,9 +59,9 @@ class ProveedoresForm extends Component{
                         this.setState({ ...this.state, title: 'Editar proveedor', formeditado: 1, form, proveedor: proveedor })
                     }
                     else
-                        history.push('/administracion/proveedores')
+                        history.push('/leads/proveedores')
                 } else
-                    history.push('/administracion/proveedores')
+                    history.push('/leads/proveedores')
                 break;
             default:
                 break;

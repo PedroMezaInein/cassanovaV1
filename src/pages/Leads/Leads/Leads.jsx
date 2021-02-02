@@ -62,7 +62,7 @@ class Leads extends Component {
             `¿Deseas convertir el lead ${lead.nombre} en un proveedor?`, 
             () => 
                 history.push({
-                    pathname: '/administracion/proveedores/convert',
+                    pathname: '/leads/proveedores/convert',
                     state: { lead: lead}
                 })
         )
