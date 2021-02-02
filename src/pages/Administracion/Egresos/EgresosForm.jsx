@@ -4,7 +4,7 @@ import axios from 'axios'
 import Swal from 'sweetalert2'
 import { URL_DEV } from '../../../constants'
 import { setOptions, setSelectOptions } from '../../../functions/setters'
-import { errorAlert, waitAlert, forbiddenAccessAlert, createAlert, doneAlert, deleteAlert } from '../../../functions/alert'
+import { errorAlert, waitAlert, forbiddenAccessAlert, createAlert, doneAlert, deleteAlert, errorAlertRedirectOnDissmis } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { EgresosForm as EgresosFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
@@ -181,13 +181,8 @@ class EgresosForm extends Component {
                         });
                         let auxProveedor = ''
                         data.proveedores.find(function (element, index) {
-                            let cadena = obj.nombre_emisor.replace(' S. C.', ' SC').toUpperCase()
-                            cadena = cadena.replace(',S.A.', ' SA').toUpperCase()
-                            cadena = cadena.replace(/,/g, '').toUpperCase()
-                            cadena = cadena.replace(/\./g, '').toUpperCase()
                             if(element.rfc)
-                                if (element.rfc.toUpperCase() === obj.rfc_emisor.toUpperCase() ||
-                                    element.razon_social.toUpperCase() === cadena) {
+                                if (element.rfc.toUpperCase() === obj.rfc_emisor.toUpperCase()) {
                                     auxProveedor = element
                                 }
                             return false
@@ -199,7 +194,8 @@ class EgresosForm extends Component {
                         if (auxProveedor) { form.proveedor = auxProveedor.id.toString() } 
                         else {
                             if(obj.nombre_emisor === ''){
-                                errorAlert('LA FACTURA NO TIENE RAZÓN SOCIAL, CREA EL PROVEEDOR DESDE LA SECCIÓN DE PROVEEDORES EN LEADS.')
+                                const { history } = this.props
+                                errorAlertRedirectOnDissmis('LA FACTURA NO TIENE RAZÓN SOCIAL, CREA EL PROVEEDOR DESDE LA SECCIÓN DE PROVEEDORES EN LEADS.', history, '/administracion/proveedores')
                             }else
                                 createAlert('NO EXISTE EL PROVEEDOR', '¿LO QUIERES CREAR?', () => this.addProveedorAxios(obj))
                         }
