@@ -182,8 +182,8 @@ class Leads extends Component {
         const { cliente } = this.state
         await axios.delete(URL_DEV + 'cliente/' + cliente.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { modal } = this.state
                 this.getClientesAxios()
+                const { modal } = this.state
                 modal.delete = false
                 this.setState({
                     ...this.state,
@@ -230,7 +230,7 @@ class Leads extends Component {
                     cardTable='cardTable'
                     cardTableHeader='cardTableHeader'
                     cardBody='cardBody'
-                    idTable='cliente_table'
+                    idTable='clientes'
                 />
                 <ModalDelete
                     title={cliente === null ? "¿Estás seguro que deseas eliminar a " : "¿Estás seguro que deseas eliminar a " + cliente.empresa + " ?"}
