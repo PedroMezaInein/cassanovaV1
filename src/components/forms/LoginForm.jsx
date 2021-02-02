@@ -34,7 +34,7 @@ class LoginForm extends React.Component {
         event.preventDefault();
         const data = this.state.form;
         // let error = this.state.error;;
-        await axios.post(URL_DEV + 'user/login', data).then(
+        await axios.post(`${URL_DEV}user/login`, data).then(
             (response) => {
                 const { history, login } = this.props
                 login({

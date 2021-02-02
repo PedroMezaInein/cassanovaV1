@@ -181,7 +181,7 @@ const SolicitudEgresosForm = Loader(() => import('./pages/Mercadotecnia/Pagos/So
 class App extends Component{
     async componentDidMount(){
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'user', { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.get(`${URL_DEV}user`, { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 const { data } = response
                 login(data)
@@ -212,7 +212,7 @@ class App extends Component{
     async logoutUser(){
         const { logout, authUser : {access_token }, history } = this.props
         
-        await axios.get(URL_DEV + 'user/logout', { headers: {Authorization:`Bearer ${access_token}`}}).then(
+        await axios.get(`${URL_DEV}user/logout`, { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
                 logout();
                 history.push('/login')
