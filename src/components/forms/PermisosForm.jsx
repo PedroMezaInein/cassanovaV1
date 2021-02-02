@@ -131,7 +131,7 @@ class PermisosForm extends Component {
         const { authUser: { access_token }, history, user } = this.props
         if (!access_token)
             history.push('/login')
-        await axios.get(URL_DEV + 'modulos/user/' + user, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
+        await axios.get(`${URL_DEV}modulos/user/${user}`, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
                 const { data: { modulos: grupos } } = response
                 this.setGrupos(grupos);
@@ -160,7 +160,7 @@ class PermisosForm extends Component {
         const { authUser: { access_token }, history, handleClose } = this.props
         if (!access_token)
             history.push('/login')
-        await axios.put(URL_DEV + 'modulos/user/' + user, { grupos: data }, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
+        await axios.put(`${URL_DEV}modulos/user/${user}`, { grupos: data }, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
                 const { data: { modulos: grupos } } = response
                 this.setGrupos(grupos);

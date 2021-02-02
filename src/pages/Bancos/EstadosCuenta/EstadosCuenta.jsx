@@ -77,6 +77,7 @@ class EstadosCuenta extends Component {
         return aux
     }
     openModalDelete = estado => {
+        console.log('ESTADO', estado)
         const { modal } = this.state
         modal.delete = true
         this.setState({
@@ -118,7 +119,7 @@ class EstadosCuenta extends Component {
     async deleteEstadoAxios() {
         const { access_token } = this.props.authUser
         const { estado } = this.state
-        await axios.delete(URL_DEV + 'cuentas/' + estado.cuenta.id + '/estado/' + estado.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.delete(`${URL_DEV}cuentas/${estado.cuenta.id}/estado/${estado.adjunto_id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 this.getEstadosCuentaAxios()
                 const { modal } = this.state

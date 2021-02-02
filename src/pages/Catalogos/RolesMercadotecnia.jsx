@@ -157,20 +157,13 @@ class RolesMercadotecnia extends Component {
     async addRolAxios() {
         const { access_token } = this.props.authUser
         const { form } = this.state
-        await axios.post(URL_DEV + 'roles-mercadotecnia', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}roles-mercadotecnia`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { roles } = response.data
                 const { data, modal } = this.state
                 modal.form = false
-                data.roles = roles
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Creaste con éxito un nuevo rol.')
-                this.setState({
-                    ...this.state,
-                    modal,
-                    form: this.clearForm(),
-                    roles: this.setRoles(roles),
-                    data
-                })
+                this.getRolesAxios()
+                this.setState({ ...this.state, modal, form: this.clearForm() })
             },
             (error) => {
                 console.log(error, 'error')
@@ -190,15 +183,12 @@ class RolesMercadotecnia extends Component {
         const { form, rol, data, modal } = this.state
         await axios.put(URL_DEV + 'roles-mercadotecnia/' + rol.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { roles } = response.data
-                data.roles = roles
                 modal.form = false
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito el rol.')
                 this.setState({
                     ...this.state,
                     modal,
                     form: this.clearForm(),
-                    roles: this.setRoles(roles),
                     rol: ''
                 })
             },
@@ -224,11 +214,7 @@ class RolesMercadotecnia extends Component {
                 this.getRolesAxios()
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito el rol.')
                 modal.delete = false
-                this.setState({
-                    ...this.state,
-                    modal,
-                    rol: '',
-                })
+                this.setState({ ...this.state, modal, rol: '', })
             },
             (error) => {
                 console.log(error, 'error')
@@ -243,56 +229,33 @@ class RolesMercadotecnia extends Component {
             console.log(error, 'error')
         })
     }
-    async getRolesAxios() {
-        $('#kt_datatable_roles').DataTable().ajax.reload();
-    }
+
+    async getRolesAxios() { $('#kt_datatable_roles').DataTable().ajax.reload(); }
+    
     render() {
-        const { form, modal, title, formeditado } = this.state
+        const { form, modal, title, formeditado, rol } = this.state
         return (
             <Layout active={'catalogos'}  {...this.props}>
-                <NewTableServerRender
-                    columns={ROLES_COLUMNS}
-                    title='ROLES MERCADOTECNIA'
-                    subtitle='Listado de roles'
-                    mostrar_boton={true}
-                    abrir_modal={true}
-                    mostrar_acciones={true}
-                    onClick={this.openModal}
-                    actions={{
+                <NewTableServerRender columns = { ROLES_COLUMNS } title = 'ROLES MERCADOTECNIA' subtitle = 'Listado de roles'
+                    mostrar_boton = { true } abrir_modal = { true } mostrar_acciones = { true } onClick = { this.openModal }
+                    actions = { {
                         'edit': { function: this.openModalEdit },
                         'delete': { function: this.openModalDelete }
-                    }}
-                    idTable='kt_datatable_roles'
-                    accessToken={this.props.authUser.access_token}
-                    setter={this.setRoles}
-                    urlRender={URL_DEV + 'roles-mercadotecnia'}
-                    cardTable='cardTable'
-                    cardTableHeader='cardTableHeader'
-                    cardBody='cardBody'
-                />
+                    } } idTable = 'kt_datatable_roles' accessToken = { this.props.authUser.access_token }
+                    setter = { this.setRoles } urlRender = { `${URL_DEV}roles-mercadotecnia` }
+                    cardTable = 'cardTable' cardTableHeader = 'cardTableHeader' cardBody = 'cardBody' />
                 <Modal size="lg" show={modal.form} title={title} handleClose={this.handleClose}>
-                    <RolesMercadotecniaForm
-                        form={form}
-                        onChange={this.onChange}
-                        onSubmit={this.onSubmit}
-                        formeditado={formeditado}
-                    />
+                    <RolesMercadotecniaForm form = { form } onChange = { this.onChange }
+                        onSubmit = { this.onSubmit } formeditado = { formeditado } color = { rol.color } />
                 </Modal>
-                <ModalDelete title={"¿Estás seguro que deseas eliminar el rol?"} show={modal.delete} handleClose={this.handleCloseDelete} onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteRolAxios() }}>
-                </ModalDelete>
+                <ModalDelete title = "¿Estás seguro que deseas eliminar el rol?" show = { modal.delete } handleClose = { this.handleCloseDelete }
+                    onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteRolAxios() } } />
             </Layout>
         )
     }
 }
 
-
-const mapStateToProps = state => {
-    return {
-        authUser: state.authUser
-    }
-}
-
-const mapDispatchToProps = dispatch => ({
-})
+const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapDispatchToProps = dispatch => ({ })
 
 export default connect(mapStateToProps, mapDispatchToProps)(RolesMercadotecnia);
