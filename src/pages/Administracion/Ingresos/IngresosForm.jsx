@@ -4,7 +4,7 @@ import axios from 'axios'
 import Swal from 'sweetalert2'
 import { URL_DEV } from '../../../constants'
 import { setOptions, setSelectOptions } from '../../../functions/setters'
-import { errorAlert, waitAlert, forbiddenAccessAlert, createAlert, doneAlert } from '../../../functions/alert'
+import { errorAlert, waitAlert, forbiddenAccessAlert, createAlert, doneAlert, errorAlertRedirectOnDissmis } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { IngresosForm as IngresosFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
@@ -239,14 +239,10 @@ class IngresosForm extends Component {
                         });
                         let auxCliente = ''
                         data.clientes.find(function (element, index) {
-                            let cadena = obj.nombre_receptor.replace(' S. C.', ' SC').toUpperCase()
-                            cadena = cadena.replace(',S.A.', ' SA').toUpperCase()
-                            cadena = cadena.replace(/,/g, '').toUpperCase()
-                            cadena = cadena.replace(/\./g, '').toUpperCase()
-                            if (element.empresa.toUpperCase() === obj.nombre_receptor.toUpperCase() ||
-                                element.empresa.toUpperCase() === cadena) {
-                                auxCliente = element
-                            }
+                            if(element.rfc)
+                                if (element.rfc.toUpperCase() === obj.rfc_receptor.toUpperCase()) {
+                                    auxCliente = element
+                                }
                             return false
                         });
                         if (auxEmpresa) {
@@ -258,7 +254,12 @@ class IngresosForm extends Component {
                         if (auxCliente) {
                             form.cliente = auxCliente.empresa
                         } else {
-                            createAlert('NO EXISTE EL CLIENTE', '¿LO QUIERES CREAR?', () => this.addClienteAxios(obj))
+                            if(obj.nombre_receptor === ''){
+                                const { history } = this.props
+                                errorAlertRedirectOnDissmis('LA FACTURA NO TIENE RAZÓN SOCIAL, CREA EL CLIENTE DESDE LA SECCIÓN DE CLIENTES EN LEADS.', history, '/leads/clientes')
+                            }else {
+                                createAlert('NO EXISTE EL CLIENTE', '¿LO QUIERES CREAR?', () => this.addClienteAxios(obj))
+                            }
                         }
                         if (auxEmpresa && auxCliente) {
                             Swal.close()
