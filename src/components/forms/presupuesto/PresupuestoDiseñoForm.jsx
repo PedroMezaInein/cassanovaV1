@@ -81,7 +81,7 @@ class PresupuestoDiseñoForm extends Component {
     }
 
     render() {
-        const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, onSubmit, submitPDF, onChangeCheckboxes, checkButtonSemanas, formeditado, onChangeConceptos, ...props } = this.props
+        const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, onSubmit, submitPDF, onChangeCheckboxes, checkButtonSemanas, formeditado, onChangeConceptos,onClickTab, activeKey, defaultKey, ...props } = this.props
         const { date } = this.state
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
@@ -363,7 +363,10 @@ class PresupuestoDiseñoForm extends Component {
                                 </div>
                             </div>
                             <div id="wizard-3-content" className="pb-3" data-wizard-type="step-content">
-                                <Tab.Container defaultActiveKey="options1">
+                                <Tab.Container 
+                                    defaultActiveKey={defaultKey?defaultKey:form.acabados?"acabados":form.mobiliario?"mobiliario": form.obra?"obra":"vacio"}
+                                    activeKey={ activeKey?activeKey:form.acabados?"acabados":form.mobiliario?"mobiliario": form.obra?"obra":"vacio" }
+                                    >
                                     <h5 className="mb-4 font-weight-bold text-dark">INGRESA LOS PRECIOS PARAMÉTRICOS Y EL TIEMPO DE EJECUCIÓN</h5>
                                     <div className="form-group row form-group-marginless">
                                         <div className="col-md-3">
@@ -373,22 +376,65 @@ class PresupuestoDiseñoForm extends Component {
                                                 formgroup = "mb-1" />
                                         </div>
                                         <div className="col-md-9 d-flex justify-content-center align-items-center">
+                                        <div className="form-group">
+                                            <label className="font-weight-bolder m-0">Fases</label>
+                                            <div className="checkbox-list pt-2">
+                                                <label className="checkbox font-weight-light">
+                                                    <input name = 'acabados' type = "checkbox" checked = { form.acabados } onChange = { onChange } /> 
+                                                        Acabados
+                                                    <span></span>
+                                                </label>
+                                                <label className="checkbox font-weight-light">
+                                                    <input  name = 'mobiliario' type = "checkbox" checked = { form.mobiliario } onChange = { onChange } /> 
+                                                        Mobiliario
+                                                    <span></span>
+                                                </label>
+                                                <label className="checkbox font-weight-light">
+                                                    <input  name = 'obra' type = "checkbox" checked = { form.obra } onChange = { onChange } /> 
+                                                        Obra
+                                                    <span></span>
+                                                </label>
+                                            </div>
+                                        </div>
+                                        </div>
+                                    </div>
+                                    <div className="separator separator-dashed mt-1 mb-2"></div>
+                                    <div className="form-group row form-group-marginless">
+                                        <div className="col-md-12">
                                             <Nav className="nav nav-pills col-md-12">
-                                                <div className="col-md-4 pt-4 align-self-end">
-                                                    <Nav.Item>
-                                                        <Nav.Link eventKey="options1" className="btn btn-text-primary btn-hover-light-primary font-weight-bolder mr-2 d-flex justify-content-center">Acabados e instalaciones</Nav.Link>
-                                                    </Nav.Item>
-                                                </div>
-                                                <div className="col-md-4 pt-4 align-self-end">
-                                                    <Nav.Item>
-                                                        <Nav.Link eventKey="options2" className="btn btn-text-primary btn-hover-light-primary font-weight-bolder mr-2 d-flex justify-content-center ">Mobiliario</Nav.Link>
-                                                    </Nav.Item>
-                                                </div>
-                                                <div className="col-md-4 pt-4 align-self-end">
-                                                    <Nav.Item>
-                                                        <Nav.Link eventKey="options3" className="btn btn-text-primary btn-hover-light-primary font-weight-bolder mr-2 d-flex justify-content-center">Obra civil</Nav.Link>
-                                                    </Nav.Item>
-                                                </div>
+                                                {
+                                                    form.acabados?
+                                                        <div className="col-md-4 pt-4 align-self-end">
+                                                            <Nav.Item>
+                                                                <Nav.Link 
+                                                                eventKey="acabados" className="btn btn-text-primary btn-hover-light-primary font-weight-bolder mr-2 d-flex justify-content-center"  
+                                                                onClick={() => {onClickTab("acabados")}}>Acabados e instalaciones</Nav.Link>
+                                                            </Nav.Item>
+                                                        </div>
+                                                    :""
+                                                }
+                                                {
+                                                    form.mobiliario?
+                                                        <div className="col-md-4 pt-4 align-self-end">
+                                                            <Nav.Item>
+                                                                <Nav.Link eventKey="mobiliario" 
+                                                                className="btn btn-text-primary btn-hover-light-primary font-weight-bolder mr-2 d-flex justify-content-center " 
+                                                                onClick={() => {onClickTab("mobiliario")}}>Mobiliario</Nav.Link>
+                                                            </Nav.Item>
+                                                        </div>
+                                                    :""
+                                                }
+                                                {
+                                                    form.obra?
+                                                        <div className="col-md-4 pt-4 align-self-end">
+                                                            <Nav.Item>
+                                                                <Nav.Link eventKey="obra" 
+                                                                className="btn btn-text-primary btn-hover-light-primary font-weight-bolder mr-2 d-flex justify-content-center"  
+                                                                onClick={() => {onClickTab("obra")}}>Obra civil</Nav.Link>
+                                                            </Nav.Item>
+                                                        </div>
+                                                    :""
+                                                }
                                             </Nav>
                                         </div>
                                     </div>
@@ -396,7 +442,9 @@ class PresupuestoDiseñoForm extends Component {
                                     <div className="form-group row form-group-marginless">
                                         <div className="col-md-12">
                                             <Tab.Content>
-                                                <Tab.Pane eventKey="options1">
+                                                <Tab.Pane eventKey="vacio">
+                                                    </Tab.Pane>
+                                                <Tab.Pane eventKey="acabados">
                                                     <div className="col-md-12">
                                                         <div className='row mx-0 d-flex justify-content-center'>
                                                             <div className="col-md-3">
@@ -418,7 +466,7 @@ class PresupuestoDiseñoForm extends Component {
                                                         onChange = { this.handleChangeCheckboxPartidasAcabados } customgroup="columns-2"
                                                         customlist="px-3" />
                                                 </Tab.Pane>
-                                                <Tab.Pane eventKey="options2">
+                                                <Tab.Pane eventKey="mobiliario">
                                                     <div className="col-md-12">
                                                         <div className='row mx-0 d-flex justify-content-center'>
                                                             <div className="col-md-3">
@@ -439,7 +487,7 @@ class PresupuestoDiseñoForm extends Component {
                                                         name = 'partidasMobiliario' value = { form.partidasMobiliario } customgroup = "columns-2"
                                                         onChange = { this.handleChangeCheckboxPartidasMobiliario } customlist="px-3" />
                                                 </Tab.Pane>
-                                                <Tab.Pane eventKey="options3">
+                                                <Tab.Pane eventKey="obra">
                                                     <div className="col-md-12">
                                                         <div className='row mx-0 d-flex justify-content-center'>
                                                             <div className="col-md-3">
