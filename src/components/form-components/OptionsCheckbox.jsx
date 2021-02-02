@@ -4,7 +4,7 @@ import Form from 'react-bootstrap/Form'
 class Input extends Component{
 
     render(){
-        const { onChange, placeholder, options, customgroup, customlist} = this.props
+        const { onChange, placeholder, options, customgroup, customlist, customcolor} = this.props
         return(
             <div>
                 <Form.Label className="font-weight-bolder">{placeholder}</Form.Label>
@@ -15,7 +15,7 @@ class Input extends Component{
                             
                             options.map((option, key) => {
                                 return(  
-                                        <label key = {key} className="checkbox checkbox-outline checkbox-outline-2x checkbox-primary font-weight-light text-justify pt-2px">
+                                        <label key = {key} className={`checkbox checkbox-outline checkbox-outline-2x checkbox-${customcolor} font-weight-light text-justify pt-2px`}>
                                             <input 
                                             type="checkbox" 
                                             onChange={ (e) => { onChange(e)} } 

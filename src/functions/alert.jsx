@@ -97,6 +97,22 @@ export function errorAlert(text) {
     })
 }
 
+export function errorAlertRedirectOnDissmis(text, history, ruta) {
+    MySwal.fire({
+        title: '¡Ups!',
+        text: text,
+        icon: 'error',
+        showCancelButton: true,
+        showConfirmButton: true,
+        cancelButtonText: 'CANCELAR',
+        confirmButtonText: 'DIRECCIONAR',
+
+    }).then((result) => {
+        if(result.value)
+            history.push({pathname: ruta})
+    })
+}
+
 export function deleteAlert(title,text,action) {
     MySwal.fire({
         title: title,

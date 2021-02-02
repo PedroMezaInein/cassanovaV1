@@ -125,6 +125,7 @@ class ContabilidadForm extends Component {
                             name="modulos"
                             value={form.modulos}
                             onChange={(e) => { this.handleChangeCheckbox(e, 'modulos') }}
+                            customcolor="primary"
                         />
                     </div>
                     <div className="col-md-4  d-flex justify-content-around align-items-top">
@@ -134,6 +135,7 @@ class ContabilidadForm extends Component {
                             name="archivos"
                             value={form.archivos}
                             onChange={(e) => { this.handleChangeCheckbox(e, 'archivos') }}
+                            customcolor="primary" 
                         />
                     </div>
                     <div className="col-md-4  d-flex justify-content-around align-items-top">
@@ -143,6 +145,7 @@ class ContabilidadForm extends Component {
                             name="facturas"
                             value={form.facturas}
                             onChange={(e) => { this.handleChangeCheckbox(e, 'facturas') }}
+                            customcolor="primary" 
                         />
                     </div>
                 </div>
