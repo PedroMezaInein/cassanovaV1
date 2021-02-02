@@ -87,12 +87,12 @@ class OrigenesLeads extends Component {
         })
     }
 
-    openModalDelete = unidad => {
+    openModalDelete = origen => {
         const { modal } = this.state
         modal.delete = true
         this.setState({
             modal,
-            unidad: unidad
+            origen: origen
         })
     }
 
@@ -220,15 +220,14 @@ class OrigenesLeads extends Component {
     }
 
     async deleteOrigenAxios() {
+        const { origen } = this.state
         const { access_token } = this.props.authUser
-        const { origen  } = this.state
         await axios.delete(URL_DEV + 'origenes/' + origen.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { modal } = this.state
                 this.getOrigenesAxios()
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito la unidad.')
+                const { modal } = this.state
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito la origen.')
                 modal.delete=false
-
                 this.setState({
                     ...this.state,
                     modal,
@@ -287,9 +286,12 @@ class OrigenesLeads extends Component {
                         formeditado = { formeditado }
                     />
                 </Modal>
-                <ModalDelete title = '¿Estás seguro que deseas eliminar el origen?'
-                    show = { modal.delete } handleClose = { this.handleCloseDelete }
-                    onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteOrigenAxios() } } />
+                <ModalDelete 
+                    title = '¿Estás seguro que deseas eliminar el origen?'
+                    show = { modal.delete } 
+                    handleClose = { this.handleCloseDelete }
+                    onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteOrigenAxios() }}
+                    />
             </Layout>
         )
     }
