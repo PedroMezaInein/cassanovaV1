@@ -368,82 +368,106 @@ class PresupuestoDiseñoForm extends Component {
                                     activeKey={ activeKey?activeKey:form.acabados?"acabados":form.mobiliario?"mobiliario": form.obra?"obra":"vacio" }
                                     >
                                     <h5 className="mb-4 font-weight-bold text-dark">INGRESA LOS PRECIOS PARAMÉTRICOS Y EL TIEMPO DE EJECUCIÓN</h5>
-                                    <div className="form-group row form-group-marginless">
+                                    <div className={form.acabados || form.mobiliario || form.obra ?"form-group row form-group-marginless":"row form-group-marginless"}>
                                         <div className="col-md-3">
                                             <Input requirevalidation = { 1 } formeditado = { formeditado } placeholder = "TIEMPO DE EJECUCIÓN (SEMANAS)"
                                                 value = { form.tiempo_ejecucion_construccion } name = "tiempo_ejecucion_construccion" onChange = { onChange }
                                                 iconclass = "flaticon-calendar-with-a-clock-time-tools" messageinc = "Ingresa el tiempo de ejecución."
                                                 formgroup = "mb-1" />
                                         </div>
-                                        <div className="col-md-9 d-flex justify-content-center align-items-center">
-                                        <div className="form-group">
-                                            <label className="font-weight-bolder m-0">Fases</label>
-                                            <div className="checkbox-list pt-2">
-                                                <label className="checkbox font-weight-light">
-                                                    <input name = 'acabados' type = "checkbox" checked = { form.acabados } onChange = { onChange } /> 
-                                                        Acabados
+                                        <div class="col-md-3 align-self-center my-3">
+                                            <div class="d-flex align-items-center justify-content-center">
+                                                <span class="bullet bullet-bar bg-primary align-self-stretch"></span>
+                                                <label class="checkbox checkbox-lg checkbox-light-primary checkbox-single flex-shrink-0 m-0 mx-2">
+                                                    <input
+                                                        type="checkbox"
+                                                        name='acabados'
+                                                        checked={form.acabados}
+                                                        onChange={onChange}
+                                                    />
                                                     <span></span>
                                                 </label>
-                                                <label className="checkbox font-weight-light">
-                                                    <input  name = 'mobiliario' type = "checkbox" checked = { form.mobiliario } onChange = { onChange } /> 
-                                                        Mobiliario
-                                                    <span></span>
-                                                </label>
-                                                <label className="checkbox font-weight-light">
-                                                    <input  name = 'obra' type = "checkbox" checked = { form.obra } onChange = { onChange } /> 
-                                                        Obra
-                                                    <span></span>
-                                                </label>
+                                                <div>
+                                                    <span class="text-dark-75 font-weight-bold font-size-lg">Acabados e instalaciones</span>
+                                                </div>
                                             </div>
                                         </div>
+                                        <div class="col-md-3 align-self-center my-3">
+                                            <div class="d-flex align-items-center justify-content-center">
+                                                <span class="bullet bullet-bar bg-primary align-self-stretch"></span>
+                                                <label class="checkbox checkbox-lg checkbox-light-primary checkbox-single flex-shrink-0 m-0 mx-2">
+                                                    <input
+                                                        type="checkbox"
+                                                        name="mobiliario"
+                                                        checked={form.mobiliario}
+                                                        onChange={onChange}
+                                                    />
+                                                    <span></span>
+                                                </label>
+                                                <div>
+                                                    <a class="text-dark-75 font-weight-bold font-size-lg">Mobiliario</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 align-self-center my-3">
+                                            <div class="d-flex align-items-center justify-content-center">
+                                                <span class="bullet bullet-bar bg-primary align-self-stretch"></span>
+                                                <label class="checkbox checkbox-lg checkbox-light-primary checkbox-single flex-shrink-0 m-0 mx-2">
+                                                    <input
+                                                        type="checkbox"
+                                                        name="obra"
+                                                        checked={form.obra}
+                                                        onChange={onChange}
+                                                    />
+                                                    <span></span>
+                                                </label>
+                                                <div>
+                                                    <a class="text-dark-75 font-size-sm font-weight-bold font-size-lg mb-1">Obra civil</a>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div className="separator separator-dashed mt-1 mb-2"></div>
+                                    {
+                                        form.acabados || form.mobiliario || form.obra ?
+                                            <div className="separator separator-dashed mt-1 mb-2"></div>
+                                        :""
+                                    }
                                     <div className="form-group row form-group-marginless">
-                                        <div className="col-md-12">
-                                            <Nav className="nav nav-pills col-md-12">
+                                        <div className="col-md-2 align-self-center">
+                                            <Nav className="navi navi-active">
                                                 {
-                                                    form.acabados?
-                                                        <div className="col-md-4 pt-4 align-self-end">
-                                                            <Nav.Item>
-                                                                <Nav.Link 
-                                                                eventKey="acabados" className="btn btn-text-primary btn-hover-light-primary font-weight-bolder mr-2 d-flex justify-content-center"  
-                                                                onClick={() => {onClickTab("acabados")}}>Acabados e instalaciones</Nav.Link>
-                                                            </Nav.Item>
-                                                        </div>
-                                                    :""
+                                                    form.acabados ?
+                                                        <Nav.Item className="navi-item">
+                                                            <Nav.Link className="navi-link pl-0 bg-navi-light-primary" eventKey="acabados" onClick={() => { onClickTab("acabados") }}>
+                                                                <span class="navi-text font-weight-bolder text-hover-primary"> Acabados e instalaciones</span>
+                                                            </Nav.Link>
+                                                        </Nav.Item>
+                                                        : ""
                                                 }
                                                 {
-                                                    form.mobiliario?
-                                                        <div className="col-md-4 pt-4 align-self-end">
-                                                            <Nav.Item>
-                                                                <Nav.Link eventKey="mobiliario" 
-                                                                className="btn btn-text-primary btn-hover-light-primary font-weight-bolder mr-2 d-flex justify-content-center " 
-                                                                onClick={() => {onClickTab("mobiliario")}}>Mobiliario</Nav.Link>
-                                                            </Nav.Item>
-                                                        </div>
-                                                    :""
+                                                    form.mobiliario ?
+                                                        <Nav.Item className="navi-item">
+                                                            <Nav.Link className="navi-link pl-0 bg-navi-light-primary" eventKey="mobiliario" onClick={() => { onClickTab("mobiliario") }}>
+                                                                <span class="navi-text font-weight-bolder text-hover-primary">Mobiliario</span>
+                                                            </Nav.Link>
+                                                        </Nav.Item>
+                                                        : ""
                                                 }
                                                 {
-                                                    form.obra?
-                                                        <div className="col-md-4 pt-4 align-self-end">
-                                                            <Nav.Item>
-                                                                <Nav.Link eventKey="obra" 
-                                                                className="btn btn-text-primary btn-hover-light-primary font-weight-bolder mr-2 d-flex justify-content-center"  
-                                                                onClick={() => {onClickTab("obra")}}>Obra civil</Nav.Link>
-                                                            </Nav.Item>
-                                                        </div>
-                                                    :""
+                                                    form.obra ?
+                                                        <Nav.Item className="navi-item">
+                                                            <Nav.Link className="navi-link pl-0 bg-navi-light-primary" eventKey="obra" onClick={() => { onClickTab("obra") }}>
+                                                                <span class="navi-text font-weight-bolder text-hover-primary">Obra civil</span>
+                                                            </Nav.Link>
+                                                        </Nav.Item>
+                                                        : ""
                                                 }
                                             </Nav>
                                         </div>
-                                    </div>
-                                    <div className="separator separator-dashed mt-1 mb-2"></div>
-                                    <div className="form-group row form-group-marginless">
-                                        <div className="col-md-12">
-                                            <Tab.Content>
+                                    <div className="col-md-10">
+                                        <Tab.Content>
                                                 <Tab.Pane eventKey="vacio">
-                                                    </Tab.Pane>
+                                                </Tab.Pane>
                                                 <Tab.Pane eventKey="acabados">
                                                     <div className="col-md-12">
                                                         <div className='row mx-0 d-flex justify-content-center'>
@@ -464,7 +488,7 @@ class PresupuestoDiseñoForm extends Component {
                                                     <OptionsCheckbox requirevalidation = { 0 } formeditado = { formeditado }
                                                         options = { form.partidasAcabados } name = 'partidasAcabados'  value = { form.partidasAcabados }
                                                         onChange = { this.handleChangeCheckboxPartidasAcabados } customgroup="columns-2"
-                                                        customlist="px-3" />
+                                                        customlist="px-3" customcolor="primary" />
                                                 </Tab.Pane>
                                                 <Tab.Pane eventKey="mobiliario">
                                                     <div className="col-md-12">
@@ -485,7 +509,7 @@ class PresupuestoDiseñoForm extends Component {
                                                     </div>
                                                     <OptionsCheckbox requirevalidation = { 0 } formeditado = { formeditado } options = { form.partidasMobiliario }
                                                         name = 'partidasMobiliario' value = { form.partidasMobiliario } customgroup = "columns-2"
-                                                        onChange = { this.handleChangeCheckboxPartidasMobiliario } customlist="px-3" />
+                                                        onChange = { this.handleChangeCheckboxPartidasMobiliario } customlist="px-3" customcolor="primary"/>
                                                 </Tab.Pane>
                                                 <Tab.Pane eventKey="obra">
                                                     <div className="col-md-12">
@@ -506,10 +530,10 @@ class PresupuestoDiseñoForm extends Component {
                                                     </div>
                                                     <OptionsCheckbox requirevalidation = { 0 } formeditado = { formeditado } name = 'partidasObra' 
                                                         options = { form.partidasObra } value = { form.partidasObra } customlist = "px-3"
-                                                        onChange = { this.handleChangeCheckboxPartidasObra } customgroup = "columns-2"/>
+                                                        onChange = { this.handleChangeCheckboxPartidasObra } customgroup = "columns-2" customcolor="primary"/>
                                                 </Tab.Pane>
                                             </Tab.Content>
-                                        </div>
+                                    </div>
                                     </div>
                                 </Tab.Container>
                                     <div className="d-flex justify-content-between border-top mt-3 pt-3">

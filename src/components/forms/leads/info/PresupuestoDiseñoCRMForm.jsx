@@ -69,9 +69,8 @@ class PresupuestoDiseñoCRMForm extends Component {
         });
         onChangeCheckboxes(aux, 'planos')
     }
-    
     render() {
-        const { options, formDiseño, onChange, onSubmit, submitPDF, onChangeCheckboxes, checkButtonSemanas, formeditado, onChangeConceptos, ...props } = this.props
+        const { options, formDiseño, onChange, onSubmit, submitPDF, onChangeCheckboxes, checkButtonSemanas, formeditado, onChangeConceptos, onClickTab, activeKey, defaultKey, ...props } = this.props
         const { date } = this.state
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
@@ -430,9 +429,12 @@ class PresupuestoDiseñoCRMForm extends Component {
                                 </div>
                             </div>
                             <div id="wizard-3-content" className="pb-3" data-wizard-type="step-content">
-                                <Tab.Container defaultActiveKey="options1">
+                                <Tab.Container 
+                                    defaultActiveKey={defaultKey?defaultKey:formDiseño.acabados?"acabados":formDiseño.mobiliario?"mobiliario": formDiseño.obra_civil?"obra_civil":"vacio"}
+                                    activeKey={ activeKey?activeKey:formDiseño.acabados?"acabados":formDiseño.mobiliario?"mobiliario": formDiseño.obra_civil?"obra_civil":"vacio" }
+                                >
                                     <h5 className="mb-4 font-weight-bold text-dark">INGRESA LOS PRECIOS PARAMÉTRICOS Y EL TIEMPO DE EJECUCIÓN</h5>
-                                    <div className="form-group row form-group-marginless">
+                                    <div className={formDiseño.acabados || formDiseño.mobiliario || formDiseño.obra_civil ?"form-group row form-group-marginless":"row form-group-marginless"}>
                                         <div className="col-md-3" >
                                             <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1}
                                                 withicon={1} requirevalidation={1} withformgroup={1} formeditado={formeditado}
@@ -441,53 +443,122 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                 iconclass="flaticon-calendar-with-a-clock-time-tools"
                                                 messageinc="Ingresa el tiempo de ejecución." />
                                         </div>
-                                        <div className="col-md-9 d-flex justify-content-center align-items-center">
-                                            <Nav className="nav nav-pills col-md-12">
-                                                <div className="col-md-4">
-                                                    <Nav.Item>
-                                                        <Nav.Link eventKey="options1" className="btn btn-text-primary btn-hover-light-primary font-weight-bolder mr-2 d-flex justify-content-center">Acabados e instalaciones</Nav.Link>
-                                                    </Nav.Item>
+                                        <div class="col-md-3 align-self-center my-3">
+                                            <div class="d-flex align-items-center justify-content-center">
+                                                <span class="bullet bullet-bar bg-info align-self-stretch"></span>
+                                                <label class="checkbox checkbox-lg checkbox-light-info checkbox-single flex-shrink-0 m-0 mx-2">
+                                                    <input
+                                                        type="checkbox"
+                                                        name='acabados'
+                                                        checked={formDiseño.acabados}
+                                                        onChange={onChange}
+                                                    />
+                                                    <span></span>
+                                                </label>
+                                                <div>
+                                                    <span class="text-dark-75 font-weight-bold font-size-lg">Acabados e instalaciones</span>
                                                 </div>
-                                                <div className="col-md-4">
-                                                    <Nav.Item>
-                                                        <Nav.Link eventKey="options2" className="btn btn-text-primary btn-hover-light-primary font-weight-bolder mr-2 d-flex justify-content-center ">Mobiliario</Nav.Link>
-                                                    </Nav.Item>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 align-self-center my-3">
+                                            <div class="d-flex align-items-center justify-content-center">
+                                                <span class="bullet bullet-bar bg-primary align-self-stretch"></span>
+                                                <label class="checkbox checkbox-lg checkbox-light-primary checkbox-single flex-shrink-0 m-0 mx-2">
+                                                    <input
+                                                        type="checkbox"
+                                                        name="mobiliario"
+                                                        checked={formDiseño.mobiliario}
+                                                        onChange={onChange}
+                                                    />
+                                                    <span></span>
+                                                </label>
+                                                <div>
+                                                    <a class="text-dark-75 font-weight-bold font-size-lg">Mobiliario</a>
                                                 </div>
-                                                <div className="col-md-4">
-                                                    <Nav.Item>
-                                                        <Nav.Link eventKey="options3" className="btn btn-text-primary btn-hover-light-primary font-weight-bolder mr-2 d-flex justify-content-center">Obra civil</Nav.Link>
-                                                    </Nav.Item>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3 align-self-center my-3">
+                                            <div class="d-flex align-items-center justify-content-center">
+                                                <span class="bullet bullet-bar bg-warning align-self-stretch"></span>
+                                                <label class="checkbox checkbox-lg checkbox-light-warning checkbox-single flex-shrink-0 m-0 mx-2">
+                                                    <input
+                                                        type="checkbox"
+                                                        name="obra_civil"
+                                                        checked={formDiseño.obra_civil}
+                                                        onChange={onChange}
+                                                    />
+                                                    <span></span>
+                                                </label>
+                                                <div>
+                                                    <a class="text-dark-75 font-size-sm font-weight-bold font-size-lg mb-1">Obra civil</a>
                                                 </div>
-                                            </Nav>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div className="separator separator-dashed mt-1 mb-2"></div>
+                                    {
+                                        formDiseño.acabados || formDiseño.mobiliario || formDiseño.obra_civil ?
+                                            <div className="separator separator-dashed mt-1 mb-2"></div>
+                                        :""
+                                    }
                                     <div className="form-group row form-group-marginless">
-                                        <div className="col-md-12">
+                                        <div className="col-md-2 align-self-center">
+                                            <Nav className="navi navi-active">
+                                                {
+                                                    formDiseño.acabados ?
+                                                        <Nav.Item className="navi-item">
+                                                            <Nav.Link className="navi-link pl-0 bg-navi-light-info" eventKey="acabados" onClick={() => { onClickTab("acabados") }}>
+                                                                <span class="navi-text font-weight-bolder text-hover-info"> Acabados e instalaciones</span>
+                                                            </Nav.Link>
+                                                        </Nav.Item>
+                                                        : ""
+                                                }
+                                                {
+                                                    formDiseño.mobiliario ?
+                                                        <Nav.Item className="navi-item">
+                                                            <Nav.Link className="navi-link pl-0 bg-navi-light-primary" eventKey="mobiliario" onClick={() => { onClickTab("mobiliario") }}>
+                                                                <span class="navi-text font-weight-bolder text-hover-primary">Mobiliario</span>
+                                                            </Nav.Link>
+                                                        </Nav.Item>
+                                                        : ""
+                                                }
+                                                {
+                                                    formDiseño.obra_civil ?
+                                                        <Nav.Item className="navi-item">
+                                                            <Nav.Link className="navi-link pl-0 bg-navi-light-warning" eventKey="obra_civil" onClick={() => { onClickTab("obra_civil") }}>
+                                                                <span class="navi-text font-weight-bolder text-hover-warning">Obra civil</span>
+                                                            </Nav.Link>
+                                                        </Nav.Item>
+                                                        : ""
+                                                }
+                                            </Nav>
+                                        </div>
+                                        <div className="col-md-10">
                                             <Tab.Content>
-                                                <Tab.Pane eventKey="options1">
+                                                <Tab.Pane eventKey="vacio">
+                                                </Tab.Pane>
+                                                <Tab.Pane eventKey="acabados">
                                                     <div className="col-md-12">
                                                         <div className='row mx-0 d-flex justify-content-center'>
                                                             <div className='col-md-3'>
                                                                 <InputNumberGray requirevalidation={1} formeditado={formeditado}
-                                                                    placeholder="CONSTR. INTERIOR INF." value={formDiseño.construccion_interiores_inf}
+                                                                    placeholder="ACAB. INTERIOR INF." value={formDiseño.construccion_interiores_inf}
                                                                     name="construccion_interiores_inf" onChange={onChange} iconclass="fas fa-dollar-sign"
-                                                                    messageinc="Ingresa el precio de constr. interior inf." thousandseparator={true} formgroup={"mb-1"}/>
+                                                                    messageinc="Ingresa el precio de acab. interior inf." thousandseparator={true} formgroup={"mb-1"} />
                                                             </div>
                                                             <div className='col-md-3'>
                                                                 <InputNumberGray requirevalidation={1} formeditado={formeditado}
-                                                                    placeholder="CONSTR. INTERIOR SUP." value={formDiseño.construccion_interiores_sup}
+                                                                    placeholder="ACAB. INTERIOR SUP." value={formDiseño.construccion_interiores_sup}
                                                                     name="construccion_interiores_sup" onChange={onChange} iconclass="fas fa-dollar-sign"
-                                                                    messageinc="Ingresa el precio de constr. de interiores sup." thousandseparator={true} formgroup={"mb-1"}/>
+                                                                    messageinc="Ingresa el precio de acab. de interiores sup." thousandseparator={true} formgroup={"mb-1"} />
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <OptionsCheckbox requirevalidation = { 0 } formeditado = { formeditado }
-                                                        options = { formDiseño.partidasAcabados } name = 'partidasAcabados'
-                                                        value = { formDiseño.partidasAcabados } onChange = { this.handleChangeCheckboxPartidasAcabados }
-                                                        customgroup = "columns-2" customlist = "px-3" />
+                                                    <OptionsCheckbox requirevalidation={0} formeditado={formeditado}
+                                                        options={formDiseño.partidasAcabados} name='partidasAcabados'
+                                                        value={formDiseño.partidasAcabados} onChange={this.handleChangeCheckboxPartidasAcabados}
+                                                        customgroup="columns-2" customlist="px-3" customcolor="info" />
                                                 </Tab.Pane>
-                                                <Tab.Pane eventKey="options2">
+                                                <Tab.Pane eventKey="mobiliario">
                                                     <div className="col-md-12">
                                                         <div className='row mx-0 d-flex justify-content-center'>
                                                             <div className='col-md-3'>
@@ -495,23 +566,23 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                                     placeholder="MOBILIARIO INF." value={formDiseño.mobiliario_inf}
                                                                     name="mobiliario_inf" onChange={onChange}
                                                                     messageinc="Ingresa el precio de mobiliario inf."
-                                                                    iconclass="fas fa-dollar-sign" thousandseparator={true} formgroup={"mb-1"}/>
+                                                                    iconclass="fas fa-dollar-sign" thousandseparator={true} formgroup={"mb-1"} />
                                                             </div>
                                                             <div className='col-md-3'>
                                                                 <InputNumberGray requirevalidation={1} formeditado={formeditado}
                                                                     placeholder="MOBILIARIO SUP." value={formDiseño.mobiliario_sup}
                                                                     name="mobiliario_sup" onChange={onChange}
                                                                     messageinc="Ingresa el precio de mobiliario sup."
-                                                                    iconclass="fas fa-dollar-sign" thousandseparator={true} formgroup={"mb-1"}/>
+                                                                    iconclass="fas fa-dollar-sign" thousandseparator={true} formgroup={"mb-1"} />
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <OptionsCheckbox requirevalidation = { 0 } formeditado = { formeditado }
-                                                        options = { formDiseño.partidasMobiliario } name = 'partidasMobiliario'
-                                                        value = { formDiseño.partidasMobiliario } customgroup = "columns-2"
-                                                        onChange = { this.handleChangeCheckboxPartidasMobiliario } customlist = "px-3" />
+                                                    <OptionsCheckbox requirevalidation={0} formeditado={formeditado}
+                                                        options={formDiseño.partidasMobiliario} name='partidasMobiliario'
+                                                        value={formDiseño.partidasMobiliario} customgroup="columns-2"
+                                                        onChange={this.handleChangeCheckboxPartidasMobiliario} customlist="px-3" customcolor="primary" />
                                                 </Tab.Pane>
-                                                <Tab.Pane eventKey="options3">
+                                                <Tab.Pane eventKey="obra_civil">
                                                     <div className="col-md-12">
                                                         <div className='row mx-0 d-flex justify-content-center'>
                                                             <div className='col-md-3'>
@@ -519,21 +590,21 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                                     placeholder="CONST. CIVIL INF." value={formDiseño.construccion_civil_inf}
                                                                     name="construccion_civil_inf" onChange={onChange}
                                                                     messageinc="Ingresa el precio de const. civil inf."
-                                                                    iconclass="fas fa-dollar-sign" thousandseparator={true} formgroup={"mb-1"}/>
+                                                                    iconclass="fas fa-dollar-sign" thousandseparator={true} formgroup={"mb-1"} />
                                                             </div>
                                                             <div className='col-md-3'>
                                                                 <InputNumberGray requirevalidation={1} formeditado={formeditado}
                                                                     placeholder="CONST. CIVIL SUP." value={formDiseño.construccion_civil_sup}
                                                                     name="construccion_civil_sup" onChange={onChange}
                                                                     messageinc="Ingresa el precio de const. civil sup."
-                                                                    iconclass="fas fa-dollar-sign" thousandseparator={true} formgroup={"mb-1"}/>
+                                                                    iconclass="fas fa-dollar-sign" thousandseparator={true} formgroup={"mb-1"} />
                                                             </div>
                                                         </div>
                                                     </div>
-                                                    <OptionsCheckbox requirevalidation = { 0 } formeditado = { formeditado }
-                                                        options = { formDiseño.partidasObra } name = 'partidasObra'
-                                                        value = { formDiseño.partidasObra } customgroup = "columns-2"
-                                                        onChange = { this.handleChangeCheckboxPartidasObra } customlist = "px-3" />
+                                                    <OptionsCheckbox requirevalidation={0} formeditado={formeditado}
+                                                        options={formDiseño.partidasObra} name='partidasObra'
+                                                        value={formDiseño.partidasObra} customgroup="columns-2"
+                                                        onChange={this.handleChangeCheckboxPartidasObra} customlist="px-3" customcolor="warning" />
                                                 </Tab.Pane>
                                             </Tab.Content>
                                         </div>
