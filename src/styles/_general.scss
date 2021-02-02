@@ -1501,3 +1501,33 @@ span.font-weight-bolder.text-hover-error:hover{
     border-radius: 50%;
     display: inline-block;
 }
+
+.navi .navi-item .navi-link.active .text-hover-warning{
+    color: #ffa800;
+    border-left: 3px solid #ffa800;
+    padding-left: 10px;
+}
+
+.navi .navi-item .navi-link.active .text-hover-info{
+    color: #8950FC;
+    border-left: 3px solid #8950FC;
+    padding-left: 10px;
+}
+
+.navi .navi-item .navi-link.active .text-hover-primary{
+    color: #2171c1 ;
+    border-left: 3px solid #2171c1 ;
+    padding-left: 10px;
+}
+.navi.navi-active .navi-item .bg-navi-light-info.active {
+    background-color: #f4efff;
+    border-radius: 0;
+}
+.navi.navi-active .navi-item .bg-navi-light-primary.active {
+    background-color: #ebf5ff;
+    border-radius: 0;
+}
+.navi.navi-active .navi-item .bg-navi-light-warning.active {
+    background-color: #fff7e8;
+    border-radius: 0;
+}
