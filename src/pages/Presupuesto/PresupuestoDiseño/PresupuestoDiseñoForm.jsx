@@ -99,7 +99,12 @@ class PresupuestoDiseñoForm extends Component {
             empresa: '',
             tipoProyecto: '',
             proyecto: '',
+            obra: true,
+            mobiliario: true,
+            acabados: true,
         },
+        activeKey: '',
+        defaultKey: '',
         options: {
             empresas: [],
             precios: [],
@@ -553,6 +558,7 @@ class PresupuestoDiseñoForm extends Component {
     onChange = e => {
         const { name, value, type, checked } = e.target
         const { form, data, options } = this.state
+        let { defaultKey, activeKey } = this.state
         form[name] = value
         let planos = []
         let partidas = [];
@@ -780,10 +786,14 @@ class PresupuestoDiseñoForm extends Component {
             default:
                 break;
         }
+        defaultKey = form.acabados?"acabados":form.mobiliario?"mobiliario": form.obra?"obra":"vacio"
+        activeKey = form.acabados?"acabados":form.mobiliario?"mobiliario": form.obra?"obra":"vacio"
         this.setState({
             ...this.state,
             form,
             options,
+            defaultKey,
+            activeKey,
             data
         })
     }
@@ -960,8 +970,17 @@ class PresupuestoDiseñoForm extends Component {
             form: form
         })
     }
+    handleClickTab = (type) => { 
+        let {defaultKey, form} = this.state
+        defaultKey = form.acabados?"acabados":form.mobiliario?"mobiliario": form.obra?"obra":"vacio"
+        this.setState({
+            ...this.state,
+            activeKey: type,
+            defaultKey
+        })
+    }
     render() {
-        const { options, title, form, formeditado, presupuesto, modalPdfs } = this.state
+        const { options, title, form, formeditado, presupuesto, modalPdfs, activeKey, defaultKey } = this.state
         return (
             <Layout active={'presupuesto'} {...this.props}>
                 <Card className="card-custom">
@@ -1000,6 +1019,10 @@ class PresupuestoDiseñoForm extends Component {
                             onChangeConceptos = { this.onChangeConceptos }
                             checkButtonSemanas = { this.checkButtonSemanas }
                             onChangeCheckboxes = { this.handleChangeCheckbox }
+                            onClickTab = { this.handleClickTab }
+                            activeKey={activeKey}
+                            defaultKey={defaultKey}
+                            
                         />
                     </Card.Body>
                 </Card>
