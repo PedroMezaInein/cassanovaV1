@@ -106,7 +106,7 @@ export const ICONS_MODULES = {
     'faAtlas':faAtlas, 'faCubes':faCubes
 }
 //Paleta de colores
-export const COLORS = ["#20ACE9", "#EE4C9E", "#62D270 ", "#E63850", "#A962E2", "#E4C127", "#1D69E1", "#8C5E4D", "#737373"];
+export const COLORS = ["#20ACE9", "#EE4C9E", "#62D270", "#E63850", "#A962E2", "#E4C127", "#1D69E1", "#8C5E4D", "#737373"];
 
 //Expresiones Regulares
 
