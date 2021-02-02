@@ -286,6 +286,10 @@ class Herramienta extends Component {
             (response) => {
                 this.getHerramientasAxios()
                 doneAlert('Herramienta eliminada con éxito')
+                this.setState({
+                    ...this.state,
+                    modalDelete: false,
+                })
             },
             (error) => {
                 console.log(error, 'error')

@@ -131,6 +131,7 @@ class Proveedor extends Component {
         const { proveedor } = this.state
         await axios.delete(URL_DEV + 'proveedores/' + proveedor.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                this.getProveedorAxios()
                 const { proveedores } = response.data
                 const { data } = this.state
                 data.proveedores = proveedores
