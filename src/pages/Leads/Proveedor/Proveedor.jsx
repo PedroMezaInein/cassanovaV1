@@ -95,7 +95,7 @@ class Proveedor extends Component {
     changePageEdit = (proveedor) => {
         const { history } = this.props
         history.push({
-            pathname: '/administracion/proveedores/edit',
+            pathname: '/leads/proveedores/edit',
             state: { proveedor: proveedor }
         });
     }
@@ -170,7 +170,7 @@ class Proveedor extends Component {
                     subtitle='Listado de proveedores'
                     mostrar_boton={true}
                     abrir_modal={false}
-                    url='/administracion/proveedores/add'
+                    url='/leads/proveedores/add'
                     mostrar_acciones={true}
                     actions={{
                         'edit': { function: this.changePageEdit },
@@ -199,7 +199,6 @@ class Proveedor extends Component {
         )
     }
 }
-
 
 const mapStateToProps = state => {
     return {

@@ -64,9 +64,9 @@ class ProveedorForm extends Component {
                         })
                     }
                     else
-                        history.push('/administracion/proveedores')
+                        history.push('/leads/proveedores')
                 } else
-                    history.push('/administracion/proveedores')
+                    history.push('/leads/proveedores')
                 break;
             case 'convert':
                 if (state) {
@@ -79,9 +79,9 @@ class ProveedorForm extends Component {
                         })
                     }
                     else
-                        history.push('/administracion/proveedores')
+                        history.push('/leads/proveedores')
                 } else
-                    history.push('/administracion/proveedores')
+                    history.push('/leads/proveedores')
                 break;
             default:
                 break;
@@ -214,7 +214,7 @@ class ProveedorForm extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El provedor fue registrado con éxito.')
                 const { history } = this.props
                 history.push({
-                    pathname: '/administracion/proveedores'
+                    pathname: '/leads/proveedores'
                 });
             },
             (error) => {
@@ -243,7 +243,7 @@ class ProveedorForm extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El provedor fue registrado con éxito.')
                 const { history } = this.props
                 history.push({
-                    pathname: '/administracion/proveedores'
+                    pathname: '/leads/proveedores'
                 });
             },
             (error) => {

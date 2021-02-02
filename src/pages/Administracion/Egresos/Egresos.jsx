@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV, EGRESOS_COLUMNS, ADJUNTOS_COLUMNS } from '../../../constants'
 import { setOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setAdjuntosList, setSelectOptions } from '../../../functions/setters'
-import { errorAlert, waitAlert, forbiddenAccessAlert, createAlert, deleteAlert, doneAlert } from '../../../functions/alert'
+import { errorAlert, waitAlert, forbiddenAccessAlert, createAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { Button, FileInput } from '../../../components/form-components'
 import { Modal, ModalDelete } from '../../../components/singles'
@@ -223,14 +223,10 @@ class egresos extends Component {
                         });
                         let auxProveedor = ''
                         data.proveedores.find(function (element, index) {
-                            let cadena = obj.nombre_emisor.replace(' S. C.', ' SC').toUpperCase()
-                            cadena = cadena.replace(',S.A.', ' SA').toUpperCase()
-                            cadena = cadena.replace(/,/g, '').toUpperCase()
-                            cadena = cadena.replace(/\./g, '').toUpperCase()
-                            if (element.razon_social.toUpperCase() === obj.nombre_emisor.toUpperCase() ||
-                                element.razon_social.toUpperCase() === cadena) {
-                                auxProveedor = element
-                            }
+                            if(element.rfc)
+                                if (element.rfc.toUpperCase() === obj.rfc_emisor.toUpperCase()) {
+                                    auxProveedor = element
+                                }
                             return false
                         });
                         if (auxEmpresa) {
@@ -239,10 +235,13 @@ class egresos extends Component {
                         } else {
                             errorAlert('No existe la empresa')
                         }
-                        if (auxProveedor) {
-                            form.proveedor = auxProveedor.id.toString()
-                        } else {
-                            createAlert('NO EXISTE EL PROVEEDOR', '¿LO QUIERES CREAR?', () => this.addProveedorAxios(obj))
+                        if (auxProveedor) { form.proveedor = auxProveedor.id.toString() } 
+                        else {
+                            if(obj.nombre_emisor === ''){
+                                const { history } = this.props
+                                errorAlertRedirectOnDissmis('LA FACTURA NO TIENE RAZÓN SOCIAL, CREA EL PROVEEDOR DESDE LA SECCIÓN DE PROVEEDORES EN LEADS.', history, '/leads/proveedores')
+                            }else
+                                createAlert('NO EXISTE EL PROVEEDOR', '¿LO QUIERES CREAR?', () => this.addProveedorAxios(obj))
                         }
                         if (auxEmpresa && auxProveedor) {
                             Swal.close()
