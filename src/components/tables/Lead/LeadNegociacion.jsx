@@ -71,7 +71,7 @@ class LeadNegociacion extends Component {
                                 <th style={{ minWidth: "120px" }} className="text-center">Empresa</th>
                                 <th style={{ minWidth: "100px" }} className="text-center">Vendedor</th>
                                 <th style={{ minWidth: "100px" }} className="text-center">Estatus</th>
-                                <th style={{ minWidth: "95px" }}></th>
+                                <th style={{ minWidth: "97px" }}></th>
                             </tr>
                         </thead>
                         <tbody>
