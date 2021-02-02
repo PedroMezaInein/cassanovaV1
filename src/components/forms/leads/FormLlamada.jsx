@@ -101,6 +101,7 @@ class FormLlamada extends Component {
                                         value={form.email}
                                         onChange={onChange}
                                         patterns={EMAIL}
+                                        letterCase = { false }
                                     />
                                 </div>
                                 : ''
@@ -146,7 +147,7 @@ class FormLlamada extends Component {
                                             name="comentario"
                                             value={form.comentario}
                                             onChange={onChange}
-                                            rows={1}
+                                            rows={3}
                                             as='textarea'
                                         />
                                     </div>

@@ -141,8 +141,13 @@ class LeadInfo extends Component {
             subtotal: 0.0,
             fase1: true,
             fase2: true,
-            renders: ''
+            renders: '',
+            acabados: true,
+            mobiliario: true,
+            obra_civil: true,
         },
+        activeKey: '',
+        defaultKey: '',
         // tipo: '',
         options: {
             empresas: [],
@@ -400,6 +405,7 @@ class LeadInfo extends Component {
     onChangePresupuesto = e => {
         const { name, value, type, checked } = e.target
         const { formDiseño, data } = this.state
+        let { defaultKey, activeKey } = this.state
         formDiseño[name] = value
         switch (name) {
             case 'esquema':
@@ -572,9 +578,13 @@ class LeadInfo extends Component {
             default:
                 break;
         }
+        defaultKey = formDiseño.acabados?"acabados":formDiseño.mobiliario?"mobiliario": formDiseño.obra_civil?"obra_civil":"vacio"
+        activeKey = formDiseño.acabados?"acabados":formDiseño.mobiliario?"mobiliario": formDiseño.obra_civil?"obra_civil":"vacio"
         this.setState({
             ...this.state,
-            formDiseño
+            formDiseño,
+            defaultKey,
+            activeKey,
         })
     }
     calculateSemanas = tiempo => {
@@ -1332,8 +1342,18 @@ class LeadInfo extends Component {
     componentDidUpdate(){
         $(".pagination").removeClass("page-link");
     }
+    
+    handleClickTab = (type) => { 
+        let {defaultKey, formDiseño} = this.state
+        defaultKey = formDiseño.acabados?"acabados":formDiseño.mobiliario?"mobiliario": formDiseño.obra_civil?"obra_civil":"vacio"
+        this.setState({
+            ...this.state,
+            activeKey: type,
+            defaultKey
+        })
+    }
     render() {
-        const { lead, form, formHistorial, options, formAgenda, formDiseño, modal, formeditado, itemsPerPage, activePage } = this.state
+        const { lead, form, formHistorial, options, formAgenda, formDiseño, modal, formeditado, itemsPerPage, activePage, activeKey, defaultKey } = this.state
         return (
             <Layout active={'leads'}  {...this.props} botonHeader={this.botonHeader} >
                 <Tab.Container defaultActiveKey="2" className="p-5">
@@ -1695,6 +1715,9 @@ class LeadInfo extends Component {
                                                 onSubmit={this.onSubmitPresupuestoDiseño}
                                                 submitPDF={this.onSubmitPDF}
                                                 formeditado={formeditado}
+                                                onClickTab = { this.handleClickTab }
+                                                activeKey={activeKey}
+                                                defaultKey={defaultKey}
                                             />
                                         </Card.Body>
                                     </Tab.Pane>

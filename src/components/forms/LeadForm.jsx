@@ -169,6 +169,7 @@ class LeadForm extends Component {
                             name="servicios"
                             value={form.servicios}
                             onChange={this.handleChangeCheckbox}
+                            customcolor="primary"
                         />
                     </div>
                 </div>
