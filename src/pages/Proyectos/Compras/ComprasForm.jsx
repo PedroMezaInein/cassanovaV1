@@ -4,7 +4,7 @@ import axios from 'axios'
 import Swal from 'sweetalert2'
 import { URL_DEV } from '../../../constants'
 import { setOptions, setSelectOptions } from '../../../functions/setters'
-import { errorAlert, waitAlert, createAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
+import { errorAlert, waitAlert, createAlert, forbiddenAccessAlert, doneAlert, errorAlertRedirectOnDissmis } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { ComprasForm as ComprasFormulario } from '../../../components/forms'
 import { SolicitudCompraCard } from '../../../components/cards'
@@ -191,14 +191,10 @@ class ComprasForm extends Component {
                         });
                         let auxProveedor = ''
                         data.proveedores.find(function (element, index) {
-                            let cadena = obj.nombre_emisor.replace(' S. C.', ' SC').toUpperCase()
-                            cadena = cadena.replace(',S.A.', ' SA').toUpperCase()
-                            cadena = cadena.replace(/,/g, '').toUpperCase()
-                            cadena = cadena.replace(/\./g, '').toUpperCase()
-                            if (element.razon_social.toUpperCase() === obj.nombre_emisor.toUpperCase() ||
-                                element.razon_social.toUpperCase() === cadena) {
-                                auxProveedor = element
-                            }
+                            if(element.rfc)
+                                if (element.rfc.toUpperCase() === obj.rfc_emisor.toUpperCase()) {
+                                    auxProveedor = element
+                                }
                             return false
                         });
                         if (auxEmpresa) {
@@ -213,7 +209,12 @@ class ComprasForm extends Component {
                                 options['contratos'] = setOptions(auxProveedor.contratos, 'nombre', 'id')
                             }
                         } else {
-                            createAlert('NO EXISTE EL PROVEEDOR', '¿LO QUIERES CREAR?', () => this.addProveedorAxios(obj))
+                            if(obj.nombre_emisor === ''){
+                                const { history } = this.props
+                                errorAlertRedirectOnDissmis('LA FACTURA NO TIENE RAZÓN SOCIAL, CREA EL PROVEEDOR DESDE LA SECCIÓN DE PROVEEDORES EN LEADS.', history, '/leads/proveedores')
+                            }else {
+                                createAlert('NO EXISTE EL PROVEEDOR', '¿LO QUIERES CREAR?', () => this.addProveedorAxios(obj))
+                            }
                         }
                         if (auxEmpresa && auxProveedor) {
                             Swal.close()
