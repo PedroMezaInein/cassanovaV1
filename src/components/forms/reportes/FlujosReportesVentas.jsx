@@ -69,80 +69,43 @@ class FlujosReportesForm extends Component {
             <Form>
                 <div className="row mx-0 justify-content-center">
                     <div className="col-md-3">
-                        <SelectSearchGray
-                            withtaglabel={1}
-                            withtextlabel={1}
-                            name = 'empresa'
-                            options = { options.empresas }
-                            placeholder = 'SELECCIONA LA EMPRESA'
-                            value = { form.empresa }
-                            onChange = { this.updateEmpresa }
-                            iconclass = "far fa-building"
-                            messageinc = "Selecciona la empresa."
-                            />
+                        <SelectSearchGray withtaglabel = { 1 } withtextlabel = { 1 } name = 'empresa'
+                            options = { options.empresas } placeholder = 'SELECCIONA LA EMPRESA' value = { form.empresa }
+                            onChange = { this.updateEmpresa } iconclass = "far fa-building" messageinc = "Selecciona la empresa." />
                     </div>
                     <div className="col-md-3">
-                        <SelectSearchGray
-                            withtaglabel={1}
-                            withtextlabel={1}
-                            name = 'mes'
-                            options = { this.getMeses() }
-                            placeholder = 'SELECCIONA EL MES'
-                            value = { form.mes }
-                            onChange = { this.updateMes }
-                            iconclass = "fas fa-calendar-day"
-                            messageinc = "Selecciona el mes."
-                            />
+                        <SelectSearchGray withtaglabel = { 1 } withtextlabel = { 1 } name = 'mes' options = { this.getMeses() }
+                            placeholder = 'SELECCIONA EL MES' value = { form.mes } onChange = { this.updateMes }
+                            iconclass = "fas fa-calendar-day" messageinc = "Selecciona el mes." />
                     </div>
                     <div className="col-md-2">
-                        <SelectSearchGray
-                            withtaglabel={1}
-                            withtextlabel={1}
-                            name = 'año'
-                            options = { this.getAños() }
-                            placeholder = 'SELECCIONA EL AÑO'
-                            value = { form.año }
-                            onChange = { this.updateAño }
-                            iconclass = "fas fa-calendar-day"
-                            messageinc = "Selecciona el año."
-                            />
+                        <SelectSearchGray withtaglabel = { 1 } withtextlabel = { 1 } name = 'año' options = { this.getAños() }
+                            placeholder = 'SELECCIONA EL AÑO' value = { form.año } onChange = { this.updateAño }
+                            iconclass = "fas fa-calendar-day" messageinc = "Selecciona el año." />
                     </div>
-                    <div className="col-md-2">
-                        <SelectSearchGray
-                            withtaglabel={1}
-                            withtextlabel={1}
-                            name = 'año'
-                            options = { this.getRangos() }
-                            placeholder = 'SELECCIONA EL RANGO'
-                            value = { form.rango }
-                            onChange = { this.updateRango }
-                            iconclass = "fas fa-calendar-day"
-                            messageinc = "Selecciona el rango."
-                            />
-                    </div>
+                    {
+                        form.no_adjunto ?
+                            <div className="col-md-2"> 
+                                <SelectSearchGray withtaglabel = { 1 } withtextlabel = { 1 } name = 'año' options = { this.getRangos() } 
+                                    placeholder = 'SELECCIONA EL RANGO' value = { form.rango } onChange = { this.updateRango }
+                                    iconclass = "fas fa-calendar-day" messageinc = "Selecciona el rango." />
+                            </div>
+                        : ''
+                    }
+                    
                     <div className="col-md-2">
                         <div className="form-group row">
-                            <label className="col-form-label col-md-12 font-weight-bold text-dark-60">¿Se adjuntará el reporte?</label>
+                            <label className="col-form-label col-md-12 font-weight-bold text-dark-60">¿Se adjuntará un reporte existente?</label>
                             <div className="col-md-12">
                                 <div className="radio-inline text-dark-50 font-weight-bold">
                                     <label className="radio radio-outline radio-outline-2x radio-primary">
-                                        <input 
-                                            type="radio" 
-                                            name="si_adjunto"
-                                            checked={form.si_adjunto}
-                                            onChange={onChange}
-                                            value={form.si_adjunto}
-                                        />Si
+                                        <input  type = "radio" name = "si_adjunto" checked = { form.si_adjunto } onChange = { onChange }
+                                            value = { form.si_adjunto } />Si
                                             <span></span>
-                                        </label>
+                                    </label>
                                     <label className="radio radio-outline radio-outline-2x radio-primary">
-                                        <input
-                                            type="radio" 
-                                            name="no_adjunto"
-                                            checked={form.no_adjunto}
-                                            onChange={onChange}
-                                            value={form.no_adjunto}
-                                        />No
+                                        <input type = "radio" name = "no_adjunto" checked = { form.no_adjunto } onChange = { onChange }
+                                            value = { form.no_adjunto } />No
                                         <span></span>
                                     </label>
                                 </div>
@@ -150,26 +113,8 @@ class FlujosReportesForm extends Component {
                         </div>
                     </div>
                 </div>
-                    {
-                        form.si_adjunto?
-                            <>
-                                <div className="separator separator-dashed mt-1 mb-2"></div>
-                                    <div className="form-group row form-group-marginless justify-content-center mt-3 text-center">
-                                        <div className="col-md-12 text-center">
-                                        <label className="col-form-label my-2 font-weight-bolder">{form.adjuntos.reportes.placeholder}</label>
-                                            <ItemSlider
-                                                items={form.adjuntos.reportes.files}
-                                                item='reportes' 
-                                                handleChange={handleChange}
-                                                multiple={false} 
-                                            />
-                                    </div>
-                                </div>
-                            </>
-                        :''
-                    }
                 {
-                    form.no_adjunto?
+                    form.no_adjunto ?
                         <div className="card-footer pt-3 pb-0 pr-1">
                             <div className="row">
                                 <div className="col-lg-12 text-center pr-0 pb-0">
@@ -179,17 +124,25 @@ class FlujosReportesForm extends Component {
                                 </div>
                             </div>
                         </div>
-                    : form.si_adjunto?
-                        <div className="card-footer pt-3 pb-0 pr-1">
-                            <div className="row">
-                                <div className="col-lg-12 text-center pr-0 pb-0">
-                                    <Button icon='' className="btn btn-light-primary font-weight-bold" text="ENVIAR REPORTE" 
-                                        onClick={ onSubmitAdjunto } 
-                                    />
+                    : 
+                        <>
+                            <div className="separator separator-dashed mt-1 mb-2"></div>
+                            <div className="form-group row form-group-marginless justify-content-center mt-3 text-center">
+                                <div className="col-md-12 text-center">
+                                    <label className="col-form-label my-2 font-weight-bolder">{form.adjuntos.reportes.placeholder}</label>
+                                    <ItemSlider items = { form.adjuntos.reportes.files } item = 'reportes' 
+                                        handleChange = { handleChange } multiple = { false } />
+                                </div>
                             </div>
-                        </div>
-                    </div>
-                    :''
+                            <div className="card-footer pt-3 pb-0 pr-1">
+                                <div className="row">
+                                    <div className="col-lg-12 text-center pr-0 pb-0">
+                                        <Button icon='' className="btn btn-light-primary font-weight-bold" text="ENVIAR REPORTE" 
+                                            onClick={ onSubmitAdjunto }  />
+                                    </div>
+                                </div>
+                            </div>
+                        </>
                 }
                 
             </Form>
