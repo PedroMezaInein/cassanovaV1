@@ -1208,51 +1208,34 @@ export const SOLICITUD_EGRESO_COLUMNS = [
     }
 ]
 
+export const PAGOS_COLUMNS = [
+    { Header: 'Opciones', accessor: 'actions'},
+    { Header: 'ID', accessor: 'identificador'},
+    { Header: 'Fecha', accessor: 'fecha'},
+    { Header: 'Proveedor', accessor: 'proveedor'},
+    { Header: 'Factura', accessor: 'factura'},
+    { Header: 'Subárea', accessor: 'subarea'},
+    { Header: 'Monto', accessor: 'monto'},
+    { Header: 'Comisión', accessor: 'comision'},
+    { Header: 'Total', accessor: 'total'},
+    { Header: 'Cuenta', accessor: 'cuenta'},
+    { Header: 'Pago', accessor: 'pago'},
+    { Header: 'Impuesto', accessor: 'impuesto'},
+    { Header: 'Estatus', accessor: 'estatus'},
+]
+
 export const SOLICITUD_VENTA_COLUMNS = [
-    {
-        Header: 'OPCIONES',
-        accessor: 'actions',
-    },
-    {
-        Header: 'Proyecto',
-        accessor: 'proyecto'
-    },
-    {
-        Header: 'Empresa',
-        accessor: 'empresa'
-    },
-    {
-        Header: 'Monto',
-        accessor: 'monto'
-    },
-    {
-        Header: 'Factura',
-        accessor: 'factura'
-    },
-    {
-        Header: 'Pago', //Cambié de Tipo de pago a Pago
-        accessor: 'tipoPago'
-    },
-    {
-        Header: 'Descripción',
-        accessor: 'descripcion'
-    },
-    {
-        Header: 'Área',
-        accessor: 'area'
-    },
-    {
-        Header: 'Sub-Área',
-        accessor: 'subarea'
-    },
-    {
-        Header: 'Adjunto',
-        accessor: 'adjunto'
-    },
-    {
-        Header: 'Fecha',
-        accessor: 'fecha',
-    },
+    { Header: 'OPCIONES', accessor: 'actions' },
+    { Header: 'Proyecto', accessor: 'proyecto' },
+    { Header: 'Empresa', accessor: 'empresa' },
+    { Header: 'Monto', accessor: 'monto' },
+    { Header: 'Factura', accessor: 'factura' },
+    { Header: 'Pago', accessor: 'tipoPago' },
+    { Header: 'Descripción', accessor: 'descripcion' },
+    { Header: 'Área', accessor: 'area' },
+    { Header: 'Sub-Área', accessor: 'subarea' },
+    { Header: 'Adjunto', accessor: 'adjunto' },
+    { Header: 'Fecha', accessor: 'fecha' }
 ]
 
 export const CONCEPTOS_COLUMNS = [
