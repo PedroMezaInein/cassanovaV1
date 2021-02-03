@@ -159,7 +159,7 @@ class SolicitudEgresos extends Component {
     changePageEdit = solicitud => {
         const { history } = this.props
         history.push({
-            pathname: '/mercadotecnia/pagos/edit',
+            pathname: '/mercadotecnia/solicitud-de-pagos/edit',
             state: { solicitud: solicitud }
         });
     }
@@ -296,7 +296,7 @@ class SolicitudEgresos extends Component {
             <Layout active={'mercadotecnia'}  {...this.props}>
                 <NewTableServerRender  columns = { SOLICITUD_EGRESO_COLUMNS }  title = 'Solicitudes de pagos' 
                     subtitle = 'Listado de solicitudes de pagos' mostrar_boton = { true } abrir_modal = { false }
-                    url = '/mercadotecnia/pagos/add' mostrar_acciones = { true }
+                    url = '/mercadotecnia/solicitud-de-pagos/add' mostrar_acciones = { true }
                     actions = { 
                         { 
                             'edit': { function: this.changePageEdit }, 
