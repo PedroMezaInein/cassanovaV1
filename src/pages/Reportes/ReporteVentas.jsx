@@ -1966,7 +1966,7 @@ class ReporteVentas extends Component {
                                 if(empresaActive.toString() === empresa.id.toString())
                                     return(
                                         <div className="d-flex justify-content-center mt-4">
-                                            <table className="table table-responsive-lg table-vertical-center text-center mt-3" id="esquemas">
+                                            <table className="table table-vertical-center text-center mt-3" id="reportes">
                                                 <thead>
                                                     <tr className="bg-gray-200">
                                                         <th>

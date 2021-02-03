@@ -67,7 +67,7 @@ class FlujosReportesForm extends Component {
         const { form, options, onSubmit, onChange, handleChange, onSubmitAdjunto} = this.props
         return (
             <Form>
-                <div className="row mx-0 justify-content-center mb-3">
+                <div className="row mx-0 justify-content-center">
                     <div className="col-md-3">
                         <SelectSearchGray
                             withtaglabel={1}
@@ -149,6 +149,7 @@ class FlujosReportesForm extends Component {
                             </div>
                         </div>
                     </div>
+                </div>
                     {
                         form.si_adjunto?
                             <>
@@ -167,7 +168,6 @@ class FlujosReportesForm extends Component {
                             </>
                         :''
                     }
-                </div>
                 {
                     form.no_adjunto?
                         <div className="card-footer pt-3 pb-0 pr-1">
