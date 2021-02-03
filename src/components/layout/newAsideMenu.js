@@ -10,14 +10,12 @@ export default function NewAsideMenu({props}) {
     if(!document.body.classList.contains('open-f')){    
       document.body.classList.remove('aside-minimize'); 
       document.body.classList.add('aside-minimize-hover');
-      document.body.classList.add("overflow-hidden");
     }
   }
   function asideOnMouseLeave(e) {    
     if(!document.body.classList.contains('open-f')){
       document.body.classList.remove('aside-minimize-hover'); 
       document.body.classList.add('aside-minimize'); 
-      document.body.classList.remove("overflow-hidden");
     }
   }
 
@@ -40,7 +38,6 @@ export default function NewAsideMenu({props}) {
       <> 
       
         <div id="aside" onMouseEnter={asideOnMouseEnter} onMouseLeave={asideOnMouseLeave} className="aside aside-left aside-fixed d-flex flex-column flex-row-auto" >
-            {asideOnMouseLeave()}
             <div className="brand flex-column-auto" >
               <a href="/mi-proyecto" className="brand-logo">
                 <img alt="Logo" src="/dashboard.png" />
