@@ -434,7 +434,7 @@ class App extends Component{
                     <Route path = "/mercadotecnia/solicitud-de-pagos/:action" exact component = { SolicitudEgresosForm } />
 
                     {/* ANCHOR Routes for user settings */}
-
+                    
                     <Route path = "/mi-perfil" exact component ={ AccountSettings } />
                     <Route path = "/mi-calendario" exact component ={ Calendario } />
                     <Route path = "/mis-notificaciones" exact component ={ Notificaciones } />
