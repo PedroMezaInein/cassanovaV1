@@ -152,9 +152,7 @@ class LeadInfo extends Component {
         options: {
             empresas: [],
             tipos: [],
-            origenes: [],
             tiposContactos: [],
-            precios: [],
             esquemas: []
         },
         formeditado: 0,
@@ -191,7 +189,7 @@ class LeadInfo extends Component {
         const { history } = this.props
         if (state) {
             if (state.lead) {
-                const { form, options, formDiseño } = this.state
+                const { form, formDiseño } = this.state
                 const { lead, tipo } = state
                 form.name = lead.nombre === 'SIN ESPECIFICAR' ? '' : lead.nombre.toUpperCase()
                 form.email = lead.email.toUpperCase()
@@ -245,7 +243,6 @@ class LeadInfo extends Component {
                     lead: lead,
                     form,
                     formeditado: 1,
-                    options,
                     tipo: tipo,
                     formDiseño
                 })
@@ -268,7 +265,6 @@ class LeadInfo extends Component {
                 Swal.close()
                 const { empresas, medios } = response.data
                 const { options } = this.state
-                options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['tiposContactos'] = setOptions(medios, 'tipo', 'id')
                 options.esquemas = setOptions([
                     { name: 'Esquema 1', value: 'esquema_1' },
@@ -961,12 +957,19 @@ class LeadInfo extends Component {
             (response) => {
                 const { lead } = response.data
                 const { history } = this.props
-                const { form, formDiseño, data } = this.state
+                const { form, formDiseño, data, options } = this.state
+                options.tipos = setOptions(lead.empresa.tipos, 'tipo', 'id')
 
                 form.name = lead.nombre
                 form.email = lead.email
                 form.telefono = lead.telefono
-                form.proyecto = lead.prospecto.nombre_proyecto
+                
+                if(lead.prospecto){
+                    form.proyecto = lead.prospecto.nombre_proyecto
+                    if(lead.prospecto.tipo_proyecto)
+                        form.tipoProyecto = lead.prospecto.tipo_proyecto.id.toString()
+                }
+                
                 form.fecha = new Date(lead.created_at)
                 
                 if (lead.presupuesto_diseño) {
@@ -1069,7 +1072,8 @@ class LeadInfo extends Component {
                     ...this.state,
                     lead: lead,
                     form,
-                    formDiseño
+                    formDiseño,
+                    options
                 })
 
                 history.push({
@@ -1209,11 +1213,7 @@ class LeadInfo extends Component {
         })
     }
 
-    submitForm = e => {
-        this.addLeadInfoAxios()
-    }
-
-    async addLeadInfoAxios() {
+    addLeadInfoAxios = async() => {
         const { access_token } = this.props.authUser
         const { form, lead } = this.state
         await axios.put(URL_DEV + 'crm/update/lead-en-contacto/' + lead.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -1513,14 +1513,9 @@ class LeadInfo extends Component {
                                             </Card.Title>
                                         </Card.Header>
                                         <Card.Body className="py-0">
-                                            <InformacionGeneral
-                                                form={form}
-                                                onChange={this.onChange}
-                                                onSubmit={this.submitForm}
-                                                user={this.props.authUser.user}
-                                                lead={lead}
-                                                formeditado={formeditado}
-                                            />
+                                            <InformacionGeneral form = { form } onChange = { this.onChange }
+                                                onSubmit = { this.addLeadInfoAxios } user = { this.props.authUser.user }
+                                                lead = { lead } formeditado = { formeditado } options = { options } />
                                         </Card.Body>
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="2">
