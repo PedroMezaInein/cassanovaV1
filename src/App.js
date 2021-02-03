@@ -175,8 +175,10 @@ const PlanTrabajo = Loader( () => import('./pages/Mercadotecnia/PlanTrabajo/Plan
 const MercaProveedores = Loader( () => import('./pages/Mercadotecnia/Proveedores/Proveedores') )
 const MercaProveedoresForm = Loader(() => import('./pages/Mercadotecnia/Proveedores/ProveedoresForm') )
 
-const SolicitudEgresos = Loader( () => import('./pages/Mercadotecnia/Pagos/SolicitudEgresos') )
-const SolicitudEgresosForm = Loader(() => import('./pages/Mercadotecnia/Pagos/SolicitudEgresosForm') )
+const SolicitudEgresos = Loader( () => import('./pages/Mercadotecnia/Solicitud-Pagos/SolicitudEgresos') )
+const SolicitudEgresosForm = Loader(() => import('./pages/Mercadotecnia/Solicitud-Pagos/SolicitudEgresosForm') )
+
+const Pagos = Loader( () => import('./pages/Mercadotecnia/Pagos/Pagos') )
 
 class App extends Component{
     async componentDidMount(){
@@ -432,6 +434,8 @@ class App extends Component{
 
                     <Route path = "/mercadotecnia/solicitud-de-pagos" exact component = { SolicitudEgresos } />
                     <Route path = "/mercadotecnia/solicitud-de-pagos/:action" exact component = { SolicitudEgresosForm } />
+
+                    <Route path = "/mercadotecnia/pagos" exact component = { Pagos } />
 
                     {/* ANCHOR Routes for user settings */}
                     

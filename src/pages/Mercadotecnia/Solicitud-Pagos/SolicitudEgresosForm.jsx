@@ -167,7 +167,7 @@ class SolicitudEgresosForm extends Component {
     
     async getOptionsAxios() {
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'mercadotecnia/pagos/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(URL_DEV + 'mercadotecnia/solicitud-pagos/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { empresas, subareas, tipos, proveedores } = response.data
                 const { options } = this.state
@@ -217,7 +217,7 @@ class SolicitudEgresosForm extends Component {
             }
             return false
         })
-        await axios.post(URL_DEV + 'mercadotecnia/pagos', data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(URL_DEV + 'mercadotecnia/solicitud-pagos', data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.')
                 const { history } = this.props
@@ -261,7 +261,7 @@ class SolicitudEgresosForm extends Component {
             data.append('adjuntos[]', element)
             return false
         })
-        await axios.post(URL_DEV + 'mercadotecnia/pagos/update/' + solicitud.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(URL_DEV + 'mercadotecnia/solicitud-pagos/update/' + solicitud.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El egreso fue registrado con éxito.')
                 const { history } = this.props
@@ -282,7 +282,7 @@ class SolicitudEgresosForm extends Component {
         const { access_token } = this.props.authUser
         const { solicitud } = this.state
         waitAlert();
-        await axios.delete(URL_DEV + 'mercadotecnia/pagos/adjuntos/'+solicitud.id+'/'+id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.delete(URL_DEV + 'mercadotecnia/solicitud-pagos/adjuntos/'+solicitud.id+'/'+id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El archivo fue eliminado con éxito.')
                 const { solicitud } = response.data
