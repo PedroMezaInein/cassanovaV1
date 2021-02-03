@@ -184,7 +184,7 @@ class SolicitudEgresos extends Component {
 
     async getSolicitudEgresoAxios(id) {
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'mercadotecnia/pagos/single/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(URL_DEV + 'mercadotecnia/solicitud-pagos/single/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { solicitud } = response.data
                 this.setState({ ...this.state, solicitud: solicitud })
@@ -203,7 +203,7 @@ class SolicitudEgresos extends Component {
     async deleteSolicitudAxios() {
         const { access_token } = this.props.authUser
         const { solicitud } = this.state
-        await axios.delete(URL_DEV + 'mercadotecnia/pagos/' + solicitud.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.delete(URL_DEV + 'mercadotecnia/solicitud-pagos/' + solicitud.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La solicitud fue registrado con éxito.')
                 this.getSolicitudesEgresoAxios()
@@ -224,7 +224,7 @@ class SolicitudEgresos extends Component {
         const { access_token } = this.props.authUser
         const { solicitud } = this.state
         waitAlert()
-        await axios.delete(URL_DEV + 'mercadotecnia/pagos/adjuntos/'+solicitud.id+'/'+id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.delete(URL_DEV + 'mercadotecnia/solicitud-pagos/adjuntos/'+solicitud.id+'/'+id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El archivo fue eliminado con éxito.')
                 const { solicitud } = response.data
@@ -262,7 +262,7 @@ class SolicitudEgresos extends Component {
             return ''
         })
         waitAlert()
-        await axios.post(URL_DEV + 'mercadotecnia/pagos/adjuntos/'+solicitud.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(URL_DEV + 'mercadotecnia/solicitud-pagos/adjuntos/'+solicitud.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El archivo fue eliminado con éxito.')
                 const { solicitud } = response.data
@@ -294,8 +294,8 @@ class SolicitudEgresos extends Component {
         const { modalDelete, modalSee, modalAdjuntos, solicitud, form } = this.state
         return (
             <Layout active={'mercadotecnia'}  {...this.props}>
-                <NewTableServerRender  columns = { SOLICITUD_EGRESO_COLUMNS }  title = 'Solicitudes de egreso' 
-                    subtitle = 'Listado de solicitudes de egresos' mostrar_boton = { true } abrir_modal = { false }
+                <NewTableServerRender  columns = { SOLICITUD_EGRESO_COLUMNS }  title = 'Solicitudes de pagos' 
+                    subtitle = 'Listado de solicitudes de pagos' mostrar_boton = { true } abrir_modal = { false }
                     url = '/mercadotecnia/pagos/add' mostrar_acciones = { true }
                     actions = { 
                         { 

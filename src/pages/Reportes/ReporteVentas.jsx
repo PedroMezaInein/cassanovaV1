@@ -4,7 +4,7 @@ import Layout from '../../components/layout/layout'
 import { Card, Nav, Tab } from 'react-bootstrap'
 import { Button } from '../../components/form-components';
 // import moment from 'moment'
-import { waitAlert, errorAlert, forbiddenAccessAlert, questionAlert2 } from '../../functions/alert'
+import { waitAlert, errorAlert, forbiddenAccessAlert, questionAlert2,doneAlert } from '../../functions/alert'
 import Swal from 'sweetalert2'
 import { COLORES_GRAFICAS_IM, COLORES_GRAFICAS_INEIN, IM_AZUL, INEIN_RED, URL_DEV } from '../../constants'
 import axios from 'axios'
@@ -40,7 +40,9 @@ class ReporteVentas extends Component {
                     placeholder: 'Reporte',
                     files: []
                 }
-            }
+            },
+            si_adjunto:false,
+            no_adjunto:true,
         },
         data:{
             total: {},
@@ -257,11 +259,19 @@ class ReporteVentas extends Component {
         });
     };
     onChange = e => {
-        const { name, value } = e.target
+        const { name, value, checked, type } = e.target
         const { form, options } = this.state
         let { empresa } = this.state
         form[name] = value
-
+        if (type === 'radio') {
+            if (name === "si_adjunto") {
+                form["no_adjunto"] = false
+            }
+            else if (name === "no_adjunto") {
+                form["si_adjunto"] = false
+            }
+            form[name] = checked
+        }
         if(name === 'empresa'){
             options.empresas.map((emp)=>{
                 if(emp.value === value)
@@ -269,7 +279,6 @@ class ReporteVentas extends Component {
                 return false
             })
         }
-        
         this.setState({
             ...this.state,
             form,
@@ -296,7 +305,7 @@ class ReporteVentas extends Component {
             errorAlert('No completaste todos los campos.')
     }
 
-    async saveReporteAxios(){
+    saveReporteAxios = async () => {
         waitAlert()
         const { access_token } = this.props.authUser
         const { form } = this.state
@@ -306,12 +315,22 @@ class ReporteVentas extends Component {
         data.append('mes', form.mes)
         data.append('año', form.año)
 
-        for (var i = 0; i < form.adjuntos.reportes.files.length; i++) 
-            data.append(`adjuntos[]`, form.adjuntos.reportes.files[i].file)
+        form.adjuntos.reportes.files.map((file)=>{
+            data.append(`adjuntos[]`, file.file)
+            return ''
+        })
 
-        await axios.post( URL_DEV + 'reportes/ventas/save', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}reportes/ventas/save`, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                Swal.close()
+                const { form  } = this.state
+                form.empresa = ''
+                form.mes = ''
+                form.año = ''
+                form.adjuntos.reportes.value = ''
+                form.adjuntos.reportes.files = []
+                this.setState({ ...this.state,form })
+                doneAlert('Reporte de ventas guardado con éxito')
+                
             },
             (error) => {
                 console.log(error, 'error')
@@ -1025,6 +1044,35 @@ class ReporteVentas extends Component {
         return aux
     }
 
+    handleChange = (files, item) => {
+        const { form } = this.state
+        let aux = []
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        form['adjuntos'][item].value = files
+        form['adjuntos'][item].files = aux
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
+    onSubmitAdjunto = e => {
+        e.preventDefault();
+        const { form } = this.state
+        if(form.empresa !== '' && form.año !== '' && form.mes !== null && form.adjuntos.reportes.files.length > 0)
+            this.saveReporteAxios()
+        else
+            errorAlert('No completaste todos los campos.')
+    }
+
     render() {
         const { form, data, options: opciones, key, editorState, leadsAnteriores, mes, modal, empresas, empresaActive } = this.state
 
@@ -1308,31 +1356,29 @@ class ReporteVentas extends Component {
             <Layout active = 'reportes'  {...this.props}>
                 <Card className="card-custom">
                     <Card.Header>
-                        <div className="card-title w-100 d-flex justify-content-between">
+                        <div className="card-title">
                             <h3 className="card-label">Reporte de ventas</h3>
-                            <div>
-                                <Button 
-                                    icon =''
-                                    className = "btn btn-light mr-2 text-hover-primary"
-                                    onClick = { () => { this.getReporteAxios() } }
-                                    only_icon = "far fa-file-pdf mr-1"
-                                    text= 'REPORTES GENERADOS'
-                                />
-                            </div>
+                        </div>
+                        <div className="card-toolbar">
+                            <Button
+                                icon =''
+                                className = "btn btn-icon btn-xs w-auto p-3 btn-light"
+                                onClick = { () => { this.getReporteAxios() } }
+                                only_icon = "far fa-file-pdf mr-2"
+                                text= 'REPORTES GENERADOS'
+                            />
                         </div>
                     </Card.Header>
                     <Card.Body>
-                        <div className="row mx-0">
-                            <div className="col-md-12">
-                                <FlujosReportesVentas
-                                    form = { form }
-                                    options = { opciones }
-                                    onChange = { this.onChange }
-                                    className = "mb-3"
-                                    onSubmit = { this.onSubmit }
-                                    />
-                            </div>
-                        </div>
+                        <FlujosReportesVentas
+                            form={form}
+                            options={opciones}
+                            onChange={this.onChange}
+                            className="mb-3"
+                            onSubmit={this.onSubmit}
+                            onSubmitAdjunto={this.onSubmitAdjunto}
+                            handleChange={this.handleChange}
+                        />
                         <Tab.Container activeKey = { key }>
                             <Tab.Content>
                                 <Tab.Pane eventKey = 'one'>
@@ -1695,10 +1741,10 @@ class ReporteVentas extends Component {
                                         </thead>
                                         <tbody>
                                             {
-                                                form.leads.map((lead, index)=>{
-                                                    if(lead.prospecto)
-                                                        return(
-                                                            <tr key = { index } >
+                                                form.leads.map((lead, index) => {
+                                                    if (lead.prospecto)
+                                                        return (
+                                                            <tr key={index} >
                                                                 <td className="font-size-sm text-justify">
                                                                     {
                                                                         lead.nombre
@@ -1708,7 +1754,7 @@ class ReporteVentas extends Component {
                                                                     {
                                                                         lead.prospecto.tipoProyecto ?
                                                                             lead.prospecto.tipoProyecto.tipo
-                                                                        : 
+                                                                            :
                                                                             lead.servicios.map((serv, index) => {
                                                                                 return serv.servicio
                                                                             })
@@ -1718,25 +1764,25 @@ class ReporteVentas extends Component {
                                                                     {
                                                                         lead.prospecto.estatus_prospecto ?
                                                                             this.setLabel(lead.prospecto.estatus_prospecto)
-                                                                        : ''
+                                                                            : ''
                                                                     }
                                                                 </td>
-                                                                <td className = 'text-center'>
+                                                                <td className='text-center font-size-sm'>
                                                                     {
                                                                         lead.prospecto.contactos ?
                                                                             lead.prospecto.contactos.length ?
                                                                                 setDateTableLG(lead.prospecto.contactos[lead.prospecto.contactos.length - 1].created_at)
+                                                                                : 'SIN CONTACTO'
                                                                             : 'SIN CONTACTO'
-                                                                        : 'SIN CONTACTO'
                                                                     }
                                                                 </td>
-                                                                <td className = 'text-center'>
+                                                                <td className='text-center font-size-sm'>
                                                                     {
                                                                         lead.prospecto.contactos ?
                                                                             lead.prospecto.contactos.length ?
                                                                                 setDateTableLG(lead.prospecto.contactos[0].created_at)
+                                                                                : 'SIN CONTACTO'
                                                                             : 'SIN CONTACTO'
-                                                                        : 'SIN CONTACTO'
                                                                     }
                                                                 </td>
                                                                 <td className="font-size-sm text-justify">
@@ -1825,7 +1871,7 @@ class ReporteVentas extends Component {
                                                                         : ''
                                                                     }
                                                                 </td>
-                                                                <td className = 'text-center'>
+                                                                <td className = 'text-center font-size-sm'>
                                                                     {
                                                                         lead.prospecto.contactos ?
                                                                             lead.prospecto.contactos.length ?
@@ -1834,7 +1880,7 @@ class ReporteVentas extends Component {
                                                                         : 'SIN CONTACTO'
                                                                     }
                                                                 </td>
-                                                                <td className = 'text-center'>
+                                                                <td className = 'text-center font-size-sm'>
                                                                     {
                                                                         lead.prospecto.contactos ?
                                                                             lead.prospecto.contactos.length ?
@@ -1885,7 +1931,7 @@ class ReporteVentas extends Component {
                         </Tab.Container>
                     </Card.Body>
                 </Card>
-                <Modal title = "Reportes de ventas" show = { modal } handleClose = { this.handleCloseModal } >
+                <Modal size="lg" title = "Reportes de ventas" show = { modal } handleClose = { this.handleCloseModal } >
                     <Tab.Container activeKey = { empresaActive } 
                         onSelect = { (select) => this.onClickEmpresa(select) }>
                         <div className="d-flex justify-content-end mt-2">
@@ -1905,8 +1951,8 @@ class ReporteVentas extends Component {
                             empresas.map((empresa)=>{
                                 if(empresaActive.toString() === empresa.id.toString())
                                     return(
-                                        <div className="d-flex justify-content-center mt-2">
-                                            <table className="table table-responsive-lg table-vertical-center text-center mt-3" id="esquemas">
+                                        <div className="d-flex justify-content-center mt-4">
+                                            <table className="table table-vertical-center text-center mt-3" id="reportes">
                                                 <thead>
                                                     <tr className="bg-gray-200">
                                                         <th>
@@ -1926,9 +1972,9 @@ class ReporteVentas extends Component {
                                                             return(
                                                                 <tr key = { key }>
                                                                     <td> { reporte.año } </td>
-                                                                    <td> { mesesEspañol[reporte.mes] } </td>
+                                                                    <td> { mesesEspañol[parseInt(reporte.mes)] } </td>
                                                                     <td>
-                                                                        <a href = { reporte.adjunto.url}className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-primary">
+                                                                        <a href = { reporte.adjunto.url} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-primary" target = '_blank'>
                                                                             <span className="svg-icon svg-icon-md">
                                                                                 <i className="far fa-file-pdf icon-15px"></i>
                                                                             </span>
