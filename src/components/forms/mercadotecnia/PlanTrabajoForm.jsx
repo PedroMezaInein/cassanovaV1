@@ -5,7 +5,9 @@ import { Button, Input, RangeCalendar, TagSelectSearch, CircleColor, SelectCreat
 import { COLORS } from '../../../constants'
 const $ = require('jquery');
 class PlanTrabajoForm extends Component{
-
+    state = {
+        color: ''
+    }
     updateRangeCalendar = range => {
         const { startDate, endDate } = range
         const { onChange } = this.props
@@ -51,6 +53,7 @@ class PlanTrabajoForm extends Component{
     handleChangeColor = (color) => {
         const { onChange } = this.props
         onChange({ target: { value: color.hex, name: 'color' } })
+        this.setState({...this.state,color:color});
     }
 
     updateEmpresa = value => {
@@ -110,7 +113,7 @@ class PlanTrabajoForm extends Component{
                                     <div className="form-group row form-group-marginless">
                                         <div className="col-md-12">
                                             <CircleColor circlesize = { 23 } width = "auto" onChange = { this.handleChangeColor }
-                                                placeholder = "SELECCIONA EL COLOR DEL ROL" colors = { COLORS } classlabel="text-center" classname="d-flex justify-content-center"/>
+                                                placeholder = "SELECCIONA EL COLOR DEL ROL" colors = { COLORS } classlabel="text-center" classname="d-flex justify-content-center" value = { this.state.color }/>
                                         </div>
                                     </div>
                                 </>
