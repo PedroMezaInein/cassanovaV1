@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
-import { Button, InputGray, InputPhoneGray, CalendarDay } from '../../form-components'
+import { Button, InputGray, InputPhoneGray, CalendarDay, SelectSearch } from '../../form-components'
 import { Form } from 'react-bootstrap'
 import { TEL, EMAIL } from '../../../constants'
+import SelectSearchGray from '../../form-components/Gray/SelectSearchGray'
 class InformacionGeneral extends Component {
 
     componentDidMount(){
@@ -9,8 +10,13 @@ class InformacionGeneral extends Component {
         onChange({ target: { name: 'fecha', value: form.fecha } })
     }
 
+    updateTipoProyecto = value => {
+        const { onChange } = this.props
+        onChange({ target: { name: 'tipoProyecto', value: value } })
+    }
+
     render() {
-        const { form, onChange, onSubmit, lead, formeditado } = this.props
+        const { form, onChange, onSubmit, lead, formeditado, options } = this.props
         return (
             <>
                 <Form>
@@ -47,7 +53,20 @@ class InformacionGeneral extends Component {
                                 : ''
                             : ''
                         }
-                        
+                        {
+                            options ? 
+                                options.tipos ?
+                                    options.tipos.length ?
+                                        <div className = 'col-md-3'>
+                                            <SelectSearchGray options = { options.tipos } placeholder="SELECCIONE UN TIPO DE PROYECTO"
+                                                name="tipoProyecto" value = { form.tipoProyecto } onChange = { this.updateTipoProyecto }
+                                                requirevalidation = { 1 } messageinc = "Incorrecto. Seleccione el proyecto."
+                                                customdiv = "mb-0" withtaglabel = { 0 } withtextlabel = { 0 } />
+                                        </div>
+                                    : ''
+                                : ''
+                            : ''
+                        }
                     </div>
                     <div className="separator separator-dashed mt-1 mb-2"></div>
                     <div className="form-group row form-group-marginless mt-4">
