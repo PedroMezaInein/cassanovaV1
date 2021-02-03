@@ -660,7 +660,7 @@ class Calendario extends Component {
                                 </Nav>
                             </div>
                             <FullCalendar locale={esLocale} plugins={[dayGridPlugin, interactionPlugin, bootstrapPlugin]} eventContent={this.renderEventContent}
-                                initialView="dayGridMonth" weekends={false} firstDay={1} themeSystem='bootstrap' events={content} />
+                                initialView="dayGridMonth" firstDay={1} themeSystem='bootstrap' events={content} />
                         </div>
 
                     </Card.Body>

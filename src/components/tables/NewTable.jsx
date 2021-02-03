@@ -43,8 +43,7 @@ class NewTable extends Component {
 
     reloadHeader(){
         const {cardTable, cardTableHeader, cardBody, isTab} = this.props
-        $("body").addClass("card-sticky-on")
-                .css("overflow-y","scroll")  
+        $("body").addClass("card-sticky-on").css("overflow-y","scroll")  
         
         let tableWidth = $("#"+cardTable).width() 
         $("#"+cardTableHeader).css("width",tableWidth).css("box-shadow", "0px 1px 15px 1px rgba(69, 65, 78, 0)").css("z-index",3)

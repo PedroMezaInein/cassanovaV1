@@ -45,8 +45,7 @@ class NewTableServerRender extends Component {
 
     componentDidUpdate() {
         const { cardTable, cardTableHeader, cardBody, isTab, isNav} = this.props
-        $("body").addClass("card-sticky-on")
-            .css("overflow-y", "scroll")
+        $("body").addClass("card-sticky-on").css("overflow-y", "scroll")
 
         let tableWidth = $("#" + cardTable).width()
         $("#" + cardTableHeader).css("width", tableWidth).css("box-shadow", "0px 1px 15px 1px rgba(69, 65, 78, 0)").css("z-index", 3)
@@ -100,8 +99,7 @@ class NewTableServerRender extends Component {
             cardTableHeader, cardBody, isTab, checkbox, isNav } = this.props
         global_variable["mostrar_acciones"] = mostrar_acciones;
 
-        $("body").addClass("card-sticky-on")
-            .css("overflow-y", "scroll")
+        $("body").addClass("card-sticky-on").css("overflow-y", "scroll")
 
         let tableWidth = $("#" + cardTable).width()
         $("#" + cardTableHeader).css("width", tableWidth).css("box-shadow", "0px 1px 15px 1px rgba(69, 65, 78, 0)").css("z-index", 3)
