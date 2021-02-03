@@ -117,10 +117,9 @@ export function setLabelVentas(text) {
             <div className="d-none">
                 {text.estatus}
             </div>
-            <span className="label label-md label-light-success label-inline font-weight-bold" style={{
+            <span className="label label-md label-light-success label-inline font-weight-bold font-size-sm" style={{
                 color: `${text.letra}`,
-                backgroundColor: `${text.fondo}`,
-                fontSize: '10.7px'
+                backgroundColor: `${text.fondo}`
             }} >
                 {text.estatus}
             </span>
