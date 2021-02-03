@@ -41,8 +41,8 @@ class ReporteVentas extends Component {
                     files: []
                 }
             },
-            si_adjunto:'',
-            no_adjunto:'',
+            si_adjunto:false,
+            no_adjunto:true,
         },
         data:{
             total: {},
@@ -305,7 +305,7 @@ class ReporteVentas extends Component {
             errorAlert('No completaste todos los campos.')
     }
 
-    async saveReporteAxios(){
+    saveReporteAxios = async () => {
         waitAlert()
         const { access_token } = this.props.authUser
         const { form } = this.state
@@ -315,12 +315,22 @@ class ReporteVentas extends Component {
         data.append('mes', form.mes)
         data.append('año', form.año)
 
-        for (var i = 0; i < form.adjuntos.reportes.files.length; i++) 
-            data.append(`adjuntos[]`, form.adjuntos.reportes.files[i].file)
+        form.adjuntos.reportes.files.map((file)=>{
+            data.append(`adjuntos[]`, file.file)
+            return ''
+        })
 
-        await axios.post( URL_DEV + 'reportes/ventas/save', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}reportes/ventas/save`, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                Swal.close()
+                const { form  } = this.state
+                form.empresa = ''
+                form.mes = ''
+                form.año = ''
+                form.adjuntos.reportes.value = ''
+                form.adjuntos.reportes.files = []
+                this.setState({ ...this.state,form })
+                doneAlert('Reporte de ventas guardado con éxito')
+                
             },
             (error) => {
                 console.log(error, 'error')
@@ -1057,34 +1067,10 @@ class ReporteVentas extends Component {
     onSubmitAdjunto = e => {
         e.preventDefault();
         const { form } = this.state
-        if(form.empresa !== '' && form.referencia !== '' && form.fechaInicio !== null && form.fechaFin !== null && form.adjuntos.reportes.files.length > 0)
-            this.addReporteAdjuntoAxios()
+        if(form.empresa !== '' && form.año !== '' && form.mes !== null && form.adjuntos.reportes.files.length > 0)
+            this.saveReporteAxios()
         else
             errorAlert('No completaste todos los campos.')
-    }
-    async addReporteAdjuntoAxios() {
-        const { access_token } = this.props.authUser
-        const { form } = this.state
-        await axios.post(URL_DEV + '', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Creaste con éxito el nuevo reporte.')
-
-                this.setState({
-                })
-
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
     }
 
     render() {
@@ -1986,9 +1972,9 @@ class ReporteVentas extends Component {
                                                             return(
                                                                 <tr key = { key }>
                                                                     <td> { reporte.año } </td>
-                                                                    <td> { mesesEspañol[reporte.mes] } </td>
+                                                                    <td> { mesesEspañol[parseInt(reporte.mes)] } </td>
                                                                     <td>
-                                                                        <a href = { reporte.adjunto.url}className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-primary">
+                                                                        <a href = { reporte.adjunto.url} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-primary" target = '_blank'>
                                                                             <span className="svg-icon svg-icon-md">
                                                                                 <i className="far fa-file-pdf icon-15px"></i>
                                                                             </span>
