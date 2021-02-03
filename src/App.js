@@ -179,6 +179,7 @@ const SolicitudEgresos = Loader( () => import('./pages/Mercadotecnia/Solicitud-P
 const SolicitudEgresosForm = Loader(() => import('./pages/Mercadotecnia/Solicitud-Pagos/SolicitudEgresosForm') )
 
 const Pagos = Loader( () => import('./pages/Mercadotecnia/Pagos/Pagos') )
+const PagosForm = Loader(() => import('./pages/Mercadotecnia/Pagos/PagosForm') )
 
 class App extends Component{
     async componentDidMount(){
@@ -436,6 +437,7 @@ class App extends Component{
                     <Route path = "/mercadotecnia/solicitud-de-pagos/:action" exact component = { SolicitudEgresosForm } />
 
                     <Route path = "/mercadotecnia/pagos" exact component = { Pagos } />
+                    <Route path = "/mercadotecnia/pagos/:action" exact component ={ PagosForm } />
 
                     {/* ANCHOR Routes for user settings */}
                     
