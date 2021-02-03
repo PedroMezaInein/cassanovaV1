@@ -8,6 +8,7 @@ import { errorAlert, waitAlert, forbiddenAccessAlert, createAlert, doneAlert, de
 import Layout from '../../../components/layout/layout'
 import { PagosForm as PagosFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
+import XMLParser from 'react-xml-parser';
 class PagosForm extends Component {
     
     state = {
@@ -84,8 +85,7 @@ class PagosForm extends Component {
             if (extension.toUpperCase() === 'XML') {
                 const reader = new FileReader()
                 reader.onload = async (e) => {
-                    const text = (e.target.result)
-                    let XMLParser = require('react-xml-parser');
+                    const { result: text } = e.target
                     let xml = new XMLParser().parseFromString(text);
                     const emisor = xml.getElementsByTagName('cfdi:Emisor')[0]
                     const receptor = xml.getElementsByTagName('cfdi:Receptor')[0]
@@ -113,82 +113,79 @@ class PagosForm extends Component {
                         serie: xml.attributes.Serie ? xml.attributes.Serie : '',
                     }
                     let tipoRelacion = ''
-                        if (relacionados) {
-                            if (relacionados.length) {
-                                relacionados = relacionados[0]
-                                tipoRelacion = relacionados.attributes.TipoRelacion
-                                let uuidRelacionado = xml.getElementsByTagName('cfdi:CfdiRelacionado')[0]
-                                uuidRelacionado = uuidRelacionado.attributes.UUID
-                                obj.tipo_relacion = tipoRelacion
-                                obj.uuid_relacionado = uuidRelacionado
-                            }
+                    if (relacionados) {
+                        if (relacionados.length) {
+                            relacionados = relacionados[0]
+                            tipoRelacion = relacionados.attributes.TipoRelacion
+                            let uuidRelacionado = xml.getElementsByTagName('cfdi:CfdiRelacionado')[0]
+                            uuidRelacionado = uuidRelacionado.attributes.UUID
+                            obj.tipo_relacion = tipoRelacion
+                            obj.uuid_relacionado = uuidRelacionado
                         }
-                        if (obj.numero_certificado === '') {
-                            let NoCertificado = text.search('NoCertificado="')
-                            if (NoCertificado)
-                                obj.numero_certificado = text.substring(NoCertificado + 15, NoCertificado + 35)
-                        }
-                        let aux = ''
-                        if (obj.subtotal === '') {
-                            let Subtotal = text.search('SubTotal="')
-                            if (Subtotal)
-                                Subtotal = text.substring(Subtotal + 10)
-                            aux = Subtotal.search('"')
-                            Subtotal = Subtotal.substring(0, aux)
-                            obj.subtotal = Subtotal
-                        }
-                        aux = ''
-                        if (obj.total === '') {
-                            let Total = text.search('Total="')
-                            if (Total)
-                                Total = text.substring(Total + 7)
-                            aux = Total.search('"')
-                            Total = Total.substring(0, aux)
-                            obj.total = Total
-                        }
-                        if (obj.fecha === '') {
-                            let Fecha = text.search('Fecha="')
-                            if (Fecha)
-                                Fecha = text.substring(Fecha + 7)
-                            aux = Fecha.search('"')
-                            Fecha = Fecha.substring(0, aux)
-                            obj.fecha = Fecha
-                        }
-                        let auxEmpresa = ''
-                        data.empresas.find(function (element, index) {
-                            if (element.rfc === obj.rfc_receptor) {
-                                auxEmpresa = element
-                            }
-                            return false
-                        });
-                        let auxProveedor = ''
-                        data.proveedores.find(function (element, index) {
-                            if(element.rfc)
-                                if (element.rfc.toUpperCase() === obj.rfc_emisor.toUpperCase()) {
-                                    auxProveedor = element
-                                }
-                            return false
-                        });
-                        if (auxEmpresa) {
-                            options['cuentas'] = setOptions(auxEmpresa.cuentas, 'nombre', 'id')
-                            form.empresa = auxEmpresa.name
-                        } else { errorAlert('No existe la empresa') }
-                        if (auxProveedor) { form.proveedor = auxProveedor.id.toString() } 
-                        else {
-                            if(obj.nombre_emisor === ''){
-                                const { history } = this.props
-                                errorAlertRedirectOnDissmis('LA FACTURA NO TIENE RAZÓN SOCIAL, CREA EL PROVEEDOR DESDE LA SECCIÓN DE PROVEEDORES EN LEADS.', history, '/leads/proveedores')
-                            }else
-                                createAlert('NO EXISTE EL PROVEEDOR', '¿LO QUIERES CREAR?', () => this.addProveedorAxios(obj))
-                        }
-                        if (auxEmpresa && auxProveedor) { Swal.close() }
-                        form.facturaObject = obj
-                        form.rfc = obj.rfc_emisor
-                        this.setState({
-                            ...this.state,
-                            options,
-                            form
-                        })
+                    }
+                    if (obj.numero_certificado === '') {
+                        let NoCertificado = text.search('NoCertificado="')
+                        if (NoCertificado)
+                            obj.numero_certificado = text.substring(NoCertificado + 15, NoCertificado + 35)
+                    }
+                    let aux = ''
+                    if (obj.subtotal === '') {
+                        let Subtotal = text.search('SubTotal="')
+                        if (Subtotal)
+                            Subtotal = text.substring(Subtotal + 10)
+                        aux = Subtotal.search('"')
+                        Subtotal = Subtotal.substring(0, aux)
+                        obj.subtotal = Subtotal
+                    }
+                    aux = ''
+                    if (obj.total === '') {
+                        let Total = text.search('Total="')
+                        if (Total)
+                            Total = text.substring(Total + 7)
+                        aux = Total.search('"')
+                        Total = Total.substring(0, aux)
+                        obj.total = Total
+                    }
+                    if (obj.fecha === '') {
+                        let Fecha = text.search('Fecha="')
+                        if (Fecha)
+                            Fecha = text.substring(Fecha + 7)
+                        aux = Fecha.search('"')
+                        Fecha = Fecha.substring(0, aux)
+                        obj.fecha = Fecha
+                    }
+                    let auxEmpresa = ''
+                    data.empresas.find(function (element, index) {
+                        if (element.rfc === obj.rfc_receptor)
+                            auxEmpresa = element
+                        return false
+                    });
+                    let auxProveedor = ''
+                    data.proveedores.find(function (element, index) {
+                        if(element.rfc)
+                            if (element.rfc.toUpperCase() === obj.rfc_emisor.toUpperCase()) 
+                                auxProveedor = element
+                        return false
+                    });
+                    if (auxEmpresa) {
+                        options['cuentas'] = setOptions(auxEmpresa.cuentas, 'nombre', 'id')
+                        form.empresa = auxEmpresa.name
+                    } else { errorAlert('No existe la empresa') }
+                    if (auxProveedor) { form.proveedor = auxProveedor.id.toString() } 
+                    else {
+                        if(obj.nombre_emisor === ''){
+                            const { history } = this.props
+                            errorAlertRedirectOnDissmis('LA FACTURA NO TIENE RAZÓN SOCIAL, CREA EL PROVEEDOR DESDE LA SECCIÓN DE PROVEEDORES EN LEADS.', history, '/leads/proveedores')
+                        }else createAlert('NO EXISTE EL PROVEEDOR', '¿LO QUIERES CREAR?', () => this.addProveedorAxios(obj))
+                    }
+                    if (auxEmpresa && auxProveedor) { Swal.close() }
+                    form.facturaObject = obj
+                    form.rfc = obj.rfc_emisor
+                    this.setState({
+                        ...this.state,
+                        options,
+                        form
+                    })
                 }
                 reader.readAsText(file)
             }
@@ -201,12 +198,11 @@ class PagosForm extends Component {
                 }
             )
         }
-        form['adjuntos'][name].value = value
-        form['adjuntos'][name].files = aux
-        this.setState({
-            ...this.state,
-            form
-        })
+
+        form.adjuntos[name].value = value
+        form.adjuntos[name].files = aux
+        
+        this.setState({ ...this.state, form })
     }
 
     clearFiles = (name, key) => {
@@ -469,18 +465,11 @@ class PagosForm extends Component {
         if(solicitud !== ''){
             data.append(`solicitud`, solicitud.id)
         }
-        await axios.post(URL_DEV + 'pagos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}mercadotecnia/pagos`, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                this.setState({
-                    ...this.state,
-                    modal: false,
-                    form: this.clearForm()
-                })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El pago fue registrado con éxito.')
                 const { history } = this.props
-                history.push({
-                    pathname: '/mercadotecnia/pagos'
-                });
+                history.push({ pathname: '/mercadotecnia/pagos' });
             },
             (error) => {
                 console.log(error, 'error')
@@ -507,7 +496,9 @@ class PagosForm extends Component {
                     data.append(element, (new Date(form[element])).toDateString())
                     break
                 case 'adjuntos':
+                    break;
                 case 'facturaObject':
+                    data.append(element, JSON.stringify(form[element]))
                     break;
                 default:
                     data.append(element, form[element])
@@ -524,9 +515,9 @@ class PagosForm extends Component {
             data.append('adjuntos[]', element)
             return false
         })
-        await axios.post(URL_DEV + 'pagos/update/' + pago.id, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}mercadotecnia/pagos/update/${pago.id}`, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                this.setState({
+                /* this.setState({
                     ...this.state,
                     modal: false,
                     form: this.clearForm()
@@ -535,7 +526,7 @@ class PagosForm extends Component {
                 const { history } = this.props
                 history.push({
                     pathname: '/mercadotecnia/pagos'
-                });
+                }); */
             },
             (error) => {
                 console.log(error, 'error')
@@ -594,6 +585,7 @@ class PagosForm extends Component {
             console.log(error, 'error')
         })
     }
+
     handleChange = (files, item) => {
         const { form } = this.state
         let aux = []
@@ -614,6 +606,7 @@ class PagosForm extends Component {
             form
         })
     }
+
     render() {
         const { form, title, options, formeditado, data } = this.state
         return (
