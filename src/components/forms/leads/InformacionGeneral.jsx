@@ -20,7 +20,7 @@ class InformacionGeneral extends Component {
         return (
             <>
                 <Form>
-                    <div className="form-group row form-group-marginless mb-0 justify-content-center">
+                    <div className="form-group row form-group-marginless mb-2 justify-content-center">
                         <div className={lead.estatus? lead.estatus.estatus!=="En espera" ?"col-md-3":"col-md-4":"col-md-4"}>
                             <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 }
                                 withicon = { 1 } withformgroup = { 1 } requirevalidation = { formeditado === false ? 0 : 1 }
@@ -53,6 +53,9 @@ class InformacionGeneral extends Component {
                                 : ''
                             : ''
                         }
+                    </div>
+                    <div className="separator separator-dashed mt-1 mb-2"></div>
+                    <div className="form-group row form-group-marginless">
                         {
                             options ? 
                                 options.tipos ?
@@ -61,7 +64,7 @@ class InformacionGeneral extends Component {
                                             <SelectSearchGray options = { options.tipos } placeholder="SELECCIONE UN TIPO DE PROYECTO"
                                                 name="tipoProyecto" value = { form.tipoProyecto } onChange = { this.updateTipoProyecto }
                                                 requirevalidation = { 1 } messageinc = "Incorrecto. Seleccione el proyecto."
-                                                customdiv = "mb-0" withtaglabel = { 0 } withtextlabel = { 0 } />
+                                                customdiv = "mb-0" withtaglabel = { 1 } withtextlabel = { 1 } />
                                         </div>
                                     : ''
                                 : ''
@@ -75,7 +78,7 @@ class InformacionGeneral extends Component {
                                 <label className="text-center font-weight-bold text-dark-60">Fecha de ingreso</label>
                             </div>
                             <CalendarDay value = { form.fecha } date = { form.fecha } onChange = { onChange }
-                                name = 'fecha' withformgroup = { 1 } />
+                                name = 'fecha' withformgroup = { 0 } />
                         </div>
                     </div>
                     <div className="card-footer px-2 py-3">
