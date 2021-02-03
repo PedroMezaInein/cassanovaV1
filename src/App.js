@@ -430,11 +430,11 @@ class App extends Component{
                     <Route path = "/mercadotecnia/merca-proveedores" exact component = { MercaProveedores } />
                     <Route path = "/mercadotecnia/merca-proveedores/:action" exact component = { MercaProveedoresForm } />
 
-                    <Route path = "/mercadotecnia/pagos" exact component = { SolicitudEgresos } />
-                    <Route path = "/mercadotecnia/pagos/:action" exact component = { SolicitudEgresosForm } />
+                    <Route path = "/mercadotecnia/solicitud-de-pagos" exact component = { SolicitudEgresos } />
+                    <Route path = "/mercadotecnia/solicitud-de-pagos/:action" exact component = { SolicitudEgresosForm } />
 
                     {/* ANCHOR Routes for user settings */}
-
+                    
                     <Route path = "/mi-perfil" exact component ={ AccountSettings } />
                     <Route path = "/mi-calendario" exact component ={ Calendario } />
                     <Route path = "/mis-notificaciones" exact component ={ Notificaciones } />
