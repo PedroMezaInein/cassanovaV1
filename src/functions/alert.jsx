@@ -189,6 +189,25 @@ export function createAlertSA2WithClose(title, text, action, history, ruta) {
     })
 }
 
+export function createAlertSA2WithActionOnClose(title, text, action, closeAction) {
+    MySwal.fire({
+        title: title,
+        text: text,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'ACEPTAR',
+        cancelButtonText: 'CANCELAR',
+        reverseButtons: true,
+    }).then((result) => {
+        if(result.dismiss)
+            closeAction()
+        else
+            if (result.value) {
+                action()
+            }
+    })
+}
+
 export function createAlertSA2Parametro(title, text, action, parametro) {
     MySwal.fire({
         title: title,
