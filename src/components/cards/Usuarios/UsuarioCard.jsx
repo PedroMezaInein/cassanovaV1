@@ -66,33 +66,63 @@ export default class UsuariosCard extends Component {
                         </div>
                         <div className="row row-paddingless mb-4">
                             {
-                                user.departamentos ?
-                                    <div className="col-md-12">
-                                        <div className="d-flex align-items-start mr-2">
-                                            <div className="symbol symbol-35 symbol-light-info mr-4 flex-shrink-0">
-                                                <div className="symbol-label">
-                                                    <span className="svg-icon svg-icon-lg svg-icon-info">
-                                                        <SVG src={toAbsoluteUrl('/images/svg/Interselect.svg')} />
-                                                    </span>
+                                user.departamentos?
+                                    user.departamentos.length > 0?
+                                        <div className="col-md-12">
+                                            <div className="d-flex align-items-start mr-2">
+                                                <div className="symbol symbol-35 symbol-light-info mr-4 flex-shrink-0">
+                                                    <div className="symbol-label">
+                                                        <span className="svg-icon svg-icon-lg svg-icon-info">
+                                                            <SVG src={toAbsoluteUrl('/images/svg/Interselect.svg')} />
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div className="text-justify">
+                                                    <ul className="list-inline mb-0 font-size-lg text-dark-75 font-weight-bolder">
+                                                        {
+                                                            user.departamentos ?
+                                                                user.departamentos.map((departamento, key) => {
+                                                                    return (
+                                                                        <li className="list-inline-item" key={key}>&#8226; {departamento.nombre}</li>
+                                                                    )
+                                                                })
+                                                                : <span>-</span>
+                                                        }
+                                                    </ul>
+                                                    <div className="font-size-sm text-muted font-weight-bold mt-1">{user.departamentos.length === 1?"DEPARTAMENTO":"DEPARTAMENTOS"}</div>
                                                 </div>
                                             </div>
-                                            <div className="text-justify">
-                                                <ul className="list-inline mb-0 font-size-lg text-dark-75 font-weight-bolder">
-                                                    {
-                                                        user.departamentos ?
-                                                            user.departamentos.map((departamento, key) => {
-                                                                return (
-                                                                    <li className="list-inline-item" key={key}>&#8226; {departamento.nombre}</li>
-                                                                )
-                                                            })
-                                                            : <span>-</span>
-                                                    }
-                                                </ul>
-                                                <div className="font-size-sm text-muted font-weight-bold mt-1">DEPARTAMENTO(S) </div>
-                                            </div>
                                         </div>
-                                    </div>
-                                    : ''
+                                    : user.proyectos?
+                                        user.proyectos.length > 0?
+                                            <div className="col-md-12">
+                                                <div className="d-flex align-items-start mr-2">
+                                                    <div className="symbol symbol-35 symbol-light-info mr-4 flex-shrink-0">
+                                                        <div className="symbol-label">
+                                                            <span className="svg-icon svg-icon-lg svg-icon-info">
+                                                                <SVG src={toAbsoluteUrl('/images/svg/Interselect.svg')} />
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <div className="text-justify">
+                                                        <ul className="list-inline mb-0 font-size-lg text-dark-75 font-weight-bolder">
+                                                            {
+                                                                user.proyectos ?
+                                                                    user.proyectos.map((proyecto, key) => {
+                                                                        return (
+                                                                            <li className="list-inline-item" key={key}>&#8226; {proyecto.nombre}</li>
+                                                                        )
+                                                                    })
+                                                                    : <span>-</span>
+                                                            }
+                                                        </ul>
+                                                        <div className="font-size-sm text-muted font-weight-bold mt-1">{user.proyectos.length === 1?"PROYECTO":"PROYECTOS"} </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        : ""
+                                    :""
+                                : ""
                             }
                         </div>
                     </div>

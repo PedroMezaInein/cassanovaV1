@@ -198,8 +198,8 @@ class NewTable extends Component {
             dom:
                 `<'row'
                 <'col-sm-12'tr>>
-                <'row'<'col-sm-12 col-md-5'i>
-                <'col-sm-12 col-md-7 flex-column-reverse flex-md-row dataTables_pager'lp>
+                <'row'<'col-sm-12 col-md-7'i>
+                <'col-sm-12 col-md-5 flex-column-reverse flex-md-row dataTables_pager'lp>
             >`,
             language: {
                 "sProcessing": "Procesando...",
