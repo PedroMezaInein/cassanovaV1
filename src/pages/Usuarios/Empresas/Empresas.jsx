@@ -450,7 +450,7 @@ class Empresas extends Component {
             console.log(error, 'error')
         })
     }
-    openModalInhabilitadas = async () => {
+    openModalHabilitar = async () => {
         waitAlert()
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'empresa/detenidas', { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -496,8 +496,10 @@ class Empresas extends Component {
                     abrir_modal={false}
                     url='/usuarios/empresas/add'
                     mostrar_acciones={true}
-                    inhabilitar_empresa={true}
-                    onClickInhabilitadas={this.openModalInhabilitadas}
+                    habilitar={true}
+                    text_habilitar="HABILITAR EMPRESA"
+                    icon_habilitar="fa-unlock-alt"
+                    onClickHabilitar={this.openModalHabilitar}
                     actions={
                         {
                             'edit': { function: this.changePageEdit },

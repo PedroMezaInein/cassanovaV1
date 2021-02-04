@@ -7,7 +7,7 @@ import { Modal, ModalDelete } from '../../../components/singles'
 import { RegisterUserForm, PermisosForm } from '../../../components/forms'
 import Swal from 'sweetalert2'
 import { setOptions, setSelectOptions } from '../../../functions/setters'
-import { forbiddenAccessAlert, errorAlert, waitAlert, doneAlert } from '../../../functions/alert'
+import { forbiddenAccessAlert, errorAlert, waitAlert, doneAlert, questionAlertY } from '../../../functions/alert'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { USUARIOS, CLIENTES } from '../../../constants'
 import { save, deleteForm } from '../../../redux/reducers/formulario'
@@ -30,6 +30,7 @@ class Usuarios extends Component {
             delete: false,
             permisos: false,
             see: false,
+            inhabilitados: false,
         },
         title: 'Registrar nuevo usuario',
         form: {
@@ -407,6 +408,13 @@ class Usuarios extends Component {
                     iconclass: 'flaticon2-accept',
                     action: 'permisos',
                     tooltip: { id: 'permisos', text: 'Permisos' }
+                },
+                {
+                    text: 'Inhabilitar&nbsp;usuario',
+                    btnclass: 'dark',
+                    iconclass: 'fa-user-lock',
+                    action: 'inhabilitar',
+                    tooltip: { id: 'inhabilitar', text: 'Inhabilitar usuario', type: 'info' },
                 }
         ) 
         return aux 
@@ -522,7 +530,80 @@ class Usuarios extends Component {
         })
         deleteForm()
     }
+    inhabilitar = (user) => {
+        questionAlertY('¿ESTÁS SEGURO?', '¿DESEAS INHABILITAR EL USUARIO?', () => this.inhabilitarUsuario(user, true))
+    }
+    async inhabilitarUsuario(user, estatus) {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.put(URL_DEV + 'user/detener/' + user.id, { detenido: estatus }, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.getEmpresas()
+                if (estatus)
+                    doneAlert('El usuario fue inhabilitado con éxito.')
+                else
+                    doneAlert('El usuario fue habilitado con éxito.')
+                this.setState({
+                    ...this.state,
+                    detenidas: [],
+                    modalInhabilitadas: false
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    habilitar = (user) => {
+        questionAlertY('¿ESTÁS SEGURO?', '¿DESEAS HABILITAR LA EMPRESA?', () => this.inhabilitarUsuario(user, false))
+    }
+    openModalHabilitar = async () => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'user/detenidos', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { modal } = this.state
+                const { users } = response.data
 
+                modal.inhabilitados=true
+                Swal.close();
+
+                this.setState({
+                    ...this.state,
+                    modal,
+                    title: 'Usuarios inhabilitados',
+                    detenidas: users
+                })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    handleCloseInhabilitados = () => {
+        const { modal } = this.state
+        modal.inhabilitados = false
+        this.setState({
+            ...this.state,
+            modal
+        })
+    }
     render(){
         const { modal, title, user, form, options, key} = this.state
         const { formulario } = this.props
@@ -538,12 +619,17 @@ class Usuarios extends Component {
                             abrir_modal={false}
                             url = '/usuarios/usuarios/add'
                             mostrar_acciones={true}
+                            habilitar={true}
+                            text_habilitar="HABILITAR ADMINISTRADOR"
+                            icon_habilitar="fa-unlock-alt"
+                            onClickHabilitar={this.openModalHabilitar}
                             actions={
                                 {
                                     'edit': { function:this.changePageEdit},
                                     'delete': { function: this.openModalDelete },
                                     'permisos': { function: this.openModalPermisos},
                                     'see': { function: this.openModalSee },
+                                    'inhabilitar': { function: this.inhabilitar }
                                 }
                             }
                             accessToken={this.props.authUser.access_token}
@@ -565,11 +651,16 @@ class Usuarios extends Component {
                             abrir_modal={false}
                             url = '/usuarios/usuarios/add'
                             mostrar_acciones={true}
+                            habilitar={true}
+                            text_habilitar="HABILITAR EMPLEADO"
+                            icon_habilitar="fa-unlock-alt"
+                            onClickHabilitar={this.openModalHabilitar}
                             actions={{
                                 'edit': { function:this.changePageEdit},
                                 'delete': { function: this.openModalDelete },
                                 'permisos': { function: this.openModalPermisos},
                                 'see': { function: this.openModalSee },
+                                'inhabilitar': { function: this.inhabilitar }
                             }}
                             accessToken={this.props.authUser.access_token}
                             setter={this.setUsers}
@@ -591,11 +682,16 @@ class Usuarios extends Component {
                             url = '/usuarios/usuarios/add'
                             onClick={this.openModal}
                             mostrar_acciones={true}
+                            habilitar={true}
+                            text_habilitar="HABILITAR CLIENTE"
+                            icon_habilitar="fa-unlock-alt"
+                            onClickHabilitar={this.openModalHabilitar}
                             actions={{
                                 'edit': { function:this.changePageEdit},
                                 'delete': { function: this.openModalDelete },
                                 'permisos': { function: this.openModalPermisos},
                                 'see': { function: this.openModalSee },
+                                'inhabilitar': { function: this.inhabilitar }
                             }}
                             accessToken={this.props.authUser.access_token}
                             setter={this.setUsers}
@@ -637,6 +733,52 @@ class Usuarios extends Component {
                 </Modal>
                 <Modal size="lg" title="Empleado" show = { modal.see } handleClose = { this.handleCloseSee } >
                     <UsuarioCard user={user}/>
+                </Modal>
+                <Modal title="Habilitar por empresa" show={modal.inhabilitados} handleClose={this.handleCloseInhabilitados} >
+                    <div className="table-responsive mt-4">
+                        <table className="table table-head-bg table-borderless table-vertical-center">
+                            <thead>
+                                <tr>
+                                    <th className="w-auto">
+                                        <div className="text-left text-muted font-size-sm d-flex justify-content-start">USUARIO</div>
+                                    </th>
+                                    <th className="text-muted font-size-sm">
+                                        <div className=" text-muted font-size-sm d-flex justify-content-center">HABILITAR</div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {/* {
+                                    detenidas.length > 0 ?
+                                        detenidas.map((detenida, key) => {
+                                            return (
+                                                <tr key={key} >
+                                                    <td>
+                                                        <span className="text-dark-75 font-weight-bolder d-block font-size-lg">
+                                                            {detenida.name}
+                                                        </span>
+                                                    </td>
+                                                    <td className="text-center">
+                                                        <button className="btn btn-icon btn-light btn-text-primary btn-hover-text-dark font-weight-bold btn-sm mr-2"
+                                                            onClick={(e) => { e.preventDefault(); this.habilitar(detenida) }} >
+                                                            <i className="fas fa-unlock-alt text-dark-50"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>
+                                            )
+                                        })
+                                        :
+                                        <tr>
+                                            <td className='text-center' colSpan="2">
+                                                <span className="text-dark-75 font-weight-bolder d-block font-size-lg">
+                                                    NO HAY EMPRESA INHABILITADAS
+                                                </span>
+                                            </td>
+                                        </tr>
+                                } */}
+                            </tbody>
+                        </table>
+                    </div>
                 </Modal>
             </Layout>
         )
