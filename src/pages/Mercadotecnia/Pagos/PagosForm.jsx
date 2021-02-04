@@ -301,7 +301,6 @@ class PagosForm extends Component {
                 if (state) {
                     if (state.pago) {
                         const { pago } = state
-                        console.log(pago)
                         const { form, options } = this.state
                         if (pago.empresa) {
                             form.empresa = pago.empresa.id.toString()
@@ -325,16 +324,10 @@ class PagosForm extends Component {
                             form.proveedor = pago.proveedor.id.toString()
                             form.rfc = pago.proveedor.rfc
                         }
-                        if (pago.pago) {
-                            form.adjuntos.pago.files = [{
-                                name: pago.pago.name, url: pago.pago.url
-                            }]
-                        }
-                        if (pago.presupuesto) {
-                            form.adjuntos.presupuesto.files = [{
-                                name: pago.presupuesto.name, url: pago.presupuesto.url
-                            }]
-                        }
+                        if (pago.pagos)
+                            form.adjuntos.pago.files = pago.pagos
+                        if (pago.presupuestos)
+                            form.adjuntos.presupuesto.files = pago.presupuestos
                         this.setState({
                             ...this.state,
                             title: 'Editar pago',
@@ -388,13 +381,10 @@ class PagosForm extends Component {
     setOptions = (name, array) => {
         const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
-        this.setState({
-            ...this.state,
-            options
-        })
+        this.setState({ ...this.state, options })
     }
 
-    async getEgresosAxios() {
+    getEgresosAxios = async () => {
         waitAlert()
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'mercadotecnia/pagos/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
@@ -430,7 +420,7 @@ class PagosForm extends Component {
         })
     }
 
-    async addPagoAxios() {
+    addPagoAxios = async () => {
         const { access_token } = this.props.authUser
         const { form, solicitud } = this.state
         const data = new FormData();
@@ -465,7 +455,7 @@ class PagosForm extends Component {
         if(solicitud !== ''){
             data.append(`solicitud`, solicitud.id)
         }
-        await axios.post(`${URL_DEV}mercadotecnia/pagos`, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}mercadotecnia/pagos`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El pago fue registrado con éxito.')
                 const { history } = this.props
@@ -485,7 +475,7 @@ class PagosForm extends Component {
         })
     }
 
-    async editPagoAxios() {
+    editPagoAxios = async () => {
         const { access_token } = this.props.authUser
         const { form, pago } = this.state
         const data = new FormData();
@@ -508,25 +498,20 @@ class PagosForm extends Component {
         })
         aux = Object.keys(form.adjuntos)
         aux.map((element) => {
-            for (var i = 0; i < form.adjuntos[element].files.length; i++) {
-                data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
-                data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
-            }
+            form.adjuntos[element].files.map((file) => {
+                if(file.id === undefined){
+                    data.append(`files_name_${element}[]`, file.name)
+                    data.append(`files_${element}[]`, file.file)
+                }
+            })
             data.append('adjuntos[]', element)
             return false
         })
-        await axios.post(`${URL_DEV}mercadotecnia/pagos/update/${pago.id}`, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}mercadotecnia/pagos/update/${pago.id}`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                /* this.setState({
-                    ...this.state,
-                    modal: false,
-                    form: this.clearForm()
-                })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El pago fue registrado con éxito.')
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El pago fue editado con éxito.')
                 const { history } = this.props
-                history.push({
-                    pathname: '/mercadotecnia/pagos'
-                }); */
+                history.push({ pathname: '/mercadotecnia/pagos' });
             },
             (error) => {
                 console.log(error, 'error')
@@ -542,7 +527,7 @@ class PagosForm extends Component {
         })
     }
 
-    async addProveedorAxios(obj) {
+    addProveedorAxios = async (obj) => {
         const { access_token } = this.props.authUser
         const data = new FormData();
         let cadena = obj.nombre_emisor.replace(' S. C.', ' SC').toUpperCase()
@@ -559,17 +544,11 @@ class PagosForm extends Component {
                 options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
                 data.proveedores = proveedores
                 proveedores.map((proveedor) => {
-                    if (proveedor.razon_social === cadena) {
+                    if (proveedor.razon_social === cadena)
                         form.proveedor = proveedor.id.toString()
-                    }
                     return false
                 })
-                this.setState({
-                    ...this.state,
-                    form,
-                    data,
-                    options
-                })
+                this.setState({ ...this.state, form, data, options })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
             },
             (error) => {
@@ -586,9 +565,39 @@ class PagosForm extends Component {
         })
     }
 
+    deleteAdjuntoAxios = async(id) => {
+        const { pago } = this.state
+        const { access_token } = this.props.authUser
+        await axios.delete(`${URL_DEV}mercadotecnia/pagos/${pago.id}/adjunto/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { pago } = response.data
+                const { form } = this.state
+                const { history } = this.props
+                if(pago.presupuestos)
+                    form.adjuntos.presupuesto.files = pago.presupuestos
+                if(pago.pagos)
+                    form.adjuntos.pago.files = pago.pagos
+                this.setState({...this.state, form})
+                history.push({
+                    pathname: '/mercadotecnia/pagos/edit',
+                    state: { pago: pago }
+                });
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste el adjunto con éxito.')
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) { forbiddenAccessAlert() } 
+                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     handleChange = (files, item) => {
         const { form } = this.state
-        let aux = []
+        let aux = form.adjuntos[item].files
         for (let counter = 0; counter < files.length; counter++) {
             aux.push(
                 {
@@ -607,6 +616,10 @@ class PagosForm extends Component {
         })
     }
 
+    deleteFile = element => {
+        deleteAlert('DESEAS ELIMINAR EL ARCHIVO', element.name, () => this.deleteAdjuntoAxios(element.id))
+    }
+
     render() {
         const { form, title, options, formeditado, data } = this.state
         return (
@@ -618,20 +631,10 @@ class PagosForm extends Component {
                         </div>
                     </Card.Header>
                     <Card.Body className="pt-0">
-                        <PagosFormulario
-                            className = "px-3"
-                            formeditado = { formeditado }
-                            title = { title }
-                            form = { form }
-                            onChange = { this.onChange }
-                            onChangeFactura = { this.onChangeFactura }
-                            clearFiles = { this.clearFiles }
-                            options = { options }
-                            setOptions = { this.setOptions }
-                            onSubmit = { this.onSubmit }
-                            data = { data }
-                            handleChange={this.handleChange}
-                        />
+                        <PagosFormulario className = "px-3" formeditado = { formeditado } title = { title } form = { form } 
+                            onChange = { this.onChange } onChangeFactura = { this.onChangeFactura } clearFiles = { this.clearFiles }
+                            options = { options } setOptions = { this.setOptions } onSubmit = { this.onSubmit } data = { data }
+                            handleChange = { this.handleChange } deleteFile = { this.deleteFile } />
                     </Card.Body>
                 </Card>
             </Layout>
