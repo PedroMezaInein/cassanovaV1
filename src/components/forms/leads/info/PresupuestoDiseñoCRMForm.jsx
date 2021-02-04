@@ -433,7 +433,40 @@ class PresupuestoDiseñoCRMForm extends Component {
                                     defaultActiveKey={defaultKey?defaultKey:formDiseño.acabados?"acabados":formDiseño.mobiliario?"mobiliario": formDiseño.obra_civil?"obra_civil":"vacio"}
                                     activeKey={ activeKey?activeKey:formDiseño.acabados?"acabados":formDiseño.mobiliario?"mobiliario": formDiseño.obra_civil?"obra_civil":"vacio" }
                                 >
-                                    <h5 className="mb-4 font-weight-bold text-dark">INGRESA LOS PRECIOS PARAMÉTRICOS Y EL TIEMPO DE EJECUCIÓN</h5>
+                                    <div className="form-group row form-group-marginless d-flex justify-content-between">
+                                        <div className="col-md-7">
+                                            <h5 className="mb-0 font-weight-bold text-dark">INGRESA LOS PRECIOS PARAMÉTRICOS Y EL TIEMPO DE EJECUCIÓN</h5>
+                                        </div>
+                                        <div className="col-md-5 d-flex justify-content-end">
+                                            <div className="row py-0 mx-0">
+                                                <label className="w-auto mr-4 py-0 col-form-label text-dark-75 font-weight-bold font-size-lg">¿Llevará desglose de información?</label>
+                                                <div className="w-auto px-3">
+                                                    <div className="radio-inline mt-0 ">
+                                                        <label className="radio radio-outline radio-brand text-dark-75 font-weight-bold">
+                                                            <input
+                                                                type="radio"
+                                                                name='si_desglose'
+                                                                value={formDiseño.si_desglose}
+                                                                onChange={onChange}
+                                                                checked={formDiseño.si_desglose}
+                                                            />Si
+																<span></span>
+                                                            </label>
+                                                        <label className="radio radio-outline radio-brand text-dark-75 font-weight-bold">
+                                                            <input 
+                                                                type="radio"
+                                                                name='no_desglose'
+                                                                value={formDiseño.no_desglose}
+                                                                onChange={onChange}
+                                                                checked={formDiseño.no_desglose}
+                                                            />No
+															<span></span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div className={formDiseño.acabados || formDiseño.mobiliario || formDiseño.obra_civil ?"form-group row form-group-marginless":"row form-group-marginless"}>
                                         <div className="col-md-3" >
                                             <InputGray withtaglabel={1} withtextlabel={1} withplaceholder={1}
@@ -443,10 +476,10 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                 iconclass="flaticon-calendar-with-a-clock-time-tools"
                                                 messageinc="Ingresa el tiempo de ejecución." />
                                         </div>
-                                        <div class="col-md-3 align-self-center my-3">
-                                            <div class="d-flex align-items-center justify-content-center">
-                                                <span class="bullet bullet-bar bg-info align-self-stretch"></span>
-                                                <label class="checkbox checkbox-lg checkbox-light-info checkbox-single flex-shrink-0 m-0 mx-2">
+                                        <div className="col-md-3 align-self-center my-3">
+                                            <div className="d-flex align-items-center justify-content-center">
+                                                <span className="bullet bullet-bar bg-info align-self-stretch"></span>
+                                                <label className="checkbox checkbox-lg checkbox-light-info checkbox-single flex-shrink-0 m-0 mx-2">
                                                     <input
                                                         type="checkbox"
                                                         name='acabados'
@@ -456,14 +489,14 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                     <span></span>
                                                 </label>
                                                 <div>
-                                                    <span class="text-dark-75 font-weight-bold font-size-lg">Acabados e instalaciones</span>
+                                                    <span className="text-dark-75 font-weight-bold font-size-lg">Acabados e instalaciones</span>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-3 align-self-center my-3">
-                                            <div class="d-flex align-items-center justify-content-center">
-                                                <span class="bullet bullet-bar bg-primary align-self-stretch"></span>
-                                                <label class="checkbox checkbox-lg checkbox-light-primary checkbox-single flex-shrink-0 m-0 mx-2">
+                                        <div className="col-md-3 align-self-center my-3">
+                                            <div className="d-flex align-items-center justify-content-center">
+                                                <span className="bullet bullet-bar bg-primary align-self-stretch"></span>
+                                                <label className="checkbox checkbox-lg checkbox-light-primary checkbox-single flex-shrink-0 m-0 mx-2">
                                                     <input
                                                         type="checkbox"
                                                         name="mobiliario"
@@ -473,14 +506,14 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                     <span></span>
                                                 </label>
                                                 <div>
-                                                    <a class="text-dark-75 font-weight-bold font-size-lg">Mobiliario</a>
+                                                    <a className="text-dark-75 font-weight-bold font-size-lg">Mobiliario</a>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-3 align-self-center my-3">
-                                            <div class="d-flex align-items-center justify-content-center">
-                                                <span class="bullet bullet-bar bg-warning align-self-stretch"></span>
-                                                <label class="checkbox checkbox-lg checkbox-light-warning checkbox-single flex-shrink-0 m-0 mx-2">
+                                        <div className="col-md-3 align-self-center my-3">
+                                            <div className="d-flex align-items-center justify-content-center">
+                                                <span className="bullet bullet-bar bg-warning align-self-stretch"></span>
+                                                <label className="checkbox checkbox-lg checkbox-light-warning checkbox-single flex-shrink-0 m-0 mx-2">
                                                     <input
                                                         type="checkbox"
                                                         name="obra_civil"
@@ -490,7 +523,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                     <span></span>
                                                 </label>
                                                 <div>
-                                                    <a class="text-dark-75 font-size-sm font-weight-bold font-size-lg mb-1">Obra civil</a>
+                                                    <a className="text-dark-75 font-size-sm font-weight-bold font-size-lg mb-1">Obra civil</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -507,7 +540,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                     formDiseño.acabados ?
                                                         <Nav.Item className="navi-item">
                                                             <Nav.Link className="navi-link pl-0 bg-navi-light-info" eventKey="acabados" onClick={() => { onClickTab("acabados") }}>
-                                                                <span class="navi-text font-weight-bolder text-hover-info"> Acabados e instalaciones</span>
+                                                                <span className="navi-text font-weight-bolder text-hover-info"> Acabados e instalaciones</span>
                                                             </Nav.Link>
                                                         </Nav.Item>
                                                         : ""
@@ -516,7 +549,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                     formDiseño.mobiliario ?
                                                         <Nav.Item className="navi-item">
                                                             <Nav.Link className="navi-link pl-0 bg-navi-light-primary" eventKey="mobiliario" onClick={() => { onClickTab("mobiliario") }}>
-                                                                <span class="navi-text font-weight-bolder text-hover-primary">Mobiliario</span>
+                                                                <span className="navi-text font-weight-bolder text-hover-primary">Mobiliario</span>
                                                             </Nav.Link>
                                                         </Nav.Item>
                                                         : ""
@@ -525,7 +558,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                     formDiseño.obra_civil ?
                                                         <Nav.Item className="navi-item">
                                                             <Nav.Link className="navi-link pl-0 bg-navi-light-warning" eventKey="obra_civil" onClick={() => { onClickTab("obra_civil") }}>
-                                                                <span class="navi-text font-weight-bolder text-hover-warning">Obra civil</span>
+                                                                <span className="navi-text font-weight-bolder text-hover-warning">Obra civil</span>
                                                             </Nav.Link>
                                                         </Nav.Item>
                                                         : ""

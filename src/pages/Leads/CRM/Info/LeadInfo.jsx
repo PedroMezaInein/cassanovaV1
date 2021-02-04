@@ -145,6 +145,8 @@ class LeadInfo extends Component {
             acabados: true,
             mobiliario: true,
             obra_civil: true,
+            si_desglose: true,
+            no_desglose: false,
         },
         activeKey: '',
         defaultKey: '',
@@ -556,6 +558,15 @@ class LeadInfo extends Component {
             }
         if (formDiseño.subtotal > 0) {
             formDiseño.total = formDiseño.subtotal * (1 - (formDiseño.descuento / 100))
+        }
+        if (type === 'radio') {
+            if (name === "si_desglose") {
+                formDiseño.no_desglose = false
+            }
+            else if (name === "no_desglose") {
+                formDiseño.si_desglose = false
+            }
+            formDiseño[name] = checked
         }
         if (type === 'checkbox')
             formDiseño[name] = checked
