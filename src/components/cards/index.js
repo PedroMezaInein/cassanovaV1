@@ -51,6 +51,9 @@ import caducadasCard from './Usuarios/Tareas/CaducadasCard'
 import enProcesoCard from './Usuarios/Tareas/EnProcesoCard'
 import proximasCaducarCard from './Usuarios/Tareas/ProximasCaducarCard'
 
+//Mercadotecnia
+import pagosCard from './Mercadotecnia/Pagos/PagosCard'
+
 //-------------------------------------------------------
 
 //Usuarios
@@ -104,3 +107,5 @@ export const UltimosIngresosCard = ultimosIngresosCard
 export const CaducadasCard = caducadasCard
 export const EnProcesoCard = enProcesoCard
 export const ProximasCaducarCard = proximasCaducarCard
+//Mercadotecnia
+export const PagosCard = pagosCard

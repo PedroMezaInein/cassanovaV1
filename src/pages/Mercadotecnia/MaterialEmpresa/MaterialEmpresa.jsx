@@ -114,6 +114,7 @@ class MaterialEmpresa extends Component {
                         element.isActive = true
                     else 
                         element.isActive = false
+                    return ''
                 })
                 this.setState({...this.state, empresa, opciones_adjuntos, submenuactive: '', menuactive: 0 })
             },
@@ -132,11 +133,12 @@ class MaterialEmpresa extends Component {
     addAdjunto = async() => {
         const { access_token } = this.props.authUser
         const data = new FormData();
-        const { form, menuactive, opciones_adjuntos, empresa, submenuactive, levelName  } = this.state
+        const { form, menuactive, opciones_adjuntos, empresa } = this.state
         data.append('tipo', opciones_adjuntos[menuactive].slug)
         form.adjuntos.adjuntos.files.map((file)=>{
             data.append(`files_name[]`, file.name)
             data.append(`files[]`, file.file)
+            return ''
         })
         data.append('empresa', empresa.id)
         await axios.post(`${URL_DEV}mercadotecnia/material-empresas`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
@@ -184,6 +186,7 @@ class MaterialEmpresa extends Component {
         if(opciones_adjuntos.length >= key+1){
             opciones_adjuntos.map((adjunto)=>{
                 adjunto.isActive = false
+                return ''
             })
             opciones_adjuntos[key].isActive = true
         }
@@ -206,7 +209,6 @@ class MaterialEmpresa extends Component {
     }
 
     handleChange = (files, item) => {
-        const { menuactive, level } = this.state
         this.onChangeAdjuntos({ target: { name: item, value: files, files: files } })
         questionAlert('ENVIAR ARCHIVO', '¿ESTÁS SEGURO QUE DESEAS ENVIARLO?', () => { waitAlert(); this.addAdjunto() })
     }
@@ -243,10 +245,12 @@ class MaterialEmpresa extends Component {
                 active = adjunto
                 index = key
             }
+            return ''
         })
         empresa.adjuntos.map((adjunto)=>{
             if(adjunto.pivot.tipo === active.slug)
                 adjuntos.push(adjunto)
+            return ''
         })
         return(
             <div>

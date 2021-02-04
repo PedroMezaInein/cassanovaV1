@@ -209,7 +209,10 @@ span.rdrDayStartPreview,
 @media screen and (max-width: 1280px) {
     .col-md-4{
         .rdrCalendarWrapper{
-            font-size: 9.7px !important;
+            @include down-screen($xs) {
+                font-size: 9.7px !important;
+            }
+            font-size: 10.7px !important;
         }
     }
 }
