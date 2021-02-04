@@ -541,7 +541,7 @@ class Pagos extends Component {
     deletePagoAxios = async () => {
         const { access_token } = this.props.authUser
         const { pago } = this.state
-        await axios.delete(URL_DEV + 'pago/' + pago.id, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.delete(`${URL_DEV}mercadotecnia/pagos/${pago.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 this.getPagosAxios()
                 this.setState({ ...this.state, modalDelete: false, pago: '' })
