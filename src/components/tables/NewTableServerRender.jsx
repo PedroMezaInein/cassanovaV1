@@ -168,6 +168,8 @@ class NewTableServerRender extends Component {
             initComplete: function () {
                 // var html_append;
                 // var html;
+                tableWidth = $("#" + cardTable).width()
+                $("#" + cardTableHeader).css("width", tableWidth)
                 var contador = 0;
                 table.find("thead th").each(function () {
                     let cellIndex = $(this)[0].cellIndex
@@ -200,6 +202,8 @@ class NewTableServerRender extends Component {
                         newElements: response.elements
                     })
                     drawCallback(response);
+                    tableWidth = $("#" + cardTable).width()
+                    $("#" + cardTableHeader).css("width", tableWidth)
                 });
             },
             columns,
