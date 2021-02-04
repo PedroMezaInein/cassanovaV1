@@ -308,7 +308,7 @@ class NewTableServerRender extends Component {
                     if (global_variable.mostrar_acciones === true) {
                         let aux = ''
                         data.map((element) => {
-                            aux = aux + `<button name=${element.action}  id = ${row.id} class="btn btn-icon btn-actions-table btn-xs mr-2 btn-text-${element.btnclass} btn-hover-${element.btnclass}" title=${element.text}><i class="fas ${element.iconclass}"></i></button>`
+                            aux = aux + `<button name=${element.action}  id = ${row.id} class="btn btn-icon btn-actions-table btn-xs ml-2 btn-text-${element.btnclass} btn-hover-${element.btnclass}" title=${element.text}><i class="fas ${element.iconclass}"></i></button>`
                             return false
                         })
                         return (
