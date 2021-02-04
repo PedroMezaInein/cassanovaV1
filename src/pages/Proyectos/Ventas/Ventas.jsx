@@ -5,7 +5,7 @@ import axios from 'axios'
 import Swal from 'sweetalert2'
 import { URL_DEV, VENTAS_COLUMNS, ADJUNTOS_COLUMNS } from '../../../constants'
 import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setAdjuntosList } from '../../../functions/setters'
-import { waitAlert, errorAlert, createAlert, forbiddenAccessAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis } from '../../../functions/alert'
+import { waitAlert, errorAlert, createAlert, forbiddenAccessAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis, createAlertSA2WithActionOnClose } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { Button, FileInput } from '../../../components/form-components'
 import { Modal, ModalDelete } from '../../../components/singles'
@@ -173,6 +173,43 @@ class Ventas extends Component {
             form
         })
     }
+
+    handleChange = (files, item)  => {
+        const { form } = this.state
+        let aux = form.adjuntos[item].files
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        form['adjuntos'][item].value = files
+        form['adjuntos'][item].files = aux
+        this.setState({...this.state,form})
+        createAlertSA2WithActionOnClose(
+            '¿Deseas agregar el archivo?',
+            '',
+            () => this.addAdjuntoVentaAxios(files, item),
+            () => this.cleanAdjuntos(item)
+        )
+    }
+
+    cleanAdjuntos = (item) => {
+        const { form } = this.state
+        let aux = []
+        form.adjuntos[item].files.map((file) => {
+            if(file.id)
+                aux.push(file)
+        })
+        form.adjuntos[item].value = ''
+        form.adjuntos[item].files = aux
+        this.setState({...this.state,form})
+    }
+    
     onChangeAdjunto = e => {
         const { form, data, options } = this.state
         const { files, value, name } = e.target
@@ -520,20 +557,13 @@ class Ventas extends Component {
         })
     }
     openModalAdjuntos = venta => {
-        const { data } = this.state
-        data.adjuntos = venta.presupuestos.concat(venta.pagos)
-        this.setState({
-            ...this.state,
-            modalAdjuntos: true,
-            venta: venta,
-            form: this.clearForm(),
-            formeditado: 0,
-            adjuntos: this.setAdjuntosTable(venta),
-            data
-        })
+        const { form } = this.state
+        form.adjuntos.presupuesto.files = venta.presupuestos
+        form.adjuntos.pago.files = venta.pagos
+        this.setState({ ...this.state, modalAdjuntos: true, venta: venta, form })
     }
     openModalDeleteAdjuntos = adjunto => {
-        deleteAlert('¿SEGURO DESEAS BORRAR EL ADJUNTO?', '', () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
+        deleteAlert('¿SEGURO DESEAS BORRAR EL ADJUNTO?', adjunto.name, () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
     }
     openModalSee = venta => {
         this.setState({
@@ -846,36 +876,26 @@ class Ventas extends Component {
             console.log(error, 'error')
         })
     }
-    async addAdjuntoVentaAxios() {
+    addAdjuntoVentaAxios = async (files, item) => {
+        waitAlert()
         const { access_token } = this.props.authUser
         const { form, venta } = this.state
         const data = new FormData();
-        let aux = Object.keys(form.adjuntos)
-        aux.map((element) => {
-            if (form.adjuntos[element].value !== '') {
-                for (var i = 0; i < form.adjuntos[element].files.length; i++) {
-                    data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
-                    data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
-                }
-                data.append('adjuntos[]', element)
-            }
-            return false
+        files.map((file) => {
+            data.append(`files_name_${item}[]`, file.name)
+            data.append(`files_${item}[]`, file)
         })
+        data.append('tipo', item)
         data.append('id', venta.id)
-        await axios.post(URL_DEV + 'ventas/adjuntos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}ventas/adjuntos`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { venta } = response.data
-                const { data } = this.state
-                data.adjuntos = venta.presupuestos.concat(venta.pagos)
+                const { form } = this.state
+                form.adjuntos.pago.files = venta.pagos
+                form.adjuntos.presupuesto.files = venta.presupuestos
                 this.getVentasAxios()
-                this.setState({
-                    ...this.state,
-                    form: this.clearForm(),
-                    venta: venta,
-                    adjuntos: this.setAdjuntosTable(venta),
-                    data
-                })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
+                this.setState({ ...this.state, form })
+                doneAlert('Archivo adjuntado con éxito.')
             },
             (error) => {
                 console.log(error, 'error')
@@ -890,23 +910,20 @@ class Ventas extends Component {
             console.log(error, 'error')
         })
     }
-    async deleteAdjuntoAxios(id) {
+    deleteAdjuntoAxios = async (id) => {
         const { access_token } = this.props.authUser
         const { venta } = this.state
-        await axios.delete(URL_DEV + 'ventas/' + venta.id + '/adjuntos/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.delete(`${URL_DEV}ventas/${venta.id}/adjuntos/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { venta } = response.data
-                const { data } = this.state
-                data.adjuntos = venta.presupuestos.concat(venta.pagos)
+                const { form } = this.state
+                if(venta.presupuestos)
+                    form.adjuntos.presupuesto.files = venta.presupuestos
+                if(venta.pagos)
+                    form.adjuntos.pago.files = venta.pagos
+                this.setState({...this.state, form })
                 this.getVentasAxios()
-                this.setState({
-                    ...this.state,
-                    form: this.clearForm(),
-                    venta: venta,
-                    adjuntos: this.setAdjuntosTable(venta),
-                    data
-                })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste el adjunto con éxito.')
             },
             (error) => {
                 console.log(error, 'error')
@@ -1077,30 +1094,8 @@ class Ventas extends Component {
                         </Tab>
                     </Tabs>
                 </Modal>
-                {/* <Modal size="xl" title={"Solicitar factura"} show = { modalAskFactura } handleClose = { this.handleCloseAskFactura }>
-                    <FacturaForm 
-                        options = { options } 
-                        onChange = { this.onChange } 
-                        form = { form } 
-                        onSubmit = { this.onSubmitAskFactura } 
-                        formeditado={formeditado} 
-                        data ={data} 
-                    />
-                </Modal> */}
-                <Modal size="xl" title={"Adjuntos"} show={modalAdjuntos} handleClose={this.handleCloseAdjuntos}>
-                    <AdjuntosForm form={form} onChangeAdjunto={this.onChangeAdjunto} clearFiles={this.clearFiles}
-                        onSubmit={(e) => { e.preventDefault(); waitAlert(); this.addAdjuntoVentaAxios() }} />
-                    <TableForModals
-                        columns={ADJUNTOS_COLUMNS}
-                        data={adjuntos}
-                        hideSelector={true}
-                        mostrar_acciones={true}
-                        actions={{
-                            'deleteAdjunto': { function: this.openModalDeleteAdjuntos }
-                        }}
-                        dataID='adjuntos'
-                        elements={data.adjuntos}
-                    />
+                <Modal size = "xl" title = "Adjuntos" show = { modalAdjuntos } handleClose = { this.handleCloseAdjuntos } >
+                    <AdjuntosForm form = { form } onChangeAdjunto = { this.handleChange } deleteFile = { this.openModalDeleteAdjuntos } />
                 </Modal>
                 <Modal size="lg" title="Ventas" show={modalSee} handleClose={this.handleCloseSee} >
                     <VentasCard venta={venta} />

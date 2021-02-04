@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV, EGRESOS_COLUMNS, ADJUNTOS_COLUMNS } from '../../../constants'
 import { setOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setAdjuntosList, setSelectOptions } from '../../../functions/setters'
-import { errorAlert, waitAlert, forbiddenAccessAlert, createAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis } from '../../../functions/alert'
+import { errorAlert, waitAlert, forbiddenAccessAlert, createAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis, createAlertSA2WithActionOnClose } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { Button, FileInput } from '../../../components/form-components'
 import { Modal, ModalDelete } from '../../../components/singles'
@@ -133,6 +133,43 @@ class egresos extends Component {
             form
         })
     }
+    
+    handleChange = (files, item)  => {
+        const { form } = this.state
+        let aux = form.adjuntos[item].files
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        form['adjuntos'][item].value = files
+        form['adjuntos'][item].files = aux
+        this.setState({...this.state,form})
+        createAlertSA2WithActionOnClose(
+            '¿Deseas agregar el archivo?',
+            '',
+            () => this.addAdjuntoEgresoAxios(files, item),
+            () => this.cleanAdjuntos(item)
+        )
+    }
+
+    cleanAdjuntos = (item) => {
+        const { form } = this.state
+        let aux = []
+        form.adjuntos[item].files.map((file) => {
+            if(file.id)
+                aux.push(file)
+        })
+        form.adjuntos[item].value = ''
+        form.adjuntos[item].files = aux
+        this.setState({...this.state,form})
+    }
+
     onChangeAdjunto = e => {
         const { form, data, options } = this.state
         const { files, value, name } = e.target
@@ -457,22 +494,18 @@ class egresos extends Component {
             form
         })
     }
+
     openModalAdjuntos = egreso => {
-        const { data } = this.state
-        data.adjuntos = egreso.presupuestos.concat(egreso.pagos)
-        this.setState({
-            ...this.state,
-            modalAdjuntos: true,
-            egreso: egreso,
-            form: this.clearForm(),
-            formeditado: 0,
-            adjuntos: this.setAdjuntosTable(egreso),
-            data
-        })
+        const { form } = this.state
+        form.adjuntos.presupuesto.files = egreso.presupuestos
+        form.adjuntos.pago.files = egreso.pagos
+        this.setState({ ...this.state, modalAdjuntos: true, egreso: egreso, form })
     }
+
     openModalDeleteAdjuntos = adjunto => {
-        deleteAlert('¿SEGURO DESEAS BORRAR EL ADJUNTO?', '', () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
+        deleteAlert('¿SEGURO DESEAS BORRAR EL ADJUNTO?', adjunto.name, () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
     }
+
     openModalSee = egreso => {
         this.setState({
             ...this.state,
@@ -769,37 +802,28 @@ class egresos extends Component {
             console.log(error, 'error')
         })
     }
-    async addAdjuntoEgresoAxios() {
+    
+    addAdjuntoEgresoAxios = async (files, item) => {
+        waitAlert()
         const { access_token } = this.props.authUser
         const { form, egreso } = this.state
         const data = new FormData();
         let aux = Object.keys(form.adjuntos)
-        aux.map((element) => {
-            if (form.adjuntos[element].value !== '') {
-                for (var i = 0; i < form.adjuntos[element].files.length; i++) {
-                    data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
-                    data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
-                }
-                data.append('adjuntos[]', element)
-            }
-            return false
+        files.map((file) => {
+            data.append(`files_name_${item}[]`, file.name)
+            data.append(`files_${item}[]`, file)
         })
+        data.append('tipo', item)
         data.append('id', egreso.id)
-        await axios.post(URL_DEV + 'egresos/adjuntos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}egresos/adjuntos`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { egreso } = response.data
-                const { data } = this.state
-                data.adjuntos = egreso.presupuestos.concat(egreso.pagos)
+                const { form } = this.state
+                form.adjuntos.pago.files = egreso.pagos
+                form.adjuntos.presupuesto.files = egreso.presupuestos
                 this.getEgresosAxios()
-                this.setState({
-                    ...this.state,
-                    form: this.clearForm(),
-                    egreso: egreso,
-                    adjuntos: this.setAdjuntosTable(egreso),
-                    modal: false,
-                    data
-                })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
+                this.setState({ ...this.state, form })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Archivo adjuntado con éxito.')
             },
             (error) => {
                 console.log(error, 'error')
@@ -821,17 +845,14 @@ class egresos extends Component {
         await axios.delete(URL_DEV + 'egresos/' + egreso.id + '/adjuntos/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { egreso } = response.data
-                const { data } = this.state
-                data.adjuntos = egreso.presupuestos.concat(egreso.pagos)
+                const { form } = this.state
+                if(egreso.presupuestos)
+                    form.adjuntos.presupuesto.files = egreso.presupuestos
+                if(egreso.pagos)
+                    form.adjuntos.pago.files = egreso.pagos
+                this.setState({...this.state, form })
                 this.getEgresosAxios()
-                this.setState({
-                    ...this.state,
-                    form: this.clearForm(),
-                    egreso: egreso,
-                    adjuntos: this.setAdjuntosTable(egreso),
-                    data
-                })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste el adjunto con éxito.')
             },
             (error) => {
                 console.log(error, 'error')
@@ -947,23 +968,8 @@ class egresos extends Component {
                     <FacturaTable deleteFactura={this.deleteFactura} facturas={facturas} />
                 </Modal>
                 <Modal size="xl" title={"Adjuntos"} show={modalAdjuntos} handleClose={this.handleCloseAdjuntos}>
-                    <AdjuntosForm 
-                        form={form}
-                        onChangeAdjunto={this.onChangeAdjunto}
-                        clearFiles={this.clearFiles}
-                        onSubmit={(e) => { e.preventDefault(); waitAlert(); this.addAdjuntoEgresoAxios() }}
-                    />
-                    <TableForModals
-                        columns={ADJUNTOS_COLUMNS}
-                        data={adjuntos}
-                        hideSelector={true}
-                        mostrar_acciones={true}
-                        actions={{
-                            'deleteAdjunto': { function: this.openModalDeleteAdjuntos }
-                        }}
-                        dataID='adjuntos'
-                        elements={data.adjuntos}
-                    />
+                    <AdjuntosForm form = { form } onChangeAdjunto = { this.handleChange }
+                        clearFiles = { this.clearFiles } deleteFile = { this.openModalDeleteAdjuntos } />
                 </Modal>
                 <Modal size="lg" title="Egreso" show={modalSee} handleClose={this.handleCloseSee} >
                     <EgresosCard egreso={egreso} />
