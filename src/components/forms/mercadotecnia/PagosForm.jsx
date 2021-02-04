@@ -92,7 +92,7 @@ class PagosForm extends Component {
     }
 
     render() {
-        const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, onSubmit, formeditado, onChangeFactura, onChangeCalendar,handleChange, ...props } = this.props
+        const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, onSubmit, formeditado, onChangeFactura, onChangeCalendar,handleChange, deleteFile, ...props } = this.props
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
@@ -155,7 +155,7 @@ class PagosForm extends Component {
                                         />
                                     </div>
                                     {
-                                        form.factura === 'Con factura' && title !== 'Editar egreso' ?
+                                        form.factura === 'Con factura' && title !== 'Editar pago' ?
                                             <div className="col-md-4">
                                                 <FileInput
                                                     requirevalidation={0}
@@ -390,12 +390,8 @@ class PagosForm extends Component {
                                                         <div className="text-center font-weight-bolder mb-2">
                                                             {form.adjuntos.presupuesto.placeholder}
                                                         </div>
-                                                        <ItemSlider
-                                                            multiple={true}
-                                                            items={form.adjuntos.presupuesto.files}
-                                                            item='presupuesto'
-                                                            handleChange={handleChange}
-                                                        />
+                                                        <ItemSlider multiple = { true } items = { form.adjuntos.presupuesto.files }
+                                                            item = 'presupuesto' handleChange = { handleChange } deleteFile = { deleteFile } />
                                                     </div>
                                                 </div>
                                                 <div className="col-md-6 d-flex justify-content-center align-self-center">
@@ -403,12 +399,8 @@ class PagosForm extends Component {
                                                         <div className="text-center font-weight-bolder mb-2">
                                                             {form.adjuntos.pago.placeholder}
                                                         </div>
-                                                        <ItemSlider
-                                                            multiple={true}
-                                                            items={form.adjuntos.pago.files}
-                                                            item='pago'
-                                                            handleChange={handleChange}
-                                                        />
+                                                        <ItemSlider multiple = { true } items = { form.adjuntos.pago.files }
+                                                            item = 'pago' handleChange = { handleChange } deleteFile = { deleteFile } />
                                                     </div>
                                                 </div>
                                             </div>
