@@ -3,7 +3,7 @@ import Layout from '../../../components/layout/layout'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV } from '../../../constants'
-import { forbiddenAccessAlert, errorAlert } from '../../../functions/alert'
+import { forbiddenAccessAlert, errorAlert, waitAlert, doneAlert} from '../../../functions/alert'
 import { save, deleteForm } from '../../../redux/reducers/formulario'
 import { Card } from 'react-bootstrap'
 import { PartidasDiseñoForm as PartidasDiseoFormulario } from '../../../components/forms'
@@ -103,7 +103,7 @@ class PartidasDiseñoForm extends Component {
     }
     // Falta hacer el options
     async getOptionsAxios() {
-        // waitAlert()
+        waitAlert()
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'partidas-diseño', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -129,7 +129,7 @@ class PartidasDiseñoForm extends Component {
         const { form} = this.state
         await axios.post(URL_DEV + 'partidas-diseño', form,  { headers: { Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
-                // doneAlert(response.data.message !== undefined ? response.data.message : 'Agregaste con éxito al usuario.')
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Agregaste con éxito al usuario.')
                 const { history } = this.props
                 history.push({ pathname: '/catalogos/partidas-diseño' });
             },
@@ -149,7 +149,7 @@ class PartidasDiseñoForm extends Component {
         const { form, partida } = this.state
         await axios.put(URL_DEV + 'partidas-diseño/' + partida.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                // doneAlert(response.data.message !== undefined ? response.data.message : 'Agregaste con éxito al usuario.')
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Agregaste con éxito al usuario.')
                 const { history } = this.props
                 history.push({ pathname: '/catalogos/partidas-diseño' });
             },
@@ -173,7 +173,7 @@ class PartidasDiseñoForm extends Component {
 
     onSubmit = e => {
         e.preventDefault();
-        // waitAlert()
+        waitAlert()
         const { title } = this.state
         if (title === 'Editar partida')
             this.updatePartidaDiseñoAxios()
