@@ -977,6 +977,9 @@ class LeadInfo extends Component {
                     formDiseño.fase1 = lead.presupuesto_diseño.fase1
                     formDiseño.fase2 = lead.presupuesto_diseño.fase2
                     formDiseño.renders = lead.presupuesto_diseño.renders
+                    formDiseño.acabados = lead.presupuesto_diseño.acabados_e_instalaciones
+                    formDiseño.mobiliario = lead.presupuesto_diseño.mobiliario
+                    formDiseño.obra_civil = lead.presupuesto_diseño.obra_civil
 
                     let aux = JSON.parse(lead.presupuesto_diseño.actividades)
                     if (aux) {

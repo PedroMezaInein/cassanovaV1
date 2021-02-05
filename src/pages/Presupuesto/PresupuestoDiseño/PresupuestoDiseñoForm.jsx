@@ -253,6 +253,10 @@ class PresupuestoDiseñoForm extends Component {
                 form.fecha = new Date(presupuesto.fecha);
                 form.tiempo_ejecucion_construccion = presupuesto.tiempo_ejecucion_construccion
 
+                form.acabados = presupuesto.acabados_e_instalaciones;
+                form.mobiliario = presupuesto.mobiliario;
+                form.obra_civil = presupuesto.obra_civil;
+
                 if(presupuesto.empresa){
                     data.empresa = presupuesto.empresa
                     form.empresa = presupuesto.empresa.id.toString()
