@@ -81,7 +81,7 @@ class PresupuestoDiseñoForm extends Component {
     }
 
     render() {
-        const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, onSubmit, submitPDF, onChangeCheckboxes, checkButtonSemanas, formeditado, onChangeConceptos,onClickTab, activeKey, defaultKey, ...props } = this.props
+        const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, onSubmit, submitPDF, onChangeCheckboxes, checkButtonSemanas, formeditado, onChangeConceptos,onClickTab, activeKey, defaultKey, onChangePartidas, ...props } = this.props
         const { date } = this.state
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
@@ -383,7 +383,7 @@ class PresupuestoDiseñoForm extends Component {
                                                         type="checkbox"
                                                         name='acabados'
                                                         checked={form.acabados}
-                                                        onChange={onChange}
+                                                        onChange={onChangePartidas}
                                                     />
                                                     <span></span>
                                                 </label>
@@ -400,7 +400,7 @@ class PresupuestoDiseñoForm extends Component {
                                                         type="checkbox"
                                                         name="mobiliario"
                                                         checked={form.mobiliario}
-                                                        onChange={onChange}
+                                                        onChange={onChangePartidas}
                                                     />
                                                     <span></span>
                                                 </label>
@@ -417,7 +417,7 @@ class PresupuestoDiseñoForm extends Component {
                                                         type="checkbox"
                                                         name="obra"
                                                         checked={form.obra}
-                                                        onChange={onChange}
+                                                        onChange={onChangePartidas}
                                                     />
                                                     <span></span>
                                                 </label>
