@@ -7,7 +7,7 @@ import { PAGOS_COLUMNS, URL_DEV, ADJUNTOS_COLUMNS } from '../../../constants'
 import { renderToString } from 'react-dom/server'
 import { setArrayTable, setDateTable, setMoneyTable, setTextTable, setOptions, setAdjuntosList, setSelectOptions} from '../../../functions/setters'
 import { Modal, ModalDelete } from '../../../components/singles'
-import { errorAlert, waitAlert, forbiddenAccessAlert, createAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis } from '../../../functions/alert'
+import { errorAlert, waitAlert, forbiddenAccessAlert, createAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis, createAlertSA2WithActionOnClose } from '../../../functions/alert'
 import TableForModals from '../../../components/tables/TableForModals'
 import AdjuntosForm from '../../../components/forms/AdjuntosForm'
 import { PagosCard } from '../../../components/cards'
@@ -86,35 +86,7 @@ class Pagos extends Component {
             }
         }
     }
-    async getOptionsAxios() {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'mercadotecnia/pagos/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { data, options } = this.state
-                const { proveedores, empresas, estatusCompras } = response.data
-                data.proveedores = proveedores
-                data.empresas = empresas
-                options['estatusCompras'] = setSelectOptions(estatusCompras, 'estatus')
-                Swal.close()
-                this.setState({
-                    ...this.state,
-                    data, options
-                })
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
+
     setPagos = pagos => {
         let aux = []
         let _aux = []
@@ -160,22 +132,7 @@ class Pagos extends Component {
         })
         return aux
     }
-    setAdjuntosTable = pago => {
-        let aux = []
-        let adjuntos = pago.presupuestos.concat(pago.pagos)
-        adjuntos.map((adjunto) => {
-            aux.push({
-                actions: this.setActionsAdjuntos(adjunto),
-                url: renderToString(
-                    setAdjuntosList([{ name: adjunto.name, url: adjunto.url }])
-                ),
-                tipo: renderToString(setTextTable(adjunto.pivot.tipo)),
-                id: 'adjuntos-' + adjunto.id
-            })
-            return false
-        })
-        return aux
-    }
+
     setActions = (pago) => {
         let aux = []
         aux.push(
@@ -219,9 +176,9 @@ class Pagos extends Component {
         }
         return aux
     }
-    async getPagosAxios() {
-        $('#kt_table_pagos').DataTable().ajax.reload();
-    }
+
+    async getPagosAxios() { $('#kt_table_pagos').DataTable().ajax.reload(); }
+
     changePageEdit = (pago) => {
         const { history } = this.props
         history.push({
@@ -229,6 +186,11 @@ class Pagos extends Component {
             state: { pago: pago }
         });
     }
+
+    deleteFile = element => {
+        deleteAlert('DESEAS ELIMINAR EL ARCHIVO', element.name, () => this.deleteAdjuntoAxios(element.id))
+    }
+
     openModalDelete = pago => {
         this.setState({
             ...this.state,
@@ -236,19 +198,14 @@ class Pagos extends Component {
             pago: pago
         })
     }
+
     openModalAdjuntos = pago => {
-        const { data } = this.state
-        data.adjuntos = pago.presupuestos.concat(pago.pagos)
-        this.setState({
-            ...this.state,
-            modalAdjuntos: true,
-            pago: pago,
-            form: this.clearForm(),
-            formeditado: 0,
-            adjuntos: this.setAdjuntosTable(pago),
-            data
-        })
+        const { form } = this.state
+        form.adjuntos.presupuesto.files = pago.presupuestos
+        form.adjuntos.pago.files = pago.pagos
+        this.setState({ ...this.state, modalAdjuntos: true, pago: pago, form })
     }
+
     openModalSee = pago => {
         this.setState({
             ...this.state,
@@ -256,6 +213,7 @@ class Pagos extends Component {
             pago: pago
         })
     }
+
     openModalFacturas = pago => {
         let { porcentaje, form } = this.state
         form = this.clearForm()
@@ -276,6 +234,7 @@ class Pagos extends Component {
             form
         })
     }
+
     handleCloseDelete = () => {
         const { modalDelete } = this.state
         this.setState({
@@ -284,18 +243,16 @@ class Pagos extends Component {
             pago: ''
         })
     }
+
     handleCloseAdjuntos = () => {
-        const { data } = this.state
-        data.adjuntos = []
         this.setState({
             ...this.state,
             modalAdjuntos: false,
             form: this.clearForm(),
-            adjuntos: [],
-            data,
             pago: ''
         })
     }
+
     handleCloseSee = () => {
         this.setState({
             ...this.state,
@@ -303,6 +260,7 @@ class Pagos extends Component {
             pago: ''
         })
     }
+
     handleCloseFacturas = () => {
         this.setState({
             ...this.state,
@@ -313,40 +271,7 @@ class Pagos extends Component {
             form: this.clearForm()
         })
     }
-    openModalDeleteAdjuntos = adjunto => {
-        deleteAlert('¿SEGURO DESEAS BORRAR EL ADJUNTO?', '', () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
-    }
-    async deleteAdjuntoAxios(id) {
-        const { access_token } = this.props.authUser
-        const { pago } = this.state
-        await axios.delete(URL_DEV + 'pagos/' + pago.id + '/adjuntos/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { pago } = response.data
-                const { data } = this.state
-                data.adjuntos = pago.presupuestos.concat(pago.pagos)
-                this.getPagosAxios()
-                this.setState({
-                    ...this.state,
-                    form: this.clearForm(),
-                    pago: pago,
-                    adjuntos: this.setAdjuntosTable(pago),
-                    data
-                })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
+
     onChange = e => {
         const { form } = this.state
         const { name, value } = e.target
@@ -356,6 +281,43 @@ class Pagos extends Component {
             form
         })
     }
+    
+    handleChange = (files, item)  => {
+        const { form } = this.state
+        let aux = form.adjuntos[item].files
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        form['adjuntos'][item].value = files
+        form['adjuntos'][item].files = aux
+        this.setState({...this.state,form})
+        createAlertSA2WithActionOnClose(
+            '¿Deseas agregar el archivo?',
+            '',
+            () => this.addAdjuntoPagosAxios(files, item),
+            () => this.cleanAdjuntos(item)
+        )
+    }
+
+    cleanAdjuntos = (item) => {
+        const { form } = this.state
+        let aux = []
+        form.adjuntos[item].files.map((file) => {
+            if(file.id)
+                aux.push(file)
+        })
+        form.adjuntos[item].value = ''
+        form.adjuntos[item].files = aux
+        this.setState({...this.state,form})
+    }
+    
     onChangeAdjunto = e => {
         const { form, data, options } = this.state
         const { files, value, name } = e.target
@@ -496,49 +458,7 @@ class Pagos extends Component {
             form
         })
     }
-    async addProveedorAxios(obj) {
-        const { access_token } = this.props.authUser
-        const data = new FormData();
-        let cadena = obj.nombre_emisor.replace(' S. C.', ' SC').toUpperCase()
-        cadena = cadena.replace(',S.A.', ' SA').toUpperCase()
-        cadena = cadena.replace(/,/g, '').toUpperCase()
-        cadena = cadena.replace(/\./g, '').toUpperCase()
-        data.append('nombre', cadena)
-        data.append('razonSocial', cadena)
-        data.append('rfc', obj.rfc_emisor.toUpperCase())
-        await axios.post(URL_DEV + 'proveedores', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { proveedores } = response.data
-                const { options, data, form } = this.state
-                options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
-                data.proveedores = proveedores
-                proveedores.map((proveedor) => {
-                    if (proveedor.razon_social === cadena) {
-                        form.proveedor = proveedor.id.toString()
-                    }
-                    return false
-                })
-                this.setState({
-                    ...this.state,
-                    form,
-                    data,
-                    options
-                })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
+    
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
@@ -574,62 +494,34 @@ class Pagos extends Component {
         })
         return form;
     }
-    async deletePagoAxios() {
-        const { access_token } = this.props.authUser
-        const { pago } = this.state
-        await axios.delete(URL_DEV + 'pago/' + pago.id, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                this.getPagosAxios()
-                this.setState({
-                    ...this.state,
-                    modalDelete: false,
-                    pago: '',
-                })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El pago fue eliminado con éxito.')
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
+
+    deleteFactura = id => {
+        waitAlert()
+        this.deleteFacturaAxios(id)
     }
-    async addAdjuntoPagosAxios() {
+
+    addProveedorAxios = async (obj) => {
         const { access_token } = this.props.authUser
-        const { form, pago } = this.state
         const data = new FormData();
-        let aux = Object.keys(form.adjuntos)
-        aux.map((element) => {
-            if (form.adjuntos[element].value !== '') {
-                for (var i = 0; i < form.adjuntos[element].files.length; i++) {
-                    data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
-                    data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
-                }
-                data.append('adjuntos[]', element)
-            }
-            return false
-        })
-        data.append('id', pago.id)
-        await axios.post(URL_DEV + 'pagos/adjuntos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        let cadena = obj.nombre_emisor.replace(' S. C.', ' SC').toUpperCase()
+        cadena = cadena.replace(',S.A.', ' SA').toUpperCase()
+        cadena = cadena.replace(/,/g, '').toUpperCase()
+        cadena = cadena.replace(/\./g, '').toUpperCase()
+        data.append('nombre', cadena)
+        data.append('razonSocial', cadena)
+        data.append('rfc', obj.rfc_emisor.toUpperCase())
+        await axios.post(URL_DEV + 'proveedores', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { pago } = response.data
-                const { data } = this.state
-                data.adjuntos = pago.presupuestos.concat(pago.pagos)
-                this.getPagosAxios()
-                this.setState({
-                    ...this.state,
-                    form: this.clearForm(),
-                    pago: pago,
-                    adjuntos: this.setAdjuntosTable(pago),
-                    modal: false,
-                    data
+                const { proveedores } = response.data
+                const { options, data, form } = this.state
+                options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
+                data.proveedores = proveedores
+                proveedores.map((proveedor) => {
+                    if (proveedor.razon_social === cadena)
+                        form.proveedor = proveedor.id.toString()
+                    return false
                 })
+                this.setState({ ...this.state, form, data, options })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
             },
             (error) => {
@@ -645,7 +537,89 @@ class Pagos extends Component {
             console.log(error, 'error')
         })
     }
-    async sendFacturaAxios() {
+
+    deletePagoAxios = async () => {
+        const { access_token } = this.props.authUser
+        const { pago } = this.state
+        await axios.delete(`${URL_DEV}mercadotecnia/pagos/${pago.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.getPagosAxios()
+                this.setState({ ...this.state, modalDelete: false, pago: '' })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El pago fue eliminado con éxito.')
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) { forbiddenAccessAlert() } 
+                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    addAdjuntoPagosAxios = async ( files, item ) => {
+        const { access_token } = this.props.authUser
+        const { form, pago } = this.state
+        const data = new FormData();
+        let aux = Object.keys(form.adjuntos)
+        files.map((file) => {
+            data.append(`files_name_${item}[]`, file.name)
+            data.append(`files_${item}[]`, file)
+        })
+        data.append('tipo', item)
+        data.append('pago', pago.id)
+        await axios.post(`${URL_DEV}mercadotecnia/pagos/adjuntos`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { pago } = response.data
+                const { form } = this.state
+                form.adjuntos.pago.files = pago.pagos
+                form.adjuntos.presupuesto.files = pago.presupuestos
+                this.setState({...this.state, form, pago: pago})
+                this.getPagosAxios()
+                doneAlert('Archivo adjuntado con éxito.')
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) {
+                    forbiddenAccessAlert()
+                } else {
+                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    
+    deleteAdjuntoAxios = async(id) => {
+        const { pago } = this.state
+        const { access_token } = this.props.authUser
+        await axios.delete(`${URL_DEV}mercadotecnia/pagos/${pago.id}/adjunto/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { pago } = response.data
+                const { form } = this.state
+                if(pago.presupuestos)
+                    form.adjuntos.presupuesto.files = pago.presupuestos
+                if(pago.pagos)
+                    form.adjuntos.pago.files = pago.pagos
+                this.setState({...this.state, form, pago: pago})
+                this.getPagosAxios()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste el adjunto con éxito.')
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) { forbiddenAccessAlert() } 
+                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    sendFacturaAxios = async () => {
         const { access_token } = this.props.authUser
         const { form, pago } = this.state
         const data = new FormData();
@@ -663,40 +637,19 @@ class Pagos extends Component {
             }
             return false
         })
-        aux = Object.keys(form.adjuntos)
-        aux.map((element) => {
-            if (form.adjuntos[element].value !== '' && element === 'factura') {
-                for (var i = 0; i < form.adjuntos[element].files.length; i++) {
-                    data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
-                    data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
-                }
-                data.append('adjuntos[]', element)
-            }
-            return false
+        form.adjuntos.factura.files.map((file) => {
+            data.append(`files_name_factura[]`, file.name)
+            data.append(`files_factura[]`, file.file)
         })
         data.append('id', pago.id)
-        await axios.post(URL_DEV + 'pagos/factura', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}mercadotecnia/pagos/factura`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { pago } = response.data
-                let { porcentaje, data, form } = this.state
+                let { form } = this.state
                 form = this.clearForm()
                 form.estatusCompra = pago.estatus_compra.id
-                porcentaje = 0
-                pago.facturas.map((factura) => {
-                    porcentaje = porcentaje + factura.total
-                    return false
-                })
-                porcentaje = porcentaje * 100 / (pago.total - pago.comision)
-                porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
-                this.getEgresosAxios()
-                this.setState({
-                    ...this.state,
-                    form,
-                    pago: pago,
-                    facturas: pago.facturas,
-                    porcentaje,
-                    data
-                })
+                this.getPagosAxios()
+                this.setState({...this.state, form, pago: pago, facturas: pago.facturas })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
             },
             (error) => {
@@ -712,11 +665,8 @@ class Pagos extends Component {
             console.log(error, 'error')
         })
     }
-    deleteFactura = id => {
-        waitAlert()
-        this.deleteFacturaAxios(id)
-    }
-    async deleteFacturaAxios(id) {
+
+    deleteFacturaAxios = async (id) => {
         const { access_token } = this.props.authUser
         const { pago } = this.state
         await axios.delete(URL_DEV + 'pagos/' + pago.id + '/facturas/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -754,6 +704,31 @@ class Pagos extends Component {
             console.log(error, 'error')
         })
     }
+
+    getOptionsAxios = async () => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'mercadotecnia/pagos/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { data, options } = this.state
+                const { proveedores, empresas, estatusCompras } = response.data
+                data.proveedores = proveedores
+                data.empresas = empresas
+                options['estatusCompras'] = setSelectOptions(estatusCompras, 'estatus')
+                Swal.close()
+                this.setState({ ...this.state, data, options })
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) { forbiddenAccessAlert() } 
+                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     render() {
         const { modalDelete, modalAdjuntos, modalFacturas, adjuntos, form, data, modalSee, pago, options, facturas} = this.state
         return (
@@ -783,24 +758,8 @@ class Pagos extends Component {
                 />
                 <ModalDelete title={"¿Estás seguro que deseas eliminar el pago?"} show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { e.preventDefault(); waitAlert(); this.deletePagoAxios() }}>
                 </ModalDelete>
-                <Modal size="xl" title={"Adjuntos"} show={modalAdjuntos} handleClose={this.handleCloseAdjuntos}>
-                    <AdjuntosForm 
-                        form={form}
-                        onChangeAdjunto={this.onChangeAdjunto}
-                        clearFiles={this.clearFiles}
-                        onSubmit={(e) => { e.preventDefault(); waitAlert(); this.addAdjuntoPagosAxios() }}
-                    />
-                    <TableForModals
-                        columns={ADJUNTOS_COLUMNS}
-                        data={adjuntos}
-                        hideSelector={true}
-                        mostrar_acciones={true}
-                        actions={{
-                            'deleteAdjunto': { function: this.openModalDeleteAdjuntos }
-                        }}
-                        dataID='adjuntos'
-                        elements={data.adjuntos}
-                    />
+                <Modal size = "xl" title = "Adjuntos" show = { modalAdjuntos } handleClose = { this.handleCloseAdjuntos } >
+                    <AdjuntosForm  form = { form } onChangeAdjunto = { this.handleChange } clearFiles = { this.clearFiles } deleteFile = { this.deleteFile } />
                 </Modal>
                 <Modal size="lg" title="Pago" show={modalSee} handleClose={this.handleCloseSee} >
                     <PagosCard pago={pago} />
@@ -809,36 +768,22 @@ class Pagos extends Component {
                     <Form onSubmit={(e) => { e.preventDefault(); waitAlert(); this.sendFacturaAxios(); }}>
                         <div className="row mx-0 pt-4">
                             <div className="col-md-6 px-2">
-                                <FileInput
-                                    onChangeAdjunto={this.onChangeAdjunto}
-                                    placeholder={form['adjuntos']['factura']['placeholder']}
-                                    value={form['adjuntos']['factura']['value']}
-                                    name={'factura'}
-                                    id={'factura'}
-                                    accept="text/xml, application/pdf"
-                                    files={form['adjuntos']['factura']['files']}
-                                    deleteAdjunto={this.clearFiles} multiple
-                                />
+                                <FileInput onChangeAdjunto = { this.onChangeAdjunto } placeholder = { form.adjuntos.factura.placeholder }
+                                    value = { form.adjuntos.factura.value } name = 'factura' id = 'factura' accept = "text/xml, application/pdf"
+                                    files = { form.adjuntos.factura.files } deleteAdjunto = { this.clearFiles } multiple />
                             </div>
                             <div className="col-md-6 px-2">
-                                <Select
-                                    requirevalidation={1}
-                                    formeditado={1}
-                                    placeholder="SELECCIONA EL ESTATUS DE COMPRA"
-                                    options={options.estatusCompras}
-                                    name="estatusCompra"
-                                    value={form.estatusCompra}
-                                    onChange={this.onChange}
-                                    iconclass={"flaticon2-time"}
-                                    messageinc="Incorrecto. Selecciona el estatus de compra."
-                                />
+                                <Select requirevalidation = { 1 } formeditado = { 1 } placeholder = "SELECCIONA EL ESTATUS DE COMPRA"
+                                    options = { options.estatusCompras } name = "estatusCompra" value = { form.estatusCompra }
+                                    onChange = { this.onChange } iconclass = "flaticon2-time" 
+                                    messageinc="Incorrecto. Selecciona el estatus de compra." />
                             </div>
                         </div>
                         <div className="col-md-12 px-2 align-items-center d-flex mt-4">
                             <Button icon='' className="mx-auto" type="submit" text="ENVIAR" />
                         </div>
                     </Form>
-                    <FacturaTable deleteFactura={this.deleteFactura} facturas={facturas} />
+                    <FacturaTable deleteFactura = { this.deleteFactura } facturas = { facturas } />
                 </Modal>
             </Layout>
         )

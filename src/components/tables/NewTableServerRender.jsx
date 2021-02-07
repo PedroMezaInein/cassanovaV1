@@ -45,7 +45,7 @@ class NewTableServerRender extends Component {
 
     componentDidUpdate() {
         const { cardTable, cardTableHeader, cardBody, isTab, isNav} = this.props
-        $("body").addClass("card-sticky-on").css("overflow-y", "scroll")
+        $("body").addClass("card-sticky-on")
 
         let tableWidth = $("#" + cardTable).width()
         $("#" + cardTableHeader).css("width", tableWidth).css("box-shadow", "0px 1px 15px 1px rgba(69, 65, 78, 0)").css("z-index", 3)
@@ -99,7 +99,7 @@ class NewTableServerRender extends Component {
             cardTableHeader, cardBody, isTab, checkbox, isNav } = this.props
         global_variable["mostrar_acciones"] = mostrar_acciones;
 
-        $("body").addClass("card-sticky-on").css("overflow-y", "scroll")
+        $("body").addClass("card-sticky-on")
 
         let tableWidth = $("#" + cardTable).width()
         $("#" + cardTableHeader).css("width", tableWidth).css("box-shadow", "0px 1px 15px 1px rgba(69, 65, 78, 0)").css("z-index", 3)
@@ -262,8 +262,8 @@ class NewTableServerRender extends Component {
             dom:
                 `<'row'
                 <'col-sm-12'tr>>
-                <'row'<'col-sm-12 col-md-5'i>
-                <'col-sm-12 col-md-7 flex-column-reverse flex-md-row dataTables_pager'lp>
+                <'row'<'col-sm-12 col-md-7'i>
+                <'col-sm-12 col-md-5 flex-column-reverse flex-md-row dataTables_pager'lp>
             >`,
             language: {
                 "sProcessing": renderToString(
@@ -308,7 +308,7 @@ class NewTableServerRender extends Component {
                     if (global_variable.mostrar_acciones === true) {
                         let aux = ''
                         data.map((element) => {
-                            aux = aux + `<button name=${element.action}  id = ${row.id} class="ml-2 btn btn-actions-table btn-xs btn-icon btn-text-${element.btnclass} btn-hover-${element.btnclass}" title=${element.text}><i class=${element.iconclass}></i></button>`
+                            aux = aux + `<button name=${element.action}  id = ${row.id} class="btn btn-icon btn-actions-table btn-xs ml-2 btn-text-${element.btnclass} btn-hover-${element.btnclass}" title=${element.text}><i class="fas ${element.iconclass}"></i></button>`
                             return false
                         })
                         return (
@@ -371,14 +371,14 @@ class NewTableServerRender extends Component {
             this.props.onClickRestante();
         }
     }
-    clickHandlerInhabilitadas = (e) => {
-        if (typeof this.props.onClickInhabilitadas === 'function') {
-            this.props.onClickInhabilitadas();
+    clickHandlerHabilitar = (e) => {
+        if (typeof this.props.onClickHabilitar === 'function') {
+            this.props.onClickHabilitar();
         }
     }
     render() {
 
-        const { title, subtitle, url, mostrar_boton, abrir_modal, exportar_boton, cardTable, cardTableHeader, cardBody, restante_empresa, inhabilitar_empresa, customcard, customheader, customtitle, customsubtitle, customlabel} = this.props
+        const { title, subtitle, url, mostrar_boton, abrir_modal, exportar_boton, cardTable, cardTableHeader, cardBody, restante_empresa, habilitar, text_habilitar, customcard, customheader, customtitle, customsubtitle, customlabel, icon_habilitar} = this.props
         return (
             <>
                 <Card id={cardTable} className={`card-custom card-sticky ${customcard}`}>
@@ -405,10 +405,10 @@ class NewTableServerRender extends Component {
                                 :
                                 ""
                             }
-                            {(inhabilitar_empresa === true) ?
-                                <OverlayTrigger overlay={<Tooltip>HABILITAR EMPRESA</Tooltip>}>
-                                    <button onClick={() => this.clickHandlerInhabilitadas()} className="btn btn-icon btn-light btn-text-primary btn-hover-text-dark font-weight-bold btn-sm mr-2">
-                                        <i className="fas fa-unlock-alt text-dark-50"></i>
+                            {(habilitar === true) ?
+                                <OverlayTrigger overlay={<Tooltip><span className="font-weight-bold text-dark-75">{text_habilitar}</span></Tooltip>}>
+                                    <button onClick={() => this.clickHandlerHabilitar()} className="btn btn-icon btn-light btn-text-primary btn-hover-text-dark font-weight-bold btn-sm mr-2">
+                                        <i className={`fas ${icon_habilitar} text-dark-50`}></i>
                                     </button>
                                 </OverlayTrigger>
                                 :
@@ -424,11 +424,11 @@ class NewTableServerRender extends Component {
                             {
                                 (mostrar_boton === true) ?
                                     (abrir_modal === true) ?
-                                        <button onClick={() => this.clickHandler()} className="btn btn-success font-weight-bold mr-2">
+                                        <button onClick={() => this.clickHandler()} className="btn btn-success font-weight-bold">
                                             <i className="flaticon-add"></i> AGREGAR
                                         </button>
                                         :
-                                        <a href={url} className="btn btn-success font-weight-bold mr-2">
+                                        <a href={url} className="btn btn-success font-weight-bold">
                                             <i className="flaticon-add"></i> AGREGAR
                                         </a>
                                     :
