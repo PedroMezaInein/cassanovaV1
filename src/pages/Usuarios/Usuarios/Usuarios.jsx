@@ -51,7 +51,8 @@ class Usuarios extends Component {
             proyectos: [],
             departamentos: [],
             users:[],
-        }
+        },
+        detenidas: []
     }
 
     componentDidMount() {
@@ -536,26 +537,26 @@ class Usuarios extends Component {
     async inhabilitarUsuario(user, estatus) {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.put(URL_DEV + 'user/detener/' + user.id, { detenido: estatus }, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.put(`${URL_DEV}user/bloquear/${user.id}`, { detenido: estatus }, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                this.getEmpresas()
+                const { key, modal } = this.state
+                modal.inhabilitar = false
+                if(key === 'administrador')
+                    this.getAdministradorAxios()
+                if(key === 'empleados')
+                    this.getEmpleadosAxios()
+                if(key === 'clientes')
+                    this.getClientesAxios()
                 if (estatus)
                     doneAlert('El usuario fue inhabilitado con éxito.')
                 else
                     doneAlert('El usuario fue habilitado con éxito.')
-                this.setState({
-                    ...this.state,
-                    detenidas: [],
-                    modalInhabilitadas: false
-                })
+                this.setState({...this.state, modalInhabilitadas: false, detenidas: [], modal })
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                if (error.response.status === 401) { forbiddenAccessAlert() } 
+                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -563,12 +564,25 @@ class Usuarios extends Component {
         })
     }
     habilitar = (user) => {
-        questionAlertY('¿ESTÁS SEGURO?', '¿DESEAS HABILITAR LA EMPRESA?', () => this.inhabilitarUsuario(user, false))
+        questionAlertY('¿ESTÁS SEGURO?', '¿DESEAS HABILITAR AL USUARIO?', () => this.inhabilitarUsuario(user, false))
     }
     openModalHabilitar = async () => {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'user/detenidos', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        const { key } = this.state
+        let tipo = 0;
+        switch(key){
+            case 'administrador':
+                tipo = 1;
+                break;
+            case 'empleado':
+                tipo = 2;
+                break;
+            case 'cliente':
+                tipo = 3;
+                break;
+        }
+        await axios.get(`${URL_DEV}user/bloqueados/${tipo}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { modal } = this.state
                 const { users } = response.data
@@ -605,7 +619,7 @@ class Usuarios extends Component {
         })
     }
     render(){
-        const { modal, title, user, form, options, key} = this.state
+        const { modal, title, user, form, options, key, detenidas } = this.state
         const { formulario } = this.props
         return (
             <Layout active = { 'usuarios' }  { ...this.props } >
@@ -748,7 +762,7 @@ class Usuarios extends Component {
                                 </tr>
                             </thead>
                             <tbody>
-                                {/* {
+                                {
                                     detenidas.length > 0 ?
                                         detenidas.map((detenida, key) => {
                                             return (
@@ -771,11 +785,11 @@ class Usuarios extends Component {
                                         <tr>
                                             <td className='text-center' colSpan="2">
                                                 <span className="text-dark-75 font-weight-bolder d-block font-size-lg">
-                                                    NO HAY EMPRESA INHABILITADAS
+                                                    NO HAY USUARIOS INHABILITADOS
                                                 </span>
                                             </td>
                                         </tr>
-                                } */}
+                                }
                             </tbody>
                         </table>
                     </div>
