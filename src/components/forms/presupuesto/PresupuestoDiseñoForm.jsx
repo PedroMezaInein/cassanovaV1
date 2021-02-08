@@ -81,7 +81,7 @@ class PresupuestoDiseñoForm extends Component {
     }
 
     render() {
-        const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, onSubmit, submitPDF, onChangeCheckboxes, checkButtonSemanas, formeditado, onChangeConceptos,onClickTab, activeKey, defaultKey, ...props } = this.props
+        const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, onSubmit, submitPDF, onChangeCheckboxes, checkButtonSemanas, formeditado, onChangeConceptos,onClickTab, activeKey, defaultKey, onChangePartidas, ...props } = this.props
         const { date } = this.state
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
@@ -375,54 +375,54 @@ class PresupuestoDiseñoForm extends Component {
                                                 iconclass = "flaticon-calendar-with-a-clock-time-tools" messageinc = "Ingresa el tiempo de ejecución."
                                                 formgroup = "mb-1" />
                                         </div>
-                                        <div class="col-md-3 align-self-center my-3">
-                                            <div class="d-flex align-items-center justify-content-center">
-                                                <span class="bullet bullet-bar bg-primary align-self-stretch"></span>
-                                                <label class="checkbox checkbox-lg checkbox-light-primary checkbox-single flex-shrink-0 m-0 mx-2">
+                                        <div className="col-md-3 align-self-center my-3">
+                                            <div className="d-flex align-items-center justify-content-center">
+                                                <span className="bullet bullet-bar bg-primary align-self-stretch"></span>
+                                                <label className="checkbox checkbox-lg checkbox-light-primary checkbox-single flex-shrink-0 m-0 mx-2">
                                                     <input
                                                         type="checkbox"
                                                         name='acabados'
                                                         checked={form.acabados}
-                                                        onChange={onChange}
+                                                        onChange={onChangePartidas}
                                                     />
                                                     <span></span>
                                                 </label>
                                                 <div>
-                                                    <span class="text-dark-75 font-weight-bold font-size-lg">Acabados e instalaciones</span>
+                                                    <span className="text-dark-75 font-weight-bold font-size-lg">Acabados e instalaciones</span>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-3 align-self-center my-3">
-                                            <div class="d-flex align-items-center justify-content-center">
-                                                <span class="bullet bullet-bar bg-primary align-self-stretch"></span>
-                                                <label class="checkbox checkbox-lg checkbox-light-primary checkbox-single flex-shrink-0 m-0 mx-2">
+                                        <div className="col-md-3 align-self-center my-3">
+                                            <div className="d-flex align-items-center justify-content-center">
+                                                <span className="bullet bullet-bar bg-primary align-self-stretch"></span>
+                                                <label className="checkbox checkbox-lg checkbox-light-primary checkbox-single flex-shrink-0 m-0 mx-2">
                                                     <input
                                                         type="checkbox"
                                                         name="mobiliario"
                                                         checked={form.mobiliario}
-                                                        onChange={onChange}
+                                                        onChange={onChangePartidas}
                                                     />
                                                     <span></span>
                                                 </label>
                                                 <div>
-                                                    <a class="text-dark-75 font-weight-bold font-size-lg">Mobiliario</a>
+                                                    <a className="text-dark-75 font-weight-bold font-size-lg">Mobiliario</a>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div class="col-md-3 align-self-center my-3">
-                                            <div class="d-flex align-items-center justify-content-center">
-                                                <span class="bullet bullet-bar bg-primary align-self-stretch"></span>
-                                                <label class="checkbox checkbox-lg checkbox-light-primary checkbox-single flex-shrink-0 m-0 mx-2">
+                                        <div className="col-md-3 align-self-center my-3">
+                                            <div className="d-flex align-items-center justify-content-center">
+                                                <span className="bullet bullet-bar bg-primary align-self-stretch"></span>
+                                                <label className="checkbox checkbox-lg checkbox-light-primary checkbox-single flex-shrink-0 m-0 mx-2">
                                                     <input
                                                         type="checkbox"
                                                         name="obra"
                                                         checked={form.obra}
-                                                        onChange={onChange}
+                                                        onChange={onChangePartidas}
                                                     />
                                                     <span></span>
                                                 </label>
                                                 <div>
-                                                    <a class="text-dark-75 font-size-sm font-weight-bold font-size-lg mb-1">Obra civil</a>
+                                                    <a className="text-dark-75 font-size-sm font-weight-bold font-size-lg mb-1">Obra civil</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -439,7 +439,7 @@ class PresupuestoDiseñoForm extends Component {
                                                     form.acabados ?
                                                         <Nav.Item className="navi-item">
                                                             <Nav.Link className="navi-link pl-0 bg-navi-light-primary" eventKey="acabados" onClick={() => { onClickTab("acabados") }}>
-                                                                <span class="navi-text font-weight-bolder text-hover-primary"> Acabados e instalaciones</span>
+                                                                <span className="navi-text font-weight-bolder text-hover-primary"> Acabados e instalaciones</span>
                                                             </Nav.Link>
                                                         </Nav.Item>
                                                         : ""
@@ -448,7 +448,7 @@ class PresupuestoDiseñoForm extends Component {
                                                     form.mobiliario ?
                                                         <Nav.Item className="navi-item">
                                                             <Nav.Link className="navi-link pl-0 bg-navi-light-primary" eventKey="mobiliario" onClick={() => { onClickTab("mobiliario") }}>
-                                                                <span class="navi-text font-weight-bolder text-hover-primary">Mobiliario</span>
+                                                                <span className="navi-text font-weight-bolder text-hover-primary">Mobiliario</span>
                                                             </Nav.Link>
                                                         </Nav.Item>
                                                         : ""
@@ -457,7 +457,7 @@ class PresupuestoDiseñoForm extends Component {
                                                     form.obra ?
                                                         <Nav.Item className="navi-item">
                                                             <Nav.Link className="navi-link pl-0 bg-navi-light-primary" eventKey="obra" onClick={() => { onClickTab("obra") }}>
-                                                                <span class="navi-text font-weight-bolder text-hover-primary">Obra civil</span>
+                                                                <span className="navi-text font-weight-bolder text-hover-primary">Obra civil</span>
                                                             </Nav.Link>
                                                         </Nav.Item>
                                                         : ""

@@ -43,3 +43,7 @@
 [1218/100322.477:ERROR:directory_reader_win.cc(43)] FindFirstFile: El sistema no puede encontrar la ruta especificada. (0x3)
 >>>>>>> 7ae9d19df81947861ed180556a6064af031fa66b
 [1228/120038.446:ERROR:directory_reader_win.cc(43)] FindFirstFile: El sistema no puede encontrar la ruta especificada. (0x3)
+[0113/214533.835:ERROR:directory_reader_win.cc(43)] FindFirstFile: El sistema no puede encontrar la ruta especificada. (0x3)
+[0113/214533.835:ERROR:filesystem_win.cc(129)] GetFileAttributes C:\Users\Carina\AppData\Local\Google\Chrome\User Data\Crashpad\attachments\6b5a4052-1fa0-4cfa-a9af-66cc63823895: El sistema no puede encontrar la ruta especificada. (0x3)
+[0114/204509.061:ERROR:directory_reader_win.cc(43)] FindFirstFile: El sistema no puede encontrar la ruta especificada. (0x3)
+[0120/221706.055:ERROR:directory_reader_win.cc(43)] FindFirstFile: El sistema no puede encontrar la ruta especificada. (0x3)

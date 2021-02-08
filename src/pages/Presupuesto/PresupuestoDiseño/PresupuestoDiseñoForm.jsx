@@ -237,8 +237,8 @@ class PresupuestoDiseñoForm extends Component {
                 form.presupuesto = presupuesto
                 form.construccion_civil_inf = presupuesto.construccion_civil_inf
                 form.construccion_civil_sup = presupuesto.construccion_civil_sup
-                form.construccion_interiores_inf = presupuesto.construccion_civil_inf
-                form.construccion_interiores_sup = presupuesto.construccion_civil_sup
+                form.construccion_interiores_inf = presupuesto.construccion_interiores_inf
+                form.construccion_interiores_sup = presupuesto.construccion_interiores_sup
                 form.mobiliario_inf = presupuesto.mobiliario_inf
                 form.mobiliario_sup = presupuesto.mobiliario_sup
                 form.m2 = presupuesto.m2;
@@ -562,7 +562,7 @@ class PresupuestoDiseñoForm extends Component {
     onChange = e => {
         const { name, value, type, checked } = e.target
         const { form, data, options } = this.state
-        let { defaultKey, activeKey } = this.state
+        // let { defaultKey, activeKey } = this.state
         form[name] = value
         let planos = []
         let partidas = [];
@@ -790,14 +790,14 @@ class PresupuestoDiseñoForm extends Component {
             default:
                 break;
         }
-        defaultKey = form.acabados?"acabados":form.mobiliario?"mobiliario": form.obra?"obra":"vacio"
-        activeKey = form.acabados?"acabados":form.mobiliario?"mobiliario": form.obra?"obra":"vacio"
+        // defaultKey = form.acabados?"acabados":form.mobiliario?"mobiliario": form.obra?"obra":"vacio"
+        // activeKey = form.acabados?"acabados":form.mobiliario?"mobiliario": form.obra?"obra":"vacio"
         this.setState({
             ...this.state,
             form,
             options,
-            defaultKey,
-            activeKey,
+            // defaultKey,
+            // activeKey,
             data
         })
     }
@@ -983,6 +983,24 @@ class PresupuestoDiseñoForm extends Component {
             defaultKey
         })
     }
+
+    onChangePartidas = e => {
+        const { name, type, value, checked } = e.target
+        const { form } = this.state
+        let { defaultKey, activeKey } = this.state
+        form[name] = value
+        if (type === 'checkbox'){
+            form[name] = checked
+        }
+            defaultKey = form.acabados?"acabados":form.mobiliario?"mobiliario": form.obra?"obra":"vacio"
+            activeKey = form.acabados?"acabados":form.mobiliario?"mobiliario": form.obra?"obra":"vacio"
+        this.setState({
+            ...this.state,
+            form,
+            defaultKey,
+            activeKey
+        })
+    }
     render() {
         const { options, title, form, formeditado, presupuesto, modalPdfs, activeKey, defaultKey } = this.state
         return (
@@ -1026,6 +1044,7 @@ class PresupuestoDiseñoForm extends Component {
                             onClickTab = { this.handleClickTab }
                             activeKey={activeKey}
                             defaultKey={defaultKey}
+                            onChangePartidas={this.onChangePartidas}
                             
                         />
                     </Card.Body>
