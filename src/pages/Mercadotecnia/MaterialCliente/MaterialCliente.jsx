@@ -707,11 +707,14 @@ class MaterialCliente extends Component {
                                         <FolderStatic text = "SUBPORTAFOLIO" onClick = { this.onClickFolder} element = 'subportafolio' />
                                     </div>
                                     <div className='col-md-3'>
-                                        <FolderStatic text = "EJEMPLO" onClick = { this.onClickFolder } element = 'ejemplo' />
+                                        <FolderStatic text = "INSERTOS" onClick = { this.onClickFolder } element = 'inserto' />
                                     </div>
                                     <div className='col-md-3'>
-                                        <FolderStatic text = "PORTADA" onClick = { this.onClickFolder } element = 'portada' />
+                                        <FolderStatic text = "EJEMPLO" onClick = { this.onClickFolder } element = 'ejemplo' />
                                     </div>
+                                    {/* <div className='col-md-3'>
+                                        <FolderStatic text = "PORTADA" onClick = { this.onClickFolder } element = 'portada' />
+                                    </div> */}
                                     <div className='col-md-3'>
                                         <FolderStatic text = "RENDERS" onClick = { this.onClickFolder } element = 'renders' />
                                     </div>
