@@ -145,6 +145,8 @@ class LeadInfo extends Component {
             acabados: true,
             mobiliario: true,
             obra_civil: true,
+            si_desglose: true,
+            no_desglose: false,
         },
         activeKey: '',
         defaultKey: '',
@@ -401,7 +403,7 @@ class LeadInfo extends Component {
     onChangePresupuesto = e => {
         const { name, value, type, checked } = e.target
         const { formDiseño, data } = this.state
-        let { defaultKey, activeKey } = this.state
+        // let { defaultKey, activeKey } = this.state
         formDiseño[name] = value
         switch (name) {
             case 'esquema':
@@ -557,6 +559,15 @@ class LeadInfo extends Component {
         if (formDiseño.subtotal > 0) {
             formDiseño.total = formDiseño.subtotal * (1 - (formDiseño.descuento / 100))
         }
+        if (type === 'radio') {
+            if (name === "si_desglose") {
+                formDiseño.no_desglose = false
+            }
+            else if (name === "no_desglose") {
+                formDiseño.si_desglose = false
+            }
+            formDiseño[name] = checked
+        }
         if (type === 'checkbox')
             formDiseño[name] = checked
         else
@@ -574,13 +585,30 @@ class LeadInfo extends Component {
             default:
                 break;
         }
-        defaultKey = formDiseño.acabados?"acabados":formDiseño.mobiliario?"mobiliario": formDiseño.obra_civil?"obra_civil":"vacio"
-        activeKey = formDiseño.acabados?"acabados":formDiseño.mobiliario?"mobiliario": formDiseño.obra_civil?"obra_civil":"vacio"
+        // defaultKey = formDiseño.acabados?"acabados":formDiseño.mobiliario?"mobiliario": formDiseño.obra_civil?"obra_civil":"vacio"
+        // activeKey = formDiseño.acabados?"acabados":formDiseño.mobiliario?"mobiliario": formDiseño.obra_civil?"obra_civil":"vacio"
         this.setState({
             ...this.state,
             formDiseño,
+            // defaultKey,
+            // activeKey,
+        })
+    }
+    onChangePartidas = e => {
+        const { name, type, value, checked } = e.target
+        const { form } = this.state
+        let { defaultKey, activeKey } = this.state
+        form[name] = value
+        if (type === 'checkbox'){
+            form[name] = checked
+        }
+            defaultKey = form.acabados?"acabados":form.mobiliario?"mobiliario": form.obra_civil?"obra_civil":"vacio"
+            activeKey = form.acabados?"acabados":form.mobiliario?"mobiliario": form.obra_civil?"obra_civil":"vacio"
+        this.setState({
+            ...this.state,
+            form,
             defaultKey,
-            activeKey,
+            activeKey
         })
     }
     calculateSemanas = tiempo => {
@@ -923,10 +951,10 @@ class LeadInfo extends Component {
         })
     }
     openModalWithInput = (estatus, id) => {
-        questionAlert2('ESCRIBE EL MOTIVO DEL RECHAZO O CANCELACIÓN', '', () => this.changeEstatusCanceladoRechazadoAxios({ id: id, estatus: estatus }),
+        questionAlert2('ESCRIBE EL MOTIVO DE CANCELACIÓN', '', () => this.changeEstatusCanceladoRechazadoAxios({ id: id, estatus: estatus }),
             <div>
                 <Form.Control
-                    placeholder='MOTIVO DE RECHAZO'
+                    placeholder='MOTIVO DE CANCELACIÓN'
                     className="form-control form-control-solid h-auto py-7 px-6 text-uppercase"
                     id='motivo'
                     as="textarea"
@@ -977,6 +1005,9 @@ class LeadInfo extends Component {
                     formDiseño.fase1 = lead.presupuesto_diseño.fase1
                     formDiseño.fase2 = lead.presupuesto_diseño.fase2
                     formDiseño.renders = lead.presupuesto_diseño.renders
+                    formDiseño.acabados = lead.presupuesto_diseño.acabados_e_instalaciones
+                    formDiseño.mobiliario = lead.presupuesto_diseño.mobiliario
+                    formDiseño.obra_civil = lead.presupuesto_diseño.obra_civil
 
                     let aux = JSON.parse(lead.presupuesto_diseño.actividades)
                     if (aux) {
@@ -1094,9 +1125,9 @@ class LeadInfo extends Component {
         })
     }
     async changeEstatusCanceladoRechazadoAxios(data) {
+        data.motivo = document.getElementById('motivo').value
         waitAlert()
         const { access_token } = this.props.authUser
-        data.motivo = document.getElementById('motivo').value
         await axios.put(URL_DEV + 'crm/lead/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { history } = this.props
@@ -1408,10 +1439,10 @@ class LeadInfo extends Component {
                                                                                                                 </span>
                                                                                                             </span>
                                                                                                         </Dropdown.Item>
-                                                                                                        <Dropdown.Item className="p-0" onClick={(e) => { e.preventDefault(); this.openModalWithInput('Rechazado', lead.id) }} >
+                                                                                                        <Dropdown.Item className="p-0" onClick={(e) => { e.preventDefault(); this.openModalWithInput('Cancelado', lead.id) }} >
                                                                                                             <span className="navi-link w-100">
                                                                                                                 <span className="navi-text">
-                                                                                                                    <span className="label label-xl label-inline label-light-danger rounded-0 w-100">Rechazado</span>
+                                                                                                                    <span className="label label-xl label-inline label-light-danger rounded-0 w-100">Cancelado</span>
                                                                                                                 </span>
                                                                                                             </span>
                                                                                                         </Dropdown.Item>
@@ -1713,6 +1744,7 @@ class LeadInfo extends Component {
                                                 onClickTab = { this.handleClickTab }
                                                 activeKey={activeKey}
                                                 defaultKey={defaultKey}
+                                                onChangePartidas={this.onChangePartidas}
                                             />
                                         </Card.Body>
                                     </Tab.Pane>
