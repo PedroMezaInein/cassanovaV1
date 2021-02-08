@@ -934,10 +934,10 @@ class LeadInfo extends Component {
         })
     }
     openModalWithInput = (estatus, id) => {
-        questionAlert2('ESCRIBE EL MOTIVO DEL RECHAZO O CANCELACIÓN', '', () => this.changeEstatusCanceladoRechazadoAxios({ id: id, estatus: estatus }),
+        questionAlert2('ESCRIBE EL MOTIVO DE CANCELACIÓN', '', () => this.changeEstatusCanceladoRechazadoAxios({ id: id, estatus: estatus }),
             <div>
                 <Form.Control
-                    placeholder='MOTIVO DE RECHAZO'
+                    placeholder='MOTIVO DE CANCELACIÓN'
                     className="form-control form-control-solid h-auto py-7 px-6 text-uppercase"
                     id='motivo'
                     as="textarea"
@@ -1105,9 +1105,9 @@ class LeadInfo extends Component {
         })
     }
     async changeEstatusCanceladoRechazadoAxios(data) {
+        data.motivo = document.getElementById('motivo').value
         waitAlert()
         const { access_token } = this.props.authUser
-        data.motivo = document.getElementById('motivo').value
         await axios.put(URL_DEV + 'crm/lead/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { history } = this.props
@@ -1419,10 +1419,10 @@ class LeadInfo extends Component {
                                                                                                                 </span>
                                                                                                             </span>
                                                                                                         </Dropdown.Item>
-                                                                                                        <Dropdown.Item className="p-0" onClick={(e) => { e.preventDefault(); this.openModalWithInput('Rechazado', lead.id) }} >
+                                                                                                        <Dropdown.Item className="p-0" onClick={(e) => { e.preventDefault(); this.openModalWithInput('Cancelado', lead.id) }} >
                                                                                                             <span className="navi-link w-100">
                                                                                                                 <span className="navi-text">
-                                                                                                                    <span className="label label-xl label-inline label-light-danger rounded-0 w-100">Rechazado</span>
+                                                                                                                    <span className="label label-xl label-inline label-light-danger rounded-0 w-100">Cancelado</span>
                                                                                                                 </span>
                                                                                                             </span>
                                                                                                         </Dropdown.Item>
