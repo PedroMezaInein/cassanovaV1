@@ -403,7 +403,7 @@ class LeadInfo extends Component {
     onChangePresupuesto = e => {
         const { name, value, type, checked } = e.target
         const { formDiseño, data } = this.state
-        let { defaultKey, activeKey } = this.state
+        // let { defaultKey, activeKey } = this.state
         formDiseño[name] = value
         switch (name) {
             case 'esquema':
@@ -585,13 +585,30 @@ class LeadInfo extends Component {
             default:
                 break;
         }
-        defaultKey = formDiseño.acabados?"acabados":formDiseño.mobiliario?"mobiliario": formDiseño.obra_civil?"obra_civil":"vacio"
-        activeKey = formDiseño.acabados?"acabados":formDiseño.mobiliario?"mobiliario": formDiseño.obra_civil?"obra_civil":"vacio"
+        // defaultKey = formDiseño.acabados?"acabados":formDiseño.mobiliario?"mobiliario": formDiseño.obra_civil?"obra_civil":"vacio"
+        // activeKey = formDiseño.acabados?"acabados":formDiseño.mobiliario?"mobiliario": formDiseño.obra_civil?"obra_civil":"vacio"
         this.setState({
             ...this.state,
             formDiseño,
+            // defaultKey,
+            // activeKey,
+        })
+    }
+    onChangePartidas = e => {
+        const { name, type, value, checked } = e.target
+        const { form } = this.state
+        let { defaultKey, activeKey } = this.state
+        form[name] = value
+        if (type === 'checkbox'){
+            form[name] = checked
+        }
+            defaultKey = form.acabados?"acabados":form.mobiliario?"mobiliario": form.obra_civil?"obra_civil":"vacio"
+            activeKey = form.acabados?"acabados":form.mobiliario?"mobiliario": form.obra_civil?"obra_civil":"vacio"
+        this.setState({
+            ...this.state,
+            form,
             defaultKey,
-            activeKey,
+            activeKey
         })
     }
     calculateSemanas = tiempo => {
@@ -1724,6 +1741,7 @@ class LeadInfo extends Component {
                                                 onClickTab = { this.handleClickTab }
                                                 activeKey={activeKey}
                                                 defaultKey={defaultKey}
+                                                onChangePartidas={this.onChangePartidas}
                                             />
                                         </Card.Body>
                                     </Tab.Pane>
