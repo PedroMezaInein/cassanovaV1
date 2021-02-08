@@ -65,6 +65,7 @@ class Esquema3 extends Component{
 
     render(){
         const { tipos } = this.state
+        const { deletePlano } = this.props
         return(
             <DragDropContext onDragEnd = { this.onDragEnd }>
                 <Droppable droppableId = 'esquema_3'>
@@ -76,13 +77,13 @@ class Esquema3 extends Component{
                                         { (provided, snapshot) => (
                                             <div ref = { provided.innerRef } {...provided.draggableProps} {...provided.dragHandleProps} >
                                                 <div className="text-muted font-weight-bolder my-3">
-                                                    {item.posicion} {item.tipo}
+                                                    {item.tipo}
                                                 </div>
                                                 {
                                                     item.planos.map((plano, key) => (
                                                         <div className = 'row borderBottom mx-0 py-2' key = { key } >
                                                             <div className='col-1 px-1 change-col-2 '>
-                                                                <Button icon = '' onClick = { () => { this.deletePlano(plano.id) } } 
+                                                                <Button icon = '' onClick = { () => { deletePlano(plano.id) } } 
                                                                     className = "btn btn-icon btn-light-danger btn-xs mr-2" 
                                                                     only_icon = "flaticon2-delete icon-xs" tooltip={{text:'Eliminar'}} />
                                                             </div>
