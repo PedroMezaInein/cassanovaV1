@@ -31,7 +31,12 @@ function runAjax(settings, accessToken, request, setter, url) {
         },
         error: function (error) {
             console.log(error, 'error')
-            errorAlert(error.responseJSON.message !== undefined ? error.responseJSON.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+            if(error.status === 401){
+                errorAlert('Usuario sin autentificar')
+                window.location.href = '/'
+            }
+            else
+                errorAlert(error.responseJSON.message !== undefined ? error.responseJSON.message : 'Ocurrió un error desconocido, intenta de nuevo.')
             deferred.fail(error);
         }
     });
