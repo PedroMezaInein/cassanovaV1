@@ -12,6 +12,8 @@ import { Line } from 'react-chartjs-2';
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../functions/routers"
 import InputSinText from '../../components/form-components/SinText/InputSinText'
+import Esquema3 from '../../components/draggable/Planos/Esquema3'
+import Swal from 'sweetalert2'
 
 class Diseño extends Component {
 
@@ -86,6 +88,38 @@ class Diseño extends Component {
         if (!diseño)
             history.push('/')
         this.getDiseñoAxios()
+    }
+
+    reorderPlanos = async(result) => {
+        const { access_token } = this.props.authUser
+        const { empresa } = this.state
+        waitAlert()
+        await axios.put(`${URL_DEV}empresa/tabulador/reorder/${empresa.id}`, result ,{ headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                Swal.close();
+                const { empresa } = response.data
+                const { form } = this.state
+                let auxEsquema3 = [];
+                empresa.planos.map((plano) => {
+                    if(plano.esquema_3)
+                        auxEsquema3.push(plano)
+                    return ''
+                })
+            
+                auxEsquema3.push({id: '', nombre: '', tipo: ''})
+
+                form.esquema_3 = auxEsquema3
+                this.setState({...this.state, form})
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) { forbiddenAccessAlert() } 
+                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
     }
 
     async getDiseñoAxios() {
@@ -1144,7 +1178,25 @@ class Diseño extends Component {
                                                             </Card.Header>
                                                             <Card.Body className='py-0 px-3' style={{border:"3px solid #F3F6F9"}}>
                                                                 <div className="pt-2">
-                                                                    {
+                                                                    <Esquema3 planos = { form.esquema_3 } reorderPlanos = { this.reorderPlanos } />
+                                                                    <div className = 'row mx-0 py-2'>
+                                                                        <div className = 'col-5 w-100 align-self-center text-justify'>
+                                                                            <InputSinText name = 'tipo' placeholder = 'TIPO' requireValidation = { 1 }
+                                                                                value = { form.esquema_3[form.esquema_3.length-1].tipo } onChange = { (e) => { this.handleChangePlanos('esquema_3', e,form.esquema_3.length-1) }}
+                                                                                customclass="border-top-0 border-left-0 border-right-0 rounded-0 text-center pl-0 w-100" />
+                                                                        </div>
+                                                                        <div className = 'col-5 w-100 align-self-center text-justify'>
+                                                                            <InputSinText name = 'nombre' placeholder = 'PLANO' requireValidation = { 1 } value = { form.esquema_3[form.esquema_3.length - 1].nombre }
+                                                                                onChange = { (e) => { this.handleChangePlanos('esquema_3', e, form.esquema_3.length - 1) }}
+                                                                                customclass="border-top-0 border-left-0 border-right-0 rounded-0 text-center pl-0 w-100" />
+                                                                        </div>
+                                                                        <div className='col-2 text-center d-flex align-items-end justify-content-center'>
+                                                                            <Button icon = '' onClick = { () => { this.sendPlano('esquema_3', form.esquema_3.length - 1) } } 
+                                                                                className = "btn btn-icon btn-light-success btn-xs mr-2 px-2" only_icon = "fas fa-plus icon-xs"
+                                                                                tooltip={{text:'ENVIAR'}}/>
+                                                                        </div>
+                                                                    </div>
+                                                                    {/* {
                                                                         form.esquema_3.map((plano, key) => {
                                                                             return(
                                                                                 <>
@@ -1218,7 +1270,7 @@ class Diseño extends Component {
                                                                                 </>
                                                                             )
                                                                         })
-                                                                    }
+                                                                    } */}
                                                                 </div>
                                                             </Card.Body>
                                                         </Card>

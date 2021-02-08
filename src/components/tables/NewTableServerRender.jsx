@@ -45,7 +45,7 @@ class NewTableServerRender extends Component {
 
     componentDidUpdate() {
         const { cardTable, cardTableHeader, cardBody, isTab, isNav} = this.props
-        $("body").addClass("card-sticky-on").css("overflow-y", "scroll")
+        $("body").addClass("card-sticky-on")
 
         let tableWidth = $("#" + cardTable).width()
         $("#" + cardTableHeader).css("width", tableWidth).css("box-shadow", "0px 1px 15px 1px rgba(69, 65, 78, 0)").css("z-index", 3)
@@ -99,7 +99,7 @@ class NewTableServerRender extends Component {
             cardTableHeader, cardBody, isTab, checkbox, isNav } = this.props
         global_variable["mostrar_acciones"] = mostrar_acciones;
 
-        $("body").addClass("card-sticky-on").css("overflow-y", "scroll")
+        $("body").addClass("card-sticky-on")
 
         let tableWidth = $("#" + cardTable).width()
         $("#" + cardTableHeader).css("width", tableWidth).css("box-shadow", "0px 1px 15px 1px rgba(69, 65, 78, 0)").css("z-index", 3)
@@ -308,7 +308,7 @@ class NewTableServerRender extends Component {
                     if (global_variable.mostrar_acciones === true) {
                         let aux = ''
                         data.map((element) => {
-                            aux = aux + `<button name=${element.action}  id = ${row.id} class="btn btn-icon btn-actions-table btn-xs mr-2 btn-text-${element.btnclass} btn-hover-${element.btnclass}" title=${element.text}><i class="fas ${element.iconclass}"></i></button>`
+                            aux = aux + `<button name=${element.action}  id = ${row.id} class="btn btn-icon btn-actions-table btn-xs ml-2 btn-text-${element.btnclass} btn-hover-${element.btnclass}" title=${element.text}><i class="fas ${element.iconclass}"></i></button>`
                             return false
                         })
                         return (
