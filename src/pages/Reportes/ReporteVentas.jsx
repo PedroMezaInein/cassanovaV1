@@ -1752,9 +1752,9 @@ class ReporteVentas extends Component {
                                                                 </td>
                                                                 <td className="font-size-sm text-justify">
                                                                     {
-                                                                        lead.prospecto.tipoProyecto ?
-                                                                            lead.prospecto.tipoProyecto.tipo
-                                                                            :
+                                                                        lead.prospecto.tipo_proyecto ?
+                                                                            lead.prospecto.tipo_proyecto.tipo
+                                                                        :
                                                                             lead.servicios.map((serv, index) => {
                                                                                 return serv.servicio
                                                                             })
@@ -1856,8 +1856,8 @@ class ReporteVentas extends Component {
                                                                 </td>
                                                                 <td className="font-size-sm text-justify">
                                                                     {
-                                                                        lead.prospecto.tipoProyecto ?
-                                                                            lead.prospecto.tipoProyecto.tipo
+                                                                        lead.prospecto.tipo_proyecto ?
+                                                                            lead.prospecto.tipo_proyecto.tipo
                                                                         : 
                                                                             lead.servicios.map((serv, index) => {
                                                                                 return serv.servicio

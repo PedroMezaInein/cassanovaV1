@@ -843,8 +843,8 @@ export default class ReporteVentasInein extends Component {
                                                     <View style = { styles.cell15 }>
                                                         <Text style = { styles.bodyText } >
                                                             {
-                                                                lead.prospecto.tipoProyecto ?
-                                                                    lead.prospecto.tipoProyecto.tipo.toUpperCase()
+                                                                lead.prospecto.tipo_proyecto ?
+                                                                    lead.prospecto.tipo_proyecto.tipo.toUpperCase()
                                                                 : 
                                                                     lead.servicios.map((serv, index) => {
                                                                         return serv.servicio.toUpperCase()
@@ -965,8 +965,8 @@ export default class ReporteVentasInein extends Component {
                                                     <View style = { styles.cell15 }>
                                                         <Text style = { styles.bodyText } >
                                                             {
-                                                                lead.prospecto.tipoProyecto ?
-                                                                    lead.prospecto.tipoProyecto.tipo.toUpperCase()
+                                                                lead.prospecto.tipo_proyecto ?
+                                                                    lead.prospecto.tipo_proyecto.tipo.toUpperCase()
                                                                 : 
                                                                     lead.servicios.map((serv, index) => {
                                                                         return serv.servicio.toUpperCase()
