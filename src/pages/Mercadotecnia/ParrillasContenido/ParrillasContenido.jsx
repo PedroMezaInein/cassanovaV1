@@ -46,6 +46,11 @@ class Calendario extends Component {
                     placeholder: 'Adjunto',
                     files: []
                 },
+                image: {
+                    value: '',
+                    placeholder: 'Imagen',
+                    files: []
+                },
             }
         },
         options: {
@@ -211,15 +216,33 @@ class Calendario extends Component {
         waitAlert()
         const { access_token } = this.props.authUser
         const { form } = this.state
-        await axios.post(URL_DEV + 'mercadotecnia/parrilla-contenido', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        const data = new FormData();
+        let aux = Object.keys(form)
+        aux.map((element) => {
+            switch (element) {
+                case 'adjuntos':
+                    break;
+                case 'fecha':
+                    data.append(element, (new Date(form[element])).toDateString())
+                    break;
+                default:
+                    data.append(element, form[element]);
+                    break
+            }
+            return false
+        })
+        if (form.adjuntos.image.value !== '') {
+            form.adjuntos.image.files.map( ( file, index ) => {
+                data.append(`files_name_image[]`, file.name)
+                data.append(`files_image[]`, file.file)
+            })
+        }
+        await axios.post(URL_DEV + 'mercadotecnia/parrilla-contenido', data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert('Parrilla guardad con éxito');
                 const { modal } = this.state
                 modal.form = false
-                this.setState({
-                    ...this.state,
-                    modal
-                })
+                this.setState({ ...this.state, modal })
                 this.getContentAxios()
             },
             (error) => {
@@ -445,6 +468,11 @@ class Calendario extends Component {
                         adjunto_comentario: {
                             value: '',
                             placeholder: 'Adjunto',
+                            files: []
+                        },
+                        image: {
+                            value: '',
+                            placeholder: 'Imagen',
                             files: []
                         }
                     }
