@@ -1,16 +1,16 @@
 import React, { Component } from 'react'
 import { Card } from 'react-bootstrap'
-import moment from 'moment'
+import { diffCommentDate } from '../../../../functions/functions';
 
 export default class UltimosContactosCard extends Component {
-    diffCommentDate = (contacto) => {
+    /* diffCommentDate = (contacto) => {
         var now = new Date();
         var then = new Date(contacto.created_at);
-        /* console.log(contacto)
-        if(contacto.prospecto)
-            if(contacto.prospecto.contactos)
-                if(contacto.prospecto.contactos.length)
-                    then = new Date(contacto.prospecto.contactos[0].created_at) */
+        // console.log(contacto)
+        // if(contacto.prospecto)
+        //    if(contacto.prospecto.contactos)
+        //        if(contacto.prospecto.contactos.length)
+        //            then = new Date(contacto.prospecto.contactos[0].created_at)
 
         var diff = moment.duration(moment(now).diff(moment(then)));
         var months = parseInt(moment(now).diff(moment(then), 'month'))
@@ -32,7 +32,7 @@ export default class UltimosContactosCard extends Component {
             }
             else {
                 return 'Hoy'
-                /* if (hours > 0) {
+                if (hours > 0) {
                     if (hours === 1)
                         return '1 hora'
                     else
@@ -48,10 +48,11 @@ export default class UltimosContactosCard extends Component {
                     else {
                         return 'Hace un momento'
                     }
-                } */
+                }
             }
         }
-    }
+    } */
+
     isActiveButton(direction){
         const { ultimos_contactados} = this.props
         if(ultimos_contactados.total_paginas>1){
@@ -69,6 +70,7 @@ export default class UltimosContactosCard extends Component {
         }
         return false;
     }
+    
     render() {
         const { ultimos_contactados, onClick, onClickPrev, clickOneLead } = this.props
         return (
@@ -96,7 +98,10 @@ export default class UltimosContactosCard extends Component {
                                 return (
                                     <div className="timeline-item text-hover" key={key}
                                         onClick = { ( e ) => { e.preventDefault(); clickOneLead(contacto.prospecto.lead.id) } }>
-                                        <div className="timeline-label"> {this.diffCommentDate(contacto)}</div>
+                                        <div className="timeline-label">
+                                            {/* {this.diffCommentDate(contacto)} */}
+                                            { diffCommentDate(contacto) }
+                                        </div>
                                         <div className="timeline-badge"><span className="bg-primary w-50 h-50"></span></div>
                                         <div className="timeline-content">
                                             <a href={`tel:+${contacto.prospecto.lead.telefono}`} className="text-dark-75 font-weight-bolder text-hover-primary mb-1">{contacto.prospecto.lead.nombre}</a>

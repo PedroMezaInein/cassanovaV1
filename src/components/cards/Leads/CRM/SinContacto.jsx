@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import { Card } from 'react-bootstrap'
-import moment from 'moment'
+import { diffCommentDate } from '../../../../functions/functions';
+/* import moment from 'moment' */
 export default class SinContacto extends Component {
-    diffCommentDate = (contacto) => {
+    /* diffCommentDate = (contacto) => {
         var now = new Date();
         var then = new Date(contacto.ultimo_contacto);
         var diff = moment.duration(moment(now).diff(moment(then)));
@@ -43,7 +44,7 @@ export default class SinContacto extends Component {
                 }
             }
         }
-    }
+    } */
     isActiveButton(direction){
         const { prospectos_sin_contactar} = this.props
         if(prospectos_sin_contactar.total_paginas>1){
@@ -61,6 +62,7 @@ export default class SinContacto extends Component {
         }
         return false;
     }
+
     render() {
         const { prospectos_sin_contactar, onClick, onClickPrev, clickOneLead } = this.props
         return (
@@ -87,7 +89,10 @@ export default class SinContacto extends Component {
                                 return (
                                     <div className="timeline-item text-hover" key={key}
                                         onClick = { ( e ) => { e.preventDefault(); clickOneLead(contacto.id) } }>
-                                        <div className="timeline-label"> {this.diffCommentDate(contacto)}</div>
+                                        <div className="timeline-label"> 
+                                            {/* {this.diffCommentDate(contacto)} */}
+                                            { diffCommentDate(contacto) }
+                                        </div>
                                         <div className="timeline-badge"><span className="bg-danger w-50 h-50"></span></div>
                                         <div className="timeline-content">
                                             <a href={`tel:+${contacto.telefono}`} className="text-dark-75 font-weight-bolder text-hover-danger mb-1">{contacto.nombre}</a>

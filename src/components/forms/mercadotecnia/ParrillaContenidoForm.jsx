@@ -2,17 +2,19 @@ import React, { Component } from 'react'
 import { SelectSearch, Button, Input, CalendarDay, SelectHorario, InputGray } from '../../form-components'
 import { Form, Col, Row, Nav, Tab } from 'react-bootstrap'
 import { validateAlert, deleteAlert } from '../../../functions/alert'
-import moment from 'moment'
 import ItemSlider from '../../../components/singles/ItemSlider'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
 import FileItem from '../../singles/FileItem'
 import Pagination from "react-js-pagination";
+import { diffCommentDate } from '../../../functions/functions'
 class ParrillaContenidoForm extends Component {
+    
     state = {
         itemsPerPage: 10,
         activePage: 1
     }
+
     updateSocialNetworks = value => {
         const { onChange } = this.props
         onChange({ target: { value: value, name: 'socialNetwork' } })
@@ -27,64 +29,17 @@ class ParrillaContenidoForm extends Component {
         const { onChange } = this.props
         onChange({ target: { value: value, name: 'empresa' } })
     }
-
-    diffCommentDate = (comentario) => {
-        var now = new Date();
-        var then = new Date(comentario.created_at);
-
-        var diff = moment.duration(moment(now).diff(moment(then)));
-        var months = parseInt(moment(now).diff(moment(then), 'month'))
-
-        var days = parseInt(diff.asDays());
-        var hours = parseInt(diff.asHours());
-        var minutes = parseInt(diff.asMinutes());
-
-        if (months) {
-            if (months === 1)
-                return 'Hace un mes'
-            else
-                return `Hace ${months} meses`
-        }
-        else {
-            if (days) {
-                if (days === 1)
-                    return 'Hace un día'
-                else
-                    return `Hace ${days} días`
-            }
-            else {
-                if (hours) {
-                    if (hours === 1)
-                        return 'Hace una hora'
-                    else
-                        return `Hace ${hours} horas`
-                }
-                else {
-                    if (minutes) {
-                        if (minutes === 1)
-                            return 'Hace un minuto'
-                        else
-                            return `Hace ${minutes} minutos`
-                    }
-                    else {
-                        return 'Hace un momento'
-                    }
-                }
-            }
-        }
-    }
+    
     onChangePage(pageNumber) {
         let { activePage } = this.state
         activePage = pageNumber
-        this.setState({
-            ...this.state,
-            activePage
-        })
+        this.setState({ ...this.state, activePage })
     }
+
     render() {
         const { options, form, onChange, onSubmit, formeditado, activeKey, onChangeModalTab, addComentario, evento, handleChange, deleteContenido, 
             title, addAdjunto, handleChangeSubmit, onClickDelete, ...props } = this.props
-            const { itemsPerPage, activePage } = this.state
+        const { itemsPerPage, activePage } = this.state
         return (
             <Tab.Container activeKey={activeKey} >
                 <Nav className="nav-tabs nav-bold nav-tabs-line nav-tabs-line-3x border-0 nav-tabs-line-primary mt-2 mb-4 d-flex justify-content-end">
@@ -156,8 +111,7 @@ class ParrillaContenidoForm extends Component {
                                                 <label className="col-form-label text-center font-weight-bolder">Hora de publicación</label>
                                                 <div className="form-group row d-flex justify-content-center">
                                                     <SelectHorario onChange={onChange} hora={{ value: form.hora, name: 'hora' }}
-                                                        minuto={{ value: form.minuto, name: 'minuto' }}
-                                                    />
+                                                        minuto={{ value: form.minuto, name: 'minuto' }} quarter = { true } />
                                                 </div>
                                             </div>
                                         </div>
@@ -219,23 +173,19 @@ class ParrillaContenidoForm extends Component {
                                         </div>
                                     </div>
                                 </Col>
-                                {
-                                    title === 'Agregar contenido'  && false ? 
-                                        <Col md="12">
-                                            <div className="form-group row form-group-marginless justify-content-center">
-                                                <div className="col-md-12 d-flex justify-content-center align-self-center">
-                                                    <div>
-                                                        <div className="text-center font-weight-bolder mb-2">
-                                                            {form.adjuntos.adjunto.placeholder}
-                                                        </div>
-                                                        <ItemSlider multiple = { true } items = { form.adjuntos.adjunto.files }
-                                                            item = 'adjunto' handleChange={handleChange}/>
-                                                    </div>
+                                <Col md="12">
+                                    <div className="form-group row form-group-marginless justify-content-center">
+                                        <div className="col-md-6 d-flex justify-content-center align-self-center">
+                                            <div>
+                                                <div className="text-center font-weight-bolder mb-2">
+                                                    {form.adjuntos.image.placeholder}
                                                 </div>
+                                                <ItemSlider multiple = { true } items = { form.adjuntos.image.files }
+                                                    item = 'image' handleChange={handleChange}/>
                                             </div>
-                                        </Col>
-                                    : ''
-                                }
+                                        </div>
+                                    </div>
+                                </Col>
                             </Row>
                             <div className="card-footer py-3 pr-1">
                                 <div className="row mx-0">
@@ -328,7 +278,9 @@ class ParrillaContenidoForm extends Component {
                                                                         </div>
                                                                         <div className="timeline-content">
                                                                             <span className="text-primary font-weight-bolder">{comentario.user.name}</span>
-                                                                            <span className="text-muted ml-2 font-weight-bold">{this.diffCommentDate(comentario)}</span>
+                                                                            <span className="text-muted ml-2 font-weight-bold">
+                                                                                { diffCommentDate(comentario) }
+                                                                            </span>
                                                                             <p className="p-0 font-weight-light mb-0">{comentario.comentario}</p>
                                                                             {
                                                                                 comentario.adjunto ?
