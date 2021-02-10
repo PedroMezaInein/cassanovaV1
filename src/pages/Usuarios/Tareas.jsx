@@ -17,6 +17,7 @@ import ItemSlider from '../../components/singles/ItemSlider'
 import InputGray from '../../components/form-components/Gray/InputGray'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../functions/routers"
+import { diffCommentDate } from '../../functions/functions'
 class Tareas extends Component {
 
     state = {
@@ -101,7 +102,7 @@ class Tareas extends Component {
         }
     }
 
-    diffCommentDate = (comentario) => {
+    /* diffCommentDate = (comentario) => {
         var now = new Date();
         var then = new Date(comentario.created_at);
 
@@ -146,7 +147,7 @@ class Tareas extends Component {
             }
         }
 
-    }
+    } */
 
     handleCloseModal = () => {
         this.setState({
@@ -1042,7 +1043,10 @@ class Tareas extends Component {
                                                                             </div>
                                                                             <div className="timeline-content">
                                                                                 <span className="text-info font-weight-bolder">{comentario.user.name}</span>
-                                                                                <span className="text-muted ml-2 font-weight-bold">{this.diffCommentDate(comentario)}</span>
+                                                                                <span className="text-muted ml-2 font-weight-bold">
+                                                                                    {/* {this.diffCommentDate(comentario)} */}
+                                                                                    { diffCommentDate(comentario) }
+                                                                                </span>
                                                                                 <p className={comentario.adjunto===null?"p-0 font-weight-light mb-0":"p-0 font-weight-light"}>{comentario.comentario}</p>
                                                                                 {
                                                                                     comentario.adjunto ?

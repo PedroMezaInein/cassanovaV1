@@ -5,7 +5,7 @@ import { SelectHoras, SelectMinutos } from '.'
 class SelectHorario extends Component {
     render(){
 
-        const { hora, minuto, onChange } = this.props
+        const { hora, minuto, onChange, quarter } = this.props
 
         return(
             <div className="input-daterange input-group" style={{ width: "auto" }}>
@@ -15,7 +15,7 @@ class SelectHorario extends Component {
                         :
                     </span>
                 </div>
-                <SelectMinutos value = { minuto.value } name = { minuto.name } onChange = { onChange } />
+                <SelectMinutos value = { minuto.value } name = { minuto.name } onChange = { onChange } quarter = { quarter } />
             </div>
         )
 

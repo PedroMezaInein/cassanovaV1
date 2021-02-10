@@ -1,8 +1,9 @@
 import React, { Component } from 'react'
 import { Card } from 'react-bootstrap'
-import moment from 'moment'
+import { diffCommentDate } from '../../../../functions/functions';
 export default class UltimosContactosCard extends Component {
-    diffCommentDate = (contacto) => {
+
+    /* diffCommentDate = (contacto) => {
         var now = new Date();
         var then = new Date(contacto.created_at);
         var diff = moment.duration(moment(now).diff(moment(then)));
@@ -43,7 +44,8 @@ export default class UltimosContactosCard extends Component {
                 }
             }
         }
-    }
+    } */
+
     isActiveButton(direction){
         const { ultimos_ingresados} = this.props
         if(ultimos_ingresados.total_paginas>1){
@@ -61,6 +63,7 @@ export default class UltimosContactosCard extends Component {
         }
         return false;
     }
+
     render() {
         const { ultimos_ingresados, onClick, onClickPrev, clickOneLead } = this.props
         return (
@@ -87,7 +90,10 @@ export default class UltimosContactosCard extends Component {
                                 return (
                                     <div className = "timeline-item text-hover" key = { key } 
                                         onClick = { ( e ) => { e.preventDefault(); clickOneLead(contacto.id) } } >
-                                        <div className="timeline-label"> {this.diffCommentDate(contacto)}</div>
+                                        <div className="timeline-label">
+                                            {/* {this.diffCommentDate(contacto)} */}
+                                            { diffCommentDate(contacto) }
+                                        </div>
                                         <div className="timeline-badge"><span className="bg-primary w-50 h-50"></span></div>
                                         <div className="timeline-content text-justify">
                                             <a href={`tel:+${contacto.telefono}`} className="text-dark font-weight-bolder text-hover-primary mb-1">{contacto.nombre}</a>
