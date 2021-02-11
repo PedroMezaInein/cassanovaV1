@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import moment from 'moment'
 import { URL_DEV } from '../../../constants';
-import { doneAlert, errorAlert, forbiddenAccessAlert, questionAlert, waitAlert, deleteAlert } from '../../../functions/alert';
+import { doneAlert, errorAlert, forbiddenAccessAlert, questionAlert, waitAlert, deleteAlert, createAlertSA2 } from '../../../functions/alert';
 import { connect } from 'react-redux';
 import Layout from '../../../components/layout/layout';
 import { Card, Nav, OverlayTrigger, Tooltip } from 'react-bootstrap'
@@ -174,7 +174,6 @@ class Calendario extends Component {
                         return ''
                     })
                 }
-
                 if (bandera !== false) {
                     bandera.parrillas.map((parrilla) => {
                         aux.push(
@@ -402,6 +401,28 @@ class Calendario extends Component {
         })
     }
 
+    postInFacebookAxios = async() => {
+        waitAlert()
+        const { evento } = this.state
+        const { access_token } = this.props.authUser
+        await axios.put(`${URL_DEV}mercadotecnia/parrilla-contenido/${evento.id}/facebook`, {}, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
+            (response) => {
+                const { evento } = response.data
+                doneAlert('Contenido publicado con éxito.')
+                this.setState({...this.state,evento:evento})
+                this.getContentAxios();
+            },
+            (error) => {
+                console.log(error, 'error')
+                if (error.response.status === 401) { forbiddenAccessAlert() } 
+                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     onSumitParrilla = () => {
         const { title } = this.state
         if( title === 'Editar contenido' )
@@ -420,6 +441,15 @@ class Calendario extends Component {
             form: this.clearForm(),
             activeKeyModal: 'form'
         })
+    }
+
+    openModalFacebookPost = () => {
+        const { evento } = this.state
+        createAlertSA2(
+            '¿Estás seguro?',
+            `Postearás ${evento.titulo} en la página de ${evento.empresa.name}`,
+            () =>  { this.postInFacebookAxios() }
+        )
     }
 
     handleCloseForm = () => {
@@ -507,7 +537,16 @@ class Calendario extends Component {
         })
     }
 
+    getNameFromUrl = url => {
+        let aux = url.split('/');
+        if(aux.length){
+            return aux[aux.length - 1];
+        }
+        return 'imagen.jpg'
+    }
+
     clickEvent = (evento) => {
+
         const { evento: event } = evento.event._def.extendedProps
         const { form, modal } = this.state
 
@@ -529,6 +568,16 @@ class Calendario extends Component {
         }
         
         form.fecha = new Date(moment(event.fecha))
+
+        if(event.imagen_file){
+            form.adjuntos.image.files = [
+                {
+                    id: event.id,
+                    name: this.getNameFromUrl(event.imagen_file),
+                    url: event.imagen_file
+                }
+            ]
+        }
 
         this.setState({
             ...this.state,
@@ -581,7 +630,6 @@ class Calendario extends Component {
                     <span className={'btn btn-icon btn-sm ml-2 btn-light-' + aux}>
                         <i className={'line-height-0 socicon-' + aux}></i>
                     </span>
-                    {console.log(eventInfo.event._def.extendedProps, 'INFO')}
                     {
                         eventInfo.event._def.extendedProps.evento.uploaded === 1 ?
                             <div className = 'circle-notificacion bg-success position-absolute'></div>
@@ -709,6 +757,7 @@ class Calendario extends Component {
                         onChangeModalTab={this.onChangeModalTab} activeKey={activeKeyModal}
                         addComentario={this.addComentarioAxios} evento={evento} handleChange={this.handleChange} 
                         deleteContenido={this.deleteContenido} handleChangeSubmit = {this.handleChangeSubmit} onClickDelete={this.onClickDelete} 
+                        onClickFacebookPost = { this.openModalFacebookPost }
                     />
                 </Modal>
             </Layout>
