@@ -36,9 +36,18 @@ class ParrillaContenidoForm extends Component {
         this.setState({ ...this.state, activePage })
     }
 
+    isActivePostingButton = evento => {
+        if(evento)
+            if(evento.red)
+                if(evento.red.nombre === 'FACEBOOK')
+                    if(evento.uploaded !== 1)
+                        return true
+        return false
+    }
+
     render() {
         const { options, form, onChange, onSubmit, formeditado, activeKey, onChangeModalTab, addComentario, evento, handleChange, deleteContenido, 
-            title, addAdjunto, handleChangeSubmit, onClickDelete, ...props } = this.props
+            title, addAdjunto, handleChangeSubmit, onClickDelete, onClickFacebookPost, ...props } = this.props
         const { itemsPerPage, activePage } = this.state
         return (
             <Tab.Container activeKey={activeKey} >
@@ -98,6 +107,17 @@ class ParrillaContenidoForm extends Component {
                             }
                             {...props}
                         >
+                            {
+                                this.isActivePostingButton(evento) ?
+                                    <div className = 'd-flex justify-content-end py-2'>
+                                        <div>
+                                            <Button icon='' className = "btn btn-light-success btn-sm font-weight-bold" only_icon="flaticon-facebook-letter-logo pr-0 mr-2"
+                                                text='POSTEAR EN FACEBOOK' onClick = { onClickFacebookPost } />
+                                        </div>
+                                    </div>
+                                : ''
+                            }
+                            
                             <Row>
                                 <Col md={4} className="d-flex justify-content-center">
                                     <div className="col-md-12 text-center align-self-center mt-4">
