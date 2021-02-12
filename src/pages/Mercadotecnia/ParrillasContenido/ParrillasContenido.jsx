@@ -637,34 +637,36 @@ class Calendario extends Component {
         }
 
         return (
-            <OverlayTrigger overlay={
-                <Tooltip>
-                    <span>
+            <div className = 'pb-2'>
+                <OverlayTrigger overlay={
+                    <Tooltip>
                         <span>
-                            {eventInfo.event.title}
-                        </span>
-                        <div className="mt-3 font-weight-bolder">
-                            <div>
-                                {event.tipo_contenido.toUpperCase()}<span> - {auxHora}</span>
+                            <span>
+                                {eventInfo.event.title}
+                            </span>
+                            <div className="mt-3 font-weight-bolder">
+                                <div>
+                                    {event.tipo_contenido.toUpperCase()}<span> - {auxHora}</span>
+                                </div>
                             </div>
-                        </div>
-                    </span>
-                </Tooltip>}>
-                <div className="d-flex justify-content-center align-items-center position-relative" 
-                    onClick={(e) => { e.preventDefault(); this.getParrillaAxios(eventInfo.event._def.extendedProps.evento.id) }}>
-                    <span className={'btn btn-icon btn-sm ml-2 btn-light-' + aux}>
-                        <i className={'line-height-0 socicon-' + aux}></i>
-                    </span>
-                    {
-                        eventInfo.event._def.extendedProps.evento.uploaded === 1 ?
-                            <div className = 'circle-notificacion bg-success position-absolute'></div>
-                        :
-                            eventInfo.event._def.extendedProps.evento.uploaded === 0 ?
-                                <div className = 'circle-notificacion bg-danger position-absolute'></div>
-                            : ''
-                    }
-                </div>
-            </OverlayTrigger>
+                        </span>
+                    </Tooltip>}>
+                    <div className="d-flex justify-content-center align-items-center position-relative" 
+                        onClick={(e) => { e.preventDefault(); this.getParrillaAxios(eventInfo.event._def.extendedProps.evento.id) }}>
+                        <span className={'btn btn-icon btn-sm ml-2 btn-light-' + aux}>
+                            <i className={'line-height-0 socicon-' + aux}></i>
+                        </span>
+                        {
+                            eventInfo.event._def.extendedProps.evento.uploaded === 1 ?
+                                <div className = 'circle-notificacion bg-success position-absolute'></div>
+                            :
+                                eventInfo.event._def.extendedProps.evento.uploaded === 0 ?
+                                    <div className = 'circle-notificacion bg-danger position-absolute'></div>
+                                : ''
+                        }
+                    </div>
+                </OverlayTrigger>
+            </div>
         )
     }
 
