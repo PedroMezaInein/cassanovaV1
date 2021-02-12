@@ -16,6 +16,7 @@ import { Modal } from '../../../components/singles'
 import ParrillaContenidoForm from '../../../components/forms/mercadotecnia/ParrillaContenidoForm';
 import { setOptions } from '../../../functions/setters';
 import Swal from 'sweetalert2';
+
 class Calendario extends Component {
     state = {
         content: [],
@@ -28,6 +29,7 @@ class Calendario extends Component {
         post: {},
         form: {
             socialNetwork: '',
+            socialNetworks: [],
             post: '',
             typeContent: "contenido",
             title: '',
@@ -108,7 +110,16 @@ class Calendario extends Component {
                 form.cta = parrilla.cta
                 form.comments = parrilla.imagen
                 form.typeContent = parrilla.tipo_contenido
-                form.socialNetwork = parrilla.subarea_id.toString()
+                if(parrilla.red){
+                    form.socialNetwork = parrilla.subarea_id.toString()
+                    form.socialNetworks = [
+                        {
+                            name: parrilla.red.nombre,
+                            value: parrilla.red.id.toString(),
+                            label: parrilla.red.nombre
+                        }
+                    ]
+                }
                 form.empresa = parrilla.empresa_id.toString()
                 form.title = parrilla.titulo
 
@@ -244,6 +255,11 @@ class Calendario extends Component {
         aux.map((element) => {
             switch (element) {
                 case 'adjuntos':
+                    break;
+                case 'socialNetworks':
+                    form.socialNetworks.map((dato)=>{
+                        data.append(`socialNetworks[]`, dato.value)
+                    })
                     break;
                 case 'fecha':
                     data.append(element, (new Date(form[element])).toDateString())
@@ -499,6 +515,34 @@ class Calendario extends Component {
         })
     }
 
+    onChangeOptions = (e, arreglo) => {
+        const { value } = e.target
+        const { form, options } = this.state
+        let auxArray = form[arreglo]
+        let aux = []
+        options[arreglo].find(function (_aux) {
+            if (_aux.value.toString() === value.toString())
+                auxArray.push(_aux)
+            else 
+                aux.push(_aux)
+            return false
+        })
+        form[arreglo] = auxArray
+        this.setState({ ...this.state, form, options })
+    }
+
+    deleteOption = (element, array) => {
+        let { form } = this.state
+        let auxForm = []
+        form[array].map((elemento, key) => {
+            if (element !== elemento)
+                auxForm.push(elemento)
+            return false
+        })
+        form[array] = auxForm
+        this.setState({ ...this.state, form })
+    }
+
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
@@ -506,6 +550,9 @@ class Calendario extends Component {
             switch (element) {
                 case 'typeContent':
                     form[element] = "contenido";
+                    break;
+                case 'socialNetworks':
+                    form[element] = []
                     break;
                 case 'hora':
                     form[element] = "09";
@@ -785,7 +832,7 @@ class Calendario extends Component {
                         addComentario={this.addComentarioAxios} evento={evento} handleChange={this.handleChange} 
                         deleteContenido={this.deleteContenido} handleChangeSubmit = {this.handleChangeSubmit} onClickDelete={this.onClickDelete} 
                         onClickFacebookPost = { this.openModalFacebookPost } post = { post }
-                    />
+                        onChangeOptions = { this.onChangeOptions } deleteOption = { this.deleteOption } />
                 </Modal>
             </Layout>
         );
