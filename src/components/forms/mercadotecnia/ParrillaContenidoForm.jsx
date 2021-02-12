@@ -8,6 +8,10 @@ import { toAbsoluteUrl } from "../../../functions/routers"
 import FileItem from '../../singles/FileItem'
 import Pagination from "react-js-pagination";
 import { diffCommentDate } from '../../../functions/functions'
+import TagSelectSearch from '../../form-components/TagSelectSearch'
+import { transformarOptions } from '../../../functions/setters'
+const $ = require('jquery');
+
 class ParrillaContenidoForm extends Component {
     
     state = {
@@ -15,7 +19,40 @@ class ParrillaContenidoForm extends Component {
         activePage: 1
     }
 
+    selectTagSocialNetworks = seleccionados => {
+        const { form, deleteOption } = this.props
+        seleccionados = seleccionados ? seleccionados : []
+        if(seleccionados.length > form.socialNetworks.length){
+            let diferencia = $(seleccionados).not(form.socialNetworks).get();
+            let val_diferencia = diferencia[0].value
+            this.updateSocialNetworks(val_diferencia)
+        }else{
+            let diferencia = $(form.socialNetworks ).not(seleccionados).get(); 
+            diferencia.forEach( borrar => {
+                deleteOption(borrar,"socialNetworks")
+            })
+        }
+    }
+
     updateSocialNetworks = value => {
+        const { onChange, options, onChangeOptions, form } = this.props
+        options.socialNetworks.map( ( red ) => {
+            if (red.value === value) {
+                let aux = false;
+                form.socialNetworks.map( (element) => {
+                    if (element.value === value)
+                        aux = true
+                    return false
+                })
+                if (!aux)
+                    onChangeOptions({ target: { value: red.value, name: 'socialNetwork' } }, 'socialNetworks')
+            }
+            return false
+        })
+        onChange({ target: { value: value, name: 'socialNetwork' } })
+    }
+
+    updateSocialNetwork = value => {
         const { onChange } = this.props
         onChange({ target: { value: value, name: 'socialNetwork' } })
     }
@@ -47,12 +84,18 @@ class ParrillaContenidoForm extends Component {
     }
 
     isFacebook = () => {
-        const { form, options } = this.props
+        const { form } = this.props
         let bandera = false
-        options.socialNetworks.map((social)=>{
-            if(form.socialNetwork === social.value && social.name === 'FACEBOOK' )
+        form.socialNetworks.map((red)=>{
+            if(red.label === 'FACEBOOK')
                 bandera = true
         })
+        if(bandera){
+            if(form.typeContent === 'contenido')
+                bandera = true
+            else
+                bandera = false
+        }
         return bandera
     }
 
@@ -64,7 +107,6 @@ class ParrillaContenidoForm extends Component {
             <Tab.Container activeKey={activeKey} >
                 <div className = 'd-flex justify-content-between'>
                     <div className = 'd-flex align-items-center'>
-                        {console.log('POST', post)}
                         {
                             Object.keys(post).length > 0 ?
                                 <>
@@ -82,7 +124,7 @@ class ParrillaContenidoForm extends Component {
                                     </div>
                                     <div className = ''>
                                         <div className="label label-md label-light-info label-inline font-weight-bold h-auto py-2" style={{fontSize: '10px'}}>
-                                            <i className = 'animation animation__people far fa-smile-beam mr-2 text-dark' style={{fontSize: '10px'}}></i>
+                                            <i className = 'animation animation__people flaticon-users-1 mr-2 text-dark' style={{fontSize: '10px'}}></i>
                                             { post.engaged } personas alcanzadas
                                         </div>
                                     </div>
@@ -168,49 +210,58 @@ class ParrillaContenidoForm extends Component {
                                 </Col>
                                 <Col md={8} >
                                     <div className="form-group row form-group-marginless mt-4">
-                                        <div className={this.isFacebook() ? "col-md-3" : 'col-md-4'}>
+                                        <div className='col-md-4'>
                                             <SelectSearch formeditado={formeditado} options={options.empresas}
                                                 placeholder="SELECCIONA LA EMPRESA" name="empresa" value={form.empresa}
                                                 onChange={this.updateEmpresa} iconclass="far fa-building"
                                                 messageinc="Incorrecto. Selecciona la empresa"
                                             />
                                         </div>
-                                        <div className={this.isFacebook() ? "col-md-3" : 'col-md-4'}>
-                                            <SelectSearch formeditado={formeditado} options={options.socialNetworks}
-                                                placeholder="SELECCIONA LA RED SOCIAL" name="socialNetwork"
-                                                value={form.socialNetwork} onChange={this.updateSocialNetworks}
-                                                iconclass="fas fa-mail-bulk" messageinc="Incorrecto. Selecciona la red social"
-                                            />
-                                        </div>
-                                        <div className={this.isFacebook() ? "col-md-3" : 'col-md-4'}>
+                                        {
+                                            formeditado ? 
+                                                <div className = 'col-md-5'>
+                                                    <SelectSearch formeditado={formeditado} options={options.socialNetworks}
+                                                    placeholder="SELECCIONA LA RED SOCIAL" name="socialNetwork"
+                                                    value={form.socialNetwork} onChange={this.updateSocialNetwork}
+                                                    iconclass="fas fa-mail-bulk" messageinc="Incorrecto. Selecciona la red social" />
+                                                </div>
+
+                                            :
+                                                <div className = 'col-md-5'>
+                                                    <TagSelectSearch placeholder = "SELECCIONA LA RED" options = { transformarOptions(options.socialNetworks) }
+                                                        defaultvalue = { transformarOptions(form.socialNetworks) } onChange = { this.selectTagSocialNetworks }
+                                                        iconclass = "fas fa-mail-bulk" requirevalidation = { 1 } messageinc = "Incorrecto. Selecciona la red" />
+                                                </div>
+                                        }
+                                        <div className = 'col-md-3'>
                                             <SelectSearch formeditado={formeditado} options={options.typeContents}
                                                 placeholder="SELECCIONA EL CONTENIDO" name="typeContent"
                                                 value={form.typeContent} onChange={this.updateTypeContent}
                                                 iconclass="fas fa-pen-fancy" messageinc="Incorrecto. Selecciona el contenido"
                                             />
                                         </div>
-                                        <div className={this.isFacebook() ? "col-md-3" : 'd-none'}>
+                                    </div>
+                                    <div className="separator separator-dashed mt-1 mb-2"></div>
+                                    <div className="form-group row form-group-marginless justify-content-center">
+                                        <div className = { this.isFacebook() ? "col-md-3" : 'd-none'}>
                                             <Input requirevalidation = { 0 } formeditado = { formeditado }
                                                 name = "post" value = { form.post } onChange = { onChange }
                                                 type = "text" placeholder="POST ID" iconclass="flaticon-facebook-letter-logo"
                                                 messageinc="Incorrecto. Ingresa ID del post." />
                                         </div>
-                                    </div>
-                                    <div className="separator separator-dashed mt-1 mb-2"></div>
-                                    <div className="form-group row form-group-marginless justify-content-center">
-                                        <div className="col-md-4">
+                                        <div className = { this.isFacebook() ? "col-md-3" : 'col-md-4'}>
                                             <Input requirevalidation={1} formeditado={formeditado}
                                                 name="title" value={form.title} onChange={onChange}
                                                 type="text" placeholder="TÍTULO" iconclass="flaticon2-crisp-icons"
                                                 messageinc="Incorrecto. Ingresa el título." spellCheck={true} letterCase={false} />
                                         </div>
-                                        <div className="col-md-4">
+                                        <div className = { this.isFacebook() ? "col-md-3" : 'col-md-4'}>
                                             <Input requirevalidation={1} formeditado={formeditado} name="cta"
                                                 value={form.cta} onChange={onChange} type="text"
                                                 placeholder="CTA" iconclass="fas fa-share-square"
                                                 messageinc="Incorrecto. Ingresa la cta." spellCheck={true} letterCase={false} />
                                         </div>
-                                        <div className="col-md-4">
+                                        <div className = { this.isFacebook() ? "col-md-3" : 'col-md-4'}>
                                             <Input requirevalidation={0} formeditado={formeditado}
                                                 name="comments" value={form.comments} onChange={onChange}
                                                 type="text" placeholder="COMENTARIOS (IMAGEN)" iconclass="far fa-file-alt"

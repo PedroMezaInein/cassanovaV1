@@ -16,6 +16,16 @@ function compare( a, b ) {
     }
     return 0;
 }
+
+export const transformarOptions = (options) => {
+    options = options ? options : []
+    options.map((value)=>{
+        value.label = value.name 
+        return ''
+    } );
+    return options
+}
+
 export function setOptions(arreglo, name, value) {
     let aux = []
     arreglo.map((element) => {
