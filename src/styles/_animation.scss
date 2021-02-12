@@ -3,22 +3,20 @@
         animation: heartbeat 5s infinite;
     }
     &__comment{
-        transform: scale( .75 );
         animation: comment 5s infinite;
     }
     &__people{
-        transform: scale( .75 );
         animation: people 10s infinite;
     }
 }
 
 @keyframes heartbeat {
-    0% { transform: scale( .75 );  opacity: .25; }
-    20% { transform: scale( 1 ); }
-    40% { transform: scale( .75 ); }
-    60% { transform: scale( 1 ); }
-    80% { transform: scale( .75 ); }
-    100% { transform: scale( .75 ); }
+    0% { transform: scale( 1 );  opacity: .25; }
+    20% { transform: scale( 1.25 ); }
+    40% { transform: scale( 1 ); }
+    60% { transform: scale( 1.25 ); }
+    80% { transform: scale( 1 ); }
+    100% { transform: scale( 1.25 ); }
 }
 
 @keyframes comment {
@@ -30,9 +28,9 @@
 }
 
 @keyframes people{
-    0% { opacity: 0; display: none; }
+    0% { opacity: 0.1; display: none; }
     25% { opacity: 1; }
-    50% { opacity: 0; display: none; }
+    50% { opacity: 0.1; display: none; }
     75% { opacity: 1; }
-    100% { opacity: 0; display: none; }
+    100% { opacity: 0.1; display: none; }
 }

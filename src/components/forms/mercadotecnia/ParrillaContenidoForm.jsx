@@ -68,20 +68,20 @@ class ParrillaContenidoForm extends Component {
                             Object.keys(post).length > 0 ?
                                 <>
                                     <div>
-                                        <div className="label label-lg label-light-primary label-inline font-weight-bold py-2" style={{fontSize: '10px'}}>
-                                        <i className = 'animation animation__heart fas fa-heart mr-2 text-danger'></i>
+                                        <div className="label label-md label-light-primary label-inline font-weight-bold h-auto py-2" style={{fontSize: '10px'}}>
+                                        <i className = 'animation animation__heart fas fa-heart mr-2 text-danger' style={{fontSize: '10px'}}></i>
                                             { post.reacciones } reacciones
                                         </div>
                                     </div>
                                     <div className = 'mx-2'>
-                                        <div className="label label-lg label-light-success label-inline font-weight-bold m-1 py-1" style={{fontSize: '10px'}}>
-                                            <i className = 'animation animation__comment flaticon-comment mr-2 text-primary'></i>
+                                        <div className="label label-md label-light-success label-inline font-weight-bold h-auto py-2" style={{fontSize: '10px'}}>
+                                            <i className = 'animation animation__comment flaticon-comment mr-2 text-primary' style={{fontSize: '10px'}}></i>
                                             { post.comentarios } comentarios
                                         </div>
                                     </div>
                                     <div className = ''>
-                                        <div className="label label-lg label-light-info label-inline font-weight-bold m-1 py-1" style={{fontSize: '10px'}}>
-                                            <i className = 'animation animation__people far fa-smile-beam mr-2 text-dark'></i>
+                                        <div className="label label-md label-light-info label-inline font-weight-bold h-auto py-2" style={{fontSize: '10px'}}>
+                                            <i className = 'animation animation__people far fa-smile-beam mr-2 text-dark' style={{fontSize: '10px'}}></i>
                                             { post.engaged } personas alcanzadas
                                         </div>
                                     </div>
