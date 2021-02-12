@@ -41,7 +41,8 @@ class ParrillaContenidoForm extends Component {
             if(evento.red)
                 if(evento.red.nombre === 'FACEBOOK')
                     if(evento.uploaded !== 1)
-                        return true
+                        if(evento.post_id)
+                            return true
         return false
     }
 
@@ -219,11 +220,10 @@ class ParrillaContenidoForm extends Component {
                                     <div className="separator separator-dashed mt-1 mb-2"></div>
                                     <div className="form-group row form-group-marginless justify-content-center">
                                         <div className="col-md-12">
-                                            <Input requirevalidation={1} formeditado={formeditado}
-                                                name="copy" value={form.copy} onChange={onChange}
-                                                type="text" placeholder="COPY" messageinc="Incorrecto. Ingresa el copy."
-                                                spellCheck={true} letterCase={false} as="textarea"
-                                                rows="5" style={{ paddingLeft: "10px" }} customicon="d-none" />
+                                            <Input requirevalidation = { 0 } formeditado = { formeditado } name = "copy" value = { form.copy } 
+                                                onChange = { onChange } type = "text" placeholder = "COPY" messageinc = "Incorrecto. Ingresa el copy."
+                                                spellCheck = { true } letterCase = { false } as = "textarea" rows = "5" style = { { paddingLeft: "10px" } } 
+                                                customicon = "d-none" />
                                         </div>
                                     </div>
                                 </Col>
