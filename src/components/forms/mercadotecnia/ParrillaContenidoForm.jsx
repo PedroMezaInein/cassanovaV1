@@ -47,8 +47,6 @@ class ParrillaContenidoForm extends Component {
 
     isFacebook = () => {
         const { form, options } = this.props
-        console.log('FORM   ', form)
-        console.log('OPTIONS', options)
         let bandera = false
         options.socialNetworks.map((social)=>{
             if(form.socialNetwork === social.value && social.name === 'FACEBOOK' )
@@ -70,21 +68,20 @@ class ParrillaContenidoForm extends Component {
                             Object.keys(post).length > 0 ?
                                 <>
                                     <div>
-                                        <div className="label label-md label-light-primary label-inline font-weight-bold py-2" style={{fontSize: '10px'}}>
+                                        <div className="label label-lg label-light-primary label-inline font-weight-bold py-2" style={{fontSize: '10px'}}>
                                         <i className = 'animation animation__heart fas fa-heart mr-2 text-danger'></i>
                                             { post.reacciones } reacciones
                                         </div>
                                     </div>
                                     <div className = 'mx-2'>
-                                        <div className="label label-md label-light-success label-inline font-weight-bold m-1 py-1" style={{fontSize: '10px'}}>
+                                        <div className="label label-lg label-light-success label-inline font-weight-bold m-1 py-1" style={{fontSize: '10px'}}>
                                             <i className = 'animation animation__comment flaticon-comment mr-2 text-primary'></i>
                                             { post.comentarios } comentarios
                                         </div>
                                     </div>
                                     <div className = ''>
-                                        <div className="label label-md label-light-info label-inline font-weight-bold m-1 py-1" style={{fontSize: '10px'}}>
+                                        <div className="label label-lg label-light-info label-inline font-weight-bold m-1 py-1" style={{fontSize: '10px'}}>
                                             <i className = 'animation animation__people far fa-smile-beam mr-2 text-dark'></i>
-                                            {/* <i className = 'animation animation__people2 far fa-laugh-beam mr-2'></i> */}
                                             { post.engaged } personas alcanzadas
                                         </div>
                                     </div>
