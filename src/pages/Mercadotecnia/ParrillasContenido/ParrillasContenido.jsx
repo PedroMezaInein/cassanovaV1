@@ -15,6 +15,7 @@ import { Button } from '../../../components/form-components'
 import { Modal } from '../../../components/singles'
 import ParrillaContenidoForm from '../../../components/forms/mercadotecnia/ParrillaContenidoForm';
 import { setOptions } from '../../../functions/setters';
+import Swal from 'sweetalert2';
 class Calendario extends Component {
     state = {
         content: [],
@@ -24,8 +25,10 @@ class Calendario extends Component {
         modal: {
             form: false
         },
+        post: {},
         form: {
             socialNetwork: '',
+            post: '',
             typeContent: "contenido",
             title: '',
             copy: '',
@@ -91,10 +94,12 @@ class Calendario extends Component {
     }
 
     getParrillaAxios = async(id) => {
+        waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'mercadotecnia/parrilla-contenido/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(`${URL_DEV}mercadotecnia/parrilla-contenido/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { parrilla } = response.data
+                Swal.close()
+                const { parrilla, post } = response.data
                 const { form, modal } = this.state
 
                 modal.form = true
@@ -115,6 +120,24 @@ class Calendario extends Component {
                 }
                 
                 form.fecha = new Date(moment(parrilla.fecha))
+                
+                if(parrilla.post_id){
+                    let aux = parrilla.post_id.split("_");
+                    if(aux.length > 1){
+                        if(aux[1].length)
+                            form.post = aux[1];
+                    }
+                }
+
+                if(parrilla.imagen_file){
+                    form.adjuntos.image.files = [
+                        {
+                            id: parrilla.id,
+                            name: this.getNameFromUrl(parrilla.imagen_file),
+                            url: parrilla.imagen_file
+                        }
+                    ]
+                }
 
                 this.setState({
                     ...this.state,
@@ -123,7 +146,8 @@ class Calendario extends Component {
                     formeditado: 1,
                     activeKeyModal: "form",
                     evento: parrilla,
-                    title: 'Editar contenido'
+                    title: 'Editar contenido',
+                    post: post
                 })
             },
             (error) => {
@@ -460,7 +484,8 @@ class Calendario extends Component {
             modal,
             empresa: '',
             form: this.clearForm(),
-            evento: ''
+            evento: '',
+            post: {}
         })
     }
 
@@ -626,7 +651,7 @@ class Calendario extends Component {
                     </span>
                 </Tooltip>}>
                 <div className="d-flex justify-content-center align-items-center position-relative" 
-                    onClick={(e) => { e.preventDefault(); this.clickEvent(eventInfo) }}>
+                    onClick={(e) => { e.preventDefault(); this.getParrillaAxios(eventInfo.event._def.extendedProps.evento.id) }}>
                     <span className={'btn btn-icon btn-sm ml-2 btn-light-' + aux}>
                         <i className={'line-height-0 socicon-' + aux}></i>
                     </span>
@@ -704,7 +729,7 @@ class Calendario extends Component {
     
     render() {
 
-        const { modal, title, form, formeditado, options, content, data, empresa, activeKeyModal, evento } = this.state
+        const { modal, title, form, formeditado, options, content, data, empresa, activeKeyModal, evento, post } = this.state
 
         return (
             <Layout active={"mercadotecnia"} {...this.props}>
@@ -757,7 +782,7 @@ class Calendario extends Component {
                         onChangeModalTab={this.onChangeModalTab} activeKey={activeKeyModal}
                         addComentario={this.addComentarioAxios} evento={evento} handleChange={this.handleChange} 
                         deleteContenido={this.deleteContenido} handleChangeSubmit = {this.handleChangeSubmit} onClickDelete={this.onClickDelete} 
-                        onClickFacebookPost = { this.openModalFacebookPost }
+                        onClickFacebookPost = { this.openModalFacebookPost } post = { post }
                     />
                 </Modal>
             </Layout>

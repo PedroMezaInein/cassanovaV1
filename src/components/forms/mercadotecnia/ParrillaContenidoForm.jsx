@@ -45,57 +45,99 @@ class ParrillaContenidoForm extends Component {
         return false
     }
 
+    isFacebook = () => {
+        const { form, options } = this.props
+        console.log('FORM   ', form)
+        console.log('OPTIONS', options)
+        let bandera = false
+        options.socialNetworks.map((social)=>{
+            if(form.socialNetwork === social.value && social.name === 'FACEBOOK' )
+                bandera = true
+        })
+        return bandera
+    }
+
     render() {
         const { options, form, onChange, onSubmit, formeditado, activeKey, onChangeModalTab, addComentario, evento, handleChange, deleteContenido, 
-            title, addAdjunto, handleChangeSubmit, onClickDelete, onClickFacebookPost, ...props } = this.props
+            title, addAdjunto, handleChangeSubmit, onClickDelete, onClickFacebookPost, post, ...props } = this.props
         const { itemsPerPage, activePage } = this.state
         return (
             <Tab.Container activeKey={activeKey} >
-                <Nav className="nav-tabs nav-bold nav-tabs-line nav-tabs-line-3x border-0 nav-tabs-line-primary mt-2 mb-4 d-flex justify-content-end">
-                    <Nav.Item onClick={(e) => { e.preventDefault(); onChangeModalTab("form") }}>
-                        <Nav.Link eventKey="form" >
-                            <span className="nav-icon">
-                                <i className="flaticon2-writing"></i>
-                            </span>
-                            <span className="nav-text">INFORMACIÓN DEL COPY</span>
-                        </Nav.Link>
-                    </Nav.Item>
-                    {
-                        evento !== '' ?
-                            <>
-                                <Nav.Item onClick={(e) => { e.preventDefault(); onChangeModalTab("files") }}>
-                                    <Nav.Link eventKey="files" >
-                                        <span className="nav-icon">
-                                            <i className="flaticon-attachment"></i>
-                                        </span>
-                                        <span className="nav-text">ADJUNTOS</span>
-                                    </Nav.Link>
-                                </Nav.Item>
-                                <Nav.Item onClick={(e) => { e.preventDefault(); onChangeModalTab("addcomments") }}>
-                                    <Nav.Link eventKey="addcomments" >
-                                        <span className="nav-icon">
-                                            <i className="flaticon2-plus"></i>
-                                        </span>
-                                        <span className="nav-text">AGREGAR COMENTARIO</span>
-                                    </Nav.Link>
-                                </Nav.Item>
-                            </>
+                <div className = 'd-flex justify-content-between'>
+                    <div className = 'd-flex align-items-center'>
+                        {console.log('POST', post)}
+                        {
+                            Object.keys(post).length > 0 ?
+                                <>
+                                    <div>
+                                        <div className="label label-md label-light-primary label-inline font-weight-bold py-2" style={{fontSize: '10px'}}>
+                                        <i className = 'animation animation__heart fas fa-heart mr-2 text-danger'></i>
+                                            { post.reacciones } reacciones
+                                        </div>
+                                    </div>
+                                    <div className = 'mx-2'>
+                                        <div className="label label-md label-light-success label-inline font-weight-bold m-1 py-1" style={{fontSize: '10px'}}>
+                                            <i className = 'animation animation__comment flaticon-comment mr-2 text-primary'></i>
+                                            { post.comentarios } comentarios
+                                        </div>
+                                    </div>
+                                    <div className = ''>
+                                        <div className="label label-md label-light-info label-inline font-weight-bold m-1 py-1" style={{fontSize: '10px'}}>
+                                            <i className = 'animation animation__people far fa-smile-beam mr-2 text-dark'></i>
+                                            {/* <i className = 'animation animation__people2 far fa-laugh-beam mr-2'></i> */}
+                                            { post.engaged } personas alcanzadas
+                                        </div>
+                                    </div>
+                                </>
                             : ''
-                    }
-                    {
-                        evento &&
-                        evento.comentarios.length > 0 ?
-                            <Nav.Item onClick={(e) => { e.preventDefault(); onChangeModalTab("comments") }}>
-                                <Nav.Link eventKey="comments" >
-                                    <span className="nav-icon">
-                                        <i className="flaticon2-chat-1"></i>
-                                    </span>
-                                    <span className="nav-text">MOSTRAR COMENTARIOS</span>
-                                </Nav.Link>
-                            </Nav.Item>
-                        : ''
-                    }
-                </Nav>
+                        }
+                    </div>
+                    <Nav className="nav-tabs nav-bold nav-tabs-line nav-tabs-line-3x border-0 nav-tabs-line-primary mt-2 mb-4 d-flex justify-content-end">
+                        <Nav.Item onClick={(e) => { e.preventDefault(); onChangeModalTab("form") }}>
+                            <Nav.Link eventKey="form" >
+                                <span className="nav-icon">
+                                    <i className="flaticon2-writing"></i>
+                                </span>
+                                <span className="nav-text">INFORMACIÓN DEL COPY</span>
+                            </Nav.Link>
+                        </Nav.Item>
+                        {
+                            evento !== '' ?
+                                <>
+                                    <Nav.Item onClick={(e) => { e.preventDefault(); onChangeModalTab("files") }}>
+                                        <Nav.Link eventKey="files" >
+                                            <span className="nav-icon">
+                                                <i className="flaticon-attachment"></i>
+                                            </span>
+                                            <span className="nav-text">ADJUNTOS</span>
+                                        </Nav.Link>
+                                    </Nav.Item>
+                                    <Nav.Item onClick={(e) => { e.preventDefault(); onChangeModalTab("addcomments") }}>
+                                        <Nav.Link eventKey="addcomments" >
+                                            <span className="nav-icon">
+                                                <i className="flaticon2-plus"></i>
+                                            </span>
+                                            <span className="nav-text">AGREGAR COMENTARIO</span>
+                                        </Nav.Link>
+                                    </Nav.Item>
+                                </>
+                                : ''
+                        }
+                        {
+                            evento &&
+                            evento.comentarios.length > 0 ?
+                                <Nav.Item onClick={(e) => { e.preventDefault(); onChangeModalTab("comments") }}>
+                                    <Nav.Link eventKey="comments" >
+                                        <span className="nav-icon">
+                                            <i className="flaticon2-chat-1"></i>
+                                        </span>
+                                        <span className="nav-text">MOSTRAR COMENTARIOS</span>
+                                    </Nav.Link>
+                                </Nav.Item>
+                            : ''
+                        }
+                    </Nav>
+                </div>
                 <Tab.Content>
                     <Tab.Pane eventKey="form">
                         <Form id="form-contenido"
@@ -107,17 +149,6 @@ class ParrillaContenidoForm extends Component {
                             }
                             {...props}
                         >
-                            {
-                                this.isActivePostingButton(evento) ?
-                                    <div className = 'd-flex justify-content-end py-2'>
-                                        <div>
-                                            <Button icon='' className = "btn btn-light-success btn-sm font-weight-bold" only_icon="flaticon-facebook-letter-logo pr-0 mr-2"
-                                                text='POSTEAR EN FACEBOOK' onClick = { onClickFacebookPost } />
-                                        </div>
-                                    </div>
-                                : ''
-                            }
-                            
                             <Row>
                                 <Col md={4} className="d-flex justify-content-center">
                                     <div className="col-md-12 text-center align-self-center mt-4">
@@ -139,26 +170,32 @@ class ParrillaContenidoForm extends Component {
                                 </Col>
                                 <Col md={8} >
                                     <div className="form-group row form-group-marginless mt-4">
-                                        <div className="col-md-4">
+                                        <div className={this.isFacebook() ? "col-md-3" : 'col-md-4'}>
                                             <SelectSearch formeditado={formeditado} options={options.empresas}
                                                 placeholder="SELECCIONA LA EMPRESA" name="empresa" value={form.empresa}
                                                 onChange={this.updateEmpresa} iconclass="far fa-building"
                                                 messageinc="Incorrecto. Selecciona la empresa"
                                             />
                                         </div>
-                                        <div className="col-md-4">
+                                        <div className={this.isFacebook() ? "col-md-3" : 'col-md-4'}>
                                             <SelectSearch formeditado={formeditado} options={options.socialNetworks}
                                                 placeholder="SELECCIONA LA RED SOCIAL" name="socialNetwork"
                                                 value={form.socialNetwork} onChange={this.updateSocialNetworks}
                                                 iconclass="fas fa-mail-bulk" messageinc="Incorrecto. Selecciona la red social"
                                             />
                                         </div>
-                                        <div className="col-md-4">
+                                        <div className={this.isFacebook() ? "col-md-3" : 'col-md-4'}>
                                             <SelectSearch formeditado={formeditado} options={options.typeContents}
                                                 placeholder="SELECCIONA EL CONTENIDO" name="typeContent"
                                                 value={form.typeContent} onChange={this.updateTypeContent}
                                                 iconclass="fas fa-pen-fancy" messageinc="Incorrecto. Selecciona el contenido"
                                             />
+                                        </div>
+                                        <div className={this.isFacebook() ? "col-md-3" : 'd-none'}>
+                                            <Input requirevalidation = { 0 } formeditado = { formeditado }
+                                                name = "post" value = { form.post } onChange = { onChange }
+                                                type = "text" placeholder="POST ID" iconclass="flaticon-facebook-letter-logo"
+                                                messageinc="Incorrecto. Ingresa ID del post." />
                                         </div>
                                     </div>
                                     <div className="separator separator-dashed mt-1 mb-2"></div>
@@ -208,14 +245,24 @@ class ParrillaContenidoForm extends Component {
                                 </Col>
                             </Row>
                             <div className="card-footer py-3 pr-1">
-                                <div className="row mx-0">
+                                <div className = 'd-flex justify-content-between'>
+                                    <div>
+                                        {
+                                            this.isActivePostingButton(evento) ?
+                                                <Button icon='' className = "btn-light-success font-weight-bold" only_icon="flaticon-facebook-letter-logo pr-0 mr-2"
+                                                    text='POSTEAR EN FACEBOOK' onClick = { onClickFacebookPost } />                                        
+                                            : ''
+                                        }
+                                    </div>
+                                    <div>
+                                        <Button icon = '' className = 'btn-light-danger font-weight-bold mr-3' text = "ELIMINAR"
+                                            onClick={(e) => { deleteAlert('¿ESTÁS SEGURO QUE DESEAS ELIMINAR EL CONTENIDO ?', '¡NO PODRÁS REVERTIR ESTO!', () => deleteContenido(form.id)) }} />
+                                        <Button icon = '' className = "btn-light-primary font-weight-bold mx-auto" text = "ENVIAR"
+                                            onClick = { (e) => { e.preventDefault(); validateAlert(onSubmit, e, 'form-contenido') } } />
+                                    </div>
+                                </div>
+                                {/* <div className="row mx-0 justify">
                                     <div className="col-lg-12 text-right pr-0 pb-0">
-                                        <Button
-                                            icon=''
-                                            className="btn-light-danger mr-2 font-weight-bold"
-                                            onClick={(e) => { deleteAlert('¿ESTÁS SEGURO QUE DESEAS ELIMINAR EL CONTENIDO ?', '¡NO PODRÁS REVERTIR ESTO!', () => deleteContenido(form.id)) }}
-                                            text='ELIMINAR'
-                                        />
                                         <Button
                                             icon=''
                                             className="btn-light-primary font-weight-bold mx-auto"
@@ -228,7 +275,7 @@ class ParrillaContenidoForm extends Component {
                                             text="ENVIAR"
                                         />
                                     </div>
-                                </div>
+                                </div> */}
                             </div>
                         </Form>
                     </Tab.Pane>
