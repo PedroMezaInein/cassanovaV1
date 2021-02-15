@@ -54,23 +54,25 @@ class InformacionGeneral extends Component {
                             : ''
                         }
                     </div>
-                    <div className="separator separator-dashed mt-1 mb-2"></div>
-                    <div className="form-group row form-group-marginless">
-                        {
-                            options ? 
-                                options.tipos ?
-                                    options.tipos.length ?
-                                        <div className = 'col-md-3'>
-                                            <SelectSearchGray options = { options.tipos } placeholder="SELECCIONE UN TIPO DE PROYECTO"
-                                                name="tipoProyecto" value = { form.tipoProyecto } onChange = { this.updateTipoProyecto }
-                                                requirevalidation = { 1 } messageinc = "Incorrecto. Seleccione el proyecto."
-                                                customdiv = "mb-0" withtaglabel = { 1 } withtextlabel = { 1 } />
+                    {
+                        options ? 
+                            options.tipos ?
+                                options.tipos.length ?
+                                    <>
+                                        <div className="separator separator-dashed mt-1 mb-2"></div>
+                                        <div className="form-group row form-group-marginless">
+                                            <div className = 'col-md-3'>
+                                                <SelectSearchGray options = { options.tipos } placeholder="SELECCIONE UN TIPO DE PROYECTO"
+                                                    name="tipoProyecto" value = { form.tipoProyecto } onChange = { this.updateTipoProyecto }
+                                                    requirevalidation = { 1 } messageinc = "Incorrecto. Seleccione el proyecto."
+                                                    customdiv = "mb-0" withtaglabel = { 1 } withtextlabel = { 1 } />
+                                            </div>
                                         </div>
-                                    : ''
+                                    </>
                                 : ''
                             : ''
-                        }
-                    </div>
+                        : ''
+                    }
                     <div className="separator separator-dashed mt-1 mb-2"></div>
                     <div className="form-group row form-group-marginless mt-4">
                         <div className="col-md-12 text-center align-self-center">
