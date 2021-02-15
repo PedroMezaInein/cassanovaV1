@@ -6,9 +6,9 @@ import { Button } from '../../../../components/form-components';
 import { URL_DEV } from '../../../../constants'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../../functions/routers"
-import { setOptions, setDateTableLG } from '../../../../functions/setters';
+import { setOptions, setDateTableLG, setContactoIcon } from '../../../../functions/setters';
 import axios from 'axios'
-import { doneAlert, errorAlert, forbiddenAccessAlert, waitAlert, questionAlert2, questionAlert, deleteAlert } from '../../../../functions/alert';
+import { doneAlert, errorAlert, forbiddenAccessAlert, waitAlert, questionAlert2, questionAlert, deleteAlert, printResponseErrorAlert } from '../../../../functions/alert';
 import Swal from 'sweetalert2'
 import { HistorialContactoForm, AgendarCitaForm, PresupuestoDiseñoCRMForm, PresupuestoGenerado,InformacionGeneral} from '../../../../components/forms'
 import { Modal } from '../../../../components/singles'
@@ -48,7 +48,9 @@ class LeadInfo extends Component {
                     value: '',
                     placeholder: 'Adjuntos'
                 }
-            }
+            },
+            hora: '08',
+            minuto: '00',
         },
         formAgenda: {
             fecha: new Date(),
@@ -259,7 +261,12 @@ class LeadInfo extends Component {
         this.getOptionsAxios()
     }
 
-    async getOptionsAxios() {
+    /* -------------------------------------------------------------------------- */
+    /*                             ASYNC CALL TO APIS                             */
+    /* -------------------------------------------------------------------------- */
+
+    /* ------------------------ ASYNC CALL TO GET OPTIONS ----------------------- */
+    getOptionsAxios = async() => {
         waitAlert()
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'crm/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -273,25 +280,17 @@ class LeadInfo extends Component {
                     { name: 'Esquema 2', value: 'esquema_2' },
                     { name: 'Esquema 3', value: 'esquema_3' },
                 ], 'name', 'value')
-                this.setState({
-                    ...this.state,
-                    options
-                })
+                this.setState({ ...this.state, options })
             },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401)
-                    forbiddenAccessAlert();
-                else
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-            }
+            (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
 
-    async getPresupuestoDiseñoOptionsAxios(id) {
+    /* ------------ ASNC CALL GET OPTIONS FROM PRESUPUESTO DE DISEÑO ------------ */
+    getPresupuestoDiseñoOptionsAxios = async(id) => {
         waitAlert()
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'crm/options/presupuesto-diseño/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -299,11 +298,9 @@ class LeadInfo extends Component {
                 const { empresa, tipo, partidas } = response.data
                 const { data, formDiseño } = this.state
                 let planos = []
-
                 data.empresa = empresa
                 data.tipoProyecto = tipo
                 data.partidas = partidas
-
                 if (tipo) {
                     formDiseño.construccion_interiores_inf = tipo.construccion_interiores_inf
                     formDiseño.construccion_interiores_sup = tipo.construccion_interiores_sup
@@ -312,18 +309,14 @@ class LeadInfo extends Component {
                     formDiseño.mobiliario_inf = tipo.mobiliario_inf
                     formDiseño.mobiliario_sup = tipo.mobiliario_sup
                 }
-
                 formDiseño.partidas = this.setOptionsCheckboxes(partidas, true)
-
                 if (empresa)
                     empresa.planos.map((plano) => {
                         if (plano[formDiseño.esquema])
                             planos.push(plano)
                         return ''
                     })
-
                 formDiseño.planos = this.setOptionsCheckboxes(planos, true)
-
                 let auxPartidasAcabados = []
                 let auxPartidasMobiliario = []
                 let auxPartidasObra = []
@@ -341,24 +334,352 @@ class LeadInfo extends Component {
                         default: break;
                     }
                 })
-
                 formDiseño.partidasAcabados = this.setOptionsCheckboxes(auxPartidasAcabados, true)
                 formDiseño.partidasMobiliario = this.setOptionsCheckboxes(auxPartidasMobiliario, true)
                 formDiseño.partidasObra = this.setOptionsCheckboxes(auxPartidasObra, true)
-
-                this.setState({
-                    ...this.state,
-                    data,
-                    formDiseño
-                })
+                this.setState({ ...this.state, data, formDiseño })
             },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401)
-                    forbiddenAccessAlert();
-                else
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+            (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    /* ------------------------ ASYNC CALL POST CONTACTO ------------------------ */
+    agregarContacto = async () => {
+        waitAlert()
+        const { lead, formHistorial } = this.state
+        const { access_token } = this.props.authUser
+        const data = new FormData();
+        let aux = Object.keys(formHistorial)
+        aux.map((element) => {
+            switch (element) {
+                case 'fechaContacto':
+                    data.append(element, (new Date(formHistorial[element])).toDateString())
+                    break
+                case 'adjuntos':
+                    break;
+                default:
+                    data.append(element, formHistorial[element]);
+                    break
             }
+            return false
+        })
+        aux = Object.keys(formHistorial.adjuntos)
+        aux.map((element) => {
+            if (formHistorial.adjuntos[element].value !== '') {
+                for (var i = 0; i < formHistorial.adjuntos[element].files.length; i++) {
+                    data.append(`files_name_${element}[]`, formHistorial.adjuntos[element].files[i].name)
+                    data.append(`files_${element}[]`, formHistorial.adjuntos[element].files[i].file)
+                }
+                data.append('adjuntos[]', element)
+            }
+            return false
+        })
+        await axios.post(URL_DEV + 'crm/contacto/lead/' + lead.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { lead } = response.data
+                this.setState({ ...this.state, formHistorial: this.clearForm(), lead: lead })
+                doneAlert('Historial actualizado con éxito');
+                const { history } = this.props
+                history.push({ pathname: '/leads/crm/info/info', state: { lead: lead } });
+            },
+            (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    /* ---------------------- ASYNC CALL TO AGENDAR EVENTO ---------------------- */
+    agendarEvento = async () => {
+        const { lead, formAgenda } = this.state
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.post(URL_DEV + 'crm/agendar/evento/' + lead.id, formAgenda, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                formAgenda.fecha = new Date()
+                formAgenda.hora_inicio = '08'
+                formAgenda.minuto_inicio = '00'
+                formAgenda.hora_final = '08'
+                formAgenda.minuto_final = '15'
+                formAgenda.titulo = ''
+                formAgenda.correo = ''
+                formAgenda.correos = []
+                formAgenda.lugar = 'presencial'
+                formAgenda.ubicacion = ''
+                formAgenda.url = ''
+                this.setState({ ...this.state, formAgenda, modal: false })
+                doneAlert('Evento generado con éxito')
+                this.getOneLead(lead)
+            },
+            (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    /* ----------------------- ASYNC CALL TO GET ONE LEAD ----------------------- */
+    getOneLead = async (lead) => {
+        let { tipo } = this.state
+        const { access_token } = this.props.authUser
+        if (tipo === '')
+            tipo = lead.estatus.estatus
+        let api = ''
+        if (lead.estatus.estatus === 'En proceso'){
+            api = 'crm/table/lead-en-contacto/';
+        }else if(lead.estatus.estatus === 'En negociación'){
+            api = 'crm/table/lead-en-negociacion/';
+        }else{
+            api = 'crm/table/lead-detenido/';
+        }
+        await axios.get(URL_DEV + api + lead.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { lead } = response.data
+                const { history } = this.props
+                const { form, formDiseño, data, options } = this.state
+                options.tipos = setOptions(lead.empresa.tipos, 'tipo', 'id')
+                form.name = lead.nombre
+                form.email = lead.email
+                form.telefono = lead.telefono
+                if(lead.prospecto){
+                    form.proyecto = lead.prospecto.nombre_proyecto
+                    if(lead.prospecto.tipo_proyecto)
+                        form.tipoProyecto = lead.prospecto.tipo_proyecto.id.toString()
+                }
+                form.fecha = new Date(lead.created_at)
+                if (lead.presupuesto_diseño) {
+                    formDiseño.fase1 = lead.presupuesto_diseño.fase1
+                    formDiseño.fase2 = lead.presupuesto_diseño.fase2
+                    formDiseño.renders = lead.presupuesto_diseño.renders
+                    formDiseño.acabados = lead.presupuesto_diseño.acabados_e_instalaciones
+                    formDiseño.mobiliario = lead.presupuesto_diseño.mobiliario
+                    formDiseño.obra_civil = lead.presupuesto_diseño.obra_civil
+                    if(lead.presupuesto_diseño.desglose){
+                        formDiseño.no_desglose = false;
+                        formDiseño.si_desglose = true;
+                    }else{
+                        formDiseño.si_desglose = false;
+                        formDiseño.no_desglose = true;
+                    }
+                    let aux = JSON.parse(lead.presupuesto_diseño.actividades)
+                    if (aux) {
+                        aux = aux.actividades
+                        formDiseño.conceptos = aux
+                    }
+                    aux = JSON.parse(lead.presupuesto_diseño.semanas)
+                    if (aux) {
+                        aux = aux.semanas
+                        formDiseño.semanas = aux
+                    }
+                    let planos = []
+                    if (data.empresa)
+                        data.empresa.planos.map((plano) => {
+                            if (plano[lead.presupuesto_diseño.esquema])
+                                planos.push(plano)
+                            return ''
+                        })
+                    formDiseño.planos = this.setOptionsCheckboxes(planos, true)
+                    aux = JSON.parse(lead.presupuesto_diseño.planos)
+                    if (aux) {
+                        aux = aux.planos
+                        aux.map((element) => {
+                            formDiseño.planos.map((plano) => {
+                                if (plano.id.toString() === element.toString())
+                                    plano.checked = true
+                                else
+                                    plano.checked = false
+                                return ''
+                            })
+                            return ''
+                        })
+                    }
+                    aux = JSON.parse(lead.presupuesto_diseño.planos)
+                    if (aux) {
+                        aux = aux.planos
+                        formDiseño.planos.map((plano) => {
+                            if(aux.indexOf(plano.id) >= 0)
+                                plano.checked = true
+                            else
+                                plano.checked = false
+                        })
+                    }
+                    aux = JSON.parse(lead.presupuesto_diseño.partidas)
+                    if (aux) {
+                        aux = aux.partidas
+                        formDiseño.partidasAcabados.map((partida) => {
+                            if(aux.indexOf(partida.id) >= 0)
+                                partida.checked = true
+                            else
+                                partida.checked = false
+                        })
+                        formDiseño.partidasMobiliario.map((partida) => {
+                            if(aux.indexOf(partida.id) >= 0)
+                                partida.checked = true
+                            else
+                                partida.checked = false
+                        })
+                        formDiseño.partidasObra.map((partida) => {
+                            if(aux.indexOf(partida.id) >= 0)
+                                partida.checked = true
+                            else
+                                partida.checked = false
+                        })
+                    }
+                    formDiseño.construccion_civil_inf = lead.presupuesto_diseño.construccion_civil_inf
+                    formDiseño.construccion_civil_sup = lead.presupuesto_diseño.construccion_civil_sup
+                    formDiseño.construccion_interiores_inf = lead.presupuesto_diseño.construccion_interiores_inf
+                    formDiseño.construccion_interiores_sup = lead.presupuesto_diseño.construccion_interiores_sup
+                    formDiseño.mobiliario_inf = lead.presupuesto_diseño.mobiliario_inf
+                    formDiseño.mobiliario_sup = lead.presupuesto_diseño.mobiliario_sup
+                    formDiseño.tiempo_ejecucion_construccion = lead.presupuesto_diseño.tiempo_ejecucion_construccion
+                    formDiseño.tiempo_ejecucion_diseno = lead.presupuesto_diseño.tiempo_ejecucion_diseño
+                    formDiseño.m2 = lead.presupuesto_diseño.m2
+                    formDiseño.fecha = new Date(lead.presupuesto_diseño.fecha)
+                    formDiseño.total = lead.presupuesto_diseño.total
+                    formDiseño.subtotal = lead.presupuesto_diseño.subtotal
+                    formDiseño.esquema = lead.presupuesto_diseño.esquema
+                    formDiseño.descuento = lead.presupuesto_diseño.descuento
+                }
+                this.setState({ ...this.state, lead: lead, form, formDiseño, options })
+                history.push({ state: { lead: lead } })
+            },
+            (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    /* --------------------- ASYNC CALL TO RECHAZAR ESTATUS --------------------- */    
+    changeEstatusCanceladoRechazadoAxios = async (data) => {
+        data.motivo = document.getElementById('motivo').value
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.put(URL_DEV + 'crm/lead/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { history } = this.props
+                history.push('/leads/crm')
+                doneAlert('El estatus fue actualizado con éxito.')
+            },
+            (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    /* ----------------------- ASYN CALL TO CHANGE ESTATUS ---------------------- */
+    changeEstatusAxios = async (data) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.put(URL_DEV + 'crm/lead/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { history } = this.props
+                history.push('/leads/crm')
+                doneAlert('El estatus fue actualizado con éxito.')
+            },
+            (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    /* --------------------- ASYNC CALL TO ELIMINAR CONTACTO -------------------- */
+    eliminarContacto = async (contacto) => {
+        const { access_token } = this.props.authUser
+        const { lead } = this.state
+        await axios.delete(URL_DEV + 'crm/prospecto/' + lead.id + '/contacto/' + contacto.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert('Registro eliminado con éxito.');
+                this.getOneLead(lead)
+            },
+            (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    /* ------------------- ASYNC CALL TO SOLICITAR FECHA CITA ------------------- */
+    solicitarFechaCita = async () => {
+        const { access_token } = this.props.authUser
+        const { lead } = this.state
+        await axios.put(URL_DEV + 'crm/email/lead-potencial/' + lead.id, {}, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert('Correo enviado con éxito');
+                this.getOneLead(lead)
+            },
+            (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    /* ---------------- ASYNC CALL TO SEND CORREO CON PRESUPUESTO --------------- */
+    sendCorreoPresupuesto = async (identificador) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { lead } = this.state
+        await axios.put(URL_DEV + 'crm/email/envio-cotizacion/' + lead.id, { identificador: identificador }, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { history } = this.props
+                doneAlert('Correo enviado con éxito')
+                history.push({ pathname: '/leads/crm' });
+            },
+            (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    /* --------------------- ASYNC CALL TO UPDATE LEAD INFO --------------------- */
+    addLeadInfoAxios = async() => {
+        const { access_token } = this.props.authUser
+        const { form, lead } = this.state
+        await axios.put(URL_DEV + 'crm/update/lead-en-contacto/' + lead.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito el lead.')
+                this.getOneLead(lead)
+            },
+            (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    /* --------------- ASYNC CALL TO SUBMIT PRESUPUESTO DE DISEÑO --------------- */
+    onSubmitPresupuestoDiseñoAxios = async (pdf) => {
+        waitAlert();
+        const { access_token } = this.props.authUser
+        const { formDiseño, lead } = this.state
+        formDiseño.pdf = pdf
+        await axios.post(URL_DEV + 'crm/add/presupuesto-diseño/' + lead.id, formDiseño, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                if (formDiseño.pdf) {
+                    const { presupuesto } = response.data
+                    if (presupuesto)
+                        if (presupuesto.pdfs)
+                            if (presupuesto.pdfs[0])
+                                if (presupuesto.pdfs[0].pivot) {
+                                    Swal.close()
+                                    questionAlert2('¡NO PODRÁS REVERTIR ESTO!', '',
+                                        () => this.sendCorreoPresupuesto(presupuesto.pdfs[0].pivot.identificador),
+                                        this.getTextAlert(presupuesto.pdfs[0].url)
+                                    )
+                                }
+                }
+                else
+                    doneAlert('Presupuesto generado con éxito')
+                this.getOneLead(lead)
+            },
+            (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -369,45 +690,35 @@ class LeadInfo extends Component {
         const { form } = this.state
         const { name, value } = e.target
         form[name] = value
-        this.setState({
-            ...this.state,
-            form
-        })
+        this.setState({ ...this.state, form })
     }
+
     onChangeHistorial = e => {
         const { formHistorial } = this.state
         const { name, value } = e.target
         formHistorial[name] = value
-        this.setState({
-            ...this.state,
-            formHistorial
-        })
+        this.setState({ ...this.state, formHistorial })
     }
+
     onChangeAgenda = e => {
         const { name, value } = e.target
         const { formAgenda } = this.state
         formAgenda[name] = value
-        this.setState({
-            ...this.state,
-            formAgenda
-        })
+        this.setState({ ...this.state, formAgenda })
     }
 
     handleChangeCheckbox = (array, type) => {
         const { formDiseño } = this.state
         formDiseño[type] = array
-        console.log('FORM DISEÑO TYPE', formDiseño[type])
         this.setState({ ...this.state, formDiseño: formDiseño })
     }
 
     onChangePresupuesto = e => {
         const { name, value, type, checked } = e.target
         const { formDiseño, data } = this.state
-        // let { defaultKey, activeKey } = this.state
         formDiseño[name] = value
         switch (name) {
             case 'esquema':
-                // Tiempo de ejecución
                 switch(value){
                     case 'esquema_1':
                         formDiseño.tiempo_ejecucion_diseno = 7
@@ -585,11 +896,9 @@ class LeadInfo extends Component {
             default:
                 break;
         }
-        this.setState({
-            ...this.state,
-            formDiseño,
-        })
+        this.setState({ ...this.state, formDiseño })
     }
+
     onChangePartidas = e => {
         const { name, type, value, checked } = e.target
         const { formDiseño } = this.state
@@ -600,6 +909,7 @@ class LeadInfo extends Component {
         activeKey = formDiseño.acabados ? "acabados" : formDiseño.mobiliario ? "mobiliario" : formDiseño.obra_civil ? "obra_civil" : "vacio"
         this.setState({ ...this.state, formDiseño, defaultKey, activeKey })
     }
+
     calculateSemanas = tiempo => {
         let modulo = parseFloat(tiempo) % 5
         let aux = Object.keys(
@@ -635,11 +945,10 @@ class LeadInfo extends Component {
             domingo: false
         })
         aux.map((element, key) => {
-            if (key < modulo) {
+            if (key < modulo) 
                 semanas[semanas.length - 1][element] = true
-            } else {
+            else
                 semanas[semanas.length - 1][element] = false
-            }
             return false
         })
         if (modulo > 2) {
@@ -655,6 +964,7 @@ class LeadInfo extends Component {
         }
         return semanas
     }
+
     handleChange = (files, item) => {
         const { formHistorial } = this.state
         let aux = []
@@ -670,10 +980,7 @@ class LeadInfo extends Component {
         }
         formHistorial['adjuntos'][item].value = files
         formHistorial['adjuntos'][item].files = aux
-        this.setState({
-            ...this.state,
-            formHistorial
-        })
+        this.setState({...this.state, formHistorial })
     }
 
     removeCorreo = value => {
@@ -696,10 +1003,7 @@ class LeadInfo extends Component {
         const { value } = e.target
         const { formDiseño } = this.state
         formDiseño.conceptos[key].value = value
-        this.setState({
-            ...this.state,
-            formDiseño
-        })
+        this.setState({...this.state, formDiseño })
     }
 
     checkButtonSemanas = (e, key, dia) => {
@@ -727,10 +1031,7 @@ class LeadInfo extends Component {
             return false
         })
         formDiseño.tiempo_ejecucion_diseno = count
-        this.setState({
-            ...this.state,
-            formDiseño
-        })
+        this.setState({...this.state, formDiseño })
     }
 
     setOptionsCheckboxes = (partidas, value) => {
@@ -817,65 +1118,7 @@ class LeadInfo extends Component {
         }
 
     }
-
-    async agregarContacto() {
-        waitAlert()
-        const { lead, formHistorial } = this.state
-        const { access_token } = this.props.authUser
-        const data = new FormData();
-        let aux = Object.keys(formHistorial)
-        aux.map((element) => {
-            switch (element) {
-                case 'fechaContacto':
-                    data.append(element, (new Date(formHistorial[element])).toDateString())
-                    break
-                case 'adjuntos':
-                    break;
-                default:
-                    data.append(element, formHistorial[element]);
-                    break
-            }
-            return false
-        })
-        aux = Object.keys(formHistorial.adjuntos)
-        aux.map((element) => {
-            if (formHistorial.adjuntos[element].value !== '') {
-                for (var i = 0; i < formHistorial.adjuntos[element].files.length; i++) {
-                    data.append(`files_name_${element}[]`, formHistorial.adjuntos[element].files[i].name)
-                    data.append(`files_${element}[]`, formHistorial.adjuntos[element].files[i].file)
-                }
-                data.append('adjuntos[]', element)
-            }
-            return false
-        })
-        await axios.post(URL_DEV + 'crm/contacto/lead/' + lead.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { lead } = response.data
-                this.setState({
-                    ...this.state,
-                    formHistorial: this.clearForm(),
-                    lead: lead
-                })
-                doneAlert('Historial actualizado con éxito');
-                const { history } = this.props
-                history.push({
-                    pathname: '/leads/crm/info/info',
-                    state: { lead: lead }
-                });
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
+    
     clearForm = () => {
         const { formHistorial } = this.state
         let aux = Object.keys(formHistorial)
@@ -901,44 +1144,7 @@ class LeadInfo extends Component {
         })
         return formHistorial;
     }
-    async agendarEvento() {
-        const { lead, formAgenda } = this.state
-        waitAlert()
-        const { access_token } = this.props.authUser
-        await axios.post(URL_DEV + 'crm/agendar/evento/' + lead.id, formAgenda, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                formAgenda.fecha = new Date()
-                formAgenda.hora_inicio = '08'
-                formAgenda.minuto_inicio = '00'
-                formAgenda.hora_final = '08'
-                formAgenda.minuto_final = '15'
-                formAgenda.titulo = ''
-                formAgenda.correo = ''
-                formAgenda.correos = []
-                formAgenda.lugar = 'presencial'
-                formAgenda.ubicacion = ''
-                formAgenda.url = ''
-                this.setState({
-                    ...this.state,
-                    formAgenda,
-                    modal: false
-                })
-                this.getOneLead(lead)
-                doneAlert('Evento generado con éxito');
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
+
     openModalWithInput = (estatus, id) => {
         questionAlert2('ESCRIBE EL MOTIVO DE CANCELACIÓN', '', () => this.changeEstatusCanceladoRechazadoAxios({ id: id, estatus: estatus }),
             <div>
@@ -953,322 +1159,13 @@ class LeadInfo extends Component {
         )
     }
 
-    async getOneLead(lead) {
-
-        let { tipo } = this.state
-        const { access_token } = this.props.authUser
-
-        if (tipo === '')
-            tipo = lead.estatus.estatus
-
-        let api = ''
-
-        if (lead.estatus.estatus === 'En proceso'){
-            api = 'crm/table/lead-en-contacto/';
-        }else if(lead.estatus.estatus === 'En negociación'){
-            api = 'crm/table/lead-en-negociacion/';
-        }else{
-            api = 'crm/table/lead-detenido/';
-        }
-        await axios.get(URL_DEV + api + lead.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { lead } = response.data
-                const { history } = this.props
-                const { form, formDiseño, data, options } = this.state
-                options.tipos = setOptions(lead.empresa.tipos, 'tipo', 'id')
-
-                form.name = lead.nombre
-                form.email = lead.email
-                form.telefono = lead.telefono
-                
-                if(lead.prospecto){
-                    form.proyecto = lead.prospecto.nombre_proyecto
-                    if(lead.prospecto.tipo_proyecto)
-                        form.tipoProyecto = lead.prospecto.tipo_proyecto.id.toString()
-                }
-                
-                form.fecha = new Date(lead.created_at)
-                
-                if (lead.presupuesto_diseño) {
-
-                    formDiseño.fase1 = lead.presupuesto_diseño.fase1
-                    formDiseño.fase2 = lead.presupuesto_diseño.fase2
-                    formDiseño.renders = lead.presupuesto_diseño.renders
-                    formDiseño.acabados = lead.presupuesto_diseño.acabados_e_instalaciones
-                    formDiseño.mobiliario = lead.presupuesto_diseño.mobiliario
-                    formDiseño.obra_civil = lead.presupuesto_diseño.obra_civil
-                    if(lead.presupuesto_diseño.desglose){
-                        formDiseño.no_desglose = false;
-                        formDiseño.si_desglose = true;
-                    }else{
-                        formDiseño.si_desglose = false;
-                        formDiseño.no_desglose = true;
-                    }
-
-                    let aux = JSON.parse(lead.presupuesto_diseño.actividades)
-                    if (aux) {
-                        aux = aux.actividades
-                        formDiseño.conceptos = aux
-                    }
-
-                    aux = JSON.parse(lead.presupuesto_diseño.semanas)
-                    if (aux) {
-                        aux = aux.semanas
-                        formDiseño.semanas = aux
-                    }
-
-                    let planos = []
-                    if (data.empresa)
-                        data.empresa.planos.map((plano) => {
-                            if (plano[lead.presupuesto_diseño.esquema])
-                                planos.push(plano)
-                            return ''
-                        })
-                    formDiseño.planos = this.setOptionsCheckboxes(planos, true)
-
-                    aux = JSON.parse(lead.presupuesto_diseño.planos)
-                    if (aux) {
-                        aux = aux.planos
-                        aux.map((element) => {
-                            formDiseño.planos.map((plano) => {
-                                if (plano.id.toString() === element.toString())
-                                    plano.checked = true
-                                else
-                                    plano.checked = false
-                                return ''
-                            })
-                            return ''
-                        })
-                    }
-
-                    aux = JSON.parse(lead.presupuesto_diseño.planos)
-                    if (aux) {
-                        aux = aux.planos
-                        formDiseño.planos.map((plano) => {
-                            if(aux.indexOf(plano.id) >= 0)
-                                plano.checked = true
-                            else
-                                plano.checked = false
-                        })
-                    }
-
-                    aux = JSON.parse(lead.presupuesto_diseño.partidas)
-                    if (aux) {
-                        aux = aux.partidas
-
-                        formDiseño.partidasAcabados.map((partida) => {
-                            if(aux.indexOf(partida.id) >= 0)
-                                partida.checked = true
-                            else
-                                partida.checked = false
-                        })
-
-                        formDiseño.partidasMobiliario.map((partida) => {
-                            if(aux.indexOf(partida.id) >= 0)
-                                partida.checked = true
-                            else
-                                partida.checked = false
-                        })
-
-                        formDiseño.partidasObra.map((partida) => {
-                            if(aux.indexOf(partida.id) >= 0)
-                                partida.checked = true
-                            else
-                                partida.checked = false
-                        })
-                    }
-
-                    formDiseño.construccion_civil_inf = lead.presupuesto_diseño.construccion_civil_inf
-                    formDiseño.construccion_civil_sup = lead.presupuesto_diseño.construccion_civil_sup
-                    formDiseño.construccion_interiores_inf = lead.presupuesto_diseño.construccion_interiores_inf
-                    formDiseño.construccion_interiores_sup = lead.presupuesto_diseño.construccion_interiores_sup
-                    formDiseño.mobiliario_inf = lead.presupuesto_diseño.mobiliario_inf
-                    formDiseño.mobiliario_sup = lead.presupuesto_diseño.mobiliario_sup
-                    formDiseño.tiempo_ejecucion_construccion = lead.presupuesto_diseño.tiempo_ejecucion_construccion
-                    formDiseño.tiempo_ejecucion_diseno = lead.presupuesto_diseño.tiempo_ejecucion_diseño
-                    formDiseño.m2 = lead.presupuesto_diseño.m2
-                    formDiseño.fecha = new Date(lead.presupuesto_diseño.fecha)
-                    formDiseño.total = lead.presupuesto_diseño.total
-                    formDiseño.subtotal = lead.presupuesto_diseño.subtotal
-                    formDiseño.esquema = lead.presupuesto_diseño.esquema
-                    formDiseño.descuento = lead.presupuesto_diseño.descuento
-
-                }
-
-                this.setState({
-                    ...this.state,
-                    lead: lead,
-                    form,
-                    formDiseño,
-                    options
-                })
-
-                history.push({
-                    state: { lead: lead }
-                })
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-    async changeEstatusCanceladoRechazadoAxios(data) {
-        data.motivo = document.getElementById('motivo').value
-        waitAlert()
-        const { access_token } = this.props.authUser
-        await axios.put(URL_DEV + 'crm/lead/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { history } = this.props
-                history.push('/leads/crm')
-                doneAlert('El estatus fue actualizado con éxito.')
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-    async changeEstatusAxios(data) {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        await axios.put(URL_DEV + 'crm/lead/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { history } = this.props
-                history.push('/leads/crm')
-                doneAlert('El estatus fue actualizado con éxito.')
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-
-    async eliminarContacto(contacto){
-        const { access_token } = this.props.authUser
-        const { lead } = this.state
-        await axios.delete(URL_DEV + 'crm/prospecto/' + lead.id + '/contacto/' + contacto.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                doneAlert('Registro eliminado con éxito.');
-                this.getOneLead(lead)
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-
     changeEstatus = (estatus, id) => {
         questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios({ id: id, estatus: estatus }))
     }
 
-    solicitarFechaCita = async () => {
-        const { access_token } = this.props.authUser
-        const { lead } = this.state
-        await axios.put(URL_DEV + 'crm/email/lead-potencial/' + lead.id, {}, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                doneAlert('Correo enviado con éxito');
-                this.getOneLead(lead)
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
+    onSubmitPDF = () => { this.onSubmitPresupuestoDiseñoAxios(true) }
 
-    sendCorreoPresupuesto = async (identificador) => {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        const { lead } = this.state
-        await axios.put(URL_DEV + 'crm/email/envio-cotizacion/' + lead.id, { identificador: identificador }, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { history } = this.props
-                doneAlert('Correo enviado con éxito')
-                history.push({
-                    pathname: '/leads/crm'
-                });
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-
-    addLeadInfoAxios = async() => {
-        const { access_token } = this.props.authUser
-        const { form, lead } = this.state
-        await axios.put(URL_DEV + 'crm/update/lead-en-contacto/' + lead.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito el lead.')
-                this.getOneLead(lead)
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-
-    onSubmitPDF = () => {
-        this.onSubmitPresupuestoDiseñoAxios(true)
-    }
-
-    onSubmitPresupuestoDiseño = () => {
-        this.onSubmitPresupuestoDiseñoAxios(false)
-    }
+    onSubmitPresupuestoDiseño = () => { this.onSubmitPresupuestoDiseñoAxios(false) }
 
     getTextAlert = url => {
         return (
@@ -1293,43 +1190,6 @@ class LeadInfo extends Component {
         )
     }
 
-    onSubmitPresupuestoDiseñoAxios = async (pdf) => {
-        waitAlert();
-        const { access_token } = this.props.authUser
-        const { formDiseño, lead } = this.state
-        formDiseño.pdf = pdf
-        await axios.post(URL_DEV + 'crm/add/presupuesto-diseño/' + lead.id, formDiseño, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                if (formDiseño.pdf) {
-                    const { presupuesto } = response.data
-                    if (presupuesto)
-                        if (presupuesto.pdfs)
-                            if (presupuesto.pdfs[0])
-                                if (presupuesto.pdfs[0].pivot) {
-                                    Swal.close()
-                                    questionAlert2('¡NO PODRÁS REVERTIR ESTO!', '',
-                                        () => this.sendCorreoPresupuesto(presupuesto.pdfs[0].pivot.identificador),
-                                        this.getTextAlert(presupuesto.pdfs[0].url)
-                                    )
-                                }
-                }
-                else
-                    doneAlert('Presupuesto generado con éxito')
-                this.getOneLead(lead)
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
     openModalPresupuesto = () => {
         const { modal } = this.state
         modal.presupuesto = true
@@ -1338,6 +1198,7 @@ class LeadInfo extends Component {
             modal
         })
     }
+
     handleCloseModalPresupuesto = () => {
         const { modal } = this.state
         modal.presupuesto = false
@@ -1346,6 +1207,7 @@ class LeadInfo extends Component {
             modal
         })
     }
+
     tagInputChange = (nuevosCorreos) => {
         const uppercased = nuevosCorreos.map(tipo => tipo.toUpperCase());
         const { formAgenda } = this.state
@@ -1358,6 +1220,7 @@ class LeadInfo extends Component {
             formAgenda
         })
     }
+
     onChangePage(pageNumber){
         let { activePage } = this.state
         activePage = pageNumber
@@ -1366,6 +1229,7 @@ class LeadInfo extends Component {
             activePage
         })
     }
+
     componentDidUpdate(){
         $(".pagination").removeClass("page-link");
     }
@@ -1379,6 +1243,7 @@ class LeadInfo extends Component {
             defaultKey
         })
     }
+
     render() {
         const { lead, form, formHistorial, options, formAgenda, formDiseño, modal, formeditado, itemsPerPage, activePage, activeKey, defaultKey } = this.state
         return (
@@ -1401,14 +1266,6 @@ class LeadInfo extends Component {
                                                                 <div className="d-flex flex-column font-weight-bold ml-2">
                                                                     <div>
                                                                         <div className="d-flex align-items-center text-dark font-size-h5 font-weight-bold mr-3 text-center ">{lead.nombre}
-                                                                            {/* <span className="ml-3">
-                                                                                <Button
-                                                                                    icon=''
-                                                                                    className="btn btn-light-success p-1"
-                                                                                    only_icon="fab fa-whatsapp pr-0"
-                                                                                    tooltip={{ text: 'CONTACTAR POR WHATSAPP' }}
-                                                                                />
-                                                                            </span> */}
                                                                             <span className="ml-3">
                                                                                 {
                                                                                     lead ?
@@ -1550,50 +1407,31 @@ class LeadInfo extends Component {
                                             <h3 className="card-title d-flex justify-content-between">
                                                 <span className="font-weight-bolder text-dark align-self-center">Historial de contacto</span>
                                                 <div className="text-center">
-                                                    <Button
-                                                        id={"solicitar_cita"}
-                                                        icon=''
-                                                        className={"btn btn-icon btn-xs w-auto p-3 btn-light-gray mr-2 mt-2"}
+                                                    <Button id = "solicitar_cita" icon='' className = "btn btn-icon btn-xs w-auto p-3 btn-light-gray mr-2 mt-2"
                                                         // onClick={() => { waitAlert(); this.solicitarFechaCita() }}
                                                         onClick={(e) => { questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.solicitarFechaCita()) }}
-                                                        only_icon={"far fa-calendar-check icon-15px mr-2"}
-                                                        text='SOLICITAR CITA'
-                                                    />
-                                                    <Button
-                                                        icon=''
-                                                        className={"btn btn-icon btn-xs p-3 btn-light-primary mr-2 mt-2"}
-                                                        onClick={() => { this.mostrarAgenda() }}
-                                                        only_icon={"flaticon2-calendar-2 icon-md"}
-                                                        tooltip={{ text: 'AGENDAR CITA' }}
-                                                    />
-                                                    <Button
-                                                        icon=''
-                                                        className={"btn btn-icon btn-xs p-3 btn-light-success mr-2 mt-2"}
-                                                        onClick={() => { this.mostrarFormulario() }}
-                                                        only_icon={"flaticon2-plus icon-13px"}
-                                                        tooltip={{ text: 'AGREGAR NUEVO CONTACTO' }}
-                                                    />
+                                                        only_icon = "far fa-calendar-check icon-15px mr-2" text = 'SOLICITAR CITA' />
+                                                    <Button icon='' className = "btn btn-icon btn-xs p-3 btn-light-primary mr-2 mt-2"
+                                                        onClick={() => { this.mostrarAgenda() }} only_icon = "flaticon2-calendar-2 icon-md"
+                                                        tooltip={{ text: 'AGENDAR CITA' }} />
+                                                    <Button icon='' className = "btn btn-icon btn-xs p-3 btn-light-success mr-2 mt-2"
+                                                        onClick={() => { this.mostrarFormulario() }} only_icon = "flaticon2-plus icon-13px"
+                                                        tooltip={{ text: 'AGREGAR NUEVO CONTACTO' }} />
                                                 </div>
                                             </h3>
                                         </Card.Header>
                                         <Card.Body className="d-flex justify-content-center pt-0 row">
                                             <div className={this.state.showForm ? 'col-md-12 mb-5' : 'd-none'}>
-                                                <HistorialContactoForm
-                                                    options={options}
-                                                    formHistorial={formHistorial}
-                                                    onChangeHistorial={this.onChangeHistorial}
-                                                    handleChange={this.handleChange}
+                                                <HistorialContactoForm options = { options } formHistorial = { formHistorial }
+                                                    onChangeHistorial = { this.onChangeHistorial } handleChange = { this.handleChange }
                                                     onSubmit={() => { waitAlert(); this.agregarContacto() }} />
                                             </div>
                                             <div className={this.state.showAgenda ? 'col-md-12 mb-5' : 'd-none'}>
-                                                <AgendarCitaForm
-                                                    formAgenda={formAgenda}
-                                                    onChange={this.onChangeAgenda}
-                                                    removeCorreo={this.removeCorreo}
+                                                <AgendarCitaForm formAgenda = { formAgenda } onChange = { this.onChangeAgenda }
+                                                    removeCorreo = { this.removeCorreo }
                                                     // solicitarFechaCita={() => { waitAlert(); this.solicitarFechaCita() }}
-                                                    onSubmit={() => { waitAlert(); this.agendarEvento() }}
-                                                    tagInputChange={(e) => this.tagInputChange(e)}
-                                                />
+                                                    onSubmit = { () => { waitAlert(); this.agendarEvento() } }
+                                                    tagInputChange = { (e) => this.tagInputChange(e) } />
                                             </div>
                                             <div className="col-md-8">
                                                 {
@@ -1612,27 +1450,7 @@ class LeadInfo extends Component {
                                                                                     <div className="timeline-item">
                                                                                         <div className={contacto.success ? "timeline-media bg-light-success" : "timeline-media bg-light-danger"}>
                                                                                             <span className={contacto.success ? "svg-icon svg-icon-success svg-icon-md" : "svg-icon svg-icon-danger  svg-icon-md"}>
-                                                                                                {
-                                                                                                    contacto.tipo_contacto ?
-                                                                                                        contacto.tipo_contacto.tipo === 'Llamada' ?
-                                                                                                            <SVG src={toAbsoluteUrl('/images/svg/Outgoing-call.svg')} />
-                                                                                                            : contacto.tipo_contacto.tipo === 'Correo' ?
-                                                                                                                <SVG src={toAbsoluteUrl('/images/svg/Outgoing-mail.svg')} />
-                                                                                                                : contacto.tipo_contacto.tipo === 'VIDEO LLAMADA' ?
-                                                                                                                    <SVG src={toAbsoluteUrl('/images/svg/Video-camera.svg')} />
-                                                                                                                    : contacto.tipo_contacto.tipo === 'Whatsapp' ?
-                                                                                                                        <i className={contacto.success ? "socicon-whatsapp text-success icon-16px" : "socicon-whatsapp text-danger icon-16px"}></i>
-                                                                                                                        : contacto.tipo_contacto.tipo === 'TAWK TO ADS' ?
-                                                                                                                            <i className={contacto.success ? "fas fa-dove text-success icon-16px" : "fas fa-dove text-danger icon-16px"}></i>
-                                                                                                                            : contacto.tipo_contacto.tipo === 'REUNIÓN PRESENCIAL' ?
-                                                                                                                                <i className={contacto.success ? "fas fa-users text-success icon-16px" : "fas fa-users text-danger icon-16px"}></i>
-                                                                                                                                : contacto.tipo_contacto.tipo === 'Visita' ?
-                                                                                                                                    <i className={contacto.success ? "fas fa-house-user text-success icon-16px" : "fas fa-house-user text-danger icon-16px"}></i>
-                                                                                                                                        :contacto.tipo_contacto.tipo === 'TAWK TO ORGANICO' ?
-                                                                                                                                            <i className={contacto.success ? "fas fa-dove text-success icon-16px" : "fas fa-dove text-danger icon-16px"}></i>
-                                                                                                                                            : <i className={contacto.success ? "fas fa-mail-bulk text-success icon-16px" : "fas fa-mail-bulk text-danger icon-16px"}></i>
-                                                                                                        : ''
-                                                                                                }
+                                                                                                { setContactoIcon(contacto) }
                                                                                             </span>
                                                                                         </div>
                                                                                         <div className={contacto.success ? "timeline-desc timeline-desc-light-success" : "timeline-desc timeline-desc-light-danger"}>
@@ -1675,24 +1493,16 @@ class LeadInfo extends Component {
                                                         lead.prospecto ?
                                                             lead.prospecto.contactos.length > itemsPerPage ?
                                                                 <div className="d-flex justify-content-center mt-4">
-                                                                    <Pagination
-                                                                        itemClassLast="d-none"
-                                                                        itemClassFirst="d-none"
-                                                                        itemClass="page-item"
-                                                                        firstPageText = 'Primero'
-                                                                        lastPageText = 'Último'
-                                                                        activePage = { activePage }
-                                                                        itemsCountPerPage = { itemsPerPage }
-                                                                        totalItemsCount = { lead.prospecto.contactos.length }
-                                                                        pageRangeDisplayed = { 5 }
-                                                                        onChange={this.onChangePage.bind(this)}
-                                                                        prevPageText={<i className='ki ki-bold-arrow-back icon-xs'/>}
-                                                                        nextPageText={<i className='ki ki-bold-arrow-next icon-xs'/>}
-                                                                        linkClassPrev="btn btn-icon btn-sm btn-light-primary mr-2 my-1 pagination"
-                                                                        linkClassNext="btn btn-icon btn-sm btn-light-primary mr-2 my-1 pagination"
-                                                                        linkClass="btn btn-icon btn-sm border-0 btn-hover-primary mr-2 my-1 pagination"
-                                                                        activeLinkClass="btn btn-icon btn-sm border-0 btn-light btn-hover-primary active mr-2 my-1 pagination"
-                                                                    />
+                                                                    <Pagination itemClassLast = "d-none" itemClassFirst = "d-none" itemClass = "page-item"
+                                                                        firstPageText = 'Primero' lastPageText = 'Último' activePage = { activePage }
+                                                                        itemsCountPerPage = { itemsPerPage } totalItemsCount = { lead.prospecto.contactos.length }
+                                                                        pageRangeDisplayed = { 5 } onChange = { this.onChangePage.bind(this) }
+                                                                        prevPageText = { <i className='ki ki-bold-arrow-back icon-xs'/> }
+                                                                        nextPageText = { <i className='ki ki-bold-arrow-next icon-xs'/> }
+                                                                        linkClassPrev = "btn btn-icon btn-sm btn-light-primary mr-2 my-1 pagination"
+                                                                        linkClassNext = "btn btn-icon btn-sm btn-light-primary mr-2 my-1 pagination"
+                                                                        linkClass = "btn btn-icon btn-sm border-0 btn-hover-primary mr-2 my-1 pagination"
+                                                                        activeLinkClass = "btn btn-icon btn-sm border-0 btn-light btn-hover-primary active mr-2 my-1 pagination" />
                                                                 </div>
                                                             : ''
                                                         : ''
@@ -1711,13 +1521,9 @@ class LeadInfo extends Component {
                                                             lead.presupuesto_diseño.pdfs ?
                                                                 lead.presupuesto_diseño.pdfs.length ?
                                                                     <div>
-                                                                        <Button
-                                                                            icon=''
-                                                                            className={"btn btn-icon btn-xs w-auto p-3 btn-light-gray"}
-                                                                            onClick={() => { this.openModalPresupuesto() }}
-                                                                            only_icon={"far fa-file-pdf icon-15px mr-2"}
-                                                                            text='COTIZACIONES GENERADAS'
-                                                                        />
+                                                                        <Button icon='' className = "btn btn-icon btn-xs w-auto p-3 btn-light-gray"
+                                                                            onClick={() => { this.openModalPresupuesto() }} only_icon = "far fa-file-pdf icon-15px mr-2"
+                                                                            text = 'COTIZACIONES GENERADAS' />
                                                                     </div>
                                                                     : ''
                                                                 : ''
@@ -1727,21 +1533,12 @@ class LeadInfo extends Component {
                                             </h3>
                                         </Card.Header>
                                         <Card.Body className="pt-0">
-                                            <PresupuestoDiseñoCRMForm
-                                                options={options}
-                                                formDiseño={formDiseño}
-                                                onChange={this.onChangePresupuesto}
-                                                onChangeConceptos={this.onChangeConceptos}
-                                                checkButtonSemanas={this.checkButtonSemanas}
-                                                onChangeCheckboxes={this.handleChangeCheckbox}
-                                                onSubmit={this.onSubmitPresupuestoDiseño}
-                                                submitPDF={this.onSubmitPDF}
-                                                formeditado={formeditado}
-                                                onClickTab = { this.handleClickTab }
-                                                activeKey={activeKey}
-                                                defaultKey={defaultKey}
-                                                onChangePartidas={this.onChangePartidas}
-                                            />
+                                            <PresupuestoDiseñoCRMForm options = { options } formDiseño = { formDiseño }
+                                                onChange = { this.onChangePresupuesto } onChangeConceptos = { this.onChangeConceptos }
+                                                checkButtonSemanas = { this.checkButtonSemanas } onChangeCheckboxes = { this.handleChangeCheckbox }
+                                                onSubmit = { this.onSubmitPresupuestoDiseño } submitPDF = { this.onSubmitPDF }
+                                                formeditado = { formeditado } onClickTab = { this.handleClickTab }
+                                                activeKey = { activeKey } defaultKey = { defaultKey } onChangePartidas={this.onChangePartidas} />
                                         </Card.Body>
                                     </Tab.Pane>
                                 </Tab.Content>
@@ -1767,13 +1564,7 @@ class LeadInfo extends Component {
         )
     }
 }
-const mapStateToProps = (state) => {
-    return {
-        authUser: state.authUser
-    }
-}
 
-const mapDispatchToProps = dispatch => ({
-})
-
+const mapStateToProps = (state) => { return { authUser: state.authUser } }
+const mapDispatchToProps = dispatch => ({ })
 export default connect(mapStateToProps, mapDispatchToProps)(LeadInfo)

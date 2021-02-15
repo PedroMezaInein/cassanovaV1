@@ -6,7 +6,7 @@ import { ModalDelete, Modal, ItemSlider } from '../../../components/singles'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { URL_DEV, DOCUMENTOS_COLUMNS } from '../../../constants'
 import { setDateTable, setTextTable } from '../../../functions/setters'
-import { waitAlert, errorAlert, doneAlert, forbiddenAccessAlert, deleteAlert } from '../../../functions/alert'
+import { waitAlert, errorAlert, doneAlert, deleteAlert, printResponseErrorAlert } from '../../../functions/alert'
 import axios from 'axios'
 import { Button } from '../../../components/form-components'
 import { DocumentosCard } from '../../../components/cards'
@@ -196,15 +196,7 @@ class Documentos extends Component {
                     documento: ''
                 })
                 doneAlert('Documento eliminado con éxito')
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -244,15 +236,7 @@ class Documentos extends Component {
                 })
                 doneAlert('Adjunto creado con éxito')
                 this.getDocumentosAxios()
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -268,15 +252,7 @@ class Documentos extends Component {
                 this.setAdjuntos(documento.adjuntos)
                 doneAlert('Adjunto eliminado con éxito')
                 this.getDocumentosAxios()
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')

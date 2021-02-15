@@ -3,49 +3,6 @@ import { Card } from 'react-bootstrap'
 import { diffCommentDate } from '../../../../functions/functions';
 export default class UltimosContactosCard extends Component {
 
-    /* diffCommentDate = (contacto) => {
-        var now = new Date();
-        var then = new Date(contacto.created_at);
-        var diff = moment.duration(moment(now).diff(moment(then)));
-        var months = parseInt(moment(now).diff(moment(then), 'month'))
-        var days = parseInt(diff.asDays());
-        var hours = parseInt(diff.asHours());
-        var minutes = parseInt(diff.asMinutes());
-        if (months) {
-            if (months === 1)
-                return '1 mes'
-            else
-                return `${months} meses`
-        }
-        else {
-            if (days) {
-                if (days === 1)
-                    return '1 día'
-                else
-                    return `${days} días`
-            }
-            else {
-                if (hours) {
-                    if (hours === 1)
-                        return '1 hora'
-                    else
-                        return `${hours} horas`
-                }
-                else {
-                    if (minutes) {
-                        if (minutes === 1)
-                            return '1 minuto'
-                        else
-                            return `${minutes} minutos`
-                    }
-                    else {
-                        return 'Hace un momento'
-                    }
-                }
-            }
-        }
-    } */
-
     isActiveButton(direction){
         const { ultimos_ingresados} = this.props
         if(ultimos_ingresados.total_paginas>1){
@@ -91,8 +48,7 @@ export default class UltimosContactosCard extends Component {
                                     <div className = "timeline-item text-hover" key = { key } 
                                         onClick = { ( e ) => { e.preventDefault(); clickOneLead(contacto.id) } } >
                                         <div className="timeline-label">
-                                            {/* {this.diffCommentDate(contacto)} */}
-                                            { diffCommentDate(contacto) }
+                                            {diffCommentDate(contacto)}
                                         </div>
                                         <div className="timeline-badge"><span className="bg-primary w-50 h-50"></span></div>
                                         <div className="timeline-content text-justify">

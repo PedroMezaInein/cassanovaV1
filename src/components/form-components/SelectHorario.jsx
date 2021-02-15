@@ -1,15 +1,19 @@
 import React, { Component } from 'react'
-// import { Form } from 'react-bootstrap'
-import { SelectHoras, SelectMinutos } from '.'
+import { SelectHorasLaborales, SelectAllHours, SelectMinutos } from '.'
 
 class SelectHorario extends Component {
     render(){
 
-        const { hora, minuto, onChange, quarter } = this.props
+        const { hora, minuto, onChange, quarter, allhours} = this.props
 
         return(
             <div className="input-daterange input-group" style={{ width: "auto" }}>
-                <SelectHoras value = { hora.value } onChange = { onChange } name = { hora.name } />
+                {
+                    allhours?
+                        <SelectAllHours value = { hora.value } onChange = { onChange } name = { hora.name } />
+                    :
+                        <SelectHorasLaborales value = { hora.value } onChange = { onChange } name = { hora.name } />
+                }
                 <div className="input-group-append">
                     <span className="input-group-text py-0 px-2">
                         :

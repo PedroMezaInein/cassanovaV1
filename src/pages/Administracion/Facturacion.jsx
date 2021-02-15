@@ -6,7 +6,7 @@ import axios from 'axios'
 import { URL_DEV, FACTURAS_COLUMNS } from '../../constants'
 import { Small, B } from '../../components/texts'
 import { setTextTable, setMoneyTable, setDateTable, setOptions, setLabelTable } from '../../functions/setters'
-import { errorAlert, forbiddenAccessAlert, doneAlert, waitAlert, createAlert, questionAlertY } from '../../functions/alert'
+import { errorAlert, doneAlert, waitAlert, createAlert, questionAlertY, printResponseErrorAlert } from '../../functions/alert'
 import { Modal, ItemSlider } from '../../components/singles'
 import { Button, FileInput } from '../../components/form-components'
 import { Tabs, Tab, Form } from 'react-bootstrap'
@@ -86,15 +86,7 @@ class Facturacion extends Component {
                     ...this.state,
                     data
                 })
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -112,15 +104,7 @@ class Facturacion extends Component {
                     ...this.state,
                     data
                 })
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -229,15 +213,7 @@ class Facturacion extends Component {
                     this.getVentasAxios()
                 }
                 doneAlert('La factura fue inhabilitado con éxito.')
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -421,15 +397,7 @@ class Facturacion extends Component {
                     this.getVentasAxios()
                 }
                 doneAlert('Factura cancelada con éxito')
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -446,15 +414,7 @@ class Facturacion extends Component {
                     facturas: this.setFactura(facturasVentas),
                     data
                 })
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -503,15 +463,7 @@ class Facturacion extends Component {
                     title: 'Restante por empresa',
                     empresas: empresas
                 })        
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -745,15 +697,7 @@ class Facturacion extends Component {
                     modalFacturas: false
                 })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -788,15 +732,7 @@ class Facturacion extends Component {
                     options
                 })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -815,15 +751,7 @@ class Facturacion extends Component {
                 document.body.appendChild(link);
                 link.click();
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-            },
-            (error) => {
-                console.log(error, 'error')
-                if(error.response.status === 401){
-                    forbiddenAccessAlert()
-                }else{
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -842,15 +770,7 @@ class Facturacion extends Component {
                 document.body.appendChild(link);
                 link.click();
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-            },
-            (error) => {
-                console.log(error, 'error')
-                if(error.response.status === 401){
-                    forbiddenAccessAlert()
-                }else{
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')

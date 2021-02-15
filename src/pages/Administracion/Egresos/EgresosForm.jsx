@@ -4,7 +4,7 @@ import axios from 'axios'
 import Swal from 'sweetalert2'
 import { URL_DEV } from '../../../constants'
 import { setOptions, setSelectOptions } from '../../../functions/setters'
-import { errorAlert, waitAlert, forbiddenAccessAlert, createAlert, doneAlert, deleteAlert, errorAlertRedirectOnDissmis } from '../../../functions/alert'
+import { errorAlert, waitAlert, createAlert, doneAlert, deleteAlert, errorAlertRedirectOnDissmis, printResponseErrorAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { EgresosForm as EgresosFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
@@ -436,15 +436,7 @@ class EgresosForm extends Component {
                     data
                 })
                 Swal.close()
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -498,15 +490,7 @@ class EgresosForm extends Component {
                 history.push({
                     pathname: '/administracion/egresos'
                 });
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -553,15 +537,7 @@ class EgresosForm extends Component {
                 history.push({
                     pathname: '/administracion/egresos'
                 });
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -597,15 +573,7 @@ class EgresosForm extends Component {
                     options
                 })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
