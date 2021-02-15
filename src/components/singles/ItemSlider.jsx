@@ -85,6 +85,13 @@ class ItemSlider extends Component {
         return false
     }
 
+    isVideo = string => {
+        let aux = string.substring(string.length - 3);
+        if (aux.toUpperCase() === 'MP4')
+            return true
+        return false
+    }
+
     downloadFile = item => {
         const url = item.url;
         const link = document.createElement('a');
@@ -164,16 +171,22 @@ class ItemSlider extends Component {
                                                     :
                                                     this.isImage(items[active].name) ?
                                                         <img alt = '' className="p-2 rounded pdfview-img" src={items[active].url} style={{ width: "100", height: "100" }} />
+                                                    :
+                                                        this.isVideo(items[active].name) ?
+                                                            <video className = 'w-100' controls>
+                                                                <source src = { items[active].url } type="video/mp4" />
+                                                                Your browser does not support the video tag.
+                                                            </video>
                                                         :
-                                                        <div id="descarga" className="btn btn-hover p-2 rounded pdfview d-flex align-items-center justify-content-center mx-auto" onClick={() => { this.downloadFile(items[active]) }}>
-                                                            <div>
-                                                                <i className={"fas fa-file m-0 kt-font-boldest text-primary"}></i>
-                                                                <br />
-                                                                <Small className="text-center" color="gold">
-                                                                    Descarga
-                                                                </Small>
+                                                            <div id="descarga" className="btn btn-hover p-2 rounded pdfview d-flex align-items-center justify-content-center mx-auto" onClick={() => { this.downloadFile(items[active]) }}>
+                                                                <div>
+                                                                    <i className={"fas fa-file m-0 kt-font-boldest text-primary"}></i>
+                                                                    <br />
+                                                                    <Small className="text-center" color="gold">
+                                                                        Descarga
+                                                                    </Small>
+                                                                </div>
                                                             </div>
-                                                        </div>
                                             }
                                         </div>
                                         {
