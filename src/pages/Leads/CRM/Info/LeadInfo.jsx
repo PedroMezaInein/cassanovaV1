@@ -48,7 +48,9 @@ class LeadInfo extends Component {
                     value: '',
                     placeholder: 'Adjuntos'
                 }
-            }
+            },
+            hora: '08',
+            minuto: '00',
         },
         formAgenda: {
             fecha: new Date(),
