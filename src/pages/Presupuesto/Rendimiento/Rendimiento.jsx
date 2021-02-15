@@ -6,7 +6,7 @@ import { URL_DEV, RENDIMIENTOS_COLUMNS } from '../../../constants'
 import { setTextTable, setMoneyTable} from '../../../functions/setters'
 import Layout from '../../../components/layout/layout'
 import { ModalDelete, Modal } from '../../../components/singles'
-import { doneAlert, forbiddenAccessAlert, errorAlert, waitAlert } from '../../../functions/alert'
+import { doneAlert, printResponseErrorAlert, errorAlert, waitAlert } from '../../../functions/alert'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { RendimientoCard } from '../../../components/cards'
 const $ = require('jquery');
@@ -137,12 +137,7 @@ class Rendimientos extends Component {
                 })
             },
             (error) => {
-                console.log(error, 'error')
-                if(error.response.status === 401){
-                    forbiddenAccessAlert()
-                }else{
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')

@@ -8,11 +8,11 @@ import { URL_DEV, CLIENTES_COLUMNS, EMPTY_CLIENTE, CP_URL } from '../../constant
 import Moment from 'react-moment'
 import { Small } from '../../components/texts'
 import { Form } from 'react-bootstrap'
-import { ClienteForm, ProspectoForm} from '../../components/forms'
+import { ClienteForm } from '../../components/forms'
 import { Modal } from '../../components/singles'
 import NewTable from '../../components/tables/NewTable'
 import { setTextTable, setDateTable } from '../../functions/setters'
-import { validateAlert, doneAlert, errorAlert, forbiddenAccessAlert } from '../../functions/alert'
+import { validateAlert, doneAlert, errorAlert, printResponseErrorAlert } from '../../functions/alert'
 import { ClienteCard} from '../../components/cards'
 
 class Leads extends Component {
@@ -315,12 +315,7 @@ class Leads extends Component {
                 })
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -349,12 +344,7 @@ class Leads extends Component {
                 this.clearForm('form', EMPTY_CLIENTE)
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -383,12 +373,7 @@ class Leads extends Component {
                 this.clearForm('form', EMPTY_CLIENTE)
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -416,12 +401,7 @@ class Leads extends Component {
                 this.clearForm('form', EMPTY_CLIENTE)
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -542,9 +522,6 @@ class Leads extends Component {
                     <ClienteCard cliente={cliente} />
                 </Modal>
                 <Modal size="xl" title="Agregar prospecto" show={modalProspecto} handleClose={this.handleCloseAddProspecto} >
-                    {/* <ProspectoForm
-                    
-                    /> */}
                     Formulario prospecto
                 </Modal>
             </Layout>

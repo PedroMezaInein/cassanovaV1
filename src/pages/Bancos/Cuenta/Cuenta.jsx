@@ -1,17 +1,17 @@
-import React, { Component } from 'react';
-import { Form, Tab, Tabs } from 'react-bootstrap';
-import { renderToString } from 'react-dom/server';
-import { connect } from 'react-redux';
-import CuentaCard from '../../../components/cards/Bancos/CuentaCard';
-import { Calendar, Button } from '../../../components/form-components';
+import React, { Component } from 'react'
+import { Form, Tab, Tabs } from 'react-bootstrap'
+import { renderToString } from 'react-dom/server'
+import { connect } from 'react-redux'
+import CuentaCard from '../../../components/cards/Bancos/CuentaCard'
+import { Calendar, Button } from '../../../components/form-components'
 import Layout from '../../../components/layout/layout'
-import { ModalDelete, Modal } from '../../../components/singles';
-import ItemSlider from '../../../components/singles/ItemSlider';
-import NewTableServerRender from '../../../components/tables/NewTableServerRender';
-import TableForModals from '../../../components/tables/TableForModals';
-import { CUENTAS_COLUMNS, EDOS_CUENTAS_COLUMNS, URL_DEV } from '../../../constants';
-import { deleteAlert, doneAlert, errorAlert, forbiddenAccessAlert, waitAlert } from '../../../functions/alert';
-import { setArrayTable, setDateTable, setListTable, setMoneyTable, setTextTable, setLabelTable } from '../../../functions/setters';
+import { ModalDelete, Modal } from '../../../components/singles'
+import ItemSlider from '../../../components/singles/ItemSlider'
+import NewTableServerRender from '../../../components/tables/NewTableServerRender'
+import TableForModals from '../../../components/tables/TableForModals'
+import { CUENTAS_COLUMNS, EDOS_CUENTAS_COLUMNS, URL_DEV } from '../../../constants'
+import { deleteAlert, doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../../functions/alert'
+import { setArrayTable, setDateTable, setListTable, setMoneyTable, setTextTable, setLabelTable } from '../../../functions/setters'
 import axios from 'axios'
 const $ = require('jquery');
 class Cuenta extends Component {
@@ -307,12 +307,7 @@ class Cuenta extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Cuenta eliminada con éxito.')
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -358,12 +353,7 @@ class Cuenta extends Component {
                 doneAlert('Adjunto creado con éxito')
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -392,12 +382,7 @@ class Cuenta extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Estado de cuenta eliminado con éxito.')
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -418,12 +403,7 @@ class Cuenta extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
             },
             (error) => {
-                console.log(error, 'error')
-                if(error.response.status === 401){
-                    forbiddenAccessAlert()
-                }else{
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -444,12 +424,7 @@ class Cuenta extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
             },
             (error) => {
-                console.log(error, 'error')
-                if(error.response.status === 401){
-                    forbiddenAccessAlert()
-                }else{
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')

@@ -152,7 +152,6 @@
       "react-table": "^7.6.0",
       "react-test-renderer": "0.0.0-33c3af284",
       "react-time-picker": "^4.0.1",
-      "react-tiny-link": "^3.6.0",
       "react-toastify": "^6.0.9",
       "react-toggle-component": "^3.0.8",
       "react-tooltip": "^4.2.10",
@@ -194,8 +193,8 @@
    },
    "scripts": {
       "serve": "cp-cli build _site/react/preview/react/react-new/demo1 && serve",
-      "start": "react-scripts --max_old_space_size=8192 start -o ",
-      "build": "react-scripts --max_old_space_size=8192  build",
+      "start": "react-scripts --max_old_space_size=4096 start -o ",
+      "build": "react-scripts --max_old_space_size=4096  build",
       "test": "react-scripts test",
       "eject": "react-scripts eject",
       "lint": "eslint src",

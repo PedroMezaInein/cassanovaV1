@@ -5,12 +5,11 @@ import { URL_DEV } from '../../../constants'
 import { connect } from 'react-redux'
 import ItemSlider from '../../../components/singles/ItemSlider'
 import { Tab, Nav, Col, Row, Card, Accordion, } from 'react-bootstrap'
-import { waitAlert, questionAlert, errorAlert, forbiddenAccessAlert, doneAlert, deleteAlert} from '../../../functions/alert'
+import { waitAlert, questionAlert, errorAlert, printResponseErrorAlert, doneAlert, deleteAlert} from '../../../functions/alert'
 import { Build, NoFiles} from '../../../components/Lottie'
 import { Button, TablePagination } from '../../../components/form-components'
 import { Modal } from '../../../components/singles'
 import Swal from 'sweetalert2'
-
 class MaterialEmpresa extends Component {
 
     state = {
@@ -90,9 +89,7 @@ class MaterialEmpresa extends Component {
                 this.setState({ ...this.state, data })
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) { forbiddenAccessAlert() } 
-                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -119,9 +116,7 @@ class MaterialEmpresa extends Component {
                 this.setState({...this.state, empresa, opciones_adjuntos, submenuactive: '', menuactive: 0 })
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) { forbiddenAccessAlert() } 
-                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -150,9 +145,7 @@ class MaterialEmpresa extends Component {
                 this.setState({...this.state,modal:false,form,empresa:empresa})
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) forbiddenAccessAlert()
-                else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -171,9 +164,7 @@ class MaterialEmpresa extends Component {
                 this.setState({...this.state,empresa:empresa})
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) forbiddenAccessAlert()
-                else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')

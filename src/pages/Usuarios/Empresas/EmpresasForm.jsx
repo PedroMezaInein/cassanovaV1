@@ -5,7 +5,7 @@ import axios from 'axios'
 import { URL_DEV } from '../../../constants'
 import { EmpresaForm } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
-import { waitAlert, doneAlert, errorAlert, forbiddenAccessAlert } from '../../../functions/alert'
+import { waitAlert, doneAlert, errorAlert, printResponseErrorAlert } from '../../../functions/alert'
 
 class EmpresasForm extends Component {
 
@@ -193,12 +193,7 @@ class EmpresasForm extends Component {
                 });
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -221,12 +216,7 @@ class EmpresasForm extends Component {
                 });
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')

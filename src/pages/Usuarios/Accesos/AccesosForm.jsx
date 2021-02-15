@@ -6,7 +6,7 @@ import axios from 'axios'
 import { URL_DEV } from '../../../constants'
 import { AccesosForm as AccesosFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
-import { errorAlert, forbiddenAccessAlert, waitAlert, createAlert, questionAlert } from '../../../functions/alert'
+import { errorAlert, printResponseErrorAlert, waitAlert, createAlert, questionAlert } from '../../../functions/alert'
 import { setSelectOptions } from '../../../functions/setters'
 import { ItemSlider, Modal } from '../../../components/singles'
 import { Button } from '../../../components/form-components'
@@ -138,12 +138,7 @@ class AccesosForm extends Component {
                     ...this.state,
                     form: this.clearForm(),
                 })
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             this.setState({
@@ -218,12 +213,7 @@ class AccesosForm extends Component {
                 })
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -242,9 +232,7 @@ class AccesosForm extends Component {
                 history.push({pathname: '/usuarios/accesos'});
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) { forbiddenAccessAlert() } 
-                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -263,9 +251,7 @@ class AccesosForm extends Component {
                 history.push({pathname: '/usuarios/accesos'});
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) { forbiddenAccessAlert() } 
-                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')

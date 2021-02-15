@@ -5,7 +5,7 @@ import { Card } from 'react-bootstrap';
 import { ClienteForm } from '../../../components/forms'
 import Layout from '../../../components/layout/layout';
 import { URL_DEV, CP_URL } from '../../../constants'
-import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
+import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert } from '../../../functions/alert'
 class ClientesForm extends Component {
     state = {
         clientes: [],
@@ -107,12 +107,7 @@ class ClientesForm extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Cliente agregado con éxito.')
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -131,12 +126,7 @@ class ClientesForm extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Cliente editado con éxito.')
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')

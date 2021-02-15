@@ -1,11 +1,11 @@
-import { connect } from 'react-redux';
-import React, { Component } from 'react';
-import Layout from '../../../../components/layout/layout';
-import { Form } from 'react-bootstrap';
-import { InputGray, Button } from '../../../../components/form-components';
+import { connect } from 'react-redux'
+import React, { Component } from 'react'
+import Layout from '../../../../components/layout/layout'
+import { Form } from 'react-bootstrap'
+import { InputGray, Button } from '../../../../components/form-components'
 import axios from 'axios'
-import { doneAlert, errorAlert, forbiddenAccessAlert, validateAlert, waitAlert } from '../../../../functions/alert';
-import { URL_DEV } from '../../../../constants';
+import { doneAlert, errorAlert, printResponseErrorAlert, validateAlert, waitAlert } from '../../../../functions/alert'
+import { URL_DEV } from '../../../../constants'
 import { Modal } from '../../../../components/singles'
 import { AgendaLlamada, AgendaLlamadaUbicacion} from '../../../../components/forms'
 class LeadLlamadaCierre extends Component {
@@ -233,12 +233,8 @@ class LeadLlamadaCierre extends Component {
                     });    
                 },
                 (error) => {
-                    console.log(error, 'error')
-                    if (error.response.status === 401)
-                        forbiddenAccessAlert();
-                    else
-                        errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
+            }
             ).catch((error) => {
                 errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
                 console.log(error, 'error')

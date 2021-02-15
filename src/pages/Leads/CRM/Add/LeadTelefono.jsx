@@ -1,13 +1,13 @@
-import { connect } from 'react-redux';
-import React, { Component } from 'react';
-import Layout from '../../../../components/layout/layout';
-import { Form } from 'react-bootstrap';
-import { InputGray, SelectSearchGray, InputPhoneGray, Button } from '../../../../components/form-components';
+import { connect } from 'react-redux'
+import React, { Component } from 'react'
+import Layout from '../../../../components/layout/layout'
+import { Form } from 'react-bootstrap'
+import { InputGray, SelectSearchGray, InputPhoneGray, Button } from '../../../../components/form-components'
 import axios from 'axios'
-import { doneAlert, errorAlert, forbiddenAccessAlert, validateAlert, waitAlert, questionAlert2} from '../../../../functions/alert';
+import { doneAlert, errorAlert, printResponseErrorAlert, validateAlert, waitAlert, questionAlert2} from '../../../../functions/alert'
 import Swal from 'sweetalert2'
-import { setOptions } from '../../../../functions/setters';
-import { TEL, URL_DEV, EMAIL } from '../../../../constants';
+import { setOptions } from '../../../../functions/setters'
+import { TEL, URL_DEV, EMAIL } from '../../../../constants'
 class LeadTelefono extends Component {
     state = {
         messages: [],
@@ -155,11 +155,7 @@ class LeadTelefono extends Component {
                 })
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401)
-                    forbiddenAccessAlert();
-                else
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -185,11 +181,7 @@ class LeadTelefono extends Component {
                 });
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401)
-                    forbiddenAccessAlert();
-                else
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')

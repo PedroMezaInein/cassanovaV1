@@ -196,7 +196,9 @@ class Documentos extends Component {
                     documento: ''
                 })
                 doneAlert('Documento eliminado con éxito')
-            }, (error) => { printResponseErrorAlert(error) }
+            }, (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -236,7 +238,9 @@ class Documentos extends Component {
                 })
                 doneAlert('Adjunto creado con éxito')
                 this.getDocumentosAxios()
-            }, (error) => { printResponseErrorAlert(error) }
+            }, (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -252,7 +256,9 @@ class Documentos extends Component {
                 this.setAdjuntos(documento.adjuntos)
                 doneAlert('Adjunto eliminado con éxito')
                 this.getDocumentosAxios()
-            }, (error) => { printResponseErrorAlert(error) }
+            }, (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')

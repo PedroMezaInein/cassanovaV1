@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV, SOLICITUD_EGRESO_COLUMNS } from '../../../constants'
 import { setTextTable, setDateTable, setMoneyTable, setArrayTable } from '../../../functions/setters'
-import { errorAlert, forbiddenAccessAlert, doneAlert, waitAlert, deleteAlert, questionAlert } from '../../../functions/alert'
+import { errorAlert, printResponseErrorAlert, doneAlert, waitAlert, deleteAlert, questionAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { ModalDelete, Modal, ItemSlider } from '../../../components/singles'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
@@ -190,9 +190,7 @@ class SolicitudEgresos extends Component {
                 this.setState({ ...this.state, solicitud: solicitud })
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) { forbiddenAccessAlert() } 
-                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -210,9 +208,7 @@ class SolicitudEgresos extends Component {
                 this.setState({ ...this.state, modalDelete: false, title: 'Nueva solicitud de egreso', solicitud: '' })
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) { forbiddenAccessAlert() } 
-                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -242,9 +238,7 @@ class SolicitudEgresos extends Component {
                 this.getSolicitudesEgresoAxios()
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) { forbiddenAccessAlert() } 
-                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -280,9 +274,7 @@ class SolicitudEgresos extends Component {
                 this.getSolicitudesEgresoAxios()
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) { forbiddenAccessAlert() } 
-                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')

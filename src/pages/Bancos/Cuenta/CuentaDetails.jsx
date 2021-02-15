@@ -2,12 +2,12 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import Layout from '../../../components/layout/layout'
-import NewTable from '../../../components/tables/NewTable';
-import { DETAILS_CUENTAS, URL_DEV } from '../../../constants';
-import { renderToString } from 'react-dom/server';
+import NewTable from '../../../components/tables/NewTable'
+import { DETAILS_CUENTAS, URL_DEV } from '../../../constants'
+import { renderToString } from 'react-dom/server'
 import { setMoneyTable, setDateTable } from '../../../functions/setters'
-import { Tab, Tabs } from 'react-bootstrap';
-import { errorAlert, waitAlert, forbiddenAccessAlert } from '../../../functions/alert'
+import { Tab, Tabs } from 'react-bootstrap'
+import { errorAlert, waitAlert, printResponseErrorAlert } from '../../../functions/alert'
 import { Small } from '../../../components/texts'
 import Swal from 'sweetalert2'
 class CuentaDetails extends Component {
@@ -73,12 +73,7 @@ class CuentaDetails extends Component {
                 })
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')

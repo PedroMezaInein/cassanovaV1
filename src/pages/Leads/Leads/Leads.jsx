@@ -1,21 +1,16 @@
-// Component
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import axios from 'axios';
-import { renderToString } from 'react-dom/server';
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import axios from 'axios'
+import { renderToString } from 'react-dom/server'
 import moment from 'moment'
-
-// Custom components
-import Layout from '../../../components/layout/layout';
-import { ModalDelete } from '../../../components/singles';
-import { URL_DEV, LEADS_COLUMNS } from '../../../constants';
-import NewTableServerRender from '../../../components/tables/NewTableServerRender';
+import Layout from '../../../components/layout/layout'
+import { ModalDelete } from '../../../components/singles'
+import { URL_DEV, LEADS_COLUMNS } from '../../../constants'
+import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { Modal } from '../../../components/singles'
-import { RangeCalendar, Button } from '../../../components/form-components';
-
-// Functions
-import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert, createAlertSA2, questionAlert2} from '../../../functions/alert'
-import { setTextTable, setContactoTable, setListTable, setDateTable, setLabelTable } from '../../../functions/setters';
+import { RangeCalendar, Button } from '../../../components/form-components'
+import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert, createAlertSA2, questionAlert2} from '../../../functions/alert'
+import { setTextTable, setContactoTable, setListTable, setDateTable, setLabelTable } from '../../../functions/setters'
 import { LeadCard } from '../../../components/cards';
 import { Form } from 'react-bootstrap';
 
@@ -147,9 +142,7 @@ class Leads extends Component {
                 doneAlert('Lead rechazado.')
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) { forbiddenAccessAlert() } 
-                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -165,9 +158,7 @@ class Leads extends Component {
                 doneAlert('Lead cancelado.')
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) { forbiddenAccessAlert() } 
-                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -342,12 +333,7 @@ class Leads extends Component {
                 })
             },
             (error) => {
-                console.log(error, 'error')
-                if(error.response.status === 401){
-                    forbiddenAccessAlert()
-                }else{
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -373,12 +359,7 @@ class Leads extends Component {
 
             },
             (error) => {
-                console.log(error, 'error')
-                if(error.response.status === 401){
-                    forbiddenAccessAlert()
-                }else{
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
