@@ -178,7 +178,7 @@ class HistorialContactoForm extends Component {
                                             <div className="col-md-5">
                                                 <label className="col-form-label text-center font-weight-bolder">Hora de contacto</label>
                                                 <div className="form-group row d-flex justify-content-center">
-                                                    <SelectHorario onChange={onChange} minuto={{ value: formHistorial.minuto, name: 'minuto' }}
+                                                    <SelectHorario onChange={onChangeHistorial} minuto={{ value: formHistorial.minuto, name: 'minuto' }}
                                                         hora={{ value: formHistorial.hora, name: 'hora' }} allhours={1}/>
                                                 </div>
                                             </div>
