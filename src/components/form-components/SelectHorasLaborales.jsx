@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
 
-class SelectMinutos extends Component {
+class SelectHorasLaborales extends Component {
     render(){
 
         const { value, onChange, name } = this.props
@@ -29,4 +29,4 @@ class SelectMinutos extends Component {
     }
 }
 
-export default SelectMinutos
+export default SelectHorasLaborales

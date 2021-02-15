@@ -40,8 +40,9 @@ import tagInputGray from './Gray/TagInputGray'
 import tagSelectSearchGray from './Gray/TagSelectSearchGray'
 //TIempos
 import selectMinutos from './SelectMinutos'
-import selectHoras from './SelectHoras'
+import selectHorasLaborales from './SelectHorasLaborales'
 import selectHorario from './SelectHorario'
+import selectAllHours from './SelectAllHours'
 //Drive
 import btnBackUrl from './Drive/BtnBackUrl'
 import tablePagination from './Drive/TablePagination'
@@ -89,8 +90,9 @@ export const TagInputGray = tagInputGray
 export const TagSelectSearchGray = tagSelectSearchGray
 //Tiempos
 export const SelectMinutos = selectMinutos
-export const SelectHoras = selectHoras
+export const SelectHorasLaborales = selectHorasLaborales
 export const SelectHorario = selectHorario
+export const SelectAllHours = selectAllHours
 //Drive
 export const BtnBackUrl = btnBackUrl
 export const TablePagination = tablePagination
