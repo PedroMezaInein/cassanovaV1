@@ -585,31 +585,20 @@ class LeadInfo extends Component {
             default:
                 break;
         }
-        // defaultKey = formDiseño.acabados?"acabados":formDiseño.mobiliario?"mobiliario": formDiseño.obra_civil?"obra_civil":"vacio"
-        // activeKey = formDiseño.acabados?"acabados":formDiseño.mobiliario?"mobiliario": formDiseño.obra_civil?"obra_civil":"vacio"
         this.setState({
             ...this.state,
             formDiseño,
-            // defaultKey,
-            // activeKey,
         })
     }
     onChangePartidas = e => {
         const { name, type, value, checked } = e.target
-        const { form } = this.state
+        const { formDiseño } = this.state
         let { defaultKey, activeKey } = this.state
-        form[name] = value
-        if (type === 'checkbox'){
-            form[name] = checked
-        }
-            defaultKey = form.acabados?"acabados":form.mobiliario?"mobiliario": form.obra_civil?"obra_civil":"vacio"
-            activeKey = form.acabados?"acabados":form.mobiliario?"mobiliario": form.obra_civil?"obra_civil":"vacio"
-        this.setState({
-            ...this.state,
-            form,
-            defaultKey,
-            activeKey
-        })
+        formDiseño[name] = value
+        if (type === 'checkbox'){ formDiseño[name] = checked }
+        defaultKey = formDiseño.acabados ? "acabados" : formDiseño.mobiliario ? "mobiliario" : formDiseño.obra_civil ? "obra_civil" : "vacio"
+        activeKey = formDiseño.acabados ? "acabados" : formDiseño.mobiliario ? "mobiliario" : formDiseño.obra_civil ? "obra_civil" : "vacio"
+        this.setState({ ...this.state, formDiseño, defaultKey, activeKey })
     }
     calculateSemanas = tiempo => {
         let modulo = parseFloat(tiempo) % 5
@@ -1008,6 +997,13 @@ class LeadInfo extends Component {
                     formDiseño.acabados = lead.presupuesto_diseño.acabados_e_instalaciones
                     formDiseño.mobiliario = lead.presupuesto_diseño.mobiliario
                     formDiseño.obra_civil = lead.presupuesto_diseño.obra_civil
+                    if(lead.presupuesto_diseño.desglose){
+                        formDiseño.no_desglose = false;
+                        formDiseño.si_desglose = true;
+                    }else{
+                        formDiseño.si_desglose = false;
+                        formDiseño.no_desglose = true;
+                    }
 
                     let aux = JSON.parse(lead.presupuesto_diseño.actividades)
                     if (aux) {
