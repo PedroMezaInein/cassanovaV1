@@ -1919,7 +1919,7 @@ class Crm extends Component {
                                 <div className = "row mx-0 px-lg-2">
                                     {
                                         lead.empresa ? 
-                                            <div className="col-md-3">
+                                            <div className="col-md-3 text-truncate">
                                                 <div className="d-flex justify-content-start">
                                                     <SymbolIcon tipo = 'info' urlIcon = '/images/svg/Building.svg' />
                                                     <div>
@@ -1930,7 +1930,7 @@ class Crm extends Component {
                                             </div>
                                         : ''
                                     }
-                                    <div className="col-md-3">
+                                    <div className="col-md-3 text-truncate">
                                         <div className="d-flex justify-content-start mr-2">
                                             <SymbolIcon tipo = 'primary' urlIcon = '/images/svg/iPhone-X.svg' />
                                             <div>
@@ -1942,7 +1942,7 @@ class Crm extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-md-3">
+                                    <div className="col-md-3 text-truncate">
                                         <div className="d-flex justify-content-start mr-2">
                                             <SymbolIcon tipo = 'info' urlIcon = '/images/svg/Box1.svg' />
                                             <div>
@@ -1951,7 +1951,7 @@ class Crm extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-md-3">
+                                    <div className="col-md-3 text-truncate">
                                         <div className="d-flex justify-content-start mr-2">
                                             <SymbolIcon tipo = 'primary' urlIcon = '/images/svg/Mail.svg' />
                                             <div>
@@ -1965,7 +1965,7 @@ class Crm extends Component {
                                     </div>
                                     {
                                         lead.origen ? 
-                                            <div className="col-md-3 mt-4">
+                                            <div className="col-md-3 mt-4 text-truncate">
                                                 <div className="d-flex justify-content-start mr-2">
                                                     <SymbolIcon tipo = 'primary' urlIcon = '/images/svg/Folder-cloud.svg' />
                                                     <div>
@@ -1976,7 +1976,7 @@ class Crm extends Component {
                                             </div>
                                         : ''
                                     }
-                                    <div className="col-md-9 mt-4">
+                                    <div className="col-md-9 mt-4 text-truncate">
                                         <div className="d-flex justify-content-start mr-2">
                                             <SymbolIcon tipo = 'info' urlIcon = '/images/svg/Tools.svg' />
                                             <div>
@@ -1996,7 +1996,7 @@ class Crm extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className = 'col-md-12 mt-4'>
+                                    <div className = 'col-md-12 mt-4 text-truncate'>
                                         <div className="bg-gray-100 p-3 font-size-lg font-weight-light" >
                                             <strong >Comentario: </strong>{lead.comentario}
                                         </div>
