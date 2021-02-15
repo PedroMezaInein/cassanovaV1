@@ -345,3 +345,12 @@ export function messageAlert(text) {
         confirmButtonColor:'#B5B5C3'
     })
 }
+
+export const printResponseErrorAlert = (error) => {
+    if(error.message === 'Network Error')
+        errorAlert('Ocurrió un error en el servidor, vuelve a intentar en 5 minutos.')
+    else{
+        if (error.response.status === 401) { forbiddenAccessAlert() } 
+        else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
+    }
+}
