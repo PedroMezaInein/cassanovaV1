@@ -1,12 +1,12 @@
-import { connect } from 'react-redux';
-import React, { Component } from 'react';
-import Layout from '../../../../components/layout/layout';
-import { Card, Nav, Tab, Col, Row } from 'react-bootstrap';
+import { connect } from 'react-redux'
+import React, { Component } from 'react'
+import Layout from '../../../../components/layout/layout'
+import { Card, Nav, Tab, Col, Row } from 'react-bootstrap'
 import axios from 'axios'
-import { doneAlert, errorAlert, forbiddenAccessAlert, questionAlertY, waitAlert } from '../../../../functions/alert';
+import { doneAlert, errorAlert, printResponseErrorAlert, questionAlertY, waitAlert } from '../../../../functions/alert'
 import Swal from 'sweetalert2'
-import { setOptions } from '../../../../functions/setters';
-import { URL_DEV } from '../../../../constants';
+import { setOptions } from '../../../../functions/setters'
+import { URL_DEV } from '../../../../constants'
 import FormLlamada from '../../../../components/forms/leads/FormLlamada'
 import FormWhatsapp from '../../../../components/forms/leads/FormWhatsapp'
 import MensajePrincipal from '../../../../components/forms/leads/MensajePrincipal'
@@ -513,11 +513,7 @@ class LeadLlamadaSalida extends Component {
                 })
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401)
-                    forbiddenAccessAlert();
-                else
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -539,11 +535,7 @@ class LeadLlamadaSalida extends Component {
                 });
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401)
-                    forbiddenAccessAlert();
-                else
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -572,11 +564,7 @@ class LeadLlamadaSalida extends Component {
                 doneAlert('Contacto registrado con éxito')
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401)
-                    forbiddenAccessAlert();
-                else
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')

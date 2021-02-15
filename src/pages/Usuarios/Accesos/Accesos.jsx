@@ -2,11 +2,11 @@ import React, { Component } from 'react'
 import Layout from '../../../components/layout/layout'
 import { connect } from 'react-redux'
 import { OverlayTrigger, Tooltip, Card } from 'react-bootstrap'
-import SVG from "react-inlinesvg";
+import SVG from "react-inlinesvg"
 import { toAbsoluteUrl } from "../../../functions/routers"
-import { deleteAlert, errorAlert, forbiddenAccessAlert, waitAlert } from '../../../functions/alert';
+import { deleteAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../../functions/alert'
 import axios from 'axios'
-import { URL_DEV } from '../../../constants';
+import { URL_DEV } from '../../../constants'
 import Swal from 'sweetalert2';
 const $ = require('jquery');
 class Accesos extends Component {
@@ -41,9 +41,7 @@ class Accesos extends Component {
                 })
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) { forbiddenAccessAlert() }
-                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -59,9 +57,7 @@ class Accesos extends Component {
                 this.getAccesosAxios()
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) { forbiddenAccessAlert() }
-                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')

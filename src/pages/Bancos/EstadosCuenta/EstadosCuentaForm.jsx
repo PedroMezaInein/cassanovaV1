@@ -3,7 +3,7 @@ import Layout from '../../../components/layout/layout'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV } from '../../../constants'
-import { waitAlert, doneAlert, errorAlert, forbiddenAccessAlert, deleteAlert } from '../../../functions/alert'
+import { waitAlert, doneAlert, errorAlert, printResponseErrorAlert, deleteAlert } from '../../../functions/alert'
 import { Card } from 'react-bootstrap'
 import { EstadosCuentaForm as EstadosCuentaFormulario } from '../../../components/forms'
 import Swal from 'sweetalert2'
@@ -107,12 +107,7 @@ class EstadosCuentaForm extends Component {
                 })
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -155,12 +150,7 @@ class EstadosCuentaForm extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -183,12 +173,7 @@ class EstadosCuentaForm extends Component {
                 doneAlert('Adjunto eliminado con éxito')
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')

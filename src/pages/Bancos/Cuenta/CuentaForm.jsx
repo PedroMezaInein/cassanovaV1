@@ -1,13 +1,13 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Layout from '../../../components/layout/layout'
-import { doneAlert, errorAlert, forbiddenAccessAlert, waitAlert } from '../../../functions/alert';
+import { doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../../functions/alert'
 import axios from 'axios'
-import { URL_DEV } from '../../../constants';
-import { Card } from 'react-bootstrap';
+import { URL_DEV } from '../../../constants'
+import { Card } from 'react-bootstrap'
 import { CuentaForm as CuentaFormulario } from '../../../components/forms'
 import Swal from 'sweetalert2'
-import { setOptions, setSelectOptions } from '../../../functions/setters';
+import { setOptions, setSelectOptions } from '../../../functions/setters'
 class CuentaForm extends Component {
     state = {
         title: 'Nueva cuenta',
@@ -266,12 +266,7 @@ class CuentaForm extends Component {
                 })
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -292,12 +287,7 @@ class CuentaForm extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Cuenta agregada con éxito.')
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -316,12 +306,7 @@ class CuentaForm extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Cuenta editada con éxito.')
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')

@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { URL_DEV, PRECIO_M2_DISEÑOS_COLUMNS } from '../../../constants'
 import { ModalDelete, Modal } from '../../../components/singles'
 import axios from 'axios'
-import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
+import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert } from '../../../functions/alert'
 import { setTextTable, setMoneyTable} from '../../../functions/setters'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { PreciosDisenoCard } from '../../../components/cards'
@@ -153,12 +153,7 @@ class PrecioDiseño extends Component {
                 })
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')

@@ -6,7 +6,7 @@ import { URL_DEV } from '../../../constants'
 import { RegisterUserForm } from '../../../components/forms'
 import Swal from 'sweetalert2'
 import { setOptions, setSelectOptions } from '../../../functions/setters'
-import { forbiddenAccessAlert, errorAlert, waitAlert, doneAlert } from '../../../functions/alert'
+import { printResponseErrorAlert, errorAlert, waitAlert, doneAlert } from '../../../functions/alert'
 import { save, deleteForm } from '../../../redux/reducers/formulario'
 import { Card } from 'react-bootstrap'
 
@@ -158,12 +158,7 @@ class UsuariosForm extends Component {
                 this.showProyectos();
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -211,12 +206,7 @@ class UsuariosForm extends Component {
                 });
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -264,12 +254,7 @@ class UsuariosForm extends Component {
                 });
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')

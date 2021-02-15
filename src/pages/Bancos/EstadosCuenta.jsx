@@ -10,7 +10,7 @@ import { Small, B } from '../../components/texts'
 import { Form } from 'react-bootstrap'
 import NewTable from '../../components/tables/NewTable'
 import { renderToString } from 'react-dom/server'
-import { waitAlert, doneAlert, errorAlert, forbiddenAccessAlert } from '../../functions/alert'
+import { waitAlert, doneAlert, errorAlert, printResponseErrorAlert } from '../../functions/alert'
 import { setTextTable, setDateTable, setArrayTable } from '../../functions/setters'
 import { EstadoCuentaCard } from '../../components/cards'
 class EstadosCuenta extends Component {
@@ -231,12 +231,7 @@ class EstadosCuenta extends Component {
                 })
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -269,12 +264,7 @@ class EstadosCuenta extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Estado de cuenta agregado con éxito.')
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -299,12 +289,7 @@ class EstadosCuenta extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste el estado de cuenta')
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')

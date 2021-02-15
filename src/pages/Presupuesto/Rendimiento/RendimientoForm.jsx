@@ -1,11 +1,11 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import axios from 'axios';
-import { URL_DEV } from '../../../constants';
-import { setOptions } from '../../../functions/setters';
-import { errorAlert, forbiddenAccessAlert, waitAlert, doneAlert } from '../../../functions/alert';
-import Layout from '../../../components/layout/layout';
-import { Card } from 'react-bootstrap';
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import axios from 'axios'
+import { URL_DEV } from '../../../constants'
+import { setOptions } from '../../../functions/setters'
+import { errorAlert, printResponseErrorAlert, waitAlert, doneAlert } from '../../../functions/alert'
+import Layout from '../../../components/layout/layout'
+import { Card } from 'react-bootstrap'
 import { RendimientoForm as RendimientoFormulario } from '../../../components/forms'
 class RendimientoForm extends Component {
     state = {
@@ -159,12 +159,7 @@ class RendimientoForm extends Component {
                 })
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -201,12 +196,7 @@ class RendimientoForm extends Component {
                 });
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -243,12 +233,7 @@ class RendimientoForm extends Component {
                 });
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')

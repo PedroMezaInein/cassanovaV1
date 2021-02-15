@@ -182,7 +182,9 @@ class Flujos extends Component {
                     data
                 })
             },
-            (error) => { printResponseErrorAlert(error) }
+            (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -202,7 +204,9 @@ class Flujos extends Component {
                     data,
                     flujos: this.setFlujos(flujos)
                 })
-            }, (error) => { printResponseErrorAlert(error) }
+            }, (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')

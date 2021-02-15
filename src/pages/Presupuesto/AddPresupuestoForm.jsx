@@ -1,12 +1,12 @@
-import React, { Component } from "react";
-import { connect } from "react-redux";
-import axios from "axios";
+import React, { Component } from "react"
+import { connect } from "react-redux"
+import axios from "axios"
 import Swal from 'sweetalert2'
-import { URL_DEV } from "../../constants";
-import { setOptions } from "../../functions/setters";
-import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert } from "../../functions/alert";
-import Layout from "../../components/layout/layout";
-import { PresupuestoForm } from "../../components/forms";
+import { URL_DEV } from "../../constants"
+import { setOptions } from "../../functions/setters"
+import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert } from "../../functions/alert"
+import Layout from "../../components/layout/layout"
+import { PresupuestoForm } from "../../components/forms"
 class AddPresupuestoForm extends Component {
     state = {
         formeditado: 0,
@@ -94,17 +94,8 @@ class AddPresupuestoForm extends Component {
                     });
                 },
                 (error) => {
-                    console.log(error, "error");
-                    if (error.response.status === 401) {
-                        forbiddenAccessAlert();
-                    } else {
-                        errorAlert(
-                            error.response.data.message !== undefined
-                                ? error.response.data.message
-                                : "Ocurrió un error desconocido, intenta de nuevo."
-                        );
-                    }
-                }
+                printResponseErrorAlert(error)
+            }
             )
             .catch((error) => {
                 errorAlert("Ocurrió un error desconocido catch, intenta de nuevo.");
@@ -125,12 +116,7 @@ class AddPresupuestoForm extends Component {
                 });
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')

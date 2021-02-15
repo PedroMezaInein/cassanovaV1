@@ -8,7 +8,7 @@ import { Small } from '../../../components/texts'
 import { Modal, ModalDelete } from '../../../components/singles'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { setTextTable, setDateTable, setListTableLinkProyecto } from '../../../functions/setters'
-import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
+import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert } from '../../../functions/alert'
 import { ClienteCard } from '../../../components/cards'
 const $ = require('jquery');
 
@@ -193,12 +193,7 @@ class Leads extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Cliente eliminada con éxito.')
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')

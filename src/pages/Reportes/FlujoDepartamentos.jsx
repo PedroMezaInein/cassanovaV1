@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import axios from 'axios'
 import Swal from 'sweetalert2'
-import { connect } from 'react-redux';
-import Layout from '../../components/layout/layout';
-import { Card } from 'react-bootstrap';
+import { connect } from 'react-redux'
+import Layout from '../../components/layout/layout'
+import { Card } from 'react-bootstrap'
 import { FlujosReportes, TablaReportesDepartamento } from '../../components/forms'
 import { setOptions, setMoneyTableSinSmall} from '../../functions/setters'
-import { waitAlert, errorAlert, forbiddenAccessAlert } from '../../functions/alert'
+import { waitAlert, errorAlert, printResponseErrorAlert } from '../../functions/alert'
 import { URL_DEV } from '../../constants'
 
 class FlujoDepartamentos extends Component {
@@ -55,12 +55,7 @@ class FlujoDepartamentos extends Component {
                 })
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -111,12 +106,7 @@ class FlujoDepartamentos extends Component {
                 })
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
