@@ -4,7 +4,7 @@ import { URL_DEV } from '../../constants'
 import { ToggleButton, Button } from '../form-components'
 import { Accordion, Card } from 'react-bootstrap'
 import Form from 'react-bootstrap/Form'
-import { doneAlert, errorAlert, forbiddenAccessAlert } from '../../functions/alert'
+import { doneAlert, errorAlert, printResponseErrorAlert } from '../../functions/alert'
 class PermisosForm extends Component {
 
     state = {
@@ -136,14 +136,7 @@ class PermisosForm extends Component {
                 const { data: { modulos: grupos } } = response
                 this.setGrupos(grupos);
             },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
+            (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -166,15 +159,7 @@ class PermisosForm extends Component {
                 this.setGrupos(grupos);
                 handleClose();
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Actualizaste los permisos.',)
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
+            },(error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')

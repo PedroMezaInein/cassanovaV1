@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV } from '../../../constants'
 import { setOptions } from '../../../functions/setters'
-import { errorAlert, waitAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
+import { errorAlert, waitAlert, doneAlert, printResponseErrorAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { ContratoForm as ContratoFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
@@ -224,15 +224,7 @@ class ContratosForm extends Component {
                     ...this.state,
                     options
                 })
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -275,15 +267,7 @@ class ContratosForm extends Component {
                 history.push({
                     pathname: '/administracion/contratos'
                 });
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -300,15 +284,7 @@ class ContratosForm extends Component {
                 history.push({
                     pathname: '/administracion/contratos'
                 });
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')

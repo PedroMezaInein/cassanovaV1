@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV, FLUJOS_COLUMNS } from '../../constants'
 import { setOptions, setTextTable, setMoneyTable } from '../../functions/setters'
-import { waitAlert, errorAlert, forbiddenAccessAlert } from '../../functions/alert'
+import { waitAlert, errorAlert, printResponseErrorAlert } from '../../functions/alert'
 import Layout from '../../components/layout/layout'
 import { Card } from 'react-bootstrap'
 import { FlujosForm } from '../../components/forms'
@@ -182,14 +182,7 @@ class Flujos extends Component {
                     data
                 })
             },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
+            (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -209,15 +202,7 @@ class Flujos extends Component {
                     data,
                     flujos: this.setFlujos(flujos)
                 })
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
