@@ -8,7 +8,7 @@ import { Modal, ModalDelete } from '../../components/singles'
 import axios from 'axios'
 import { AreaCard } from '../../components/cards'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
-import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert } from '../../functions/alert'
+import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert } from '../../functions/alert'
 import { setTextTable, setListTable} from '../../functions/setters'
 import { Tabs, Tab } from 'react-bootstrap'
 
@@ -324,12 +324,7 @@ class Areas extends Component {
 
             },
             (error) => {
-                console.log(error, 'error')
-                if(error.response.status === 401){
-                    forbiddenAccessAlert()
-                }else{
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -357,12 +352,7 @@ class Areas extends Component {
 
             },
             (error) => {
-                console.log(error, 'error')
-                if(error.response.status === 401){
-                    forbiddenAccessAlert()
-                }else{
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -390,12 +380,7 @@ class Areas extends Component {
 
             },
             (error) => {
-                console.log(error, 'error')
-                if(error.response.status === 401){
-                    forbiddenAccessAlert()
-                }else{
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')

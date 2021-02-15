@@ -204,14 +204,7 @@ class Contratos extends Component {
     //                 options
     //             })
     //         },
-    //         (error) => {
-    //             console.log(error, 'error')
-    //             if (error.response.status === 401) {
-    //                 forbiddenAccessAlert()
-    //             } else {
-    //                 errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-    //             }
-    //         }
+    //         (error) => {printResponseErrorAlert(error) }
     //     ).catch((error) => {
     //         errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
     //         console.log(error, 'error')
@@ -236,7 +229,9 @@ class Contratos extends Component {
                     contrato: '',
                     modal
                 })
-            }, (error) => { printResponseErrorAlert(error) }
+            }, (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -458,7 +453,9 @@ class Contratos extends Component {
                     modal,
                     adjuntos: this.setAdjuntos(contrato.adjuntos)
                 })
-            }, (error) => { printResponseErrorAlert(error) }
+            }, (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -484,7 +481,9 @@ class Contratos extends Component {
                     modal,
                     adjuntos: this.setAdjuntos(contrato.adjuntos)
                 })
-            }, (error) => { printResponseErrorAlert(error) }
+            }, (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')

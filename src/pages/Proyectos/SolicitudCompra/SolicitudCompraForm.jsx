@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV } from '../../../constants'
 import { setOptions, setSelectOptions } from '../../../functions/setters'
-import { errorAlert, forbiddenAccessAlert, doneAlert, waitAlert } from '../../../functions/alert'
+import { errorAlert, printResponseErrorAlert, doneAlert, waitAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { SolicitudCompraForm as SolicitudCompraFormulario } from '../../../components/forms'
 import { Card, Accordion } from 'react-bootstrap'
@@ -245,12 +245,7 @@ class SolicitudCompraForm extends Component {
                 })
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -296,12 +291,7 @@ class SolicitudCompraForm extends Component {
                 });
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -345,12 +335,7 @@ class SolicitudCompraForm extends Component {
                 });
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')

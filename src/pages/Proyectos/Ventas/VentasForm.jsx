@@ -4,7 +4,7 @@ import axios from 'axios'
 import Swal from 'sweetalert2'
 import { URL_DEV } from '../../../constants'
 import { setOptions, setSelectOptions } from '../../../functions/setters'
-import { waitAlert, errorAlert, createAlert, forbiddenAccessAlert, doneAlert, errorAlertRedirectOnDissmis } from '../../../functions/alert'
+import { waitAlert, errorAlert, createAlert, printResponseErrorAlert, doneAlert, errorAlertRedirectOnDissmis } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { VentasForm as VentasFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
@@ -437,12 +437,7 @@ class Ventas extends Component {
                 })
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -495,12 +490,7 @@ class Ventas extends Component {
                 });
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -549,12 +539,7 @@ class Ventas extends Component {
                 });
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -593,12 +578,7 @@ class Ventas extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -660,12 +640,7 @@ class Ventas extends Component {
                 })
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')

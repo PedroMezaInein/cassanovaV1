@@ -1,14 +1,12 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import axios from 'axios';
-import { Card } from 'react-bootstrap';
-
-import Layout from '../../../components/layout/layout';
-import { URL_DEV } from '../../../constants';
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import axios from 'axios'
+import { Card } from 'react-bootstrap'
+import Layout from '../../../components/layout/layout'
+import { URL_DEV } from '../../../constants'
 import { LeadForm as LeadFormulario } from '../../../components/forms'
-
-import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
-import { setCheckedOptions, setSelectOptions } from '../../../functions/setters';
+import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert } from '../../../functions/alert'
+import { setCheckedOptions, setSelectOptions } from '../../../functions/setters'
 
 class LeadsForm extends Component {
 
@@ -184,12 +182,7 @@ class LeadsForm extends Component {
                 })
             },
             (error) => {
-                console.log(error, 'error')
-                if(error.response.status === 401){
-                    forbiddenAccessAlert()
-                }else{
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -209,12 +202,7 @@ class LeadsForm extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Agregaste con éxito el lead.')
             },
             (error) => {
-                console.log(error, 'error')
-                if(error.response.status === 401){
-                    forbiddenAccessAlert()
-                }else{
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -234,12 +222,7 @@ class LeadsForm extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito el lead.')
             },
             (error) => {
-                console.log(error, 'error')
-                if(error.response.status === 401){
-                    forbiddenAccessAlert()
-                }else{
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')

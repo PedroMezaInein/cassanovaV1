@@ -1,17 +1,17 @@
-import React, { Component } from 'react';
-import { renderToString } from 'react-dom/server';
-import { connect } from 'react-redux';
-import Layout from '../../../components/layout/layout';
-import { ModalDelete, Modal, ItemSlider } from '../../../components/singles';
-import NewTableServerRender from '../../../components/tables/NewTableServerRender';
-import { URL_DEV, HERRAMIENTAS_COLUMNS, UBICACIONES_HERRAMIENTAS_COLUMNS } from '../../../constants';
-import { deleteAlert, doneAlert, errorAlert, forbiddenAccessAlert, waitAlert } from '../../../functions/alert';
-import { setDateTable, setTextTable } from '../../../functions/setters';
+import React, { Component } from 'react'
+import { renderToString } from 'react-dom/server'
+import { connect } from 'react-redux'
+import Layout from '../../../components/layout/layout'
+import { ModalDelete, Modal, ItemSlider } from '../../../components/singles'
+import NewTableServerRender from '../../../components/tables/NewTableServerRender'
+import { URL_DEV, HERRAMIENTAS_COLUMNS, UBICACIONES_HERRAMIENTAS_COLUMNS } from '../../../constants'
+import { deleteAlert, doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../../functions/alert'
+import { setDateTable, setTextTable } from '../../../functions/setters'
 import axios from 'axios'
 import { Button } from '../../../components/form-components'
-import UbicacionHerramientaForm from '../../../components/forms/proyectos/UbicacionHerramientaForm';
-import { Tab, Tabs } from 'react-bootstrap';
-import TableForModals from '../../../components/tables/TableForModals';
+import UbicacionHerramientaForm from '../../../components/forms/proyectos/UbicacionHerramientaForm'
+import { Tab, Tabs } from 'react-bootstrap'
+import TableForModals from '../../../components/tables/TableForModals'
 import { HerramientaCard } from '../../../components/cards'
 const $ = require('jquery');
 class Herramienta extends Component {
@@ -292,12 +292,7 @@ class Herramienta extends Component {
                 })
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -324,12 +319,7 @@ class Herramienta extends Component {
                 })
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -363,12 +353,7 @@ class Herramienta extends Component {
                 doneAlert('Adjunto eliminado con éxito')
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -426,12 +411,7 @@ class Herramienta extends Component {
                 doneAlert('Adjunto creado con éxito')
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -463,12 +443,7 @@ class Herramienta extends Component {
                 doneAlert('Herramienta actualizada')
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')

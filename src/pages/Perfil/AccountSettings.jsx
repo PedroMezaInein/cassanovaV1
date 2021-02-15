@@ -1,10 +1,9 @@
-import React, { Component } from 'react';
+import React, { Component } from 'react'
 import Layout from '../../components/layout/layout'
-// import { Card } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV } from '../../constants'
-import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert, questionAlert} from '../../functions/alert'
+import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert, questionAlert} from '../../functions/alert'
 import { update } from '../../redux/reducers/auth_user'
 import { ChangePasswordForm } from '../../components/forms'
 import Swal from 'sweetalert2'
@@ -120,12 +119,7 @@ class AccountSettings extends Component {
 
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -150,12 +144,7 @@ class AccountSettings extends Component {
 
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -178,12 +167,7 @@ class AccountSettings extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El avatar fue actualizado con éxito.')
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -237,12 +221,7 @@ class AccountSettings extends Component {
                 doneAlert('Firma actualizada con éxito.')
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -264,9 +243,7 @@ class AccountSettings extends Component {
             },
             (error) => {
                 Swal.close()
-                console.log(error, 'error')
-                if (error.response.status === 401) forbiddenAccessAlert()
-                else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             Swal.close()

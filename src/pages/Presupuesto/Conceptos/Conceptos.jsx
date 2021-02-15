@@ -6,7 +6,7 @@ import { URL_DEV, CONCEPTOS_COLUMNS } from '../../../constants'
 import { setTextTable, setMoneyTable } from '../../../functions/setters'
 import Layout from '../../../components/layout/layout'
 import { ModalDelete, Modal } from '../../../components/singles'
-import { forbiddenAccessAlert, errorAlert, doneAlert, waitAlert } from '../../../functions/alert'
+import { printResponseErrorAlert, errorAlert, doneAlert, waitAlert } from '../../../functions/alert'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { ConceptoCard } from '../../../components/cards'
 
@@ -137,12 +137,7 @@ class Conceptos extends Component {
                 })
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -173,12 +168,7 @@ class Conceptos extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')

@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import Layout from '../../components/layout/layout';
-import { errorAlert, forbiddenAccessAlert } from '../../functions/alert';
+import Layout from '../../components/layout/layout'
+import { errorAlert, printResponseErrorAlert } from '../../functions/alert'
 import axios from 'axios'
-import { URL_DEV } from '../../constants';
-import { Card } from 'react-bootstrap';
-import { setDateTableLG } from '../../functions/setters';
-import SVG from "react-inlinesvg";
+import { URL_DEV } from '../../constants'
+import { Card } from 'react-bootstrap'
+import { setDateTableLG } from '../../functions/setters'
+import SVG from "react-inlinesvg"
 import { toAbsoluteUrl } from "../../functions/routers"
 
 class Notificaciones extends Component {
@@ -30,12 +30,7 @@ class Notificaciones extends Component {
                 })
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')

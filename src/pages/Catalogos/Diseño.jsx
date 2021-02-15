@@ -3,13 +3,13 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV } from '../../constants'
 import { setSelectOptions } from '../../functions/setters'
-import { waitAlert, errorAlert, forbiddenAccessAlert, doneAlert, questionAlert, errorAdjuntos, deleteAlertSA2Parametro, createAlertSA2Parametro } from '../../functions/alert'
+import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert, questionAlert, errorAdjuntos, deleteAlertSA2Parametro, createAlertSA2Parametro } from '../../functions/alert'
 import Layout from '../../components/layout/layout'
 import { Card, Nav, Tab } from 'react-bootstrap'
 import { DiseñoForm, ObraForm } from '../../components/forms'
 import { Button } from '../../components/form-components'
-import { Line } from 'react-chartjs-2';
-import SVG from "react-inlinesvg";
+import { Line } from 'react-chartjs-2'
+import SVG from "react-inlinesvg"
 import { toAbsoluteUrl } from "../../functions/routers"
 import InputSinText from '../../components/form-components/SinText/InputSinText'
 import Esquema3 from '../../components/draggable/Planos/Esquema3'
@@ -112,9 +112,7 @@ class Diseño extends Component {
                 this.setState({...this.state, form})
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) { forbiddenAccessAlert() } 
-                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -221,12 +219,7 @@ class Diseño extends Component {
                 })
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -329,12 +322,7 @@ class Diseño extends Component {
                 })
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -460,12 +448,7 @@ class Diseño extends Component {
 
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -484,12 +467,7 @@ class Diseño extends Component {
                 this.getDiseñoAxios()
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -514,12 +492,7 @@ class Diseño extends Component {
                 /*  */
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -850,12 +823,7 @@ class Diseño extends Component {
 
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -881,12 +849,7 @@ class Diseño extends Component {
 
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')

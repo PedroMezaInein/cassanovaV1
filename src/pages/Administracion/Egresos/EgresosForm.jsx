@@ -436,7 +436,9 @@ class EgresosForm extends Component {
                     data
                 })
                 Swal.close()
-            }, (error) => { printResponseErrorAlert(error) }
+            }, (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -490,7 +492,9 @@ class EgresosForm extends Component {
                 history.push({
                     pathname: '/administracion/egresos'
                 });
-            }, (error) => { printResponseErrorAlert(error) }
+            }, (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -537,7 +541,9 @@ class EgresosForm extends Component {
                 history.push({
                     pathname: '/administracion/egresos'
                 });
-            }, (error) => { printResponseErrorAlert(error) }
+            }, (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -573,7 +579,9 @@ class EgresosForm extends Component {
                     options
                 })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-            }, (error) => { printResponseErrorAlert(error) }
+            }, (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')

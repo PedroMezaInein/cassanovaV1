@@ -9,7 +9,7 @@ import { EMPLEADOS_COLUMNS, URL_DEV, ADJUNTOS_COLUMNS } from '../../../constants
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { AdjuntosForm } from '../../../components/forms'
 import { setOptions, setTextTable, setArrayTable, setAdjuntosList, setDateTable,setLabelTable } from '../../../functions/setters'
-import { errorAlert, waitAlert, forbiddenAccessAlert, deleteAlert, doneAlert } from '../../../functions/alert'
+import { errorAlert, waitAlert, printResponseErrorAlert, deleteAlert, doneAlert } from '../../../functions/alert'
 import { Tabs, Tab } from 'react-bootstrap'
 import TableForModals from '../../../components/tables/TableForModals'
 import { EmpleadosCard } from '../../../components/cards'
@@ -172,12 +172,7 @@ class Empleados extends Component {
                 })
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -207,12 +202,7 @@ class Empleados extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El empleado fue eliminado con éxito.')
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -438,12 +428,7 @@ class Empleados extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -474,12 +459,7 @@ class Empleados extends Component {
                 })
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')

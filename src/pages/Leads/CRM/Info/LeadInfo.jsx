@@ -1,18 +1,18 @@
-import { connect } from 'react-redux';
+import { connect } from 'react-redux'
 import React, { Component } from 'react'
 import Layout from '../../../../components/layout/layout'
 import { Col, Row, Card, Tab, Nav, Dropdown, Form } from 'react-bootstrap'
-import { Button } from '../../../../components/form-components';
+import { Button } from '../../../../components/form-components'
 import { URL_DEV } from '../../../../constants'
-import SVG from "react-inlinesvg";
+import SVG from "react-inlinesvg"
 import { toAbsoluteUrl } from "../../../../functions/routers"
-import { setOptions, setDateTableLG, setContactoIcon } from '../../../../functions/setters';
+import { setOptions, setDateTableLG, setContactoIcon } from '../../../../functions/setters'
 import axios from 'axios'
-import { doneAlert, errorAlert, forbiddenAccessAlert, waitAlert, questionAlert2, questionAlert, deleteAlert, printResponseErrorAlert } from '../../../../functions/alert';
+import { doneAlert, errorAlert, waitAlert, questionAlert2, questionAlert, deleteAlert, printResponseErrorAlert } from '../../../../functions/alert'
 import Swal from 'sweetalert2'
 import { HistorialContactoForm, AgendarCitaForm, PresupuestoDiseñoCRMForm, PresupuestoGenerado,InformacionGeneral} from '../../../../components/forms'
 import { Modal } from '../../../../components/singles'
-import Pagination from "react-js-pagination";
+import Pagination from "react-js-pagination"
 const $ = require('jquery');
 class LeadInfo extends Component {
     state = {
@@ -282,7 +282,9 @@ class LeadInfo extends Component {
                 ], 'name', 'value')
                 this.setState({ ...this.state, options })
             },
-            (error) => { printResponseErrorAlert(error) }
+            (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -339,7 +341,9 @@ class LeadInfo extends Component {
                 formDiseño.partidasObra = this.setOptionsCheckboxes(auxPartidasObra, true)
                 this.setState({ ...this.state, data, formDiseño })
             },
-            (error) => { printResponseErrorAlert(error) }
+            (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -385,7 +389,9 @@ class LeadInfo extends Component {
                 const { history } = this.props
                 history.push({ pathname: '/leads/crm/info/info', state: { lead: lead } });
             },
-            (error) => { printResponseErrorAlert(error) }
+            (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -414,7 +420,9 @@ class LeadInfo extends Component {
                 doneAlert('Evento generado con éxito')
                 this.getOneLead(lead)
             },
-            (error) => { printResponseErrorAlert(error) }
+            (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -546,7 +554,9 @@ class LeadInfo extends Component {
                 this.setState({ ...this.state, lead: lead, form, formDiseño, options })
                 history.push({ state: { lead: lead } })
             },
-            (error) => { printResponseErrorAlert(error) }
+            (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -564,7 +574,9 @@ class LeadInfo extends Component {
                 history.push('/leads/crm')
                 doneAlert('El estatus fue actualizado con éxito.')
             },
-            (error) => { printResponseErrorAlert(error) }
+            (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -581,7 +593,9 @@ class LeadInfo extends Component {
                 history.push('/leads/crm')
                 doneAlert('El estatus fue actualizado con éxito.')
             },
-            (error) => { printResponseErrorAlert(error) }
+            (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -597,7 +611,9 @@ class LeadInfo extends Component {
                 doneAlert('Registro eliminado con éxito.');
                 this.getOneLead(lead)
             },
-            (error) => { printResponseErrorAlert(error) }
+            (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -613,7 +629,9 @@ class LeadInfo extends Component {
                 doneAlert('Correo enviado con éxito');
                 this.getOneLead(lead)
             },
-            (error) => { printResponseErrorAlert(error) }
+            (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -631,7 +649,9 @@ class LeadInfo extends Component {
                 doneAlert('Correo enviado con éxito')
                 history.push({ pathname: '/leads/crm' });
             },
-            (error) => { printResponseErrorAlert(error) }
+            (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -647,7 +667,9 @@ class LeadInfo extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito el lead.')
                 this.getOneLead(lead)
             },
-            (error) => { printResponseErrorAlert(error) }
+            (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -679,7 +701,9 @@ class LeadInfo extends Component {
                     doneAlert('Presupuesto generado con éxito')
                 this.getOneLead(lead)
             },
-            (error) => { printResponseErrorAlert(error) }
+            (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')

@@ -2,8 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV} from '../../../constants'
-// import { setOptions} from '../../../functions/setters'
-import { errorAlert, forbiddenAccessAlert, doneAlert } from '../../../functions/alert'
+import { errorAlert, printResponseErrorAlert, doneAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { PrecioDiseñoForm as Formulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
@@ -120,12 +119,7 @@ class PrecioDiseñoForm extends Component{
                 });
             },
             (error) => {
-                console.log(error, 'error')
-                if(error.response.status === 401){
-                    forbiddenAccessAlert()
-                }else{
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -147,12 +141,7 @@ class PrecioDiseñoForm extends Component{
                 });
             },
             (error) => {
-                console.log(error, 'error')
-                if(error.response.status === 401){
-                    forbiddenAccessAlert()
-                }else{
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
