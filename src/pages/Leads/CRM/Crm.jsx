@@ -144,7 +144,9 @@ class Crm extends Component {
                     value: '',
                     placeholder: 'Adjuntos'
                 }
-            }
+            },
+            hora: '08',
+            minuto: '00',
         },
         modal_agendar: false,
         modal_editar: false,

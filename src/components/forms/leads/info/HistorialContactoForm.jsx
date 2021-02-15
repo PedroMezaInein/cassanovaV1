@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { RadioGroupGray, InputGray, SelectSearchGray, CalendarDay, Button} from '../../../form-components'
+import { RadioGroupGray, InputGray, SelectSearchGray, CalendarDay, Button, SelectHorario} from '../../../form-components'
 import { ItemSlider } from '../../../../components/singles'
 import { openWizard1_for2_wizard, openWizard2_for2_wizard } from '../../../../functions/wizard'
 import { validateAlert } from '../../../../functions/alert'
@@ -164,24 +164,25 @@ class HistorialContactoForm extends Component {
                                         />
                                     </div>
                                     <div className="col-md-6 text-center align-self-center">
-                                        {/* <Calendar
-                                            formeditado={formeditado}
-                                            onChangeCalendar={this.handleChangeDate}
-                                            placeholder="FECHA DE CONTACTO"
-                                            name="fechaContacto"
-                                            value={formHistorial.fechaContacto}
-                                            patterns={DATE}
-                                        /> */}
                                         <div className="d-flex justify-content-center" style={{ height: '1px' }}>
                                             <label className="text-center font-weight-bolder">Fecha de contacto</label>
                                         </div>
                                         <CalendarDay
-                                            date = { formHistorial.fechaContacto }
-                                            value = {formHistorial.fechaContacto} 
-                                            onChange = { onChangeHistorial } 
-                                            name = 'fechaContacto'
+                                            date={formHistorial.fechaContacto}
+                                            value={formHistorial.fechaContacto}
+                                            onChange={onChangeHistorial}
+                                            name='fechaContacto'
                                             withformgroup={1}
                                         />
+                                        <div className="d-flex justify-content-center">
+                                            <div className="col-md-5">
+                                                <label className="col-form-label text-center font-weight-bolder">Hora de contacto</label>
+                                                <div className="form-group row d-flex justify-content-center">
+                                                    <SelectHorario onChange={onChangeHistorial} minuto={{ value: formHistorial.minuto, name: 'minuto' }}
+                                                        hora={{ value: formHistorial.hora, name: 'hora' }} allhours={1}/>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                                 <div className="border-bottom mt-3 py-3">

@@ -4,7 +4,7 @@ import Layout from '../components/layout/layout'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV, URL_ASSETS, TICKETS_ESTATUS } from '../constants'
-import { forbiddenAccessAlert, errorAlert, waitAlert, doneAlert, questionAlert } from '../functions/alert'
+import { errorAlert, waitAlert, doneAlert, questionAlert, printResponseErrorAlert } from '../functions/alert'
 import { SelectSearch, SelectSearchGray, Input } from '../components/form-components'
 import { setOptions, setLabelTable } from '../functions/setters'
 import { Card, Nav, Tab, Col, Row, NavDropdown, Navbar } from 'react-bootstrap'
@@ -437,15 +437,7 @@ class MiProyecto extends Component {
                     form: this.clearForm()
                 })
 
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -466,15 +458,7 @@ class MiProyecto extends Component {
                 link.setAttribute('download', proyecto.nombre + '.zip');
                 document.body.appendChild(link);
                 link.click();
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -542,15 +526,7 @@ class MiProyecto extends Component {
                     ...this.state,
                     form: this.clearForm()
                 })
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -722,15 +698,7 @@ class MiProyecto extends Component {
                     doneAlert('El ticket fue actualizado con éxito.')
                     this.getMiProyectoAxios()
                 }
-            },
-            (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
