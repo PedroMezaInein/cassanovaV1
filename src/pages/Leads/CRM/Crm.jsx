@@ -1234,12 +1234,7 @@ class Crm extends Component {
         formEditar.email = lead.email!==null?lead.email:''
         formEditar.telefono = lead.telefono
         formEditar.fecha = new Date(lead.created_at)
-        this.setState({
-            ...this.state,
-            modal_editar: true,
-            lead: lead,
-            formEditar
-        })
+        this.setState({...this.state, modal_editar: true, lead: lead, formEditar, formeditado: true})
     }
 
     handleCloseModalEditar = () => {
@@ -1404,14 +1399,6 @@ class Crm extends Component {
         history.push({
             pathname: '/leads/crm/info/info',
             state: { lead: lead, tipo: 'Detenido' }
-        });
-    }
-
-    changePageDetailsRP = (lead) => {
-        const { history } = this.props
-        history.push({
-            pathname: '/leads/crm/info/info',
-            state: { lead: lead, tipo: 'RP' }
         });
     }
 
@@ -1775,12 +1762,9 @@ class Crm extends Component {
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="rp">
-                                        <LeadRP
-                                            leads={leads_rp}
-                                            onClickNext={this.nextPageLeadRP}
-                                            onClickPrev={this.prevPageLeadRP}
-                                            changePageDetails={this.changePageDetailsRP}
-                                        />
+                                        <LeadRP leads = { leads_rp } onClickNext = { this.nextPageLeadRP }
+                                            onClickPrev = { this.prevPageLeadRP } openModalHistorial = { this.openModalHistorial } 
+                                            openModalEditar = { this.openModalEditar } />
                                     </Tab.Pane>
                                 </Tab.Content>
                             </div>
@@ -2107,13 +2091,6 @@ class Crm extends Component {
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        authUser: state.authUser
-    }
-}
-
-const mapDispatchToProps = dispatch => ({
-})
-
+const mapStateToProps = (state) => { return { authUser: state.authUser } }
+const mapDispatchToProps = dispatch => ({ })
 export default connect(mapStateToProps, mapDispatchToProps)(Crm)

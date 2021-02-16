@@ -21,7 +21,7 @@ class LeadRP extends Component {
         return false;
     }
     render() {
-        const { leads, onClickNext, onClickPrev, changePageDetails } = this.props
+        const { leads, onClickNext, onClickPrev, openModalHistorial, openModalEditar } = this.props
         return (
             <div className="tab-content">
                 <div className="table-responsive-lg">
@@ -128,9 +128,15 @@ class LeadRP extends Component {
                                                     }
                                                 </td> */}
                                                 <td className="pr-0 text-center">
-                                                    <OverlayTrigger overlay={<Tooltip>VER MÁS</Tooltip>}>
-                                                        <span onClick={(e) => { changePageDetails(lead) }} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-orange">
-                                                            <i className="flaticon2-plus icon-nm"></i>
+                                                    <OverlayTrigger overlay={<Tooltip>EDITAR INFORMACIÓN GENERAL</Tooltip>}>
+                                                        <span onClick={(e) => { openModalEditar(lead) }}
+                                                            className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-info" id="info-general">
+                                                            <i className="fas fa-edit icon-nm"></i>
+                                                        </span>
+                                                    </OverlayTrigger>
+                                                    <OverlayTrigger overlay={<Tooltip>HSITORIAL DE CONTACTO</Tooltip>}>
+                                                        <span onClick={(e) => { openModalHistorial(lead) }} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-orange">
+                                                            <i className="fas fa-clipboard-list icon-nm"></i>
                                                         </span>
                                                     </OverlayTrigger>
                                                 </td>
