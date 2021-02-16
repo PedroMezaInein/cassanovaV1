@@ -1141,7 +1141,7 @@ class Diseño extends Component {
                                                             </Card.Header>
                                                             <Card.Body className='py-0 px-3' style={{border:"3px solid #F3F6F9"}}>
                                                                 <div className="pt-2">
-                                                                    <Esquema3 planos = { form.esquema_3 } reorderPlanos = { this.reorderPlanos } />
+                                                                    <Esquema3 planos = { form.esquema_3 } reorderPlanos = { this.reorderPlanos } deletePlano = { this.deletePlano } />
                                                                     <div className = 'row mx-0 py-2'>
                                                                         <div className = 'col-5 w-100 align-self-center text-justify'>
                                                                             <InputSinText name = 'tipo' placeholder = 'TIPO' requireValidation = { 1 }
