@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { setDateTableLG } from '../../../functions/setters'
 
-class LeadNoContratado extends Component {
+class LeadRP extends Component {
     isActiveButton(direction) {
         const { leads } = this.props
         if (leads.total_paginas > 1) {
@@ -28,19 +28,19 @@ class LeadNoContratado extends Component {
                     <table className="table table-borderless table-vertical-center">
                         <thead>
                             <tr>
-                                <th colSpan="7" className = 'text-danger p-2 text-center text-uppercase'>
-                                    LEADS CANCELADOS/RECHAZADOS
+                                <th colSpan="7" className = 'text-orange p-2 text-center text-uppercase'>
+                                    LEADS RELACIONES PÚBLICAS
                                 </th>
                             </tr>
-                            <tr className="text-uppercase bg-danger-o-30 text-danger">
+                            <tr className="text-uppercase bg-light-orange text-orange">
                                 <th style={{ minWidth: "100px" }} className="pl-7">
                                     <span>Nombre del cliente</span>
                                 </th>
                                 <th style={{ minWidth: "140px" }}>Fecha</th>
                                 <th style={{ minWidth: "100px" }}>Origen</th>
-                                <th style={{ minWidth: "100px" }} className="text-center">Motivo</th>
+                                {/* <th style={{ minWidth: "100px" }} className="text-center">Motivo</th> */}
                                 <th style={{ minWidth: "120px" }} className="text-center">Empresa</th>
-                                <th style={{ minWidth: "100px" }} className="text-center">Estatus</th>
+                                {/* <th style={{ minWidth: "100px" }} className="text-center">Estatus</th> */}
                                 <th style={{ minWidth: "70px" }}></th>
                             </tr>
                         </thead>
@@ -98,11 +98,11 @@ class LeadNoContratado extends Component {
                                                             : ''
                                                     }
                                                 </td>
-                                                <td className="text-justify">
+                                                {/* <td className="text-justify">
                                                     <span className="text-muted font-weight-bold font-size-sm">
                                                         {lead.motivo}
                                                     </span>
-                                                </td>
+                                                </td> */}
                                                 <td className="text-center">
                                                     {
                                                         lead.empresa.isotipos.length > 0 ?
@@ -120,16 +120,16 @@ class LeadNoContratado extends Component {
                                                             : <span className="text-dark-75 font-weight-bolder">{lead.empresa.name}</span>
                                                     }
                                                 </td>
-                                                <td className="text-center">
+                                                {/* <td className="text-center">
                                                     {
                                                         lead.estatus ?
                                                             <span className="label label-md label-light-danger label-inline font-weight-bold" style={{fontSize: '10.7px'}}>{lead.estatus.estatus.toUpperCase()}</span>
                                                             : ''
                                                     }
-                                                </td>
+                                                </td> */}
                                                 <td className="pr-0 text-center">
                                                     <OverlayTrigger overlay={<Tooltip>VER MÁS</Tooltip>}>
-                                                        <span onClick={(e) => { changePageDetails(lead) }} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-danger">
+                                                        <span onClick={(e) => { changePageDetails(lead) }} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-orange">
                                                             <i className="flaticon2-plus icon-nm"></i>
                                                         </span>
                                                     </OverlayTrigger>
@@ -166,4 +166,4 @@ class LeadNoContratado extends Component {
         )
     }
 }
-export default LeadNoContratado
+export default LeadRP
