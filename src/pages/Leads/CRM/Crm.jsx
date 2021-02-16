@@ -407,8 +407,8 @@ class Crm extends Component {
         }
     }
 
-    /* ANCHOR CRM ELIMINAR CONTACTO */
-    async eliminarContacto(contacto){
+    /* ---------------------- ANCHOR CRM ELIMINAR CONTACTO ---------------------- */
+    eliminarContacto = async (contacto) => {
         const { access_token } = this.props.authUser
         const { lead } = this.state
         await axios.delete(URL_DEV + 'crm/prospecto/' + lead.id + '/contacto/' + contacto.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -423,17 +423,15 @@ class Crm extends Component {
                     this.getLeadsWeb()
                 }, 1500);
             },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
 
-    /* ANCHOR CRM GET ALL OPTIONS */
-    async getOptionsAxios() {
+    /* ----------------------- ANCHOR CRM GET ALL OPTIONS ----------------------- */
+    getOptionsAxios = async () => {
         waitAlert()
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'crm/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
@@ -457,17 +455,15 @@ class Crm extends Component {
                     options
                 })
             },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
     
-    /* ANCHOR CRM TIMELINE GET ULTIMOS LEADS INGRESADOS */
-    async getUltimosContactos() {
+    /* ------------ ANCHOR CRM TIMELINE GET ULTIMOS LEADS INGRESADOS ------------ */
+    getUltimosContactos = async () => {
         const { access_token } = this.props.authUser
         const { ultimos_contactados } = this.state
         await axios.get(URL_DEV + 'crm/timeline/ultimos-contactos/' + ultimos_contactados.numPage, { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -483,17 +479,15 @@ class Crm extends Component {
                     ultimos_contactados
                 })
             },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
 
-    /* ANCHOR CRM TIMELINE GET ULTIMOS LEADS SIN CONTACTO */
-    async getSinContactar() {
+    /* ----------- ANCHOR CRM TIMELINE GET ULTIMOS LEADS SIN CONTACTO ----------- */
+    getSinContactar = async () => {
         const { access_token } = this.props.authUser
         const { prospectos_sin_contactar } = this.state
         await axios.get(URL_DEV + 'crm/timeline/ultimos-prospectos-sin-contactar/' + prospectos_sin_contactar.numPage, { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -509,17 +503,15 @@ class Crm extends Component {
                     prospectos_sin_contactar
                 })
             },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
 
-    /* ANCHOR CRM TIMELINE GET ULTIMOS LEADS INGRESADOS */
-    async getUltimosIngresados() {
+    /* ------------ ANCHOR CRM TIMELINE GET ULTIMOS LEADS INGRESADOS ------------ */
+    getUltimosIngresados = async () => {
         const { access_token } = this.props.authUser
         const { ultimos_ingresados } = this.state
         await axios.get(URL_DEV + 'crm/timeline/ultimos-leads-ingresados/' + ultimos_ingresados.numPage, { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -535,17 +527,15 @@ class Crm extends Component {
                     ultimos_ingresados
                 })
             },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
 
-    /* ANCHOR CRM TABLE PUT LEADS RRHH PROVEEDOR */
-    async getLeadsRhProveedores() {
+    /* ---------------- ANCHOR CRM TABLE PUT LEADS RRHH PROVEEDOR --------------- */
+    getLeadsRhProveedores = async () => {
         waitAlert()
         const { access_token } = this.props.authUser
         const { lead_rh_proveedores, form } = this.state
@@ -564,17 +554,15 @@ class Crm extends Component {
                     lead_rh_proveedores
                 })
             },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
 
-    /* ANCHOR CRM TABLE PUT LEADS DE PÁGINAS WEB */
-    async getLeadsWeb() {
+    /* ---------------- ANCHOR CRM TABLE PUT LEADS DE PÁGINAS WEB --------------- */
+    getLeadsWeb = async () => {
         waitAlert()
         const { access_token } = this.props.authUser
         const { lead_web, form } = this.state
@@ -593,17 +581,15 @@ class Crm extends Component {
                     lead_web
                 })
             },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
 
-    /* ANCHOR CRM TABLE PUT LEADS EN NEGOCIACIÓN */
-    async getLeadsEnNegociacion() {
+    /* ---------------- ANCHOR CRM TABLE PUT LEADS EN NEGOCIACIÓN --------------- */
+    getLeadsEnNegociacion = async () => {
         waitAlert()
         const { access_token } = this.props.authUser
         const { leads_en_negociacion, form } = this.state
@@ -622,17 +608,15 @@ class Crm extends Component {
                     leads_en_negociacion
                 })
             },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
 
-    /* ANCHOR CRM TABLE PUT LEADS EN CONTACTO */
-    async getLeadsEnContacto() {
+    /* ----------------- ANCHOR CRM TABLE PUT LEADS EN CONTACTO ----------------- */
+    getLeadsEnContacto = async () => {
         waitAlert()
         const { access_token } = this.props.authUser
         const { leads_en_contacto, form } = this.state
@@ -660,8 +644,8 @@ class Crm extends Component {
         })
     }
 
-    /* ANCHOR CRM TABLE PUT LEADS CANCELADOS */
-    async getLeadsCancelados() {
+    /* ------------------ ANCHOR CRM TABLE PUT LEADS CANCELADOS ----------------- */
+    getLeadsCancelados = async () => {
         waitAlert()
         const { access_token } = this.props.authUser
         const { leads_cancelados, form } = this.state
@@ -680,17 +664,15 @@ class Crm extends Component {
                     leads_cancelados
                 })
             },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
 
-    /* ANCHOR CRM TABLE PUT LEADS CONTRATADOS */
-    async getLeadsContratados() {
+    /* ----------------- ANCHOR CRM TABLE PUT LEADS CONTRATADOS ----------------- */
+    getLeadsContratados = async () => {
         waitAlert()
         const { access_token } = this.props.authUser
         const { leads_contratados, form } = this.state
@@ -708,18 +690,16 @@ class Crm extends Component {
                     ...this.state,
                     leads_contratados
                 })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, 
+            (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
 
-    /* ANCHOR CRM TABLE PUT LEADS DETENIDOS */
-    async getLeadsDetenidos() {
+    /* ------------------ ANCHOR CRM TABLE PUT LEADS DETENIDOS ------------------ */
+    getLeadsDetenidos = async () => {
         waitAlert()
         const { access_token } = this.props.authUser
         const { leads_detenidos, form } = this.state
@@ -738,16 +718,14 @@ class Crm extends Component {
                     leads_detenidos
                 })
             },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
 
-    /* ANCHOR CRM SOLICITAR LLAMADA */
+    /* ---------------------- ANCHOR CRM SOLICITAR LLAMADA ---------------------- */
     sendEmailNewWebLead = async lead => {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -759,16 +737,14 @@ class Crm extends Component {
                 doneAlert('Correo enviado con éxito');
                 this.getLeadsWeb()
             },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
 
-    /* ANCHOR CRM CONFIRMAR RECEPCIÓN DE DATOS */
+    /* ----------------- ANCHOR CRM CONFIRMAR RECEPCIÓN DE DATOS ---------------- */
     sendEmailLeadNegociacion = async lead => {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -789,7 +765,7 @@ class Crm extends Component {
         })
     }
 
-    /* ANCHOR CRM AGENDAR LLAMADA */
+    /* ----------------------- ANCHOR CRM AGENDAR LLAMADA ----------------------- */
     agendarLlamada = async () => {
         const { lead, form } = this.state
         waitAlert()
@@ -811,17 +787,15 @@ class Crm extends Component {
                 doneAlert('Evento generado con éxito');
                 this.getLeadsWeb()
             },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
 
-    /* ANCHOR LEAD PUT CAMBIO DE ESTATUS */
-    async changeEstatusAxios(data) {
+    /* -------------------- ANCHOR LEAD PUT CAMBIO DE ESTATUS ------------------- */
+    changeEstatusAxios = async (data) => {
         waitAlert()
         const { access_token } = this.props.authUser
         await axios.put(URL_DEV + 'crm/lead/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -830,41 +804,32 @@ class Crm extends Component {
                 this.changeActiveTable(activeTable)
                 doneAlert('El estatus fue actualizado con éxito.')
             },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
 
-    /* ANCHOR CRM PUT CAMBIO DE ORIGEN */
-    async changeOrigenAxios(data) {
-
+    /* --------------------- ANCHOR CRM PUT CAMBIO DE ORIGEN -------------------- */
+    changeOrigenAxios = async (data) => {
         waitAlert()
-
         const { access_token } = this.props.authUser
-
         await axios.put(URL_DEV + 'crm/lead/origen/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-
                 const { activeTable } = this.state
                 this.changeActiveTable(activeTable)
                 doneAlert('El origen fue actualizado con éxito.')
-
             },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
 
-    /* ANCHOR CRM PUT CAMBIO DE ESTATUS CANCELADO Y RECHAZADO */
-    async changeEstatusCanceladoRechazadoAxios(data) {
+    /* --------- ANCHOR CRM PUT CAMBIO DE ESTATUS CANCELADO Y RECHAZADO --------- */
+    changeEstatusCanceladoRechazadoAxios = async (data) => {
         const { access_token } = this.props.authUser
         if(document.getElementById('motivo'))
             data.motivo = document.getElementById('motivo').value
@@ -878,17 +843,15 @@ class Crm extends Component {
                 this.changeActiveTable(activeTable)
                 doneAlert('El estatus fue actualizado con éxito.')
             },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
 
-    /* ANCHOR CRM UPDATE INFO LEAD */
-    async addLeadInfoAxios() {
+    /* ----------------------- ANCHOR CRM UPDATE INFO LEAD ---------------------- */
+    addLeadInfoAxios = async () => {
         const { access_token } = this.props.authUser
         const { formEditar, lead } = this.state
         await axios.put(URL_DEV + 'crm/update/lead-en-contacto/' + lead.id, formEditar, { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -922,23 +885,17 @@ class Crm extends Component {
                         break;
                     default: break;
                 }
-                this.setState({
-                    ...this.state,
-                    modal_editar: false,
-                    formEditar
-                })
+                this.setState({...this.state, modal_editar: false, formEditar })
             },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
 
-    /* ANCHOR CRM AGREGAR CONTACTO DE LEAD */
-    async agregarContacto() {
+    /* ------------------- ANCHOR CRM AGREGAR CONTACTO DE LEAD ------------------ */
+    agregarContacto = async () => {
         waitAlert()
         const { lead, formHistorial } = this.state
         const { access_token } = this.props.authUser
@@ -974,24 +931,18 @@ class Crm extends Component {
                 this.getSinContactar()
                 this.getUltimosContactos()
                 const { lead } = response.data
-                this.setState({
-                    ...this.state,
-                    formHistorial: this.clearForm(),
-                    lead: lead
-                })
+                this.setState({...this.state, formHistorial: this.clearForm(), lead: lead })
                 doneAlert('Historial actualizado con éxito');
                 this.getLeadsWeb()
             },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
 
-    /* ANCHOR CRM GET ONE LEAD ALL INFO */
+    /* -------------------- ANCHOR CRM GET ONE LEAD ALL INFO -------------------- */
     getOneLeadInfoAxios = async( lead ) => {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -1013,6 +964,70 @@ class Crm extends Component {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
+    }
+
+    /* -------------------- ANCHOR CRM DELETE LEAD DUPLICADO -------------------- */
+    deleteDuplicadoAxios = async (lead) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.delete(`${URL_DEV}crm/lead/duplicado/${lead.id}`, { headers: { 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { activeTable } = this.state
+                this.getUltimosIngresados()
+                this.getSinContactar()
+                this.getUltimosContactos()
+                this.refreshActualTable( activeTable )
+                doneAlert('Lead eliminado con éxito')
+            },
+            (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    /* -------------------- ANCHOR CRM UPDATE LEAD SET RR.PP -------------------- */
+    moveToRelacionesPublicasAxios = async ( lead ) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.put(`${URL_DEV}crm/lead/relaciones-publicas/${lead.id}`, {}, { headers: { 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { activeTable } = this.state
+                this.refreshActualTable( activeTable )
+                doneAlert('Contacto en relaciones públicas generado con éxito.')
+            },
+            (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    refreshActualTable = (activeTable) => {
+        switch (activeTable) {
+            case 'rh-proveedores':
+                this.getLeadsRhProveedores();
+                break;
+            case 'web':
+                this.getLeadsWeb();
+                break;
+            case 'contacto':
+                this.getLeadsEnContacto();
+                break;
+            case 'contratados':
+                this.getLeadsContratados();
+                break;
+            case 'cancelados':
+                this.getLeadsCancelados();
+                break;
+            case 'detenidos':
+                this.getLeadsDetenidos();
+                break;
+            case 'negociacion':
+                this.getLeadsEnNegociacion();
+                break;
+            default: break;
+        }
     }
 
     onChange = e => {
@@ -1620,19 +1635,12 @@ class Crm extends Component {
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="web">
-                                        <LeadNuevo
-                                            leads={lead_web}
-                                            onClickNext={this.nextPageLeadWeb}
-                                            onClickPrev={this.prevPageLeadWeb}
-                                            sendEmail={this.sendEmailNewWebLead}
-                                            openModal={this.openModal}
-                                            openModalWithInput={this.openModalWithInput}
-                                            changePageLlamadaSalida={this.changePageLlamadaSalida}
-                                            options={options}
-                                            changeOrigen={this.changeOrigen}
-                                            openModalEditar={this.openModalEditar}
-                                            openModalHistorial={this.openModalHistorial}
-                                        />
+                                        <LeadNuevo leads = { lead_web } onClickNext = { this.nextPageLeadWeb } onClickPrev = { this.prevPageLeadWeb } 
+                                            openModal = { this.openModal } sendEmail = { this.sendEmailNewWebLead } 
+                                            openModalWithInput = { this.openModalWithInput } changePageLlamadaSalida = { this.changePageLlamadaSalida }
+                                            options = { options } changeOrigen = { this.changeOrigen } deleteDuplicado = { this.deleteDuplicadoAxios }
+                                            openModalEditar = { this.openModalEditar } openModalHistorial = { this.openModalHistorial } 
+                                            moveToRelacionesPublicas = { this.moveToRelacionesPublicasAxios } />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="contacto">
                                         <LeadContacto
