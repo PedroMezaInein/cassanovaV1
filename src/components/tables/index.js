@@ -9,6 +9,7 @@ import leadContrato from './Lead/LeadContrato'
 import leadNoContratado from './Lead/LeadNoContratado'
 import leadDetenido from './Lead/LeadDetenido'
 import leadRhProveedor from './Lead/LeadRhProveedor'
+import leadRP from './Lead/LeadRP'
 
 export const EmpresasTable = empresasTable
 export const LeadsTable = leadsTable
@@ -21,3 +22,4 @@ export const LeadContrato = leadContrato
 export const LeadNoContratado = leadNoContratado
 export const LeadDetenido = leadDetenido
 export const LeadRhProveedor = leadRhProveedor
+export const LeadRP = leadRP

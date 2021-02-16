@@ -25,6 +25,11 @@ class FlujosReportesForm extends Component {
         onChange({ target: { value: value, name: 'rango' } })
     }
 
+    updatePeriodo = value => {
+        const { onChange } = this.props
+        onChange({ target: { value: value, name: 'periodo' } })
+    }
+
     getMeses = () => {
         return [
             { name: 'Enero', value: '01' },
@@ -39,6 +44,13 @@ class FlujosReportesForm extends Component {
             { name: 'Octubre', value: '10' },
             { name: 'Noviembre', value: '11' },
             { name: 'Diciembre', value: '12' }
+        ]
+    }
+
+    getPeriodo = () => {
+        return [
+            { name: 'Enero - Junio', value: '1' },
+            { name: 'Julio - Diciembre', value: '2' }
         ]
     }
 
@@ -68,31 +80,6 @@ class FlujosReportesForm extends Component {
         return (
             <Form>
                 <div className="row mx-0 justify-content-center">
-                    <div className="col-md-3">
-                        <SelectSearchGray withtaglabel = { 1 } withtextlabel = { 1 } name = 'empresa'
-                            options = { options.empresas } placeholder = 'SELECCIONA LA EMPRESA' value = { form.empresa }
-                            onChange = { this.updateEmpresa } iconclass = "far fa-building" messageinc = "Selecciona la empresa." />
-                    </div>
-                    <div className="col-md-3">
-                        <SelectSearchGray withtaglabel = { 1 } withtextlabel = { 1 } name = 'mes' options = { this.getMeses() }
-                            placeholder = 'SELECCIONA EL MES' value = { form.mes } onChange = { this.updateMes }
-                            iconclass = "fas fa-calendar-day" messageinc = "Selecciona el mes." />
-                    </div>
-                    <div className="col-md-2">
-                        <SelectSearchGray withtaglabel = { 1 } withtextlabel = { 1 } name = 'año' options = { this.getAños() }
-                            placeholder = 'SELECCIONA EL AÑO' value = { form.año } onChange = { this.updateAño }
-                            iconclass = "fas fa-calendar-day" messageinc = "Selecciona el año." />
-                    </div>
-                    {
-                        form.no_adjunto ?
-                            <div className="col-md-2"> 
-                                <SelectSearchGray withtaglabel = { 1 } withtextlabel = { 1 } name = 'año' options = { this.getRangos() } 
-                                    placeholder = 'SELECCIONA EL RANGO' value = { form.rango } onChange = { this.updateRango }
-                                    iconclass = "fas fa-calendar-day" messageinc = "Selecciona el rango." />
-                            </div>
-                        : ''
-                    }
-                    
                     <div className="col-md-2">
                         <div className="form-group row">
                             <label className="col-form-label col-md-12 font-weight-bold text-dark-60">¿Se adjuntará un reporte existente?</label>
@@ -112,6 +99,43 @@ class FlujosReportesForm extends Component {
                             </div>
                         </div>
                     </div>
+                    <div className="col-md-3">
+                        <SelectSearchGray withtaglabel = { 1 } withtextlabel = { 1 } name = 'empresa'
+                            options = { options.empresas } placeholder = 'SELECCIONA LA EMPRESA' value = { form.empresa }
+                            onChange = { this.updateEmpresa } iconclass = "far fa-building" messageinc = "Selecciona la empresa." />
+                    </div>
+                    <div className="col-md-2">
+                        <SelectSearchGray withtaglabel = { 1 } withtextlabel = { 1 } name = 'año' options = { this.getAños() }
+                            placeholder = 'SELECCIONA EL AÑO' value = { form.año } onChange = { this.updateAño }
+                            iconclass = "fas fa-calendar-day" messageinc = "Selecciona el año." />
+                    </div>
+                    {
+                        form.no_adjunto ?
+                            <div className="col-md-2"> 
+                                <SelectSearchGray withtaglabel = { 1 } withtextlabel = { 1 } name = 'año' options = { this.getRangos() } 
+                                    placeholder = 'SELECCIONA EL RANGO' value = { form.rango } onChange = { this.updateRango }
+                                    iconclass = "fas fa-calendar-day" messageinc = "Selecciona el rango." />
+                            </div>
+                        : ''
+                    }
+                    {
+                        form.rango === "2" ?
+                            <div className="col-md-3">
+                                <SelectSearchGray withtaglabel = { 1 } withtextlabel = { 1 } name = 'mes' options = { this.getMeses() }
+                                    placeholder = 'SELECCIONA EL MES' value = { form.mes } onChange = { this.updateMes }
+                                    iconclass = "fas fa-calendar-day" messageinc = "Selecciona el mes." />
+                            </div>
+                        : form.rango === "5" ?
+                            <div className="col-md-3">
+                                <SelectSearchGray withtaglabel = { 1 } withtextlabel = { 1 } name = 'periodo' options = { this.getPeriodo() }
+                                    placeholder = 'SELECCIONA EL PERIODO' value = { form.periodo } onChange = { this.updatePeriodo }
+                                    iconclass = "fas fa-calendar-day" messageinc = "Selecciona el periodo." />
+                            </div>
+                        
+                        :
+                        form.rango === "11" ? ""
+                        :""
+                    }
                 </div>
                 {
                     form.no_adjunto ?

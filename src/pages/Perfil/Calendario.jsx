@@ -1,22 +1,22 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import Layout from '../../components/layout/layout';
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import Layout from '../../components/layout/layout'
 import axios from 'axios';
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
-import interactionPlugin from "@fullcalendar/interaction"; // needed for dayClick
-import esLocale from '@fullcalendar/core/locales/es';
+import interactionPlugin from "@fullcalendar/interaction"
+import esLocale from '@fullcalendar/core/locales/es'
 import { Modal } from '../../components/singles'
-import { SolicitarVacacionesForm, EstatusForm } from "../../components/forms";
-import { errorAlert, forbiddenAccessAlert, waitAlert, doneAlert, questionAlert, deleteAlert } from '../../functions/alert';
-import { countDaysWithoutWeekend } from '../../functions/functions';
-import { URL_DEV } from '../../constants';
+import { SolicitarVacacionesForm, EstatusForm } from "../../components/forms"
+import { errorAlert, printResponseErrorAlert, waitAlert, doneAlert, questionAlert, deleteAlert } from '../../functions/alert'
+import { countDaysWithoutWeekend } from '../../functions/functions'
+import { URL_DEV } from '../../constants'
 import bootstrapPlugin from '@fullcalendar/bootstrap'
 import { DropdownButton, Dropdown, Card, OverlayTrigger, Tooltip, Nav } from 'react-bootstrap'
 import moment from 'moment'
 import AVATAR from '../../assets/images/icons/avatar.png'
 import Swal from 'sweetalert2'
-import { Parking, ParkingRed, PassportTravel, HappyBirthday, Calendar, EmptyParkSlot } from '../../components/Lottie';
+import { Parking, ParkingRed, PassportTravel, HappyBirthday, Calendar, EmptyParkSlot } from '../../components/Lottie'
 import { Button } from '../../components/form-components'
 
 const meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
@@ -283,9 +283,7 @@ class Calendario extends Component {
                 this.handleCloseDate()
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) { forbiddenAccessAlert() } 
-                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -305,12 +303,7 @@ class Calendario extends Component {
 
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -396,12 +389,7 @@ class Calendario extends Component {
 
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -435,12 +423,7 @@ class Calendario extends Component {
                 })
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -459,12 +442,7 @@ class Calendario extends Component {
                 this.getEventsOneDateAxios(date)
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -482,12 +460,7 @@ class Calendario extends Component {
                 this.getEventsOneDateAxios(date)
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')

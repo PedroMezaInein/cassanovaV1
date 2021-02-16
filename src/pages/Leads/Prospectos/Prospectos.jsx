@@ -11,10 +11,10 @@ import { Form } from 'react-bootstrap'
 import { setOptions, setTextTable, setDateTable, setArrayTable, setContactoTable, setLabelTable } from '../../../functions/setters'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import TableForModals from '../../../components/tables/TableForModals'
-import { doneAlert, errorAlert, forbiddenAccessAlert, waitAlert } from '../../../functions/alert'
+import { doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../../functions/alert'
 import { ProspectoCard } from '../../../components/cards'
-import { Tab, Tabs } from 'react-bootstrap';
-import SVG from "react-inlinesvg";
+import { Tab, Tabs } from 'react-bootstrap'
+import SVG from "react-inlinesvg"
 import { toAbsoluteUrl } from "../../../functions/routers"
 const $ = require('jquery');
 class Leads extends Component {
@@ -343,12 +343,7 @@ class Leads extends Component {
                 })
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -377,12 +372,7 @@ class Leads extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste el lead con éxito.')
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -412,12 +402,7 @@ class Leads extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Convertiste con éxisto el lead.')
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')

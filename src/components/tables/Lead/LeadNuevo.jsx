@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { OverlayTrigger, Tooltip, Dropdown } from 'react-bootstrap'
+import { OverlayTrigger, Tooltip, Dropdown, DropdownButton } from 'react-bootstrap'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
 import { setDateTableLG } from '../../../functions/setters'
@@ -45,7 +45,8 @@ class LeadNuevo extends Component {
     }
     
     render() {
-        const { leads, onClickPrev, onClickNext, sendEmail, openModal, openModalWithInput, openModalEditar, changePageLlamadaSalida, options, changeOrigen, openModalHistorial } = this.props
+        const { leads, onClickPrev, onClickNext, sendEmail, openModal, openModalWithInput, openModalEditar, changePageLlamadaSalida, options, changeOrigen, openModalHistorial,
+            deleteDuplicado, moveToRelacionesPublicas } = this.props
         return (
             <>
                 <div className="tab-content">
@@ -215,49 +216,59 @@ class LeadNuevo extends Component {
                                                             }
                                                         </td>
                                                         <td className="pr-0 text-center">
-                                                            <OverlayTrigger overlay={<Tooltip>EDITAR INFORMACIÓN GENERAL</Tooltip>}>
-                                                                <span onClick={(e) => { openModalEditar(lead) }}
-                                                                    className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-info" id="info-general">
-                                                                    <span className="svg-icon svg-icon-md">
-                                                                        <SVG src={toAbsoluteUrl('/images/svg/Edit.svg')} />
+                                                            <DropdownButton menualign="right"
+                                                                title = { <i className="fas fa-chevron-down icon-nm p-0"></i> }
+                                                                id = {`dropdown-button-drop-left-crm`} >
+                                                                <Dropdown.Item className="text-hover-info" onClick = { (e) => { openModalEditar(lead) } } >
+                                                                    <span className="navi-icon">
+                                                                        <i className="fas fa-edit pr-3 text"></i>
                                                                     </span>
-                                                                </span>
-                                                            </OverlayTrigger>
-                                                            {
-                                                                this.canSendFirstEmail(lead) ?
-                                                                    <OverlayTrigger overlay={<Tooltip>ENVIAR CORREO</Tooltip>}>
-                                                                        <span onClick={(e) => { questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => sendEmail(lead)) }}
-                                                                            className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-info" id="env-correo">
-                                                                            <span className="svg-icon svg-icon-md ">{/* svg-icon-primary */}
-                                                                                <SVG src={toAbsoluteUrl('/images/svg/Outgoing-mail.svg')} />
+                                                                    <span className="navi-text align-self-center">EDITAR INFORMACIÓN GENERAL</span>
+                                                                </Dropdown.Item>
+                                                                {
+                                                                    this.canSendFirstEmail(lead) ?
+                                                                        <Dropdown.Item className="text-hover-info" 
+                                                                            onClick = { (e) => { questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => sendEmail(lead)) }}>
+                                                                            <span className="navi-icon">
+                                                                                <i className="fas fa-envelope-open pr-3 text"></i>
                                                                             </span>
-                                                                        </span>
-                                                                    </OverlayTrigger>
+                                                                            <span className="navi-text align-self-center">ENVIAR CORREO</span>
+                                                                        </Dropdown.Item>
                                                                     : ''
-                                                            }
-                                                            <OverlayTrigger overlay={<Tooltip>AGENDAR LLAMADA</Tooltip>}>
-                                                                <span onClick={(e) => { openModal(lead) }}
-                                                                    className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-info" id="ag-llamada">
-                                                                    <span className="svg-icon svg-icon-md">
-                                                                        <SVG src={toAbsoluteUrl('/images/svg/Active-call.svg')} />
+                                                                }
+                                                                <Dropdown.Item className="text-hover-info" onClick={(e) => { changePageLlamadaSalida(lead) }} >
+                                                                    <span className="navi-icon">
+                                                                        <i className="fas fa-phone pr-3 text"></i>
                                                                     </span>
-                                                                </span>
-                                                            </OverlayTrigger>
-                                                            <OverlayTrigger overlay={<Tooltip>SEGUIMIENTO (SCRIPT)</Tooltip>}>
-                                                                <span onClick={(e) => { changePageLlamadaSalida(lead) }} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-info" id="seg-script">
-                                                                    <span className="svg-icon svg-icon-md">
-                                                                        <SVG src={toAbsoluteUrl('/images/svg/File.svg')} />
+                                                                    <span className="navi-text align-self-center">AGENDAR LLAMADA</span>
+                                                                </Dropdown.Item>
+                                                                <Dropdown.Item className="text-hover-info" onClick={(e) => { changePageLlamadaSalida(lead) }} >
+                                                                    <span className="navi-icon">
+                                                                        <i className="fas fa-file pr-3 text"></i>
                                                                     </span>
-                                                                </span>
-                                                            </OverlayTrigger>
-                                                            <OverlayTrigger overlay={<Tooltip>HISTORIAL DE CONTACTO</Tooltip>}>
-                                                                <span onClick={(e) => { openModalHistorial(lead) }}
-                                                                    className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-info" id="historial">
-                                                                    <span className="svg-icon svg-icon-md">
-                                                                        <SVG src={toAbsoluteUrl('/images/svg/Clipboard-list.svg')} />
+                                                                    <span className="navi-text align-self-center">SEGUIMIENTO (SCRIPT)</span>
+                                                                </Dropdown.Item>
+                                                                <Dropdown.Item className="text-hover-info" onClick={(e) => { openModalHistorial(lead) }} >
+                                                                    <span className="navi-icon">
+                                                                        <i className="fas fa-clipboard-list pr-3 text"></i>
                                                                     </span>
-                                                                </span>
-                                                            </OverlayTrigger>
+                                                                    <span className="navi-text align-self-center">HISTORIAL DE CONTACTO</span>
+                                                                </Dropdown.Item>
+                                                                <Dropdown.Item className="text-hover-info" 
+                                                                    onClick = { (e) => { questionAlert('¿ESTÁS SEGURO?', 'ESTE LEAD SERÁ MARCADO COMO DUPLICADO', () => deleteDuplicado(lead)) }}>
+                                                                    <span className="navi-icon">
+                                                                        <i className="fas fa-minus-circle pr-3 text"></i>
+                                                                    </span>
+                                                                    <span className="navi-text align-self-center">ELIMINAR LEAD DUPLICADO</span>
+                                                                </Dropdown.Item>
+                                                                <Dropdown.Item className="text-hover-info" 
+                                                                    onClick = { (e) => { questionAlert('¿ESTÁS SEGURO?', 'MOVERÁS ESTE LEAD A RELACIONES PÚBLICAS', () => moveToRelacionesPublicas(lead)) }}>
+                                                                    <span className="navi-icon">
+                                                                        <i className="far fa-handshake pr-3 text"></i>
+                                                                    </span>
+                                                                    <span className="navi-text align-self-center">Relaciones públicas</span>
+                                                                </Dropdown.Item>
+                                                            </DropdownButton>
                                                         </td>
                                                     </tr>
                                                 )

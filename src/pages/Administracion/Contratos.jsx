@@ -532,7 +532,9 @@ class Contratos extends Component {
                     options
                 })
             },
-            (error) => { printResponseErrorAlert(error) }
+            (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -582,7 +584,9 @@ class Contratos extends Component {
                     modal
                 })
             },
-            (error) => { printResponseErrorAlert(error) }
+            (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -621,7 +625,9 @@ class Contratos extends Component {
                     modal,
                     adjuntos: this.setAdjuntos(contrato.adjuntos)
                 })
-            }, (error) => { printResponseErrorAlert(error) }
+            }, (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -645,7 +651,9 @@ class Contratos extends Component {
                     ...this.state,
                     contrato: ''
                 })
-            }, (error) => { printResponseErrorAlert(error) }
+            }, (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -671,7 +679,9 @@ class Contratos extends Component {
                     contrato: '',
                     modal
                 })
-            }, (error) => { printResponseErrorAlert(error) }
+            }, (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -698,7 +708,9 @@ class Contratos extends Component {
                     modal,
                     adjuntos: this.setAdjuntos(contrato.adjuntos)
                 })
-            }, (error) => { printResponseErrorAlert(error) }
+            }, (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')

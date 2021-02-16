@@ -1,17 +1,17 @@
-import React, { Component } from 'react';
-import { renderToString } from 'react-dom/server';
-import { connect } from 'react-redux';
+import React, { Component } from 'react'
+import { renderToString } from 'react-dom/server'
+import { connect } from 'react-redux'
 import Layout from '../../../components/layout/layout'
-import { ModalDelete, Modal, ItemSlider } from '../../../components/singles';
-import NewTableServerRender from '../../../components/tables/NewTableServerRender';
+import { ModalDelete, Modal, ItemSlider } from '../../../components/singles'
+import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { PRESTAMOS_COLUMNS, URL_DEV } from '../../../constants'
-import { setDateTable, setMoneyTable, setMoneyTableSinSmall, setTextTable } from '../../../functions/setters';
+import { setDateTable, setMoneyTable, setMoneyTableSinSmall, setTextTable } from '../../../functions/setters'
 import axios from 'axios'
-import { deleteAlert, doneAlert, errorAlert, forbiddenAccessAlert, waitAlert } from '../../../functions/alert';
+import { deleteAlert, doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../../functions/alert'
 import { Button } from '../../../components/form-components'
-import { Tab, Tabs } from 'react-bootstrap';
-import Pagination from "react-js-pagination";
-import { AbonoPrestamosForm } from '../../../components/forms';
+import { Tab, Tabs } from 'react-bootstrap'
+import Pagination from "react-js-pagination"
+import { AbonoPrestamosForm } from '../../../components/forms'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
 import { PrestamosCard } from '../../../components/cards'
@@ -263,12 +263,7 @@ class Prestamos extends Component {
                 doneAlert('Préstamo eliminado con éxito')
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -312,12 +307,7 @@ class Prestamos extends Component {
                 this.getPrestamosAxios()
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -344,12 +334,7 @@ class Prestamos extends Component {
                 this.getPrestamosAxios()
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -368,12 +353,7 @@ class Prestamos extends Component {
                 this.getPrestamosAxios()
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -395,12 +375,7 @@ class Prestamos extends Component {
                 this.getPrestamosAxios()
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')

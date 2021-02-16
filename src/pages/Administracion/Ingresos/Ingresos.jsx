@@ -16,7 +16,7 @@ import NewTableServerRender from '../../../components/tables/NewTableServerRende
 import Select from '../../../components/form-components/Select'
 import AdjuntosForm from '../../../components/forms/AdjuntosForm'
 import { IngresosCard } from '../../../components/cards'
-import { Tab, Tabs } from 'react-bootstrap';
+import { Tab, Tabs } from 'react-bootstrap'
 const $ = require('jquery');
 class Ingresos extends Component {
     state = {
@@ -616,7 +616,9 @@ class Ingresos extends Component {
                     ...this.state,
                     ingreso: ingreso
                 })
-            }, (error) => { printResponseErrorAlert(error) }
+            }, (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -643,7 +645,9 @@ class Ingresos extends Component {
                     data,
                     options
                 })
-            }, (error) => { printResponseErrorAlert(error) }
+            }, (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -661,7 +665,9 @@ class Ingresos extends Component {
                     ingreso: ''
                 })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue eliminado con éxito.')
-            }, (error) => { printResponseErrorAlert(error) }
+            }, (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -719,7 +725,9 @@ class Ingresos extends Component {
                     porcentaje
                 })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-            }, (error) => { printResponseErrorAlert(error) }
+            }, (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -748,7 +756,9 @@ class Ingresos extends Component {
                     porcentaje
                 })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-            }, (error) => { printResponseErrorAlert(error) }
+            }, (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -765,7 +775,9 @@ class Ingresos extends Component {
                     // modalAskFactura: false
                 })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-            }, (error) => { printResponseErrorAlert(error) }
+            }, (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -802,7 +814,9 @@ class Ingresos extends Component {
                     options
                 })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-            }, (error) => { printResponseErrorAlert(error) }
+            }, (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -820,7 +834,9 @@ class Ingresos extends Component {
                 document.body.appendChild(link);
                 link.click();
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-            }, (error) => { printResponseErrorAlert(error) }
+            }, (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -847,7 +863,9 @@ class Ingresos extends Component {
                 this.getIngresosAxios()
                 this.setState({ ...this.state, form })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Archivo adjuntado con éxito.')
-            }, (error) => { printResponseErrorAlert(error) }
+            }, (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -867,7 +885,9 @@ class Ingresos extends Component {
                 this.setState({...this.state, form })
                 this.getIngresosAxios()
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste el adjunto con éxito.')
-            }, (error) => { printResponseErrorAlert(error) }
+            }, (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')

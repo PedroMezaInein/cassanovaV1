@@ -5,16 +5,13 @@ import { URL_DEV } from '../../../constants'
 import { connect } from 'react-redux'
 import ItemSlider from '../../../components/singles/ItemSlider'
 import { Tab, Nav, Col, Row, Card, Accordion, } from 'react-bootstrap'
-import { setSelectOptions } from '../../../functions/setters'
-import { waitAlert, questionAlert, errorAlert, forbiddenAccessAlert, doneAlert, deleteAlert } from '../../../functions/alert'
+import { waitAlert, questionAlert, errorAlert, printResponseErrorAlert, doneAlert, deleteAlert } from '../../../functions/alert'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
 import { Folder, FolderStatic, Modal } from '../../../components/singles'
 import { Button, BtnBackUrl, TablePagination, NewFolderInput } from '../../../components/form-components'
 import Swal from 'sweetalert2'
 import { NoFiles, Files, Build } from '../../../components/Lottie'
-import { element } from 'prop-types'
-
 const arrayOpcionesAdjuntos = ['portafolio', 'como_trabajamos', 'servicios_generales', '', 'brokers', 'videos'];
 class MaterialCliente extends Component {
     state = {
@@ -118,9 +115,7 @@ class MaterialCliente extends Component {
                 this.setState({ ...this.state, data })
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) { forbiddenAccessAlert() } 
-                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -146,9 +141,7 @@ class MaterialCliente extends Component {
                 this.setState({...this.state, empresa, opciones_adjuntos, submenuactive: '', menuactive: 0, level: 0})
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) { forbiddenAccessAlert() } 
-                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -172,9 +165,7 @@ class MaterialCliente extends Component {
                 this.setState({...this.state, empresa: empresa, form, newFolder: false})
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) forbiddenAccessAlert()
-                else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -197,9 +188,7 @@ class MaterialCliente extends Component {
                 this.setState({...this.state, empresa: empresa, form, newFolder: false})
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) forbiddenAccessAlert()
-                else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -233,9 +222,7 @@ class MaterialCliente extends Component {
                 this.setState({...this.state,modal:false,form,empresa:empresa})
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) forbiddenAccessAlert()
-                else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -269,9 +256,7 @@ class MaterialCliente extends Component {
                 this.setState({...this.state, modal:false, form, empresa:empresa, levelItem})
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) forbiddenAccessAlert()
-                else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -300,9 +285,7 @@ class MaterialCliente extends Component {
                 this.setState({...this.state, modal:false, form, empresa:empresa, levelItem})
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) forbiddenAccessAlert()
-                else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -321,9 +304,7 @@ class MaterialCliente extends Component {
                 this.setState({...this.state,empresa:empresa})
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) forbiddenAccessAlert()
-                else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -347,9 +328,7 @@ class MaterialCliente extends Component {
                 this.setState({...this.state,empresa:empresa, levelItem: carpeta})
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) forbiddenAccessAlert()
-                else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -369,9 +348,7 @@ class MaterialCliente extends Component {
                 this.setState({...this.state,empresa:empresa, levelItem: carpeta})
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) forbiddenAccessAlert()
-                else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -394,10 +371,7 @@ class MaterialCliente extends Component {
                 this.setState({ ...this.state, empresa: empresa, levelItem: carpeta, newFolder: false, form })
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) forbiddenAccessAlert()
-                else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                return true
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -421,10 +395,7 @@ class MaterialCliente extends Component {
                 this.setState({ ...this.state, empresa: empresa, levelItem: carpeta, newFolder: false, form })
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) forbiddenAccessAlert()
-                else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                return true
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -446,10 +417,7 @@ class MaterialCliente extends Component {
                 this.setState({ ...this.state, empresa: empresa })
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) forbiddenAccessAlert()
-                else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                return true
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -471,10 +439,7 @@ class MaterialCliente extends Component {
                 this.setState({ ...this.state, empresa: empresa })
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) forbiddenAccessAlert()
-                else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                return true
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')

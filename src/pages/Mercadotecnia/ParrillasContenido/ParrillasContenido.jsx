@@ -1,21 +1,21 @@
-import React, { Component } from 'react';
-import axios from 'axios';
+import React, { Component } from 'react'
+import axios from 'axios'
 import moment from 'moment'
-import { URL_DEV } from '../../../constants';
-import { doneAlert, errorAlert, forbiddenAccessAlert, questionAlert, waitAlert, deleteAlert, createAlertSA2 } from '../../../functions/alert';
-import { connect } from 'react-redux';
-import Layout from '../../../components/layout/layout';
+import { URL_DEV } from '../../../constants'
+import { doneAlert, errorAlert, printResponseErrorAlert, questionAlert, waitAlert, deleteAlert, createAlertSA2 } from '../../../functions/alert'
+import { connect } from 'react-redux'
+import Layout from '../../../components/layout/layout'
 import { Card, Nav, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import FullCalendar from '@fullcalendar/react'
 import dayGridPlugin from '@fullcalendar/daygrid'
-import interactionPlugin from "@fullcalendar/interaction";
+import interactionPlugin from "@fullcalendar/interaction"
 import bootstrapPlugin from '@fullcalendar/bootstrap'
-import esLocale from '@fullcalendar/core/locales/es';
+import esLocale from '@fullcalendar/core/locales/es'
 import { Button } from '../../../components/form-components'
 import { Modal } from '../../../components/singles'
-import ParrillaContenidoForm from '../../../components/forms/mercadotecnia/ParrillaContenidoForm';
-import { setOptions } from '../../../functions/setters';
-import Swal from 'sweetalert2';
+import ParrillaContenidoForm from '../../../components/forms/mercadotecnia/ParrillaContenidoForm'
+import { setOptions } from '../../../functions/setters'
+import Swal from 'sweetalert2'
 
 class Calendario extends Component {
     state = {
@@ -162,9 +162,7 @@ class Calendario extends Component {
                 })
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) { forbiddenAccessAlert() } 
-                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -233,12 +231,7 @@ class Calendario extends Component {
                 })
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -285,12 +278,7 @@ class Calendario extends Component {
                 this.getContentAxios()
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -314,12 +302,7 @@ class Calendario extends Component {
                 this.getContentAxios()
             },
             (error) => {
-                console.log(error, 'error')
-                if(error.response.status === 401){
-                    forbiddenAccessAlert()
-                }else{
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -358,12 +341,7 @@ class Calendario extends Component {
                 this.getContentAxios()
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -399,12 +377,7 @@ class Calendario extends Component {
                 this.getContentAxios()
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -428,12 +401,7 @@ class Calendario extends Component {
                 this.getContentAxios()
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -453,9 +421,7 @@ class Calendario extends Component {
                 this.getContentAxios();
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) { forbiddenAccessAlert() } 
-                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -741,10 +707,8 @@ class Calendario extends Component {
                     })
                 },
                 (error) => {
-                    console.log(error, 'error')
-                    if (error.response.status === 401) forbiddenAccessAlert()
-                    else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
+            }
             ).catch((error) => {
                 errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
                 console.log(error, 'error')

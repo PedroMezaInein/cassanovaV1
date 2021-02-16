@@ -437,7 +437,9 @@ class MiProyecto extends Component {
                     form: this.clearForm()
                 })
 
-            }, (error) => { printResponseErrorAlert(error) }
+            }, (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -458,7 +460,9 @@ class MiProyecto extends Component {
                 link.setAttribute('download', proyecto.nombre + '.zip');
                 document.body.appendChild(link);
                 link.click();
-            }, (error) => { printResponseErrorAlert(error) }
+            }, (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -526,7 +530,9 @@ class MiProyecto extends Component {
                     ...this.state,
                     form: this.clearForm()
                 })
-            }, (error) => { printResponseErrorAlert(error) }
+            }, (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -698,7 +704,9 @@ class MiProyecto extends Component {
                     doneAlert('El ticket fue actualizado con éxito.')
                     this.getMiProyectoAxios()
                 }
-            }, (error) => { printResponseErrorAlert(error) }
+            }, (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')

@@ -5,7 +5,7 @@ import Layout from '../../../components/layout/layout'
 import { ModalDelete, Modal } from '../../../components/singles'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { PROVEEDORES_MERCA_COLUMNS, URL_DEV } from '../../../constants'
-import { doneAlert, errorAlert, forbiddenAccessAlert, waitAlert } from '../../../functions/alert'
+import { doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../../functions/alert'
 import { setArrayTable, setTextTable } from '../../../functions/setters'
 import axios from 'axios'
 import { ProveedorCard } from '../../../components/cards'
@@ -103,9 +103,7 @@ class Proveedores extends Component{
                 this.getProveedoresAxios()
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) { forbiddenAccessAlert() } 
-                else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')

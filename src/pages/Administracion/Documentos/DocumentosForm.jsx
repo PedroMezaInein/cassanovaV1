@@ -1,12 +1,12 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import Layout from '../../../components/layout/layout'
-import { deleteAlert, doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../../functions/alert';
+import { deleteAlert, doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../../functions/alert'
 import axios from 'axios'
-import { URL_DEV } from '../../../constants';
+import { URL_DEV } from '../../../constants'
 import Swal from 'sweetalert2'
-import { setOptions } from '../../../functions/setters';
-import { Card } from 'react-bootstrap';
+import { setOptions } from '../../../functions/setters'
+import { Card } from 'react-bootstrap'
 import { DocumentosForm as DocumentosFormulario } from '../../../components/forms'
 class DocumentosForm extends Component {
     state = {
@@ -155,7 +155,9 @@ class DocumentosForm extends Component {
                     ...this.state,
                     options
                 })
-            }, (error) => { printResponseErrorAlert(error) }
+            }, (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -193,7 +195,9 @@ class DocumentosForm extends Component {
                     pathname: '/administracion/documentos'
                 });
                 doneAlert('Documento credo con éxito')
-            }, (error) => { printResponseErrorAlert(error) }
+            }, (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -231,7 +235,9 @@ class DocumentosForm extends Component {
                     pathname: '/administracion/documentos'
                 });
                 doneAlert('Documento editada con éxito')
-            }, (error) => { printResponseErrorAlert(error) }
+            }, (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -246,7 +252,9 @@ class DocumentosForm extends Component {
                 const { documento } = response.data
                 this.setAdjuntos(documento.adjuntos)
                 doneAlert('Adjunto eliminado con éxito')
-            }, (error) => { printResponseErrorAlert(error) }
+            }, (error) => {
+                printResponseErrorAlert(error)
+            }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')

@@ -2,20 +2,19 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Layout from '../../components/layout/layout'
 import { Card, Nav, Tab } from 'react-bootstrap'
-import { Button } from '../../components/form-components';
-// import moment from 'moment'
-import { waitAlert, errorAlert, forbiddenAccessAlert, questionAlert2,doneAlert } from '../../functions/alert'
+import { Button } from '../../components/form-components'
+import { waitAlert, errorAlert, printResponseErrorAlert, questionAlert2,doneAlert } from '../../functions/alert'
 import Swal from 'sweetalert2'
 import { COLORES_GRAFICAS_IM, COLORES_GRAFICAS_INEIN, IM_AZUL, INEIN_RED, URL_DEV } from '../../constants'
 import axios from 'axios'
 import { pdf } from '@react-pdf/renderer'
-import { Pie, Bar, Line } from 'react-chartjs-2';
+import { Pie, Bar, Line } from 'react-chartjs-2'
 import "chartjs-plugin-datalabels";
-import { setLabelVentas, setOptions, setDateTableLG,setMoneyTableSinSmall } from '../../functions/setters';
-import FlujosReportesVentas from '../../components/forms/reportes/FlujosReportesVentas';
-import { Editor } from 'react-draft-wysiwyg';
-import { EditorState, convertToRaw } from 'draft-js';
-import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import { setLabelVentas, setOptions, setDateTableLG,setMoneyTableSinSmall } from '../../functions/setters'
+import FlujosReportesVentas from '../../components/forms/reportes/FlujosReportesVentas'
+import { Editor } from 'react-draft-wysiwyg'
+import { EditorState, convertToRaw } from 'draft-js'
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
 import ReporteVentasInein from '../../components/pdfs/ReporteVentasInein'
 import ReporteVentasIm from '../../components/pdfs/ReporteVentasIm'
 import { Modal } from '../../components/singles'
@@ -29,7 +28,7 @@ class ReporteVentas extends Component {
         mes: '',
         empresa : '',
         form:{
-            rango: '2',
+            rango: '5',
             empresa: '',
             mes: '',
             año: new Date().getFullYear(),
@@ -43,6 +42,7 @@ class ReporteVentas extends Component {
             },
             si_adjunto:false,
             no_adjunto:true,
+            periodo:'1'
         },
         data:{
             total: {},
@@ -333,9 +333,7 @@ class ReporteVentas extends Component {
                 
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) forbiddenAccessAlert()
-                else errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -360,12 +358,7 @@ class ReporteVentas extends Component {
                 })
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -877,12 +870,7 @@ class ReporteVentas extends Component {
                 
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -908,13 +896,8 @@ class ReporteVentas extends Component {
                 })
             },
             (error) => {
-                Swal.close()
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                Swal.close() 
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             Swal.close()

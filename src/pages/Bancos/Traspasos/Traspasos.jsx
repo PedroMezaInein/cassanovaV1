@@ -1,14 +1,14 @@
-import React, { Component } from 'react';
-import { renderToString } from 'react-dom/server';
+import React, { Component } from 'react'
+import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import Layout from '../../../components/layout/layout'
-import NewTableServerRender from '../../../components/tables/NewTableServerRender';
-import { TRASPASOS_COLUMNS, URL_DEV } from '../../../constants';
-import { doneAlert, errorAlert, forbiddenAccessAlert, waitAlert } from '../../../functions/alert';
-import { setArrayTable, setDateTable, setMoneyTable, setTextTable } from '../../../functions/setters';
+import NewTableServerRender from '../../../components/tables/NewTableServerRender'
+import { TRASPASOS_COLUMNS, URL_DEV } from '../../../constants'
+import { doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../../functions/alert'
+import { setArrayTable, setDateTable, setMoneyTable, setTextTable } from '../../../functions/setters'
 import axios from 'axios'
-import { ModalDelete, Modal } from '../../../components/singles';
-import { TraspasoCard } from '../../../components/cards';
+import { ModalDelete, Modal } from '../../../components/singles'
+import { TraspasoCard } from '../../../components/cards'
 const $ = require('jquery');
 class Traspasos extends Component {
     state = {
@@ -174,12 +174,7 @@ class Traspasos extends Component {
                 })
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -200,12 +195,7 @@ class Traspasos extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -228,12 +218,7 @@ class Traspasos extends Component {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
             },
             (error) => {
-                console.log(error, 'error')
-                if (error.response.status === 401) {
-                    forbiddenAccessAlert()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
-                }
+                printResponseErrorAlert(error)
             }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
