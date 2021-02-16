@@ -28,7 +28,7 @@ class ReporteVentas extends Component {
         mes: '',
         empresa : '',
         form:{
-            rango: '2',
+            rango: '5',
             empresa: '',
             mes: '',
             año: new Date().getFullYear(),
@@ -42,6 +42,7 @@ class ReporteVentas extends Component {
             },
             si_adjunto:false,
             no_adjunto:true,
+            periodo:'1'
         },
         data:{
             total: {},
