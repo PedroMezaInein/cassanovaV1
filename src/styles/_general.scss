@@ -406,7 +406,7 @@ td.concepto {
     // }
 }
 
-a#rh-proveedores {
+a#rh-proveedores, a#cancelados-rechazados, a#rp {
     font-weight: 500;
     color: #7f7f7f;
 
@@ -423,35 +423,7 @@ a#rh-proveedores {
     }
 }
 
-a#cancelados-rechazados {
-    font-weight: 500;
-    color: #7f7f7f;
-
-    &:hover {
-        color: #2171c1;
-        text-decoration: none;
-        background-color: #F3F6F9;
-    }
-
-    &:active {
-        color: #2171c1;
-        text-decoration: none;
-        background-color: #F3F6F9;
-    }
-}
-
-a#cancelados-rechazados.text-hover-primary.dropdown-item.active {
-    color: #2171c1;
-    text-decoration: none;
-    background-color: #F3F6F9;
-    font-weight: 500;
-
-    i {
-        color: #2171c1;
-    }
-}
-
-a#rh-proveedores.text-hover-primary.dropdown-item.active {
+a#cancelados-rechazados.text-hover-primary.dropdown-item.active,  a#rh-proveedores.text-hover-primary.dropdown-item.active, a#rp.text-hover-primary.dropdown-item.active{
     color: #2171c1;
     text-decoration: none;
     background-color: #F3F6F9;
@@ -587,6 +559,20 @@ a.text-hover-brown:hover,
 .text-hover-brown:hover {
     transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
     color: #5D4037 !important;
+}
+// COLOR ORANGE
+.bg-light-orange {
+    background-color: #fff2d9 !important;
+}
+
+.text-orange {
+    color: #D08905 !important;
+}
+
+a.text-hover-orange:hover,
+.text-hover-orange:hover {
+    transition: color 0.15s ease, background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    color: #D08905 !important;
 }
 
 // COLOR GREEN

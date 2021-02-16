@@ -14,6 +14,7 @@ import LeadNegociacion from '../../../components/tables/Lead/LeadNegociacion'
 import LeadContrato from '../../../components/tables/Lead/LeadContrato'
 import LeadNoContratado from '../../../components/tables/Lead/LeadNoContratado'
 import LeadDetenido from '../../../components/tables/Lead/LeadDetenido'
+import LeadRP from '../../../components/tables/Lead/LeadRP'
 import { Modal, } from '../../../components/singles'
 import { AgendaLlamada, InformacionGeneral, HistorialContactoForm } from '../../../components/forms'
 import InputGray from '../../../components/form-components/Gray/InputGray'
@@ -104,6 +105,13 @@ class Crm extends Component {
             total: 0,
             total_paginas: 0,
             value: "detenidos"
+        },
+        leads_rp:{
+            data: [],
+            numPage: 0,
+            total: 0,
+            total_paginas: 0,
+            value: "rp"
         },
         lead: '',
         form: {
@@ -332,6 +340,30 @@ class Crm extends Component {
                 leads_cancelados
             })
             this.getLeadsCancelados()
+        }
+    }
+
+    nextPageLeadRP = (e) => {
+        e.preventDefault()
+        const { leads_rp } = this.state
+        if (leads_rp.numPage < leads_rp.total_paginas - 1) {
+            leads_rp.numPage++
+            this.setState({
+                leads_rp
+            })
+        }
+        this.getLeadsRP()
+    }
+
+    prevPageLeadRP = (e) => {
+        e.preventDefault()
+        const { leads_rp } = this.state
+        if (leads_rp.numPage > 0) {
+            leads_rp.numPage--
+            this.setState({
+                leads_rp
+            })
+            this.getLeadsRP()
         }
     }
 
@@ -689,6 +721,35 @@ class Crm extends Component {
         })
     }
 
+    /* ANCHOR CRM TABLE PUT LEADS RELACIONES PÚBLICAS */
+    async getLeadsRP () {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { leads_rp, form } = this.state
+        await axios.put(URL_DEV + 'crm/table/lead-rp/' + leads_rp.numPage, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                Swal.close()
+                const { leads, total, page } = response.data
+                const { leads_rp } = this.state
+                leads_rp.data = leads
+                leads_rp.total = total
+                leads_rp.numPage = page
+                let total_paginas = Math.ceil(total / 10)
+                leads_rp.total_paginas = total_paginas
+                this.setState({
+                    ...this.state,
+                    leads_rp
+                })
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     /* ANCHOR CRM TABLE PUT LEADS CONTRATADOS */
     async getLeadsContratados() {
         waitAlert()
@@ -920,6 +981,8 @@ class Crm extends Component {
                     case 'negociacion':
                         this.getLeadsEnNegociacion();
                         break;
+                    case 'rp':
+                        this.getLeadsRP();
                     default: break;
                 }
                 this.setState({
@@ -1077,6 +1140,8 @@ class Crm extends Component {
             case 'negociacion':
                 this.getLeadsEnNegociacion();
                 break;
+            case 'rp':
+                this.getLeadsRP();
             default: break;
         }
         this.setState({
@@ -1116,6 +1181,8 @@ class Crm extends Component {
             case 'negociacion':
                 this.getLeadsEnNegociacion();
                 break;
+            case 'rp':
+                this.getLeadsRP();
             default: break;
         }
         this.setState({
@@ -1327,6 +1394,14 @@ class Crm extends Component {
         });
     }
 
+    changePageDetailsRP = (lead) => {
+        const { history } = this.props
+        history.push({
+            pathname: '/leads/crm/info/info',
+            state: { lead: lead, tipo: 'RP' }
+        });
+    }
+
     changePageCierreVenta = (lead) => {
         const { history } = this.props
         history.push({
@@ -1423,7 +1498,8 @@ class Crm extends Component {
 
     render() {
         const { ultimos_contactados, prospectos_sin_contactar, ultimos_ingresados, lead_web, activeTable, leads_en_contacto, leads_en_negociacion, modal_one_lead,
-            leads_contratados, leads_cancelados, leads_detenidos, modal_agendar, form, lead, lead_rh_proveedores, options, modal_editar, formEditar, modal_historial, formHistorial, itemsPerPage, activePage} = this.state
+            leads_contratados, leads_cancelados, leads_detenidos, modal_agendar, form, lead, lead_rh_proveedores, options, modal_editar, formEditar, modal_historial,
+            formHistorial, itemsPerPage, activePage, leads_rp} = this.state
         return (
             <Layout active='leads' {...this.props} >
                 <Row>
@@ -1498,6 +1574,12 @@ class Crm extends Component {
                                                     </span>
                                                     <span className="navi-text align-self-center">CANCELADOS/RECHAZADOS</span>
                                                 </Dropdown.Item>
+                                                <Dropdown.Item eventKey="rp" className="text-hover-primary" id="rp">
+                                                    <span className="navi-icon">
+                                                        <i className="far fa-handshake pr-3 text"></i>
+                                                    </span>
+                                                    <span className="navi-text align-self-center">RELACIONES PÚBLICAS</span>
+                                                </Dropdown.Item>
                                             </DropdownButton>
                                         </Nav.Item>
                                     </Nav>
@@ -1524,7 +1606,7 @@ class Crm extends Component {
                                             />
                                         </div>
                                         {
-                                            activeTable !== "web" && activeTable !== "rh-proveedores" && activeTable !== 'cancelados' ?
+                                            activeTable !== "web" && activeTable !== "rh-proveedores" && activeTable !== 'cancelados' && activeTable !== 'rp' ?
                                                 <div className="col-md-2">
                                                     <InputGray
                                                         letterCase={true}
@@ -1684,6 +1766,14 @@ class Crm extends Component {
                                             onClickNext={this.nextPageLeadCancelados}
                                             onClickPrev={this.prevPageLeadCancelados}
                                             changePageDetails={this.changePageDetailsCR}
+                                        />
+                                    </Tab.Pane>
+                                    <Tab.Pane eventKey="rp">
+                                        <LeadRP
+                                            leads={leads_rp}
+                                            onClickNext={this.nextPageLeadRP}
+                                            onClickPrev={this.prevPageLeadRP}
+                                            changePageDetails={this.changePageDetailsRP}
                                         />
                                     </Tab.Pane>
                                 </Tab.Content>
