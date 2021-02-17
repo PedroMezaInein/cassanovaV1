@@ -30,6 +30,7 @@ const $ = require('jquery');
 class Crm extends Component {
 
     state = {
+        checked: 6,
         options: {
             empresas: [],
             servicios: [],
@@ -1109,32 +1110,6 @@ class Crm extends Component {
             form
         })
     }
-    onChangeMotivo = e => {
-        const { name, checked, type } = e.target
-        let { formMotivo } = this.state
-        const { options  } = this.state
-
-        options.motivosCancelacion.map((motivo) => {
-            if (name === motivo.motivo) {
-                formMotivo[name] = checked
-            }else{
-                formMotivo[name] = checked
-            }
-            return false
-        })
-        // if (type === 'radio') {
-
-        //     if (name === "si_reviso_cotizacion") {
-        //         formMotivo["no_reviso_cotizacion"] = false
-        //     }
-            
-        //     formMotivo[name] = checked
-        // }
-        this.setState({
-            ...this.state,
-            formMotivo
-        })
-    }
 
     onChangeEditar = e => {
         const { name, value } = e.target
@@ -1355,8 +1330,20 @@ class Crm extends Component {
         questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.changeOrigenAxios({ id: id, origen: origen }))
     }
 
+    onChange2 (index) {
+        let { checked } = this.state
+        checked = index
+        this.setState({
+            ...this.state,
+            checked
+        });
+    }  
+    input(){
+        let claselabel = document.getElementsByClassName("motivo")
+        console.log(claselabel)
+    }  
     openModalWithInput = (estatus, id) => {
-        const { options, formMotivo } = this.state
+        const { options, checked } = this.state
         if(estatus === 'En negociación'){
             questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusCanceladoRechazadoAxios({ id: id, estatus: estatus }))
         }else{
@@ -1370,61 +1357,44 @@ class Crm extends Component {
                     {
                         estatus === 'Cancelado' ?
                         <>
-                            <div className="radio-list">
+                            <div>
                                 {
-                                    options.motivosCancelacion.map((option, key) => {
-                                        return (
-                                            <>
-                                                <label className="radio radio-outline radio-brand text-dark-75 font-weight-bold">
-                                                    <input
-                                                        type="radio"
-                                                        name='no_desglose'
-                                                        value={formMotivo.motivo}
-                                                        onChange={this.onChange}
-                                                        checked={formMotivo.motivo}
-                                                    />
-                                                    {option.motivo}
-													<span></span>
-                                                </label>
-                                            </>
+                                    options.motivosCancelacion.map((option,i)=>{
+                                        return(
+                                            <label key={i}>
+                                                <input 
+                                                    type="radio"
+                                                    checked={checked == i ? true : false}
+                                                    onChange={this.onChange2.bind(this, i)} 
+                                                    value={option.motivo}
+                                                />
+                                                {option.motivo}
+                                            </label>
                                         )
                                     })
                                 }
                             </div>
-                            
                         </>
                         :
-                        <>
-                            <div className="radio-list">
+                        <div>
                                 {
                                     options.motivosRechazo.map((option, key) => {
-                                        formMotivo.motivo = option.motivo
                                         return (
                                             <Form.Check
                                                 key={key}
                                                 type="radio"
                                                 label={option.motivo}
                                                 name="motivo"
-                                                id="motivo"
-                                                className="text-justify"
-                                                value={formMotivo.motivo}
+                                                className="text-justify mb-2 motivo"
+                                                value={option.motivo}
                                             />
                                         )
                                     })
                                 }
-                            </div>
-                        {/* <Form.Control
-                            placeholder={
-                            estatus === 'Cancelado' ?
-                                'MOTIVO DE CANCELACIÓN' :
-                                'MOTIVO DE RECHAZO'
-                            }
-                            className="form-control form-control-solid h-auto py-7 px-6 text-uppercase"
-                            id='motivo'
-                            as="textarea"
-                            rows="3"
-                        /> */}
-                    </>
+                                {
+                                    this.input()
+                                }
+                    </div>
                     }
                 </div>
             )
