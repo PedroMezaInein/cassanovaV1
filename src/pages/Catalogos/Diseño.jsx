@@ -7,7 +7,6 @@ import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert, questionAler
 import Layout from '../../components/layout/layout'
 import { Card, Nav, Tab } from 'react-bootstrap'
 import { DiseñoForm, ObraForm } from '../../components/forms'
-import { Button } from '../../components/form-components'
 import { Line } from 'react-chartjs-2'
 import SVG from "react-inlinesvg"
 import { toAbsoluteUrl } from "../../functions/routers"
@@ -15,6 +14,7 @@ import InputSinText from '../../components/form-components/SinText/InputSinText'
 import Esquema3 from '../../components/draggable/Planos/Esquema3'
 import Esquema from '../../components/draggable/Planos/Esquema'
 import Swal from 'sweetalert2'
+import { Button, SelectCreate } from '../../components/form-components'
 
 class Diseño extends Component {
 
@@ -32,7 +32,8 @@ class Diseño extends Component {
             }]
         },
         options: {
-            empresas: []
+            empresas: [],
+            tipos: []
         },
         form: {
             m2: '',
@@ -69,6 +70,8 @@ class Diseño extends Component {
             esquema_1:[],
             esquema_2:[],
             esquema_3:[],
+            tipo: '',
+            tipoTarget: {taget: '', value: ''},
         },
         data: {
             empresas: []
@@ -238,7 +241,18 @@ class Diseño extends Component {
 
                         grafica = this.setGrafica(empresa)
                     }
+
+                    options.tipos = []
+
+                    empresa.tipos_planos.map((tipo) => {
+                        options.tipos.push({
+                            text: tipo.tipo,
+                            value: tipo.id,
+                            label: tipo.tipo
+                        })
+                    })
                 }
+                
                 this.setState({
                     ...this.state,
                     options,
@@ -875,9 +889,40 @@ class Diseño extends Component {
         })
     }
 
+    handleChangeCreate = (newValue) => {
+        const { form } = this.state
+        if(newValue == null){
+            newValue = { "label":"","value":"" }
+        }
+        let nuevoValue = {
+            "label":newValue.label,
+            "value":newValue.value
+        }
+        form.tipo = newValue.value
+        form.tipoTarget = nuevoValue
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
+
+    handleCreateOption = inputValue => {
+        let { options, form } = this.state
+        let newOption = {
+            'label': inputValue,
+            'value': inputValue,
+            'text': inputValue,
+        }
+        options.tipos.push(newOption)
+        form.tipoTarget = newOption
+        form.tipo = inputValue
+        this.setState({
+            ...this.state,
+            form, options
+        });
+    }
     render() {
-        const { form, empresa, data, grafica } = this.state
-            // {console.log(empresa)}
+        const { form, empresa, data, grafica, options } = this.state
         return (
             <Layout active={'catalogos'}  {...this.props}>
                 <Tab.Container activeKey={empresa !== '' ? empresa.id : ''} >
@@ -1002,7 +1047,7 @@ class Diseño extends Component {
                                                             </Card.Header>
                                                             <Card.Body className='py-0 px-3' style={{border:"3px solid #F3F6F9"}}>
                                                                 <div className="pt-2">
-                                                                    <Esquema planos = { form.esquema_2 } reorderPlanos = { this.reorderPlanosEsquema1y2 } deletePlano = { this.deletePlano } />
+                                                                    {/* <Esquema planos = { form.esquema_2 } reorderPlanos = { this.reorderPlanosEsquema1y2 } deletePlano = { this.deletePlano } /> */}
                                                                     <div className = 'row mx-0 py-2 mt-5'>
                                                                         <div className = 'col-10 w-100 align-self-center text-justify'>
                                                                             <InputSinText name = 'nombre' placeholder = 'PLANO' requireValidation = { 1 }
@@ -1029,9 +1074,26 @@ class Diseño extends Component {
                                                                     <Esquema3 planos = { form.esquema_3 } reorderPlanos = { this.reorderPlanos } deletePlano = { this.deletePlano } />
                                                                     <div className = 'row mx-0 py-2'>
                                                                         <div className = 'col-5 w-100 align-self-center text-justify'>
-                                                                            <InputSinText name = 'tipo' placeholder = 'TIPO' requireValidation = { 1 }
-                                                                                value = { form.esquema_3[form.esquema_3.length-1].tipo } onChange = { (e) => { this.handleChangePlanos('esquema_3', e,form.esquema_3.length-1) }}
-                                                                                customclass="border-top-0 border-left-0 border-right-0 rounded-0 text-center pl-0 w-100" />
+                                                                            {/* <InputSinText 
+                                                                                    name = 'tipo' 
+                                                                                    placeholder = 'TIPO' 
+                                                                                    requireValidation = { 1 }
+                                                                                    value = { form.esquema_3[form.esquema_3.length-1].tipo } 
+                                                                                    onChange = { (e) => { this.handleChangePlanos('esquema_3', e, form.esquema_3.length-1) }}
+                                                                                    customclass="border-top-0 border-left-0 border-right-0 rounded-0 text-center pl-0 w-100" 
+                                                                                /> */}
+
+                                                                            <SelectCreate 
+                                                                                name = 'tipo'
+                                                                                placeholder = "TIPO"
+                                                                                iconclass = "far fa-file-alt"
+                                                                                requirevalidation = { 1 }
+                                                                                messageinc = "Ingresa el tipo"
+                                                                                onChange = { this.handleChangeCreate }
+                                                                                onCreateOption = { this.handleCreateOption }
+                                                                                elementoactual = { form.tipoTarget }
+                                                                                options = { options.tipos }
+                                                                            />
                                                                         </div>
                                                                         <div className = 'col-5 w-100 align-self-center text-justify'>
                                                                             <InputSinText name = 'nombre' placeholder = 'PLANO' requireValidation = { 1 } value = { form.esquema_3[form.esquema_3.length - 1].nombre }
