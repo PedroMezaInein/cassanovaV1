@@ -26,10 +26,15 @@ import Pagination from "react-js-pagination"
 import SymbolIcon from '../../../components/singles/SymbolIcon'
 import Moment from 'react-moment'
 import FileItem from '../../../components/singles/FileItem'
+import { element } from 'prop-types'
 const $ = require('jquery');
 class Crm extends Component {
 
     state = {
+        flags:{
+            rechazo: false,
+            cancelado: false
+        },
         checked: 6,
         options: {
             empresas: [],
@@ -481,6 +486,12 @@ class Crm extends Component {
                 options.empresas = setOptions(empresas, 'name', 'id')
                 options.motivosCancelacion = motivosCancelacion
                 options.motivosRechazo = motivosRechazo
+                options.motivosCancelacion.map((motivo)=>{
+                    motivo.checked = false
+                })
+                options.motivosRechazo.map((motivo)=>{
+                    motivo.checked = false
+                })
                 let aux = []
                 origenes.map((origen) => {
                     aux.push({
@@ -1111,6 +1122,26 @@ class Crm extends Component {
         })
     }
 
+    onChangeMotivoRechazo =  e => {
+        const { value } = e.target
+        var element = document.getElementById("customInputRechazo");
+        if(value === 'Otro'){
+            element.classList.remove("d-none");
+        }else{
+            element.classList.add("d-none");
+        }
+    }
+
+    onChangeMotivoCancelado = e => {
+        const { value } = e.target
+        var element = document.getElementById("customInputCancelado");
+        if(value === 'Otro'){
+            element.classList.remove("d-none");
+        }else{
+            element.classList.add("d-none");
+        }
+    }
+
     onChangeEditar = e => {
         const { name, value } = e.target
         const { formEditar } = this.state
@@ -1343,7 +1374,7 @@ class Crm extends Component {
         console.log(claselabel)
     }  
     openModalWithInput = (estatus, id) => {
-        const { options, checked } = this.state
+        const { options, checked, flags } = this.state
         if(estatus === 'En negociación'){
             questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusCanceladoRechazadoAxios({ id: id, estatus: estatus }))
         }else{
@@ -1356,45 +1387,38 @@ class Crm extends Component {
                 <div>
                     {
                         estatus === 'Cancelado' ?
-                        <>
-                            <div>
+                            <form>
                                 {
-                                    options.motivosCancelacion.map((option,i)=>{
+                                    options.motivosCancelacion.map((option,key)=>{
                                         return(
-                                            <label key={i}>
-                                                <input 
-                                                    type="radio"
-                                                    checked={checked == i ? true : false}
-                                                    onChange={this.onChange2.bind(this, i)} 
-                                                    value={option.motivo}
-                                                />
-                                                {option.motivo}
-                                            </label>
+                                            <Form.Check key = { key } id = { `motivo-cancelado-${option.id}` } 
+                                                type="radio" label = { option.motivo } name = 'motivoCancelado'
+                                                className="text-justify mb-2" value = { option.motivo } 
+                                                onChange = { this.onChangeMotivoCancelado }/>
                                         )
                                     })
                                 }
-                            </div>
-                        </>
+                                <div id = 'customInputCancelado' className = 'd-none'>
+                                    HOLA
+                                </div>
+                            </form>
                         :
-                        <div>
+                            <form id = 'rechazoForm' name = 'rechazoForm' >
                                 {
                                     options.motivosRechazo.map((option, key) => {
                                         return (
-                                            <Form.Check
-                                                key={key}
-                                                type="radio"
-                                                label={option.motivo}
-                                                name="motivo"
-                                                className="text-justify mb-2 motivo"
-                                                value={option.motivo}
-                                            />
+                                            <Form.Check key = { key } id = { `motivo-rechazo-${option.id}` } 
+                                                type="radio" label = { option.motivo } name = 'motivoRechazo'
+                                                className="text-justify mb-2" value = { option.motivo } 
+                                                onChange = { this.onChangeMotivoRechazo }/>
                                         )
                                     })
                                 }
-                                {
-                                    this.input()
-                                }
-                    </div>
+                                <div id = 'customInputRechazo' className = 'd-none'>
+                                    HOLA
+                                </div>
+                            </form>
+                        
                     }
                 </div>
             )
