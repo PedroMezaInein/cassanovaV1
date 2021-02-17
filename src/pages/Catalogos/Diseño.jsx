@@ -14,7 +14,7 @@ import InputSinText from '../../components/form-components/SinText/InputSinText'
 import Esquema3 from '../../components/draggable/Planos/Esquema3'
 import Esquema from '../../components/draggable/Planos/Esquema'
 import Swal from 'sweetalert2'
-import { Button, SelectCreate } from '../../components/form-components'
+import { Button, SelectCreateSinText } from '../../components/form-components'
 
 class Diseño extends Component {
 
@@ -1073,7 +1073,7 @@ class Diseño extends Component {
                                                                 <div className="pt-2">
                                                                     <Esquema3 planos = { form.esquema_3 } reorderPlanos = { this.reorderPlanos } deletePlano = { this.deletePlano } />
                                                                     <div className = 'row mx-0 py-2'>
-                                                                        <div className = 'col-5 w-100 align-self-center text-justify'>
+                                                                        <div className = 'col-5 w-100 align-self-center text-justify pb-1'>
                                                                             {/* <InputSinText 
                                                                                     name = 'tipo' 
                                                                                     placeholder = 'TIPO' 
@@ -1083,7 +1083,7 @@ class Diseño extends Component {
                                                                                     customclass="border-top-0 border-left-0 border-right-0 rounded-0 text-center pl-0 w-100" 
                                                                                 /> */}
 
-                                                                            <SelectCreate 
+                                                                            <SelectCreateSinText 
                                                                                 name = 'tipo'
                                                                                 placeholder = "TIPO"
                                                                                 iconclass = "far fa-file-alt"
