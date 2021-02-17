@@ -17,6 +17,7 @@ const $ = require('jquery');
 class LeadInfo extends Component {
     state = {
         tipo: '',
+        activeNav: 'historial-contacto',
         modal: {
             presupuesto: false,
         },
@@ -572,22 +573,39 @@ class LeadInfo extends Component {
 
     /* --------------------- ASYNC CALL TO RECHAZAR ESTATUS --------------------- */    
     changeEstatusCanceladoRechazadoAxios = async (data) => {
-        data.motivo = document.getElementById('motivo').value
-        waitAlert()
+        const { estatus } = data
         const { access_token } = this.props.authUser
-        await axios.put(URL_DEV + 'crm/lead/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        let elemento = ''
+        let motivo = ''
+        if(estatus === 'Cancelado'){
+            elemento = document.canceladoForm.motivoCancelado.value;
+            motivo = document.getElementById('otro-motivo-cancelado').value
+        }
+        if(elemento === '')
+            errorAlert('No seleccionaste el motivo')
+        else{
+            waitAlert()
+            if(elemento === 'Otro')
+                if(motivo !== '')
+                    elemento = motivo
+            data.motivo = elemento
+            await axios.put(URL_DEV + 'crm/lead/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                const { activeNav } = this.state
+                this.changeActiveNav(activeNav)
                 const { history } = this.props
                 history.push('/leads/crm')
+                        
                 doneAlert('El estatus fue actualizado con éxito.')
             },
             (error) => {
                 printResponseErrorAlert(error)
             }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
+            ).catch((error) => {
+                    errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+                    console.log(error, 'error')
+            })
+        }
     }
 
     /* ----------------------- ASYN CALL TO CHANGE ESTATUS ---------------------- */
@@ -596,6 +614,8 @@ class LeadInfo extends Component {
         const { access_token } = this.props.authUser
         await axios.put(URL_DEV + 'crm/lead/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                const { activeNav } = this.state
+                this.changeActiveNav(activeNav)
                 const { history } = this.props
                 history.push('/leads/crm')
                 doneAlert('El estatus fue actualizado con éxito.')
@@ -1185,11 +1205,11 @@ class LeadInfo extends Component {
             element.classList.add("d-none");
         }
     }
-    
+
     openModalWithInput = (estatus, id) => {
         const { options } = this.state
         questionAlert2('ESCRIBE EL MOTIVO DE CANCELACIÓN', '', () => this.changeEstatusCanceladoRechazadoAxios({ id: id, estatus: estatus }),
-            <form className="mx-auto w-80">
+            <form id = 'canceladoForm' name = 'canceladoForm' className="mx-auto w-80">
                 {
                     options.motivosCancelacion.map((option,key)=>{
                         return(
@@ -1204,7 +1224,7 @@ class LeadInfo extends Component {
                     <Form.Control
                         placeholder='MOTIVO DE CANCELACIÓN'
                         className="form-control form-control-solid h-auto py-7 px-6 text-uppercase"
-                        id='otro-motivo'
+                        id='otro-motivo-cancelado'
                         as="textarea"
                         rows="3"
                     />
@@ -1297,12 +1317,25 @@ class LeadInfo extends Component {
             defaultKey
         })
     }
+    changeActiveNav = key => {
+        this.setState({
+            ...this.state,
+            activeNav: key
+        })
+    }
 
+    
     render() {
-        const { lead, form, formHistorial, options, formAgenda, formDiseño, modal, formeditado, itemsPerPage, activePage, activeKey, defaultKey } = this.state
+        const { lead, form, formHistorial, options, formAgenda, formDiseño, modal, formeditado, itemsPerPage, activePage, activeKey, defaultKey, activeNav} = this.state
+        // console.log(activeNav)
         return (
             <Layout active={'leads'}  {...this.props} botonHeader={this.botonHeader} >
-                <Tab.Container defaultActiveKey="2" className="p-5">
+                <Tab.Container
+                    className="p-5"
+                    defaultActiveKey={activeNav}
+                    activeKey={activeNav}
+                    onSelect={(select) => { this.changeActiveNav(select) }}
+                    >
                     <Row>
                         <Col md={12} className="mb-3">
                             <Card className="card-custom gutter-b">
@@ -1339,7 +1372,7 @@ class LeadInfo extends Component {
                                                                                                         <Dropdown.Header>
                                                                                                             <span className="font-size-sm">Elige una opción</span>
                                                                                                         </Dropdown.Header>
-                                                                                                        <Dropdown.Item href="#" className="p-0" onClick={(e) => { e.preventDefault(); this.changeEstatus('Detenido', lead.id) }} >
+                                                                                                        <Dropdown.Item className="p-0" onClick={(e) => { e.preventDefault(); this.changeEstatus('Detenido', lead.id) }} >
                                                                                                             <span className="navi-link w-100">
                                                                                                                 <span className="navi-text">
                                                                                                                     <span className="label label-xl label-inline bg-light-gray text-gray rounded-0 w-100">DETENIDO</span>
@@ -1393,7 +1426,7 @@ class LeadInfo extends Component {
                                                             <div className="d-flex align-items-center">
                                                                 <Nav className="navi navi-bold navi-hover navi-active navi-link-rounded d-inline-flex d-flex justify-content-center">
                                                                     <Nav.Item className="navi-item mr-3">
-                                                                        <Nav.Link className="navi-link px-2" eventKey="1" style={{ display: '-webkit-box' }}>
+                                                                        <Nav.Link className="navi-link px-2" eventKey="informacion-general" style={{ display: '-webkit-box' }}>
                                                                             <span className="navi-icon mr-2">
                                                                                 <span className="svg-icon">
                                                                                     <SVG src={toAbsoluteUrl('/images/svg/User.svg')} />
@@ -1405,7 +1438,7 @@ class LeadInfo extends Component {
                                                                         </Nav.Link>
                                                                     </Nav.Item>
                                                                     <Nav.Item className="navi-item mr-3">
-                                                                        <Nav.Link className="navi-link px-2" eventKey="2" style={{ display: '-webkit-box' }}>
+                                                                        <Nav.Link className="navi-link px-2" eventKey="historial-contacto" style={{ display: '-webkit-box' }}>
                                                                             <span className="navi-icon mr-2">
                                                                                 <span className="svg-icon">
                                                                                     <SVG src={toAbsoluteUrl('/images/svg/Group-chat.svg')} />
@@ -1417,14 +1450,14 @@ class LeadInfo extends Component {
                                                                         </Nav.Link>
                                                                     </Nav.Item>
                                                                     <Nav.Item className="navi-item">
-                                                                        <Nav.Link className="navi-link px-2" eventKey="3" style={{ display: '-webkit-box' }}>
+                                                                        <Nav.Link className="navi-link px-2" eventKey="cotizacion" style={{ display: '-webkit-box' }}>
                                                                             <span className="navi-icon mr-2">
                                                                                 <span className="svg-icon">
                                                                                     <SVG src={toAbsoluteUrl('/images/svg/File.svg')} />
                                                                                 </span>
                                                                             </span>
                                                                             <div className="navi-text">
-                                                                                <span className="d-block font-weight-bold">Presupuesto de diseño</span>
+                                                                                <span className="d-block font-weight-bold">Cotización de diseño</span>
                                                                             </div>
                                                                         </Nav.Link>
                                                                     </Nav.Item>
@@ -1442,7 +1475,7 @@ class LeadInfo extends Component {
                         <Col md={12} className="mb-3">
                             <Card className="card-custom card-stretch">
                                 <Tab.Content>
-                                    <Tab.Pane eventKey="1">
+                                    <Tab.Pane eventKey="informacion-general">
                                         <Card.Header className="align-items-center border-0 mt-4 pt-3 pb-0">
                                             <Card.Title>
                                                 <h3 className="card-title align-items-start flex-column">
@@ -1456,7 +1489,7 @@ class LeadInfo extends Component {
                                                 lead = { lead } formeditado = { formeditado } options = { options } />
                                         </Card.Body>
                                     </Tab.Pane>
-                                    <Tab.Pane eventKey="2">
+                                    <Tab.Pane eventKey="historial-contacto">
                                         <Card.Header className="border-0 mt-4 pt-3">
                                             <h3 className="card-title d-flex justify-content-between">
                                                 <span className="font-weight-bolder text-dark align-self-center">Historial de contacto</span>
@@ -1565,7 +1598,7 @@ class LeadInfo extends Component {
                                             </div>
                                         </Card.Body>
                                     </Tab.Pane>
-                                    <Tab.Pane eventKey="3">
+                                    <Tab.Pane eventKey="cotizacion">
                                         <Card.Header className="border-0 mt-4 pt-3">
                                             <h3 className="card-title d-flex justify-content-between">
                                                 <span className="font-weight-bolder text-dark align-self-center">Presupuesto de diseño</span>
