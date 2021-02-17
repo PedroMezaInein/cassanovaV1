@@ -100,7 +100,7 @@ class LeadNoContratado extends Component {
                                                 </td>
                                                 <td className="text-justify">
                                                     <span className="text-muted font-weight-bold font-size-sm">
-                                                        {lead.motivo}
+                                                        { lead.motivos ? lead.motivos.motivo : lead.motivo }
                                                     </span>
                                                 </td>
                                                 <td className="text-center">

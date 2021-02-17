@@ -909,24 +909,41 @@ class Crm extends Component {
 
     /* --------- ANCHOR CRM PUT CAMBIO DE ESTATUS CANCELADO Y RECHAZADO --------- */
     changeEstatusCanceladoRechazadoAxios = async (data) => {
-        if(document.getElementById('motivo'))
-            data.motivo = document.getElementById('motivo').value
-            const { access_token } = this.props.authUser
-        waitAlert()
-        await axios.put(URL_DEV + 'crm/lead/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                this.getUltimosIngresados()
-                this.getSinContactar()
-                this.getUltimosContactos()
-                const { activeTable } = this.state
-                this.changeActiveTable(activeTable)
-                doneAlert('El estatus fue actualizado con éxito.')
-            },
-            (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
+        const { estatus } = data
+        const { access_token } = this.props.authUser
+        let elemento = ''
+        let motivo = ''
+        if(estatus === 'Rechazado'){
+            elemento = document.rechazoForm.motivoRechazo.value;
+            motivo = document.getElementById('otro-motivo-rechazo').value
+        }
+        if(estatus === 'Cancelado'){
+            elemento = document.canceladoForm.motivoCancelado.value;
+            motivo = document.getElementById('otro-motivo-cancelado').value
+        }
+        if(elemento === '')
+            errorAlert('No seleccionaste el motivo')
+        else{
+            waitAlert()
+            if(elemento === 'Otro')
+                if(motivo !== '')
+                    elemento = motivo
+            data.motivo = elemento
+            await axios.put(`${URL_DEV}crm/lead/estatus/${data.id}`, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+                (response) => {
+                    this.getUltimosIngresados()
+                    this.getSinContactar()
+                    this.getUltimosContactos()
+                    const { activeTable } = this.state
+                    this.changeActiveTable(activeTable)
+                    doneAlert('El estatus fue actualizado con éxito.')
+                },
+                (error) => { printResponseErrorAlert(error) }
+            ).catch((error) => {
+                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+                console.log(error, 'error')
+            })
+        }
     }
 
     /* ----------------------- ANCHOR CRM UPDATE INFO LEAD ---------------------- */
@@ -1374,7 +1391,7 @@ class Crm extends Component {
                 <div>
                     {
                         estatus === 'Cancelado' ?
-                            <form className="mx-auto w-80">
+                            <form id = 'canceladoForm' name = 'canceladoForm' className="mx-auto w-80">
                                 {
                                     options.motivosCancelacion.map((option,key)=>{
                                         return(
@@ -1389,7 +1406,7 @@ class Crm extends Component {
                                     <Form.Control
                                         placeholder='MOTIVO DE CANCELACIÓN'
                                         className="form-control form-control-solid h-auto py-7 px-6 text-uppercase"
-                                        id='otro-motivo'
+                                        id='otro-motivo-cancelado'
                                         as="textarea"
                                         rows="3"
                                     />
@@ -1411,7 +1428,7 @@ class Crm extends Component {
                                     <Form.Control
                                         placeholder='MOTIVO DE RECHAZO'
                                         className="form-control form-control-solid h-auto py-7 px-6 text-uppercase"
-                                        id='otro-motivo'
+                                        id='otro-motivo-rechazo'
                                         as="textarea"
                                         rows="3"
                                     />
