@@ -21,7 +21,7 @@ import InputGray from '../../../components/form-components/Gray/InputGray'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
 import Swal from 'sweetalert2'
-import { Button } from '../../../components/form-components'
+import { Button, RadioGroup } from '../../../components/form-components'
 import Pagination from "react-js-pagination"
 import SymbolIcon from '../../../components/singles/SymbolIcon'
 import Moment from 'react-moment'
@@ -30,6 +30,13 @@ const $ = require('jquery');
 class Crm extends Component {
 
     state = {
+        options: {
+            empresas: [],
+            servicios: [],
+            origenes: [],
+            motivosCancelacion: [],
+            motivosRechazo: []
+        },
         ultimos_contactados: {
             data: [],
             numPage: 0,
@@ -38,11 +45,6 @@ class Crm extends Component {
             value: "ultimos_contactados"
         },
         activeTable: 'web',
-        options: {
-            empresas: [],
-            servicios: [],
-            origenes: []
-        },
         prospectos_sin_contactar: {
             data: [],
             numPage: 0,
@@ -155,6 +157,9 @@ class Crm extends Component {
             },
             hora: '08',
             minuto: '00',
+        },
+        formMotivo:{
+            motivo:''
         },
         modal_agendar: false,
         modal_editar: false,
@@ -469,10 +474,12 @@ class Crm extends Component {
         await axios.get(URL_DEV + 'crm/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 Swal.close()
-                const { empresas, origenes, medios } = response.data
+                const { empresas, origenes, medios, motivosCancelacion, motivosRechazo} = response.data
                 const { options } = this.state
                 options['tiposContactos'] = setOptions(medios, 'tipo', 'id')
                 options.empresas = setOptions(empresas, 'name', 'id')
+                options.motivosCancelacion = motivosCancelacion
+                options.motivosRechazo = motivosRechazo
                 let aux = []
                 origenes.map((origen) => {
                     aux.push({
@@ -482,6 +489,7 @@ class Crm extends Component {
                     return ''
                 })
                 options.origenes = aux
+
                 this.setState({
                     ...this.state,
                     options
@@ -892,6 +900,7 @@ class Crm extends Component {
         const { access_token } = this.props.authUser
         if(document.getElementById('motivo'))
             data.motivo = document.getElementById('motivo').value
+            console.log(document.getElementById('motivo').value)
         waitAlert()
         await axios.put(URL_DEV + 'crm/lead/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -1098,6 +1107,32 @@ class Crm extends Component {
         this.setState({
             ...this.state,
             form
+        })
+    }
+    onChangeMotivo = e => {
+        const { name, checked, type } = e.target
+        let { formMotivo } = this.state
+        const { options  } = this.state
+
+        options.motivosCancelacion.map((motivo) => {
+            if (name === motivo.motivo) {
+                formMotivo[name] = checked
+            }else{
+                formMotivo[name] = checked
+            }
+            return false
+        })
+        // if (type === 'radio') {
+
+        //     if (name === "si_reviso_cotizacion") {
+        //         formMotivo["no_reviso_cotizacion"] = false
+        //     }
+            
+        //     formMotivo[name] = checked
+        // }
+        this.setState({
+            ...this.state,
+            formMotivo
         })
     }
 
@@ -1321,6 +1356,7 @@ class Crm extends Component {
     }
 
     openModalWithInput = (estatus, id) => {
+        const { options, formMotivo } = this.state
         if(estatus === 'En negociación'){
             questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusCanceladoRechazadoAxios({ id: id, estatus: estatus }))
         }else{
@@ -1331,17 +1367,65 @@ class Crm extends Component {
                 '',
                 () => this.changeEstatusCanceladoRechazadoAxios({ id: id, estatus: estatus }),
                 <div>
-                    <Form.Control
-                        placeholder={
+                    {
+                        estatus === 'Cancelado' ?
+                        <>
+                            <div className="radio-list">
+                                {
+                                    options.motivosCancelacion.map((option, key) => {
+                                        return (
+                                            <>
+                                                <label className="radio radio-outline radio-brand text-dark-75 font-weight-bold">
+                                                    <input
+                                                        type="radio"
+                                                        name='no_desglose'
+                                                        value={formMotivo.motivo}
+                                                        onChange={this.onChange}
+                                                        checked={formMotivo.motivo}
+                                                    />
+                                                    {option.motivo}
+													<span></span>
+                                                </label>
+                                            </>
+                                        )
+                                    })
+                                }
+                            </div>
+                            
+                        </>
+                        :
+                        <>
+                            <div className="radio-list">
+                                {
+                                    options.motivosRechazo.map((option, key) => {
+                                        formMotivo.motivo = option.motivo
+                                        return (
+                                            <Form.Check
+                                                key={key}
+                                                type="radio"
+                                                label={option.motivo}
+                                                name="motivo"
+                                                id="motivo"
+                                                className="text-justify"
+                                                value={formMotivo.motivo}
+                                            />
+                                        )
+                                    })
+                                }
+                            </div>
+                        {/* <Form.Control
+                            placeholder={
                             estatus === 'Cancelado' ?
                                 'MOTIVO DE CANCELACIÓN' :
                                 'MOTIVO DE RECHAZO'
-                        }
-                        className="form-control form-control-solid h-auto py-7 px-6 text-uppercase"
-                        id='motivo'
-                        as="textarea"
-                        rows="3"
-                    />
+                            }
+                            className="form-control form-control-solid h-auto py-7 px-6 text-uppercase"
+                            id='motivo'
+                            as="textarea"
+                            rows="3"
+                        /> */}
+                    </>
+                    }
                 </div>
             )
         }
@@ -2076,8 +2160,8 @@ class Crm extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className = 'col-md-12 mt-4 text-truncate'>
-                                        <div className="bg-gray-100 p-3 font-size-lg font-weight-light" >
+                                    <div className = 'col-md-12 mt-4'>
+                                        <div className="bg-gray-100 p-3 font-size-lg font-weight-light text-justify" >
                                             <strong >Comentario: </strong>{lead.comentario}
                                         </div>
                                     </div>
