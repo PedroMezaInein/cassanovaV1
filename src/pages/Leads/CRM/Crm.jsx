@@ -909,10 +909,9 @@ class Crm extends Component {
 
     /* --------- ANCHOR CRM PUT CAMBIO DE ESTATUS CANCELADO Y RECHAZADO --------- */
     changeEstatusCanceladoRechazadoAxios = async (data) => {
-        const { access_token } = this.props.authUser
         if(document.getElementById('motivo'))
             data.motivo = document.getElementById('motivo').value
-            console.log(document.getElementById('motivo').value)
+            const { access_token } = this.props.authUser
         waitAlert()
         await axios.put(URL_DEV + 'crm/lead/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -1360,21 +1359,9 @@ class Crm extends Component {
     changeOrigen = (origen, id) => {
         questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.changeOrigenAxios({ id: id, origen: origen }))
     }
-
-    onChange2 (index) {
-        let { checked } = this.state
-        checked = index
-        this.setState({
-            ...this.state,
-            checked
-        });
-    }  
-    input(){
-        let claselabel = document.getElementsByClassName("motivo")
-        console.log(claselabel)
-    }  
+    
     openModalWithInput = (estatus, id) => {
-        const { options, checked, flags } = this.state
+        const { options } = this.state
         if(estatus === 'En negociación'){
             questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusCanceladoRechazadoAxios({ id: id, estatus: estatus }))
         }else{
@@ -1387,35 +1374,47 @@ class Crm extends Component {
                 <div>
                     {
                         estatus === 'Cancelado' ?
-                            <form>
+                            <form className="mx-auto w-80">
                                 {
                                     options.motivosCancelacion.map((option,key)=>{
                                         return(
                                             <Form.Check key = { key } id = { `motivo-cancelado-${option.id}` } 
                                                 type="radio" label = { option.motivo } name = 'motivoCancelado'
-                                                className="text-justify mb-2" value = { option.motivo } 
+                                                className="text-justify mb-3" value = { option.motivo } 
                                                 onChange = { this.onChangeMotivoCancelado }/>
                                         )
                                     })
                                 }
                                 <div id = 'customInputCancelado' className = 'd-none'>
-                                    HOLA
+                                    <Form.Control
+                                        placeholder='MOTIVO DE CANCELACIÓN'
+                                        className="form-control form-control-solid h-auto py-7 px-6 text-uppercase"
+                                        id='otro-motivo'
+                                        as="textarea"
+                                        rows="3"
+                                    />
                                 </div>
                             </form>
                         :
-                            <form id = 'rechazoForm' name = 'rechazoForm' >
+                            <form id = 'rechazoForm' name = 'rechazoForm' className="mx-auto w-90">
                                 {
                                     options.motivosRechazo.map((option, key) => {
                                         return (
                                             <Form.Check key = { key } id = { `motivo-rechazo-${option.id}` } 
                                                 type="radio" label = { option.motivo } name = 'motivoRechazo'
-                                                className="text-justify mb-2" value = { option.motivo } 
+                                                className="text-justify mb-3" value = { option.motivo } 
                                                 onChange = { this.onChangeMotivoRechazo }/>
                                         )
                                     })
                                 }
                                 <div id = 'customInputRechazo' className = 'd-none'>
-                                    HOLA
+                                    <Form.Control
+                                        placeholder='MOTIVO DE RECHAZO'
+                                        className="form-control form-control-solid h-auto py-7 px-6 text-uppercase"
+                                        id='otro-motivo'
+                                        as="textarea"
+                                        rows="3"
+                                    />
                                 </div>
                             </form>
                         
