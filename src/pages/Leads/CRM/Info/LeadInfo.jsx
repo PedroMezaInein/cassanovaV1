@@ -157,7 +157,8 @@ class LeadInfo extends Component {
             empresas: [],
             tipos: [],
             tiposContactos: [],
-            esquemas: []
+            esquemas: [],
+            motivosCancelacion: [],
         },
         formeditado: 0,
         showForm: false,
@@ -272,7 +273,7 @@ class LeadInfo extends Component {
         await axios.get(URL_DEV + 'crm/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 Swal.close()
-                const { empresas, medios } = response.data
+                const { medios, motivosCancelacion } = response.data
                 const { options } = this.state
                 options['tiposContactos'] = setOptions(medios, 'tipo', 'id')
                 options.esquemas = setOptions([
@@ -280,6 +281,12 @@ class LeadInfo extends Component {
                     { name: 'Esquema 2', value: 'esquema_2' },
                     { name: 'Esquema 3', value: 'esquema_3' },
                 ], 'name', 'value')
+
+                options.motivosCancelacion = motivosCancelacion
+                options.motivosCancelacion.map((motivo)=>{
+                    motivo.checked = false
+                })
+
                 this.setState({ ...this.state, options })
             },
             (error) => {
@@ -1169,17 +1176,40 @@ class LeadInfo extends Component {
         return formHistorial;
     }
 
+    onChangeMotivoCancelado = e => {
+        const { value } = e.target
+        var element = document.getElementById("customInputCancelado");
+        if(value === 'Otro'){
+            element.classList.remove("d-none");
+        }else{
+            element.classList.add("d-none");
+        }
+    }
+    
     openModalWithInput = (estatus, id) => {
+        const { options } = this.state
         questionAlert2('ESCRIBE EL MOTIVO DE CANCELACIÓN', '', () => this.changeEstatusCanceladoRechazadoAxios({ id: id, estatus: estatus }),
-            <div>
-                <Form.Control
-                    placeholder='MOTIVO DE CANCELACIÓN'
-                    className="form-control form-control-solid h-auto py-7 px-6 text-uppercase"
-                    id='motivo'
-                    as="textarea"
-                    rows="3"
-                />
-            </div>
+            <form className="mx-auto w-80">
+                {
+                    options.motivosCancelacion.map((option,key)=>{
+                        return(
+                            <Form.Check key = { key } id = { `motivo-cancelado-${option.id}` } 
+                                type="radio" label = { option.motivo } name = 'motivoCancelado'
+                                className="text-justify mb-3" value = { option.motivo } 
+                                onChange = { this.onChangeMotivoCancelado }/>
+                        )
+                    })
+                }
+                <div id = 'customInputCancelado' className = 'd-none'>
+                    <Form.Control
+                        placeholder='MOTIVO DE CANCELACIÓN'
+                        className="form-control form-control-solid h-auto py-7 px-6 text-uppercase"
+                        id='otro-motivo'
+                        as="textarea"
+                        rows="3"
+                    />
+                </div>
+            </form>
         )
     }
 
