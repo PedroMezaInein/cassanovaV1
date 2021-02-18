@@ -94,6 +94,64 @@ class Diseño extends Component {
         this.getDiseñoAxios()
     }
 
+    changePosicionTipo = async(tipo, direction) => {
+        const { access_token } = this.props.authUser
+        const { empresa } = this.state
+        await axios.put(`${URL_DEV}empresa/tabulador/reorder/esquema-3/${empresa.id}`, {tipo: tipo.tipo, dir: direction} ,{ headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                Swal.close();
+                const { empresa } = response.data
+                const { form } = this.state
+                let auxEsquema3 = [];
+                empresa.planos.map((plano) => {
+                    if(plano.esquema_3)
+                        auxEsquema3.push(plano)
+                    return ''
+                })
+                auxEsquema3.push({id: '', nombre: '', tipo: ''})
+                form.esquema_3 = auxEsquema3
+                this.setState({...this.state, form})
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    changePosicionPlano = async(plano, direction) => {
+        const { access_token } = this.props.authUser
+        const { empresa } = this.state
+        await axios.put(`${URL_DEV}empresa/tabulador/reorder/esquema-1-2/${empresa.id}`, {plano: plano.id, dir: direction} ,{ headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                Swal.close();
+                const { empresa } = response.data
+                const { form } = this.state
+                let auxEsquema2 = [];
+                let auxEsquema1 = [];
+                let auxEsquema3 = [];
+                empresa.planos.map((plano) => {
+                    if(plano.esquema_2)
+                        auxEsquema2.push(plano)
+                    if(plano.esquema_1)
+                        auxEsquema1.push(plano)
+                    if(plano.esquema_3)
+                        auxEsquema3.push(plano)
+                    return ''
+                })
+                auxEsquema1.push({id: '', nombre: ''})
+                auxEsquema2.push({id: '', nombre: ''})
+                auxEsquema3.push({id: '', nombre: '', tipo: ''})
+                form.esquema_1 = auxEsquema1
+                form.esquema_2 = auxEsquema2
+                form.esquema_3 = auxEsquema3
+                this.setState({...this.state, form})
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     reorderPlanosEsquema1y2 = async(result) => {
         const { access_token } = this.props.authUser
         const { empresa } = this.state
@@ -827,7 +885,7 @@ class Diseño extends Component {
         const { form } = this.state
         if(form[esquema][key].nombre !== '')
             if(esquema === 'esquema_3')
-                if(form[esquema][key].tipo !== '')
+                if(form.tipoTarget !== '')
                     createAlertSA2Parametro(
                         '¿CONFIRMAS EL ENVÍO DE INFORMACIÓN?', '', this.sendPlanoAxios, {esquema: esquema, value: form[esquema][key]}
                     )
@@ -844,19 +902,17 @@ class Diseño extends Component {
     sendPlanoAxios = async(datos) => {
 
         const { access_token } = this.props.authUser
-        const { empresa } = this.state
+        const { empresa, form } = this.state
 
-        await axios.post(URL_DEV + 'empresa/' + empresa.id + '/plano/' + datos.esquema, datos.value, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        if(datos.esquema === 'esquema_3')
+            datos.value.tipo = form.tipoTarget
+
+        await axios.post(`${URL_DEV}empresa/${empresa.id}/plano/${datos.esquema}`, datos.value, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { empresa } = response.data
-
                 this.getSingleDiseño(empresa.id)
                 doneAlert('Plano agregado con éxito')
-
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -871,18 +927,12 @@ class Diseño extends Component {
     deletePlanoAxios = async(data) => {
         const { access_token } = this.props.authUser
         const { empresa } = this.state
-
-        await axios.delete(URL_DEV + 'empresa/' + empresa.id + '/planos/' + data.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.delete(`${URL_DEV}empresa/${empresa.id}/planos/${data.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { empresa } = response.data
-
                 this.getSingleDiseño(empresa.id)
                 doneAlert('Plano eliminado con éxito')
-
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -1021,13 +1071,14 @@ class Diseño extends Component {
                                                             <Card.Header className="p-3 border-0 bg-light">
                                                                 <div class="card-label text-dark font-size-h6 font-weight-bold text-center">ESQUEMA 1</div>
                                                             </Card.Header>
-                                                            <Card.Body className='py-0 px-3' style={{border:"3px solid #F3F6F9"}} >
-                                                                <div className="pt-2">
-                                                                    {/* <Esquema planos = { form.esquema_1 } reorderPlanos = { this.reorderPlanosEsquema1y2 } deletePlano = { this.deletePlano } /> */}
+                                                            <Card.Body className='py-0 px-0' style={{border:"3px solid #F3F6F9"}} >
+                                                                <div className="pt-0">
+                                                                    <Esquema planos = { form.esquema_1 } deletePlano = { this.deletePlano } 
+                                                                        changePosicionPlano = { this.changePosicionPlano } />
                                                                     <div className = 'row mx-0 py-2'>
                                                                         <div className = 'col-10 w-100 align-self-center text-justify'>
                                                                             <InputSinText name = 'nombre' placeholder = 'PLANO' requireValidation = { 1 }
-                                                                                value = { form.esquema_1[form.esquema_1.length-1].tipo } onChange = { (e) => { this.handleChangePlanos('esquema_1', e,form.esquema_1.length-1) }}
+                                                                                value = { form.esquema_1[form.esquema_1.length-1].nombre } onChange = { (e) => { this.handleChangePlanos('esquema_1', e,form.esquema_1.length-1) }}
                                                                                 customclass="border-top-0 border-left-0 border-right-0 rounded-0 text-center pl-0 w-100" />
                                                                         </div>
                                                                         <div className='col-2 text-center d-flex align-items-end justify-content-center'>
@@ -1045,13 +1096,14 @@ class Diseño extends Component {
                                                             <Card.Header className="p-3 border-0 bg-light">
                                                                 <div class="card-label text-dark font-size-h6 font-weight-bold text-center">ESQUEMA 2</div>
                                                             </Card.Header>
-                                                            <Card.Body className='py-0 px-3' style={{border:"3px solid #F3F6F9"}}>
-                                                                <div className="pt-2">
-                                                                    {/* <Esquema planos = { form.esquema_2 } reorderPlanos = { this.reorderPlanosEsquema1y2 } deletePlano = { this.deletePlano } /> */}
-                                                                    <div className = 'row mx-0 py-2 mt-5'>
+                                                            <Card.Body className='py-0 px-0' style={{border:"3px solid #F3F6F9"}}>
+                                                                <div className="pt-0">
+                                                                    <Esquema planos = { form.esquema_2 } deletePlano = { this.deletePlano } 
+                                                                        changePosicionPlano = { this.changePosicionPlano } />
+                                                                    <div className = 'row mx-0 py-2'>
                                                                         <div className = 'col-10 w-100 align-self-center text-justify'>
                                                                             <InputSinText name = 'nombre' placeholder = 'PLANO' requireValidation = { 1 }
-                                                                                value = { form.esquema_2[form.esquema_2.length-1].tipo } onChange = { (e) => { this.handleChangePlanos('esquema_3', e,form.esquema_2.length-1) }}
+                                                                                value = { form.esquema_2[form.esquema_2.length-1].nombre } onChange = { (e) => { this.handleChangePlanos('esquema_2', e,form.esquema_2.length-1) }}
                                                                                 customclass="border-top-0 border-left-0 border-right-0 rounded-0 text-center pl-0 w-100" />
                                                                         </div>
                                                                         <div className='col-2 text-center d-flex align-items-end justify-content-center'>
@@ -1069,9 +1121,10 @@ class Diseño extends Component {
                                                             <Card.Header className="p-3 border-0 bg-light">
                                                             <div class="card-label text-dark font-size-h6 font-weight-bold text-center">ESQUEMA 3</div>
                                                             </Card.Header>
-                                                            <Card.Body className='py-0 px-3' style={{border:"3px solid #F3F6F9"}}>
-                                                                <div className="pt-2">
-                                                                    <Esquema3 planos = { form.esquema_3 } reorderPlanos = { this.reorderPlanos } deletePlano = { this.deletePlano } />
+                                                            <Card.Body className='py-0 px-0' style={{border:"3px solid #F3F6F9"}}>
+                                                                <div className="pt-0 border-top">
+                                                                    <Esquema3 planos = { form.esquema_3 } deletePlano = { this.deletePlano } 
+                                                                        changePosicionPlano = { this.changePosicionPlano } changePosicionTipo = { this.changePosicionTipo } />
                                                                     <div className = 'row mx-0 py-2'>
                                                                         <div className = 'col-5 w-100 align-self-center text-justify pb-1'>
                                                                             {/* <InputSinText 
