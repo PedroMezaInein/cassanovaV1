@@ -384,11 +384,11 @@ td.concepto {
         color: #B5B5C3;
 
         &:hover {
-            color: #2171c1;
+            color: #464E5F;
         }
 
         &:active {
-            color: #2171c1;
+            color: #464E5F;
         }
 
     }
@@ -431,6 +431,34 @@ a#cancelados-rechazados.text-hover-primary.dropdown-item.active,  a#rh-proveedor
 
     i {
         color: #2171c1;
+    }
+}
+
+.dropdown-pagina-web {
+    font-weight: 500;
+    color: #7f7f7f;
+
+    &:hover {
+        color: #8950FC;
+        text-decoration: none;
+        background-color: #F3F6F9;
+    }
+
+    &:active {
+        color: #8950FC ;
+        text-decoration: none;
+        background-color: #F3F6F9;
+    }
+}
+
+.dropdown-pagina-web.dropdown-item.active{
+    color: #8950FC;
+    text-decoration: none;
+    background-color: #F3F6F9;
+    font-weight: 500;
+
+    i {
+        color: #8950FC;
     }
 }
 
@@ -1519,4 +1547,11 @@ span.font-weight-bolder.text-hover-error:hover{
 .navi.navi-active .navi-item .bg-navi-light-warning.active {
     background-color: #fff7e8;
     border-radius: 0;
+}
+
+.w-80{
+    width: 80%;
+}
+.w-90{
+    width: 90%;
 }
