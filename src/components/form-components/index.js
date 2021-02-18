@@ -29,6 +29,7 @@ import inputMoneySinText from './SinText/InputMoneySinText'
 import selectSearchSinText from './SinText/SelectSearchSinText'
 import inputNumberSinText from './SinText/InputNumberSinText'
 import inputSinText from './SinText/InputSinText'
+import selectCreateSinText from './SinText/SelectCreateSinText'
 // Sin validar y sin texto de error
 import inputGray from './Gray/InputGray'
 import inputPhoneGray from './Gray/InputPhoneGray'
@@ -79,6 +80,7 @@ export const InputMoneySinText = inputMoneySinText
 export const SelectSearchSinText = selectSearchSinText
 export const InputNumberSinText = inputNumberSinText
 export const InputSinText = inputSinText
+export const SelectCreateSinText = selectCreateSinText
 // Sin validar y sin texto de error
 export const InputGray = inputGray
 export const InputPhoneGray = inputPhoneGray

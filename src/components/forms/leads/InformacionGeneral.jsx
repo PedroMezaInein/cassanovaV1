@@ -42,7 +42,7 @@ class InformacionGeneral extends Component {
                         </div>
                         {
                             lead.estatus ?
-                                lead.estatus.estatus !== "En espera"  && lead.relaciones_publicas === false ?
+                                lead.estatus.estatus !== "En espera"  || lead.relaciones_publicas === false ?
                                     <div className="col-md-3">
                                         <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 1 } 
                                             requirevalidation = { 1 } withformgroup = { 1 } formeditado = { formeditado }

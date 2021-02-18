@@ -169,7 +169,7 @@ class DiseñoForm extends Component {
                                                             value={form['variaciones'][key]['inferior']}
                                                             onChange={(e) => onChangeVariaciones(key, e, 'inferior')}
                                                             // customstyle={{ width: "auto", borderRadius: 0, borderTop: 'none', borderRight: 'none', borderLeft: 'none' }}
-                                                            identificador="inferior"
+                                                            /* identificador="inferior" */
                                                             customclass="border-top-0 border-left-0 border-right-0 rounded-0 w-100px text-center pl-0"
                                                         />
                                                     </div>
@@ -183,7 +183,7 @@ class DiseñoForm extends Component {
                                                             value={form['variaciones'][key]['superior']}
                                                             onChange={(e) => onChangeVariaciones(key, e, 'superior')}
                                                             // customstyle={{ width: "auto", borderRadius: 0, borderTop: 'none', borderRight: 'none', borderLeft: 'none' }}
-                                                            identificador="superior"
+                                                            /* identificador="superior" */
                                                             customclass="border-top-0 border-left-0 border-right-0 rounded-0 w-100px text-center pl-0"
                                                         />
                                                     </div>
@@ -199,7 +199,7 @@ class DiseñoForm extends Component {
                                                             thousandseparator={true}
                                                             prefix='$'
                                                             // customstyle = { { width: "auto", borderRadius: 0, borderTop: 'none', borderRight: 'none', borderLeft: 'none' } }
-                                                            identificador="cambio"
+                                                            /* identificador="cambio" */
                                                             customclass="border-top-0 border-left-0 border-right-0 rounded-0 w-100px text-center pl-0"
                                                         />
                                                     </div>

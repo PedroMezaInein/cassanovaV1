@@ -23,7 +23,7 @@ class LeadNuevo extends Component {
         }
         return false;
     }
-    
+
     canSendFirstEmail = lead => {
         if (lead.prospecto) {
             if (lead.prospecto.contactos) {
@@ -43,7 +43,7 @@ class LeadNuevo extends Component {
         }
         return true
     }
-    
+
     render() {
         const { leads, onClickPrev, onClickNext, sendEmail, openModal, openModalWithInput, openModalEditar, changePageLlamadaSalida, options, changeOrigen, openModalHistorial,
             deleteDuplicado, moveToRelacionesPublicas } = this.props
@@ -54,7 +54,7 @@ class LeadNuevo extends Component {
                         <table className="table table-borderless table-vertical-center">
                             <thead>
                                 <tr>
-                                    <th colSpan="7" className = 'text-info p-2 text-center text-uppercase'>
+                                    <th colSpan="7" className='text-info p-2 text-center text-uppercase'>
                                         LEADS DE PÁGINA WEB
                                     </th>
                                 </tr>
@@ -67,12 +67,12 @@ class LeadNuevo extends Component {
                                     <th style={{ minWidth: "95px" }} className="text-center">Empresa</th>
                                     <th style={{ minWidth: "100px" }} className="text-center">Origen</th>
                                     <th style={{ minWidth: "100px" }} className="text-center">Estatus</th>
-                                    <th style={{ minWidth: "75px" }}></th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {
-                                    leads.total?
+                                    leads.total ?
                                         leads.total === 0 ?
                                             <tr>
                                                 <td colSpan="6" className="text-center text-dark-75 font-weight-bolder font-size-lg pt-3">NO SE ENCONTRARON RESULTADOS</td>
@@ -115,7 +115,7 @@ class LeadNuevo extends Component {
                                                                             <OverlayTrigger key={key} overlay={<Tooltip>{lead.empresa.name}</Tooltip>}>
                                                                                 <div className="symbol-group symbol-hover d-flex justify-content-center">
                                                                                     <div className="symbol symbol-40 symbol-circle">
-                                                                                        <img alt="Pic" src={isotipo.url}/>
+                                                                                        <img alt="Pic" src={isotipo.url} />
                                                                                     </div>
                                                                                 </div>
                                                                             </OverlayTrigger>
@@ -130,12 +130,12 @@ class LeadNuevo extends Component {
                                                                     lead.origen ?
                                                                         <span className="text-dark-75 font-weight-bolder d-block font-size-lg">
                                                                             <Dropdown>
-                                                                                <Dropdown.Toggle 
+                                                                                <Dropdown.Toggle
                                                                                     style={
-                                                                                        { 
-                                                                                            backgroundColor:'#F3F6F9', color: '#80808F', border: 'transparent', padding: '2.8px 5.6px',
+                                                                                        {
+                                                                                            backgroundColor: '#F3F6F9', color: '#80808F', border: 'transparent', padding: '2.8px 5.6px',
                                                                                             width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '11.5px',
-                                                                                            fontWeight: 500 
+                                                                                            fontWeight: 500
                                                                                         }
                                                                                     }
                                                                                 >
@@ -146,19 +146,19 @@ class LeadNuevo extends Component {
                                                                                         <span className="font-size-sm">Elige una opción</span>
                                                                                     </Dropdown.Header>
                                                                                     {
-                                                                                        options.origenes.map((origen,key) => {
-                                                                                            return(
-                                                                                                <div key = {key}>
-                                                                                                    <Dropdown.Item className="p-0" key = { key } onClick = { () => { changeOrigen( origen.value, lead.id ) } } >
+                                                                                        options.origenes.map((origen, key) => {
+                                                                                            return (
+                                                                                                <div key={key}>
+                                                                                                    <Dropdown.Item className="p-0" key={key} onClick={() => { changeOrigen(origen.value, lead.id) }} >
                                                                                                         <span className="navi-link w-100">
                                                                                                             <span className="navi-text">
                                                                                                                 <span className="label label-xl label-inline  text-gray rounded-0 w-100 font-weight-bolder">
-                                                                                                                    { origen.text }
+                                                                                                                    {origen.text}
                                                                                                                 </span>
                                                                                                             </span>
                                                                                                         </span>
                                                                                                     </Dropdown.Item>
-                                                                                                    <Dropdown.Divider className="m-0" style={{borderTop:'1px solid #fff'}}/>
+                                                                                                    <Dropdown.Divider className="m-0" style={{ borderTop: '1px solid #fff' }} />
                                                                                                 </div>
                                                                                             )
                                                                                         })
@@ -166,7 +166,7 @@ class LeadNuevo extends Component {
                                                                                 </Dropdown.Menu>
                                                                             </Dropdown>
                                                                         </span>
-                                                                    : ''
+                                                                        : ''
                                                                 }
                                                             </div>
                                                         </td>
@@ -216,10 +216,12 @@ class LeadNuevo extends Component {
                                                             }
                                                         </td>
                                                         <td className="pr-0 text-center">
-                                                            <DropdownButton menualign="right"
-                                                                title = { <i className="fas fa-chevron-down icon-nm p-0"></i> }
-                                                                id = {`dropdown-button-drop-left-crm`} >
-                                                                <Dropdown.Item className="text-hover-info" onClick = { (e) => { openModalEditar(lead) } } >
+                                                            <DropdownButton
+                                                                    menualign="right"
+                                                                    title={<i className="fas fa-chevron-down icon-nm p-0"></i>}
+                                                                    id={`dropdown-button-drop-left-crm`} 
+                                                                >
+                                                                <Dropdown.Item className="text-hover-info dropdown-pagina-web" onClick={(e) => { openModalEditar(lead) }} >
                                                                     <span className="navi-icon">
                                                                         <i className="fas fa-edit pr-3 text"></i>
                                                                     </span>
@@ -227,42 +229,40 @@ class LeadNuevo extends Component {
                                                                 </Dropdown.Item>
                                                                 {
                                                                     this.canSendFirstEmail(lead) ?
-                                                                        <Dropdown.Item className="text-hover-info" 
-                                                                            onClick = { (e) => { questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => sendEmail(lead)) }}>
+                                                                        <Dropdown.Item className="text-hover-info dropdown-pagina-web"
+                                                                            onClick={(e) => { questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => sendEmail(lead)) }}>
                                                                             <span className="navi-icon">
                                                                                 <i className="fas fa-envelope-open pr-3 text"></i>
                                                                             </span>
                                                                             <span className="navi-text align-self-center">ENVIAR CORREO</span>
                                                                         </Dropdown.Item>
-                                                                    : ''
+                                                                        : ''
                                                                 }
-                                                                <Dropdown.Item className="text-hover-info" onClick={(e) => { changePageLlamadaSalida(lead) }} >
+                                                                <Dropdown.Item className="text-hover-info dropdown-pagina-web" onClick={(e) => { changePageLlamadaSalida(lead) }} >
                                                                     <span className="navi-icon">
                                                                         <i className="fas fa-phone pr-3 text"></i>
                                                                     </span>
                                                                     <span className="navi-text align-self-center">AGENDAR LLAMADA</span>
                                                                 </Dropdown.Item>
-                                                                <Dropdown.Item className="text-hover-info" onClick={(e) => { changePageLlamadaSalida(lead) }} >
+                                                                <Dropdown.Item className="text-hover-info dropdown-pagina-web" onClick={(e) => { changePageLlamadaSalida(lead) }} >
                                                                     <span className="navi-icon">
                                                                         <i className="fas fa-file pr-3 text"></i>
                                                                     </span>
                                                                     <span className="navi-text align-self-center">SEGUIMIENTO (SCRIPT)</span>
                                                                 </Dropdown.Item>
-                                                                <Dropdown.Item className="text-hover-info" onClick={(e) => { openModalHistorial(lead) }} >
+                                                                <Dropdown.Item className="text-hover-info dropdown-pagina-web" onClick={(e) => { openModalHistorial(lead) }} >
                                                                     <span className="navi-icon">
                                                                         <i className="fas fa-clipboard-list pr-3 text"></i>
                                                                     </span>
                                                                     <span className="navi-text align-self-center">HISTORIAL DE CONTACTO</span>
                                                                 </Dropdown.Item>
-                                                                <Dropdown.Item className="text-hover-info" 
-                                                                    onClick = { (e) => { questionAlert('¿ESTÁS SEGURO?', 'ESTE LEAD SERÁ MARCADO COMO DUPLICADO', () => deleteDuplicado(lead)) }}>
+                                                                <Dropdown.Item className="text-hover-info dropdown-pagina-web" onClick={(e) => { questionAlert('¿ESTÁS SEGURO?', 'ESTE LEAD SERÁ MARCADO COMO DUPLICADO', () => deleteDuplicado(lead)) }}>
                                                                     <span className="navi-icon">
                                                                         <i className="fas fa-minus-circle pr-3 text"></i>
                                                                     </span>
                                                                     <span className="navi-text align-self-center">ELIMINAR LEAD DUPLICADO</span>
                                                                 </Dropdown.Item>
-                                                                <Dropdown.Item className="text-hover-info" 
-                                                                    onClick = { (e) => { questionAlert('¿ESTÁS SEGURO?', 'MOVERÁS ESTE LEAD A RELACIONES PÚBLICAS', () => moveToRelacionesPublicas(lead)) }}>
+                                                                <Dropdown.Item className="text-hover-info dropdown-pagina-web" onClick={(e) => { questionAlert('¿ESTÁS SEGURO?', 'MOVERÁS ESTE LEAD A RELACIONES PÚBLICAS', () => moveToRelacionesPublicas(lead)) }}>
                                                                     <span className="navi-icon">
                                                                         <i className="far fa-handshake pr-3 text"></i>
                                                                     </span>
@@ -273,7 +273,7 @@ class LeadNuevo extends Component {
                                                     </tr>
                                                 )
                                             })
-                                    :   
+                                        :
                                         <tr>
                                             <td colSpan="6" className="text-center text-dark-75 font-weight-bolder font-size-lg pt-3">NO SE ENCONTRARON RESULTADOS</td>
                                         </tr>
@@ -281,13 +281,13 @@ class LeadNuevo extends Component {
                             </tbody>
                         </table>
                     </div>
-                    <div className = { leads.total === 0 ? "d-flex justify-content-end" : "d-flex justify-content-between" } >
+                    <div className={leads.total === 0 ? "d-flex justify-content-end" : "d-flex justify-content-between"} >
                         {
                             leads.total > 0 ?
                                 <div className="text-body font-weight-bolder font-size-sm">
-                                    Página { parseInt(leads.numPage) + 1} de { leads.total_paginas }
+                                    Página {parseInt(leads.numPage) + 1} de {leads.total_paginas}
                                 </div>
-                            : ''
+                                : ''
                         }
                         <div>
                             {
