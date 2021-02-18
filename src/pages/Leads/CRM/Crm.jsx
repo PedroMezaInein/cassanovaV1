@@ -21,7 +21,7 @@ import InputGray from '../../../components/form-components/Gray/InputGray'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
 import Swal from 'sweetalert2'
-import { Button, RadioGroup } from '../../../components/form-components'
+import { Button } from '../../../components/form-components'
 import Pagination from "react-js-pagination"
 import SymbolIcon from '../../../components/singles/SymbolIcon'
 import Moment from 'react-moment'
@@ -1398,10 +1398,20 @@ class Crm extends Component {
                                             <Form.Check key = { key } id = { `motivo-cancelado-${option.id}` } 
                                                 type="radio" label = { option.motivo } name = 'motivoCancelado'
                                                 className="text-justify mb-3" value = { option.motivo } 
-                                                onChange = { this.onChangeMotivoCancelado }/>
+                                                // onChange = { this.onChangeMotivoCancelado }
+                                                />
                                         )
                                     })
                                 }
+                                <Form.Check 
+                                    id="motivo-cancelado-7"
+                                    type="radio"
+                                    label="Otro"
+                                    name = 'motivoCancelado'
+                                    className="text-justify mb-3"
+                                    value="Otro"
+                                    onChange = { this.onChangeMotivoCancelado }
+                                />
                                 <div id = 'customInputCancelado' className = 'd-none'>
                                     <Form.Control
                                         placeholder='MOTIVO DE CANCELACIÓN'
@@ -1420,10 +1430,20 @@ class Crm extends Component {
                                             <Form.Check key = { key } id = { `motivo-rechazo-${option.id}` } 
                                                 type="radio" label = { option.motivo } name = 'motivoRechazo'
                                                 className="text-justify mb-3" value = { option.motivo } 
-                                                onChange = { this.onChangeMotivoRechazo }/>
+                                                // onChange = { this.onChangeMotivoRechazo }
+                                                />
                                         )
                                     })
                                 }
+                                <Form.Check 
+                                    id="motivo-rechazo-14"
+                                    type="radio"
+                                    label="Otro"
+                                    name = 'motivoRechazo'
+                                    className="text-justify mb-3"
+                                    value="Otro"
+                                    onChange = { this.onChangeMotivoRechazo }
+                                />
                                 <div id = 'customInputRechazo' className = 'd-none'>
                                     <Form.Control
                                         placeholder='MOTIVO DE RECHAZO'
