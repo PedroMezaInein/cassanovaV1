@@ -1,9 +1,9 @@
 import { connect } from 'react-redux'
 import React, { Component } from 'react'
 import Layout from '../../../../components/layout/layout'
-import { Card, Nav, Tab, Col, Row } from 'react-bootstrap'
+import { Card, Nav, Tab, Col, Row, Form } from 'react-bootstrap'
 import axios from 'axios'
-import { doneAlert, errorAlert, printResponseErrorAlert, questionAlertY, waitAlert } from '../../../../functions/alert'
+import { createAlertSA2Parametro, doneAlert, errorAlert, printResponseErrorAlert, questionAlert2, questionAlertY, waitAlert, deleteAlert } from '../../../../functions/alert'
 import Swal from 'sweetalert2'
 import { setOptions } from '../../../../functions/setters'
 import { URL_DEV } from '../../../../constants'
@@ -522,25 +522,31 @@ class LeadLlamadaSalida extends Component {
     }
 
     onSubmit = async (e) => {
-        waitAlert();
         const { form, lead } = this.state
         const { access_token } = this.props.authUser
-        await axios.put(URL_DEV + `crm/update/lead/llamada-saliente/${lead.id}`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Actualizaste los permisos.',)
-                const { history } = this.props
-                history.push({
-                    pathname: '/leads/crm',
-                    state: { tipo: 'lead-telefono' }
-                });
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
+        let sendCorreoValue = document.sendCorreoForm.sendCorreo.value;
+        if(sendCorreoValue === 'si' || sendCorreoValue === 'no'){
+            waitAlert();
+            form.sendCorreoValue =  sendCorreoValue
+            await axios.put(`${URL_DEV}crm/update/lead/llamada-saliente/${lead.id}`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+                (response) => {
+                    doneAlert(response.data.message !== undefined ? response.data.message : 'Actualizaste los permisos.',)
+                    const { history } = this.props
+                    history.push({
+                        pathname: '/leads/crm',
+                        state: { tipo: 'lead-telefono' }
+                    });
+                },
+                (error) => {
+                    printResponseErrorAlert(error)
+                }
+            ).catch((error) => {
+                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+                console.log(error, 'error')
+            })
+        }else{
+            errorAlert('Selecciona una opción')
+        }
     }
 
     sendWhatsapp = texto => {
@@ -614,12 +620,24 @@ class LeadLlamadaSalida extends Component {
                                             : ''
                                         : messages
                                     }
-                                    <FormLlamada
-                                        form={form}
-                                        onChange={this.onChange}
-                                        updateTipoProyecto={this.updateTipoProyecto}
-                                        options={options}
-                                        onSubmit={this.onSubmit}
+                                    <FormLlamada form = { form } onChange = { this.onChange }
+                                        updateTipoProyecto = { this.updateTipoProyecto } options = { options }
+                                        onSubmit = { 
+                                            (e) => {
+                                                e.preventDefault();
+                                                questionAlert2(
+                                                    '¿Deseas enviar correo al cliente?',
+                                                    '',
+                                                    () => { this.onSubmit() },
+                                                    <form id = 'sendCorreoForm' name = 'sendCorreoForm' >
+                                                        <Form.Check type="radio" label="SI" name="sendCorreo"
+                                                            className="px-0 mb-2" value = 'si'/>
+                                                        <Form.Check type="radio" label="NO" name="sendCorreo"
+                                                            className="px-0 mb-2" value = 'no'/>
+                                                    </form>
+                                                )
+                                            }
+                                        }
                                     />
                                 </Tab.Pane>
                                 <Tab.Pane eventKey="second">
