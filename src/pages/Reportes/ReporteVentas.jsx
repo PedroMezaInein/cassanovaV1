@@ -15,10 +15,11 @@ import FlujosReportesVentas from '../../components/forms/reportes/FlujosReportes
 import { Editor } from 'react-draft-wysiwyg'
 import { EditorState, convertToRaw } from 'draft-js'
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
-import ReporteVentasInein from '../../components/pdfs/ReporteVentasAnual/ReporteVentasInein'
-import ReporteVentasIm from '../../components/pdfs/ReporteVentasAnual/ReporteVentasIm'
+// import RVAnualInein from '../../components/pdfs/ReporteVentasAnual/RVAnualInein'
+// import RVAnualIm from '../../components/pdfs/ReporteVentasAnual/RVAnualIm'
+import ReporteVentasInein from '../../components/pdfs/ReporteVentasInein'
+import ReporteVentasIm from '../../components/pdfs/ReporteVentasIm'
 import { Modal } from '../../components/singles'
-import { formatDiagnosticsWithColorAndContext } from 'typescript'
 
 class ReporteVentas extends Component {
 
@@ -1395,7 +1396,7 @@ class ReporteVentas extends Component {
                                                 <Bar ref={this.chartTotalReference} data={data.total} options={optionsBar} />
                                             </Tab.Pane>
                                             <Tab.Pane eventKey='2'>
-                                                {this.setButtons('1', '3', null, empresa, '02', 'ENTRADA DE LEADS (MENSUAL)')}
+                                                {this.setButtons('1', '3', null, empresa, '02', 'ENTRADA DE LEADS MENSUAL')}
                                                 <Bar ref={this.chartTotalComparativaReference} data={data.comparativa} options={optionsBar} />
                                             </Tab.Pane>
                                             <Tab.Pane eventKey='3'>
@@ -1411,7 +1412,7 @@ class ReporteVentas extends Component {
                                                 <Bar ref={this.chartTotalServiciosReference} data={data.servicios} options={optionsBar} />
                                             </Tab.Pane>
                                             <Tab.Pane eventKey='6'>
-                                                {this.setButtons('5', '7', null, empresa, '06', 'ORIGEN DE LEADS (MENSUAL)')}
+                                                {this.setButtons('5', '7', null, empresa, '06', 'ORIGEN DE LEADS MENSUAL')}
                                                 <Bar ref={this.chartComparativaServiciosReference} data={data.serviciosComparativa} options={optionsBarGroup} />
                                             </Tab.Pane>
                                             <Tab.Pane eventKey='7'>
@@ -1419,15 +1420,15 @@ class ReporteVentas extends Component {
                                                 <Bar ref={this.chartTiposReference} data={data.tipos} options={optionsBar} />
                                             </Tab.Pane>
                                             <Tab.Pane eventKey='8'>
-                                                {this.setButtons('7', '9', null, empresa, '08', 'ORIGEN DE LEADS NO POTENCIALES (#total)')}
+                                                {this.setButtons('7', '9', null, empresa, '08', 'ORIGEN DE LEADS NO POTENCIALES')}
                                                 <Bar ref={this.chartComparativaTiposReference} data={data.tiposComparativa} options={optionsBarGroup} />
                                             </Tab.Pane>
                                             <Tab.Pane eventKey='9'>
-                                                {this.setButtons('8', '10', null, empresa, '09', 'ORIGEN DE LEADS POTENCIALES (#total)')}
+                                                {this.setButtons('8', '10', null, empresa, '09', 'ORIGEN DE LEADS POTENCIALES')}
                                                 <Bar ref={this.chartProspectosReference} data={data.prospectos} options={optionsBar} />
                                             </Tab.Pane>
                                             <Tab.Pane eventKey='10'>
-                                                {this.setButtons('9', '11', null, empresa, '10', 'ORIGEN DE LEADS DUPLICADOS (#total)')}
+                                                {this.setButtons('9', '11', null, empresa, '10', 'ORIGEN DE LEADS DUPLICADOS')}
                                                 <Line ref={this.chartComparativaProspectosReference} data={data.prospectosComparativa} options={optionsLine} />
                                             </Tab.Pane>
                                             <Tab.Pane eventKey='11'>
@@ -1439,27 +1440,35 @@ class ReporteVentas extends Component {
                                                 <Bar ref={this.chartComparativaEstatusReference} data={data.estatusComparativa} options={optionsBarGroup} />
                                             </Tab.Pane>
                                             <Tab.Pane eventKey='13'>
-                                                {this.setButtons('12', '14', null, empresa, '13', 'SERVICIOS SOLICITADOS (MENSUAL)')}
+                                                {this.setButtons('12', '14', null, empresa, '13', 'SERVICIOS SOLICITADOS MENSUAL')}
                                                 <Bar ref={this.chartComparativaEstatusReference} data={data.estatusComparativa} options={optionsBarGroup} />
                                             </Tab.Pane>
                                             <Tab.Pane eventKey='14'>
-                                                {this.setButtons('13', '15', null, empresa, '14', 'LEADS CONTACTADOS')}
-                                                <Bar ref={this.chartComparativaEstatusReference} data={data.estatusComparativa} options={optionsBarGroup} />
+                                                {this.setButtons('13', '15', null, empresa, '10', 'TOTAL DE TIPOS DE PROYECTO')}
+                                                <Line ref={this.chartComparativaProspectosReference} data={data.prospectosComparativa} options={optionsLine} />
                                             </Tab.Pane>
                                             <Tab.Pane eventKey='15'>
-                                                {this.setButtons('14', '16', null, empresa, '15', 'ESTATUS DE LEADS CONTACTADOS (#total)')}
-                                                <Bar ref={this.chartComparativaEstatusReference} data={data.estatusComparativa} options={optionsBarGroup} />
+                                                {this.setButtons('14', '16', null, empresa, '11', 'TIPO DE PROYECTO MENSUAL')}
+                                                <Bar ref={this.chartEstatusReference} data={data.estatus} options={optionsBar} />
                                             </Tab.Pane>
                                             <Tab.Pane eventKey='16'>
-                                                {this.setButtons('15', '17', null, empresa, '16', 'PRINCIPALES MOTIVOS DE CANCELACIÓN')}
+                                                {this.setButtons('15', '17', null, empresa, '14', 'LEADS CONTACTADOS')}
                                                 <Bar ref={this.chartComparativaEstatusReference} data={data.estatusComparativa} options={optionsBarGroup} />
                                             </Tab.Pane>
                                             <Tab.Pane eventKey='17'>
-                                                {this.setButtons('16', '18', null, empresa, '17', 'PRINCIPALES MOTIVOS DE RECHAZO')}
+                                                {this.setButtons('16', '18', null, empresa, '15', 'ESTATUS DE LEADS CONTACTADOS')}
                                                 <Bar ref={this.chartComparativaEstatusReference} data={data.estatusComparativa} options={optionsBarGroup} />
                                             </Tab.Pane>
                                             <Tab.Pane eventKey='18'>
-                                                {this.setButtons('17', '19', null, empresa, '18', 'OBSERVACIONES CONTRATADOS')}
+                                                {this.setButtons('17', '19', null, empresa, '16', 'PRINCIPALES MOTIVOS DE CANCELACIÓN')}
+                                                <Bar ref={this.chartComparativaEstatusReference} data={data.estatusComparativa} options={optionsBarGroup} />
+                                            </Tab.Pane>
+                                            <Tab.Pane eventKey='19'>
+                                                {this.setButtons('18', '20', null, empresa, '17', 'PRINCIPALES MOTIVOS DE RECHAZO')}
+                                                <Bar ref={this.chartComparativaEstatusReference} data={data.estatusComparativa} options={optionsBarGroup} />
+                                            </Tab.Pane>
+                                            <Tab.Pane eventKey='20'>
+                                                {this.setButtons('19', '21', null, empresa, '18', 'OBSERVACIONES CONTRATADOS')}
                                                 <div className="table-responsive d-flex justify-content-center">
                                                     <table className="table table-responsive-lg table-vertical-center w-100">
                                                         <thead>
@@ -1471,69 +1480,69 @@ class ReporteVentas extends Component {
                                                             <tr className="bg-light-gray text-dark-75">
                                                                 <th className="py-0 font-size-lg font-weight-bolder text-justify">
                                                                     NOMBRE
-                                                    </th>
+                                                                </th>
                                                                 <th className="py-0 font-size-lg font-weight-bolder text-justify">
                                                                     PROYECTO
-                                                    </th>
+                                                                </th>
                                                                 <th className="py-0 font-size-lg font-weight-bolder text-justify">
                                                                     SERVICIOS
-                                                    </th>
+                                                                </th>
                                                                 <th className="py-0 font-size-lg font-weight-bolder text-justify">
                                                                     ORIGEN
-                                                    </th>
+                                                                </th>
                                                                 <th className="py-0 font-size-lg font-weight-bolder text-center">
                                                                     MONTO
-                                                    </th>
+                                                                </th>
                                                                 <th className="py-0 font-size-lg font-weight-bolder text-center">
                                                                     M²
-                                                    </th>
+                                                                </th>
                                                                 <th className="py-0 font-size-lg font-weight-bolder text-center">
                                                                     INGRESO
-                                                    </th>
+                                                                </th>
                                                                 <th className="py-0 font-size-lg font-weight-bolder text-center">
                                                                     CONTRATO
-                                                    </th>
+                                                                </th>
                                                                 <th className="py-0 font-size-lg font-weight-bolder text-center">
                                                                     VENDEDOR
-                                                    </th>
+                                                                </th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
                                                             <tr>
                                                                 <td className="font-size-sm text-justify white-space-nowrap">
                                                                     GRACIELA REYES HERNÁNDEZ
-                                                    </td>
+                                                                </td>
                                                                 <td className="font-size-sm text-justify white-space-nowrap">
                                                                     PRETUMEX
-                                                    </td>
+                                                                </td>
                                                                 <td className="font-size-sm text-justify white-space-nowrap">
                                                                     Remodelación de oficinas
-                                                    </td>
+                                                                </td>
                                                                 <td className="font-size-sm text-justify white-space-nowrap">
                                                                     ADS Chat
-                                                    </td>
+                                                                </td>
                                                                 <td className="font-size-sm text-center white-space-nowrap">
                                                                     $271,500.00 + I.V.A
-                                                    </td>
+                                                                </td>
                                                                 <td className="font-size-sm text-center white-space-nowrap">
                                                                     500
-                                                    </td>
+                                                                </td>
                                                                 <td className="font-size-sm text-center white-space-nowrap">
                                                                     18/08/2020
-                                                    </td>
+                                                                </td>
                                                                 <td className="font-size-sm text-center white-space-nowrap">
                                                                     02/10/2020
-                                                    </td>
+                                                                </td>
                                                                 <td className="font-size-sm text-center white-space-nowrap">
                                                                     CARINA JIMÉNEZ
-                                                    </td>
+                                                                </td>
                                                             </tr>
                                                         </tbody>
                                                     </table>
                                                 </div>
                                             </Tab.Pane>
-                                            <Tab.Pane eventKey='19'>
-                                                {this.setButtons('18', '20', null, empresa, '19', 'CONCLUSIONES')}
+                                            <Tab.Pane eventKey='21'>
+                                                {this.setButtons('20', '22', null, empresa, '19', 'CONCLUSIONES')}
                                                 <Editor
                                                     editorClassName="editor-class"
                                                     toolbar={
@@ -1549,8 +1558,8 @@ class ReporteVentas extends Component {
                                                     onEditorStateChange={this.onEditorStateChange}
                                                 />
                                             </Tab.Pane>
-                                            <Tab.Pane eventKey='20'>
-                                                {this.setButtons('19', null, true, empresa, '20', 'SUGERENCIAS')}
+                                            <Tab.Pane eventKey='22'>
+                                                {this.setButtons('21', null, true, empresa, '20', 'SUGERENCIAS')}
                                                 <Editor
                                                     editorClassName="editor-class"
                                                     toolbar={
