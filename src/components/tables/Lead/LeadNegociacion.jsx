@@ -225,11 +225,6 @@ class LeadNegociacion extends Component {
                                                                         </OverlayTrigger>
                                                                     : ''
                                                                 }
-                                                                <OverlayTrigger overlay={<Tooltip>CONTRATAR</Tooltip>}>
-                                                                    <span onClick={(e) => { changePageContratar(lead) }} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-brown">
-                                                                        <i className="fas fa-file-signature icon-14px"></i>
-                                                                    </span>
-                                                                </OverlayTrigger>
                                                             </>
                                                         :
                                                             <OverlayTrigger overlay={<Tooltip>SEGUIMIENTO DE VENTA</Tooltip>}>
@@ -240,6 +235,11 @@ class LeadNegociacion extends Component {
                                                                 </span>
                                                             </OverlayTrigger>
                                                     }
+                                                    <OverlayTrigger overlay={<Tooltip>CONTRATAR</Tooltip>}>
+                                                        <span onClick={(e) => { changePageContratar(lead) }} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-brown">
+                                                            <i className="fas fa-file-signature icon-14px"></i>
+                                                        </span>
+                                                    </OverlayTrigger>
                                                     {/* <OverlayTrigger overlay={<Tooltip>SEGUIMIENTO DE VENTA</Tooltip>}>
                                                         <span onClick={(e) => { changePageCierreVenta(lead) }} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-brown">
                                                             <span className="svg-icon svg-icon-md">
