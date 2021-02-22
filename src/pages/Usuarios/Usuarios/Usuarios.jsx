@@ -559,6 +559,7 @@ class Usuarios extends Component {
             case 'cliente':
                 tipo = 3;
                 break;
+            default: break;
         }
         await axios.get(`${URL_DEV}user/bloqueados/${tipo}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {

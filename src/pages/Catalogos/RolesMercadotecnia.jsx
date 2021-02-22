@@ -159,7 +159,7 @@ class RolesMercadotecnia extends Component {
         const { form } = this.state
         await axios.post(`${URL_DEV}roles-mercadotecnia`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { data, modal } = this.state
+                const { modal } = this.state
                 modal.form = false
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Creaste con éxito un nuevo rol.')
                 this.getRolesAxios()
@@ -175,7 +175,7 @@ class RolesMercadotecnia extends Component {
     }
     async updateRolAxios() {
         const { access_token } = this.props.authUser
-        const { form, rol, data, modal } = this.state
+        const { form, rol, modal } = this.state
         await axios.put(URL_DEV + 'roles-mercadotecnia/' + rol.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 modal.form = false

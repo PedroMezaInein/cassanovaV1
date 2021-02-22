@@ -308,6 +308,7 @@ class Diseño extends Component {
                             value: tipo.id,
                             label: tipo.tipo
                         })
+                        return ''
                     })
                 }
                 

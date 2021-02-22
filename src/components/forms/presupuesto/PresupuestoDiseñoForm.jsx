@@ -405,7 +405,7 @@ class PresupuestoDiseñoForm extends Component {
                                                     <span></span>
                                                 </label>
                                                 <div>
-                                                    <a className="text-dark-75 font-weight-bold font-size-lg">Mobiliario</a>
+                                                    <span className="text-dark-75 font-weight-bold font-size-lg">Mobiliario</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -422,7 +422,7 @@ class PresupuestoDiseñoForm extends Component {
                                                     <span></span>
                                                 </label>
                                                 <div>
-                                                    <a className="text-dark-75 font-size-sm font-weight-bold font-size-lg mb-1">Obra civil</a>
+                                                    <span className="text-dark-75 font-size-sm font-weight-bold font-size-lg mb-1">Obra civil</span>
                                                 </div>
                                             </div>
                                         </div>

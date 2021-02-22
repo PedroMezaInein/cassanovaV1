@@ -493,6 +493,7 @@ class PagosForm extends Component {
                     data.append(`files_name_${element}[]`, file.name)
                     data.append(`files_${element}[]`, file.file)
                 }
+                return ''
             })
             data.append('adjuntos[]', element)
             return false

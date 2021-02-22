@@ -54,6 +54,7 @@ class Esquema extends Component{
                                     </div>
                                 </div>
                             )
+                        return <></>
                     })
                 }
             </div>

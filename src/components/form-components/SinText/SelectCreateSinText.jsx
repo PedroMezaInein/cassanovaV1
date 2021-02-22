@@ -3,9 +3,8 @@ import CreatableSelect from 'react-select/creatable';
 
 class SelectCreateSinText extends Component {
 
-    
     render() {
-        const { placeholder, onChange, onCreateOption, iconclass, requirevalidation, messageinc, options, elementoactual} = this.props
+        const { placeholder, onChange, onCreateOption, requirevalidation, messageinc, options, elementoactual} = this.props
         const customStyles = {
             indicatorSeparator: () => ({ 
                 backgroundColor:'transparent !important'

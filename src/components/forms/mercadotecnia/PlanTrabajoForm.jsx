@@ -62,7 +62,7 @@ class PlanTrabajoForm extends Component{
     }
 
     render(){
-        const { title, options, form, onChange, onSubmit, formeditado, handleChangeCreate, handleCreateOption, deletePlanAlert, ...props } = this.props
+        const { title, options, form, onChange, onSubmit, formeditado, handleChangeCreate, handleCreateOption, deletePlanAlert } = this.props
         return(
             <Form id="form-plan" onSubmit={(e) => { e.preventDefault(); validateAlert(onSubmit, e, 'form-plan') }}>
                 <Row>

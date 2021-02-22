@@ -1957,7 +1957,8 @@ class ReporteVentas extends Component {
                                                                     <td> { reporte.año } </td>
                                                                     <td> { mesesEspañol[parseInt(reporte.mes)] } </td>
                                                                     <td>
-                                                                        <a href = { reporte.adjunto.url} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-primary" target = '_blank'>
+                                                                        <a href = { reporte.adjunto.url} rel="noopener noreferrer" target = '_blank'
+                                                                            className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-primary" >
                                                                             <span className="svg-icon svg-icon-md">
                                                                                 <i className="far fa-file-pdf icon-15px"></i>
                                                                             </span>

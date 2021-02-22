@@ -286,6 +286,7 @@ class LeadInfo extends Component {
                 options.motivosCancelacion = motivosCancelacion
                 options.motivosCancelacion.map((motivo)=>{
                     motivo.checked = false
+                    return ''
                 })
 
                 this.setState({ ...this.state, options })
@@ -343,6 +344,7 @@ class LeadInfo extends Component {
                             break;
                         default: break;
                     }
+                    return ''
                 })
                 formDiseño.partidasAcabados = this.setOptionsCheckboxes(auxPartidasAcabados, true)
                 formDiseño.partidasMobiliario = this.setOptionsCheckboxes(auxPartidasMobiliario, true)
@@ -516,32 +518,28 @@ class LeadInfo extends Component {
                     if (aux) {
                         aux = aux.planos
                         formDiseño.planos.map((plano) => {
-                            if(aux.indexOf(plano.id) >= 0)
-                                plano.checked = true
-                            else
-                                plano.checked = false
+                            if(aux.indexOf(plano.id) >= 0) plano.checked = true
+                            else plano.checked = false
+                            return ''
                         })
                     }
                     aux = JSON.parse(lead.presupuesto_diseño.partidas)
                     if (aux) {
                         aux = aux.partidas
                         formDiseño.partidasAcabados.map((partida) => {
-                            if(aux.indexOf(partida.id) >= 0)
-                                partida.checked = true
-                            else
-                                partida.checked = false
+                            if(aux.indexOf(partida.id) >= 0) partida.checked = true
+                            else partida.checked = false
+                            return ''
                         })
                         formDiseño.partidasMobiliario.map((partida) => {
-                            if(aux.indexOf(partida.id) >= 0)
-                                partida.checked = true
-                            else
-                                partida.checked = false
+                            if(aux.indexOf(partida.id) >= 0) partida.checked = true
+                            else partida.checked = false
+                            return ''
                         })
                         formDiseño.partidasObra.map((partida) => {
-                            if(aux.indexOf(partida.id) >= 0)
-                                partida.checked = true
-                            else
-                                partida.checked = false
+                            if(aux.indexOf(partida.id) >= 0) partida.checked = true
+                            else partida.checked = false
+                            return ''
                         })
                     }
                     formDiseño.construccion_civil_inf = lead.presupuesto_diseño.construccion_civil_inf
@@ -1334,7 +1332,6 @@ class LeadInfo extends Component {
         })
     }
 
-    
     render() {
         const { lead, form, formHistorial, options, formAgenda, formDiseño, modal, formeditado, itemsPerPage, activePage, activeKey, defaultKey, activeNav} = this.state
         // console.log(activeNav)
