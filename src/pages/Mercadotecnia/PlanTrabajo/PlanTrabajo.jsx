@@ -72,6 +72,7 @@ class PlanTrabajo extends Component {
                     empresa.rowSpanSize = response.size
                     empresa.calendars = response.calendars
                     empresa.datos = response.datos
+                    return ''
                 })
                 options.usuarios = []
                 options.roles = []
@@ -82,6 +83,7 @@ class PlanTrabajo extends Component {
                         value: user.id.toString(),
                         label: user.name
                     })
+                    return ''
                 })
                 roles.map((rol) => {
                     options.roles.push({
@@ -89,6 +91,7 @@ class PlanTrabajo extends Component {
                         value: rol.id,
                         label: rol.nombre
                     })
+                    return ''
                 })
                 data.empresas = empresas
                 Swal.close()
@@ -254,6 +257,7 @@ class PlanTrabajo extends Component {
                 text: user.name,
                 target: user.name
             })
+            return ''
         })
         this.setState({...this.state,modal, form, formeditado: 1, title: 'EDITAR PLAN DE TRABAJO', evento: evento })
     }
@@ -369,6 +373,7 @@ class PlanTrabajo extends Component {
         let _arreglo = [];
         [...Array(dias)].map((unusedElement, key) => {
             _arreglo.push(null)
+            return ''
         })
         arregloOfCalendars.push(_arreglo)
         for(let z = 0; z < datos.length; z++){
@@ -416,6 +421,7 @@ class PlanTrabajo extends Component {
                                 dato.duracion = dias
                                 _arreglo.push(dato)
                             }else{ _arreglo.push('filled') }
+                            return ''
                         })
                         arregloOfCalendars.push(_arreglo)        
                     }
@@ -442,6 +448,7 @@ class PlanTrabajo extends Component {
                             _arreglo = [];
                             [...Array(dias)].map((unusedElement, key) => {
                                 _arreglo.push(null)
+                                return ''
                             })
                             arregloOfCalendars.push(_arreglo)
                             dato.duracion = mesActualFin.diff(fechaInicio) + 1
@@ -472,6 +479,7 @@ class PlanTrabajo extends Component {
                             _arreglo = [];
                             [...Array(dias)].map((unusedElement, key) => {
                                 _arreglo.push(null)
+                                return ''
                             })
                             arregloOfCalendars.push(_arreglo)
                             dato.duracion = numeroFechaFin + 1
@@ -488,6 +496,7 @@ class PlanTrabajo extends Component {
                 _arreglo = [];
                 [...Array(dias)].map((unusedElement, key) => {
                     _arreglo.push(null)
+                    return ''
                 })
                 arregloOfCalendars.push(_arreglo)
                 arregloOfCalendars[arregloOfCalendars.length - 1][numeroFechaInicio] = dato

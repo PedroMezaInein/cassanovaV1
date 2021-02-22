@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { CirclePicker } from 'react-color';
 class CircleColor extends Component {
     render() {
-        const {onChange, placeholder, colors, width, circlesize, requirevalidation, messageinc, value } = this.props
+        const {onChange, placeholder, colors, width, circlesize, value } = this.props
         return (
             <div className="">
                 <div className="col-form-label">{placeholder}</div>

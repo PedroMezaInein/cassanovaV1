@@ -309,8 +309,8 @@ class Pagos extends Component {
         const { form } = this.state
         let aux = []
         form.adjuntos[item].files.map((file) => {
-            if(file.id)
-                aux.push(file)
+            if(file.id) aux.push(file)
+            return ''
         })
         form.adjuntos[item].value = ''
         form.adjuntos[item].files = aux
@@ -552,12 +552,12 @@ class Pagos extends Component {
 
     addAdjuntoPagosAxios = async ( files, item ) => {
         const { access_token } = this.props.authUser
-        const { form, pago } = this.state
+        const { pago } = this.state
         const data = new FormData();
-        let aux = Object.keys(form.adjuntos)
         files.map((file) => {
             data.append(`files_name_${item}[]`, file.name)
             data.append(`files_${item}[]`, file)
+            return ''
         })
         data.append('tipo', item)
         data.append('pago', pago.id)
@@ -625,6 +625,7 @@ class Pagos extends Component {
         form.adjuntos.factura.files.map((file) => {
             data.append(`files_name_factura[]`, file.name)
             data.append(`files_factura[]`, file.file)
+            return ''
         })
         data.append('id', pago.id)
         await axios.post(`${URL_DEV}mercadotecnia/pagos/factura`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
@@ -703,7 +704,7 @@ class Pagos extends Component {
     }
 
     render() {
-        const { modalDelete, modalAdjuntos, modalFacturas, adjuntos, form, data, modalSee, pago, options, facturas} = this.state
+        const { modalDelete, modalAdjuntos, modalFacturas, form, modalSee, pago, options, facturas} = this.state
         return (
             <Layout active='mercadotecnia' {...this.props}>
                 <NewTableServerRender

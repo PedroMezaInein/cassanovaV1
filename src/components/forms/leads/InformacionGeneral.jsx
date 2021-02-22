@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Button, InputGray, InputPhoneGray, CalendarDay, SelectSearch } from '../../form-components'
+import { Button, InputGray, InputPhoneGray, CalendarDay } from '../../form-components'
 import { Form } from 'react-bootstrap'
 import { TEL, EMAIL } from '../../../constants'
 import SelectSearchGray from '../../form-components/Gray/SelectSearchGray'

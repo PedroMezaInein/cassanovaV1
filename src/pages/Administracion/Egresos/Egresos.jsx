@@ -161,8 +161,8 @@ class egresos extends Component {
         const { form } = this.state
         let aux = []
         form.adjuntos[item].files.map((file) => {
-            if(file.id)
-                aux.push(file)
+            if(file.id) aux.push(file)
+            return ''
         })
         form.adjuntos[item].value = ''
         form.adjuntos[item].files = aux
@@ -769,12 +769,12 @@ class egresos extends Component {
     addAdjuntoEgresoAxios = async (files, item) => {
         waitAlert()
         const { access_token } = this.props.authUser
-        const { form, egreso } = this.state
+        const { egreso } = this.state
         const data = new FormData();
-        let aux = Object.keys(form.adjuntos)
         files.map((file) => {
             data.append(`files_name_${item}[]`, file.name)
             data.append(`files_${item}[]`, file)
+            return ''
         })
         data.append('tipo', item)
         data.append('id', egreso.id)
@@ -836,7 +836,7 @@ class egresos extends Component {
         })
     }
     render() {
-        const { egresos, modalDelete, modalFacturas, modalAdjuntos, adjuntos, facturas, form, data, options, modalSee, egreso } = this.state
+        const { egresos, modalDelete, modalFacturas, modalAdjuntos, facturas, form, data, options, modalSee, egreso } = this.state
         return (
             <Layout active={'administracion'}  {...this.props}>
                 <NewTableServerRender columns={EGRESOS_COLUMNS} data={egresos}

@@ -1,7 +1,5 @@
 import React, { Component } from 'react'
 import { OverlayTrigger, Tooltip, Dropdown, DropdownButton } from 'react-bootstrap'
-import SVG from "react-inlinesvg";
-import { toAbsoluteUrl } from "../../../functions/routers"
 import { setDateTableLG } from '../../../functions/setters'
 import { questionAlert } from '../../../functions/alert'
 class LeadNuevo extends Component {
@@ -45,7 +43,7 @@ class LeadNuevo extends Component {
     }
 
     render() {
-        const { leads, onClickPrev, onClickNext, sendEmail, openModal, openModalWithInput, openModalEditar, changePageLlamadaSalida, options, changeOrigen, openModalHistorial,
+        const { leads, onClickPrev, onClickNext, sendEmail, openModalWithInput, openModalEditar, changePageLlamadaSalida, options, changeOrigen, openModalHistorial,
             deleteDuplicado, moveToRelacionesPublicas } = this.props
         return (
             <>
