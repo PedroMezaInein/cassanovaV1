@@ -324,7 +324,7 @@ const styles = StyleSheet.create({
     }
 });
 
-export default class ReporteVentasInein extends Component {
+export default class RVAnualInein extends Component {
 
     getFecha = () => {
         const { form } = this.props
