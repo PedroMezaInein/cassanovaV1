@@ -257,6 +257,8 @@ class PresupuestoDiseñoForm extends Component {
                 form.mobiliario = presupuesto.mobiliario;
                 form.obra_civil = presupuesto.obra_civil;
 
+                let aux = ''
+
                 if(presupuesto.empresa){
                     data.empresa = presupuesto.empresa
                     form.empresa = presupuesto.empresa.id.toString()
@@ -280,7 +282,9 @@ class PresupuestoDiseñoForm extends Component {
                                 case 'Obra civil':
                                     auxPartidasObra.push(partida)
                                     break;
+                                default: break;
                             }
+                            return ''
                         })
 
                         form.partidasAcabados = this.setOptionsCheckboxes(auxPartidasAcabados, true)
@@ -288,29 +292,26 @@ class PresupuestoDiseñoForm extends Component {
                         form.partidasObra = this.setOptionsCheckboxes(auxPartidasObra, true)
 
                         form.partidasAcabados.map((partida) => {
-                            if(aux.indexOf(partida.id) >= 0)
-                                partida.checked = true
-                            else
-                                partida.checked = false
+                            if(aux.indexOf(partida.id) >= 0) partida.checked = true
+                            else partida.checked = false
+                            return ''
                         })
 
                         form.partidasMobiliario.map((partida) => {
-                            if(aux.indexOf(partida.id) >= 0)
-                                partida.checked = true
-                            else
-                                partida.checked = false
+                            if(aux.indexOf(partida.id) >= 0) partida.checked = true
+                            else partida.checked = false
+                            return ''
                         })
 
                         form.partidasObra.map((partida) => {
-                            if(aux.indexOf(partida.id) >= 0)
-                                partida.checked = true
-                            else
-                                partida.checked = false
+                            if(aux.indexOf(partida.id) >= 0) partida.checked = true
+                            else partida.checked = false
+                            return ''
                         })
                     }
                 }
 
-                let aux = JSON.parse(presupuesto.actividades)
+                aux = JSON.parse(presupuesto.actividades)
                 if (aux) {
                     aux = aux.actividades
                     form.conceptos = aux
@@ -545,7 +546,6 @@ class PresupuestoDiseñoForm extends Component {
         // let { defaultKey, activeKey } = this.state
         form[name] = value
         let planos = []
-        let partidas = [];
         switch (name) {
             case 'empresa':
                 data.empresas.map((empresa)=>{
@@ -582,7 +582,9 @@ class PresupuestoDiseñoForm extends Component {
                                 case 'Obra civil':
                                     auxPartidasObra.push(partida)
                                     break;
+                                default: break;
                             }
+                            return ''
                         })
 
                         form.partidasAcabados = this.setOptionsCheckboxes(auxPartidasAcabados, true)

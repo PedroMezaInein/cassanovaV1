@@ -210,8 +210,8 @@ class Compras extends Component {
         const { form } = this.state
         let aux = []
         form.adjuntos[item].files.map((file) => {
-            if(file.id)
-                aux.push(file)
+            if(file.id) aux.push(file)
+            return ''
         })
         form.adjuntos[item].value = ''
         form.adjuntos[item].files = aux
@@ -837,11 +837,12 @@ class Compras extends Component {
     addAdjuntoCompraAxios = async(files, item)=>{
         waitAlert()
         const { access_token } = this.props.authUser
-        const { form, compra } = this.state
+        const { compra } = this.state
         const data = new FormData();
         files.map((file) => {
             data.append(`files_name_${item}[]`, file.name)
             data.append(`files_${item}[]`, file)
+            return ''
         })
         data.append('tipo', item)
         data.append('id', compra.id)
@@ -887,7 +888,7 @@ class Compras extends Component {
         })
     }    
     render() {
-        const {modalDelete, modalFacturas, modalAdjuntos, form, options, compras, facturas, compra, data, adjuntos, modalSee } = this.state
+        const {modalDelete, modalFacturas, modalAdjuntos, form, options, compras, facturas, compra, data, modalSee } = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
                 <NewTableServerRender columns={COMPRAS_COLUMNS} data={compras}

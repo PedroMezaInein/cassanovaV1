@@ -26,7 +26,6 @@ import Pagination from "react-js-pagination"
 import SymbolIcon from '../../../components/singles/SymbolIcon'
 import Moment from 'react-moment'
 import FileItem from '../../../components/singles/FileItem'
-import { element } from 'prop-types'
 const $ = require('jquery');
 class Crm extends Component {
 
@@ -488,9 +487,11 @@ class Crm extends Component {
                 options.motivosRechazo = motivosRechazo
                 options.motivosCancelacion.map((motivo)=>{
                     motivo.checked = false
+                    return ''
                 })
                 options.motivosRechazo.map((motivo)=>{
                     motivo.checked = false
+                    return ''
                 })
                 let aux = []
                 origenes.map((origen) => {
@@ -981,6 +982,7 @@ class Crm extends Component {
                         break;
                     case 'rp':
                         this.getLeadsRP();
+                        break;
                     default: break;
                 }
                 this.setState({...this.state, modal_editar: false, formEditar })
@@ -1212,6 +1214,7 @@ class Crm extends Component {
                 break;
             case 'rp':
                 this.getLeadsRP();
+            break;
             default: break;
         }
         this.setState({
@@ -1253,6 +1256,7 @@ class Crm extends Component {
                 break;
             case 'rp':
                 this.getLeadsRP();
+                break;
             default: break;
         }
         this.setState({
