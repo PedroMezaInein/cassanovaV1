@@ -3,21 +3,22 @@ import { connect } from 'react-redux'
 import Layout from '../../components/layout/layout'
 import { Card, Nav, Tab } from 'react-bootstrap'
 import { Button } from '../../components/form-components'
-import { waitAlert, errorAlert, printResponseErrorAlert, questionAlert2,doneAlert } from '../../functions/alert'
+import { waitAlert, errorAlert, printResponseErrorAlert, questionAlert2, doneAlert } from '../../functions/alert'
 import Swal from 'sweetalert2'
 import { COLORES_GRAFICAS_IM, COLORES_GRAFICAS_INEIN, IM_AZUL, INEIN_RED, URL_DEV } from '../../constants'
 import axios from 'axios'
 import { pdf } from '@react-pdf/renderer'
 import { Pie, Bar, Line } from 'react-chartjs-2'
 import "chartjs-plugin-datalabels";
-import { setLabelVentas, setOptions, setDateTableLG,setMoneyTableSinSmall } from '../../functions/setters'
+import { setLabelVentas, setOptions, setDateTableLG, setMoneyTableSinSmall } from '../../functions/setters'
 import FlujosReportesVentas from '../../components/forms/reportes/FlujosReportesVentas'
 import { Editor } from 'react-draft-wysiwyg'
 import { EditorState, convertToRaw } from 'draft-js'
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
-import ReporteVentasInein from '../../components/pdfs/ReporteVentasInein'
-import ReporteVentasIm from '../../components/pdfs/ReporteVentasIm'
+import ReporteVentasInein from '../../components/pdfs/ReporteVentasAnual/ReporteVentasInein'
+import ReporteVentasIm from '../../components/pdfs/ReporteVentasAnual/ReporteVentasIm'
 import { Modal } from '../../components/singles'
+import { formatDiagnosticsWithColorAndContext } from 'typescript'
 
 class ReporteVentas extends Component {
 
@@ -26,25 +27,25 @@ class ReporteVentas extends Component {
         empresas: [],
         modal: false,
         mes: '',
-        empresa : '',
-        form:{
-            rango: '5',
+        empresa: '',
+        form: {
+            rango: '',
             empresa: '',
             mes: '',
             año: new Date().getFullYear(),
             leads: [],
-            adjuntos:{
-                reportes:{
+            adjuntos: {
+                reportes: {
                     value: '',
                     placeholder: 'Reporte',
                     files: []
                 }
             },
-            si_adjunto:false,
-            no_adjunto:true,
-            periodo:'1'
+            si_adjunto: false,
+            no_adjunto: true,
+            periodo: '1'
         },
-        data:{
+        data: {
             total: {},
             comparativa: {},
             origenes: {},
@@ -88,7 +89,7 @@ class ReporteVentas extends Component {
         this.getOptionsAxios()
     }
 
-    handleCloseModal =  () => {
+    handleCloseModal = () => {
         this.setState({
             ...this.state,
             modal: false
@@ -102,55 +103,55 @@ class ReporteVentas extends Component {
         })
     }
 
-    setReporte = ( images, lista ) => {
+    setReporte = (images, lista) => {
         const { empresa, form, leadsAnteriores, mes, data } = this.state
-        switch(empresa){
+        switch (empresa) {
             case 'INEIN':
-                return(
-                    <ReporteVentasInein form = { form } images = { images } anteriores = { leadsAnteriores }
-                        lista = { lista } mes = { mes.toUpperCase() } data = { data } />
+                return (
+                    <ReporteVentasInein form={form} images={images} anteriores={leadsAnteriores}
+                        lista={lista} mes={mes.toUpperCase()} data={data} />
                 )
             case 'INFRAESTRUCTURA MÉDICA':
-                return(
-                    <ReporteVentasIm form = { form } images = { images } anteriores = { leadsAnteriores }
-                        lista = { lista } mes = { mes.toUpperCase() } data = { data } />
+                return (
+                    <ReporteVentasIm form={form} images={images} anteriores={leadsAnteriores}
+                        lista={lista} mes={mes.toUpperCase()} data={data} />
                 )
             default:
                 break;
         }
     }
 
-    setOpacity = array =>{
+    setOpacity = array => {
         let aux = [];
-        array.map( (element) => {
-            aux.push(element+'D9')
+        array.map((element) => {
+            aux.push(element + 'D9')
             return false
         })
         return aux
     }
 
-    setOpacity75 = array =>{
+    setOpacity75 = array => {
         let aux = [];
-        array.map( (element) => {
-            aux.push(element+'BF')
+        array.map((element) => {
+            aux.push(element + 'BF')
             return false
         })
         return aux
     }
 
-    setOpacity65 = array =>{
+    setOpacity65 = array => {
         let aux = [];
-        array.map( (element) => {
-            aux.push(element+'A6')
+        array.map((element) => {
+            aux.push(element + 'A6')
             return false
         })
         return aux
     }
 
-    setOpacity2 = array =>{
+    setOpacity2 = array => {
         let aux = [];
-        array.map( (element) => {
-            aux.push(element+'5F')
+        array.map((element) => {
+            aux.push(element + '5F')
             return false
         })
         return aux
@@ -165,18 +166,18 @@ class ReporteVentas extends Component {
     }
 
     getBG = tamaño => {
-        const { empresa} = this.state
+        const { empresa } = this.state
         let aux = []
-        switch(empresa){
+        switch (empresa) {
             case 'INEIN':
-                for(let i = 0; i < tamaño; i++){
+                for (let i = 0; i < tamaño; i++) {
                     aux.push(
                         COLORES_GRAFICAS_INEIN[i]
                     )
                 }
                 break;
             case 'INFRAESTRUCTURA MÉDICA':
-                for(let i = 0; i < tamaño; i++){
+                for (let i = 0; i < tamaño; i++) {
                     aux.push(
                         COLORES_GRAFICAS_IM[i]
                     )
@@ -188,48 +189,58 @@ class ReporteVentas extends Component {
         return aux
     }
 
-    setButtons = (left, right, generar) => {
-        return(
-            <div className = { left !== null ? "d-flex justify-content-between" : 'd-flex justify-content-end'}>
-                {
-                    left !== null ?
-                        <div>
-                            <Button
-                                icon=''
-                                onClick={() => { this.changeTabe(left) }}
-                                className = "btn btn-icon btn-primary-info btn-sm mr-2 ml-auto"
-                                only_icon={"fas fa-chevron-circle-left icon-md"}
-                                tooltip={{ text: 'ANTERIOR' }}
+    setButtons = (left, right, generar, empresa, page, textHeader) => {
+        return (
+            <div className="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h3 className="card-label title-reporte-ventas" >
+                        <strong className={empresa === 'INEIN' ? "colorInein" : empresa === 'INFRAESTRUCTURA MÉDICA' ? "colorIMAzul" : 'text-info'}>
+                            {page}
+                        </strong>
+                        {textHeader}
+                    </h3>
+                </div>
+                <div className="d-flex justify-content-between">
+                    {
+                        left !== null ?
+                            <div>
+                                <Button
+                                    icon=''
+                                    onClick={() => { this.changeTabe(left) }}
+                                    className={`btn btn-icon btn-30px mr-2 ${empresa === 'INEIN' ? 'btn-light-inein' : empresa === 'INFRAESTRUCTURA MÉDICA' ? 'btn-light-im' : 'btn-light-info'}`}
+                                    only_icon="fas fa-angle-left"
+                                // tooltip={{ text: 'ANTERIOR' }}
                                 />
-                        </div>
-                    : ''
-                }
-                {
-                    right !== null ?
-                        <div>
-                            <Button
-                                icon=''
-                                onClick={() => { this.changeTabe(right) }}
-                                className = "btn btn-icon btn-primary-info btn-sm mr-2 ml-auto"
-                                only_icon={"fas fa-chevron-circle-right icon-md"}
-                                tooltip={{ text: 'SIGUIENTE' }}
+                            </div>
+                            : ''
+                    }
+                    {
+                        right !== null ?
+                            <div>
+                                <Button
+                                    icon=''
+                                    onClick={() => { this.changeTabe(right) }}
+                                    className={`btn btn-icon btn-30px ${empresa === 'INEIN' ? 'btn-light-inein' : empresa === 'INFRAESTRUCTURA MÉDICA' ? 'btn-light-im' : 'btn-light-info'}`}
+                                    only_icon="fas fa-angle-right"
+                                // tooltip={{ text: 'SIGUIENTE' }}
                                 />
-                        </div>
-                    : ''
-                }
-                {
-                    generar !== null ?
-                        <div>
-                            <Button
-                                icon=''
-                                onClick={ (e) => { e.preventDefault(); waitAlert(); this.generarPDF() }}
-                                className = "btn btn-icon btn-light-success btn-sm mr-2 ml-auto"
-                                only_icon={"far fas fa-file-pdf icon-md"}
-                                tooltip={{ text: 'GENERAR PDF' }}
+                            </div>
+                            : ''
+                    }
+                    {
+                        generar !== null ?
+                            <div>
+                                <Button
+                                    icon=''
+                                    onClick={(e) => { e.preventDefault(); waitAlert(); this.generarPDF() }}
+                                    className="btn btn-icon btn-30px btn-light-success"
+                                    only_icon="far fa-file-pdf icon-md"
+                                    tooltip={{ text: 'GENERAR PDF' }}
                                 />
-                        </div>
-                    : ''
-                }
+                            </div>
+                            : ''
+                    }
+                </div>
             </div>
         )
     }
@@ -243,7 +254,7 @@ class ReporteVentas extends Component {
 
     setColor = () => {
         const { empresa } = this.state
-        switch(empresa){
+        switch (empresa) {
             case 'INEIN':
                 return INEIN_RED
             case 'INFRAESTRUCTURA MÉDICA':
@@ -272,9 +283,9 @@ class ReporteVentas extends Component {
             }
             form[name] = checked
         }
-        if(name === 'empresa'){
-            options.empresas.map((emp)=>{
-                if(emp.value === value)
+        if (name === 'empresa') {
+            options.empresas.map((emp) => {
+                if (emp.value === value)
                     empresa = emp.name
                 return false
             })
@@ -299,7 +310,7 @@ class ReporteVentas extends Component {
     onSubmit = e => {
         e.preventDefault();
         const { form } = this.state
-        if(form.empresa !== '' && form.referencia !== '' && form.fechaInicio !== null && form.fechaFin !== null )
+        if (form.empresa !== '' && form.referencia !== '' && form.fechaInicio !== null && form.fechaFin !== null)
             this.getReporteVentasAxios()
         else
             errorAlert('No completaste todos los campos.')
@@ -310,27 +321,27 @@ class ReporteVentas extends Component {
         const { access_token } = this.props.authUser
         const { form } = this.state
         const data = new FormData();
-        
+
         data.append('empresa', form.empresa)
         data.append('mes', form.mes)
         data.append('año', form.año)
 
-        form.adjuntos.reportes.files.map((file)=>{
+        form.adjuntos.reportes.files.map((file) => {
             data.append(`adjuntos[]`, file.file)
             return ''
         })
 
         await axios.post(`${URL_DEV}reportes/ventas/save`, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { form  } = this.state
+                const { form } = this.state
                 form.empresa = ''
                 form.mes = ''
                 form.año = ''
                 form.adjuntos.reportes.value = ''
                 form.adjuntos.reportes.files = []
-                this.setState({ ...this.state,form })
+                this.setState({ ...this.state, form })
                 doneAlert('Reporte de ventas guardado con éxito')
-                
+
             },
             (error) => {
                 printResponseErrorAlert(error)
@@ -366,8 +377,8 @@ class ReporteVentas extends Component {
         })
     }
 
-    async getReporteVentasAxios(){
-        
+    async getReporteVentasAxios() {
+
         const { access_token } = this.props.authUser
         const { form } = this.state
         waitAlert()
@@ -375,26 +386,26 @@ class ReporteVentas extends Component {
             (response) => {
                 const { leads, servicios, origenes, tipos, prospectos, estatus, cerrados, observaciones, observacionesAnteriores, mes } = response.data
                 const { data, form } = this.state
-                
+
                 form.leads = observaciones
-                form.leads.map((lead)=> {
+                form.leads.map((lead) => {
                     lead.observacion = ''
                     return false
                 })
-                
+
                 Swal.close()
                 data.total = {
                     labels: ['TOTAL'],
                     datasets: [{
                         data: [leads[0].leads],
                         backgroundColor: [
-                            this.setColor()+'BF'
+                            this.setColor() + 'BF'
                         ],
                         hoverBackgroundColor: [
-                            this.setColor()+'D9'
+                            this.setColor() + 'D9'
                         ],
-                        borderWidth:3,
-                        borderColor:this.setColor()
+                        borderWidth: 3,
+                        borderColor: this.setColor()
                     }]
                 }
 
@@ -415,8 +426,8 @@ class ReporteVentas extends Component {
                 let arrayLabels = []
                 let arrayData = []
                 let colors = []
-                
-                leads.map((element)=>{
+
+                leads.map((element) => {
                     arrayLabels.push(element.label.toUpperCase());
                     arrayData.push(element.leads)
                     return ''
@@ -432,8 +443,8 @@ class ReporteVentas extends Component {
                             data: arrayData,
                             backgroundColor: this.setOpacity65(colors),
                             hoverBackgroundColor: this.setOpacity75(colors),
-                            borderColor:colors,
-                            borderWidth:3
+                            borderColor: colors,
+                            borderWidth: 3
                         }
                     ]
                 }
@@ -444,8 +455,8 @@ class ReporteVentas extends Component {
 
                 let keys = Object.keys(origenes)
 
-                keys.map((element)=>{
-                    if(origenes[element][0].leads > 0){
+                keys.map((element) => {
+                    if (origenes[element][0].leads > 0) {
                         arrayLabels.push(element.toUpperCase())
                         arrayData.push(origenes[element][0].leads)
                     }
@@ -462,7 +473,7 @@ class ReporteVentas extends Component {
                             data: arrayData,
                             backgroundColor: this.setOpacity65(colors),
                             hoverBackgroundColor: this.setOpacity75(colors),
-                            borderWidth:3
+                            borderWidth: 3
                         }
                     ]
                 }
@@ -473,8 +484,8 @@ class ReporteVentas extends Component {
                 arrayData = []
                 colors = []
 
-                keys.map((element)=>{
-                    if(servicios[element][0].leads > 0){
+                keys.map((element) => {
+                    if (servicios[element][0].leads > 0) {
                         arrayLabels.push(element.toUpperCase())
                         arrayData.push(servicios[element][0].leads)
                     }
@@ -491,7 +502,7 @@ class ReporteVentas extends Component {
                             data: arrayData,
                             backgroundColor: this.setOpacity65(colors),
                             hoverBackgroundColor: this.setOpacity75(colors),
-                            borderWidth:3
+                            borderWidth: 3
                         }
                     ]
                 }
@@ -502,8 +513,8 @@ class ReporteVentas extends Component {
                 arrayData = []
                 colors = []
 
-                keys.map((element)=>{
-                    if(tipos[element][0].leads > 0){
+                keys.map((element) => {
+                    if (tipos[element][0].leads > 0) {
                         arrayLabels.push(element.toUpperCase())
                         arrayData.push(tipos[element][0].leads)
                     }
@@ -520,7 +531,7 @@ class ReporteVentas extends Component {
                             data: arrayData,
                             backgroundColor: this.setOpacity65(colors),
                             hoverBackgroundColor: this.setOpacity75(colors),
-                            borderWidth:3
+                            borderWidth: 3
                         }
                     ]
                 }
@@ -540,14 +551,14 @@ class ReporteVentas extends Component {
                     {
                         label: 'BASURA',
                         data: arrayData,
-                        backgroundColor: colors[0]+'A6',
-                        hoverBackgroundColor: colors[0]+'BF',
-                        borderWidth:3
+                        backgroundColor: colors[0] + 'A6',
+                        hoverBackgroundColor: colors[0] + 'BF',
+                        borderWidth: 3
                     }
                 );
 
                 arrayData = []
-                tipos['Potencial'].map((element)=>{
+                tipos['Potencial'].map((element) => {
                     arrayData.push(element.leads)
                     return ''
                 })
@@ -556,9 +567,9 @@ class ReporteVentas extends Component {
                     {
                         label: 'POTENCIAL',
                         data: arrayData,
-                        backgroundColor: colors[1]+'A6',
-                        hoverBackgroundColor: colors[1]+'BF',
-                        borderWidth:3
+                        backgroundColor: colors[1] + 'A6',
+                        hoverBackgroundColor: colors[1] + 'BF',
+                        borderWidth: 3
                     }
                 );
 
@@ -574,11 +585,11 @@ class ReporteVentas extends Component {
                 arrayData = []
                 colors = []
 
-                if(prospectos['Convertido'][0].leads > 0){
+                if (prospectos['Convertido'][0].leads > 0) {
                     arrayLabels.push('CONVERTIDO')
                     arrayData.push(prospectos['Convertido'][0].leads)
                 }
-                if(tipos['Potencial'][0].leads > 0){
+                if (tipos['Potencial'][0].leads > 0) {
                     arrayLabels.push('POTENCIAL')
                     arrayData.push(tipos['Potencial'][0].leads)
                 }
@@ -594,7 +605,7 @@ class ReporteVentas extends Component {
                             data: arrayData,
                             backgroundColor: this.setOpacity65(colors),
                             hoverBackgroundColor: this.setOpacity75(colors),
-                            borderWidth:3
+                            borderWidth: 3
                         }
                     ]
                 }
@@ -609,7 +620,7 @@ class ReporteVentas extends Component {
                     arrayData.push(prospecto.leads)
                 }) */
 
-                for(let i = prospectos['Convertido'].length - 1; i >= 0; i--){
+                for (let i = prospectos['Convertido'].length - 1; i >= 0; i--) {
                     arrayData.push(prospectos['Convertido'][i].leads)
                 }
 
@@ -628,7 +639,7 @@ class ReporteVentas extends Component {
                 /* tipos['Potencial'].map((element)=>{
                     arrayData.push(element.leads)
                 }) */
-                for(let i = tipos['Potencial'].length - 1; i >= 0; i--){
+                for (let i = tipos['Potencial'].length - 1; i >= 0; i--) {
                     arrayLabels.push(tipos['Potencial'][i].label.toUpperCase())
                     arrayData.push(tipos['Potencial'][i].leads)
                 }
@@ -657,11 +668,11 @@ class ReporteVentas extends Component {
                 //Grouped bar origenes
                 keys = Object.keys(origenes)
 
-                keys.map((element, key)=>{
+                keys.map((element, key) => {
                     arrayLabels.push(element.toUpperCase())
-                    if(key === 0){
-                        origenes[element].map((dataSet, index)=>{
-                            if( index <= 2 )
+                    if (key === 0) {
+                        origenes[element].map((dataSet, index) => {
+                            if (index <= 2)
                                 arrayDataSets.push(
                                     {
                                         label: dataSet.label.toUpperCase(),
@@ -676,36 +687,36 @@ class ReporteVentas extends Component {
                 })
 
                 colors = this.getBG(arrayDataSets.length);
-                
-                arrayDataSets.map((element, key)=>{
+
+                arrayDataSets.map((element, key) => {
                     arrayData = []
                     keys.map((origen) => {
                         arrayData.push(origenes[origen][key].leads)
                         return ''
                     })
                     element.data = arrayData
-                    element.backgroundColor = colors[key]+'B3'
-                    element.hoverBackgroundColor = colors[key]+'BF'
-                    element.borderWidth=3
+                    element.backgroundColor = colors[key] + 'B3'
+                    element.hoverBackgroundColor = colors[key] + 'BF'
+                    element.borderWidth = 3
                     return ''
                 })
                 let contador = 0
                 let contadorArray = []
-                if(arrayDataSets.length){
-                    arrayDataSets[0].data.map((element, index)=>{
+                if (arrayDataSets.length) {
+                    arrayDataSets[0].data.map((element, index) => {
                         contador = 0
-                        arrayDataSets.map((newElement, key)=>{
+                        arrayDataSets.map((newElement, key) => {
                             contador += newElement.data[index]
                             return ''
                         })
-                        if(contador === 0 )
+                        if (contador === 0)
                             contadorArray.push(index)
                         return ''
                     })
                 }
 
-                contadorArray.map((element)=>{
-                    arrayDataSets.map((newElement)=>{
+                contadorArray.map((element) => {
+                    arrayDataSets.map((newElement) => {
                         newElement.data.splice(element, 1)
                         return ''
                     })
@@ -725,11 +736,11 @@ class ReporteVentas extends Component {
 
                 keys = Object.keys(servicios)
 
-                keys.map((element, key)=>{
+                keys.map((element, key) => {
                     arrayLabels.push(element.toUpperCase())
-                    if(key === 0){
-                        servicios[element].map((dataSet, index)=>{
-                            if( index <= 2 )
+                    if (key === 0) {
+                        servicios[element].map((dataSet, index) => {
+                            if (index <= 2)
                                 arrayDataSets.push(
                                     {
                                         label: dataSet.label.toUpperCase(),
@@ -744,17 +755,17 @@ class ReporteVentas extends Component {
                 })
 
                 colors = this.getBG(arrayDataSets.length);
-                
-                arrayDataSets.map((element, key)=>{
+
+                arrayDataSets.map((element, key) => {
                     arrayData = []
                     keys.map((servicio) => {
                         arrayData.push(servicios[servicio][key].leads)
                         return ''
                     })
                     element.data = arrayData
-                    element.backgroundColor = colors[key]+'B3'
-                    element.hoverBackgroundColor = colors[key]+'BF'
-                    element.borderWidth=3
+                    element.backgroundColor = colors[key] + 'B3'
+                    element.hoverBackgroundColor = colors[key] + 'BF'
+                    element.borderWidth = 3
                     return ''
                 })
 
@@ -769,8 +780,8 @@ class ReporteVentas extends Component {
                 arrayData = []
                 colors = []
 
-                keys.map((element)=>{
-                    if(estatus[element][0].leads > 0){
+                keys.map((element) => {
+                    if (estatus[element][0].leads > 0) {
                         arrayLabels.push(element.toUpperCase())
                         arrayData.push(estatus[element][0].leads)
                     }
@@ -787,7 +798,7 @@ class ReporteVentas extends Component {
                             data: arrayData,
                             backgroundColor: this.setOpacity65(colors),
                             hoverBackgroundColor: this.setOpacity75(colors),
-                            borderWidth:3
+                            borderWidth: 3
                         }
                     ]
                 }
@@ -798,11 +809,11 @@ class ReporteVentas extends Component {
                 arrayData = []
                 colors = []
                 arrayDataSets = []
-                keys.map((element, key)=>{
+                keys.map((element, key) => {
                     arrayLabels.push(element.toUpperCase())
-                    if(key === 0){
-                        estatus[element].map((dataSet, index)=>{
-                            if( index <= 2 )
+                    if (key === 0) {
+                        estatus[element].map((dataSet, index) => {
+                            if (index <= 2)
                                 arrayDataSets.push(
                                     {
                                         label: dataSet.label.toUpperCase(),
@@ -817,36 +828,36 @@ class ReporteVentas extends Component {
                 })
 
                 colors = this.getBG(arrayDataSets.length);
-                
-                arrayDataSets.map((element, key)=>{
+
+                arrayDataSets.map((element, key) => {
                     arrayData = []
                     keys.map((origen) => {
                         arrayData.push(estatus[origen][key].leads)
                         return ''
                     })
                     element.data = arrayData
-                    element.backgroundColor = colors[key]+'B3'
-                    element.hoverBackgroundColor = colors[key]+'BF'
-                    element.borderWidth=3
+                    element.backgroundColor = colors[key] + 'B3'
+                    element.hoverBackgroundColor = colors[key] + 'BF'
+                    element.borderWidth = 3
                     return ''
                 })
                 contador = 0
                 contadorArray = []
-                if(arrayDataSets.length){
-                    arrayDataSets[0].data.map((element, index)=>{
+                if (arrayDataSets.length) {
+                    arrayDataSets[0].data.map((element, index) => {
                         contador = 0
-                        arrayDataSets.map((newElement, key)=>{
+                        arrayDataSets.map((newElement, key) => {
                             contador += newElement.data[index]
                             return ''
                         })
-                        if(contador === 0 )
+                        if (contador === 0)
                             contadorArray.push(index)
                         return ''
                     })
                 }
 
-                contadorArray.map((element)=>{
-                    arrayDataSets.map((newElement)=>{
+                contadorArray.map((element) => {
+                    arrayDataSets.map((newElement) => {
                         newElement.data.splice(element, 1)
                         return ''
                     })
@@ -858,16 +869,16 @@ class ReporteVentas extends Component {
                     labels: arrayLabels,
                     datasets: arrayDataSets
                 }
-                
+
                 this.setState({
                     ...this.state,
                     data,
-                    key: 'one',
+                    key: '1',
                     form,
                     leadsAnteriores: observacionesAnteriores,
                     mes: mes
                 })
-                
+
             },
             (error) => {
                 printResponseErrorAlert(error)
@@ -878,7 +889,7 @@ class ReporteVentas extends Component {
         })
     }
 
-    async getReporteAxios(){
+    async getReporteAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'reportes/ventas/guardados', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
@@ -886,7 +897,7 @@ class ReporteVentas extends Component {
                 const { empresas } = response.data
                 let { empresaActive } = this.state
                 Swal.close()
-                if(empresas.length)
+                if (empresas.length)
                     empresaActive = empresas[0].id
                 this.setState({
                     ...this.state,
@@ -896,7 +907,7 @@ class ReporteVentas extends Component {
                 })
             },
             (error) => {
-                Swal.close() 
+                Swal.close()
                 printResponseErrorAlert(error)
             }
         ).catch((error) => {
@@ -906,7 +917,7 @@ class ReporteVentas extends Component {
         })
     }
 
-    async generarPDF(){
+    async generarPDF() {
         waitAlert()
         let aux = []
         const { form, editorState } = this.state
@@ -927,18 +938,18 @@ class ReporteVentas extends Component {
         )
 
         let lista = convertToRaw(editorState.getCurrentContent())
-        
+
         let _lista = []
-        
-        lista.blocks.map((element)=>{
+
+        lista.blocks.map((element) => {
             _lista.push(element.text.toUpperCase())
             return ''
         })
-        
+
         const blob = await pdf((
-            this.setReporte( aux, _lista )
+            this.setReporte(aux, _lista)
         )).toBlob();
-        
+
         form.adjuntos.reportes.files = [
             {
                 name: 'reporte.pdf',
@@ -946,35 +957,35 @@ class ReporteVentas extends Component {
                 url: URL.createObjectURL(blob)
             }
         ]
-        
+
         this.setState({
             ...this.state,
             form
         })
 
         Swal.close()
-        
+
         questionAlert2(
             '¿ESTÁS SEGURO?', '',
             () => this.saveReporteAxios(),
             this.getTextAlert()
         )
-        
+
     }
 
     getTextAlert = () => {
-        const { empresa, form  } = this.state
-        let meses = [ '', 'ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
+        const { empresa, form } = this.state
+        let meses = ['', 'ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
         return (
             <div>
                 <span className="text-dark-50 font-weight-bolder">
-                    ¿DESEAS GUARDAR EL 
+                    ¿DESEAS GUARDAR EL
                         <u>
-                            <a rel="noopener noreferrer" href = { form.adjuntos.reportes.files[0].url } target='_blank' className='text-primary mx-2'>
-                                REPORTE DE VENTAS
+                        <a rel="noopener noreferrer" href={form.adjuntos.reportes.files[0].url} target='_blank' className='text-primary mx-2'>
+                            REPORTE DE VENTAS
                             </a>
-                        </u>
-                    { ' ' + empresa + ' ' + meses[parseInt(form.mes)] + ' ' + form.año + '?' }
+                    </u>
+                    {' ' + empresa + ' ' + meses[parseInt(form.mes)] + ' ' + form.año + '?'}
                 </span>
             </div>
         )
@@ -982,32 +993,32 @@ class ReporteVentas extends Component {
 
     setComentario = lead => {
         let aux = '';
-        if(lead.estatus){
-            switch(lead.estatus.estatus){
+        if (lead.estatus) {
+            switch (lead.estatus.estatus) {
                 case 'Rechazado':
                 case 'Cancelado':
-                    if(lead.motivo === '' || lead.motivo === null){
-                        if(lead.rh)
+                    if (lead.motivo === '' || lead.motivo === null) {
+                        if (lead.rh)
                             aux += "RR.HH.\n "
-                        if(lead.proveedor)
+                        if (lead.proveedor)
                             aux += "PROVEEDOR.\n "
                     }
-                        else
+                    else
                         aux += lead.motivo + "\n"
                     break;
                 default: break;
             }
         }
-        if( lead.prospecto ){
-            if(aux === ''){
-                if(lead.prospecto.estatus_prospecto){
-                    switch(lead.prospecto.estatus_prospecto.estatus){
+        if (lead.prospecto) {
+            if (aux === '') {
+                if (lead.prospecto.estatus_prospecto) {
+                    switch (lead.prospecto.estatus_prospecto.estatus) {
                         case 'Rechazado':
                         case 'Cancelado':
-                            if(lead.motivo === '' || lead.motivo === null){
-                                if(lead.rh)
+                            if (lead.motivo === '' || lead.motivo === null) {
+                                if (lead.rh)
                                     aux += "RR.HH.\n "
-                                if(lead.proveedor)
+                                if (lead.proveedor)
                                     aux += "PROVEEDOR.\n "
                             }
                             else
@@ -1018,8 +1029,8 @@ class ReporteVentas extends Component {
                     }
                 }
             }
-            if(lead.prospecto.contactos){
-                if(lead.prospecto.contactos.length){
+            if (lead.prospecto.contactos) {
+                if (lead.prospecto.contactos.length) {
                     aux += lead.prospecto.contactos[0].comentario
                 }
             }
@@ -1050,7 +1061,7 @@ class ReporteVentas extends Component {
     onSubmitAdjunto = e => {
         e.preventDefault();
         const { form } = this.state
-        if(form.empresa !== '' && form.año !== '' && form.mes !== null && form.adjuntos.reportes.files.length > 0)
+        if (form.empresa !== '' && form.año !== '' && form.mes !== null && form.adjuntos.reportes.files.length > 0)
             this.saveReporteAxios()
         else
             errorAlert('No completaste todos los campos.')
@@ -1069,7 +1080,7 @@ class ReporteVentas extends Component {
                     }
                 }
             },
-            legend:{
+            legend: {
                 display: false,
             },
         }
@@ -1086,31 +1097,34 @@ class ReporteVentas extends Component {
             },
             scales: {
                 yAxes: [
-                        {
-                            ticks: {
-                                beginAtZero: true,
-                                fontColor: '#000'
-                            }
-                        },
-                    ],
+                    {
+                        ticks: {
+                            beginAtZero: true,
+                            fontColor: '#808080',
+                            fontStyle: "bold",
+                            fontSize: 16,
+                        }
+                    },
+                ],
                 xAxes: [
                     {
                         ticks: {
                             beginAtZero: true,
-                            fontSize: 14,
-                            fontColor: '#000',
+                            fontSize: 16,
+                            fontColor: '#808080',
+                            fontStyle: "bold",
                             lineWidth: 10,
                             padding: 10,
                             position: 'bottom',
                             autoSkip: false,
-                            callback: function(value, index, values) {
+                            callback: function (value, index, values) {
                                 let auxiliar = ''
-                                switch(value){
+                                switch (value) {
                                     case 'AÚN NO LO SE':
-                                        auxiliar = ['AÚN NO','LO SE']
+                                        auxiliar = ['AÚN NO', 'LO SE']
                                         break;
                                     case 'ORGÁNICO THANK YOU':
-                                        auxiliar = ['ORGÁNICO','THANK YOU']
+                                        auxiliar = ['ORGÁNICO', 'THANK YOU']
                                         break;
                                     case 'ADS THANK YOU':
                                         auxiliar = ['ADS THANK', 'YOU']
@@ -1120,7 +1134,7 @@ class ReporteVentas extends Component {
                                         break;
                                     case 'CONSTRUCCIÓN DE OFICINAS':
                                         auxiliar = ['CONSTRUCCIÓN', 'DE OFICINAS']
-                                        break;   
+                                        break;
                                     case 'DISEÑO DE OFICINAS':
                                         auxiliar = ['DISEÑO', 'DE OFICINAS']
                                         break;
@@ -1135,16 +1149,16 @@ class ReporteVentas extends Component {
                                         break;
                                     default: break;
                                 }
-                                if(auxiliar !== '')
+                                if (auxiliar !== '')
                                     return auxiliar
                                 let aux = value.split(' ')
                                 return aux
                             }
                         }
                     },
-                ]
+                ],
             },
-            legend:{
+            legend: {
                 display: false,
                 fullWidth: true,
                 labels: {
@@ -1162,7 +1176,9 @@ class ReporteVentas extends Component {
                     {
                         ticks: {
                             beginAtZero: true,
-                            fontColor: '#000'
+                            fontColor: '#808080',
+                            fontStyle: "bold",
+                            fontSize: 16,
                         }
                     },
                 ],
@@ -1170,19 +1186,20 @@ class ReporteVentas extends Component {
                     {
                         ticks: {
                             beginAtZero: true,
-                            fontSize: 14,
-                            fontColor: '#000',
+                            fontSize: 16,
+                            fontColor: '#808080',
+                            fontStyle: "bold",
                             padding: 10,
                             position: 'bottom',
                             autoSkip: false,
-                            callback: function(value, index, values) {
+                            callback: function (value, index, values) {
                                 let auxiliar = ''
-                                switch(value){
+                                switch (value) {
                                     case 'AÚN NO LO SE':
-                                        auxiliar = ['AÚN NO','LO SE']
+                                        auxiliar = ['AÚN NO', 'LO SE']
                                         break;
                                     case 'ORGÁNICO THANK YOU':
-                                        auxiliar = ['ORGÁNICO','THANK YOU']
+                                        auxiliar = ['ORGÁNICO', 'THANK YOU']
                                         break;
                                     case 'ADS THANK YOU':
                                         auxiliar = ['ADS THANK', 'YOU']
@@ -1192,7 +1209,7 @@ class ReporteVentas extends Component {
                                         break;
                                     case 'CONSTRUCCIÓN DE OFICINAS':
                                         auxiliar = ['CONSTRUCCIÓN', 'DE OFICINAS']
-                                        break;   
+                                        break;
                                     case 'DISEÑO DE OFICINAS':
                                         auxiliar = ['DISEÑO', 'DE OFICINAS']
                                         break;
@@ -1207,7 +1224,7 @@ class ReporteVentas extends Component {
                                         break;
                                     default: break;
                                 }
-                                if(auxiliar !== '')
+                                if (auxiliar !== '')
                                     return auxiliar
                                 let aux = value.split(' ')
                                 return aux
@@ -1225,7 +1242,7 @@ class ReporteVentas extends Component {
                     }
                 }
             },
-            legend:{
+            legend: {
                 fullWidth: true,
                 labels: {
                     boxWidth: 20,
@@ -1287,7 +1304,9 @@ class ReporteVentas extends Component {
                         id: 'y-axis-1',
                         ticks: {
                             beginAtZero: true,
-                            fontColor: '#000'
+                            fontColor: '#808080',
+                            fontStyle: "bold",
+                            fontSize: 16,
                         }
                     },
                 ],
@@ -1295,13 +1314,14 @@ class ReporteVentas extends Component {
                     {
                         ticks: {
                             beginAtZero: true,
-                            fontSize: 15,
-                            fontColor: '#000',
+                            fontSize: 16,
+                            fontColor: '#808080',
+                            fontStyle: "bold",
                             padding: 10,
                             position: 'bottom',
                             autoSkip: false,
                             maxRotation: 0,
-                            callback: function(value, index, values) {
+                            callback: function (value, index, values) {
                                 let aux = value.split(' ')
                                 return aux
                             }
@@ -1322,7 +1342,7 @@ class ReporteVentas extends Component {
                     },
                 }
             },
-            legend:{
+            legend: {
                 fullWidth: true,
                 labels: {
                     boxWidth: 20,
@@ -1332,11 +1352,11 @@ class ReporteVentas extends Component {
             },
         }
 
-        const mesesEspañol = [ '', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
-        
+        const mesesEspañol = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+
         const { empresa } = this.state
         return (
-            <Layout active = 'reportes'  {...this.props}>
+            <Layout active='reportes'  {...this.props}>
                 <Card className="card-custom">
                     <Card.Header>
                         <div className="card-title">
@@ -1344,11 +1364,11 @@ class ReporteVentas extends Component {
                         </div>
                         <div className="card-toolbar">
                             <Button
-                                icon =''
-                                className = "btn btn-icon btn-xs w-auto p-3 btn-light"
-                                onClick = { () => { this.getReporteAxios() } }
-                                only_icon = "far fa-file-pdf mr-2"
-                                text= 'REPORTES GENERADOS'
+                                icon=''
+                                className="btn btn-icon btn-xs w-auto p-3 btn-light"
+                                onClick={() => { this.getReporteAxios() }}
+                                only_icon="far fa-file-pdf mr-2"
+                                text='REPORTES GENERADOS'
                             />
                         </div>
                     </Card.Header>
@@ -1362,578 +1382,591 @@ class ReporteVentas extends Component {
                             onSubmitAdjunto={this.onSubmitAdjunto}
                             handleChange={this.handleChange}
                         />
-                        <Tab.Container activeKey = { key }>
-                            <Tab.Content>
-                                <Tab.Pane eventKey = 'one'>
-                                    {this.setButtons(null, 'two', null)}
-                                    <div className = " mt-4 mb-5 ">
-                                        <h3 className="card-label title-reporte-ventas" >
-                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
-                                                01 
-                                            </strong>
-                                            ENTRADA TOTAL DE LEADS ({mes} {form.año}) 
-                                        </h3>
-                                    </div>
-                                    <div className = "row mx-0 mb-2 justify-content-center">
-                                        <div className = "col-md-11" >
-                                            <Pie ref = { this.chartTotalReference } data = { data.total } options = { optionsPie } />
-                                        </div>
-                                    </div>
-                                </Tab.Pane>
-                                <Tab.Pane eventKey = 'two'>
-                                    {this.setButtons('one', 'three', null)}
-                                    <div className = " mt-4 mb-5 ">
-                                        <h3 className="card-label title-reporte-ventas">
-                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
-                                                02
-                                            </strong>
-                                            COMPARATIVA DE LEADS TOTALES (MESES ANTERIORES)
-                                        </h3>
-                                    </div>
-                                    <div className = "row mx-0 mb-2 justify-content-center">
-                                        <div className = "col-md-11" >
-                                            <Bar ref = { this.chartTotalComparativaReference } data = { data.comparativa } options = { optionsBar } />
-                                        </div>
-                                    </div>
-                                </Tab.Pane>
-                                <Tab.Pane eventKey = 'three'>
-                                    {this.setButtons('two', 'four', null)}
-                                    <div className = " mt-4 mb-5 ">
-                                        <h3 className="card-label title-reporte-ventas">
-                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
-                                                03
-                                            </strong>
-                                            ORIGEN DE LEADS ({mes} {form.año})
-                                        </h3>
-                                    </div>
-                                    <div className = "row mx-0 mb-2 justify-content-center">
-                                        <div className = "col-md-11" >
-                                            <Bar ref = { this.chartTotalOrigenesReference } data = { data.origenes } options = { optionsBar } />
-                                        </div>
-                                    </div>
-                                </Tab.Pane>
-                                <Tab.Pane eventKey = 'four'>
-                                    {this.setButtons('three', 'five', null)}
-                                    <div className = " mt-4 mb-5 ">
-                                        <h3 className="card-label title-reporte-ventas">
-                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
-                                                04
-                                            </strong>
-                                            COMPARATIVA ORIGEN LEADS (MESES ANTERIORES)
-                                        </h3>
-                                    </div>
-                                    <div className = "row mx-0 mb-2 justify-content-center">
-                                        <div className = "col-md-11" >
-                                            <Bar ref = { this.chartComparativaOrigenesReference } data = { data.origenesComparativa } options = { optionsBarGroup } />
-                                        </div>
-                                    </div>
-                                </Tab.Pane>
-                                <Tab.Pane eventKey = 'five'>
-                                    {this.setButtons('four', 'six', null)}
-                                    <div className = " mt-4 mb-5 ">
-                                        <h3 className="card-label title-reporte-ventas">
-                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
-                                                05
-                                            </strong>
-                                            SERVICIOS SOLICITADOS ({mes} {form.año})
-                                        </h3>
-                                    </div>
-                                    <div className = "row mx-0 mb-2 justify-content-center">
-                                        <div className = "col-md-11" >
-                                            <Bar ref = { this.chartTotalServiciosReference } data = { data.servicios } options = { optionsBar } />
-                                        </div>
-                                    </div>
-                                </Tab.Pane>
-                                <Tab.Pane eventKey = 'six'>
-                                    {this.setButtons('five', 'seven', null)}
-                                    <div className = " mt-4 mb-5 ">
-                                        <h3 className="card-label title-reporte-ventas">
-                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
-                                                06
-                                            </strong>
-                                            COMPARATIVA SERVICIOS SOLICITADOS (MESES ANTERIORES)
-                                        </h3>
-                                    </div>
-                                    <div className = "row mx-0 mb-2 justify-content-center">
-                                        <div className = "col-md-12" >
-                                            <Bar ref = { this.chartComparativaServiciosReference } data = { data.serviciosComparativa } options = { optionsBarGroup } />
-                                        </div>
-                                    </div>
-                                </Tab.Pane>
-                                <Tab.Pane eventKey = 'seven'>
-                                    {this.setButtons('six', 'eight', null)}
-                                    <div className = " mt-4 mb-5 ">
-                                        <h3 className="card-label title-reporte-ventas">
-                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
-                                                07
-                                            </strong>
-                                            TIPO DE LEAD ({mes} {form.año})
-                                        </h3>
-                                    </div>
-                                    <div className = "row mx-0 mb-2 justify-content-center">
-                                        <div className = "col-md-6" >
-                                            <Bar ref = { this.chartTiposReference } data = { data.tipos } options = { optionsBar } />
-                                        </div>
-                                    </div>
-                                </Tab.Pane>
-                                <Tab.Pane eventKey = 'eight'>
-                                    {this.setButtons('seven', 'nine', null)}
-                                    <div className = " mt-4 mb-5 ">
-                                        <h3 className="card-label title-reporte-ventas">
-                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
-                                                08
-                                            </strong>
-                                            COMPARATIVA TIPO DE LEAD (MESES ANTERIORES)
-                                        </h3>
-                                    </div>
-                                    <div className = "row mx-0 mb-2 justify-content-center">
-                                        <div className = "col-md-11" >
-                                            <Bar ref = { this.chartComparativaTiposReference } data = { data.tiposComparativa } options = { optionsBarGroup } />
-                                        </div>
-                                    </div>
-                                </Tab.Pane>
-                                <Tab.Pane eventKey = 'nine'>
-                                    {this.setButtons('eight', 'ten', null)}
-                                    <div className = " mt-4 mb-5 ">
-                                        <h3 className="card-label title-reporte-ventas">
-                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
-                                                09
-                                            </strong>
-                                            TOTAL DE PROSPECTOS ({mes} {form.año})
-                                        </h3>
-                                    </div>
-                                    <div className = "row mx-0 mb-2 justify-content-center">
-                                        <div className = "col-md-6" >
-                                            <Bar ref = { this.chartProspectosReference } data = { data.prospectos } options = { optionsBar } />
-                                        </div>
-                                    </div>
-                                </Tab.Pane>
-                                <Tab.Pane eventKey = 'ten'>
-                                    {this.setButtons('nine', 'eleven', null)}
-                                    <div className = " mt-4 mb-5 ">
-                                        <h3 className="card-label title-reporte-ventas">
-                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
-                                                10
-                                            </strong>
-                                            COMPARATIVA TOTAL DE PROSPECTOS (MESES ANTERIORES)
-                                        </h3>
-                                    </div>
-                                    <div className = "row mx-0 mb-2 justify-content-center">
-                                        <div className = "col-md-9" >
-                                            <Line ref = { this.chartComparativaProspectosReference } data = { data.prospectosComparativa } options = { optionsLine } />
-                                        </div>
-                                    </div>
-                                </Tab.Pane>
-                                <Tab.Pane eventKey = 'eleven'>
-                                    {this.setButtons('ten', 'twelve', null)}
-                                    <div className = " mt-4 mb-5 ">
-                                        <h3 className="card-label title-reporte-ventas">
-                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
-                                                11
-                                            </strong>
-                                            ESTATUS DE PROSPECTOS ({mes} {form.año})
-                                        </h3>
-                                    </div>
-                                    <div className = "row mx-0 mb-2 justify-content-center">
-                                        <div className = "col-md-6" >
-                                            <Bar ref = { this.chartEstatusReference } data = { data.estatus } options = { optionsBar } />
-                                        </div>
-                                    </div>
-                                </Tab.Pane>
-                                <Tab.Pane eventKey = 'twelve'>
-                                    {this.setButtons('eleven', 'thirteen', null)}
-                                    <div className = " mt-4 mb-5 ">
-                                        <h3 className="card-label title-reporte-ventas">
-                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
-                                                12
-                                            </strong>
-                                            COMPARATIVA ESTATUS DE PROSPECTOS (MESES ANTERIORES)
-                                        </h3>
-                                    </div>
-                                    <div className = "row mx-0 mb-2 justify-content-center">
-                                        <div className = "col-md-6" >
-                                            <Bar ref = { this.chartComparativaEstatusReference } data = { data.estatusComparativa } options = { optionsBarGroup } />
-                                        </div>
-                                    </div>
-                                </Tab.Pane>
-                                <Tab.Pane eventKey = 'thirteen'>
-                                    {this.setButtons('twelve', 'fourteen', null)}
-                                    <div className = " mt-4 mb-5 ">
-                                        <h3 className="card-label title-reporte-ventas">
-                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
-                                                13
-                                            </strong>
-                                            PROSPECTOS CONTRATADOS ({mes} {form.año})
-                                        </h3>
-                                    </div>
-                                    {/* <div className = "row mx-0 mb-2 justify-content-center">
-                                        <div className = "col-md-6" >
-                                            <Pie ref = { this.chartCerradosReference } data = { data.cerrados } options = { optionsPie } />
-                                        </div>
-                                    </div> */}
-                                    <table className="table table-separate table-responsive-sm table-borderless table-vertical-center">
-                                        <thead>
-                                            <tr className="bg-light-gray text-dark-75">
-                                                <th className="border-0 center_content">
-                                                    <div className="font-size-lg font-weight-bolder text-justify">
-                                                        NOMBRE DE LEAD
-                                                    </div>
-                                                </th>
-                                                <th className="border-0 center_content">
-                                                    <div className="font-size-lg font-weight-bolder text-justify">
-                                                        VENDEDOR
-                                                    </div>
-                                                </th>
-                                                <th className="clave border-0 center_content">
-                                                    <div className="font-size-lg font-weight-bolder text-justify">
-                                                        ORIGEN
-                                                    </div>
-                                                </th>
-                                                <th className="clave border-0 center_content">
-                                                    <div className="font-size-lg font-weight-bolder text-center">
-                                                        COSTO
-                                                    </div>
-                                                </th>
-                                                <th className="clave border-0 center_content"style={{ minWidth: "100px" }}>
-                                                    <div className="font-size-lg font-weight-bolder text-center">
-                                                        FECHA DE CONTRATACION
-                                                    </div>
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {
-                                                data.cerrados.map((element, index)=>{
-                                                    return(
-                                                        <tr key = { index } >
-                                                            <td className="font-size-sm text-justify">
-                                                                {
-                                                                    element.prospecto ?
-                                                                        element.prospecto.lead ?
-                                                                            element.prospecto.lead.nombre
-                                                                        : '-'
-                                                                    : '-'
-                                                                }
-                                                            </td>
-                                                            <td className="font-size-sm text-justify">
-                                                                {
-                                                                    element.prospecto ?
-                                                                        element.prospecto.vendedores ?
-                                                                            element.prospecto.vendedores.length > 0 ?
-                                                                                <ul className = 'no-list'>
-                                                                                    {
-                                                                                        element.prospecto.vendedores.map((vendedor, index)=>{
-                                                                                            return(
-                                                                                                <li key = { index }>
-                                                                                                    {vendedor.name}
-                                                                                                </li>
-                                                                                            )
-                                                                                        })
-                                                                                    }
-                                                                                </ul>
-                                                                            : '-'
-                                                                        : '-'
-                                                                    : '-'
-                                                                }
-                                                            </td>
-                                                            <td className="font-size-sm text-justify">
-                                                                {
-                                                                    element.prospecto ?
-                                                                        element.prospecto.lead ?
-                                                                            element.prospecto.lead.origen ?
-                                                                                element.prospecto.lead.origen.origen
-                                                                            : ''
-                                                                        : ''
+
+                        {
+                            form.rango === "11" ?
+                                <>
+                                    {/* Nota: Aqui trabajaré con el reporte anual */}
+                                    <Tab.Container activeKey={key}>
+                                        <Tab.Content>
+                                            <div className="separator separator-solid separator-border-1 my-4"></div>
+                                            <Tab.Pane eventKey='1'>
+                                                {this.setButtons(null, '2', null, empresa, '01', 'ENTRADA TOTAL DE LEADS')}
+                                                <Bar ref={this.chartTotalReference} data={data.total} options={optionsBar} />
+                                            </Tab.Pane>
+                                            <Tab.Pane eventKey='2'>
+                                                {this.setButtons('1', '3', null, empresa, '02', 'ENTRADA DE LEADS (MENSUAL)')}
+                                                <Bar ref={this.chartTotalComparativaReference} data={data.comparativa} options={optionsBar} />
+                                            </Tab.Pane>
+                                            <Tab.Pane eventKey='3'>
+                                                {this.setButtons('2', '4', null, empresa, '03', 'ORIGEN DE LEADS')}
+                                                <Bar ref={this.chartTotalOrigenesReference} data={data.origenes} options={optionsBar} />
+                                            </Tab.Pane>
+                                            <Tab.Pane eventKey='4'>
+                                                {this.setButtons('3', '5', null, empresa, '04', 'ORIGEN DE LEADS ORGÁNICOS')}
+                                                <Bar ref={this.chartComparativaOrigenesReference} data={data.origenesComparativa} options={optionsBarGroup} />
+                                            </Tab.Pane>
+                                            <Tab.Pane eventKey='5'>
+                                                {this.setButtons('4', '6', null, empresa, '05', 'ORIGEN DE LEADS ADS')}
+                                                <Bar ref={this.chartTotalServiciosReference} data={data.servicios} options={optionsBar} />
+                                            </Tab.Pane>
+                                            <Tab.Pane eventKey='6'>
+                                                {this.setButtons('5', '7', null, empresa, '06', 'ORIGEN DE LEADS (MENSUAL)')}
+                                                <Bar ref={this.chartComparativaServiciosReference} data={data.serviciosComparativa} options={optionsBarGroup} />
+                                            </Tab.Pane>
+                                            <Tab.Pane eventKey='7'>
+                                                {this.setButtons('6', '8', null, empresa, '07', 'TIPO DE LEADS')}
+                                                <Bar ref={this.chartTiposReference} data={data.tipos} options={optionsBar} />
+                                            </Tab.Pane>
+                                            <Tab.Pane eventKey='8'>
+                                                {this.setButtons('7', '9', null, empresa, '08', 'ORIGEN DE LEADS NO POTENCIALES (#total)')}
+                                                <Bar ref={this.chartComparativaTiposReference} data={data.tiposComparativa} options={optionsBarGroup} />
+                                            </Tab.Pane>
+                                            <Tab.Pane eventKey='9'>
+                                                {this.setButtons('8', '10', null, empresa, '09', 'ORIGEN DE LEADS POTENCIALES (#total)')}
+                                                <Bar ref={this.chartProspectosReference} data={data.prospectos} options={optionsBar} />
+                                            </Tab.Pane>
+                                            <Tab.Pane eventKey='10'>
+                                                {this.setButtons('9', '11', null, empresa, '10', 'ORIGEN DE LEADS DUPLICADOS (#total)')}
+                                                <Line ref={this.chartComparativaProspectosReference} data={data.prospectosComparativa} options={optionsLine} />
+                                            </Tab.Pane>
+                                            <Tab.Pane eventKey='11'>
+                                                {this.setButtons('10', '12', null, empresa, '11', 'TIPO DE LEADS MESUAL')}
+                                                <Bar ref={this.chartEstatusReference} data={data.estatus} options={optionsBar} />
+                                            </Tab.Pane>
+                                            <Tab.Pane eventKey='12'>
+                                                {this.setButtons('11', '13', null, empresa, '12', 'SERVICIOS SOLICITADOS')}
+                                                <Bar ref={this.chartComparativaEstatusReference} data={data.estatusComparativa} options={optionsBarGroup} />
+                                            </Tab.Pane>
+                                            <Tab.Pane eventKey='13'>
+                                                {this.setButtons('12', '14', null, empresa, '13', 'SERVICIOS SOLICITADOS (MENSUAL)')}
+                                                <Bar ref={this.chartComparativaEstatusReference} data={data.estatusComparativa} options={optionsBarGroup} />
+                                            </Tab.Pane>
+                                            <Tab.Pane eventKey='14'>
+                                                {this.setButtons('13', '15', null, empresa, '14', 'LEADS CONTACTADOS')}
+                                                <Bar ref={this.chartComparativaEstatusReference} data={data.estatusComparativa} options={optionsBarGroup} />
+                                            </Tab.Pane>
+                                            <Tab.Pane eventKey='15'>
+                                                {this.setButtons('14', '16', null, empresa, '15', 'ESTATUS DE LEADS CONTACTADOS (#total)')}
+                                                <Bar ref={this.chartComparativaEstatusReference} data={data.estatusComparativa} options={optionsBarGroup} />
+                                            </Tab.Pane>
+                                            <Tab.Pane eventKey='16'>
+                                                {this.setButtons('15', '17', null, empresa, '16', 'PRINCIPALES MOTIVOS DE CANCELACIÓN')}
+                                                <Bar ref={this.chartComparativaEstatusReference} data={data.estatusComparativa} options={optionsBarGroup} />
+                                            </Tab.Pane>
+                                            <Tab.Pane eventKey='17'>
+                                                {this.setButtons('16', '18', null, empresa, '17', 'PRINCIPALES MOTIVOS DE RECHAZO')}
+                                                <Bar ref={this.chartComparativaEstatusReference} data={data.estatusComparativa} options={optionsBarGroup} />
+                                            </Tab.Pane>
+                                            <Tab.Pane eventKey='18'>
+                                                {this.setButtons('17', '19', null, empresa, '18', 'OBSERVACIONES CONTRATADOS')}
+                                                <div className="table-responsive d-flex justify-content-center">
+                                                    <table className="table table-responsive-lg table-vertical-center w-100">
+                                                        <thead>
+                                                            <tr className="bg-light-gray text-dark-75">
+                                                                <th colspan="6" className="py-0"></th>
+                                                                <th colspan="2" className="py-0 font-size-lg font-weight-bolder text-center">FECHA</th>
+                                                                <th></th>
+                                                            </tr>
+                                                            <tr className="bg-light-gray text-dark-75">
+                                                                <th className="py-0 font-size-lg font-weight-bolder text-justify">
+                                                                    NOMBRE
+                                                    </th>
+                                                                <th className="py-0 font-size-lg font-weight-bolder text-justify">
+                                                                    PROYECTO
+                                                    </th>
+                                                                <th className="py-0 font-size-lg font-weight-bolder text-justify">
+                                                                    SERVICIOS
+                                                    </th>
+                                                                <th className="py-0 font-size-lg font-weight-bolder text-justify">
+                                                                    ORIGEN
+                                                    </th>
+                                                                <th className="py-0 font-size-lg font-weight-bolder text-center">
+                                                                    MONTO
+                                                    </th>
+                                                                <th className="py-0 font-size-lg font-weight-bolder text-center">
+                                                                    M²
+                                                    </th>
+                                                                <th className="py-0 font-size-lg font-weight-bolder text-center">
+                                                                    INGRESO
+                                                    </th>
+                                                                <th className="py-0 font-size-lg font-weight-bolder text-center">
+                                                                    CONTRATO
+                                                    </th>
+                                                                <th className="py-0 font-size-lg font-weight-bolder text-center">
+                                                                    VENDEDOR
+                                                    </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td className="font-size-sm text-justify white-space-nowrap">
+                                                                    GRACIELA REYES HERNÁNDEZ
+                                                    </td>
+                                                                <td className="font-size-sm text-justify white-space-nowrap">
+                                                                    PRETUMEX
+                                                    </td>
+                                                                <td className="font-size-sm text-justify white-space-nowrap">
+                                                                    Remodelación de oficinas
+                                                    </td>
+                                                                <td className="font-size-sm text-justify white-space-nowrap">
+                                                                    ADS Chat
+                                                    </td>
+                                                                <td className="font-size-sm text-center white-space-nowrap">
+                                                                    $271,500.00 + I.V.A
+                                                    </td>
+                                                                <td className="font-size-sm text-center white-space-nowrap">
+                                                                    500
+                                                    </td>
+                                                                <td className="font-size-sm text-center white-space-nowrap">
+                                                                    18/08/2020
+                                                    </td>
+                                                                <td className="font-size-sm text-center white-space-nowrap">
+                                                                    02/10/2020
+                                                    </td>
+                                                                <td className="font-size-sm text-center white-space-nowrap">
+                                                                    CARINA JIMÉNEZ
+                                                    </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </div>
+                                            </Tab.Pane>
+                                            <Tab.Pane eventKey='19'>
+                                                {this.setButtons('18', '20', null, empresa, '19', 'CONCLUSIONES')}
+                                                <Editor
+                                                    editorClassName="editor-class"
+                                                    toolbar={
+                                                        {
+                                                            options: ['list'],
+                                                            list: {
+                                                                inDropdown: false,
+                                                                options: ['unordered'],
+                                                            },
+                                                        }
+                                                    }
+                                                    editorState={editorState}
+                                                    onEditorStateChange={this.onEditorStateChange}
+                                                />
+                                            </Tab.Pane>
+                                            <Tab.Pane eventKey='20'>
+                                                {this.setButtons('19', null, true, empresa, '20', 'SUGERENCIAS')}
+                                                <Editor
+                                                    editorClassName="editor-class"
+                                                    toolbar={
+                                                        {
+                                                            options: ['list'],
+                                                            list: {
+                                                                inDropdown: false,
+                                                                options: ['unordered'],
+                                                            },
+                                                        }
+                                                    }
+                                                    editorState={editorState}
+                                                    onEditorStateChange={this.onEditorStateChange}
+                                                />
+                                            </Tab.Pane>
+                                        </Tab.Content>
+                                    </Tab.Container>
+                                </>
+                                : form.rango === "2" ?
+                                    <>
+                                        <Tab.Container activeKey={key}>
+                                            <Tab.Content>
+                                                <div className="separator separator-solid separator-border-1 my-4"></div>
+                                                <Tab.Pane eventKey='1'>
+                                                    {this.setButtons(null, '2', null, empresa, '01', `ENTRADA TOTAL DE LEADS (${mes} ${form.año})`)}
+                                                    <Pie ref={this.chartTotalReference} data={data.total} options={optionsPie} />
+                                                </Tab.Pane>
+                                                <Tab.Pane eventKey='2'>
+                                                    {this.setButtons('1', '3', null, empresa, '02', 'COMPARATIVA DE LEADS TOTALES (MESES ANTERIORES)')}
+                                                    <Bar ref={this.chartTotalComparativaReference} data={data.comparativa} options={optionsBar} />
+                                                </Tab.Pane>
+                                                <Tab.Pane eventKey='3'>
+                                                    {this.setButtons('2', '4', null, empresa, '03', `ORIGEN DE LEADS (${mes} ${form.año})`)}
+                                                    <Bar ref={this.chartTotalOrigenesReference} data={data.origenes} options={optionsBar} />
+                                                </Tab.Pane>
+                                                <Tab.Pane eventKey='4'>
+                                                    {this.setButtons('3', '5', null, empresa, '04', 'COMPARATIVA ORIGEN LEADS (MESES ANTERIORES)')}
+                                                    <Bar ref={this.chartComparativaOrigenesReference} data={data.origenesComparativa} options={optionsBarGroup} />
+                                                </Tab.Pane>
+                                                <Tab.Pane eventKey='5'>
+                                                    {this.setButtons('4', '6', null, empresa, '05', `SERVICIOS SOLICITADOS (${mes} ${form.año})`)}
+                                                    <Bar ref={this.chartTotalServiciosReference} data={data.servicios} options={optionsBar} />
+                                                </Tab.Pane>
+                                                <Tab.Pane eventKey='6'>
+                                                    {this.setButtons('5', '7', null, empresa, '06', 'COMPARATIVA SERVICIOS SOLICITADOS (MESES ANTERIORES)')}
+                                                    <Bar ref={this.chartComparativaServiciosReference} data={data.serviciosComparativa} options={optionsBarGroup} />
+                                                </Tab.Pane>
+                                                <Tab.Pane eventKey='7'>
+                                                    {this.setButtons('6', '8', null, empresa, '07', `TIPO DE LEAD (${mes} ${form.año})`)}
+                                                    <Bar ref={this.chartTiposReference} data={data.tipos} options={optionsBar} />
+                                                </Tab.Pane>
+                                                <Tab.Pane eventKey='8'>
+                                                    {this.setButtons('7', '9', null, empresa, '08', 'COMPARATIVA TIPO DE LEAD (MESES ANTERIORES)')}
+                                                    <Bar ref={this.chartComparativaTiposReference} data={data.tiposComparativa} options={optionsBarGroup} />
+                                                </Tab.Pane>
+                                                <Tab.Pane eventKey='9'>
+                                                    {this.setButtons('8', '10', null, empresa, '09', `TOTAL DE PROSPECTOS (${mes} ${form.año})`)}
+                                                    <Bar ref={this.chartProspectosReference} data={data.prospectos} options={optionsBar} />
+                                                </Tab.Pane>
+                                                <Tab.Pane eventKey='10'>
+                                                    {this.setButtons('9', '11', null, empresa, '10', 'COMPARATIVA TOTAL DE PROSPECTOS (MESES ANTERIORES)')}
+                                                    <Line ref={this.chartComparativaProspectosReference} data={data.prospectosComparativa} options={optionsLine} />
+                                                </Tab.Pane>
+                                                <Tab.Pane eventKey='11'>
+                                                    {this.setButtons('10', '12', null, empresa, '11', `ESTATUS DE PROSPECTOS (${mes} ${form.año})`)}
+                                                    <Bar ref={this.chartEstatusReference} data={data.estatus} options={optionsBar} />
+                                                </Tab.Pane>
+                                                <Tab.Pane eventKey='12'>
+                                                    {this.setButtons('11', '13', null, empresa, '12', 'COMPARATIVA ESTATUS DE PROSPECTOS (MESES ANTERIORES)')}
+                                                    <Bar ref={this.chartComparativaEstatusReference} data={data.estatusComparativa} options={optionsBarGroup} />
+                                                </Tab.Pane>
+                                                <Tab.Pane eventKey='13'>
+                                                    {this.setButtons('12', '14', null, empresa, '13', `PROSPECTOS CONTRATADOS (${mes} ${form.año})`)}
+                                                    <table className="table table-separate table-responsive-sm table-borderless table-vertical-center">
+                                                        <thead>
+                                                            <tr className="bg-light-gray text-dark-75">
+                                                                <th className="border-0 center_content">
+                                                                    <div className="font-size-lg font-weight-bolder text-justify">
+                                                                        NOMBRE DE LEAD
+                                                            </div>
+                                                                </th>
+                                                                <th className="border-0 center_content">
+                                                                    <div className="font-size-lg font-weight-bolder text-justify">
+                                                                        VENDEDOR
+                                                            </div>
+                                                                </th>
+                                                                <th className="clave border-0 center_content">
+                                                                    <div className="font-size-lg font-weight-bolder text-justify">
+                                                                        ORIGEN
+                                                            </div>
+                                                                </th>
+                                                                <th className="clave border-0 center_content">
+                                                                    <div className="font-size-lg font-weight-bolder text-center">
+                                                                        COSTO
+                                                            </div>
+                                                                </th>
+                                                                <th className="clave border-0 center_content" style={{ minWidth: "100px" }}>
+                                                                    <div className="font-size-lg font-weight-bolder text-center">
+                                                                        FECHA DE CONTRATACION
+                                                            </div>
+                                                                </th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            {
+                                                                data.cerrados.map((element, index) => {
+                                                                    return (
+                                                                        <tr key={index} >
+                                                                            <td className="font-size-sm text-justify">
+                                                                                {
+                                                                                    element.prospecto ?
+                                                                                        element.prospecto.lead ?
+                                                                                            element.prospecto.lead.nombre
+                                                                                            : '-'
+                                                                                        : '-'
+                                                                                }
+                                                                            </td>
+                                                                            <td className="font-size-sm text-justify">
+                                                                                {
+                                                                                    element.prospecto ?
+                                                                                        element.prospecto.vendedores ?
+                                                                                            element.prospecto.vendedores.length > 0 ?
+                                                                                                <ul className='no-list'>
+                                                                                                    {
+                                                                                                        element.prospecto.vendedores.map((vendedor, index) => {
+                                                                                                            return (
+                                                                                                                <li key={index}>
+                                                                                                                    {vendedor.name}
+                                                                                                                </li>
+                                                                                                            )
+                                                                                                        })
+                                                                                                    }
+                                                                                                </ul>
+                                                                                                : '-'
+                                                                                            : '-'
+                                                                                        : '-'
+                                                                                }
+                                                                            </td>
+                                                                            <td className="font-size-sm text-justify">
+                                                                                {
+                                                                                    element.prospecto ?
+                                                                                        element.prospecto.lead ?
+                                                                                            element.prospecto.lead.origen ?
+                                                                                                element.prospecto.lead.origen.origen
+                                                                                                : ''
+                                                                                            : ''
+                                                                                        : ''
+                                                                                }
+                                                                            </td>
+                                                                            <td className="font-size-sm text-center">
+                                                                                {
+                                                                                    element.prospecto ?
+                                                                                        element.prospecto.lead ?
+                                                                                            element.prospecto.lead.presupuesto_diseño ?
+                                                                                                setMoneyTableSinSmall(element.prospecto.lead.presupuesto_diseño.total)
+                                                                                                : '-'
+                                                                                            : '-'
+                                                                                        : '-'
+                                                                                }
+                                                                            </td>
+                                                                            <td className="font-size-sm text-center">
+                                                                                {setDateTableLG(element.created_at)}
+                                                                            </td>
+                                                                        </tr>
+                                                                    )
+                                                                })
+                                                            }
+                                                            {
+                                                                data.cerrados.length === 0 ?
+                                                                    <tr>
+                                                                        <td className='font-size-sm text-center' colSpan="5">
+                                                                            No hubo prospectos cerrados
+                                                                </td>
+                                                                    </tr>
                                                                     : ''
-                                                                }
-                                                            </td>
-                                                            <td className="font-size-sm text-center">
-                                                                {
-                                                                    element.prospecto ?
-                                                                        element.prospecto.lead ?
-                                                                            element.prospecto.lead.presupuesto_diseño ?
-                                                                                setMoneyTableSinSmall(element.prospecto.lead.presupuesto_diseño.total)
-                                                                            : '-'
-                                                                        : '-'
-                                                                    : '-'
-                                                                }        
-                                                            </td>
-                                                            <td className="font-size-sm text-center">
-                                                                { setDateTableLG(element.created_at) }
-                                                            </td>
-                                                        </tr>
-                                                    )
-                                                })
-                                            }
-                                            {
-                                                data.cerrados.length === 0 ?
-                                                    <tr>
-                                                        <td className = 'font-size-sm text-center' colSpan = "5">
-                                                            No hubo prospectos cerrados
-                                                        </td>
-                                                    </tr>
-                                                : ''
-                                            }
-                                        </tbody>
-                                    </table>
-                                </Tab.Pane>
-                                <Tab.Pane eventKey = 'fourteen'>
-                                    {this.setButtons('thirteen', 'fifteen', null)}
-                                    <div className = "mt-4 mb-5">
-                                        <h3 className="card-label title-reporte-ventas">
-                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
-                                                14
-                                            </strong>
-                                            OBSERVACIONES DE PROSPECTOS ({mes} {form.año})
-                                        </h3>
-                                    </div>
-                                    <table className="table table-separate table-responsive-sm table-borderless table-vertical-center">
-                                        <thead>
-                                            <tr className="bg-light-gray text-dark-75">
-                                                <th className="border-0 center_content text-justify">
-                                                    <div className="font-size-lg font-weight-bolder">
-                                                        NOMBRE DE LEAD
-                                                    </div>
-                                                </th>
-                                                <th className="clave border-0 center_content text-justify" style={{ minWidth: "121px" }}>
-                                                    <div className="font-size-lg font-weight-bolder">
-                                                        PROYECTO
-                                                    </div>
-                                                </th>
-                                                <th className="clave border-0 center_content">
-                                                    <div className="font-size-lg font-weight-bolder text-center">
-                                                        ESTATUS
-                                                    </div>
-                                                </th>
-                                                <th className="clave border-0 center_content">
-                                                    <div className="font-size-lg font-weight-bolder text-center">
-                                                        PRIMER CONTACTO
-                                                    </div>
-                                                </th>
-                                                <th className="clave border-0 center_content">
-                                                    <div className="font-size-lg font-weight-bolder text-center">
-                                                        ÚLTIMO CONTACTO
-                                                    </div>
-                                                </th>
-                                                <th className="border-0 center_content">
-                                                    <div className="font-size-lg font-weight-bolder text-center">
-                                                        OBSERVACIONES
-                                                    </div>
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {
-                                                form.leads.map((lead, index) => {
-                                                    if (lead.prospecto)
-                                                        return (
-                                                            <tr key={index} >
-                                                                <td className="font-size-sm text-justify">
-                                                                    {
-                                                                        lead.nombre
-                                                                    }
-                                                                </td>
-                                                                <td className="font-size-sm text-justify">
-                                                                    {
-                                                                        lead.prospecto.tipo_proyecto ?
-                                                                            lead.prospecto.tipo_proyecto.tipo
-                                                                        :
-                                                                            lead.servicios.map((serv, index) => {
-                                                                                return serv.servicio
-                                                                            })
-                                                                    }
-                                                                </td>
-                                                                <td className='text-center'>
-                                                                    {
-                                                                        lead.prospecto.estatus_prospecto ?
-                                                                            this.setLabel(lead.prospecto.estatus_prospecto)
-                                                                            : ''
-                                                                    }
-                                                                </td>
-                                                                <td className='text-center font-size-sm'>
-                                                                    {
-                                                                        lead.prospecto.contactos ?
-                                                                            lead.prospecto.contactos.length ?
-                                                                                setDateTableLG(lead.prospecto.contactos[lead.prospecto.contactos.length - 1].created_at)
-                                                                                : 'SIN CONTACTO'
-                                                                            : 'SIN CONTACTO'
-                                                                    }
-                                                                </td>
-                                                                <td className='text-center font-size-sm'>
-                                                                    {
-                                                                        lead.prospecto.contactos ?
-                                                                            lead.prospecto.contactos.length ?
-                                                                                setDateTableLG(lead.prospecto.contactos[0].created_at)
-                                                                                : 'SIN CONTACTO'
-                                                                            : 'SIN CONTACTO'
-                                                                    }
-                                                                </td>
-                                                                <td className="font-size-sm text-justify">
-                                                                    {
-                                                                        this.setComentario(lead)
-                                                                    }
-                                                                </td>
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                </Tab.Pane>
+                                                <Tab.Pane eventKey='14'>
+                                                    {this.setButtons('13', '15', null, empresa, '14', `OBSERVACIONES DE PROSPECTOS (${mes} ${form.año})`)}
+                                                    <table className="table table-separate table-responsive-sm table-borderless table-vertical-center">
+                                                        <thead>
+                                                            <tr className="bg-light-gray text-dark-75">
+                                                                <th className="border-0 center_content text-justify">
+                                                                    <div className="font-size-lg font-weight-bolder">
+                                                                        NOMBRE DE LEAD
+                                                            </div>
+                                                                </th>
+                                                                <th className="clave border-0 center_content text-justify" style={{ minWidth: "121px" }}>
+                                                                    <div className="font-size-lg font-weight-bolder">
+                                                                        PROYECTO
+                                                            </div>
+                                                                </th>
+                                                                <th className="clave border-0 center_content">
+                                                                    <div className="font-size-lg font-weight-bolder text-center">
+                                                                        ESTATUS
+                                                            </div>
+                                                                </th>
+                                                                <th className="clave border-0 center_content">
+                                                                    <div className="font-size-lg font-weight-bolder text-center">
+                                                                        PRIMER CONTACTO
+                                                            </div>
+                                                                </th>
+                                                                <th className="clave border-0 center_content">
+                                                                    <div className="font-size-lg font-weight-bolder text-center">
+                                                                        ÚLTIMO CONTACTO
+                                                            </div>
+                                                                </th>
+                                                                <th className="border-0 center_content">
+                                                                    <div className="font-size-lg font-weight-bolder text-center">
+                                                                        OBSERVACIONES
+                                                            </div>
+                                                                </th>
                                                             </tr>
-                                                        )
-                                                    return false
-                                                })
-                                            }
-                                        </tbody>
-                                    </table>
-                                </Tab.Pane>
-                                <Tab.Pane eventKey = 'fifteen'>
-                                    {this.setButtons('fourteen', 'sixteen', null)}
-                                    <div className = "mt-4 mb-5">
-                                        <h3 className="card-label title-reporte-ventas">
-                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
-                                                15
-                                            </strong>
-                                            LISTADO DE PROSPECTO (MESES ANTERIORES)
-                                        </h3>
-                                    </div>
-                                    <table className="table table-separate table-responsive-sm table-borderless table-vertical-center">
-                                        <thead>
-                                            <tr className="bg-light-gray text-dark-75">
-                                                <th className="border-0 center_content" style={{ minWidth: "133px" }}>
-                                                    <div className="font-size-lg font-weight-bolder text-justify">
-                                                        NOMBRE DE LEAD
-                                                    </div>
-                                                </th>
-                                                <th className="clave border-0 center_content">
-                                                    <div className="font-size-lg font-weight-bolder text-justify">
-                                                        PROYECTO
-                                                    </div>
-                                                </th>
-                                                <th className="clave border-0 center_content">
-                                                    <div className="font-size-lg font-weight-bolder text-center">
-                                                        ESTATUS
-                                                    </div>
-                                                </th>
-                                                <th className="clave border-0 center_content">
-                                                    <div className="font-size-lg font-weight-bolder text-center">
-                                                        PRIMER CONTACTO
-                                                    </div>
-                                                </th>
-                                                <th className="clave border-0 center_content">
-                                                    <div className="font-size-lg font-weight-bolder text-center">
-                                                        ÚLTIMO CONTACTO
-                                                    </div>
-                                                </th>
-                                                <th className="clave border-0 center_content">
-                                                    <div className="font-size-lg font-weight-bolder text-center">
-                                                        MOTIVO
-                                                    </div>
-                                                </th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            {
-                                                leadsAnteriores.map((lead, index)=>{
-                                                    if(lead.prospecto)
-                                                        return(
-                                                            <tr key = { index } >
-                                                                <td className="font-size-sm text-justify">
-                                                                    {
-                                                                        lead.nombre
-                                                                    }
-                                                                </td>
-                                                                <td className="font-size-sm text-justify">
-                                                                    {
-                                                                        lead.prospecto.tipo_proyecto ?
-                                                                            lead.prospecto.tipo_proyecto.tipo
-                                                                        : 
-                                                                            lead.servicios.map((serv, index) => {
-                                                                                return serv.servicio
-                                                                            })
-                                                                    }
-                                                                </td>
-                                                                <td className='text-center'>
-                                                                    {
-                                                                        lead.prospecto.estatus_prospecto ?
-                                                                            this.setLabel(lead.prospecto.estatus_prospecto)
-                                                                        : ''
-                                                                    }
-                                                                </td>
-                                                                <td className = 'text-center font-size-sm'>
-                                                                    {
-                                                                        lead.prospecto.contactos ?
-                                                                            lead.prospecto.contactos.length ?
-                                                                                setDateTableLG(lead.prospecto.contactos[lead.prospecto.contactos.length - 1].created_at)
-                                                                            : 'SIN CONTACTO'
-                                                                        : 'SIN CONTACTO'
-                                                                    }
-                                                                </td>
-                                                                <td className = 'text-center font-size-sm'>
-                                                                    {
-                                                                        lead.prospecto.contactos ?
-                                                                            lead.prospecto.contactos.length ?
-                                                                                setDateTableLG(lead.prospecto.contactos[0].created_at)
-                                                                            : 'SIN CONTACTO'
-                                                                        : 'SIN CONTACTO'
-                                                                    }
-                                                                </td>
-                                                                <td className="font-size-sm text-justify">
-                                                                    {
-                                                                        this.setComentario(lead)
-                                                                    }
-                                                                </td>
+                                                        </thead>
+                                                        <tbody>
+                                                            {
+                                                                form.leads.map((lead, index) => {
+                                                                    if (lead.prospecto)
+                                                                        return (
+                                                                            <tr key={index} >
+                                                                                <td className="font-size-sm text-justify">
+                                                                                    {
+                                                                                        lead.nombre
+                                                                                    }
+                                                                                </td>
+                                                                                <td className="font-size-sm text-justify">
+                                                                                    {
+                                                                                        lead.prospecto.tipo_proyecto ?
+                                                                                            lead.prospecto.tipo_proyecto.tipo
+                                                                                            :
+                                                                                            lead.servicios.map((serv, index) => {
+                                                                                                return serv.servicio
+                                                                                            })
+                                                                                    }
+                                                                                </td>
+                                                                                <td className='text-center'>
+                                                                                    {
+                                                                                        lead.prospecto.estatus_prospecto ?
+                                                                                            this.setLabel(lead.prospecto.estatus_prospecto)
+                                                                                            : ''
+                                                                                    }
+                                                                                </td>
+                                                                                <td className='text-center font-size-sm'>
+                                                                                    {
+                                                                                        lead.prospecto.contactos ?
+                                                                                            lead.prospecto.contactos.length ?
+                                                                                                setDateTableLG(lead.prospecto.contactos[lead.prospecto.contactos.length - 1].created_at)
+                                                                                                : 'SIN CONTACTO'
+                                                                                            : 'SIN CONTACTO'
+                                                                                    }
+                                                                                </td>
+                                                                                <td className='text-center font-size-sm'>
+                                                                                    {
+                                                                                        lead.prospecto.contactos ?
+                                                                                            lead.prospecto.contactos.length ?
+                                                                                                setDateTableLG(lead.prospecto.contactos[0].created_at)
+                                                                                                : 'SIN CONTACTO'
+                                                                                            : 'SIN CONTACTO'
+                                                                                    }
+                                                                                </td>
+                                                                                <td className="font-size-sm text-justify">
+                                                                                    {
+                                                                                        this.setComentario(lead)
+                                                                                    }
+                                                                                </td>
+                                                                            </tr>
+                                                                        )
+                                                                    return false
+                                                                })
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                </Tab.Pane>
+                                                <Tab.Pane eventKey='15'>
+                                                    {this.setButtons('14', '16', null, empresa, '15', 'LISTADO DE PROSPECTO (MESES ANTERIORES)')}
+                                                    <table className="table table-separate table-responsive-sm table-borderless table-vertical-center">
+                                                        <thead>
+                                                            <tr className="bg-light-gray text-dark-75">
+                                                                <th className="border-0 center_content" style={{ minWidth: "133px" }}>
+                                                                    <div className="font-size-lg font-weight-bolder text-justify">
+                                                                        NOMBRE DE LEAD
+                                                            </div>
+                                                                </th>
+                                                                <th className="clave border-0 center_content">
+                                                                    <div className="font-size-lg font-weight-bolder text-justify">
+                                                                        PROYECTO
+                                                            </div>
+                                                                </th>
+                                                                <th className="clave border-0 center_content">
+                                                                    <div className="font-size-lg font-weight-bolder text-center">
+                                                                        ESTATUS
+                                                            </div>
+                                                                </th>
+                                                                <th className="clave border-0 center_content">
+                                                                    <div className="font-size-lg font-weight-bolder text-center">
+                                                                        PRIMER CONTACTO
+                                                            </div>
+                                                                </th>
+                                                                <th className="clave border-0 center_content">
+                                                                    <div className="font-size-lg font-weight-bolder text-center">
+                                                                        ÚLTIMO CONTACTO
+                                                            </div>
+                                                                </th>
+                                                                <th className="clave border-0 center_content">
+                                                                    <div className="font-size-lg font-weight-bolder text-center">
+                                                                        MOTIVO
+                                                            </div>
+                                                                </th>
                                                             </tr>
-                                                        )
-                                                    return false
-                                                })
-                                            }
-                                        </tbody>
-                                    </table>
-                                </Tab.Pane>
-                                <Tab.Pane eventKey = 'sixteen'>
-                                    {this.setButtons('fifteen', null, true)}
-                                    <div className = "mt-4 mb-5">
-                                        <h3 className="card-label title-reporte-ventas">
-                                            <strong className={empresa==='INEIN'?"colorInein":empresa==='INFRAESTRUCTURA MÉDICA'?"colorIMAzul":''}>
-                                                16
-                                            </strong>
-                                            CONCLUSIONES
-                                        </h3>
-                                    </div>
-                                    <Editor 
-                                        editorClassName = "editor-class"
-                                        toolbar = { 
-                                            {
-                                                options: ['list'],
-                                                list: {
-                                                    inDropdown: false,
-                                                    options: ['unordered'],
-                                                },
-                                            }
-                                        }
-                                        editorState = { editorState }
-                                        onEditorStateChange={this.onEditorStateChange}
-                                        />
-                                </Tab.Pane>
-                            </Tab.Content>
-                        </Tab.Container>
+                                                        </thead>
+                                                        <tbody>
+                                                            {
+                                                                leadsAnteriores.map((lead, index) => {
+                                                                    if (lead.prospecto)
+                                                                        return (
+                                                                            <tr key={index} >
+                                                                                <td className="font-size-sm text-justify">
+                                                                                    {
+                                                                                        lead.nombre
+                                                                                    }
+                                                                                </td>
+                                                                                <td className="font-size-sm text-justify">
+                                                                                    {
+                                                                                        lead.prospecto.tipo_proyecto ?
+                                                                                            lead.prospecto.tipo_proyecto.tipo
+                                                                                            :
+                                                                                            lead.servicios.map((serv, index) => {
+                                                                                                return serv.servicio
+                                                                                            })
+                                                                                    }
+                                                                                </td>
+                                                                                <td className='text-center'>
+                                                                                    {
+                                                                                        lead.prospecto.estatus_prospecto ?
+                                                                                            this.setLabel(lead.prospecto.estatus_prospecto)
+                                                                                            : ''
+                                                                                    }
+                                                                                </td>
+                                                                                <td className='text-center font-size-sm'>
+                                                                                    {
+                                                                                        lead.prospecto.contactos ?
+                                                                                            lead.prospecto.contactos.length ?
+                                                                                                setDateTableLG(lead.prospecto.contactos[lead.prospecto.contactos.length - 1].created_at)
+                                                                                                : 'SIN CONTACTO'
+                                                                                            : 'SIN CONTACTO'
+                                                                                    }
+                                                                                </td>
+                                                                                <td className='text-center font-size-sm'>
+                                                                                    {
+                                                                                        lead.prospecto.contactos ?
+                                                                                            lead.prospecto.contactos.length ?
+                                                                                                setDateTableLG(lead.prospecto.contactos[0].created_at)
+                                                                                                : 'SIN CONTACTO'
+                                                                                            : 'SIN CONTACTO'
+                                                                                    }
+                                                                                </td>
+                                                                                <td className="font-size-sm text-justify">
+                                                                                    {
+                                                                                        this.setComentario(lead)
+                                                                                    }
+                                                                                </td>
+                                                                            </tr>
+                                                                        )
+                                                                    return false
+                                                                })
+                                                            }
+                                                        </tbody>
+                                                    </table>
+                                                </Tab.Pane>
+                                                <Tab.Pane eventKey='16'>
+                                                    {this.setButtons('15', null, true, empresa, '16', 'CONCLUSIONES')}
+                                                    <Editor
+                                                        editorClassName="editor-class"
+                                                        toolbar={
+                                                            {
+                                                                options: ['list'],
+                                                                list: {
+                                                                    inDropdown: false,
+                                                                    options: ['unordered'],
+                                                                },
+                                                            }
+                                                        }
+                                                        editorState={editorState}
+                                                        onEditorStateChange={this.onEditorStateChange}
+                                                    />
+                                                </Tab.Pane>
+                                            </Tab.Content>
+                                        </Tab.Container>
+                                    </>
+                                    : ""
+                        }
+
                     </Card.Body>
                 </Card>
-                <Modal size="lg" title = "Reportes de ventas" show = { modal } handleClose = { this.handleCloseModal } >
-                    <Tab.Container activeKey = { empresaActive } 
-                        onSelect = { (select) => this.onClickEmpresa(select) }>
+                <Modal size="lg" title="Reportes de ventas" show={modal} handleClose={this.handleCloseModal} >
+                    <Tab.Container activeKey={empresaActive}
+                        onSelect={(select) => this.onClickEmpresa(select)}>
                         <div className="d-flex justify-content-end mt-2">
                             <Nav className="nav-tabs nav-bold nav-tabs-line nav-tabs-line-3x border-0">
                                 {
                                     empresas.map((empresa, key) => {
                                         return (
                                             <Nav.Item className="navi-item" key={key}>
-												<Nav.Link eventKey={empresa.id}>{empresa.name}</Nav.Link>
-											</Nav.Item>
+                                                <Nav.Link eventKey={empresa.id}>{empresa.name}</Nav.Link>
+                                            </Nav.Item>
                                         )
                                     })
                                 }
                             </Nav>
                         </div>
                         {
-                            empresas.map((empresa)=>{
-                                if(empresaActive.toString() === empresa.id.toString())
-                                    return(
+                            empresas.map((empresa) => {
+                                if (empresaActive.toString() === empresa.id.toString())
+                                    return (
                                         <div className="d-flex justify-content-center mt-4">
                                             <table className="table table-vertical-center text-center mt-3" id="reportes">
                                                 <thead>
@@ -1952,10 +1985,10 @@ class ReporteVentas extends Component {
                                                 <tbody>
                                                     {
                                                         empresa.reportes.map((reporte, key) => {
-                                                            return(
-                                                                <tr key = { key }>
-                                                                    <td> { reporte.año } </td>
-                                                                    <td> { mesesEspañol[parseInt(reporte.mes)] } </td>
+                                                            return (
+                                                                <tr key={key}>
+                                                                    <td> {reporte.año} </td>
+                                                                    <td> {mesesEspañol[parseInt(reporte.mes)]} </td>
                                                                     <td>
                                                                         <a href = { reporte.adjunto.url} rel="noopener noreferrer" target = '_blank'
                                                                             className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-primary" >
@@ -1971,16 +2004,16 @@ class ReporteVentas extends Component {
                                                     {
                                                         empresa.reportes.length === 0 ?
                                                             <tr>
-                                                                <td colSpan = "3">
+                                                                <td colSpan="3">
                                                                     No hay reportes generados
                                                                 </td>
                                                             </tr>
-                                                        : ''
+                                                            : ''
                                                     }
                                                 </tbody>
                                             </table>
                                         </div>
-                                        
+
                                     )
                                 return ''
                             })
