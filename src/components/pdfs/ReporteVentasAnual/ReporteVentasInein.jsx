@@ -20,20 +20,6 @@ const styles = StyleSheet.create({
         borderRadius: 0.5,
         backgroundColor: INEIN_RED
     },
-    pagina: {
-        backgroundColor: INEIN_RED
-    },
-    pagina2: {
-        backgroundColor: '#525252'
-    },
-    page: {
-        paddingTop: '40px',
-        paddingBottom: '40px',
-        paddingRight: '35px',
-        paddingLeft: '35px',
-        height: '97%',
-        backgroundColor: 'white'
-    },
     paginacion:{
         color: INEIN_RED,
         fontWeight: 'bold',
@@ -47,11 +33,6 @@ const styles = StyleSheet.create({
         fontFamily: 'Poppins',
         paddingBottom: 9,
         paddingLeft: 8
-    },
-    texto:{
-        marginTop: '0.5rem',
-        color: '#535353',
-        fontSize: 15
     },
     table: {
         width: '100%',
@@ -104,14 +85,14 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginLeft: 5
     },
-    cell: {
-        display: 'flex',
-        justifyContent: 'center',
-        alignContent: 'center',
-        textAlign: 'center',
-        flexWrap: 'wrap',
-        width: '50%'
-    }, 
+    // cell: {
+    //     display: 'flex',
+    //     justifyContent: 'center',
+    //     alignContent: 'center',
+    //     textAlign: 'center',
+    //     flexWrap: 'wrap',
+    //     width: '50%'
+    // }, 
     cellListaDot: {
         display: 'flex',
         justifyContent: 'center',
@@ -142,15 +123,15 @@ const styles = StyleSheet.create({
         width: '20%',
         padding:'4px'
     },
-    cell8: {
-        display: 'flex',
-        justifyContent: 'center',
-        alignContent: 'center',
-        textAlign: 'center',
-        flexWrap: 'wrap',
-        width: '8%',
-        padding:'4px'
-    },
+    // cell8: {
+    //     display: 'flex',
+    //     justifyContent: 'center',
+    //     alignContent: 'center',
+    //     textAlign: 'center',
+    //     flexWrap: 'wrap',
+    //     width: '8%',
+    //     padding:'4px'
+    // },
     cell10: {
         display: 'flex',
         justifyContent: 'center',
@@ -160,24 +141,24 @@ const styles = StyleSheet.create({
         width: '10%',
         padding:'4px'
     },
-    cell11: {
-        display: 'flex',
-        justifyContent: 'center',
-        alignContent: 'center',
-        textAlign: 'center',
-        flexWrap: 'wrap',
-        width: '11%',
-        padding:'4px'
-    },
-    cell15: {
-        display: 'flex',
-        justifyContent: 'center',
-        alignContent: 'center',
-        textAlign: 'center',
-        flexWrap: 'wrap',
-        width: '15%',
-        padding:'4px'
-    },
+    // cell11: {
+    //     display: 'flex',
+    //     justifyContent: 'center',
+    //     alignContent: 'center',
+    //     textAlign: 'center',
+    //     flexWrap: 'wrap',
+    //     width: '11%',
+    //     padding:'4px'
+    // },
+    // cell15: {
+    //     display: 'flex',
+    //     justifyContent: 'center',
+    //     alignContent: 'center',
+    //     textAlign: 'center',
+    //     flexWrap: 'wrap',
+    //     width: '15%',
+    //     padding:'4px'
+    // },
     cell30: {
         display: 'flex',
         justifyContent: 'center',
@@ -187,15 +168,15 @@ const styles = StyleSheet.create({
         width: '30%',
         padding:'4px'
     },  
-    cell43: {
-        display: 'flex',
-        justifyContent: 'center',
-        alignContent: 'center',
-        textAlign: 'center',
-        flexWrap: 'wrap',
-        width: '43%',
-        padding:'4px'
-    },
+    // cell43: {
+    //     display: 'flex',
+    //     justifyContent: 'center',
+    //     alignContent: 'center',
+    //     textAlign: 'center',
+    //     flexWrap: 'wrap',
+    //     width: '43%',
+    //     padding:'4px'
+    // },
     headerText:{
         color: 'white',
         fontWeight: 'bold',        
@@ -240,14 +221,14 @@ const styles = StyleSheet.create({
         marginRight: 'auto',
         objectFit: 'cover'
     },
-    imagenDoble:{
-        width: '90%',
-        textAlign: 'center',
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        marginBottom: 40,
-        marginTop: 100
-    },
+    // imagenDoble:{
+    //     width: '90%',
+    //     textAlign: 'center',
+    //     marginLeft: 'auto',
+    //     marginRight: 'auto',
+    //     marginBottom: 40,
+    //     marginTop: 100
+    // },
     lineaNegra:{
         backgroundColor: '#525252',
         position: 'absolute',
@@ -435,7 +416,7 @@ export default class ReporteVentasInein extends Component {
     }
 
     render() {
-        const { lista, images, form, anteriores, mes, data } = this.props
+        const { lista, images, data } = this.props
         return (
             <Document style = {{ fontFamily: 'Poppins', color: '#525252' }}>
                 <Page size="A4" orientation = "landscape" style = {{ position: 'relative', height: '100%'}}>
@@ -614,7 +595,7 @@ export default class ReporteVentasInein extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    <Text style = { styles.textPink }>ORIGEN </Text>DE LEADS  <Text style = { styles.textPink }>NO POTENCIALES </Text>(#Total)
+                                    <Text style = { styles.textPink }>ORIGEN </Text>DE LEADS  <Text style = { styles.textPink }>NO POTENCIALES </Text>
                                 </Text>
                             </View>
                         </View>
@@ -632,7 +613,7 @@ export default class ReporteVentasInein extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    <Text style = { styles.textPink }>ORIGEN </Text>DE LEADS <Text style = { styles.textPink }>POTENCIALES </Text>(#Total)
+                                    <Text style = { styles.textPink }>ORIGEN </Text>DE LEADS <Text style = { styles.textPink }>POTENCIALES </Text>
                                 </Text>
                             </View>
                         </View>
@@ -650,7 +631,7 @@ export default class ReporteVentasInein extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    <Text style = { styles.textPink }>ORIGEN </Text>DE LEADS <Text style = { styles.textPink }>DUPLICADOS </Text>(#Total)
+                                    <Text style = { styles.textPink }>ORIGEN </Text>DE LEADS <Text style = { styles.textPink }>DUPLICADOS </Text>
                                 </Text>
                             </View>
                         </View>
@@ -728,6 +709,58 @@ export default class ReporteVentasInein extends Component {
                     <View style = { styles.lineaRosa }></View>
                     <View>
                         <Text style = { styles.textSeparator }>
+                            TIPO DE PROYECTO
+                        </Text>
+                    </View>
+                </Page>
+                <Page size="A4" orientation = "landscape">
+                    <View style = { styles.pagePadding } >
+                        <View style = { styles.numberTitle } >
+                            <View >
+                                <Text style = { styles.paginacion}>20</Text>
+                            </View>
+                            <View>
+                                <Text style = { styles.titulo }>    
+                                    TOTAL DE <Text style = { styles.textPink }>TIPOS DE PROYECTO</Text>
+                                </Text>
+                            </View>
+                        </View>
+                        <View style = { styles.imgCenter }>
+                            <Image style = { styles.imagenCentrada }  src = { images[6].url }/>
+                        </View>
+                        <View style={ styles.linePink }></View>
+                    </View>
+                </Page>
+                <Page size="A4" orientation = "landscape" >
+                    <View style = { styles.pagePadding } >
+                        <View style = { styles.numberTitle } >
+                            <View >
+                                <Text style = { styles.paginacion}>21</Text>
+                            </View>
+                            <View>
+                                <Text style = { styles.titulo }>    
+                                    TIPO DE PROYECTO <Text style = { styles.textPink }>MENSUAL</Text>
+                                </Text>
+                            </View>
+                        </View>
+                        <View style = { styles.imgCenter }>
+                            <Image style = { styles.imagenCentrada }  src = { images[7].url }/>
+                        </View>
+                        <View style={ styles.lineGray }></View>
+                    </View>
+                </Page>
+
+
+
+
+
+
+
+                <Page size="A4" orientation = "landscape" style = { styles.justifyContentCenter }>
+                    <View style = { styles.lineaNegra }></View>
+                    <View style = { styles.lineaRosa }></View>
+                    <View>
+                        <Text style = { styles.textSeparator }>
                             LEADS POTENCIALES
                         </Text>
                     </View>
@@ -736,7 +769,7 @@ export default class ReporteVentasInein extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>20</Text>
+                                <Text style = { styles.paginacion}>23</Text>
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -754,7 +787,7 @@ export default class ReporteVentasInein extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>21</Text>
+                                <Text style = { styles.paginacion}>24</Text>
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -772,7 +805,7 @@ export default class ReporteVentasInein extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>22</Text>
+                                <Text style = { styles.paginacion}>25</Text>
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -783,14 +816,14 @@ export default class ReporteVentasInein extends Component {
                         <View style = { styles.imgCenter }>
                             <Image style = { styles.imagenCentrada }  src = { images[7].url }/>
                         </View>
-                        <View style={ styles.lineGray }></View>
+                        <View style={ styles.linePink }></View>
                     </View>
                 </Page>
                 <Page size="A4" orientation = "landscape" >
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>23</Text>
+                                <Text style = { styles.paginacion}>26</Text>
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -801,14 +834,14 @@ export default class ReporteVentasInein extends Component {
                         <View style = { styles.imgCenter }>
                             <Image style = { styles.imagenCentrada }  src = { images[7].url }/>
                         </View>
-                        <View style={ styles.linePink }></View>
+                        <View style={ styles.lineGray }></View>
                     </View>
                 </Page>
                 <Page size="A4" orientation = "landscape">
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>24</Text>
+                                <Text style = { styles.paginacion}>27</Text>
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -992,7 +1025,7 @@ export default class ReporteVentasInein extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>26</Text>
+                                <Text style = { styles.paginacion}>29</Text>
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -1033,7 +1066,7 @@ export default class ReporteVentasInein extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>27</Text>
+                                <Text style = { styles.paginacion}>30</Text>
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
