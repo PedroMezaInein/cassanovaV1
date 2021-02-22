@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Accordion, Card } from 'react-bootstrap'
+import { Accordion, Card, Form } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { Button } from '../../../components/form-components'
 import ClienteForm from '../../../components/forms/ClienteForm'
@@ -7,7 +7,7 @@ import Layout from '../../../components/layout/layout'
 import { Modal } from '../../../components/singles'
 import { CP_URL, URL_DEV } from '../../../constants'
 import axios from 'axios'
-import { createAlertSA2WithClose, doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../../functions/alert'
+import { createAlertSA2WithClose, doneAlert, errorAlert, printResponseErrorAlert, questionAlert2, waitAlert } from '../../../functions/alert'
 import ProyectosFormGray from '../../../components/forms/proyectos/ProyectosFormGray'
 import { setOptions } from '../../../functions/setters'
 import Swal from 'sweetalert2'
@@ -203,23 +203,30 @@ class Contratar extends Component {
 
     onSubmit = e => {
         e.preventDefault();
-        waitAlert()
-        this.convertLeadAxios();
+        questionAlert2(
+            '¿DESEAS ENVIAR CORREO Y GENERAR NUEVO USUARIO?', 
+            '', 
+            () => this.convertLeadAxios(),
+            <form id = 'sendCorreoForm' name = 'sendCorreoForm' className="mx-auto w-80">
+                <Form.Check type="radio" label="SI" name="sendCorreo" className="px-0 mb-2" value = 'si'/>
+                <Form.Check type="radio" label="NO" name="sendCorreo" className="px-0 mb-2" value = 'no'/>
+            </form>
+        )
     }
 
     async getOneLead() {
-        const { location: { state: historyState } } = this.props
+        const { location: { state } } = this.props
         const { formProyecto } = this.state
         let arreglo = []
-        formProyecto.numeroContacto = historyState.lead.telefono
-        formProyecto.contacto = historyState.lead.nombre
-        if(historyState.lead.email){
-            arreglo.push(historyState.lead.email)
+        formProyecto.numeroContacto = state.lead.telefono
+        formProyecto.contacto = state.lead.nombre
+        if(state.lead.email){
+            arreglo.push(state.lead.email)
             formProyecto.correos = arreglo
         }
         this.setState({
             ...this.state,
-            lead: historyState.lead,
+            lead: state.lead,
             formProyecto
         })
     }
@@ -256,24 +263,28 @@ class Contratar extends Component {
     async convertLeadAxios(){
         const { access_token } = this.props.authUser
         let { formProyecto, lead } = this.state
-        await axios.post(URL_DEV + 'crm/convert/' + lead.id, formProyecto, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { proyecto } = response.data
-                const { history } = this.props
-                createAlertSA2WithClose(
-                    '¡FELICIDADES CREASTE EL PROYECTO!',
-                    '¿DESEAS CREAR LA CAJA CHICA?',
-                    () => this.addCajaChicaAxios(proyecto),
-                    history, '/leads/crm'
-                )
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
+        let sendCorreoValue = document.sendCorreoForm.sendCorreo.value;
+        if(sendCorreoValue === 'si' || sendCorreoValue === 'no'){
+            formProyecto.sendCorreo = sendCorreoValue
+            await axios.post(URL_DEV + 'crm/convert/' + lead.id, formProyecto, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+                (response) => {
+                    const { proyecto } = response.data
+                    const { history } = this.props
+                    createAlertSA2WithClose(
+                        '¡FELICIDADES CREASTE EL PROYECTO!',
+                        '¿DESEAS CREAR LA CAJA CHICA?',
+                        () => this.addCajaChicaAxios(proyecto),
+                        history, '/leads/crm'
+                    )
+                },
+                (error) => {
+                    printResponseErrorAlert(error)
+                }
+            ).catch((error) => {
+                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+                console.log(error, 'error')
+            })
+        }else{ errorAlert('Selecciona una opción') }
     }
 
     async addCajaChicaAxios(proyecto){
