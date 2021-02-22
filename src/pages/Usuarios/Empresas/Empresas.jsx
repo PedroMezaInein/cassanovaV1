@@ -37,7 +37,7 @@ class Empresas extends Component {
         showadjuntos: [
             {
                 placeholder: 'Logo de la empresa',
-                id: 'logos',
+                id: 'logo_principal',
                 value: '',
                 files: []
             },
@@ -113,7 +113,9 @@ class Empresas extends Component {
                 name: renderToString(setTextTable(empresa.name)),
                 razonSocial: renderToString(setTextTable(empresa.razon_social)),
                 rfc: renderToString(setTextTable(empresa.rfc)),
-                logo: renderToString(empresa.logos.length !== 0 ? <img className="img-empresa" src={empresa.logos[empresa.logos.length - 1].url} alt={empresa.name} /> : 'No hay logo'),
+                logo: renderToString(empresa.logo_principal.length !== 0 ? 
+                        <img className="img-empresa" src={empresa.logo_principal[empresa.logo_principal.length - 1].url} alt={empresa.name} /> 
+                    : 'No hay logo'),
                 id: empresa.id
             })
             return false
@@ -188,7 +190,7 @@ class Empresas extends Component {
             empresa: empresa,
             form: this.clearForm(),
             formeditado: 0,
-            defaultActiveKey: 'logos'
+            defaultActiveKey: 'logo_principal'
         })
     }
 
@@ -346,7 +348,7 @@ class Empresas extends Component {
             data.append(`files_${showadjuntos[adjunto].id}[]`, file.file)
             return false
         })
-        await axios.post(URL_DEV + 'empresa/' + empresa.id + '/adjuntos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}empresa/${empresa.id}/adjuntos`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { empresa } = response.data
                 this.getEmpresas()
