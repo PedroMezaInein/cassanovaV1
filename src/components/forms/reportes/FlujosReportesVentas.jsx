@@ -69,9 +69,9 @@ class FlujosReportesForm extends Component {
     
     getRangos = () => {
         return [
-            { name: 'Bimestral', value: '2'},
-            { name: 'Semestral', value: '5'},
-            { name: 'Anual', value: '11'},
+            { name: 'Mensual', value: 'mensual'},
+            { name: 'Semestral', value: 'semestral'},
+            { name: 'Anual', value: 'anual'},
         ]
     }
 
