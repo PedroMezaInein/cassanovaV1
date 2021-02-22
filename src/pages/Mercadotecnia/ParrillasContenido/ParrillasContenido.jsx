@@ -252,6 +252,7 @@ class Calendario extends Component {
                 case 'socialNetworks':
                     form.socialNetworks.map((dato)=>{
                         data.append(`socialNetworks[]`, dato.value)
+                        return ''
                     })
                     break;
                 case 'fecha':
@@ -267,6 +268,7 @@ class Calendario extends Component {
             form.adjuntos.image.files.map( ( file, index ) => {
                 data.append(`files_name_image[]`, file.name)
                 data.append(`files_image[]`, file.file)
+                return ''
             })
         }
         await axios.post(URL_DEV + 'mercadotecnia/parrilla-contenido', data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(

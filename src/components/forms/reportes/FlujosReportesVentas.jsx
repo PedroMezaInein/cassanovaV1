@@ -69,9 +69,9 @@ class FlujosReportesForm extends Component {
     
     getRangos = () => {
         return [
-            { name: 'Bimestral', value: '2'},
-            { name: 'Semestral', value: '5'},
-            { name: 'Anual', value: '11'},
+            { name: 'Mensual', value: 'mensual'},
+            { name: 'Semestral', value: 'semestral'},
+            { name: 'Anual', value: 'anual'},
         ]
     }
 
@@ -139,15 +139,15 @@ class FlujosReportesForm extends Component {
                 </div>
                 {
                     form.no_adjunto ?
-                        <div className="card-footer pt-3 pb-0 pr-1">
-                            <div className="row">
-                                <div className="col-lg-12 text-center pr-0 pb-0">
+                        // <div className="card-footer pt-3 pb-0 px-0">
+                        //     <div className="row">
+                                <div className="col-lg-12 text-center px-0 pb-0">
                                     <Button icon='' className="btn btn-light-primary font-weight-bold" text="GENERAR REPORTE" 
                                         onClick={ onSubmit } 
                                     />
                                 </div>
-                            </div>
-                        </div>
+                        //     </div>
+                        // </div>
                     : 
                         <>
                             <div className="separator separator-dashed mt-1 mb-2"></div>
@@ -158,9 +158,9 @@ class FlujosReportesForm extends Component {
                                         handleChange = { handleChange } multiple = { false } />
                                 </div>
                             </div>
-                            <div className="card-footer pt-3 pb-0 pr-1">
+                            <div className="card-footer pt-3 pb-0 px-0">
                                 <div className="row">
-                                    <div className="col-lg-12 text-center pr-0 pb-0">
+                                    <div className="col-lg-12 text-center px-0 pb-0">
                                         <Button icon='' className="btn btn-light-primary font-weight-bold" text="ENVIAR REPORTE" 
                                             onClick={ onSubmitAdjunto }  />
                                     </div>

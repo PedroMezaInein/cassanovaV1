@@ -40,7 +40,8 @@ export default function NewAsideMenu({props}) {
         <div id="aside" onMouseEnter={asideOnMouseEnter} onMouseLeave={asideOnMouseLeave} className="aside aside-left aside-fixed d-flex flex-column flex-row-auto" >
             <div className="brand flex-column-auto" >
               <a href="/mi-proyecto" className="brand-logo">
-                <img alt="Logo" src="/dashboard.png" />
+                <i className = 'fas fa-home home-icon-menu'></i>
+                {/* <img alt="Logo" src="/dashboard.png" /> */}
               </a> 
               <button className="brand-toggle btn btn-sm px-0"> {/* Oculté onClick porque si le doy click la tabla no es responsive onClick = { () => { openAside() } }  */}
                   <span className="svg-icon svg-icon svg-icon-xl">

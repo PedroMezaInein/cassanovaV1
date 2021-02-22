@@ -12,7 +12,7 @@ import { Folder, FolderStatic, Modal } from '../../../components/singles'
 import { Button, BtnBackUrl, TablePagination, NewFolderInput } from '../../../components/form-components'
 import Swal from 'sweetalert2'
 import { NoFiles, Files, Build } from '../../../components/Lottie'
-const arrayOpcionesAdjuntos = ['portafolio', 'como_trabajamos', 'servicios_generales', '', 'brokers', 'videos'];
+/* const arrayOpcionesAdjuntos = ['portafolio', 'como_trabajamos', 'servicios_generales', '', 'brokers', 'videos']; */
 class MaterialCliente extends Component {
     state = {
         data: {
@@ -133,10 +133,9 @@ class MaterialCliente extends Component {
                 const { empresa } = response.data
                 const { opciones_adjuntos } = this.state
                 opciones_adjuntos.map((element, index)=>{
-                    if(index === 0)
-                        element.isActive = true
-                    else 
-                        element.isActive = false
+                    if(index === 0) element.isActive = true
+                    else element.isActive = false
+                    return ''
                 })
                 this.setState({...this.state, empresa, opciones_adjuntos, submenuactive: '', menuactive: 0, level: 0})
             },
@@ -211,6 +210,7 @@ class MaterialCliente extends Component {
         form.adjuntos.adjuntos.files.map((file)=>{
             data.append(`files_name[]`, file.name)
             data.append(`files[]`, file.file)
+            return '';
         })
         data.append('empresa', empresa.id)
         await axios.post(`${URL_DEV}mercadotecnia/material-clientes`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
@@ -242,6 +242,7 @@ class MaterialCliente extends Component {
         form.adjuntos.adjuntos.files.map((file)=>{
             data.append(`files_name[]`, file.name)
             data.append(`files[]`, file.file)
+            return ''
         })
         data.append('tipo', tipo)
         data.append('categoria', submenuactive)
@@ -266,12 +267,13 @@ class MaterialCliente extends Component {
     
     /* ANCHOR ADD ADJUNTO CASOS EXITO */
     addAdjuntoInCasoExito = async() => {
-        const { url, levelItem, form, empresa } = this.state
+        const { levelItem, form, empresa } = this.state
         const { access_token } = this.props.authUser
         const data = new FormData();
         form.adjuntos.adjuntos.files.map((file)=>{
             data.append(`files_name[]`, file.name)
             data.append(`files[]`, file.file)
+            return '';
         })
         data.append('tipo', levelItem.id)
         await axios.post(`${URL_DEV}mercadotecnia/material-clientes/empresas/${empresa.id}/caso-exito/adjuntos`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
@@ -453,6 +455,7 @@ class MaterialCliente extends Component {
         let aux = ''
         url.map((element, index)=>{
             if(index < url.length - 1 ){aux += element + ' | '}
+            return ''
         })
         return aux
     }
@@ -464,6 +467,7 @@ class MaterialCliente extends Component {
         if(opciones_adjuntos.length >= key+1){
             opciones_adjuntos.map((adjunto)=>{
                 adjunto.isActive = false
+                return ''
             })
             opciones_adjuntos[key].isActive = true
         }
@@ -566,10 +570,13 @@ class MaterialCliente extends Component {
                     if(render.nombre === url[url.length - 1]){
                         render.carpetas.map((carpeta)=>{
                             carpetas.push(carpeta)
+                            return ''
                         })
                     }
+                    return ''
                 })
             }
+            return ''
         })
         return carpetas
     }
@@ -646,6 +653,7 @@ class MaterialCliente extends Component {
                 active = adjunto
                 index = key
             }
+            return ''
         })
         switch(index){
             case 3:
@@ -691,11 +699,12 @@ class MaterialCliente extends Component {
                             empresa.tipos.map((tipo)=>{
                                 if(tipo.id === submenuactive){
                                     tipo.adjuntos.map((adjunto)=>{
-                                        if(adjunto.pivot.tipo === levelName){
+                                        if(adjunto.pivot.tipo === levelName)
                                             adjuntos.push(adjunto)
-                                        }
+                                        return ''
                                     })
                                 }
+                                return ''
                             })
                             return(
                                 <div>
@@ -810,6 +819,7 @@ class MaterialCliente extends Component {
                                 </div>
                             </div>
                         )
+                    default: break;
                 }
                 break
             case 6:
@@ -874,11 +884,14 @@ class MaterialCliente extends Component {
                                 </div>
                             </div>
                         )
+                    default: break;
                 }
+                break;
             default:
                 empresa.adjuntos.map((adjunto)=>{
                     if(adjunto.pivot.tipo === active.slug)
                         adjuntos.push(adjunto)
+                    return ''
                 })
                 return(
                     <div>

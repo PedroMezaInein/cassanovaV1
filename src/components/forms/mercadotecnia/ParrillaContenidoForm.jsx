@@ -87,8 +87,8 @@ class ParrillaContenidoForm extends Component {
         const { form } = this.props
         let bandera = false
         form.socialNetworks.map((red)=>{
-            if(red.label === 'FACEBOOK')
-                bandera = true
+            if(red.label === 'FACEBOOK') bandera = true
+            return ''
         })
         if(bandera){
             if(form.typeContent === 'contenido')

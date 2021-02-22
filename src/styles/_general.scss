@@ -155,7 +155,9 @@ a.text-hover-danger2:hover,
 .white-space {
     white-space: normal !important;
 }
-
+.white-space-nowrap{
+    white-space: nowrap;
+}
 @media screen and (max-width: 992px) {
     .tagify__tag>div>* {
         white-space: nowrap;
@@ -1555,3 +1557,10 @@ span.font-weight-bolder.text-hover-error:hover{
 .w-90{
     width: 90%;
 }
+
+.aside-minimize{
+    i.home-icon-menu{
+        display: none;
+    }
+}
+::-webkit-scrollbar {display: none;}

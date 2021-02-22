@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
 import { Button } from '../../form-components'
 
 class Esquema3 extends Component{
@@ -52,6 +51,7 @@ class Esquema3 extends Component{
                         posicion: plano.posicion
                     })
             }else{ auxTipos[value].planos.push(plano) }
+            return ''
         })
         return auxTipos
     }

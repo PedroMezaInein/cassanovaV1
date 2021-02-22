@@ -178,8 +178,8 @@ class Ingresos extends Component {
         const { form } = this.state
         let aux = []
         form.adjuntos[item].files.map((file) => {
-            if(file.id)
-                aux.push(file)
+            if(file.id) aux.push(file)
+            return ''
         })
         form.adjuntos[item].value = ''
         form.adjuntos[item].files = aux
@@ -845,12 +845,12 @@ class Ingresos extends Component {
     addAdjuntoEgresoAxios = async(files, item) => {
         waitAlert()
         const { access_token } = this.props.authUser
-        const { form, ingreso } = this.state
+        const { ingreso } = this.state
         const data = new FormData();
-        let aux = Object.keys(form.adjuntos)
         files.map((file) => {
             data.append(`files_name_${item}[]`, file.name)
             data.append(`files_${item}[]`, file)
+            return ''
         })
         data.append('tipo', item)
         data.append('id', ingreso.id)
@@ -904,7 +904,7 @@ class Ingresos extends Component {
         })
     }
     render() {
-        const { ingresos, form, options, modalDelete, modalFacturas, modalAdjuntos, adjuntos, facturas, data, formeditado, modalSee, ingreso, active } = this.state
+        const { ingresos, form, options, modalDelete, modalFacturas, modalAdjuntos, facturas, data, formeditado, modalSee, ingreso, active } = this.state
         return (
             <Layout active={'administracion'}  {...this.props}>
                 <NewTableServerRender columns={INGRESOS_COLUMNS} data={ingresos}
