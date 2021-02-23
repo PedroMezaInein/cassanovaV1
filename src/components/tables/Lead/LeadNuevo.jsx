@@ -44,7 +44,7 @@ class LeadNuevo extends Component {
 
     render() {
         const { leads, onClickPrev, onClickNext, sendEmail, openModalWithInput, openModalEditar, changePageLlamadaSalida, options, changeOrigen, openModalHistorial,
-            deleteDuplicado, moveToRelacionesPublicas } = this.props
+            deleteDuplicado, moveToRelacionesPublicas, openModal} = this.props
         return (
             <>
                 <div className="tab-content">
@@ -236,7 +236,7 @@ class LeadNuevo extends Component {
                                                                         </Dropdown.Item>
                                                                         : ''
                                                                 }
-                                                                <Dropdown.Item className="text-hover-info dropdown-pagina-web" onClick={(e) => { changePageLlamadaSalida(lead) }} >
+                                                                <Dropdown.Item className="text-hover-info dropdown-pagina-web" onClick={(e) => { openModal(lead) }} >
                                                                     <span className="navi-icon">
                                                                         <i className="fas fa-phone pr-3 text"></i>
                                                                     </span>
