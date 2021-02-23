@@ -1906,6 +1906,8 @@ class Crm extends Component {
                             onSubmit={this.submitForm}
                             lead={lead}
                             formeditado={false}
+                            showComment1={false}
+                            showComment2={true}
                         />
                     </div>
                 </Modal>
