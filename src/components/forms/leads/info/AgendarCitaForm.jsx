@@ -27,27 +27,56 @@ class AgendarCitaForm extends Component {
         }
     }
     render() {
-        const { formAgenda, onChange, onSubmit, tagInputChange} = this.props
+        const { formAgenda, onChange, onSubmit, tagInputChange, onChangeAgendaLC} = this.props
         return (
             <Form>
                 <div className="row">
-                    <Col md="6" className="text-center align-self-center">
+                    <Col md="12" className="text-center align-self-center">
+                        <div className="form-group row form-group-marginless d-flex justify-content-center pb-0">
+                            <label className="w-auto mr-4 py-0 col-form-label text-dark-60 font-weight-bold font-size-h6">¿Qué opción deseas realizar?</label>
+                            <div className="w-auto px-3">
+                                <div className="radio-inline mt-0 ">
+                                    <label className="radio radio-outline radio-brand text-dark-60 font-weight-bold">
+                                        <input
+                                            type="radio"
+                                            name='agendarCita'
+                                            value={formAgenda.agendarCita}
+                                            onChange={onChangeAgendaLC}
+                                            checked={formAgenda.agendarCita}
+                                        />Agendar cita
+										<span></span>
+                                    </label>
+                                    <label className="radio radio-outline radio-brand text-dark-60 font-weight-bold">
+                                        <input
+                                            type="radio"
+                                            name='agendarLlamada'
+                                            value={formAgenda.agendarLlamada}
+                                            onChange={onChangeAgendaLC}
+                                            checked={formAgenda.agendarLlamada}
+                                        />Agendar llamada
+										<span></span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                    </Col>
+                    <Col md={formAgenda.agendarLlamada?"12":"6"} className="text-center align-self-center">
                         <div className="form-group row form-group-marginless d-flex justify-content-center mb-0 pb-0">
                             <div className="col-md-12 text-center" style={{ height: '3px' }}>
-                                <label className="text-center font-weight-bolder">Fecha</label>
+                                <label className="text-center font-weight-bolder text-dark-60">Fecha</label>
                             </div>
                             <div className="col-md-12 text-center">
                                 <CalendarDay date = { formAgenda.fecha } value={formAgenda.fecha} name='fecha' onChange={onChange} withformgroup={1}/>
                                 <div className="d-flex justify-content-center">
                                     <div className="col-md-4">
-                                        <label className="col-form-label text-center font-weight-bolder">Hora de inicio</label>
+                                        <label className="col-form-label text-center font-weight-bolder text-dark-60">Hora de inicio</label>
                                         <div className="form-group row d-flex justify-content-center">
                                             <SelectHorario onChange = { onChange } hora = {{ value: formAgenda.hora_inicio, name: 'hora_inicio'}}
                                                 minuto = {{ value: formAgenda.minuto_inicio, name: 'minuto_inicio'}} />
                                         </div>
                                     </div>
                                     <div className="col-md-4">
-                                        <label className="col-form-label text-center font-weight-bolder">Hora final</label>
+                                        <label className="col-form-label text-center font-weight-bolder text-dark-60">Hora final</label>
                                         <div className="form-group row d-flex justify-content-center">
                                             <SelectHorario onChange = { onChange } hora = {{ value: formAgenda.hora_final, name: 'hora_final'}}
                                                 minuto = {{ value: formAgenda.minuto_final, name: 'minuto_final'}} />
@@ -57,7 +86,7 @@ class AgendarCitaForm extends Component {
                             </div>
                         </div>
                     </Col>
-                    <Col md="6" className="text-center align-self-center">
+                    <Col md="6" className={`text-center align-self-center ${formAgenda.agendarLlamada?"d-none":""}`}>
                         <div className="form-group row form-group-marginless mt-4 pb-0 mb-0">
                             <div className="col-md-8 text-left">
                                 <InputGray
@@ -93,7 +122,7 @@ class AgendarCitaForm extends Component {
                                         ]
                                     }
                                     value = { formAgenda.lugar }
-                                    />
+                                />
                             </div>
                             {
                                 formAgenda.lugar === 'presencial' ?
