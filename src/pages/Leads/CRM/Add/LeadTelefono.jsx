@@ -27,7 +27,8 @@ class LeadTelefono extends Component {
         options: {
             empresas: [],
             tipos: [],
-            origenes: []
+            origenes: [],
+            motivosRechazo: []
         }
     }
     componentDidMount() {
@@ -145,10 +146,15 @@ class LeadTelefono extends Component {
         await axios.get(URL_DEV + 'crm/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 Swal.close()
-                const { empresas, origenes } = response.data
+                const { empresas, origenes, motivosRechazo } = response.data
                 const { options } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['origenes'] = setOptions(origenes, 'origen', 'id')
+                options.motivosRechazo = motivosRechazo
+                options.motivosRechazo.map((motivo)=>{
+                    motivo.checked = false
+                    return ''
+                })
                 this.setState({
                     ...this.state,
                     options
@@ -188,12 +194,92 @@ class LeadTelefono extends Component {
             console.log(error, 'error')
         })
     }
+    openModalWithInput = (estatus) => {
+        const { options } = this.state
+        questionAlert2( 'ESCRIBE EL MOTIVO DE RECHAZO', '', () => this.changeEstatusRechazadoAxios({ estatus: estatus }),
+                <div>
+                    <form id = 'rechazoForm' name = 'rechazoForm' className="mx-auto w-90">
+                        {
+                            options.motivosRechazo.map((option, key) => {
+                                return (
+                                    <Form.Check key = { key } id = { `motivo-rechazo-${option.id}` } 
+                                        type="radio" label = { option.motivo } name = 'motivoRechazo'
+                                        className="text-justify mb-3" value = { option.motivo } 
+                                        // onChange = { this.onChangeMotivoRechazo }
+                                    />
+                                )
+                            })
+                        }
+                        <Form.Check 
+                            id="motivo-rechazo-14"
+                            type="radio"
+                            label="Otro"
+                            name = 'motivoRechazo'
+                            className="text-justify mb-3"
+                            value="Otro"
+                            onChange = { this.onChangeMotivoRechazo }
+                        />
+                        <div id = 'customInputRechazo' className = 'd-none'>
+                            <Form.Control
+                                placeholder='MOTIVO DE RECHAZO'
+                                className="form-control form-control-solid h-auto py-7 px-6 text-uppercase"
+                                id='otro-motivo-rechazo'
+                                as="textarea"
+                                rows="3"
+                            />
+                        </div>
+                    </form>
+                </div>
+        )
+    }
+    changeEstatusRechazadoAxios = async (data) => {
+        const { estatus } = data
+        const { access_token } = this.props.authUser
+        let elemento = ''
+        let motivo = ''
+        if(estatus === 'Rechazado'){
+            elemento = document.rechazoForm.motivoRechazo.value;
+            motivo = document.getElementById('otro-motivo-rechazo').value
+        }
+        if(elemento === '')
+            errorAlert('No seleccionaste el motivo')
+        else{
+            waitAlert()
+            if(elemento === 'Otro')
+                if(motivo !== '')
+                    elemento = motivo
+            data.motivo = elemento
+            await axios.put(`${URL_DEV}crm/lead/estatus/${data.id}`, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+                (response) => {
+                    const { history } = this.props
+                    doneAlert('El estatus fue actualizado con éxito.')
+                    history.push({
+                        pathname: '/leads/crm'
+                    });
+                },
+                (error) => { printResponseErrorAlert(error) }
+            ).catch((error) => {
+                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+                console.log(error, 'error')
+            })
+        }
+    }
+
+    onChangeMotivoRechazo =  e => {
+        const { value } = e.target
+        var element = document.getElementById("customInputRechazo");
+        if(value === 'Otro'){
+            element.classList.remove("d-none");
+        }else{
+            element.classList.add("d-none");
+        }
+    }
 
     render() {
         const { messages, form, options } = this.state
         return (
             <Layout active='leads' {...this.props} >
-                <div className="card-custom card-stretch gutter-b py-2 card">
+                <div className="card-custom card">
                     <div className="align-items-center border-0 card-header">
                         <h3 className="card-title align-items-start flex-column">
                             <span className="font-weight-bolder text-dark">Formulario por llamada entrante</span>
@@ -210,6 +296,49 @@ class LeadTelefono extends Component {
                             }
                             {...this.props}>
                             <div className="form-group row form-group-marginless mt-4 mb-0">
+                                <div className="col-md-4">
+                                    <InputGray
+                                        withtaglabel={1}
+                                        withtextlabel={1}
+                                        withplaceholder={1}
+                                        withicon={1}
+                                        withformgroup={1}
+                                        name='empresa'
+                                        value={form.empresa}
+                                        placeholder='EMPRESA DEL LEAD'
+                                        onChange={this.onChange}
+                                        iconclass='fas fa-building'
+                                    />
+                                </div>
+                                <div className="col-md-4">
+                                    <InputPhoneGray
+                                        placeholder="TELÉFONO DE CONTACTO"
+                                        withicon={1}
+                                        iconclass="fas fa-mobile-alt"
+                                        name="telefono"
+                                        value={form.telefono}
+                                        requirevalidation={1}
+                                        onChange={this.onChange}
+                                        patterns={TEL}
+                                        thousandseparator={false}
+                                        prefix=''
+                                        messageinc="Incorrecto. Ingresa el teléfono de contacto."
+                                    />
+                                </div>
+                                <div className="col-md-4">
+                                    <SelectSearchGray
+                                        requirevalidation={1}
+                                        options={options.origenes}
+                                        placeholder="SELECCIONA EL ORIGEN PARA EL LEAD"
+                                        name="origen"
+                                        value={form.origen}
+                                        onChange={this.updateOrigen}
+                                        iconclass="fas fa-mail-bulk"
+                                        messageinc="Incorrecto. Selecciona el origen para el lead."
+                                        withtaglabel={1}
+                                        withtextlabel={1}
+                                    />
+                                </div>
                                 <div className="col-md-4">
                                     <SelectSearchGray
                                         options={options.empresas}
@@ -312,79 +441,46 @@ class LeadTelefono extends Component {
                                                 value={form.email}
                                                 onChange={this.onChange}
                                                 patterns={EMAIL}
+                                                letterCase = { false }
                                             />
                                         </div>
                                         : ''
                                 }
                                 {
                                     form.email !== '' ?
-                                        <>
-                                            <div className="col-md-4">
-                                                <InputGray
-                                                    withtaglabel={1}
-                                                    withtextlabel={1}
-                                                    withplaceholder={1}
-                                                    withicon={1}
-                                                    withformgroup={1}
-                                                    name='empresa'
-                                                    value={form.empresa}
-                                                    placeholder='EMPRESA'
-                                                    onChange={this.onChange}
-                                                    iconclass='fas fa-building'
-                                                />
-                                            </div>
-                                            <div className="col-md-4">
-                                                <InputPhoneGray
-                                                    placeholder="TELÉFONO DE CONTACTO"
-                                                    withicon={1}
-                                                    iconclass="fas fa-mobile-alt"
-                                                    name="telefono"
-                                                    value={form.telefono}
-                                                    requirevalidation={1}
-                                                    onChange={this.onChange}
-                                                    patterns={TEL}
-                                                    thousandseparator={false}
-                                                    prefix=''
-                                                    messageinc="Incorrecto. Ingresa el teléfono de contacto."
-                                                />
-                                            </div>
-                                            <div className="col-md-8">
-                                                <InputGray
-                                                    withtaglabel={1}
-                                                    withtextlabel={1}
-                                                    withplaceholder={1}
-                                                    withicon={0}
-                                                    withformgroup={1}
-                                                    placeholder="COMENTARIO"
-                                                    name="comentario"
-                                                    value={form.comentario}
-                                                    onChange={this.onChange}
-                                                    rows={1}
-                                                    as='textarea'
-                                                />
-                                            </div>
-                                            <div className="col-md-4">
-                                                <SelectSearchGray
-                                                    requirevalidation={1}
-                                                    options={options.origenes}
-                                                    placeholder="SELECCIONA EL ORIGEN PARA EL LEAD"
-                                                    name="origen"
-                                                    value={form.origen}
-                                                    onChange={this.updateOrigen}
-                                                    iconclass="fas fa-mail-bulk"
-                                                    messageinc="Incorrecto. Selecciona el origen para el lead."
-                                                    withtaglabel={1}
-                                                    withtextlabel={1}
-                                                />
-                                            </div>
-                                        </>
-                                        : ''
+                                        <div className="col-md-12">
+                                            <InputGray
+                                                withtaglabel={1}
+                                                withtextlabel={1}
+                                                withplaceholder={1}
+                                                withicon={0}
+                                                withformgroup={1}
+                                                placeholder="COMENTARIO"
+                                                name="comentario"
+                                                value={form.comentario}
+                                                onChange={this.onChange}
+                                                rows={3}
+                                                as='textarea'
+                                            />
+                                        </div>
+                                    : ''
                                 }
                             </div>
-                            {
-                                form.telefono ?
-                                    <div className="card-footer py-3 pr-1 text-right">
-                                        <Button icon='' className="btn btn-primary mr-2" text='ENVIAR'
+                            <div className="card-footer px-0 pb-0 pt-5 text-right">
+                                {
+                                    form.name ?
+                                        <Button
+                                            icon=''
+                                            id="solicitar_cita"
+                                            className="btn btn-light-danger font-weight-bold"
+                                            onClick={(e) => { e.preventDefault(); this.openModalWithInput('Rechazado') }}
+                                            text='RECHAZAR'
+                                        />
+                                    : ''
+                                }
+                                {
+                                    form.email ?
+                                        <Button icon='' className="btn btn-light-primary font-weight-bold ml-2" text='ENVIAR'
                                             onClick = { (e) => { 
                                                 e.preventDefault();
                                                 questionAlert2(
@@ -397,10 +493,11 @@ class LeadTelefono extends Component {
                                                             className="px-0 mb-2" id = 'radio-no'  />
                                                     </div>
                                                 )
-                                            }} />
-                                    </div>
+                                            }}
+                                        />
                                     : ''
-                            }
+                                }
+                            </div>
                         </Form>
                     </div>
                 </div>
