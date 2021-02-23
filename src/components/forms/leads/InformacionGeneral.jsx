@@ -93,23 +93,19 @@ class InformacionGeneral extends Component {
                                     </div>
                                 :""
                             }
-                            
-                            {
-                                lead.estatus ?
-                                    lead.estatus.estatus !== "En espera" ? <div className="separator separator-dashed mt-1 mb-6"></div>
-                                        : ""
-                                    : <div className="separator separator-dashed mt-1 mb-5"></div>
-                            }
                             {
                                 showComment1?
                                     lead.comentario?
-                                        <div className="form-group row form-group-marginless mb-2 justify-content-center">
-                                            <div className="col-md-12">
-                                                <div className="bg-gray-100 p-3 font-size-lg font-weight-light text-justify" style={{fontSize:'13.5px'}}>
-                                                    <span className="font-weight-bolder text-dark-60">Comentario: </span>{lead.comentario}
+                                        <>
+                                            <div className="separator separator-dashed mt-1 mb-6"></div>
+                                            <div className="form-group row form-group-marginless mb-2 justify-content-center">
+                                                <div className="col-md-12">
+                                                    <div className="bg-gray-100 p-3 font-size-lg font-weight-light text-justify" style={{fontSize:'13.5px'}}>
+                                                        <span className="font-weight-bolder text-dark-60">Comentario: </span>{lead.comentario}
+                                                    </div>
                                                 </div>
                                             </div>
-                                        </div>
+                                        </>
                                     :""
                                 :""
                             }
