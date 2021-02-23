@@ -235,6 +235,7 @@ class LeadTelefono extends Component {
     changeEstatusRechazadoAxios = async (data) => {
         const { estatus } = data
         const { access_token } = this.props.authUser
+        const { form } = this.state
         let elemento = ''
         let motivo = ''
         if(estatus === 'Rechazado'){
@@ -248,11 +249,12 @@ class LeadTelefono extends Component {
             if(elemento === 'Otro')
                 if(motivo !== '')
                     elemento = motivo
-            data.motivo = elemento
-            await axios.put(`${URL_DEV}crm/lead/estatus/${data.id}`, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            form.motivo_rechazo = elemento
+            waitAlert();
+            await axios.post(`${URL_DEV}crm/add/lead/telefono/rechazar`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
                 (response) => {
                     const { history } = this.props
-                    doneAlert('El estatus fue actualizado con éxito.')
+                    doneAlert('El lead fue rechazado con éxito.')
                     history.push({
                         pathname: '/leads/crm'
                     });
