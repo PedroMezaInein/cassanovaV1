@@ -7,7 +7,7 @@ import { validateAlert } from '../../../functions/alert';
 class FormWhatsapp extends Component {
 
     render() {
-        const { form, onChange, updateTipoProyecto, options, onSubmit } = this.props
+        const { form, onChange, updateTipoProyecto, options, onSubmit, openModalWithInput } = this.props
         return (
             <>
                 <Form id="form-lead-telefono"
@@ -139,14 +139,26 @@ class FormWhatsapp extends Component {
                             />
                         </div>
                     </div>
-                    <div className="card-footer py-3 pr-1 text-right">
-                        <Button text='ENVIAR' type='submit' className="btn btn-primary mr-2" icon=''
+                    <div className="card-footer d-flex justify-content-end pt-3 pb-0 px-0">
+                        <Button
+                            icon=''
+                            id="solicitar_cita"
+                            className="btn btn-light-danger font-weight-bold mr-2"
+                            onClick={(e) => { e.preventDefault(); openModalWithInput('Rechazado') }}
+                            text='RECHAZAR'
+                        />
+                        <Button 
+                            text='ENVIAR'
+                            type='submit'
+                            className="btn btn-light-primary font-weight-bold"
+                            icon=''
                             onClick={
                                 (e) => {
                                     e.preventDefault();
                                     validateAlert(onSubmit, e, 'form-lead-telefono')
                                 }
-                            } />
+                            }
+                        />
                     </div>
                 </Form>
             </>
