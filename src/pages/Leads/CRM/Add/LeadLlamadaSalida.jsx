@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import Layout from '../../../../components/layout/layout'
 import { Card, Nav, Tab, Col, Row, Form } from 'react-bootstrap'
 import axios from 'axios'
-import { doneAlert, errorAlert, printResponseErrorAlert, questionAlert2, questionAlertY, waitAlert } from '../../../../functions/alert'
+import { doneAlert, errorAlert, printResponseErrorAlert, questionAlert2, questionAlertY, waitAlert, questionAlert } from '../../../../functions/alert'
 import Swal from 'sweetalert2'
 import { setOptions } from '../../../../functions/setters'
 import { URL_DEV } from '../../../../constants'
@@ -32,7 +32,8 @@ class LeadLlamadaSalida extends Component {
         options: {
             empresas: [],
             tipos: [],
-            origenes: []
+            origenes: [],
+            motivosRechazo:[]
         },
         formeditado: 0,
         boton:1
@@ -503,10 +504,15 @@ class LeadLlamadaSalida extends Component {
         await axios.get(URL_DEV + 'crm/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 Swal.close()
-                const { empresas, origenes } = response.data
+                const { empresas, origenes, motivosRechazo} = response.data
                 const { options } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['origenes'] = setOptions(origenes, 'origen', 'id')
+                options.motivosRechazo = motivosRechazo
+                options.motivosRechazo.map((motivo)=>{
+                    motivo.checked = false
+                    return ''
+                })
                 this.setState({
                     ...this.state,
                     options
@@ -578,6 +584,87 @@ class LeadLlamadaSalida extends Component {
         })
     }
 
+    openModalWithInput = (estatus) => {
+        const { lead, options } = this.state
+        questionAlert2( 'ESCRIBE EL MOTIVO DE RECHAZO', '', () => this.changeEstatusRechazadoAxios({ id: lead.id, estatus: estatus }),
+                <div>
+                    <form id = 'rechazoForm' name = 'rechazoForm' className="mx-auto w-90">
+                        {
+                            options.motivosRechazo.map((option, key) => {
+                                return (
+                                    <Form.Check key = { key } id = { `motivo-rechazo-${option.id}` } 
+                                        type="radio" label = { option.motivo } name = 'motivoRechazo'
+                                        className="text-justify mb-3" value = { option.motivo } 
+                                        // onChange = { this.onChangeMotivoRechazo }
+                                    />
+                                )
+                            })
+                        }
+                        <Form.Check 
+                            id="motivo-rechazo-14"
+                            type="radio"
+                            label="Otro"
+                            name = 'motivoRechazo'
+                            className="text-justify mb-3"
+                            value="Otro"
+                            onChange = { this.onChangeMotivoRechazo }
+                        />
+                        <div id = 'customInputRechazo' className = 'd-none'>
+                            <Form.Control
+                                placeholder='MOTIVO DE RECHAZO'
+                                className="form-control form-control-solid h-auto py-7 px-6 text-uppercase"
+                                id='otro-motivo-rechazo'
+                                as="textarea"
+                                rows="3"
+                            />
+                        </div>
+                    </form>
+                </div>
+        )
+    }
+    changeEstatusRechazadoAxios = async (data) => {
+        const { estatus } = data
+        const { access_token } = this.props.authUser
+        let elemento = ''
+        let motivo = ''
+        if(estatus === 'Rechazado'){
+            elemento = document.rechazoForm.motivoRechazo.value;
+            motivo = document.getElementById('otro-motivo-rechazo').value
+        }
+        if(elemento === '')
+            errorAlert('No seleccionaste el motivo')
+        else{
+            waitAlert()
+            if(elemento === 'Otro')
+                if(motivo !== '')
+                    elemento = motivo
+            data.motivo = elemento
+            await axios.put(`${URL_DEV}crm/lead/estatus/${data.id}`, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+                (response) => {
+                    const { history } = this.props
+                    doneAlert('El estatus fue actualizado con éxito.')
+                    history.push({
+                        pathname: '/leads/crm'
+                    });
+                },
+                (error) => { printResponseErrorAlert(error) }
+            ).catch((error) => {
+                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+                console.log(error, 'error')
+            })
+        }
+    }
+
+    onChangeMotivoRechazo =  e => {
+        const { value } = e.target
+        var element = document.getElementById("customInputRechazo");
+        if(value === 'Otro'){
+            element.classList.remove("d-none");
+        }else{
+            element.classList.add("d-none");
+        }
+    }
+
     render() {
         const { messages, form, options, lead } = this.state
         return (
@@ -622,6 +709,7 @@ class LeadLlamadaSalida extends Component {
                                     }
                                     <FormLlamada form = { form } onChange = { this.onChange }
                                         updateTipoProyecto = { this.updateTipoProyecto } options = { options }
+                                        openModalWithInput = { this.openModalWithInput }
                                         onSubmit = { 
                                             (e) => {
                                                 e.preventDefault();
@@ -654,6 +742,7 @@ class LeadLlamadaSalida extends Component {
                                                 updateTipoProyecto={this.updateTipoProyecto2}
                                                 options={options}
                                                 onSubmit={this.onSubmit}
+                                                openModalWithInput = { this.openModalWithInput }
                                             />
                                         </Col>
                                     </Row>
