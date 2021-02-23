@@ -72,7 +72,9 @@ class LeadInfo extends Component {
             ubicacion: '',
             si_empresa: '',
             no_empresa: '',
-            cita_empresa: 'si_empresa'
+            cita_empresa: 'si_empresa',
+            agendarLlamada: false,
+            agendarCita: true
         },
         formDiseño: {
             m2: '',
@@ -754,6 +756,25 @@ class LeadInfo extends Component {
         const { formAgenda } = this.state
         formAgenda[name] = value
         this.setState({ ...this.state, formAgenda })
+    }
+
+    onChangeAgendaLC = e => {
+        const { name, value, checked, type } = e.target
+        const { formAgenda  } = this.state
+        formAgenda[name] = value
+        if (type === 'radio') {
+            if (name === "agendarLlamada") {
+                formAgenda.agendarCita = false
+            }
+            else if (name === "agendarCita") {
+                formAgenda.agendarLlamada = false
+            }
+            formAgenda[name] = checked
+        }
+        this.setState({
+            ...this.state,
+            formAgenda
+        })
     }
 
     handleChangeCheckbox = (array, type) => {
@@ -1526,7 +1547,9 @@ class LeadInfo extends Component {
                                                     removeCorreo = { this.removeCorreo }
                                                     // solicitarFechaCita={() => { waitAlert(); this.solicitarFechaCita() }}
                                                     onSubmit = { () => { waitAlert(); this.agendarEvento() } }
-                                                    tagInputChange = { (e) => this.tagInputChange(e) } />
+                                                    tagInputChange = { (e) => this.tagInputChange(e) }
+                                                    onChangeAgendaLC = { this.onChangeAgendaLC }   
+                                                />
                                             </div>
                                             <div className="col-md-8">
                                                 {
