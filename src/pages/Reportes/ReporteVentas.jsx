@@ -1564,16 +1564,17 @@ class ReporteVentas extends Component {
     getTextAlert = () => {
         const { empresa, form } = this.state
         let meses = ['', 'ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
+        let mes = meses[parseInt(form.mes)]
         return (
             <div>
                 <span className="text-dark-50 font-weight-bolder">
                     ¿DESEAS GUARDAR EL
                         <u>
-                        <a rel="noopener noreferrer" href={form.adjuntos.reportes.files[0].url} target='_blank' className='text-primary mx-2'>
-                            REPORTE DE VENTAS
+                            <a rel="noopener noreferrer" href={form.adjuntos.reportes.files[0].url} target='_blank' className='text-primary mx-1'>
+                                REPORTE DE VENTAS
                             </a>
-                    </u>
-                    {' ' + empresa + ' ' + meses[parseInt(form.mes)] + ' ' + form.año + '?'}
+                        </u>
+                    {`${empresa} ${form.rango!=="anual"?mes+'':''}${form.año}?`}
                 </span>
             </div>
         )
@@ -1981,8 +1982,6 @@ class ReporteVentas extends Component {
                                    {/* -------------------------------------------------------------------------- */
                                     /* ------------------------- ANCHOR GRAFICAS ANUALES ------------------------ */
                                     /* -------------------------------------------------------------------------- */}
-
-                                    {/* Nota: Aqui trabajaré con el reporte anual */}
                                     <Tab.Container activeKey={key}>
                                         <Tab.Content>
                                             <div className="separator separator-solid separator-border-1 my-4"></div>
