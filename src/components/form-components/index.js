@@ -48,6 +48,9 @@ import selectAllHours from './SelectAllHours'
 import btnBackUrl from './Drive/BtnBackUrl'
 import tablePagination from './Drive/TablePagination'
 import newFolderInput from './Drive/NewFolderInput'
+//Login
+import inputLEmail from './Login/InputLEmail'
+import inputLPassword from './Login/InputLPassword'
 
 export const Button = button
 export const Input = input
@@ -99,3 +102,6 @@ export const SelectAllHours = selectAllHours
 export const BtnBackUrl = btnBackUrl
 export const TablePagination = tablePagination
 export const NewFolderInput = newFolderInput
+//Login
+export const InputLEmail = inputLEmail
+export const InputLPassword = inputLPassword
