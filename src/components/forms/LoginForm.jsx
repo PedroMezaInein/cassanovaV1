@@ -1,34 +1,36 @@
 import React from 'react'
 import axios from 'axios';
-import { URL_DEV } from '../../constants'
+import { URL_DEV, EMAIL} from '../../constants'
 import { connect } from 'react-redux'
 import { login } from '../../redux/reducers/auth_user'
-import swal from 'sweetalert'
-import '../../styles/login-3.css'
 import { Form } from 'react-bootstrap'
-import { validateAlert } from '../../functions/alert'
-import { Button } from '../../components/form-components'
+import { validateAlert, errorAlert } from '../../functions/alert'
+import { InputLEmail, InputLPassword } from '../../components/form-components'
+import WOW from 'wowjs';
 class LoginForm extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            showPassword: false,
+            showForgotP: false,
+            showSingIn: true,
             form: {
                 email: '',
-                password: ''
+                password: '',
+                emailfp: ''
             },
             error: {
                 email: '',
-                password: ''
+                password: '',
+                emailfp: ''
             }
         }
         this.handleChange = this.handleChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
     }
-    changeInputType = () => {
-        this.setState({
-            showPassword: !this.state.showPassword
-        })
+    componentDidMount = () => {
+        new WOW.WOW({
+            live: false
+        }).init();
     }
     async handleSubmit(event) {
         event.preventDefault();
@@ -51,11 +53,12 @@ class LoginForm extends React.Component {
                 });
                 if (error.response.status === 401) {
                 } else {
-                    swal({
-                        title: '¡Ups 😕!',
-                        text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
-                        icon: 'error',
-                    })
+                    errorAlert('Ocurrió un error desconocido, intenta de nuevo.')
+                    // swal({
+                    //     title: '¡Ups 😕!',
+                    //     text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
+                    //     icon: 'error',
+                    // })
                 }
             }
         ).catch((error) => {
@@ -63,11 +66,12 @@ class LoginForm extends React.Component {
             this.setState({
                 error: error
             });
-            swal({
-                title: '¡Ups 😕!',
-                text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
-                icon: 'error',
-            })
+            errorAlert('Ocurrió un error desconocido, intenta de nuevo.')
+            // swal({
+            //     title: '¡Ups 😕!',
+            //     text: error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.',
+            //     icon: 'error',
+            // })
         })
     }
 
@@ -83,20 +87,24 @@ class LoginForm extends React.Component {
         var re = /[A-Z0-9._%+-]+@[A-Z0-9.-]+.[A-Z]{2,4}/igm;
         switch (name) {
             case 'email':
+            case 'emailfp':
                 if (value.length < 1) {
                     error['email'] = 'No dejes este campo vacío.'
+                    error['emailfp'] = 'No dejes este campo vacío.'
                     this.setState({
                         error: error
                     });
                 } else {
                     if (!re.test(value)) {
                         error['email'] = 'Ingresa un correo electrónico válido.'
+                        error['emailfp'] = 'Ingresa un correo electrónico válido.'
                         this.setState({
                             error: error
                         });
                     }
                     else {
                         error['email'] = ''
+                        error['emailfp'] = ''
                         this.setState({
                             error: error
                         });
@@ -128,72 +136,101 @@ class LoginForm extends React.Component {
                 break;
         }
     }
+    showForgotP() {
+        const { showForgotP } = this.state
+        this.setState({
+            ...this.state,
+            showForgotP: !showForgotP,
+            showSingIn: false
+        })
+    }
+    showSingIn() {
+        const { showSingIn } = this.state
+        this.setState({
+            ...this.state,
+            showSingIn: !showSingIn,
+            showForgotP: false
+        })
+    }
     render() {
-        const { form, error, showPassword } = this.state
+        const { form, error } = this.state
         return (
-            <Form id="form-login"
-                onSubmit={
-                    (e) => {
-                        e.preventDefault();
-                        validateAlert(this.handleSubmit, e, 'form-login')
-                    }
-                }>
-                <div className="form-group">
-                    <input className={"form-control h-auto text-white bg-white-o-9 rounded-pill border-0 py-3 pl-4 font-size-sm"}
-                        type="text"
-                        placeholder="INGRESA TU CORREO ELECRÓNICO"
-                        required
-                        value={form.email}
-                        onChange={this.handleChange}
-                        name="email"
-                    />
-                    {
-                        error.email !== '' &&
-                        <div className="text-white mt-4 font-size-sm">
-                            {error.email}
-                        </div>
-                    }
-                </div>
-                <div className="form-group">
-                    <div className="input-group">
-                        <input className={"form-control h-auto text-white bg-white-o-9 rounded-pill border-0 py-3 pl-4 font-size-sm"}
-                            type={showPassword ? 'text' : 'password'}
-                            placeholder="INGRESA TU CONTRASEÑA"
-                            required
-                            value={form.password}
+            <>
+                <Form className={this.state.showSingIn ? 'form fv-plugins-bootstrap fv-plugins-framework' : 'd-none'} noValidate="novalidate" id="form-login"
+                    onSubmit={
+                        (e) => {
+                            e.preventDefault();
+                            validateAlert(this.handleSubmit, e, 'form-login')
+                        }
+                    }>
+                    <div className="pb-5 pb-lg-15 text-center">
+                        <h3 className="font-weight-bolder font-size-h2 font-size-h1-lg text-im">INICIAR SESIÓN</h3>
+                    </div>
+                        <InputLEmail
+                            name='email'
+                            value={form.email}
+                            placeholder='INGRESA TU CORREO ELECRÓNICO'
                             onChange={this.handleChange}
-                            name="password" />
-                        <div className="input-group-prepend text-hover text-white bg-white-o-9" onClick = { (e) => { e.preventDefault(); this.setState({...this.state, showPassword: !showPassword }) }  }>
-                            <div className="input-group-text text-white bg-white-o-9 border-0">
-                                {
-                                    !showPassword ?
-                                        <i className="fas fa-eye"></i>
-                                    : <i className="fas fa-eye-slash"></i>
-                                }
-                            </div>
-                        </div>
+                            error={error}
+                            requirevalidation={1}
+                            letterCase = { false }
+                            patterns={EMAIL}
+                        />
+                        <InputLPassword
+                            name='password'
+                            value={form.password}
+                            placeholder='INGRESA TU CONTRASEÑA'
+                            onChange={this.handleChange}
+                            error={error}
+                            requirevalidation={1}
+                            letterCase = { false }
+                        />
+                    <div className="form-group d-flex flex-wrap justify-content-end align-items-end pt-2">
+                        <a className="text-muted text-hover-im font-weight-bold a-hover" onClick={() => { this.showForgotP() }}>¿Olvidaste tu contraseña?</a>
                     </div>
-                </div>
-                {
-                    error.password !== '' &&
-                    <div className="text-white font-size-sm">
-                        {error.password}
-                    </div>
-                }
-                <div className="form-group text-center mt-10 pt-4">
-                    <Button
-                        icon=''
-                        className="btn btn-transparent-white font-weight-bold font-weight-bold opacity-90 pl-4 pr-4 font-size-sm"
-                        onClick={
+                    <div className="container-login  px-0">
+                        <a className="btn-login btn-1" style={{ color: "#7fa1c9", fontWeight: 500 }} onClick={
                             (e) => {
                                 e.preventDefault();
                                 validateAlert(this.handleSubmit, e, 'form-login')
                             }
+                        }>
+                            <svg>
+                                <rect x="0" y="0" fill="none" width="100%" height="100%" />
+                            </svg>
+                            INICIAR SESIÓN
+                        </a>
+                    </div>
+                </Form>
+                <Form className={this.state.showForgotP ? 'form fv-plugins-bootstrap fv-plugins-framework' : 'd-none'} noValidate="novalidate" id="form-forgotP"
+                    onSubmit={
+                        (e) => {
+                            e.preventDefault();
+                            validateAlert(this.handleSubmit, e, 'form-forgotP')
                         }
-                        text="INICIAR SESIÓN"
-                    />
-                </div>
-            </Form>
+                    }>
+                    <div className="login-forgot wow fadeIn" data-wow-duration="1.5s">
+                        <div className="pb-5 pb-lg-15 text-center">
+                            <div className="font-weight-bolder font-size-h2 font-size-h1-lg text-im mb-5">¿Olvidaste tu contraseña?</div>
+                            <div className="text-muted font-weight-bold">Ingresa tu correo electrónico para restablecer tu contraseña</div>
+                        </div>
+                        <InputLEmail
+                            name='emailfp'
+                            value={form.emailfp}
+                            placeholder='INGRESA TU CORREO ELECRÓNICO'
+                            onChange={this.handleChange}
+                            error={error}
+                            requirevalidation={1}
+                            letterCase = { false }
+                            patterns={EMAIL}
+                        />
+                        <div className="form-group d-flex flex-wrap flex-center mt-10">
+                            <a className="btn btn-light btn-shadow-hover font-weight-bolder px-6 py-3">Enviar</a>
+                            <a className="btn btn-light-danger font-weight-bolder px-6 py-3 ml-2" onClick={() => { this.showSingIn() }}>Cancelar</a>
+                        </div>
+                    </div>
+                </Form>
+            </>
         )
     }
 }
@@ -206,3 +243,5 @@ const mapDispatchToProps = dispatch => ({
     login: payload => dispatch(login(payload))
 })
 export default connect(mapStateToProps, mapDispatchToProps)(LoginForm);
+
+

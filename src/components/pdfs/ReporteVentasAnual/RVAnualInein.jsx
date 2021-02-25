@@ -416,7 +416,8 @@ export default class RVAnualInein extends Component {
     }
 
     render() {
-        const { lista, images, data } = this.props
+        const { conclusiones, sugerencias, images, data } = this.props
+        console.log(images, 'IMAGES')
         return (
             <Document style = {{ fontFamily: 'Poppins', color: '#525252' }}>
                 <Page size="A4" orientation = "landscape" style = {{ position: 'relative', height: '100%'}}>
@@ -454,7 +455,7 @@ export default class RVAnualInein extends Component {
                             </View>
                         </View>
                         <View style = { styles.imgCenter }>
-                            <Image style = { styles.imagenCentrada }  src = { images[0].url }/>
+                            <Image style = { styles.imagenCentrada }  src = { images.total }/>
                         </View>
                         <View style={ styles.lineGray }></View>
                     </View>
@@ -472,7 +473,7 @@ export default class RVAnualInein extends Component {
                             </View>
                         </View>
                         <View style = { styles.imgCenter }>
-                            <Image style = { styles.imagenCentrada }  src = { images[1].url }/>
+                            <Image style = { styles.imagenCentrada }  src = { images.totalMeses }/>
                         </View>
                         <View style={ styles.linePink }></View>
                     </View>
@@ -499,7 +500,7 @@ export default class RVAnualInein extends Component {
                             </View>
                         </View>
                         <View style = { styles.imgCenter }>
-                            <Image style = { styles.imagenCentrada }  src = { images[2].url }/>
+                            <Image style = { styles.imagenCentrada }  src = { images.origenes }/>
                         </View>
                         <View style={ styles.lineGray }></View>
                     </View>
@@ -517,7 +518,7 @@ export default class RVAnualInein extends Component {
                             </View>
                         </View>
                         <View style = { styles.imgCenter }>
-                            <Image style = { styles.imagenCentrada }  src = { images[3].url }/>
+                            <Image style = { styles.imagenCentrada }  src = { images.origenesOrganicos }/>
                         </View>
                         <View style={ styles.linePink }></View>
                     </View>
@@ -535,7 +536,7 @@ export default class RVAnualInein extends Component {
                             </View>
                         </View>
                         <View style = { styles.imgCenter }>
-                            <Image style = { styles.imagenCentrada }  src = { images[4].url }/>
+                            <Image style = { styles.imagenCentrada }  src = { images.origenesAds }/>
                         </View>
                         <View style={ styles.lineGray }></View>
                     </View>
@@ -553,112 +554,12 @@ export default class RVAnualInein extends Component {
                             </View>
                         </View>
                         <View style = { styles.imgCenter }>
-                            <Image style = { styles.imagenCentrada }  src = { images[5].url }/>
+                            <Image style = { styles.imagenCentrada }  src = { images.origenesMeses }/>
                         </View>
                         <View style={ styles.linePink }></View>
                     </View>
                 </Page>
 
-                
-                <Page size="A4" orientation = "landscape" style = { styles.justifyContentCenter }>
-                    <View style = { styles.lineaNegra }></View>
-                    <View style = { styles.lineaRosa }></View>
-                    <View>
-                        <Text style = { styles.textSeparator }>
-                            TIPO
-                        </Text>
-                    </View>
-                </Page>
-                <Page size="A4" orientation = "landscape">
-                    <View style = { styles.pagePadding } >
-                        <View style = { styles.numberTitle } >
-                            <View >
-                                <Text style = { styles.paginacion}>11</Text>
-                            </View>
-                            <View>
-                                <Text style = { styles.titulo }>    
-                                    TIPO DE LEADS
-                                </Text>
-                            </View>
-                        </View>
-                        <View style = { styles.imgCenter }>
-                            <Image style = { styles.imagenCentrada }  src = { images[8].url }/>
-                        </View>
-                        <View style={ styles.lineGray }></View>
-                    </View>
-                </Page>
-                <Page size="A4" orientation = "landscape">
-                    <View style = { styles.pagePadding } >
-                        <View style = { styles.numberTitle } >
-                            <View >
-                                <Text style = { styles.paginacion}>12</Text>
-                            </View>
-                            <View>
-                                <Text style = { styles.titulo }>    
-                                    <Text style = { styles.textPink }>ORIGEN </Text>DE LEADS  <Text style = { styles.textPink }>NO POTENCIALES </Text>
-                                </Text>
-                            </View>
-                        </View>
-                        <View style = { styles.imgCenter }>
-                            <Image style = { styles.imagenCentrada }  src = { images[9].url }/>
-                        </View>
-                        <View style={ styles.linePink }></View>
-                    </View>
-                </Page>
-                <Page size="A4" orientation = "landscape">
-                    <View style = { styles.pagePadding } >
-                        <View style = { styles.numberTitle } >
-                            <View >
-                                <Text style = { styles.paginacion}>13</Text>
-                            </View>
-                            <View>
-                                <Text style = { styles.titulo }>    
-                                    <Text style = { styles.textPink }>ORIGEN </Text>DE LEADS <Text style = { styles.textPink }>POTENCIALES </Text>
-                                </Text>
-                            </View>
-                        </View>
-                        <View style = { styles.imgCenter }>
-                            <Image style = { styles.imagenCentrada }  src = { images[10].url }/>
-                        </View>
-                        <View style={ styles.lineGray }></View>
-                    </View>
-                </Page>
-                <Page size="A4" orientation = "landscape">
-                    <View style = { styles.pagePadding } >
-                        <View style = { styles.numberTitle } >
-                            <View >
-                                <Text style = { styles.paginacion}>14</Text>
-                            </View>
-                            <View>
-                                <Text style = { styles.titulo }>    
-                                    <Text style = { styles.textPink }>ORIGEN </Text>DE LEADS <Text style = { styles.textPink }>DUPLICADOS </Text>
-                                </Text>
-                            </View>
-                        </View>
-                        <View style = { styles.imgCenter }>
-                            <Image style = { styles.imagenCentrada }  src = { images[11].url }/>
-                        </View>
-                        <View style={ styles.linePink }></View>
-                    </View>
-                </Page>
-                <Page size="A4" orientation = "landscape">
-                    <View style = { styles.pagePadding } >
-                        <View style = { styles.numberTitle } >
-                            <View >
-                                <Text style = { styles.paginacion}>15</Text>
-                            </View>
-                            <View>
-                                <Text style = { styles.titulo }>    
-                                    TIPO DE LEADS <Text style = { styles.textPink }>MESUAL</Text>
-                                </Text>
-                            </View>
-                        </View>
-                        <View style = { styles.imgCenter }>
-                            <Image style = { styles.imagenCentrada }  src = { images[11].url }/>
-                        </View>
-                        <View style={ styles.lineGray }></View>
-                    </View>
-                </Page>
                 <Page size="A4" orientation = "landscape" style = { styles.justifyContentCenter }>
                     <View style = { styles.lineaNegra }></View>
                     <View style = { styles.lineaRosa }></View>
@@ -672,7 +573,7 @@ export default class RVAnualInein extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>17</Text>
+                                <Text style = { styles.paginacion}>11</Text>
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -681,7 +582,7 @@ export default class RVAnualInein extends Component {
                             </View>
                         </View>
                         <View style = { styles.imgCenter }>
-                            <Image style = { styles.imagenCentrada }  src = { images[6].url }/>
+                            <Image style = { styles.imagenCentrada }  src = { images.servicios }/>
                         </View>
                         <View style={ styles.linePink }></View>
                     </View>
@@ -690,7 +591,7 @@ export default class RVAnualInein extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>18</Text>
+                                <Text style = { styles.paginacion}>12</Text>
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -699,7 +600,112 @@ export default class RVAnualInein extends Component {
                             </View>
                         </View>
                         <View style = { styles.imgCenter }>
-                            <Image style = { styles.imagenCentrada }  src = { images[7].url }/>
+                            <Image style = { styles.imagenCentrada }  src = { images.serviciosMeses }/>
+                        </View>
+                        <View style={ styles.lineGray }></View>
+                    </View>
+                </Page>
+
+                <Page size="A4" orientation = "landscape" style = { styles.justifyContentCenter }>
+                    <View style = { styles.lineaNegra }></View>
+                    <View style = { styles.lineaRosa }></View>
+                    <View>
+                        <Text style = { styles.textSeparator }>
+                            TIPO
+                        </Text>
+                    </View>
+                </Page>
+                <Page size="A4" orientation = "landscape">
+                    <View style = { styles.pagePadding } >
+                        <View style = { styles.numberTitle } >
+                            <View >
+                                <Text style = { styles.paginacion}>14</Text>
+                            </View>
+                            <View>
+                                <Text style = { styles.titulo }>    
+                                    TIPO DE LEADS
+                                </Text>
+                            </View>
+                        </View>
+                        <View style = { styles.imgCenter }>
+                            <Image style = { styles.imagenCentrada }  src = { images.tipos }/>
+                        </View>
+                        <View style={ styles.lineGray }></View>
+                    </View>
+                </Page>
+                <Page size="A4" orientation = "landscape">
+                    <View style = { styles.pagePadding } >
+                        <View style = { styles.numberTitle } >
+                            <View >
+                                <Text style = { styles.paginacion}>15</Text>
+                            </View>
+                            <View>
+                                <Text style = { styles.titulo }>    
+                                    <Text style = { styles.textPink }>ORIGEN </Text>DE LEADS  <Text style = { styles.textPink }>NO POTENCIALES </Text>
+                                </Text>
+                            </View>
+                        </View>
+                        <View style = { styles.imgCenter }>
+                            <Image style = { styles.imagenCentrada }  src = { images.origenesNoPotenciales }/>
+                        </View>
+                        <View style={ styles.linePink }></View>
+                    </View>
+                </Page>
+                <Page size="A4" orientation = "landscape">
+                    <View style = { styles.pagePadding } >
+                        <View style = { styles.numberTitle } >
+                            <View >
+                                <Text style = { styles.paginacion}>16</Text>
+                            </View>
+                            <View>
+                                <Text style = { styles.titulo }>    
+                                    <Text style = { styles.textPink }>ORIGEN </Text>DE LEADS <Text style = { styles.textPink }>POTENCIALES </Text>
+                                </Text>
+                            </View>
+                        </View>
+                        <View style = { styles.imgCenter }>
+                            <Image style = { styles.imagenCentrada }  src = { images.origenesPotenciales }/>
+                        </View>
+                        <View style={ styles.lineGray }></View>
+                    </View>
+                </Page>
+                {
+                    images.origenesDuplicados !== null &&
+                        <Page size="A4" orientation = "landscape">
+                            <View style = { styles.pagePadding } >
+                                <View style = { styles.numberTitle } >
+                                    <View >
+                                        <Text style = { styles.paginacion}>17</Text>
+                                    </View>
+                                    <View>
+                                        <Text style = { styles.titulo }>    
+                                            <Text style = { styles.textPink }>ORIGEN </Text>DE LEADS <Text style = { styles.textPink }>DUPLICADOS </Text>
+                                        </Text>
+                                    </View>
+                                </View>
+                                <View style = { styles.imgCenter }>
+                                    <Image style = { styles.imagenCentrada }  src = { images.origenesDuplicados }/>
+                                </View>
+                                <View style={ styles.linePink }></View>
+                            </View>
+                        </Page>
+                }
+                <Page size="A4" orientation = "landscape">
+                    <View style = { styles.pagePadding } >
+                        <View style = { styles.numberTitle } >
+                            <View >
+                                <Text style = { styles.paginacion}>
+                                    {images.origenesDuplicados !== null ? 18 : 17}
+                                </Text>
+                            </View>
+                            <View>
+                                <Text style = { styles.titulo }>    
+                                    TIPO DE LEADS <Text style = { styles.textPink }>MESUAL</Text>
+                                </Text>
+                            </View>
+                        </View>
+                        <View style = { styles.imgCenter }>
+                            <Image style = { styles.imagenCentrada }  src = { images.tiposMeses }/>
                         </View>
                         <View style={ styles.lineGray }></View>
                     </View>
@@ -717,7 +723,9 @@ export default class RVAnualInein extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>20</Text>
+                                <Text style = { styles.paginacion}>
+                                    {images.origenesDuplicados !== null ? 20 : 19}
+                                </Text>
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -726,7 +734,7 @@ export default class RVAnualInein extends Component {
                             </View>
                         </View>
                         <View style = { styles.imgCenter }>
-                            <Image style = { styles.imagenCentrada }  src = { images[6].url }/>
+                            <Image style = { styles.imagenCentrada }  src = { images.tiposProyectos }/>
                         </View>
                         <View style={ styles.linePink }></View>
                     </View>
@@ -735,7 +743,9 @@ export default class RVAnualInein extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>21</Text>
+                                <Text style = { styles.paginacion}>
+                                    {images.origenesDuplicados !== null ? 21 : 20}
+                                </Text>
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -744,17 +754,11 @@ export default class RVAnualInein extends Component {
                             </View>
                         </View>
                         <View style = { styles.imgCenter }>
-                            <Image style = { styles.imagenCentrada }  src = { images[7].url }/>
+                            <Image style = { styles.imagenCentrada }  src = { images.tiposProyectosMeses }/>
                         </View>
                         <View style={ styles.lineGray }></View>
                     </View>
                 </Page>
-
-
-
-
-
-
 
                 <Page size="A4" orientation = "landscape" style = { styles.justifyContentCenter }>
                     <View style = { styles.lineaNegra }></View>
@@ -769,7 +773,9 @@ export default class RVAnualInein extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>23</Text>
+                                <Text style = { styles.paginacion}>
+                                    {images.origenesDuplicados !== null ? 23 : 22}
+                                </Text>
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -778,7 +784,7 @@ export default class RVAnualInein extends Component {
                             </View>
                         </View>
                         <View style = { styles.imgCenter }>
-                            <Image style = { styles.imagenCentrada }  src = { images[7].url }/>
+                            <Image style = { styles.imagenCentrada }  src = { images.contactados }/>
                         </View>
                         <View style={ styles.linePink }></View>
                     </View>
@@ -787,7 +793,9 @@ export default class RVAnualInein extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>24</Text>
+                                <Text style = { styles.paginacion}>
+                                    {images.origenesDuplicados !== null ? 24 : 23}
+                                </Text>
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -796,7 +804,7 @@ export default class RVAnualInein extends Component {
                             </View>
                         </View>
                         <View style = { styles.imgCenter }>
-                            <Image style = { styles.imagenCentrada }  src = { images[7].url }/>
+                            <Image style = { styles.imagenCentrada }  src = { images.estatus }/>
                         </View>
                         <View style={ styles.lineGray }></View>
                     </View>
@@ -805,7 +813,9 @@ export default class RVAnualInein extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>25</Text>
+                                <Text style = { styles.paginacion}>
+                                    {images.origenesDuplicados !== null ? 25 : 24}
+                                </Text>
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -814,7 +824,7 @@ export default class RVAnualInein extends Component {
                             </View>
                         </View>
                         <View style = { styles.imgCenter }>
-                            <Image style = { styles.imagenCentrada }  src = { images[7].url }/>
+                            <Image style = { styles.imagenCentrada }  src = { images.motivosCancelacion }/>
                         </View>
                         <View style={ styles.linePink }></View>
                     </View>
@@ -823,7 +833,9 @@ export default class RVAnualInein extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>26</Text>
+                                <Text style = { styles.paginacion}>
+                                    {images.origenesDuplicados !== null ? 26 : 25}
+                                </Text>
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -832,7 +844,7 @@ export default class RVAnualInein extends Component {
                             </View>
                         </View>
                         <View style = { styles.imgCenter }>
-                            <Image style = { styles.imagenCentrada }  src = { images[7].url }/>
+                            <Image style = { styles.imagenCentrada }  src = { images.motivosRechazo }/>
                         </View>
                         <View style={ styles.lineGray }></View>
                     </View>
@@ -841,7 +853,9 @@ export default class RVAnualInein extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>27</Text>
+                                <Text style = { styles.paginacion}>
+                                    {images.origenesDuplicados !== null ? 27 : 26}
+                                </Text>
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -899,16 +913,15 @@ export default class RVAnualInein extends Component {
                                     </View>
                                 </View>
                                 {
-                                    data.cerrados.length === 0 ?
+                                    data.proyectos.length === 0 &&
                                         <View>
                                             <Text style = { styles.bodyTextCenterBig } >
                                                 NO SE CERRARON PROSPECTOS DURANTE ESTE AÑO
                                             </Text>
                                         </View>
-                                    : ''
                                 }
                                 {
-                                    data.cerrados.map( (element, index) => {
+                                    data.proyectos.map( (element, index) => {
                                         if(element.prospecto){
                                             return(
                                                 <View key = { index } style = { this.setStyleRowBody(index) } >
@@ -923,26 +936,36 @@ export default class RVAnualInein extends Component {
                                                             }
                                                         </Text>
                                                     </View>
-                                                    <View style = { styles.cell20 }>
+                                                    <View style = { styles.cell10 }>
                                                         <Text style = { styles.bodyText}>
-                                                            Proyecto
+                                                            { element.nombre.toUpperCase() }
                                                         </Text>
                                                     </View>
-                                                    <View style = { styles.cell20 }>
-                                                        <Text style = { styles.bodyText}>
-                                                            SERVICIOS
-                                                        </Text>
+                                                    <View style = { styles.cell10 }>
+                                                        {
+                                                            element.prospecto.lead.servicios ?
+                                                                element.prospecto.lead.servicios.length ?
+                                                                    element.prospecto.lead.servicios.map((servicio)=>{
+                                                                        return(
+                                                                            <Text style = { styles.bodyText}>
+                                                                                {servicio.servicio}
+                                                                            </Text>
+                                                                        )
+                                                                    })
+                                                                : <Text style = { styles.bodyText}>-</Text>
+                                                            : <Text style = { styles.bodyText}>-</Text>
+                                                        }
                                                     </View>
-                                                    <View style = { styles.cell30 }>
+                                                    <View style = { styles.cell10 }>
                                                         <Text style = { styles.bodyText } >
                                                             {
                                                                 element.prospecto ?
                                                                     element.prospecto.lead ?
                                                                         element.prospecto.lead.origen ?
                                                                             element.prospecto.lead.origen.origen.toUpperCase()
-                                                                        : ''
-                                                                    : ''
-                                                                : ''
+                                                                        : '-'
+                                                                    : '-'
+                                                                : '-'
                                                             }
                                                         </Text>
                                                     </View>
@@ -956,29 +979,41 @@ export default class RVAnualInein extends Component {
                                                                         : '-'
                                                                     : '-'
                                                                 : '-'
-                                                            }        
-                                                        </Text>
-                                                    </View>
-                                                    <View style = { styles.cell10 }>
-                                                        <Text style = { styles.bodyTextCenter } >
-                                                            M2       
-                                                        </Text>
-                                                    </View>
-                                                    <View style = { styles.cell10 }>
-                                                        <Text style = { styles.bodyTextCenter } >
-                                                            {
-                                                                this.getFechaText(element.created_at)
                                                             }
                                                         </Text>
                                                     </View>
                                                     <View style = { styles.cell10 }>
                                                         <Text style = { styles.bodyTextCenter } >
                                                             {
-                                                                this.getFechaText(element.created_at)
+                                                                element.prospecto ?
+                                                                    element.prospecto.lead ?
+                                                                        element.prospecto.lead.presupuesto_diseño ?
+                                                                            this.setMoney(element.prospecto.lead.presupuesto_diseño.m2)
+                                                                        : '-'
+                                                                    : '-'
+                                                                : '-'
                                                             }
                                                         </Text>
                                                     </View>
-                                                    <View style = { styles.cell30 }>
+                                                    <View style = { styles.cell10 }>
+                                                        <Text style = { styles.bodyTextCenter } >
+                                                            {
+                                                                element.prospecto ?
+                                                                    element.prospecto.lead ?
+                                                                        element.prospecto.lead.presupuesto_diseño ?
+                                                                            this.getFechaText(element.prospecto.lead.created_at)
+                                                                        : '-'
+                                                                    : '-'
+                                                                : '-'
+                                                            }
+                                                        </Text>
+                                                    </View>
+                                                    <View style = { styles.cell10 }>
+                                                        <Text style = { styles.bodyTextCenter } >
+                                                            { this.getFechaText(element.created_at) }
+                                                        </Text>
+                                                    </View>
+                                                    <View style = { styles.cell10 }>
                                                         <Text style = { styles.bodyText } >
                                                             {
                                                                 element.prospecto ?
@@ -988,7 +1023,7 @@ export default class RVAnualInein extends Component {
                                                                                 {
                                                                                     element.prospecto.vendedores.map((vendedor, index)=>{
                                                                                         return(
-                                                                                            <Text key = { index }>
+                                                                                            <Text style = { styles.bodyText } key = { index }>
                                                                                                 {vendedor.name.toUpperCase()}
                                                                                             </Text>
                                                                                         )
@@ -1004,7 +1039,6 @@ export default class RVAnualInein extends Component {
                                                 </View>
                                             )
                                         }
-                                        return ''
                                     })
                                 }
                             </View>
@@ -1025,7 +1059,9 @@ export default class RVAnualInein extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>29</Text>
+                                <Text style = { styles.paginacion}>
+                                    {images.origenesDuplicados !== null ? 29 : 28}
+                                </Text>
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -1036,7 +1072,7 @@ export default class RVAnualInein extends Component {
                         <View style = { styles.imgCenter }>
                             <View style = { styles.table2 }  >
                             {
-                                lista.map((element)=>{
+                                conclusiones.map((element)=>{
                                     if(element !== '')
                                     return(
                                         <View style = { styles.tableRow} >
@@ -1066,7 +1102,9 @@ export default class RVAnualInein extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>30</Text>
+                                <Text style = { styles.paginacion}>
+                                    {images.origenesDuplicados !== null ? 30 : 29}
+                                </Text>
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -1077,7 +1115,7 @@ export default class RVAnualInein extends Component {
                         <View style = { styles.imgCenter }>
                             <View style = { styles.table2 }  >
                             {
-                                lista.map((element)=>{
+                                sugerencias.map((element)=>{
                                     if(element !== '')
                                     return(
                                         <View style = { styles.tableRow} >
@@ -1101,7 +1139,7 @@ export default class RVAnualInein extends Component {
                         </View>
                         <View style={ styles.linePink }></View>
                     </View>
-                </Page>
+                </Page> 
                 <Page style = {{ position: 'relative', height: '100%' }} size="A4" orientation = "landscape">
                     <Image src = { INEIN } style = { styles.logoFin } />
                     <View style = {{ width: '85%', marginRight: 'auto', marginLeft: 'auto', top: '85%'}}>
