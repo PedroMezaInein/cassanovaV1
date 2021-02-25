@@ -3,19 +3,12 @@ import LoginForm from '../components/forms/LoginForm'
 import { connect } from 'react-redux'
 import { logout } from '../redux/reducers/auth_user'
 class Login extends Component{
-    
+
     componentDidMount(){
-        const { logout, authUser , history } = this.props
         logout()
-        if(authUser.access_token !== ''){
-            history.push('/')
-        }else{
-            logout();
-        }
     }
     
     render(){
-        
         return(
             <div className="d-flex flex-column flex-root vh-100">
                 <div className="login login-4 wizard d-flex flex-column flex-lg-row flex-column-fluid">

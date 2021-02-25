@@ -48,6 +48,7 @@ class InputLPassword extends Component {
 
     render() {
         const { messageinc, error, onChange, placeholder, letterCase, customstyle, customclass, ...props } = this.props
+        const { name } = this.props
         const { inputValido, showPassword} = this.state
         const toInputUppercase = e => {
             const { type, value, selectionStart, selectionEnd } = e.target
@@ -62,7 +63,7 @@ class InputLPassword extends Component {
         return (
             <>
                 <div className="form-group mb-5 fv-plugins-icon-container">
-                    <div className="input-group mb-4 ">
+                    <div className="input-group ">
                         <Form.Control
                             placeholder={placeholder}
                             style={customstyle}
@@ -81,8 +82,8 @@ class InputLPassword extends Component {
                         </div>
                     </div>
                     {
-                        error.password !== '' &&
-                        <span className={inputValido ? "text-muted font-size-sm hidden" : "text-muted font-size-sm is-invalid"}> {error.password} </span>
+                        error[name] !== '' &&
+                        <span className={ inputValido ? "text-danger font-size-sm hidden" : "text-danger font-size-sm is-invalid" }> {error[name]} </span>
                     }
                 </div>
             </>
