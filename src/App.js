@@ -183,6 +183,13 @@ const PagosForm = Loader(() => import('./pages/Mercadotecnia/Pagos/PagosForm') )
 
 class App extends Component{
     async componentDidMount(){
+        const { history } = this.props
+        let queryString = history.location.search
+        let token = ''
+        if (queryString) {
+            let params = new URLSearchParams(queryString)
+            token = params.get("token")
+        }
         const { access_token } = this.props.authUser
         await axios.get(`${URL_DEV}user`, { headers: {Authorization:`Bearer ${access_token}`}}).then(
             (response) => {
@@ -193,7 +200,8 @@ class App extends Component{
             (error) => {
                 console.log(error, 'error')
                 if (error.response.status === 401) {
-                    this.logoutUser()
+                    if(token === '')
+                        this.logoutUser()
                 } else {
                     errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
                 }
@@ -206,8 +214,16 @@ class App extends Component{
 
     shouldComponentUpdate(nextProps){
         const { history } = this.props
-        if(nextProps.authUser.access_token === ''){
-            history.push('/login')
+        let queryString = history.location.search
+        let token = ''
+        if (queryString) {
+            let params = new URLSearchParams(queryString)
+            token = params.get("token")
+        }
+        if(token === ''){
+            if(nextProps.authUser.access_token === ''){
+                history.push('/login')
+            }
         }
         return false
     }

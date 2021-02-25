@@ -53,6 +53,7 @@ class InputLEmail extends Component {
     
     render() {
         const {error, onChange, placeholder, letterCase, customstyle, customclass, ...props } = this.props
+        const { name } = this.props
         const { inputValido } =  this.state
         const toInputUppercase = e => {
             const { type, value, selectionStart, selectionEnd } = e.target
@@ -71,12 +72,12 @@ class InputLEmail extends Component {
                     placeholder = { placeholder }
                     style = { customstyle }
                     autoComplete="off"
-                    className = {`form-control h-auto form-control-solid text-dark-50 font-weight-bold py-4 px-8 mb-4 ${customclass}` }
+                    className = {`${customclass} form-control h-auto form-control-solid text-dark-50 font-weight-bold py-4 px-8` }
                     onChange = { (e) => { e.preventDefault(); this.validarInput(e); onChange(toInputUppercase(e)) }} {...props}
                 />
                 {
-                    error.email !== '' &&
-                    <span className={ inputValido ? "text-muted font-size-sm hidden" : "text-muted font-size-sm is-invalid" }> {error.email} </span>
+                    error[name] !== '' &&
+                    <span className={ inputValido ? "text-muted font-size-sm hidden" : "text-danger font-size-sm is-invalid" }> {error[name]} </span>
                 }
             </div>
             </>
