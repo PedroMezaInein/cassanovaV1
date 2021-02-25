@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import LoginForm from '../components/forms/LoginForm'
 import { connect } from 'react-redux'
 import { logout } from '../redux/reducers/auth_user'
-
 class Login extends Component{
     
     componentDidMount(){
@@ -18,37 +17,32 @@ class Login extends Component{
     render(){
         
         return(
-            
-            <div className="vh-100 d-flex flex-column flex-root">
-                    <div className="login login-3 login-signin-on d-flex flex-row-fluid" id="kt_login" >
-                        <div className="d-flex flex-center bgi-size-cover bgi-no-repeat flex-row-fluid" style ={ { backgroundImage: "url('/6.jpg')" } }>
-                            <div className="row mx-0 d-flex flex-center ">
-                                <div className="d-flex flex-center mb-3">
-                                    <a href="https://infraestructuramedica.mx/" target="_blank" rel="noopener noreferrer">
-                                        <img src="/im.png" className="img-empresa  mr-2 mr-md-5" alt = ''/>
-                                    </a>
-                                    <a href="https://inein.mx/" target="_blank" rel="noopener noreferrer">
-                                        <img src="/inein.png" className="img-empresa mx-2 mx-md-5" alt = ''/>
-                                    </a>
-                                    <a href="https://www.rocco.mx/" target="_blank" rel="noopener noreferrer">
-                                        <img src="/Rocco.png" className="img-empresa ml-2 ml-md-5" alt = ''/>
-                                    </a>
-                                </div>
-                                <div className="login-form text-center text-white p-7 position-relative overflow-hidden pt-4">
-                                    <div className="login-signin">
-                                        <div className="mb-20">
-                                            <h3 className="font-weight-normal pt-5 pb-2">INICIAR SESIÓN</h3>
-                                            <p className="pb-2 pt-1">ESCRIBE TU CORREO Y CONTRASEÑA</p>
-                                        </div>
-                                            <div className=" align-items-center justify-content-center">
-                                                <LoginForm { ...this.props} />
-                                            </div>
-                                    </div>
-                                </div>
+            <div className="d-flex flex-column flex-root vh-100">
+                <div className="login login-4 wizard d-flex flex-column flex-lg-row flex-column-fluid">
+                    <div className="login-container order-2 order-lg-1 d-flex flex-center flex-row-fluid px-7 pt-lg-0 pb-lg-0 pt-4 pb-6"  style ={ { backgroundImage: "url('/bg-3.jpg')" } }>
+                        <div className="login-content d-flex flex-column pt-lg-0 align-items-center" style={{flexFlow:'column nowrap'}}>
+                            <div className="login-logo pb-xl-20 pb-15">
+                                <a href="https://inein.mx/" target="_blank" rel="noopener noreferrer">
+                                    <img src="/inein-negro.png" className="max-h-img" alt="INEIN"/>
+                                </a>
+                                <a href="https://infraestructuramedica.mx/" target="_blank" rel="noopener noreferrer">
+                                    <img src="/IM_color.png" className="max-h-img px-8" alt="IM"/>
+                                </a>
+                                <a href="https://www.rocco.mx/" target="_blank" rel="noopener noreferrer">
+                                    <img src="/Rocco_negro.png" className="max-h-img" alt="ROCCO"/>
+                                </a>
+                            </div>
+                            <div className="login-form text-center">
+                                <LoginForm { ...this.props} />
                             </div>
                         </div>
                     </div>
-                </div>             
+                    <div className="login-aside order-1 order-lg-2 bgi-no-repeat">
+                        <div className="login-conteiner bgi-no-repeat" style ={ { backgroundImage: "url('/architecture-plan.jpg')" } }>
+                        </div>
+                    </div>
+                </div>
+            </div>
         )
     }
 }
