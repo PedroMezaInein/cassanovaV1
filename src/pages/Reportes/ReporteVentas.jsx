@@ -5,7 +5,7 @@ import { Card, Nav, Tab } from 'react-bootstrap'
 import { Button } from '../../components/form-components'
 import { waitAlert, errorAlert, printResponseErrorAlert, questionAlert2, doneAlert } from '../../functions/alert'
 import Swal from 'sweetalert2'
-import { COLORES_GRAFICAS_IM, COLORES_GRAFICAS_INEIN, IM_AZUL, INEIN_RED, URL_DEV } from '../../constants'
+import { COLORES_GRAFICAS_IM, COLORES_GRAFICAS_INEIN, COLORES_GRAFICAS_MESES, IM_AZUL, INEIN_RED, URL_DEV } from '../../constants'
 import axios from 'axios'
 import { pdf } from '@react-pdf/renderer'
 import { Pie, Bar, Line } from 'react-chartjs-2'
@@ -15,11 +15,13 @@ import FlujosReportesVentas from '../../components/forms/reportes/FlujosReportes
 import { Editor } from 'react-draft-wysiwyg'
 import { EditorState, convertToRaw } from 'draft-js'
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
-// import RVAnualInein from '../../components/pdfs/ReporteVentasAnual/RVAnualInein'
-// import RVAnualIm from '../../components/pdfs/ReporteVentasAnual/RVAnualIm'
+import RVAnualInein from '../../components/pdfs/ReporteVentasAnual/RVAnualInein'
+import RVAnualIm from '../../components/pdfs/ReporteVentasAnual/RVAnualIm'
 import ReporteVentasInein from '../../components/pdfs/ReporteVentasInein'
 import ReporteVentasIm from '../../components/pdfs/ReporteVentasIm'
 import { Modal } from '../../components/singles'
+import { dataSimpleBar, monthGroupBar, percentBar } from '../../constantes/barOptions'
+import { optionsPie } from '../../constantes/pieOptions'
 
 class ReporteVentas extends Component {
 
@@ -44,7 +46,11 @@ class ReporteVentas extends Component {
             },
             si_adjunto: false,
             no_adjunto: true,
-            periodo: '1'
+            periodo: '1',
+            listados: {
+                conclusiones: EditorState.createEmpty(),
+                sugerencias: EditorState.createEmpty(),
+            }
         },
         data: {
             total: {},
@@ -74,45 +80,61 @@ class ReporteVentas extends Component {
         this.chartTotalReference = React.createRef();
         this.chartTotalComparativaReference = React.createRef();
         this.chartTotalOrigenesReference = React.createRef();
+        this.chartOrigenesOrganicosReference = React.createRef();
+        this.chartOrigenesAdsReference = React.createRef();
         this.chartComparativaOrigenesReference = React.createRef();
+        this.chartServiciosReference = React.createRef();
+        this.chartServiciosComparativaReference = React.createRef();
+        this.chartTiposReference = React.createRef();
+        this.chartOrigenesNoPotencialesReference = React.createRef();
+        this.chartOrigenesPotencialesReference = React.createRef();
+        this.chartOrigenesDuplicadosReference = React.createRef();
+        this.chartTiposComparativaReference = React.createRef();
+        this.chartTiposProyectosReference = React.createRef();
+        this.chartTiposProyectosComparativaReference = React.createRef();
+        this.chartContactadosReference = React.createRef();
+        this.chartEstatusReference = React.createRef();
+        this.chartMotivosCancelacionReference = React.createRef();
+        this.chartMotivosRechazoReference = React.createRef();
+
         this.chartTotalServiciosReference = React.createRef();
         this.chartComparativaServiciosReference = React.createRef();
-        this.chartTiposReference = React.createRef();
         this.chartComparativaTiposReference = React.createRef();
         this.chartProspectosReference = React.createRef();
         this.chartComparativaProspectosReference = React.createRef();
-        this.chartEstatusReference = React.createRef();
         this.chartComparativaEstatusReference = React.createRef();
         /* this.chartCerradosReference = React.createRef(); */
     }
 
-    componentDidMount() {
-        this.getOptionsAxios()
-    }
+    componentDidMount() { this.getOptionsAxios() }
 
-    handleCloseModal = () => {
-        this.setState({
-            ...this.state,
-            modal: false
-        })
-    }
+    handleCloseModal = () => { this.setState({...this.state,modal: false}) }
 
     onClickEmpresa = select => {
-        this.setState({
-            ...this.state,
-            empresaActive: select
-        })
+        this.setState({...this.state, empresaActive: select})
     }
 
-    setReporte = (images, lista) => {
+    setReporte = (images, lista, sugerencias) => {
         const { empresa, form, leadsAnteriores, mes, data } = this.state
         switch (empresa) {
             case 'INEIN':
-                return (
-                    <ReporteVentasInein form={form} images={images} anteriores={leadsAnteriores}
-                        lista={lista} mes={mes.toUpperCase()} data={data} />
-                )
+                if(form.rango === 'semestral' || form.rango === 'anual')
+                    return(
+                        <RVAnualInein form = { form } images = { images } data = { data }
+                            conclusiones = { lista } sugerencias = { sugerencias } mes = { mes.toUpperCase() } />
+                    )
+                else
+                    return (
+                        <ReporteVentasInein form={form} images={images} anteriores={leadsAnteriores}
+                            lista={lista} mes={mes.toUpperCase()} data={data} />
+                    )
             case 'INFRAESTRUCTURA MÉDICA':
+                if(form.rango === 'semestral' || form.rango === 'anual')
+                    return(
+                        <RVAnualIm form = { form } images = { images } data = { data }
+                            conclusiones = { lista } sugerencias = { sugerencias } mes = { mes.toUpperCase() } />
+                    )
+                else
                 return (
                     <ReporteVentasIm form={form} images={images} anteriores={leadsAnteriores}
                         lista={lista} mes={mes.toUpperCase()} data={data} />
@@ -265,11 +287,12 @@ class ReporteVentas extends Component {
         }
     }
 
-    onEditorStateChange = (editorState) => {
-        this.setState({
-            editorState,
-        });
+    onEditorStateChange = (editorState, value) => {
+        const { form } = this.state
+        form.listados[value] = editorState
+        this.setState({...this.state,form});
     };
+
     onChange = e => {
         const { name, value, checked, type } = e.target
         const { form, options } = this.state
@@ -308,13 +331,36 @@ class ReporteVentas extends Component {
         })
     }
 
+    addOpacityToColors = (arreglo, string) => {
+        let aux = []
+        arreglo.map((elemento) => {
+            aux.push(elemento + string)
+        })
+        return aux
+    }
+
     onSubmit = e => {
         e.preventDefault();
         const { form } = this.state
-        if (form.empresa !== '' && form.referencia !== '' && form.fechaInicio !== null && form.fechaFin !== null)
-            this.getReporteVentasAxios()
-        else
-            errorAlert('No completaste todos los campos.')
+        if(form.empresa !== '' && form.año !== '' && form.rango !== ''){
+            switch(form.rango){
+                case 'mensual':
+                    if(form.mes !== '') this.getReporteVentasAxios()
+                    else errorAlert('No completaste todos los campos.')
+                    break;
+                case 'semestral':
+                    if(form.periodo !== '') this.getReporteVentasAxios2()
+                    else errorAlert('No completaste todos los campos.')
+                    break;
+                case 'anual':
+                    this.getReporteVentasAxios2()
+                    break;
+                default: 
+                    errorAlert('No completaste todos los campos.')
+                    break;
+            }
+        }
+        else errorAlert('No completaste todos los campos.')
     }
 
     saveReporteAxios = async () => {
@@ -378,7 +424,509 @@ class ReporteVentas extends Component {
         })
     }
 
-    async getReporteVentasAxios() {
+    getReporteVentasAxios2 = async() => {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        waitAlert()
+        await axios.post(`${URL_DEV}reportes/ventas/add/${form.rango}`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { data: result, meses } = response.data;
+                const { data } = this.state
+                Swal.close()
+
+                /* -------------------------------------------------------------------------- */
+                /* ------------------------- ENTRADA TOTAL DE LEADS ------------------------- */
+                /* -------------------- ANCHOR GET TOTAL DE LEADS ANUALES ------------------- */
+                /* -------------------------------------------------------------------------- */
+
+                data.total = {
+                    labels: ['TOTAL'],
+                    datasets: [{
+                        data: [result.total],
+                        backgroundColor: [
+                            this.setColor() + 'BF'
+                        ],
+                        hoverBackgroundColor: [
+                            this.setColor() + 'D9'
+                        ],
+                        borderWidth: 3,
+                        borderColor: this.setColor(),
+                        maxBarThickness: 500
+                    }]
+                }
+
+                let aux = []
+                let auxPercent = []
+                let auxLabels = []
+
+                result.total_meses.map((element, index)=>{
+                    aux.push(element.total)
+                    auxPercent.push(element.porcentaje.toFixed(2))
+                    auxLabels.push({ label: meses[index], value: element.total })
+                })
+
+                data.comparativa = {
+                    labels: auxLabels,
+                    datasets: [{
+                        data: aux,
+                        percent: auxPercent,
+                        backgroundColor: this.setColor() + 'BF',
+                        hoverBackgroundColor: this.setColor() + 'D9',
+                        borderWidth: 3,
+                        borderColor: this.setColor(),
+                    }]
+                }
+
+                data.origenes = {
+                    labels: [
+                        {label: 'Orgánico', value: result.origen.organico.total},
+                        {label: 'ADS', value: result.origen.ads.total},
+                    ],
+                    datasets: [{
+                        data: [result.origen.organico.total, result.origen.ads.total],
+                        percent: [result.origen.organico.porcentaje.toFixed(2), result.origen.ads.porcentaje.toFixed(2)],
+                        backgroundColor: ['#4F81BDBF', '#FFC000BF'],
+                        hoverBackgroundColor: ['#4F81BDD9', '#FFC000D9'],
+                        borderWidth: 3,
+                        borderColor: ['#4F81BD', '#FFC000'],
+                        maxBarThickness: 250
+                    }]
+                }
+
+                aux = []
+                auxPercent = []
+                auxLabels = []
+
+                result.origenes_organicos.map((element, index)=>{
+                    aux.push(element.total)
+                    auxPercent.push(element.porcentaje.toFixed(2))
+                    auxLabels.push({ label: element.nombre, value: element.total })
+                })
+
+                data.origenesOrganicos = {
+                    labels: auxLabels,
+                    datasets: [{
+                        data: aux,
+                        percent: auxPercent,
+                        backgroundColor: '#4F81BDBF',
+                        hoverBackgroundColor: '#4F81BDD9',
+                        borderWidth: 3,
+                        borderColor: '#4F81BD',
+                        maxBarThickness: 200
+                    }]
+                }
+
+                aux = []
+                auxPercent = []
+                auxLabels = []
+
+                result.origenes_ads.map((element, index)=>{
+                    aux.push(element.total)
+                    auxPercent.push(element.porcentaje.toFixed(2))
+                    auxLabels.push({ label: element.nombre, value: element.total })
+                })
+
+                data.origenesAds = {
+                    labels: auxLabels,
+                    datasets: [{
+                        data: aux,
+                        percent: auxPercent,
+                        backgroundColor: '#FFC000BF',
+                        hoverBackgroundColor: '#FFC000D9',
+                        borderWidth: 3,
+                        borderColor: '#FFC000',
+                        maxBarThickness: 200
+                    }]
+                }
+
+                auxLabels = []
+                aux = []
+                let auxColors = []
+                result.origenes_meses.map( (mes, index) => {
+                    mes.map( (origen) => {
+                        auxLabels.push(origen.nombre+';'+meses[index])
+                        aux.push(origen.total)
+                        if(origen.nombre.includes('ADS')) auxColors.push('#FFC000')
+                        else auxColors.push('#4F81BD')
+                    })
+                })
+
+                data.origenesComparativa = {
+                    labels: auxLabels,
+                    datasets: [{
+                        data: aux,
+                        backgroundColor: this.addOpacityToColors(auxColors, 'BF'),
+                        hoverBackgroundColor: this.addOpacityToColors(auxColors, 'D9'),
+                        borderColor: auxColors,
+                        borderWidth: 3,
+                        xAxisID:'xAxis1',
+                        maxBarThickness: 200
+                    }]
+                }
+
+                aux = []
+                auxPercent = []
+                auxLabels = []
+                auxColors = []
+
+                result.servicios.map((element, index)=>{
+                    aux.push(element.total)
+                    auxPercent.push(element.porcentaje.toFixed(2))
+                    auxLabels.push({ label: element.nombre, value: element.total })
+                    switch(element.nombre){
+                        case 'Quiero ser proveedor':
+                        case 'Bolsa de trabajo':
+                        case 'Otro':
+                        case 'Spam':
+                        case 'SPAM':
+                        case 'Aún no lo se':
+                            auxColors.push('#A6A6A6');
+                            break;
+                        default:
+                            auxColors.push('#4F81BD');
+                            break;
+                    }
+                })
+
+                data.servicios = {
+                    labels: auxLabels,
+                    datasets: [{
+                        data: aux,
+                        percent: auxPercent,
+                        backgroundColor: this.addOpacityToColors(auxColors, 'BF'),
+                        hoverBackgroundColor: this.addOpacityToColors(auxColors, 'D9'),
+                        borderColor: auxColors,
+                        borderWidth: 3,
+                        maxBarThickness: 200
+                    }]
+                }
+
+                auxLabels = []
+                aux = []
+                auxColors = []
+                result.servicios_meses.map( (mes, index) => {
+                    mes.map( (servicio) => {
+                        auxLabels.push(servicio.nombre+';'+meses[index])
+                        aux.push(servicio.total)
+                        switch(servicio.nombre){
+                            case 'Quiero ser proveedor':
+                            case 'Bolsa de trabajo':
+                            case 'Otro':
+                            case 'Spam':
+                            case 'SPAM':
+                            case 'Aún no lo se':
+                                auxColors.push('#A6A6A6');
+                                break;
+                            default:
+                                auxColors.push('#4F81BD');
+                                break;
+                        }
+                    })
+                })
+
+                data.serviciosComparativa = {
+                    labels: auxLabels,
+                    datasets: [{
+                        data: aux,
+                        backgroundColor: this.addOpacityToColors(auxColors, 'BF'),
+                        hoverBackgroundColor: this.addOpacityToColors(auxColors, 'D9'),
+                        borderColor: auxColors,
+                        borderWidth: 3,
+                        xAxisID:'xAxis1',
+                        maxBarThickness: 200
+                    }]
+                }
+
+                if(result.tipos.duplicados.total){
+                    data.tipos = {
+                        labels: [
+                            {label: 'No potencial', value: result.tipos.noPotenciales.total},
+                            {label: 'Potencial', value: result.tipos.potenciales.total},
+                            {label: 'Duplicados', value: result.tipos.duplicados.total},
+                        ],
+                        datasets: [{
+                            data: [result.tipos.noPotenciales.total, result.tipos.potenciales.total, result.tipos.duplicados.total],
+                            percent: [result.tipos.noPotenciales.porcentaje.toFixed(2), result.tipos.potenciales.porcentaje.toFixed(2), result.tipos.duplicados.porcentaje.toFixed(2)],
+                            backgroundColor: ['#F79646BF', '#8064A2BF', '#A6A6A6BF'],
+                            hoverBackgroundColor: ['#F79646D9', '#8064A2D9', '#A6A6A6D9'],
+                            borderWidth: 3,
+                            borderColor: ['#F79646', '#8064A2', '#A6A6A6'],
+                            maxBarThickness: 250
+                        }]
+                    }
+                }else{
+                    data.tipos = {
+                        labels: [
+                            {label: 'No potencial', value: result.tipos.noPotenciales.total},
+                            {label: 'Potencial', value: result.tipos.potenciales.total},
+                        ],
+                        datasets: [{
+                            data: [result.tipos.noPotenciales.total, result.tipos.potenciales.total],
+                            percent: [result.tipos.noPotenciales.porcentaje.toFixed(2), result.tipos.potenciales.porcentaje.toFixed(2)],
+                            backgroundColor: ['#F79646BF', '#8064A2BF'],
+                            hoverBackgroundColor: ['#F79646D9', '#8064A2D9'],
+                            borderWidth: 3,
+                            borderColor: ['#F79646', '#8064A2'],
+                            maxBarThickness: 250
+                        }]
+                    }
+                }
+
+                aux = []
+                auxPercent = []
+                auxLabels = []
+
+                result.origenes_no_potenciales.map((element, index)=>{
+                    aux.push(element.total)
+                    auxPercent.push(element.porcentaje.toFixed(2))
+                    auxLabels.push({ label: element.nombre, value: element.total })
+                })
+
+                data.origenesNoPotenciales = {
+                    labels: auxLabels,
+                    datasets: [{
+                        data: aux,
+                        percent: auxPercent,
+                        backgroundColor: '#F79646BF',
+                        hoverBackgroundColor: '#F79646D9',
+                        borderWidth: 3,
+                        borderColor: '#F79646',
+                        maxBarThickness: 200
+                    }]
+                }
+
+                aux = []
+                auxPercent = []
+                auxLabels = []
+
+                result.origenes_potenciales.map((element, index)=>{
+                    aux.push(element.total)
+                    auxPercent.push(element.porcentaje.toFixed(2))
+                    auxLabels.push({ label: element.nombre, value: element.total })
+                })
+
+                data.origenesPotenciales = {
+                    labels: auxLabels,
+                    datasets: [{
+                        data: aux,
+                        percent: auxPercent,
+                        backgroundColor: '#8064A2BF',
+                        hoverBackgroundColor: '#8064A2D9',
+                        borderWidth: 3,
+                        borderColor: '#8064A2',
+                        maxBarThickness: 200
+                    }]
+                }
+
+                if(result.origenes_duplicados.length > 0){
+                    aux = []
+                    auxPercent = []
+                    auxLabels = []
+    
+                    result.origenes_duplicados.map((element, index)=>{
+                        aux.push(element.total)
+                        auxPercent.push(element.porcentaje.toFixed(2))
+                        auxLabels.push({ label: element.nombre, value: element.total })
+                    })
+    
+                    data.origenesDuplicados = {
+                        labels: auxLabels,
+                        datasets: [{
+                            data: aux,
+                            percent: auxPercent,
+                            backgroundColor: '#A6A6A6BF',
+                            hoverBackgroundColor: '#A6A6A6D9',
+                            borderWidth: 3,
+                            borderColor: '#A6A6A6',
+                            maxBarThickness: 200
+                        }]
+                    }
+                }else{ data.origenesDuplicados = {} }
+
+                auxLabels = []
+                aux = []
+                auxColors = []
+                result.tipos_meses.map( (mes, index) => {
+                    if(mes.potenciales){
+                        auxLabels.push('Potencial'+';'+meses[index])
+                        aux.push(mes.potenciales)
+                        auxColors.push('#F79646')
+                    }
+                    if(mes.noPotenciales){
+                        auxLabels.push('No potencial'+';'+meses[index])
+                        aux.push(mes.noPotenciales)
+                        auxColors.push('#8064A2')
+                    }
+                    if(mes.duplicados){
+                        auxLabels.push('Duplicado'+';'+meses[index])
+                        aux.push(mes.duplicados)
+                        auxColors.push('#A6A6A6')
+                    }
+                })
+
+                data.tipoLeadsComparativa = {
+                    labels: auxLabels,
+                    datasets: [{
+                        data: aux,
+                        backgroundColor: this.addOpacityToColors(auxColors, 'BF'),
+                        hoverBackgroundColor: this.addOpacityToColors(auxColors, 'D9'),
+                        borderColor: auxColors,
+                        borderWidth: 3,
+                        xAxisID:'xAxis1',
+                        maxBarThickness: 200
+                    }]
+                }
+
+                auxLabels = []
+                aux = []
+                result.tipos_proyectos.map( (element, index) => {
+                    aux.push(element.total)
+                    auxLabels.push({ label: element.nombre, value: element.total })
+                })
+
+                data.tiposProyectos = {
+                    labels: auxLabels,
+                    datasets: [{
+                        data: aux,
+                        backgroundColor: this.setColor() + 'BF',
+                        hoverBackgroundColor: this.setColor() + 'D9',
+                        borderColor: this.setColor(),
+                        borderWidth: 3,
+                        maxBarThickness: 200
+                    }]
+                }
+
+                auxLabels = []
+                aux = []
+                auxColors = [];
+                result.tipos_proyectos_meses.map( (mes, index) => {
+                    mes.map( (proy) => {
+                        auxLabels.push(proy.nombre+';'+meses[index])
+                        aux.push(proy.total)
+                        auxColors.push( COLORES_GRAFICAS_MESES[index] )
+                    })
+                })
+
+                data.tiposProyectosComparativa = {
+                    labels: auxLabels,
+                    datasets: [{
+                        data: aux,
+                        backgroundColor: this.addOpacityToColors(auxColors, 'BF'),
+                        hoverBackgroundColor: this.addOpacityToColors(auxColors, 'D9'),
+                        borderColor: auxColors,
+                        borderWidth: 3,
+                        maxBarThickness: 200
+                    }]
+                }
+
+                data.contactados = {
+                    labels: [
+                        {label: 'Sin convertir', value: result.contactados.sinConvertir.total},
+                        {label: 'Convertidos', value: result.contactados.contactados.total},
+                    ],
+                    datasets: [{
+                        data: [
+                            result.contactados.sinConvertir.total, 
+                            result.contactados.contactados.total],
+                        percent: [
+                            result.contactados.sinConvertir.porcentaje.toFixed(2), 
+                            result.contactados.contactados.porcentaje.toFixed(2)],
+                        backgroundColor: ['#A6A6A6BF', this.setColor() + 'BF'],
+                        hoverBackgroundColor: ['#A6A6A6D9', this.setColor() + 'D9'],
+                        borderColor: ['#A6A6A6', this.setColor()],
+                        borderWidth: 3,
+                        maxBarThickness: 250
+                    }]
+                }
+
+                auxLabels = []
+                aux = []
+                auxColors = []
+                auxPercent = []
+                result.estatus.map( (element, index) => {
+                    aux.push(element.total)
+                    auxPercent.push(element.porcentaje.toFixed(2))
+                    auxLabels.push({ label: element.nombre, value: element.total })
+                    switch(element.nombre){
+                        case 'Cancelado':
+                        case 'Rechazado':
+                            auxColors.push('#FF0000');
+                            break;
+                        case 'Contratado':
+                            auxColors.push('#92D050');
+                            break;
+                        default:
+                            auxColors.push('#4F81DB');
+                            break;
+                    }
+                })
+
+                data.estatus = {
+                    labels: auxLabels,
+                    datasets: [{
+                        data: aux,
+                        percent: auxPercent,
+                        backgroundColor: this.addOpacityToColors(auxColors, 'BF'),
+                        hoverBackgroundColor: this.addOpacityToColors(auxColors, 'D9'),
+                        borderColor: auxColors,
+                        borderWidth: 3,
+                        maxBarThickness: 200
+                    }]
+                }
+
+                auxLabels = []
+                aux = []
+                auxPercent = []
+                result.motivos_cancelacion.map( (element, index) => {
+                    aux.push(element.total)
+                    auxLabels.push({ label: element.nombre, value: element.total })
+                })
+
+                data.motivosCancelacion = {
+                    labels: auxLabels,
+                    datasets: [{
+                        data: aux,
+                        backgroundColor: this.setColor() + 'BF',
+                        hoverBackgroundColor: this.setColor() + 'D9',
+                        borderColor: this.setColor(),
+                        borderWidth: 3,
+                        maxBarThickness: 200
+                    }]
+                }
+
+                auxLabels = []
+                aux = []
+                auxPercent = []
+                result.motivos_rechazo.map( (element, index) => {
+                    aux.push(element.total)
+                    auxLabels.push({ label: element.nombre, value: element.total })
+                })
+
+                data.motivosRechazo = {
+                    labels: auxLabels,
+                    datasets: [{
+                        data: aux,
+                        backgroundColor: this.setColor() + 'BF',
+                        hoverBackgroundColor: this.setColor() + 'D9',
+                        borderColor: this.setColor(),
+                        borderWidth: 3,
+                        maxBarThickness: 200
+                    }]
+                }
+
+                data.proyectos = result.proyectos
+                
+                this.setState({...this.state, data, key: '1'})
+
+            },
+            (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    getReporteVentasAxios = async() => {
 
         const { access_token } = this.props.authUser
         const { form } = this.state
@@ -394,6 +942,10 @@ class ReporteVentas extends Component {
                     return false
                 })
 
+                /* -------------------------------------------------------------------------- */
+                /*                    ANCHOR GET REPORTES VENTAS MENSUALES                    */
+                /* -------------------------------------------------------------------------- */
+
                 Swal.close()
                 data.total = {
                     labels: ['TOTAL'],
@@ -406,7 +958,8 @@ class ReporteVentas extends Component {
                             this.setColor() + 'D9'
                         ],
                         borderWidth: 3,
-                        borderColor: this.setColor()
+                        borderColor: this.setColor(),
+                        maxBarThickness: 500
                     }]
                 }
 
@@ -919,36 +1472,70 @@ class ReporteVentas extends Component {
     }
 
     async generarPDF() {
+
+        /* -------------------------------------------------------------------------- */
+        /*                  ANCHOR LLAMADA ASYNC PARA GENERAR EL PDF                  */
+        /* -------------------------------------------------------------------------- */
+
         waitAlert()
         let aux = []
-        const { form, editorState } = this.state
-        aux.push(
-            { name: 'total', url: this.chartTotalReference.current.chartInstance.toBase64Image() },
-            { name: 'total-comparativa', url: this.chartTotalComparativaReference.current.chartInstance.toBase64Image() },
-            { name: 'origenes', url: this.chartTotalOrigenesReference.current.chartInstance.toBase64Image() },
-            { name: 'origenes-comparativa', url: this.chartComparativaOrigenesReference.current.chartInstance.toBase64Image() },
-            { name: 'servicios', url: this.chartTotalServiciosReference.current.chartInstance.toBase64Image() },
-            { name: 'servicios-comparativa', url: this.chartComparativaServiciosReference.current.chartInstance.toBase64Image() },
-            { name: 'tipos', url: this.chartTiposReference.current.chartInstance.toBase64Image() },
-            { name: 'tipos-comparativa', url: this.chartComparativaTiposReference.current.chartInstance.toBase64Image() },
-            { name: 'prospectos', url: this.chartProspectosReference.current.chartInstance.toBase64Image() },
-            { name: 'prospectos-comparativa', url: this.chartComparativaProspectosReference.current.chartInstance.toBase64Image() },
-            { name: 'estatus', url: this.chartEstatusReference.current.chartInstance.toBase64Image() },
-            { name: 'estatus-comparativa', url: this.chartComparativaEstatusReference.current.chartInstance.toBase64Image() },
-            /* { name: 'cerrados', url: this.chartCerradosReference.current.chartInstance.toBase64Image() } */
-        )
+        let imagenes = []
+        const { form, data } = this.state
+        if(form.rango === 'semestral' || form.rango === 'anual'){
+            imagenes = {
+                total: this.chartTotalReference.current === null ? null : this.chartTotalReference.current.chartInstance.toBase64Image(),
+                totalMeses: this.chartTotalComparativaReference.current === null ? null : this.chartTotalComparativaReference.current.chartInstance.toBase64Image(),
+                origenes: this.chartTotalOrigenesReference.current === null ? null : this.chartTotalOrigenesReference.current.chartInstance.toBase64Image(),
+                origenesOrganicos: this.chartOrigenesOrganicosReference.current === null ? null : this.chartOrigenesOrganicosReference.current.chartInstance.toBase64Image(),
+                origenesAds: this.chartOrigenesAdsReference.current === null ? null : this.chartOrigenesAdsReference.current.chartInstance.toBase64Image(),
+                origenesMeses: this.chartComparativaOrigenesReference.current === null ? null : this.chartComparativaOrigenesReference.current.chartInstance.toBase64Image(),
+                servicios: this.chartServiciosReference.current === null ? null : this.chartServiciosReference.current.chartInstance.toBase64Image(),
+                serviciosMeses: this.chartServiciosComparativaReference.current === null ? null : this.chartServiciosComparativaReference.current.chartInstance.toBase64Image(),
+                tipos: this.chartTiposReference.current === null ? null : this.chartTiposReference.current.chartInstance.toBase64Image(),
+                origenesNoPotenciales: this.chartOrigenesNoPotencialesReference.current === null ? null : this.chartOrigenesNoPotencialesReference.current.chartInstance.toBase64Image(),
+                origenesPotenciales: this.chartOrigenesPotencialesReference.current === null ? null : this.chartOrigenesPotencialesReference.current.chartInstance.toBase64Image(),
+                origenesDuplicados: this.chartOrigenesDuplicadosReference.current === null ? null : this.chartOrigenesDuplicadosReference.current.chartInstance.toBase64Image(),
+                tiposMeses: this.chartTiposComparativaReference.current === null ? null : this.chartTiposComparativaReference.current.chartInstance.toBase64Image(),
+                tiposProyectos: this.chartTiposProyectosReference.current === null ? null : this.chartTiposProyectosReference.current.chartInstance.toBase64Image(),
+                tiposProyectosMeses: this.chartTiposProyectosComparativaReference.current === null ? null : this.chartTiposProyectosComparativaReference.current.chartInstance.toBase64Image(),
+                contactados: this.chartContactadosReference.current === null ? null : this.chartContactadosReference.current.chartInstance.toBase64Image(),
+                estatus: this.chartEstatusReference.current === null ? null : this.chartEstatusReference.current.chartInstance.toBase64Image(),
+                motivosCancelacion: this.chartMotivosCancelacionReference.current === null ? null : this.chartMotivosCancelacionReference.current.chartInstance.toBase64Image(),
+                motivosRechazo: this.chartMotivosRechazoReference.current === null ? null : this.chartMotivosRechazoReference.current.chartInstance.toBase64Image(),
+            }
+        }else{
+            aux.push(
+                { name: 'total', url: this.chartTotalReference.current.chartInstance.toBase64Image() },
+                { name: 'total-comparativa', url: this.chartTotalComparativaReference.current.chartInstance.toBase64Image() },
+                { name: 'origenes', url: this.chartTotalOrigenesReference.current.chartInstance.toBase64Image() },
+                { name: 'origenes-comparativa', url: this.chartComparativaOrigenesReference.current.chartInstance.toBase64Image() },
+                { name: 'servicios', url: this.chartTotalServiciosReference.current.chartInstance.toBase64Image() },
+                { name: 'servicios-comparativa', url: this.chartComparativaServiciosReference.current.chartInstance.toBase64Image() },
+                { name: 'tipos', url: this.chartTiposReference.current.chartInstance.toBase64Image() },
+                { name: 'tipos-comparativa', url: this.chartComparativaTiposReference.current.chartInstance.toBase64Image() },
+                { name: 'prospectos', url: this.chartProspectosReference.current.chartInstance.toBase64Image() },
+                { name: 'prospectos-comparativa', url: this.chartComparativaProspectosReference.current.chartInstance.toBase64Image() },
+                { name: 'estatus', url: this.chartEstatusReference.current.chartInstance.toBase64Image() },
+                { name: 'estatus-comparativa', url: this.chartComparativaEstatusReference.current.chartInstance.toBase64Image() },
+                /* { name: 'cerrados', url: this.chartCerradosReference.current.chartInstance.toBase64Image() } */
+            )
+        }
 
-        let lista = convertToRaw(editorState.getCurrentContent())
-
-        let _lista = []
-
+        let lista = convertToRaw(form.listados.conclusiones.getCurrentContent())
+        let conclusiones = []
         lista.blocks.map((element) => {
-            _lista.push(element.text.toUpperCase())
+            conclusiones.push(element.text.toUpperCase())
+            return ''
+        })
+        lista = convertToRaw(form.listados.sugerencias.getCurrentContent())
+        let sugerencias = []
+        lista.blocks.map((element) => {
+            sugerencias.push(element.text.toUpperCase())
             return ''
         })
 
         const blob = await pdf((
-            this.setReporte(aux, _lista)
+            this.setReporte(imagenes, conclusiones, sugerencias, data)
         )).toBlob();
 
         form.adjuntos.reportes.files = [
@@ -1068,23 +1655,26 @@ class ReporteVentas extends Component {
             errorAlert('No completaste todos los campos.')
     }
 
+    isActivePane = (dato) => {
+        if(dato){
+            if(Object.keys(dato).length > 0){
+                return true
+            }
+        }
+        return false
+    }
+
+    hasElementOnArray = dato => {
+        if(dato){
+            if(dato.length){
+                return true
+            }
+        }
+        return false
+    }
+
     render() {
         const { form, data, options: opciones, key, editorState, leadsAnteriores, mes, modal, empresas, empresaActive } = this.state
-
-        const optionsPie = {
-            plugins: {
-                datalabels: {
-                    color: '#fff',
-                    font: {
-                        size: 25,
-                        weight: 'bold'
-                    }
-                }
-            },
-            legend: {
-                display: false,
-            },
-        }
 
         const optionsBar = {
             plugins: {
@@ -1193,7 +1783,7 @@ class ReporteVentas extends Component {
                             padding: 10,
                             position: 'bottom',
                             autoSkip: false,
-                            callback: function (value, index, values) {
+                            /* callback: function (value, index, values) {
                                 let auxiliar = ''
                                 switch (value) {
                                     case 'AÚN NO LO SE':
@@ -1229,7 +1819,7 @@ class ReporteVentas extends Component {
                                     return auxiliar
                                 let aux = value.split(' ')
                                 return aux
-                            }
+                            } */
                         }
                     },
                 ]
@@ -1385,96 +1975,177 @@ class ReporteVentas extends Component {
                         />
 
                         {
-                            form.rango === "11" ?
+                            form.rango === "anual" || form.rango === 'semestral' ?
                                 <>
+
+                                   {/* -------------------------------------------------------------------------- */
+                                    /* ------------------------- ANCHOR GRAFICAS ANUALES ------------------------ */
+                                    /* -------------------------------------------------------------------------- */}
+
                                     {/* Nota: Aqui trabajaré con el reporte anual */}
                                     <Tab.Container activeKey={key}>
                                         <Tab.Content>
                                             <div className="separator separator-solid separator-border-1 my-4"></div>
-                                            <Tab.Pane eventKey='1'>
-                                                {this.setButtons(null, '2', null, empresa, '01', 'ENTRADA TOTAL DE LEADS')}
-                                                <Bar ref={this.chartTotalReference} data={data.total} options={optionsBar} />
-                                            </Tab.Pane>
-                                            <Tab.Pane eventKey='2'>
-                                                {this.setButtons('1', '3', null, empresa, '02', 'ENTRADA DE LEADS MENSUAL')}
-                                                <Bar ref={this.chartTotalComparativaReference} data={data.comparativa} options={optionsBar} />
-                                            </Tab.Pane>
-                                            <Tab.Pane eventKey='3'>
-                                                {this.setButtons('2', '4', null, empresa, '03', 'ORIGEN DE LEADS')}
-                                                <Bar ref={this.chartTotalOrigenesReference} data={data.origenes} options={optionsBar} />
-                                            </Tab.Pane>
-                                            <Tab.Pane eventKey='4'>
-                                                {this.setButtons('3', '5', null, empresa, '04', 'ORIGEN DE LEADS ORGÁNICOS')}
-                                                <Bar ref={this.chartComparativaOrigenesReference} data={data.origenesComparativa} options={optionsBarGroup} />
-                                            </Tab.Pane>
-                                            <Tab.Pane eventKey='5'>
-                                                {this.setButtons('4', '6', null, empresa, '05', 'ORIGEN DE LEADS ADS')}
-                                                <Bar ref={this.chartTotalServiciosReference} data={data.servicios} options={optionsBar} />
-                                            </Tab.Pane>
-                                            <Tab.Pane eventKey='6'>
-                                                {this.setButtons('5', '7', null, empresa, '06', 'ORIGEN DE LEADS MENSUAL')}
-                                                <Bar ref={this.chartComparativaServiciosReference} data={data.serviciosComparativa} options={optionsBarGroup} />
-                                            </Tab.Pane>
-                                            <Tab.Pane eventKey='7'>
-                                                {this.setButtons('6', '8', null, empresa, '07', 'TIPO DE LEADS')}
-                                                <Bar ref={this.chartTiposReference} data={data.tipos} options={optionsBar} />
-                                            </Tab.Pane>
-                                            <Tab.Pane eventKey='8'>
-                                                {this.setButtons('7', '9', null, empresa, '08', 'ORIGEN DE LEADS NO POTENCIALES')}
-                                                <Bar ref={this.chartComparativaTiposReference} data={data.tiposComparativa} options={optionsBarGroup} />
-                                            </Tab.Pane>
-                                            <Tab.Pane eventKey='9'>
-                                                {this.setButtons('8', '10', null, empresa, '09', 'ORIGEN DE LEADS POTENCIALES')}
-                                                <Bar ref={this.chartProspectosReference} data={data.prospectos} options={optionsBar} />
-                                            </Tab.Pane>
-                                            <Tab.Pane eventKey='10'>
-                                                {this.setButtons('9', '11', null, empresa, '10', 'ORIGEN DE LEADS DUPLICADOS')}
-                                                <Line ref={this.chartComparativaProspectosReference} data={data.prospectosComparativa} options={optionsLine} />
-                                            </Tab.Pane>
-                                            <Tab.Pane eventKey='11'>
-                                                {this.setButtons('10', '12', null, empresa, '11', 'TIPO DE LEADS MESUAL')}
-                                                <Bar ref={this.chartEstatusReference} data={data.estatus} options={optionsBar} />
-                                            </Tab.Pane>
-                                            <Tab.Pane eventKey='12'>
-                                                {this.setButtons('11', '13', null, empresa, '12', 'SERVICIOS SOLICITADOS')}
-                                                <Bar ref={this.chartComparativaEstatusReference} data={data.estatusComparativa} options={optionsBarGroup} />
-                                            </Tab.Pane>
-                                            <Tab.Pane eventKey='13'>
-                                                {this.setButtons('12', '14', null, empresa, '13', 'SERVICIOS SOLICITADOS MENSUAL')}
-                                                <Bar ref={this.chartComparativaEstatusReference} data={data.estatusComparativa} options={optionsBarGroup} />
-                                            </Tab.Pane>
-                                            <Tab.Pane eventKey='14'>
-                                                {this.setButtons('13', '15', null, empresa, '10', 'TOTAL DE TIPOS DE PROYECTO')}
-                                                <Line ref={this.chartComparativaProspectosReference} data={data.prospectosComparativa} options={optionsLine} />
-                                            </Tab.Pane>
-                                            <Tab.Pane eventKey='15'>
-                                                {this.setButtons('14', '16', null, empresa, '11', 'TIPO DE PROYECTO MENSUAL')}
-                                                <Bar ref={this.chartEstatusReference} data={data.estatus} options={optionsBar} />
-                                            </Tab.Pane>
-                                            <Tab.Pane eventKey='16'>
-                                                {this.setButtons('15', '17', null, empresa, '14', 'LEADS CONTACTADOS')}
-                                                <Bar ref={this.chartComparativaEstatusReference} data={data.estatusComparativa} options={optionsBarGroup} />
-                                            </Tab.Pane>
-                                            <Tab.Pane eventKey='17'>
-                                                {this.setButtons('16', '18', null, empresa, '15', 'ESTATUS DE LEADS CONTACTADOS')}
-                                                <Bar ref={this.chartComparativaEstatusReference} data={data.estatusComparativa} options={optionsBarGroup} />
-                                            </Tab.Pane>
-                                            <Tab.Pane eventKey='18'>
-                                                {this.setButtons('17', '19', null, empresa, '16', 'PRINCIPALES MOTIVOS DE CANCELACIÓN')}
-                                                <Bar ref={this.chartComparativaEstatusReference} data={data.estatusComparativa} options={optionsBarGroup} />
-                                            </Tab.Pane>
-                                            <Tab.Pane eventKey='19'>
-                                                {this.setButtons('18', '20', null, empresa, '17', 'PRINCIPALES MOTIVOS DE RECHAZO')}
-                                                <Bar ref={this.chartComparativaEstatusReference} data={data.estatusComparativa} options={optionsBarGroup} />
-                                            </Tab.Pane>
+                                            {
+                                                this.isActivePane(data.total) ?
+                                                    <Tab.Pane eventKey='1'>
+                                                        {this.setButtons(null, '2', null, empresa, '01', 'ENTRADA TOTAL DE LEADS')}
+                                                        <Bar ref={this.chartTotalReference} data={data.total} options = { dataSimpleBar } />
+                                                    </Tab.Pane>
+                                                : <></>
+                                            }
+                                            {
+                                                this.isActivePane(data.comparativa) ?
+                                                    <Tab.Pane eventKey='2'>
+                                                        {this.setButtons('1', '3', null, empresa, '02', 'ENTRADA DE LEADS MENSUAL')}
+                                                        <Bar ref = { this.chartTotalComparativaReference } data = { data.comparativa } options = { percentBar } />
+                                                    </Tab.Pane>
+                                                : <></>
+                                            }
+                                            {
+                                                this.isActivePane(data.origenes) ?
+                                                    <Tab.Pane eventKey='3'>
+                                                        {this.setButtons('2', '4', null, empresa, '03', 'ORIGEN DE LEADS')}
+                                                        <Bar ref={this.chartTotalOrigenesReference} data={data.origenes} options = { percentBar }/>
+                                                    </Tab.Pane>
+                                                : <></>
+                                            }
+                                            {
+                                                this.isActivePane(data.origenesComparativa) ?
+                                                    <Tab.Pane eventKey='4'>
+                                                        {this.setButtons('3', '5', null, empresa, '04', 'ORIGEN DE LEADS ORGÁNICOS')}
+                                                        <Bar ref={this.chartOrigenesOrganicosReference} data={data.origenesOrganicos} options = { percentBar } />
+                                                    </Tab.Pane>
+                                                : <></>
+                                            }
+                                            {
+                                                this.isActivePane(data.origenesAds) ?
+                                                    <Tab.Pane eventKey='5'>
+                                                        {this.setButtons('4', '6', null, empresa, '05', 'ORIGEN DE LEADS ADS')}
+                                                        <Bar ref = { this.chartOrigenesAdsReference } data = { data.origenesAds } options = { percentBar } />
+                                                    </Tab.Pane>
+                                                : <></>
+                                            }
+                                            {
+                                                this.isActivePane(data.origenesComparativa) ?
+                                                    <Tab.Pane eventKey='6'>
+                                                        {this.setButtons('5', '7', null, empresa, '06', 'ORIGEN DE LEADS MENSUAL')}
+                                                        <Bar ref = { this.chartComparativaOrigenesReference } data = { data.origenesComparativa } options = { monthGroupBar } />
+                                                    </Tab.Pane>
+                                                : <></>
+                                            }
+                                            {
+                                                this.isActivePane(data.servicios) ?
+                                                    <Tab.Pane eventKey='7'>
+                                                        {this.setButtons('6', '8', null, empresa, '07', 'SERVICIOS SOLICITADOS')}
+                                                        <Bar ref = { this.chartServiciosReference } data = { data.servicios } options = { percentBar } />
+                                                    </Tab.Pane>
+                                                : <></>
+                                            }
+                                            {
+                                                this.isActivePane(data.serviciosComparativa) ?
+                                                    <Tab.Pane eventKey='8'>
+                                                        {this.setButtons('7', '9', null, empresa, '08', 'SERVICIOS SOLICITADOS MENSUAL')}
+                                                        <Bar ref = { this.chartServiciosComparativaReference } data = { data.serviciosComparativa } options = { monthGroupBar } />
+                                                    </Tab.Pane>
+                                                : <></>
+                                            }
+                                            {
+                                                this.isActivePane(data.tipos) ? 
+                                                    <Tab.Pane eventKey='9'>
+                                                        {this.setButtons('8', '10', null, empresa, '09', 'TIPO DE LEADS')}
+                                                        <Bar ref = { this.chartTiposReference } data = { data.tipos } options = { percentBar } />
+                                                    </Tab.Pane>
+                                                : <></>
+                                            }
+                                            {
+                                                this.isActivePane(data.origenesNoPotenciales) ?
+                                                    <Tab.Pane eventKey='10'>
+                                                        {this.setButtons('9', '11', null, empresa, '10', 'ORIGEN DE LEADS NO POTENCIALES')}
+                                                        <Bar ref = { this.chartOrigenesNoPotencialesReference } data = { data.origenesNoPotenciales } options = { percentBar } />
+                                                    </Tab.Pane>
+                                                : <></>
+                                            }
+                                            {
+                                                this.isActivePane(data.origenesPotenciales) ?
+                                                    <Tab.Pane eventKey='11'>
+                                                        {this.setButtons('10', this.isActivePane(data.origenesDuplicados) ? '12' : '13', null, empresa, '11', 'ORIGEN DE LEADS POTENCIALES')}
+                                                        <Bar ref = { this.chartOrigenesPotencialesReference } data = { data.origenesPotenciales } options = { percentBar } />
+                                                    </Tab.Pane>
+                                                : <></>
+                                            }
+                                            {
+                                                this.isActivePane(data.origenesDuplicados) ?
+                                                    <Tab.Pane eventKey='12'>
+                                                        {this.setButtons('11', '13', null, empresa, '12', 'ORIGEN DE LEADS DUPLICADOS')}
+                                                        <Bar ref={this.chartOrigenesDuplicadosReference} data={data.origenesDuplicados} options = { percentBar } />
+                                                    </Tab.Pane>
+                                                : <></>
+                                            }
+                                            {
+                                                this.isActivePane(data.tipoLeadsComparativa) ?
+                                                    <Tab.Pane eventKey = '13'>
+                                                        {this.setButtons(this.isActivePane(data.origenesDuplicados) ? '12' : '11', '14', null, empresa, this.isActivePane(data.origenesDuplicados) ? '13' : '12', 'TIPO DE LEADS MESUAL')}
+                                                        <Bar ref={this.chartTiposComparativaReference} data={data.tipoLeadsComparativa} options = { monthGroupBar } />
+                                                    </Tab.Pane>
+                                                : <></>
+                                            }
+                                            {
+                                                this.isActivePane(data.tiposProyectos) ?
+                                                    <Tab.Pane eventKey = '14'>
+                                                        { this.setButtons( '13', '15', null, empresa, this.isActivePane(data.origenesDuplicados) ? '14' : '13',  'TIPOS DE PROYECTOS' ) }
+                                                        <Bar ref={this.chartTiposProyectosReference} data={data.tiposProyectos} options = { percentBar } />
+                                                    </Tab.Pane>
+                                                : <></>
+                                            }
+                                            {
+                                                this.isActivePane(data.tiposProyectosComparativa) ?
+                                                    <Tab.Pane eventKey = '15'>
+                                                        { this.setButtons( '14', '16', null, empresa, this.isActivePane(data.origenesDuplicados) ? '15' : '14',  'TIPO DE PROYECTO MENSUAL' ) }
+                                                        <Bar ref={this.chartTiposProyectosComparativaReference} data={data.tiposProyectosComparativa} options = { monthGroupBar } />
+                                                    </Tab.Pane>
+                                                : <></>
+                                            }
+                                            {
+                                                this.isActivePane(data.contactados) ?
+                                                    <Tab.Pane eventKey = '16'>
+                                                        { this.setButtons( '15', '17', null, empresa, this.isActivePane(data.origenesDuplicados) ? '16' : '15',  'LEADS CONVERTIDOS A PROSPECTOS' ) }
+                                                        <Bar ref={this.chartContactadosReference} data={data.contactados} options = { percentBar } />
+                                                    </Tab.Pane>
+                                                : <></>
+                                            }
+                                            {
+                                                this.isActivePane(data.estatus) ?
+                                                    <Tab.Pane eventKey='17'>
+                                                        {this.setButtons('16', '18', null, empresa, this.isActivePane(data.origenesDuplicados) ? '17' : '16', 'STATUS DE PROSPECTOS')}
+                                                        <Bar ref = { this.chartEstatusReference } data = {data.estatus} options = { percentBar } />
+                                                    </Tab.Pane>
+                                                : <></>
+                                            }
+                                            {
+                                                this.isActivePane(data.motivosCancelacion) ?
+                                                    <Tab.Pane eventKey='18'>
+                                                        {this.setButtons('17', '19', null, empresa, this.isActivePane(data.origenesDuplicados) ? '18' : '17', 'PRINCIPALES MOTIVOS DE CANCELACIÓN')}
+                                                        <Bar ref = { this.chartMotivosCancelacionReference } data = {data.motivosCancelacion} options = { percentBar } />
+                                                    </Tab.Pane>
+                                                : <></>
+                                            }
+                                            {
+                                                this.isActivePane(data.motivosRechazo) ?
+                                                    <Tab.Pane eventKey='19'>
+                                                        {this.setButtons('18', '20', null, empresa, this.isActivePane(data.origenesDuplicados) ? '19' : '18', 'PRINCIPALES MOTIVOS DE RECHAZO')}
+                                                        <Bar ref = { this.chartMotivosRechazoReference } data = {data.motivosRechazo} options = { percentBar } />
+                                                    </Tab.Pane>
+                                                : <></>
+                                            }
                                             <Tab.Pane eventKey='20'>
-                                                {this.setButtons('19', '21', null, empresa, '18', 'OBSERVACIONES CONTRATADOS')}
+                                                {this.setButtons('19', '21', null, empresa, this.isActivePane(data.origenesDuplicados) ? '20' : '19', 'OBSERVACIONES CONTRATADOS')}
                                                 <div className="table-responsive d-flex justify-content-center">
                                                     <table className="table table-responsive-lg table-vertical-center w-100">
                                                         <thead>
                                                             <tr className="bg-light-gray text-dark-75">
-                                                                <th colspan="6" className="py-0"></th>
-                                                                <th colspan="2" className="py-0 font-size-lg font-weight-bolder text-center">FECHA</th>
+                                                                <th colSpan="6" className="py-0"></th>
+                                                                <th colSpan="2" className="py-0 font-size-lg font-weight-bolder text-center">FECHA</th>
                                                                 <th></th>
                                                             </tr>
                                                             <tr className="bg-light-gray text-dark-75">
@@ -1508,85 +2179,119 @@ class ReporteVentas extends Component {
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            <tr>
-                                                                <td className="font-size-sm text-justify white-space-nowrap">
-                                                                    GRACIELA REYES HERNÁNDEZ
-                                                                </td>
-                                                                <td className="font-size-sm text-justify white-space-nowrap">
-                                                                    PRETUMEX
-                                                                </td>
-                                                                <td className="font-size-sm text-justify white-space-nowrap">
-                                                                    Remodelación de oficinas
-                                                                </td>
-                                                                <td className="font-size-sm text-justify white-space-nowrap">
-                                                                    ADS Chat
-                                                                </td>
-                                                                <td className="font-size-sm text-center white-space-nowrap">
-                                                                    $271,500.00 + I.V.A
-                                                                </td>
-                                                                <td className="font-size-sm text-center white-space-nowrap">
-                                                                    500
-                                                                </td>
-                                                                <td className="font-size-sm text-center white-space-nowrap">
-                                                                    18/08/2020
-                                                                </td>
-                                                                <td className="font-size-sm text-center white-space-nowrap">
-                                                                    02/10/2020
-                                                                </td>
-                                                                <td className="font-size-sm text-center white-space-nowrap">
-                                                                    CARINA JIMÉNEZ
-                                                                </td>
-                                                            </tr>
+                                                            {
+                                                                this.hasElementOnArray(data.proyectos) ?
+                                                                    data.proyectos.map((proy, index) => {
+                                                                        return(
+                                                                            <tr key = { `${index}-proyectos` } >
+                                                                                <td className="font-size-sm text-justify white-space-nowrap">
+                                                                                    { proy.prospecto.lead.nombre }
+                                                                                </td>
+                                                                                <td className="font-size-sm text-justify white-space-nowrap">
+                                                                                    { proy.nombre }
+                                                                                </td>
+                                                                                <td className="font-size-sm text-justify white-space-nowrap">
+                                                                                    {
+                                                                                        proy.prospecto.lead.servicios ?
+                                                                                            proy.prospecto.lead.servicios.length ?
+                                                                                                proy.prospecto.lead.servicios.map((servicio)=>{
+                                                                                                    return(
+                                                                                                        <>
+                                                                                                            {servicio.servicio}
+                                                                                                            <br />
+                                                                                                        </>
+                                                                                                    )
+                                                                                                })
+                                                                                            : '-'
+                                                                                        : '-'
+                                                                                    }
+                                                                                </td>
+                                                                                <td className="font-size-sm text-justify white-space-nowrap">
+                                                                                    {
+                                                                                        proy.prospecto.lead.origen ?
+                                                                                            proy.prospecto.lead.origen.origen
+                                                                                        : '-'
+                                                                                    }
+                                                                                </td>
+                                                                                <td className="font-size-sm text-center white-space-nowrap">
+                                                                                    {
+                                                                                        proy.prospecto.lead.presupuesto_diseño ?
+                                                                                            setMoneyTableSinSmall(proy.prospecto.lead.presupuesto_diseño.total)
+                                                                                        : '-'
+                                                                                    }
+                                                                                </td>
+                                                                                <td className="font-size-sm text-center white-space-nowrap">
+                                                                                    {
+                                                                                        proy.prospecto.lead.presupuesto_diseño ?
+                                                                                            `${proy.prospecto.lead.presupuesto_diseño.m2}`
+                                                                                        : '-'
+                                                                                    }
+                                                                                </td>
+                                                                                <td className="font-size-sm text-center white-space-nowrap">
+                                                                                    {setDateTableLG(proy.prospecto.lead.created_at)}
+                                                                                </td>
+                                                                                <td className="font-size-sm text-center white-space-nowrap">
+                                                                                    {setDateTableLG(proy.created_at)}
+                                                                                </td>
+                                                                                <td className="font-size-sm text-center white-space-nowrap">
+                                                                                    {
+                                                                                        proy.prospecto.vendedores.map((vendedor)=>{
+                                                                                            return(
+                                                                                                <>
+                                                                                                    {vendedor.name}
+                                                                                                    <br />
+                                                                                                </>
+                                                                                            )
+                                                                                        })
+                                                                                    }
+                                                                                </td>                    
+                                                                            </tr>
+                                                                        )
+                                                                    })
+                                                                :   
+                                                                    <tr>
+                                                                        <td colSpan = "9" className="font-size-sm text-center white-space-nowrap">
+                                                                            NO SE CONTRATARON LEADS EN ESTE PERIODO
+                                                                        </td>
+                                                                    </tr>
+                                                            }
                                                         </tbody>
                                                     </table>
                                                 </div>
                                             </Tab.Pane>
                                             <Tab.Pane eventKey='21'>
-                                                {this.setButtons('20', '22', null, empresa, '19', 'CONCLUSIONES')}
-                                                <Editor
-                                                    editorClassName="editor-class"
-                                                    toolbar={
-                                                        {
-                                                            options: ['list'],
-                                                            list: {
-                                                                inDropdown: false,
-                                                                options: ['unordered'],
-                                                            },
-                                                        }
-                                                    }
-                                                    editorState={editorState}
-                                                    onEditorStateChange={this.onEditorStateChange}
-                                                />
+                                                { this.setButtons('20', '22', null, empresa, this.isActivePane(data.origenesDuplicados) ? '21' : '20', 
+                                                    'CONCLUSIONES')}
+                                                <Editor editorClassName = "editor-class" editorState = { form.listados.conclusiones }
+                                                    toolbar = { { options: ['list'], list: { inDropdown: false, options: ['unordered'], }, } }
+                                                    onEditorStateChange = { (editorState) => this.onEditorStateChange(editorState, 'conclusiones') } />
                                             </Tab.Pane>
                                             <Tab.Pane eventKey='22'>
-                                                {this.setButtons('21', null, true, empresa, '20', 'SUGERENCIAS')}
-                                                <Editor
-                                                    editorClassName="editor-class"
-                                                    toolbar={
-                                                        {
-                                                            options: ['list'],
-                                                            list: {
-                                                                inDropdown: false,
-                                                                options: ['unordered'],
-                                                            },
-                                                        }
-                                                    }
-                                                    editorState={editorState}
-                                                    onEditorStateChange={this.onEditorStateChange}
-                                                />
+                                                { this.setButtons('21', null, true, empresa, this.isActivePane(data.origenesDuplicados) ? '22' : '21', 
+                                                    'SUGERENCIAS') }
+                                                <Editor editorClassName = "editor-class"  editorState = { form.listados.sugerencias }
+                                                    toolbar = { { options: ['list'], list: { inDropdown: false, options: ['unordered'], }, } }
+                                                    onEditorStateChange = { (editable) => this.onEditorStateChange(editable, 'sugerencias') } />
                                             </Tab.Pane>
                                         </Tab.Content>
                                     </Tab.Container>
                                 </>
-                                : form.rango === "2" ?
+                                : form.rango === "mensual" ?
                                     <>
+                                       {/* -------------------------------------------------------------------------- */
+                                        /* ------------------------- ANCHOR GRAFICAS MESUAL ------------------------- */
+                                        /* -------------------------------------------------------------------------- */}
                                         <Tab.Container activeKey={key}>
                                             <Tab.Content>
                                                 <div className="separator separator-solid separator-border-1 my-4"></div>
-                                                <Tab.Pane eventKey='1'>
-                                                    {this.setButtons(null, '2', null, empresa, '01', `ENTRADA TOTAL DE LEADS (${mes} ${form.año})`)}
-                                                    <Pie ref={this.chartTotalReference} data={data.total} options={optionsPie} />
-                                                </Tab.Pane>
+                                                {
+                                                    this.isActivePane(data.total) ?
+                                                        <Tab.Pane eventKey='1'>
+                                                            {this.setButtons(null, '2', null, empresa, '01', 'ENTRADA TOTAL DE LEADS')}
+                                                            <Bar ref={this.chartTotalReference} data={data.total} options = { dataSimpleBar } />
+                                                        </Tab.Pane>
+                                                    : <></>
+                                                }
                                                 <Tab.Pane eventKey='2'>
                                                     {this.setButtons('1', '3', null, empresa, '02', 'COMPARATIVA DE LEADS TOTALES (MESES ANTERIORES)')}
                                                     <Bar ref={this.chartTotalComparativaReference} data={data.comparativa} options={optionsBar} />

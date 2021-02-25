@@ -11,6 +11,9 @@ import {
     faAtlas, faCubes
 } from '@fortawesome/free-solid-svg-icons'
 
+export const COLORES_GRAFICAS_MESES = [ '#EF5350', '#EC407A', '#AB47BC', '#5C6BC0', '#42A5F5', '#26C6DA', 
+    '#26A69A', '#66BB6A', '#D4E157', '#FFEE58', '#FFA726', '#FF7043', '#8D6E63', '#78909C' ]
+
 export const COLORES_GRAFICAS = [
     '#007BFF',
     '#6610F2',

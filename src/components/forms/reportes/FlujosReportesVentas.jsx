@@ -119,13 +119,13 @@ class FlujosReportesForm extends Component {
                         : ''
                     }
                     {
-                        form.rango === "2" ?
+                        form.rango === "mensual" ?
                             <div className="col-md-3">
                                 <SelectSearchGray withtaglabel = { 1 } withtextlabel = { 1 } name = 'mes' options = { this.getMeses() }
                                     placeholder = 'SELECCIONA EL MES' value = { form.mes } onChange = { this.updateMes }
                                     iconclass = "fas fa-calendar-day" messageinc = "Selecciona el mes." />
                             </div>
-                        : form.rango === "5" ?
+                        : form.rango === "semestral" ?
                             <div className="col-md-3">
                                 <SelectSearchGray withtaglabel = { 1 } withtextlabel = { 1 } name = 'periodo' options = { this.getPeriodo() }
                                     placeholder = 'SELECCIONA EL PERIODO' value = { form.periodo } onChange = { this.updatePeriodo }
