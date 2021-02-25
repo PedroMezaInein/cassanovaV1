@@ -196,7 +196,6 @@ class App extends Component{
                 const { data } = response
                 login(data)
             },
-
             (error) => {
                 console.log(error, 'error')
                 if (error.response.status === 401) {
