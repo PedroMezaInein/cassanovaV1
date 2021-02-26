@@ -73,7 +73,7 @@ export const dataSimpleBar = {
             boxWidth: 20,
             padding: 5,
             fontSize: 12,
-            fontColor: '#000'
+            fontColor: '#808080'
         }
     },
 }
@@ -82,7 +82,7 @@ export const percentBar =  {
     layout: { padding: { top: 50 } },
     plugins: {
         datalabels: {
-            color: '#000',
+            color: '#808080',
             font: function(context) {
                 var w = context.dataset.data.length;
                 return {
@@ -119,7 +119,7 @@ export const percentBar =  {
                 ticks: {
                     beginAtZero: true,
                     fontSize: 16,
-                    fontColor: '#000',
+                    fontColor: '#808080',
                     fontStyle: "bold",
                     lineWidth: 10,
                     padding: 10,
@@ -172,7 +172,7 @@ export const percentBar =  {
             boxWidth: 20,
             padding: 5,
             fontSize: 12,
-            fontColor: '#000'
+            fontColor: '#808080'
         },    
     }
 }
@@ -200,7 +200,7 @@ export const monthGroupBar =  {
                     labelOffset:0,
                     beginAtZero: true,
                     fontSize: 15,
-                    fontColor: '#000',
+                    fontColor: '#808080',
                     fontStyle: "bold",
                     padding: 5,
                     position: 'bottom',
@@ -213,7 +213,7 @@ export const monthGroupBar =  {
     },
     plugins: {
         datalabels: {
-            color: '#000',
+            color: '#808080',
             font: { size: 13, weight: 'bold' },
             align: 'end',
             anchor: 'end'
@@ -269,7 +269,7 @@ export const singleBar = {
             boxWidth: 20,
             padding: 5,
             fontSize: 12,
-            fontColor: '#000'
+            fontColor: '#808080'
         }
     },
 }
