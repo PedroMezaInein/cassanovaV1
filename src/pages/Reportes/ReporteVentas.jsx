@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import Layout from '../../components/layout/layout'
 import { Card, Nav, Tab } from 'react-bootstrap'
 import { Button } from '../../components/form-components'
-import { waitAlert, errorAlert, printResponseErrorAlert, questionAlert2, doneAlert } from '../../functions/alert'
+import { waitAlert, errorAlert, printResponseErrorAlert, questionAlert2, doneAlert, deleteAlert } from '../../functions/alert'
 import Swal from 'sweetalert2'
 import { COLORES_GRAFICAS_IM, COLORES_GRAFICAS_INEIN, COLORES_GRAFICAS_MESES, IM_AZUL, INEIN_RED, URL_DEV } from '../../constants'
 import axios from 'axios'
@@ -363,6 +363,19 @@ class ReporteVentas extends Component {
         else errorAlert('No completaste todos los campos.')
     }
 
+    deleteReporteAxios = async (id) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.delete(`${URL_DEV}reportes/ventas/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.getReporteAxios()
+            },(error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     saveReporteAxios = async () => {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -372,6 +385,8 @@ class ReporteVentas extends Component {
         data.append('empresa', form.empresa)
         data.append('mes', form.mes)
         data.append('año', form.año)
+        data.append('rango', form.rango)
+        data.append('periodo', form.periodo)
 
         form.adjuntos.reportes.files.map((file) => {
             data.append(`adjuntos[]`, file.file)
@@ -386,6 +401,8 @@ class ReporteVentas extends Component {
                 form.año = ''
                 form.adjuntos.reportes.value = ''
                 form.adjuntos.reportes.files = []
+                form.rango = ''
+                form.periodo = ''
                 this.setState({ ...this.state, form })
                 doneAlert('Reporte de ventas guardado con éxito')
 
@@ -1010,7 +1027,7 @@ class ReporteVentas extends Component {
     async getReporteAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'reportes/ventas/guardados', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(URL_DEV + 'reportes/ventas/guardados', { responseType: 'json', headers: { 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { empresas } = response.data
                 let { empresaActive } = this.state
@@ -1144,7 +1161,23 @@ class ReporteVentas extends Component {
                                 REPORTE DE VENTAS
                             </a>
                         </u>
-                    {`${empresa} ${form.rango!=="anual"?mes+' ':''}${form.año}?`}
+                    {
+                        form.rango === 'mensual' ?
+                            `${empresa} ${mes} ${form.año}?`
+                        : ''
+                    }
+                    {
+                        form.rango === 'semestral' ?
+                            form.periodo === '1' ? 
+                                `${empresa} ENERO - JUNIO ${form.año}?`
+                            : `${empresa} JULIO - DICIEMBRE ${form.año}?`
+                        : ''
+                    }
+                    {
+                        form.rango === 'anual' ?
+                            `${empresa} anual ${form.año}?`
+                        : ''
+                    }
                 </span>
             </div>
         )
@@ -1599,11 +1632,15 @@ class ReporteVentas extends Component {
                                             <table className="table table-vertical-center text-center mt-3" id="reportes">
                                                 <thead>
                                                     <tr className="bg-gray-200">
+                                                        <th></th>
                                                         <th>
                                                             Año
                                                         </th>
                                                         <th>
                                                             Mes
+                                                        </th>
+                                                        <th>
+                                                            Rango
                                                         </th>
                                                         <th>
                                                             Archivo
@@ -1615,8 +1652,27 @@ class ReporteVentas extends Component {
                                                         empresa.reportes.map((reporte, key) => {
                                                             return (
                                                                 <tr key={key}>
+                                                                    <td>
+                                                                        <span onClick = { (e) => { e.preventDefault(); deleteAlert(
+                                                                            '¿ESTÁS SEGURO?', 'ELIMINARÁS EL REPORTE ¡NO PODRÁS REVERTIR ESTO!', () => this.deleteReporteAxios(reporte.id)
+                                                                        ) } }
+                                                                            className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-danger" >
+                                                                            <span className="svg-icon svg-icon-md">
+                                                                                <i className="fas fa-minus-circle icon-15px"></i>
+                                                                            </span>
+                                                                        </span>
+                                                                    </td>
                                                                     <td> {reporte.año} </td>
-                                                                    <td> {mesesEspañol[parseInt(reporte.mes)]} </td>
+                                                                    <td> {mesesEspañol[parseInt(reporte.mes)]} 
+                                                                        {
+                                                                            reporte.mes_fin !== null ?
+                                                                                ` - ${mesesEspañol[parseInt(reporte.mes_fin)]}`
+                                                                            : ''
+                                                                        }
+                                                                    </td>
+                                                                    <td>
+                                                                        {reporte.rango}
+                                                                    </td>
                                                                     <td>
                                                                         <a href = { reporte.adjunto.url} rel="noopener noreferrer" target = '_blank'
                                                                             className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-primary" >
@@ -1632,7 +1688,7 @@ class ReporteVentas extends Component {
                                                     {
                                                         empresa.reportes.length === 0 ?
                                                             <tr>
-                                                                <td colSpan="3">
+                                                                <td colSpan="5">
                                                                     No hay reportes generados
                                                                 </td>
                                                             </tr>
