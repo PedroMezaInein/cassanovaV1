@@ -7,7 +7,7 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from "@fullcalendar/interaction"
 import esLocale from '@fullcalendar/core/locales/es'
 import { Modal } from '../../components/singles'
-import { SolicitarVacacionesForm, EstatusForm } from "../../components/forms"
+import { SolicitarVacacionesForm, EstatusForm, AgendarReunionGoogle } from "../../components/forms"
 import { errorAlert, printResponseErrorAlert, waitAlert, doneAlert, questionAlert, deleteAlert } from '../../functions/alert'
 import { countDaysWithoutWeekend } from '../../functions/functions'
 import { URL_DEV } from '../../constants'
@@ -27,15 +27,26 @@ class Calendario extends Component {
         disponibles: 0,
         events: [],
         formeditado: 0,
-        modal: false,
+        modal: {
+            solicitar_vacaciones: false,
+            status_vacaciones:false,
+            date:false,
+            estacionamiento:false,
+            form_event:false
+        },
         empleado: '',
         vacaciones_totales: '',
-        modal_status: false,
-        modal_date: false,
-        modal_estacionamiento: false,
         form: {
             fechaInicio: new Date(),
             fechaFin: new Date(),
+        },
+        formEvento: {
+            fecha: new Date(),
+            hora: "08",
+            minuto: "00",
+            hora_final: "08",
+            minuto_final: "00",
+            correos:[]
         },
         data: {
             usuarios: []
@@ -57,7 +68,8 @@ class Calendario extends Component {
                 icono: 'fas fa-car-alt',
                 active: 'estacionamiento'
             }
-        ]
+        ],
+        title:''
     };
 
     componentDidMount() {
@@ -68,6 +80,37 @@ class Calendario extends Component {
             return pathname === url
         });
         this.getVacacionesAxios()
+        let queryString = this.props.history.location.search
+        if (queryString) {
+            let params = new URLSearchParams(queryString)
+            let id = params.get("id")
+            if(id)
+                this.getEventAxios(id)
+        }
+    }
+
+    getEventAxios = async(id) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}vacaciones/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                Swal.close()
+                const { form, modal } = this.state
+                modal.form_event = true
+                this.setState({
+                    ...this.state,
+                    form,
+                    modal,
+                    title: 'Información el evento',
+                })
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
     }
 
     handleDateClick = (arg) => {
@@ -75,19 +118,23 @@ class Calendario extends Component {
         this.getEventsOneDateAxios(arg.dateStr)
     }
 
-    openModal = () => {
+    openModalSolicitarVacaciones = () => {
+        const { modal } = this.state
+        modal.solicitar_vacaciones = true
         this.setState({
             ...this.state,
-            modal: true,
+            modal,
             title: 'Solicitar vacaciones',
             form: this.clearForm(),
             formeditado: 0,
         })
     }
-    openModalEstatus = () => {
+    openModalEstatusVacaciones = () => {
+        const { modal } = this.state
+        modal.status_vacaciones = true
         this.setState({
             ...this.state,
-            modal_status: true,
+            modal,
             title: 'Estatus de vacaciones',
             form: this.clearForm(),
             formeditado: 0
@@ -95,11 +142,21 @@ class Calendario extends Component {
     }
 
     openModalEstacionamiento = () => {
+        const { modal } = this.state
+        modal.estacionamiento = true
         this.setState({
             ...this.state,
-            modal_estacionamiento: true,
+            modal,
             title: 'Solicitud de espacio de estacionamiento',
             form: this.clearForm(),
+        })
+    }
+    handleCloseEvent = () => {
+        const { modal } = this.state
+        modal.form_event = false
+        this.setState({
+            ...this.state,
+            modal
         })
     }
 
@@ -122,38 +179,43 @@ class Calendario extends Component {
     }
     handleClose = () => {
         const { modal, options } = this.state
+        modal.solicitar_vacaciones = false
         this.setState({
             ...this.state,
-            modal: !modal,
+            modal,
             options,
             title: 'Solicitar vacaciones',
             form: this.clearForm()
         })
     }
     handleCloseEstatus = () => {
-        const { modal_status } = this.state
+        const { modal } = this.state
+        modal.status_vacaciones = false
         this.setState({
             ...this.state,
-            modal_status: !modal_status,
+            modal,
             title: 'Estatus de vacaciones',
             form: this.clearForm()
         })
     }
 
     handleCloseDate = () => {
+        const { modal } = this.state
+        modal.date = false
         this.setState({
             ...this.state,
-            modal_date: false,
+            modal,
             date: '',
             activeKey: '',
             eventos: ''
         })
     }
     handleCloseEstacionamiento = () => {
-        const { modal_estacionamiento, options } = this.state
+        const { modal, options } = this.state
+        modal.estacionamiento = false
         this.setState({
             ...this.state,
-            modal_estacionamiento: !modal_estacionamiento,
+            modal,
             options,
             title: 'Solicitud de espacio de estacionamiento',
         })
@@ -166,6 +228,16 @@ class Calendario extends Component {
         this.setState({
             ...this.state,
             form
+        })
+    }
+
+    onChangeEvento = e => {
+        const { name, value } = e.target
+        const { formEvento } = this.state
+        formEvento[name] = value
+        this.setState({
+            ...this.state,
+            formEvento
         })
     }
 
@@ -317,6 +389,7 @@ class Calendario extends Component {
             (response) => {
                 const { data } = this.state
                 const { empleados, vacaciones, empleado, user_vacaciones, feriados, eventos, usuarios } = response.data
+
                 data.usuarios = usuarios
                 let aux = []
                 let aux2 = []
@@ -371,7 +444,8 @@ class Calendario extends Component {
                         end: evento.googleEvent.end.dateTime,
                         iconClass: 'far fa-clock',
                         containerClass: 'eventos',
-                        evento: evento
+                        evento: evento,
+                        identificador:evento.id
                     })
                     return false
                 })
@@ -386,7 +460,6 @@ class Calendario extends Component {
                     disabledDates: aux2,
                     data
                 })
-
             },
             (error) => {
                 printResponseErrorAlert(error)
@@ -403,7 +476,9 @@ class Calendario extends Component {
             (response) => {
                 Swal.close()
                 const { eventos } = response.data
-                const { activeKey } = this.state
+                const { activeKey, modal } = this.state
+                modal.date = true
+
                 let bandera = false
                 Object.keys(eventos).map((evento, key) => {
                     if (eventos[evento].length && bandera === false && evento !== 'feriados')
@@ -416,7 +491,7 @@ class Calendario extends Component {
                     bandera = activeKey
                 this.setState({
                     ...this.state,
-                    modal_date: true,
+                    modal,
                     date: date,
                     eventos: eventos,
                     activeKey: bandera
@@ -592,7 +667,7 @@ class Calendario extends Component {
                         </Tooltip>
                     }
                 >
-                    <div className={eventInfo.event._def.extendedProps.containerClass + ' evento text-left'}>
+                    <div className={eventInfo.event._def.extendedProps.containerClass + ' evento text-left'} onClick={(e) => { e.preventDefault(); this.getEventAxios(eventInfo.event._def.extendedProps.evento.googleEvent.id) }}>
                         <div className="d-flex justify-content-between align-items-center">
                             <div>
                                 <i className={eventInfo.event._def.extendedProps.iconClass + " kt-font-boldest mr-3"}></i>
@@ -923,8 +998,26 @@ class Calendario extends Component {
             activeKeyTab: select
         })
     }
+    tagInputChange = ( nuevoTipos ) => {
+        const uppercased = nuevoTipos
+        const { formEvento } = this.state 
+        let unico = {};
+        uppercased.forEach(function (i) {
+            if (!unico[i]) { unico[i] = true }
+        })
+        formEvento.correos = uppercased ? Object.keys(unico) : [];
+        this.setState({
+            formEvento
+        })
+    }
+    deleteEvent=() =>{
+
+    }
+    onSubmitFormEvent=() =>{
+        
+    }
     render() {
-        const { events, form, title, formeditado, modal, modal_status, estatus, disponibles, disabledDates, modal_date, date, eventos, activeKey } = this.state
+        const { events, form, title, formeditado, modal, estatus, disponibles, disabledDates, date, eventos, activeKey, formEvento } = this.state
         return (
             <Layout {...this.props}>
                 {/* <Tab.Container defaultActiveKey={activeKeyTab} activeKey={activeKeyTab} className="p-5"> */}
@@ -961,8 +1054,8 @@ class Calendario extends Component {
                                             id={`dropdown-button-drop-left`}
                                             drop={'left'}
                                         >
-                                            <Dropdown.Item onClick={this.openModal}>Solicitar vacaciones</Dropdown.Item>
-                                            <Dropdown.Item onClick={this.openModalEstatus}>Estatus de vacaciones</Dropdown.Item>
+                                            <Dropdown.Item onClick={this.openModalSolicitarVacaciones}>Solicitar vacaciones</Dropdown.Item>
+                                            <Dropdown.Item onClick={this.openModalEstatusVacaciones}>Estatus de vacaciones</Dropdown.Item>
                                             {/* <Dropdown.Item onClick={this.openModalEstacionamiento}>Solicitar lugar de estacionamiento</Dropdown.Item> */}
                                         </DropdownButton>
                                         : ''
@@ -1027,7 +1120,7 @@ class Calendario extends Component {
                         </Card.Body>
                     </Card>
                 {/* </Tab.Container> */}
-                <Modal size="lg" title={title} show={modal} handleClose={this.handleClose}>
+                <Modal size="lg" title={title} show={modal.solicitar_vacaciones} handleClose={this.handleClose}>
                     <SolicitarVacacionesForm
                         formeditado={formeditado}
                         form={form}
@@ -1036,7 +1129,7 @@ class Calendario extends Component {
                         onSubmit={(e) => { e.preventDefault(); waitAlert(); this.askVacationAxios() }}
                     />
                 </Modal>
-                <Modal title={title} show={modal_status} handleClose={this.handleCloseEstatus}>
+                <Modal title={title} show={modal.status_vacaciones} handleClose={this.handleCloseEstatus}>
                     <EstatusForm
                         formeditado={formeditado}
                         form={form}
@@ -1044,7 +1137,7 @@ class Calendario extends Component {
                         estatus={estatus}
                     />
                 </Modal>
-                <Modal size='lg' title={this.setDateText(date)} show={modal_date} handleClose={this.handleCloseDate}>
+                <Modal size='lg' title={this.setDateText(date)} show={modal.date} handleClose={this.handleCloseDate}>
                     {
                         eventos !== '' ?
                             <>
@@ -1080,12 +1173,21 @@ class Calendario extends Component {
                             : ''
                     }
                 </Modal>
-                {/* <Modal size="lg" title={title} show={modal_estacionamiento} handleClose={this.handleCloseEstacionamiento}>
+                {/* <Modal size="lg" title={title} show={modal.estacionamiento} handleClose={this.handleCloseEstacionamiento}>
                     <div className="d-flex justify-content-center mt-4">
                         <DatePickerMulti
                         />
                     </div>
                 </Modal> */}
+                <Modal title={title} show={modal.form_event} handleClose={this.handleCloseEvent}>
+                    <AgendarReunionGoogle
+                        form={formEvento}
+                        onChange={this.onChangeEvento}
+                        onSubmit={this.onSubmitFormEvent}
+                        deleteEvent={this.deleteEvent}
+                        tagInputChange={(e) => this.tagInputChange(e)}
+                    />
+                </Modal>
             </Layout>
 
         );
