@@ -151,8 +151,8 @@ class LeadNegociacion extends Component {
                                                             : <span className="text-dark-75 font-weight-bolder">{lead.empresa.name}</span>
                                                     }
                                                 </td>
-                                                <td className="d-flex justify-content-center">
-                                                    <div className="symbol-group symbol-hover">
+                                                <td>
+                                                    <div className="symbol-group symbol-hover d-flex justify-content-center">
                                                         {
                                                             lead.prospecto.vendedores.map((vendedor, index) => {
                                                                 return (
