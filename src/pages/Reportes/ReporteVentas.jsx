@@ -17,8 +17,8 @@ import { EditorState, convertToRaw } from 'draft-js'
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
 import RVAnualInein from '../../components/pdfs/ReporteVentasAnual/RVAnualInein'
 import RVAnualIm from '../../components/pdfs/ReporteVentasAnual/RVAnualIm'
-import ReporteVentasInein from '../../components/pdfs/ReporteVentasInein'
-import ReporteVentasIm from '../../components/pdfs/ReporteVentasIm'
+import RVMensualIm from '../../components/pdfs/ReporteVentasMensual/RVMensualInein'
+import RVMensualInein from '../../components/pdfs/ReporteVentasMensual/RVMensualIm'
 import { Modal } from '../../components/singles'
 import { dataSimpleBar, monthGroupBar, percentBar } from '../../constantes/barOptions'
 
@@ -125,7 +125,7 @@ class ReporteVentas extends Component {
                     )
                 else
                     return (
-                        <ReporteVentasInein form={form} images={images} anteriores={leadsAnteriores}
+                        <RVMensualIm form={form} images={images} anteriores={leadsAnteriores}
                             lista={lista} mes={mes.toUpperCase()} data={data} />
                     )
             case 'INFRAESTRUCTURA MÉDICA':
@@ -136,7 +136,7 @@ class ReporteVentas extends Component {
                     )
                 else
                 return (
-                    <ReporteVentasIm form={form} images={images} anteriores={leadsAnteriores}
+                    <RVMensualInein form={form} images={images} anteriores={leadsAnteriores}
                         lista={lista} mes={mes.toUpperCase()} data={data} />
                 )
             default:
@@ -1144,7 +1144,7 @@ class ReporteVentas extends Component {
                                 REPORTE DE VENTAS
                             </a>
                         </u>
-                    {`${empresa} ${form.rango!=="anual"?mes+'':''}${form.año}?`}
+                    {`${empresa} ${form.rango!=="anual"?mes+' ':''}${form.año}?`}
                 </span>
             </div>
         )
@@ -1281,8 +1281,6 @@ class ReporteVentas extends Component {
                         {/* -------------------------------------------------------------------------- */
                         /*                               ANCHOR GRAFICAS                              */
                         /* -------------------------------------------------------------------------- */}
-
-                        {/* Nota: Aqui trabajaré con el reporte anual */}
                         <Tab.Container activeKey={key}>
                             <Tab.Content>
                                 <div className="separator separator-solid separator-border-1 my-4"></div>
@@ -1385,7 +1383,7 @@ class ReporteVentas extends Component {
                                 {
                                     this.isActivePane(data.tipoLeadsComparativa) ?
                                         <Tab.Pane eventKey = '13'>
-                                            {this.setButtons(this.isActivePane(data.origenesDuplicados) ? '12' : '11', '14', null, empresa, this.isActivePane(data.origenesDuplicados) ? '13' : '12', 'TIPO DE LEADS MESUAL')}
+                                            {this.setButtons(this.isActivePane(data.origenesDuplicados) ? '12' : '11', '14', null, empresa, this.isActivePane(data.origenesDuplicados) ? '13' : '12', 'TIPO DE LEADS MENSUAL')}
                                             <Bar ref={this.chartTiposComparativaReference} data={data.tipoLeadsComparativa} options = { monthGroupBar } />
                                         </Tab.Pane>
                                     : <></>
