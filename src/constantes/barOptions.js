@@ -34,13 +34,13 @@ export const dataSimpleBar = {
                         let cadena = ''
                         switch(value){
                             case 'Bolsa de trabajo':
-                                auxiliar.push('Bolsa de','trabajo')
+                                auxiliar.push('BOLSA DE','TRABAJO')
                                 break;
                             case 'Quiero ser proveedor':
-                                auxiliar.push('Quiero ser','proveedor')
+                                auxiliar.push('QUIERO SER','PROVEEDOR')
                                 break;
                             case 'Aún no lo se':
-                                auxiliar.push('Aún no lo se')
+                                auxiliar.push('AÚN NO LO SE')
                                 break;
                             default:
                                 arreglo = value.split(' ')
@@ -49,14 +49,14 @@ export const dataSimpleBar = {
                                         cadena = arreglo[i]
                                     else{
                                         if(i%2 === 0){
-                                            auxiliar.push(cadena)
+                                            auxiliar.push(cadena.toUpperCase())
                                             cadena = arreglo[i]
                                         }else{
                                             cadena = cadena + ' ' + arreglo[i]
                                         }
                                     }
                                     if(i === arreglo.length - 1)
-                                        auxiliar.push(cadena)
+                                        auxiliar.push(cadena.toUpperCase())
                                 }
                                 break;
                         }
@@ -131,13 +131,13 @@ export const percentBar =  {
                         let cadena = ''
                         switch(value.label){
                             case 'Bolsa de trabajo':
-                                auxiliar.push('Bolsa de','trabajo')
+                                auxiliar.push('BOLSA DE','TRABAJO')
                                 break;
                             case 'Quiero ser proveedor':
-                                auxiliar.push('Quiero ser','proveedor')
+                                auxiliar.push('QUIERO SER','PROVEEDOR')
                                 break;
                             case 'Aún no lo se':
-                                auxiliar.push('Aún no lo se')
+                                auxiliar.push('AÚN NO LO SE')
                                 break;
                             default:
                                 arreglo = value.label.split(' ')
@@ -206,7 +206,9 @@ export const monthGroupBar =  {
                     position: 'bottom',
                     maxRotation: 90,
                     minRotation: 90,
-                    callback:function(label){ return label.split(";"); }
+                    callback:function(label){ 
+                        return label.split(";"); 
+                    }
                 }
             }
         ]
@@ -273,3 +275,9 @@ export const singleBar = {
         }
     },
 }
+
+/* const setCapitalizeText = string => {
+    return string
+    return string.toUpperCase()
+    return string.trim().replace(/^\w/, (c) => c.toUpperCase());
+} */
