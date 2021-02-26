@@ -234,7 +234,7 @@ const styles = StyleSheet.create({
         textTransform:'uppercase'
     },
     imagenCentrada:{
-        width: '95%',
+        width: '100%',
         textAlign: 'center',
         marginLeft: 'auto',
         marginRight: 'auto',
@@ -295,8 +295,8 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         paddingTop: '25px',
         paddingBottom: '35px',
-        paddingRight: '35px',
-        paddingLeft: '35px',
+        paddingRight: '25px',
+        paddingLeft: '25px',
         height: '100%'
     },
     numberTitle:{
