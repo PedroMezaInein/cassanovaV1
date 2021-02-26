@@ -273,7 +273,7 @@ class Calendario extends Component {
         }
         await axios.post(URL_DEV + 'mercadotecnia/parrilla-contenido', data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                doneAlert('Parrilla guardad con éxito');
+                doneAlert('Parrilla guardado con éxito');
                 const { modal } = this.state
                 modal.form = false
                 this.setState({ ...this.state, modal })
@@ -638,6 +638,8 @@ class Calendario extends Component {
     }
 
     renderEventContent = (eventInfo) => {
+        
+        {console.log(eventInfo.event._def.extendedProps.evento)}
         const { evento: event } = eventInfo.event._def.extendedProps
         let aux = ''
 
