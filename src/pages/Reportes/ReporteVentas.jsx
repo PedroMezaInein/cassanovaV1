@@ -8,7 +8,7 @@ import Swal from 'sweetalert2'
 import { COLORES_GRAFICAS_IM, COLORES_GRAFICAS_INEIN, COLORES_GRAFICAS_MESES, IM_AZUL, INEIN_RED, URL_DEV } from '../../constants'
 import axios from 'axios'
 import { pdf } from '@react-pdf/renderer'
-import { Pie, Bar, Line } from 'react-chartjs-2'
+import { Bar } from 'react-chartjs-2'
 import "chartjs-plugin-datalabels";
 import { setLabelVentas, setOptions, setDateTableLG, setMoneyTableSinSmall } from '../../functions/setters'
 import FlujosReportesVentas from '../../components/forms/reportes/FlujosReportesVentas'
@@ -21,7 +21,6 @@ import ReporteVentasInein from '../../components/pdfs/ReporteVentasInein'
 import ReporteVentasIm from '../../components/pdfs/ReporteVentasIm'
 import { Modal } from '../../components/singles'
 import { dataSimpleBar, monthGroupBar, percentBar } from '../../constantes/barOptions'
-import { optionsPie } from '../../constantes/pieOptions'
 
 class ReporteVentas extends Component {
 
@@ -426,6 +425,7 @@ class ReporteVentas extends Component {
     }
 
     setData = (result, meses) => {
+        // ENTRADA TOTAL DE LEADS
         let data = {}
         data.total = {
             labels: ['TOTAL'],
@@ -439,14 +439,13 @@ class ReporteVentas extends Component {
                 ],
                 borderWidth: 3,
                 borderColor: this.setColor(),
-                maxBarThickness: 500
+                maxBarThickness: 400
             }]
         }
-
+        // ENTRADA DE LEADS MENSUAL
         let aux = []
         let auxPercent = []
         let auxLabels = []
-
         result.total_meses.map((element, index)=>{
             aux.push(element.total)
             if(element.porcentaje)
@@ -455,19 +454,23 @@ class ReporteVentas extends Component {
                 auxPercent.push(null)
             auxLabels.push({ label: meses[index], value: element.total })
         })
-
+        
+        auxColors = [];
+        result.total_meses.map( (color, index) => {
+            auxColors.push( COLORES_GRAFICAS_MESES[index] )
+        })
         data.comparativa = {
             labels: auxLabels,
             datasets: [{
                 data: aux,
                 percent: auxPercent,
-                backgroundColor: this.setColor() + 'BF',
-                hoverBackgroundColor: this.setColor() + 'D9',
+                backgroundColor: this.addOpacityToColors(auxColors, 'BF'),
+                hoverBackgroundColor: this.addOpacityToColors(auxColors, 'D9'),
                 borderWidth: 3,
-                borderColor: this.setColor(),
+                borderColor: auxColors,
             }]
         }
-
+        // ORIGEN DE LEADS
         data.origenes = {
             labels: [
                 {label: 'Orgánico', value: result.origen.organico.total},
@@ -477,18 +480,17 @@ class ReporteVentas extends Component {
                 data: [result.origen.organico.total, result.origen.ads.total],
                 percent: [result.origen.organico.porcentaje ? result.origen.organico.porcentaje.toFixed(2) : null, 
                     result.origen.ads.porcentaje ? result.origen.ads.porcentaje.toFixed(2) : null],
-                backgroundColor: ['#4F81BDBF', '#FFC000BF'],
-                hoverBackgroundColor: ['#4F81BDD9', '#FFC000D9'],
+                backgroundColor: ['#34A853BF', '#FBBC04BF'],
+                hoverBackgroundColor: ['#34A853D9', '#FBBC04D9'],
                 borderWidth: 3,
-                borderColor: ['#4F81BD', '#FFC000'],
+                borderColor: ['#34A853', '#FBBC04'],
                 maxBarThickness: 250
             }]
         }
-
+        // ORIGEN DE LEADS ORGÁNICOS
         aux = []
         auxPercent = []
         auxLabels = []
-
         result.origenes_organicos.map((element, index)=>{
             aux.push(element.total)
             if(element.porcentaje)
@@ -503,14 +505,14 @@ class ReporteVentas extends Component {
             datasets: [{
                 data: aux,
                 percent: auxPercent,
-                backgroundColor: '#4F81BDBF',
-                hoverBackgroundColor: '#4F81BDD9',
+                backgroundColor: '#34A853BF',
+                hoverBackgroundColor: '#34A853D9',
                 borderWidth: 3,
-                borderColor: '#4F81BD',
+                borderColor: '#34A853',
                 maxBarThickness: 200
             }]
         }
-
+        // ORIGEN DE LEADS ADS
         aux = []
         auxPercent = []
         auxLabels = []
@@ -529,14 +531,14 @@ class ReporteVentas extends Component {
             datasets: [{
                 data: aux,
                 percent: auxPercent,
-                backgroundColor: '#FFC000BF',
-                hoverBackgroundColor: '#FFC000D9',
+                backgroundColor: '#FBBC04BF',
+                hoverBackgroundColor: '#FBBC04D9',
                 borderWidth: 3,
-                borderColor: '#FFC000',
+                borderColor: '#FBBC04',
                 maxBarThickness: 200
             }]
         }
-
+        // ORIGEN DE LEADS MENSUAL
         auxLabels = []
         aux = []
         let auxColors = []
@@ -544,8 +546,8 @@ class ReporteVentas extends Component {
             mes.map( (origen) => {
                 auxLabels.push(origen.nombre+';'+meses[index])
                 aux.push(origen.total)
-                if(origen.nombre.includes('ADS')) auxColors.push('#FFC000')
-                else auxColors.push('#4F81BD')
+                if(origen.nombre.includes('ADS')) auxColors.push('#FBBC04')
+                else auxColors.push('#34A853')
             })
         })
 
@@ -561,7 +563,7 @@ class ReporteVentas extends Component {
                 maxBarThickness: 200
             }]
         }
-
+        // SERVICIOS SOLICITADOS
         aux = []
         auxPercent = []
         auxLabels = []
@@ -584,7 +586,7 @@ class ReporteVentas extends Component {
                     auxColors.push('#A6A6A6');
                     break;
                 default:
-                    auxColors.push('#4F81BD');
+                    auxColors.push(this.setColor());
                     break;
             }
         })
@@ -601,7 +603,7 @@ class ReporteVentas extends Component {
                 maxBarThickness: 200
             }]
         }
-
+        // SERVICIOS SOLICITADOS MENSUAL
         auxLabels = []
         aux = []
         auxColors = []
@@ -619,7 +621,7 @@ class ReporteVentas extends Component {
                         auxColors.push('#A6A6A6');
                         break;
                     default:
-                        auxColors.push('#4F81BD');
+                        auxColors.push(this.setColor());
                         break;
                 }
             })
@@ -637,7 +639,7 @@ class ReporteVentas extends Component {
                 maxBarThickness: 200
             }]
         }
-
+        // TIPOS DE LEADS
         if(result.tipos.duplicados.total){
             data.tipos = {
                 labels: [
@@ -677,7 +679,7 @@ class ReporteVentas extends Component {
                 }]
             }
         }
-
+        // ORIGEN DE LEADS NO POTENCIALES
         aux = []
         auxPercent = []
         auxLabels = []
@@ -703,7 +705,7 @@ class ReporteVentas extends Component {
                 maxBarThickness: 200
             }]
         }
-
+        // ORIGEN DE LEADS POTENCIALES
         aux = []
         auxPercent = []
         auxLabels = []
@@ -729,7 +731,7 @@ class ReporteVentas extends Component {
                 maxBarThickness: 200
             }]
         }
-
+        // ORIGEN DE LEADS DUPLICADOS
         if(result.origenes_duplicados.length > 0){
             aux = []
             auxPercent = []
@@ -757,7 +759,7 @@ class ReporteVentas extends Component {
                 }]
             }
         }else{ data.origenesDuplicados = {} }
-
+        // TIPOS DE LEADS MENSUAL
         auxLabels = []
         aux = []
         auxColors = []
@@ -791,7 +793,7 @@ class ReporteVentas extends Component {
                 maxBarThickness: 200
             }]
         }
-
+        // TIPOS DE PROYECTOS
         auxLabels = []
         aux = []
         result.tipos_proyectos.map( (element, index) => {
@@ -821,7 +823,7 @@ class ReporteVentas extends Component {
                 auxColors.push( COLORES_GRAFICAS_MESES[index] )
             })
         })
-
+        // TIPOS DE PROYECTOS MENSUAL
         data.tiposProyectosComparativa = {
             labels: auxLabels,
             datasets: [{
@@ -833,7 +835,7 @@ class ReporteVentas extends Component {
                 maxBarThickness: 200
             }]
         }
-
+        // LEADS CONVERTIDOS A PROSPECTOS
         data.contactados = {
             labels: [
                 {label: 'Sin convertir', value: result.contactados.sinConvertir.total},
@@ -853,7 +855,7 @@ class ReporteVentas extends Component {
                 maxBarThickness: 250
             }]
         }
-
+         // ESTATUS DE PROSPECTOS
         auxLabels = []
         aux = []
         auxColors = []
@@ -868,10 +870,19 @@ class ReporteVentas extends Component {
             switch(element.nombre){
                 case 'Cancelado':
                 case 'Rechazado':
-                    auxColors.push('#FF0000');
+                    auxColors.push('#ef3145');
+                    break;
+                case 'En proceso':
+                    auxColors.push('#3699FF');
+                    break;
+                case 'Detenido':
+                    auxColors.push('#b6b8b9');
+                    break;
+                case 'En negociación':
+                    auxColors.push('#82594d');
                     break;
                 case 'Contratado':
-                    auxColors.push('#92D050');
+                    auxColors.push('#388e3c');
                     break;
                 default:
                     auxColors.push('#4F81DB');
@@ -891,7 +902,7 @@ class ReporteVentas extends Component {
                 maxBarThickness: 200
             }]
         }
-
+        // PRINCIPALES MOTIVOS DE CANCELACIÓN
         auxLabels = []
         aux = []
         auxPercent = []
@@ -911,7 +922,7 @@ class ReporteVentas extends Component {
                 maxBarThickness: 200
             }]
         }
-
+        // PRINCIPALES MOTIVOS DE RECHAZO
         auxLabels = []
         aux = []
         auxPercent = []
