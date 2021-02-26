@@ -103,13 +103,13 @@ class Leads extends Component {
                 action: 'see',
                 tooltip: { id: 'see', text: 'Mostrar', type: 'info' },
             },
-            {
-                text: 'Agregar&nbsp;prospecto',
-                btnclass: 'info',
-                iconclass: 'flaticon2-user-1',
-                action: 'prospecto',
-                tooltip: { id: 'prospecto', text: 'Agregar prospecto' }
-            }
+            // {
+            //     text: 'Agregar&nbsp;prospecto',
+            //     btnclass: 'info',
+            //     iconclass: 'flaticon2-user-1',
+            //     action: 'prospecto',
+            //     tooltip: { id: 'prospecto', text: 'Agregar prospecto' }
+            // }
         )
         return aux
     }

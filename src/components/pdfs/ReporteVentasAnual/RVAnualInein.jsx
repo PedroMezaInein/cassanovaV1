@@ -114,24 +114,42 @@ const styles = StyleSheet.create({
         fontFamily: 'Poppins',
         fontWeight:'extralight'
     },
-    cell20: {
+    cell15: {
         display: 'flex',
         justifyContent: 'center',
         alignContent: 'center',
         textAlign: 'center',
         flexWrap: 'wrap',
-        width: '20%',
+        width: '14.9%',
         padding:'4px'
     },
-    // cell8: {
-    //     display: 'flex',
-    //     justifyContent: 'center',
-    //     alignContent: 'center',
-    //     textAlign: 'center',
-    //     flexWrap: 'wrap',
-    //     width: '8%',
-    //     padding:'4px'
-    // },
+    cell7: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignContent: 'center',
+        textAlign: 'center',
+        flexWrap: 'wrap',
+        width: '7%',
+        padding:'4px'
+    },
+    cell5: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignContent: 'center',
+        textAlign: 'center',
+        flexWrap: 'wrap',
+        width: '5%',
+        padding:'4px'
+    },
+    cell8: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignContent: 'center',
+        textAlign: 'center',
+        flexWrap: 'wrap',
+        width: '7.5%',
+        padding:'2px'
+    },
     cell10: {
         display: 'flex',
         justifyContent: 'center',
@@ -141,15 +159,15 @@ const styles = StyleSheet.create({
         width: '10%',
         padding:'4px'
     },
-    // cell11: {
-    //     display: 'flex',
-    //     justifyContent: 'center',
-    //     alignContent: 'center',
-    //     textAlign: 'center',
-    //     flexWrap: 'wrap',
-    //     width: '11%',
-    //     padding:'4px'
-    // },
+    cell11: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignContent: 'center',
+        textAlign: 'center',
+        flexWrap: 'wrap',
+        width: '11%',
+        padding:'4px'
+    },
     // cell15: {
     //     display: 'flex',
     //     justifyContent: 'center',
@@ -159,15 +177,15 @@ const styles = StyleSheet.create({
     //     width: '15%',
     //     padding:'4px'
     // },
-    cell30: {
-        display: 'flex',
-        justifyContent: 'center',
-        alignContent: 'center',
-        textAlign: 'center',
-        flexWrap: 'wrap',
-        width: '30%',
-        padding:'4px'
-    },  
+    // cell30: {
+    //     display: 'flex',
+    //     justifyContent: 'center',
+    //     alignContent: 'center',
+    //     textAlign: 'center',
+    //     flexWrap: 'wrap',
+    //     width: '30%',
+    //     padding:'4px'
+    // },  
     // cell43: {
     //     display: 'flex',
     //     justifyContent: 'center',
@@ -213,9 +231,10 @@ const styles = StyleSheet.create({
         textAlign: "justify",
         lineHeight:1.3,
         fontFamily: 'Poppins',
+        textTransform:'uppercase'
     },
     imagenCentrada:{
-        width: '95%',
+        width: '100%',
         textAlign: 'center',
         marginLeft: 'auto',
         marginRight: 'auto',
@@ -276,8 +295,8 @@ const styles = StyleSheet.create({
         backgroundColor: 'white',
         paddingTop: '25px',
         paddingBottom: '35px',
-        paddingRight: '35px',
-        paddingLeft: '35px',
+        paddingRight: '25px',
+        paddingLeft: '25px',
         height: '100%'
     },
     numberTitle:{
@@ -335,14 +354,12 @@ export default class RVAnualInein extends Component {
         return aux
     }
 
-    getYear = () => {
-        const { form } = this.props
-        return moment(form.mes+'/01/'+form.año).year()
-    }
-
     getFechaText = (date) => {
         let fecha = moment(date)
         let mes = fecha.month() + 1;
+        if (mes.toString().length === 1) {
+            mes = '0' + mes
+        }
         let aux = fecha.date() + '/' + mes + '/' + fecha.year()
         return aux
     }
@@ -416,8 +433,7 @@ export default class RVAnualInein extends Component {
     }
 
     render() {
-        const { conclusiones, sugerencias, images, data } = this.props
-        console.log(images, 'IMAGES')
+        const { conclusiones, sugerencias, images, data, form } = this.props
         return (
             <Document style = {{ fontFamily: 'Poppins', color: '#525252' }}>
                 <Page size="A4" orientation = "landscape" style = {{ position: 'relative', height: '100%'}}>
@@ -429,7 +445,7 @@ export default class RVAnualInein extends Component {
                             REPORTE DE VENTAS
                         </Text>
                         <Text style = {{  textAlign: 'center', marginTop: 4, fontSize: '14', color: '#525252' }}>
-                            {this.getYear()}
+                            {form.año}
                         </Text>
                     </View>
                 </Page>
@@ -559,7 +575,6 @@ export default class RVAnualInein extends Component {
                         <View style={ styles.linePink }></View>
                     </View>
                 </Page>
-
                 <Page size="A4" orientation = "landscape" style = { styles.justifyContentCenter }>
                     <View style = { styles.lineaNegra }></View>
                     <View style = { styles.lineaRosa }></View>
@@ -605,7 +620,6 @@ export default class RVAnualInein extends Component {
                         <View style={ styles.lineGray }></View>
                     </View>
                 </Page>
-
                 <Page size="A4" orientation = "landscape" style = { styles.justifyContentCenter }>
                     <View style = { styles.lineaNegra }></View>
                     <View style = { styles.lineaRosa }></View>
@@ -641,7 +655,7 @@ export default class RVAnualInein extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    <Text style = { styles.textPink }>ORIGEN </Text>DE LEADS  <Text style = { styles.textPink }>NO POTENCIALES </Text>
+                                    <Text style = { styles.textPink }>ORIGEN </Text>DE LEADS <Text style = { styles.textPink }>NO POTENCIALES </Text>
                                 </Text>
                             </View>
                         </View>
@@ -659,7 +673,7 @@ export default class RVAnualInein extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    <Text style = { styles.textPink }>ORIGEN </Text>DE LEADS <Text style = { styles.textPink }>POTENCIALES </Text>
+                                    <Text style = { styles.textPink }>ORIGEN </Text>DE LEADS <Text style = { styles.textPink }>POTENCIALES</Text>
                                 </Text>
                             </View>
                         </View>
@@ -679,7 +693,7 @@ export default class RVAnualInein extends Component {
                                     </View>
                                     <View>
                                         <Text style = { styles.titulo }>    
-                                            <Text style = { styles.textPink }>ORIGEN </Text>DE LEADS <Text style = { styles.textPink }>DUPLICADOS </Text>
+                                            <Text style = { styles.textPink }>ORIGEN </Text>DE LEADS <Text style = { styles.textPink }>DUPLICADOS</Text>
                                         </Text>
                                     </View>
                                 </View>
@@ -759,7 +773,6 @@ export default class RVAnualInein extends Component {
                         <View style={ styles.lineGray }></View>
                     </View>
                 </Page>
-
                 <Page size="A4" orientation = "landscape" style = { styles.justifyContentCenter }>
                     <View style = { styles.lineaNegra }></View>
                     <View style = { styles.lineaRosa }></View>
@@ -866,23 +879,23 @@ export default class RVAnualInein extends Component {
                         <View style = { styles.imgCenter }>
                             <View style = { styles.table}  >
                                 <View style = { styles.tableRowHeader } >
-                                    <View style = { styles.cell20 }>
+                                    <View style = { styles.cell15 }>
                                         <Text style = { styles.headerTextJustify } >
                                             NOMBRE
                                         </Text>
                                     </View>
-                                    <View style = { styles.cell10 }>
+                                    <View style = { styles.cell15 }>
                                         <Text style = { styles.headerTextJustify } >
                                             PROYECTO
                                         </Text>
                                     </View>
-                                    <View style = { styles.cell10 }>
+                                    <View style = { styles.cell15 }>
                                         <Text style = { styles.headerTextJustify } >
                                             SERVICIOS
                                         </Text>
                                     </View>
-                                    <View style = { styles.cell10 }>
-                                        <Text style = { styles.headerText } >
+                                    <View style = { styles.cell15 }>
+                                        <Text style = { styles.headerTextJustify } >
                                             ORIGEN
                                         </Text>
                                     </View>
@@ -891,22 +904,22 @@ export default class RVAnualInein extends Component {
                                             MONTO
                                         </Text>
                                     </View>
-                                    <View style = { styles.cell10 }>
+                                    <View style = { styles.cell5 }>
                                         <Text style = { styles.headerText } >
                                             M²
                                         </Text>
                                     </View>
-                                    <View style = { styles.cell10 }>
+                                    <View style = { styles.cell7 }>
                                         <Text style = { styles.headerText } >
                                             INGRESO
                                         </Text>
                                     </View>
-                                    <View style = { styles.cell10 }>
+                                    <View style = { styles.cell8 }>
                                         <Text style = { styles.headerText } >
-                                            CONTRATACIÓN
+                                            CONTRATO
                                         </Text>
                                     </View>
-                                    <View style = { styles.cell10 }>
+                                    <View style = { styles.cell11 }>
                                         <Text style = { styles.headerText } >
                                             VENDEDOR
                                         </Text>
@@ -925,7 +938,7 @@ export default class RVAnualInein extends Component {
                                         if(element.prospecto){
                                             return(
                                                 <View key = { index } style = { this.setStyleRowBody(index) } >
-                                                    <View style = { styles.cell20 }>
+                                                    <View style = { styles.cell15 }>
                                                         <Text style = { styles.bodyText}>
                                                             {
                                                                 element.prospecto ?
@@ -936,12 +949,12 @@ export default class RVAnualInein extends Component {
                                                             }
                                                         </Text>
                                                     </View>
-                                                    <View style = { styles.cell10 }>
+                                                    <View style = { styles.cell15 }>
                                                         <Text style = { styles.bodyText}>
                                                             { element.nombre.toUpperCase() }
                                                         </Text>
                                                     </View>
-                                                    <View style = { styles.cell10 }>
+                                                    <View style = { styles.cell15 }>
                                                         {
                                                             element.prospecto.lead.servicios ?
                                                                 element.prospecto.lead.servicios.length ?
@@ -956,7 +969,7 @@ export default class RVAnualInein extends Component {
                                                             : <Text style = { styles.bodyText}>-</Text>
                                                         }
                                                     </View>
-                                                    <View style = { styles.cell10 }>
+                                                    <View style = { styles.cell15 }>
                                                         <Text style = { styles.bodyText } >
                                                             {
                                                                 element.prospecto ?
@@ -982,20 +995,20 @@ export default class RVAnualInein extends Component {
                                                             }
                                                         </Text>
                                                     </View>
-                                                    <View style = { styles.cell10 }>
+                                                    <View style = { styles.cell5 }>
                                                         <Text style = { styles.bodyTextCenter } >
                                                             {
                                                                 element.prospecto ?
                                                                     element.prospecto.lead ?
                                                                         element.prospecto.lead.presupuesto_diseño ?
-                                                                            this.setMoney(element.prospecto.lead.presupuesto_diseño.m2)
+                                                                            element.prospecto.lead.presupuesto_diseño.m2
                                                                         : '-'
                                                                     : '-'
                                                                 : '-'
                                                             }
                                                         </Text>
                                                     </View>
-                                                    <View style = { styles.cell10 }>
+                                                    <View style = { styles.cell7 }>
                                                         <Text style = { styles.bodyTextCenter } >
                                                             {
                                                                 element.prospecto ?
@@ -1008,13 +1021,13 @@ export default class RVAnualInein extends Component {
                                                             }
                                                         </Text>
                                                     </View>
-                                                    <View style = { styles.cell10 }>
+                                                    <View style = { styles.cell8 }>
                                                         <Text style = { styles.bodyTextCenter } >
                                                             { this.getFechaText(element.created_at) }
                                                         </Text>
                                                     </View>
-                                                    <View style = { styles.cell10 }>
-                                                        <Text style = { styles.bodyText } >
+                                                    <View style = { styles.cell11 }>
+                                                        <Text style = { styles.bodyTextCenter } >
                                                             {
                                                                 element.prospecto ?
                                                                     element.prospecto.vendedores ?
@@ -1023,7 +1036,7 @@ export default class RVAnualInein extends Component {
                                                                                 {
                                                                                     element.prospecto.vendedores.map((vendedor, index)=>{
                                                                                         return(
-                                                                                            <Text style = { styles.bodyText } key = { index }>
+                                                                                            <Text style = { styles.bodyTextCenter } key = { index }>
                                                                                                 {vendedor.name.toUpperCase()}
                                                                                             </Text>
                                                                                         )
