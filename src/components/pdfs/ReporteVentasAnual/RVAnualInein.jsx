@@ -714,7 +714,7 @@ export default class RVAnualInein extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    TIPO DE LEADS <Text style = { styles.textPink }>MESUAL</Text>
+                                    TIPO DE LEADS <Text style = { styles.textPink }>MENSUAL</Text>
                                 </Text>
                             </View>
                         </View>

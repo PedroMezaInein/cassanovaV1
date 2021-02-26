@@ -727,7 +727,7 @@ export default class RVAnualIm extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    TIPO DE LEADS <Text style = { styles.textBlue }>MESUAL</Text>
+                                    TIPO DE LEADS <Text style = { styles.textBlue }>MENSUAL</Text>
                                 </Text>
                             </View>
                         </View>
