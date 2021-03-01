@@ -109,15 +109,12 @@ class FlujosReportesForm extends Component {
                             placeholder = 'SELECCIONA EL AÑO' value = { form.año } onChange = { this.updateAño }
                             iconclass = "fas fa-calendar-day" messageinc = "Selecciona el año." />
                     </div>
-                    {
-                        form.no_adjunto ?
-                            <div className="col-md-2"> 
-                                <SelectSearchGray withtaglabel = { 1 } withtextlabel = { 1 } name = 'año' options = { this.getRangos() } 
-                                    placeholder = 'SELECCIONA EL RANGO' value = { form.rango } onChange = { this.updateRango }
-                                    iconclass = "fas fa-calendar-day" messageinc = "Selecciona el rango." />
-                            </div>
-                        : ''
-                    }
+                    <div className="col-md-2"> 
+                        <SelectSearchGray withtaglabel = { 1 } withtextlabel = { 1 } name = 'año' options = { this.getRangos() } 
+                            placeholder = 'SELECCIONA EL RANGO' value = { form.rango } onChange = { this.updateRango }
+                            iconclass = "fas fa-calendar-day" messageinc = "Selecciona el rango." />
+                    </div>
+                    
                     {
                         form.rango === "mensual" ?
                             <div className="col-md-3">
@@ -131,23 +128,15 @@ class FlujosReportesForm extends Component {
                                     placeholder = 'SELECCIONA EL PERIODO' value = { form.periodo } onChange = { this.updatePeriodo }
                                     iconclass = "fas fa-calendar-day" messageinc = "Selecciona el periodo." />
                             </div>
-                        
-                        :
-                        form.rango === "11" ? ""
-                        :""
+                        : <></>
                     }
                 </div>
                 {
                     form.no_adjunto ?
-                        // <div className="card-footer pt-3 pb-0 px-0">
-                        //     <div className="row">
-                                <div className="col-lg-12 text-center px-0 pb-0">
-                                    <Button icon='' className="btn btn-light-primary font-weight-bold" text="GENERAR REPORTE" 
-                                        onClick={ onSubmit } 
-                                    />
-                                </div>
-                        //     </div>
-                        // </div>
+                        <div className="col-lg-12 text-center px-0 pb-0">
+                            <Button icon='' className="btn btn-light-primary font-weight-bold" text="GENERAR REPORTE" 
+                                onClick={ onSubmit }  />
+                        </div>
                     : 
                         <>
                             <div className="separator separator-dashed mt-1 mb-2"></div>
@@ -155,7 +144,7 @@ class FlujosReportesForm extends Component {
                                 <div className="col-md-12 text-center">
                                     <label className="col-form-label my-2 font-weight-bolder">{form.adjuntos.reportes.placeholder}</label>
                                     <ItemSlider items = { form.adjuntos.reportes.files } item = 'reportes' 
-                                        handleChange = { handleChange } multiple = { false } />
+                                        handleChange = { handleChange } multiple = { false } accept = '.pdf' />
                                 </div>
                             </div>
                             <div className="card-footer pt-3 pb-0 px-0">
@@ -168,7 +157,6 @@ class FlujosReportesForm extends Component {
                             </div>
                         </>
                 }
-                
             </Form>
         )
     }
