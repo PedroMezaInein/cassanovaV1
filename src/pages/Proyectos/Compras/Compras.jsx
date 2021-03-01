@@ -910,7 +910,7 @@ class Compras extends Component {
                     onClickExport={() => this.exportComprasAxios()}
                     accessToken={this.props.authUser.access_token}
                     setter={this.setCompras}
-                    urlRender={URL_DEV + 'compras'}
+                    urlRender = { `${URL_DEV}v2/proyectos/compras`}
                     validateFactura={true}
                     tipo_validacion='compras'
                     cardTable='cardTable'

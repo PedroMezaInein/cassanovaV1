@@ -198,11 +198,19 @@ class App extends Component{
             },
             (error) => {
                 console.log(error, 'error')
-                if (error.response.status === 401) {
-                    if(token === '')
-                        this.logoutUser()
-                } else {
-                    errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                if(error){
+                    if(error.response){
+                        if(error.response.status){
+                            if (error.response.status === 401) {
+                                if(token === '')
+                                    this.logoutUser()
+                            }else {
+                                errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                            }
+                        }else {
+                            errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                        }
+                    }
                 }
             }
         ).catch((error) => {
