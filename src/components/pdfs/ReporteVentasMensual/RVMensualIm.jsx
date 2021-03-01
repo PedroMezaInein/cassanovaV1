@@ -280,7 +280,7 @@ const styles = StyleSheet.create({
         top: 0,
         left: 20
     },
-    lineaRosa:{
+    lineaAzul:{
         backgroundColor: IM_AZUL,
         position: 'absolute',
         height: '70%',
@@ -378,6 +378,19 @@ export default class RVAnualIm extends Component {
         return aux
     }
 
+    getMes = () => {
+        const { form } = this.props
+        let fecha2 = moment(form.mes+'/01/'+form.año).endOf('month')
+        let meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
+        let aux = meses[fecha2.month()] 
+        return aux
+    }
+    
+    getYear = () => {
+        const { form } = this.props
+        return moment(form.mes+'/01/'+form.año).year()
+    }
+
     getFechaText = (date) => {
         let fecha = moment(date)
         let mes = fecha.month() + 1;
@@ -454,19 +467,22 @@ export default class RVAnualIm extends Component {
     }
 
     render() {
-        const {  conclusiones, sugerencias, images,  data, form} = this.props
+        const {  conclusiones, sugerencias, images,  data, form } = this.props
         return (
             <Document style = {{ fontFamily: 'Poppins' }}>
                 <Page size="A4" orientation = "landscape" style = {{ position: 'relative', height: '100%'}}>
                     <View style = { styles.lineaNegra }></View>
-                    <View style = { styles.lineaRosa }></View>
+                    <View style = { styles.lineaAzul }></View>
                     <Image src = { IM } style = { styles.logoPortada } />
                     <View style = { styles.textPortada } >
                         <Text style = {{  textAlign: 'center', fontWeight: 'bold', fontSize: '22', color: '#858585', marginTop:'70px'}}>
-                            REPORTE DE VENTAS 
+                            REPORTE DE VENTAS
                         </Text>
-                        <Text style = {{  textAlign: 'center', marginTop: 4, fontSize: '14', color: '#525252' }}>
-                            {form.año}
+                        <Text style = {{  textAlign: 'center', marginTop: 5, fontSize: '14', color: '#525252' }}>
+                            {this.getFecha()}
+                        </Text>
+                        <Text style = {{  textAlign: 'center', marginTop: 5, fontSize: '14', color: '#525252' }}>
+                            {this.getYear()}
                         </Text>
                     </View>
                 </Page>
@@ -485,7 +501,7 @@ export default class RVAnualIm extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    ENTRADA<Text style = { styles.textBlue }> TOTAL</Text> DE LEADS
+                                    ENTRADA<Text style = { styles.textBlue }> TOTAL</Text> DE LEADS ({this.getMes()})
                                 </Text>
                             </View>
                         </View>
@@ -503,7 +519,7 @@ export default class RVAnualIm extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    ENTRADA DE LEADS<Text style = { styles.textBlue }> MENSUAL</Text>
+                                    ENTRADA DE LEADS<Text style = { styles.textBlue }> MESES ANTERIORES</Text>
                                 </Text>
                             </View>
                         </View>
@@ -528,7 +544,7 @@ export default class RVAnualIm extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    <Text style = { styles.textBlue }>ORIGEN</Text> DE LEADS
+                                    <Text style = { styles.textBlue }>ORIGEN</Text> DE LEADS ({this.getMes()})
                                 </Text>
                             </View>
                         </View>
@@ -546,7 +562,7 @@ export default class RVAnualIm extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    <Text style = { styles.textBlue }>ORIGEN</Text> DE LEADS ORGÁNICOS
+                                    <Text style = { styles.textBlue }>ORIGEN</Text> DE LEADS ORGÁNICOS ({this.getMes()})
                                 </Text>
                             </View>
                         </View>
@@ -564,7 +580,7 @@ export default class RVAnualIm extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    <Text style = { styles.textBlue }>ORIGEN</Text> DE LEADS ADS
+                                    <Text style = { styles.textBlue }>ORIGEN</Text> DE LEADS ADS ({this.getMes()})
                                 </Text>
                             </View>
                         </View>
@@ -582,7 +598,7 @@ export default class RVAnualIm extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                ORIGEN DE LEADS<Text style = { styles.textBlue }> MENSUAL</Text>
+                                ORIGEN DE LEADS<Text style = { styles.textBlue }> MESES ANTERIORES</Text>
                                 </Text>
                             </View>
                         </View>
@@ -607,7 +623,7 @@ export default class RVAnualIm extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    <Text style = { styles.textBlue }>SERVICIOS</Text> SOLICITADOS
+                                    <Text style = { styles.textBlue }>SERVICIOS</Text> SOLICITADOS ({this.getMes()})
                                 </Text>
                             </View>
                         </View>
@@ -625,7 +641,7 @@ export default class RVAnualIm extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    SERVICIOS SOLICITADOS<Text style = { styles.textBlue }> MENSUAL</Text>
+                                    SERVICIOS SOLICITADOS<Text style = { styles.textBlue }> MESES ANTERIORES</Text>
                                 </Text>
                             </View>
                         </View>
@@ -650,7 +666,7 @@ export default class RVAnualIm extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    TIPO DE LEADS
+                                    TIPO DE LEADS ({this.getMes()})
                                 </Text>
                             </View>
                         </View>
@@ -668,7 +684,7 @@ export default class RVAnualIm extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    <Text style = { styles.textBlue }>ORIGEN </Text>DE LEADS <Text style = { styles.textBlue }>NO POTENCIALES</Text>
+                                    <Text style = { styles.textBlue }>ORIGEN </Text>DE LEADS <Text style = { styles.textBlue }>NO POTENCIALES</Text> ({this.getMes()})
                                 </Text>
                             </View>
                         </View>
@@ -686,7 +702,7 @@ export default class RVAnualIm extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    <Text style = { styles.textBlue }>ORIGEN </Text>DE LEADS <Text style = { styles.textBlue }>POTENCIALES</Text>
+                                    <Text style = { styles.textBlue }>ORIGEN </Text>DE LEADS <Text style = { styles.textBlue }>POTENCIALES</Text> ({this.getMes()})
                                 </Text>
                             </View>
                         </View>
@@ -706,7 +722,7 @@ export default class RVAnualIm extends Component {
                                     </View>
                                     <View>
                                         <Text style = { styles.titulo }>    
-                                            <Text style = { styles.textBlue }>ORIGEN </Text>DE LEADS <Text style = { styles.textBlue }>DUPLICADOS</Text>
+                                            <Text style = { styles.textBlue }>ORIGEN </Text>DE LEADS <Text style = { styles.textBlue }>DUPLICADOS</Text> ({this.getMes()})
                                         </Text>
                                     </View>
                                 </View>
@@ -727,7 +743,7 @@ export default class RVAnualIm extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    TIPO DE LEADS <Text style = { styles.textBlue }>MENSUAL</Text>
+                                    TIPO DE LEADS <Text style = { styles.textBlue }>MESES ANTERIORES</Text>
                                 </Text>
                             </View>
                         </View>
@@ -740,7 +756,7 @@ export default class RVAnualIm extends Component {
                 <Page size="A4" orientation = "landscape" style = { styles.justifyContentCenter }>
                     <View>
                         <Text style = { styles.textSeparator }>
-                            TIPO DE PROYECTO
+                            TIPO DE PROYECTO 
                         </Text>
                     </View>
                 </Page>
@@ -754,7 +770,7 @@ export default class RVAnualIm extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    TOTAL DE <Text style = { styles.textBlue }>TIPOS DE PROYECTO</Text>
+                                    TOTAL DE <Text style = { styles.textBlue }>TIPOS DE PROYECTO</Text> ({this.getMes()})
                                 </Text>
                             </View>
                         </View>
@@ -774,7 +790,7 @@ export default class RVAnualIm extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    TIPO DE PROYECTO <Text style = { styles.textBlue }>MENSUAL</Text>
+                                    TIPO DE PROYECTO <Text style = { styles.textBlue }>MESES ANTERIORES</Text>
                                 </Text>
                             </View>
                         </View>
@@ -801,7 +817,7 @@ export default class RVAnualIm extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    LEADS <Text style = { styles.textBlue }>CONTACTADOS</Text>
+                                    LEADS <Text style = { styles.textBlue }>CONTACTADOS</Text> ({this.getMes()})
                                 </Text>
                             </View>
                         </View>
@@ -821,7 +837,7 @@ export default class RVAnualIm extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    ESTATUS DE LEADS <Text style = { styles.textBlue }>CONTACTADOS</Text>
+                                    ESTATUS DE LEADS <Text style = { styles.textBlue }>CONTACTADOS</Text> ({this.getMes()})
                                 </Text>
                             </View>
                         </View>
@@ -841,7 +857,7 @@ export default class RVAnualIm extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    PRINCIPALES MOTIVOS DE <Text style = { styles.textBlue }>CANCELACIÓN</Text>
+                                    PRINCIPALES MOTIVOS DE <Text style = { styles.textBlue }>CANCELACIÓN</Text> ({this.getMes()})
                                 </Text>
                             </View>
                         </View>
@@ -859,7 +875,7 @@ export default class RVAnualIm extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    PRINCIPALES MOTIVOS DE <Text style = { styles.textBlue }>RECHAZO</Text>
+                                    PRINCIPALES MOTIVOS DE <Text style = { styles.textBlue }>RECHAZO</Text> ({this.getMes()})
                                 </Text>
                             </View>
                         </View>
@@ -879,7 +895,7 @@ export default class RVAnualIm extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    OBSERVACIONES <Text style = { styles.textBlue }>CONTRATADOS</Text>
+                                    OBSERVACIONES <Text style = { styles.textBlue }>CONTRATADOS</Text> ({this.getMes()})
                                 </Text>
                             </View>
                         </View>
@@ -1091,7 +1107,7 @@ export default class RVAnualIm extends Component {
                         </View>
                         <View style = { styles.imgCenter }>
                             <View style = { styles.table2 }  >
-                            {
+                            {/* {
                                 conclusiones.map((element)=>{
                                     if(element !== '')
                                     return(
@@ -1112,7 +1128,7 @@ export default class RVAnualIm extends Component {
                                     )
                                     return false
                                 })
-                            }
+                            } */}
                         </View>
                         </View>
                         <View style={ styles.lineGolden }></View>
@@ -1134,7 +1150,7 @@ export default class RVAnualIm extends Component {
                         </View>
                         <View style = { styles.imgCenter }>
                             <View style = { styles.table2 }  >
-                            {
+                            {/* {
                                 sugerencias.map((element)=>{
                                     if(element !== '')
                                     return(
@@ -1154,7 +1170,7 @@ export default class RVAnualIm extends Component {
                                     )
                                     return false
                                 })
-                            }
+                            } */}
                         </View>
                         </View>
                         <View style={ styles.lineBlue }></View>
