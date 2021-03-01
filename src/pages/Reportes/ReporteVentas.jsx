@@ -393,7 +393,7 @@ class ReporteVentas extends Component {
             return ''
         })
 
-        await axios.post(`${URL_DEV}reportes/ventas/save`, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}reportes/ventas/save`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { form } = this.state
                 form.empresa = ''
@@ -1250,10 +1250,11 @@ class ReporteVentas extends Component {
             form
         })
     }
+
     onSubmitAdjunto = e => {
         e.preventDefault();
         const { form } = this.state
-        if (form.empresa !== '' && form.año !== '' && form.mes !== null && form.adjuntos.reportes.files.length > 0)
+        if (form.empresa !== '' && form.año !== '' && form.adjuntos.reportes.files.length > 0)
             this.saveReporteAxios()
         else
             errorAlert('No completaste todos los campos.')
