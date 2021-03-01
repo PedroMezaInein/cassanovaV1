@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
 import { Page, Text, View, Document, StyleSheet, Image, Font, Link } from '@react-pdf/renderer'
-import IM from '../../../assets/logos/im.png'
+import INEIN from '../../../assets/logos/inein.png'
 import PoppinsBold from '../../../assets/fonts/Poppins-Bold.ttf'
 import Poppins from '../../../assets/fonts/Poppins-ExtraLight.ttf'
 import moment from 'moment'
-import { IM_AZUL, IM_DORADO } from '../../../constants'
+import { INEIN_RED } from '../../../constants'
 
 Font.register({
     family: 'Poppins',
@@ -18,16 +18,16 @@ const styles = StyleSheet.create({
         width: 3,
         height: 3,
         borderRadius: 0.5,
-        backgroundColor: IM_AZUL
+        backgroundColor: INEIN_RED
     },
     paginacion:{
-        color: IM_AZUL,
+        color: INEIN_RED,
         fontWeight: 'bold',
         fontFamily: 'Poppins',
         fontSize: 35
     },
     titulo:{
-        color: '#737373',
+        color: '#525252',
         fontSize: 20,
         fontWeight: 'bold',
         fontFamily: 'Poppins',
@@ -48,15 +48,10 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'row'
     },
-    tableRowCenter:{
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent:'center'
-    },
     tableRowHeader:{
         display: 'flex',
         flexDirection: 'row',
-        backgroundColor: IM_AZUL
+        backgroundColor: INEIN_RED
     },
     tableRowBodyNon:{
         display: 'flex',
@@ -69,45 +64,25 @@ const styles = StyleSheet.create({
         backgroundColor: 'white'
     },
     footerTable1:{
-        width: '10%',
+        width: '12%',
         height: '100%',
         marginTop: 'auto',
         marginBottom: 'auto',
         border: 'solid',
         borderRightWidth: 3,
-        borderColor: IM_AZUL,
+        borderColor: INEIN_RED,
         flexDirection: 'row',
         display: 'flex',
-        alignItems: 'center',
+        alignItems: 'center'
     },
     footerTable2:{
-        width: '13%',
+        width: '21%',
         height: '100%',
         marginTop: 'auto',
         marginBottom: 'auto',
         flexDirection: 'row',
         display: 'flex',
         alignItems: 'center',
-        marginLeft: 5
-    },
-    footerTable5:{
-        width: '26%',
-        height: '100%',
-        marginTop: 'auto',
-        marginBottom: 'auto',
-        flexDirection: 'row',
-        display: 'flex',
-        alignItems: 'center',
-        marginLeft: 5
-    },
-    footerTable4:{
-        width: '22%', 
-        height: '100%', 
-        marginTop: 'auto', 
-        marginBottom: 'auto',
-        flexDirection: 'row', 
-        display: 'flex', 
-        alignItems: 'center', 
         marginLeft: 5
     },
     // cell: {
@@ -222,7 +197,7 @@ const styles = StyleSheet.create({
     // },
     headerText:{
         color: 'white',
-        fontWeight: 'bold',
+        fontWeight: 'bold',        
         fontFamily: 'Poppins',
         fontSize: 8,
         padding:3,
@@ -256,6 +231,7 @@ const styles = StyleSheet.create({
         textAlign: "justify",
         lineHeight:1.3,
         fontFamily: 'Poppins',
+        textTransform:'uppercase'
     },
     imagenCentrada:{
         width: '100%',
@@ -273,7 +249,7 @@ const styles = StyleSheet.create({
     //     marginTop: 100
     // },
     lineaNegra:{
-        backgroundColor: IM_DORADO,
+        backgroundColor: '#525252',
         position: 'absolute',
         height: '70%',
         width: '10px',
@@ -281,7 +257,7 @@ const styles = StyleSheet.create({
         left: 20
     },
     lineaRosa:{
-        backgroundColor: IM_AZUL,
+        backgroundColor: INEIN_RED,
         position: 'absolute',
         height: '70%',
         width: '10px',
@@ -335,30 +311,30 @@ const styles = StyleSheet.create({
         justifyContent:'center',
         textAlign: "center"
     },
-    lineGolden:{
-        backgroundColor: IM_DORADO,
+    lineGray:{
+        backgroundColor: '#525252',
         height:"18px",
         position: 'absolute',
         bottom: 0,
         left: 0,
         right: 0
     },
-    lineBlue:{
-        backgroundColor: IM_AZUL,
+    linePink:{
+        backgroundColor: INEIN_RED,
         height:"18px",
         position: 'absolute',
         bottom: 0,
         left: 0,
         right: 0
     },
-    textBlue:{
-        color: IM_AZUL
+    textPink:{
+        color: INEIN_RED
     },
     textSeparator:{
         textAlign: 'center',
         fontWeight: 'bold',
         fontSize: '60',
-        color: '#737373',
+        color: '#525252',
         fontFamily: 'Poppins'
     },
     justifyContentCenter:{
@@ -367,7 +343,7 @@ const styles = StyleSheet.create({
     }
 });
 
-export default class RVAnualIm extends Component {
+export default class RVAnualInein extends Component {
 
     getFecha = () => {
         const { form } = this.props
@@ -378,9 +354,25 @@ export default class RVAnualIm extends Component {
         return aux
     }
 
+    getMes = () => {
+        const { form } = this.props
+        let fecha2 = moment(form.mes+'/01/'+form.año).endOf('month')
+        let meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
+        let aux = meses[fecha2.month()] 
+        return aux
+    }
+
+    getYear = () => {
+        const { form } = this.props
+        return moment(form.mes+'/01/'+form.año).year()
+    }
+    
     getFechaText = (date) => {
         let fecha = moment(date)
         let mes = fecha.month() + 1;
+        if (mes.toString().length === 1) {
+            mes = '0' + mes
+        }
         let aux = fecha.date() + '/' + mes + '/' + fecha.year()
         return aux
     }
@@ -454,23 +446,28 @@ export default class RVAnualIm extends Component {
     }
 
     render() {
-        const {  conclusiones, sugerencias, images,  data, form} = this.props
+        const { conclusiones, sugerencias, images, data, form } = this.props
         return (
-            <Document style = {{ fontFamily: 'Poppins' }}>
+            <Document style = {{ fontFamily: 'Poppins', color: '#525252' }}>
                 <Page size="A4" orientation = "landscape" style = {{ position: 'relative', height: '100%'}}>
                     <View style = { styles.lineaNegra }></View>
                     <View style = { styles.lineaRosa }></View>
-                    <Image src = { IM } style = { styles.logoPortada } />
+                    <Image src = { INEIN } style = { styles.logoPortada } />
                     <View style = { styles.textPortada } >
-                        <Text style = {{  textAlign: 'center', fontWeight: 'bold', fontSize: '22', color: '#858585', marginTop:'70px'}}>
-                            REPORTE DE VENTAS 
+                        <Text style = {{  textAlign: 'center', fontWeight: 'bold', fontSize: '22', color: '#525252', marginTop:'70px'}}>
+                            REPORTE DE VENTAS
                         </Text>
-                        <Text style = {{  textAlign: 'center', marginTop: 4, fontSize: '14', color: '#525252' }}>
-                            {form.año}
+                        <Text style = {{  textAlign: 'center', marginTop: 5, fontSize: '14', color: '#525252' }}>
+                            {this.getFecha()}
+                        </Text>
+                        <Text style = {{  textAlign: 'center', marginTop: 5, fontSize: '14', color: '#525252' }}>
+                            {this.getYear()}
                         </Text>
                     </View>
                 </Page>
                 <Page size="A4" orientation = "landscape" style = { styles.justifyContentCenter }>
+                    <View style = { styles.lineaNegra }></View>
+                    <View style = { styles.lineaRosa }></View>
                     <View>
                         <Text style = { styles.textSeparator }>
                             LEADS TOTALES
@@ -485,14 +482,14 @@ export default class RVAnualIm extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    ENTRADA<Text style = { styles.textBlue }> TOTAL</Text> DE LEADS
+                                    ENTRADA <Text style = { styles.textPink }>TOTAL</Text> DE LEADS ({this.getMes()})
                                 </Text>
                             </View>
                         </View>
                         <View style = { styles.imgCenter }>
                             <Image style = { styles.imagenCentrada }  src = { images.total }/>
                         </View>
-                        <View style={ styles.lineGolden }></View>
+                        <View style={ styles.lineGray }></View>
                     </View>
                 </Page>
                 <Page size="A4" orientation = "landscape" >
@@ -503,17 +500,19 @@ export default class RVAnualIm extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    ENTRADA DE LEADS<Text style = { styles.textBlue }> MENSUAL</Text>
+                                    ENTRADA DE LEADS <Text style = { styles.textPink }>MESES ANTERIORES</Text>
                                 </Text>
                             </View>
                         </View>
                         <View style = { styles.imgCenter }>
                             <Image style = { styles.imagenCentrada }  src = { images.totalMeses }/>
                         </View>
-                        <View style={ styles.lineBlue }></View>
+                        <View style={ styles.linePink }></View>
                     </View>
                 </Page>
                 <Page size="A4" orientation = "landscape" style = { styles.justifyContentCenter }>
+                    <View style = { styles.lineaNegra }></View>
+                    <View style = { styles.lineaRosa }></View>
                     <View>
                         <Text style = { styles.textSeparator }>
                             ORIGEN
@@ -528,14 +527,14 @@ export default class RVAnualIm extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    <Text style = { styles.textBlue }>ORIGEN</Text> DE LEADS
+                                    <Text style = { styles.textPink }>ORIGEN</Text> DE LEADS ({this.getMes()})
                                 </Text>
                             </View>
                         </View>
                         <View style = { styles.imgCenter }>
                             <Image style = { styles.imagenCentrada }  src = { images.origenes }/>
                         </View>
-                        <View style={ styles.lineGolden }></View>
+                        <View style={ styles.lineGray }></View>
                     </View>
                 </Page>
                 <Page size="A4" orientation = "landscape" >
@@ -546,14 +545,14 @@ export default class RVAnualIm extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    <Text style = { styles.textBlue }>ORIGEN</Text> DE LEADS ORGÁNICOS
+                                    <Text style = { styles.textPink }>ORIGEN </Text> DE LEADS ORGÁNICOS ({this.getMes()})
                                 </Text>
                             </View>
                         </View>
                         <View style = { styles.imgCenter }>
                             <Image style = { styles.imagenCentrada }  src = { images.origenesOrganicos }/>
                         </View>
-                        <View style={ styles.lineBlue }></View>
+                        <View style={ styles.linePink }></View>
                     </View>
                 </Page>
                 <Page size="A4" orientation = "landscape">
@@ -564,14 +563,14 @@ export default class RVAnualIm extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    <Text style = { styles.textBlue }>ORIGEN</Text> DE LEADS ADS
+                                    <Text style = { styles.textPink }>ORIGEN </Text> DE LEADS ADS ({this.getMes()})
                                 </Text>
                             </View>
                         </View>
                         <View style = { styles.imgCenter }>
                             <Image style = { styles.imagenCentrada }  src = { images.origenesAds }/>
                         </View>
-                        <View style={ styles.lineGolden }></View>
+                        <View style={ styles.lineGray }></View>
                     </View>
                 </Page>
                 <Page size="A4" orientation = "landscape" >
@@ -582,17 +581,19 @@ export default class RVAnualIm extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                ORIGEN DE LEADS<Text style = { styles.textBlue }> MENSUAL</Text>
+                                ORIGEN DE LEADS <Text style = { styles.textPink }>MESES ANTERIORES</Text>
                                 </Text>
                             </View>
                         </View>
                         <View style = { styles.imgCenter }>
                             <Image style = { styles.imagenCentrada }  src = { images.origenesMeses }/>
                         </View>
-                        <View style={ styles.lineBlue }></View>
+                        <View style={ styles.linePink }></View>
                     </View>
                 </Page>
                 <Page size="A4" orientation = "landscape" style = { styles.justifyContentCenter }>
+                    <View style = { styles.lineaNegra }></View>
+                    <View style = { styles.lineaRosa }></View>
                     <View>
                         <Text style = { styles.textSeparator }>
                             SERVICIOS
@@ -607,14 +608,14 @@ export default class RVAnualIm extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    <Text style = { styles.textBlue }>SERVICIOS</Text> SOLICITADOS
+                                    <Text style = { styles.textPink }>SERVICIOS </Text>SOLICITADOS ({this.getMes()})
                                 </Text>
                             </View>
                         </View>
                         <View style = { styles.imgCenter }>
                             <Image style = { styles.imagenCentrada }  src = { images.servicios }/>
                         </View>
-                        <View style={ styles.lineBlue }></View>
+                        <View style={ styles.linePink }></View>
                     </View>
                 </Page>
                 <Page size="A4" orientation = "landscape" >
@@ -625,17 +626,19 @@ export default class RVAnualIm extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    SERVICIOS SOLICITADOS<Text style = { styles.textBlue }> MENSUAL</Text>
+                                    SERVICIOS SOLICITADOS <Text style = { styles.textPink }>MESES ANTERIORES</Text>
                                 </Text>
                             </View>
                         </View>
                         <View style = { styles.imgCenter }>
                             <Image style = { styles.imagenCentrada }  src = { images.serviciosMeses }/>
                         </View>
-                        <View style={ styles.lineGolden }></View>
+                        <View style={ styles.lineGray }></View>
                     </View>
                 </Page>
                 <Page size="A4" orientation = "landscape" style = { styles.justifyContentCenter }>
+                    <View style = { styles.lineaNegra }></View>
+                    <View style = { styles.lineaRosa }></View>
                     <View>
                         <Text style = { styles.textSeparator }>
                             TIPO
@@ -650,14 +653,14 @@ export default class RVAnualIm extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    TIPO DE LEADS
+                                    TIPO DE LEADS ({this.getMes()})
                                 </Text>
                             </View>
                         </View>
                         <View style = { styles.imgCenter }>
                             <Image style = { styles.imagenCentrada }  src = { images.tipos }/>
                         </View>
-                        <View style={ styles.lineGolden }></View>
+                        <View style={ styles.lineGray }></View>
                     </View>
                 </Page>
                 <Page size="A4" orientation = "landscape">
@@ -668,14 +671,14 @@ export default class RVAnualIm extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    <Text style = { styles.textBlue }>ORIGEN </Text>DE LEADS <Text style = { styles.textBlue }>NO POTENCIALES</Text>
+                                    <Text style = { styles.textPink }>ORIGEN </Text>DE LEADS <Text style = { styles.textPink }>NO POTENCIALES </Text> ({this.getMes()})
                                 </Text>
                             </View>
                         </View>
                         <View style = { styles.imgCenter }>
                             <Image style = { styles.imagenCentrada }  src = { images.origenesNoPotenciales }/>
                         </View>
-                        <View style={ styles.lineBlue }></View>
+                        <View style={ styles.linePink }></View>
                     </View>
                 </Page>
                 <Page size="A4" orientation = "landscape">
@@ -686,14 +689,14 @@ export default class RVAnualIm extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    <Text style = { styles.textBlue }>ORIGEN </Text>DE LEADS <Text style = { styles.textBlue }>POTENCIALES</Text>
+                                    <Text style = { styles.textPink }>ORIGEN </Text>DE LEADS <Text style = { styles.textPink }>POTENCIALES</Text> ({this.getMes()})
                                 </Text>
                             </View>
                         </View>
                         <View style = { styles.imgCenter }>
                             <Image style = { styles.imagenCentrada }  src = { images.origenesPotenciales }/>
                         </View>
-                        <View style={ styles.lineGolden }></View>
+                        <View style={ styles.lineGray }></View>
                     </View>
                 </Page>
                 {
@@ -706,14 +709,14 @@ export default class RVAnualIm extends Component {
                                     </View>
                                     <View>
                                         <Text style = { styles.titulo }>    
-                                            <Text style = { styles.textBlue }>ORIGEN </Text>DE LEADS <Text style = { styles.textBlue }>DUPLICADOS</Text>
+                                            <Text style = { styles.textPink }>ORIGEN </Text>DE LEADS <Text style = { styles.textPink }>DUPLICADOS</Text> ({this.getMes()})
                                         </Text>
                                     </View>
                                 </View>
                                 <View style = { styles.imgCenter }>
                                     <Image style = { styles.imagenCentrada }  src = { images.origenesDuplicados }/>
                                 </View>
-                                <View style={ styles.lineBlue }></View>
+                                <View style={ styles.linePink }></View>
                             </View>
                         </Page>
                 }
@@ -727,17 +730,19 @@ export default class RVAnualIm extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    TIPO DE LEADS <Text style = { styles.textBlue }>MENSUAL</Text>
+                                    TIPO DE LEADS <Text style = { styles.textPink }>MESES ANTERIORES</Text>
                                 </Text>
                             </View>
                         </View>
                         <View style = { styles.imgCenter }>
                             <Image style = { styles.imagenCentrada }  src = { images.tiposMeses }/>
                         </View>
-                        <View style={ styles.lineGolden }></View>
+                        <View style={ styles.lineGray }></View>
                     </View>
                 </Page>
                 <Page size="A4" orientation = "landscape" style = { styles.justifyContentCenter }>
+                    <View style = { styles.lineaNegra }></View>
+                    <View style = { styles.lineaRosa }></View>
                     <View>
                         <Text style = { styles.textSeparator }>
                             TIPO DE PROYECTO
@@ -754,14 +759,14 @@ export default class RVAnualIm extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    TOTAL DE <Text style = { styles.textBlue }>TIPOS DE PROYECTO</Text>
+                                    TOTAL DE <Text style = { styles.textPink }>TIPOS DE PROYECTO</Text> ({this.getMes()})
                                 </Text>
                             </View>
                         </View>
                         <View style = { styles.imgCenter }>
                             <Image style = { styles.imagenCentrada }  src = { images.tiposProyectos }/>
                         </View>
-                        <View style={ styles.lineBlue }></View>
+                        <View style={ styles.linePink }></View>
                     </View>
                 </Page>
                 <Page size="A4" orientation = "landscape" >
@@ -774,17 +779,19 @@ export default class RVAnualIm extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    TIPO DE PROYECTO <Text style = { styles.textBlue }>MENSUAL</Text>
+                                    TIPO DE PROYECTO <Text style = { styles.textPink }>MESES ANTERIORES</Text>
                                 </Text>
                             </View>
                         </View>
                         <View style = { styles.imgCenter }>
                             <Image style = { styles.imagenCentrada }  src = { images.tiposProyectosMeses }/>
                         </View>
-                        <View style={ styles.lineGolden }></View>
+                        <View style={ styles.lineGray }></View>
                     </View>
                 </Page>
                 <Page size="A4" orientation = "landscape" style = { styles.justifyContentCenter }>
+                    <View style = { styles.lineaNegra }></View>
+                    <View style = { styles.lineaRosa }></View>
                     <View>
                         <Text style = { styles.textSeparator }>
                             LEADS POTENCIALES
@@ -801,14 +808,14 @@ export default class RVAnualIm extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    LEADS <Text style = { styles.textBlue }>CONTACTADOS</Text>
+                                    LEADS <Text style = { styles.textPink }>CONTACTADOS</Text> ({this.getMes()})
                                 </Text>
                             </View>
                         </View>
                         <View style = { styles.imgCenter }>
                             <Image style = { styles.imagenCentrada }  src = { images.contactados }/>
                         </View>
-                        <View style={ styles.lineBlue }></View>
+                        <View style={ styles.linePink }></View>
                     </View>
                 </Page>
                 <Page size="A4" orientation = "landscape" >
@@ -821,14 +828,14 @@ export default class RVAnualIm extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    ESTATUS DE LEADS <Text style = { styles.textBlue }>CONTACTADOS</Text>
+                                    ESTATUS DE LEADS <Text style = { styles.textPink }>CONTACTADOS</Text> ({this.getMes()})
                                 </Text>
                             </View>
                         </View>
                         <View style = { styles.imgCenter }>
                             <Image style = { styles.imagenCentrada }  src = { images.estatus }/>
                         </View>
-                        <View style={ styles.lineGolden }></View>
+                        <View style={ styles.lineGray }></View>
                     </View>
                 </Page>
                 <Page size="A4" orientation = "landscape" >
@@ -841,32 +848,34 @@ export default class RVAnualIm extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    PRINCIPALES MOTIVOS DE <Text style = { styles.textBlue }>CANCELACIÓN</Text>
+                                    PRINCIPALES MOTIVOS DE <Text style = { styles.textPink }>CANCELACIÓN</Text> ({this.getMes()})
                                 </Text>
                             </View>
                         </View>
                         <View style = { styles.imgCenter }>
                             <Image style = { styles.imagenCentrada }  src = { images.motivosCancelacion }/>
                         </View>
-                        <View style={ styles.lineBlue }></View>
+                        <View style={ styles.linePink }></View>
                     </View>
                 </Page>
                 <Page size="A4" orientation = "landscape" >
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>26</Text>
+                                <Text style = { styles.paginacion}>
+                                    {images.origenesDuplicados !== null ? 26 : 25}
+                                </Text>
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    PRINCIPALES MOTIVOS DE <Text style = { styles.textBlue }>RECHAZO</Text>
+                                    PRINCIPALES MOTIVOS DE <Text style = { styles.textPink }>RECHAZO</Text> ({this.getMes()})
                                 </Text>
                             </View>
                         </View>
                         <View style = { styles.imgCenter }>
                             <Image style = { styles.imagenCentrada }  src = { images.motivosRechazo }/>
                         </View>
-                        <View style={ styles.lineGolden }></View>
+                        <View style={ styles.lineGray }></View>
                     </View>
                 </Page>
                 <Page size="A4" orientation = "landscape">
@@ -879,7 +888,7 @@ export default class RVAnualIm extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    OBSERVACIONES <Text style = { styles.textBlue }>CONTRATADOS</Text>
+                                    OBSERVACIONES <Text style = { styles.textPink }>CONTRATADOS</Text> ({this.getMes()})
                                 </Text>
                             </View>
                         </View>
@@ -941,9 +950,7 @@ export default class RVAnualIm extends Component {
                                         </View>
                                 }
                                 {
-                                    
                                     data.proyectos.map( (element, index) => {
-                                        
                                         if(element.prospecto){
                                             return(
                                                 <View key = { index } style = { this.setStyleRowBody(index) } >
@@ -985,9 +992,9 @@ export default class RVAnualIm extends Component {
                                                                     element.prospecto.lead ?
                                                                         element.prospecto.lead.origen ?
                                                                             element.prospecto.lead.origen.origen.toUpperCase()
-                                                                        : ''
-                                                                    : ''
-                                                                : ''
+                                                                        : '-'
+                                                                    : '-'
+                                                                : '-'
                                                             }
                                                         </Text>
                                                     </View>
@@ -1001,7 +1008,7 @@ export default class RVAnualIm extends Component {
                                                                         : '-'
                                                                     : '-'
                                                                 : '-'
-                                                            }        
+                                                            }
                                                         </Text>
                                                     </View>
                                                     <View style = { styles.cell5 }>
@@ -1065,10 +1072,12 @@ export default class RVAnualIm extends Component {
                                 }
                             </View>
                         </View>
-                        <View style={ styles.lineBlue }></View>
+                        <View style={ styles.linePink }></View>
                     </View>
                 </Page>
                 <Page size="A4" orientation = "landscape" style = { styles.justifyContentCenter }>
+                    <View style = { styles.lineaNegra }></View>
+                    <View style = { styles.lineaRosa }></View>
                     <View>
                         <Text style = { styles.textSeparator }>
                             CONCLUSIONES
@@ -1091,7 +1100,7 @@ export default class RVAnualIm extends Component {
                         </View>
                         <View style = { styles.imgCenter }>
                             <View style = { styles.table2 }  >
-                            {
+                            {/* {
                                 conclusiones.map((element)=>{
                                     if(element !== '')
                                     return(
@@ -1112,10 +1121,10 @@ export default class RVAnualIm extends Component {
                                     )
                                     return false
                                 })
-                            }
+                            } */}
                         </View>
                         </View>
-                        <View style={ styles.lineGolden }></View>
+                        <View style={ styles.lineGray }></View>
                     </View>
                 </Page>
                 <Page size="A4" orientation = "landscape">
@@ -1134,7 +1143,7 @@ export default class RVAnualIm extends Component {
                         </View>
                         <View style = { styles.imgCenter }>
                             <View style = { styles.table2 }  >
-                            {
+                            {/* {
                                 sugerencias.map((element)=>{
                                     if(element !== '')
                                     return(
@@ -1154,17 +1163,17 @@ export default class RVAnualIm extends Component {
                                     )
                                     return false
                                 })
-                            }
+                            } */}
                         </View>
                         </View>
-                        <View style={ styles.lineBlue }></View>
+                        <View style={ styles.linePink }></View>
                     </View>
-                </Page>
+                </Page> 
                 <Page style = {{ position: 'relative', height: '100%' }} size="A4" orientation = "landscape">
-                    <Image src = { IM } style = { styles.logoFin } />
-                    <View style = {{ width: '95%', marginRight: 'auto', marginLeft: 'auto', top: '85%'}}>
+                    <Image src = { INEIN } style = { styles.logoFin } />
+                    <View style = {{ width: '85%', marginRight: 'auto', marginLeft: 'auto', top: '85%'}}>
                         <View style = { styles.table}  >
-                            <View style = { styles.tableRowCenter} >
+                            <View style = { styles.tableRow } >
                                 <View style = { styles.footerTable1 }>
                                     <View>
                                         <Text style = {{ fontSize: 13, fontWeight: 'bold', fontFamily: 'Poppins', color: '#525252', textAlign: 'right', paddingRight: 5 }}>
@@ -1172,9 +1181,9 @@ export default class RVAnualIm extends Component {
                                         </Text>
                                     </View>
                                 </View>
-                                <View style = { styles.footerTable4 }>
-                                    <Link src = "https://www.infraestructuramedica.mx" style = {{ fontSize: 11, fontFamily: 'Poppins', color: '#525252', textDecoration: 'none'  }}>
-                                        www.infraestructuramedica.mx
+                                <View style = { styles.footerTable2 }>
+                                    <Link src = "https://www.inein.mx" style = {{ fontSize: 11, fontFamily: 'Poppins', color: '#525252', textDecoration: 'none'  }}>
+                                        www.inein.mx
                                     </Link>
                                 </View>
                                 <View style = { styles.footerTable1 }>
@@ -1182,9 +1191,9 @@ export default class RVAnualIm extends Component {
                                         Email
                                     </Text>
                                 </View>
-                                <View style = { styles.footerTable5 }>
-                                    <Link src = "mailto:contacto@infraestructuramedica.mx" style = {{ fontSize: 11, fontFamily: 'Poppins', color: '#525252', textDecoration: 'none'  }}>
-                                        contacto@infraestructuramedica.mx
+                                <View style = { styles.footerTable2 }>
+                                    <Link src = "mailto:contacto@inein.mx" style = {{ fontSize: 11, fontFamily: 'Poppins', color: '#525252', textDecoration: 'none'  }}>
+                                        contacto@inein.mx
                                     </Link>
                                 </View>
                                 <View style = { styles.footerTable1 }>
@@ -1194,8 +1203,11 @@ export default class RVAnualIm extends Component {
                                 </View>
                                 <View style = { styles.footerTable2 }>
                                     <View>
-                                        <Link src = "tel:+5586621100" style = {{ fontSize: 11, fontFamily: 'Poppins', color: '#525252', textDecoration: 'none' }}>
-                                            Tel: (55) 86 62 1100
+                                        <Link src = "tel:+5578240115" style = {{ fontSize: 11, fontFamily: 'Poppins', color: '#525252', textDecoration: 'none' }}>
+                                            Cdmx (55) 78 24 0115
+                                        </Link>
+                                        <Link src = "tel+8122305180" style = {{ fontSize: 11, fontFamily: 'Poppins', color: '#525252', textDecoration: 'none'  }}>
+                                            Mty (81) 22 30 5130
                                         </Link>
                                     </View>
                                 </View>
