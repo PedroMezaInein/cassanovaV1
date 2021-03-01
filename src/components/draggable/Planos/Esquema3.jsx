@@ -90,60 +90,60 @@ class Esquema3 extends Component{
                     tipos.map((item, key)=>{
                         return(
                             <div>
-                                <div className="text-muted font-weight-bolder py-3 row mx-0 bg-light">
-                                    <div className = 'col-10'>
+                                <div className="row options-planos bg-light">
+                                    <div className= 'nom-plano text-dark-50 font-weight-bolder'>
                                         {item.tipo}
                                     </div>
-                                    <div className = 'col-1 px-1 align-self-center'>
-                                        {
-                                            this.isUpActiveButtonTipo(key) ?
-                                                <Button icon = '' onClick = { () => { changePosicionTipo(item, 'up') } } 
-                                                    className = "btn btn-icon btn-light-pink btn-xs mr-2" 
-                                                    only_icon = "flaticon2-up icon-xs" tooltip={{text:'Subir'}} />
-                                            : ''
-                                        }
-                                    </div>
-                                    <div className = 'col-1 px-1 align-self-center'>
-                                        {
-                                            this.isDownActiveButtonTipo(key) ?
-                                                <Button icon = '' onClick = { () => { changePosicionTipo(item, 'down') } } 
-                                                    className = "btn btn-icon btn-light-warning btn-xs mr-2" 
-                                                    only_icon = "flaticon2-down icon-xs" tooltip={{text:'Bajar'}} />
-                                            : ''
-                                        }
+                                    <div className = 'w-arrows row mx-0'>
+                                        <span className = 'col pr-1 p-0 text-center'>
+                                            {
+                                                this.isUpActiveButtonTipo(key) ?
+                                                    <Button icon = '' onClick = { () => { changePosicionTipo(item, 'up') } } 
+                                                        className = "btn btn-icon btn-light-info btn-xxs" 
+                                                        only_icon = "flaticon2-up icon-xs" tooltip={{text:'SUBIR'}} />
+                                                : ''
+                                            }
+                                        </span>
+                                        <span className = 'col pr-1 p-0 text-center'>
+                                            {
+                                                this.isDownActiveButtonTipo(key) ?
+                                                    <Button icon = '' onClick = { () => { changePosicionTipo(item, 'down') } } 
+                                                        className = "btn btn-icon btn-light-info btn-xxs" 
+                                                        only_icon = "flaticon2-down icon-xs" tooltip={{text:'BAJAR'}} />
+                                                : ''
+                                            }
+                                        </span>
                                     </div>
                                 </div>
                                 {
                                     item.planos.map((plano, index) => {
                                         return(
-                                            <div className = 'row borderBottom mx-0 py-2' key = { index } >
-                                                <div className='col-1 px-1 align-self-center text-justify'>
+                                            <div className = 'row options-planos' key = { index } >
+                                                <div className='w-eliminar'>
                                                     <Button icon = '' onClick = { () => { deletePlano(plano.id) } } 
-                                                        className = "btn btn-icon btn-light-danger btn-xs mr-2" 
-                                                        only_icon = "flaticon2-delete icon-xs" tooltip={{text:'Eliminar'}} />
+                                                        className = "btn btn-icon btn-light-danger btn-circle btn-xxs" 
+                                                        only_icon = "flaticon2-delete icon-xs" tooltip={{text:'ELIMINAR'}} />
                                                 </div>
-                                                <div className = 'col-9 w-100 px-2 align-self-center text-justify'>
+                                                <div className = 'w-text'>
                                                     {plano.nombre}
                                                 </div>
-                                                <div className = 'col-2 w-100 px-2 align-self-center'>
-                                                    <div className = 'row mx-0'>
-                                                        <div className = 'col-6 px-1 align-self-center'>
-                                                            {
-                                                                this.isUpActiveButton(item, index, item.planos) ?
-                                                                    <Button icon = '' onClick = { () => { changePosicionPlano(plano, 'up') } } className = "btn btn-icon btn-light-primary btn-xs mr-2" 
-                                                                        only_icon = "flaticon2-up icon-xs" tooltip={{text:'Subir'}} />
-                                                                : ''
-                                                            }
-                                                        </div>
-                                                        <div className = 'col-6 px-1 align-self-center'>
-                                                            {
-                                                                this.isDownActiveButton(item, index, item.planos) ?
-                                                                    <Button icon = '' onClick = { () => { changePosicionPlano(plano, 'down') } } className = "btn btn-icon btn-light-info btn-xs mr-2" 
-                                                                        only_icon = "flaticon2-down icon-xs" tooltip={{text:'Bajar'}} />
-                                                                : ''
-                                                            }
-                                                        </div>
-                                                    </div>
+                                                <div className = 'w-arrows row mx-0'>
+                                                    <span className = 'col pr-1 p-0 text-center'>
+                                                        {
+                                                            this.isUpActiveButton(item, index, item.planos) ?
+                                                                <Button icon = '' onClick = { () => { changePosicionPlano(plano, 'up') } } className = "btn btn-icon btn-light-primary btn-xxs" 
+                                                                only_icon = "flaticon2-up icon-xs" tooltip={{text:'SUBIR'}} />
+                                                            : ''
+                                                        }
+                                                    </span>
+                                                    <span className = 'col pr-1 p-0 text-center'>
+                                                        {
+                                                            this.isDownActiveButton(item, index, item.planos) ?
+                                                                <Button icon = '' onClick = { () => { changePosicionPlano(plano, 'down') } } className = "btn btn-icon btn-light-primary btn-xxs" 
+                                                                only_icon = "flaticon2-down icon-xs" tooltip={{text:'BAJAR'}} />
+                                                            : ''
+                                                        }
+                                                    </span>
                                                 </div>
                                             </div>
                                         )

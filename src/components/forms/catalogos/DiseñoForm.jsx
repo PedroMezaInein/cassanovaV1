@@ -60,7 +60,7 @@ class DiseñoForm extends Component {
                                         <thead>
                                             <tr className="bg-gray-200">
                                                 <th></th>
-                                                <th>ESQUEMA 1</th>
+                                                <th style={{minWidth:'100px'}}>ESQUEMA 1</th>
                                                 <th>ESQUEMA 2</th>
                                                 <th>ESQUEMA 3</th>
                                             </tr>
@@ -147,7 +147,7 @@ class DiseñoForm extends Component {
                         />
                     </div>
                     <div className="d-flex justify-content-center">
-                        <table className="table table-separate table-responsive-sm text-center w-50">
+                        <table className="table table-separate table-responsive-sm text-center w-auto">
                             <thead>
                                 <tr>
                                     <th className="pb-0 border-bottom-0">Inferior</th>

@@ -691,7 +691,7 @@ a.text-pink:focus {
 //     }
 // }
 table#esquemas {
-    width: 400px;
+    width: 421px;
     table-layout: fixed;
 }
 table#reportes{
@@ -1564,3 +1564,62 @@ span.font-weight-bolder.text-hover-error:hover{
     }
 }
 ::-webkit-scrollbar {display: none;}
+
+.row.options-planos{
+    padding: 0.75rem  0px;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    // border-bottom: 1px dashed #ebedf3;
+    // margin: 3px 0px;
+    align-items: center;
+
+    .w-eliminar {
+        padding: 0px 5px;
+        @include down-screen($xxl) {
+            padding: 0px 11px;
+            width: 6.3% !important;
+        }
+        @media screen and (max-width: ($xl)) {
+            width: 9% !important;
+        }
+        @include down-screen($xxs) {
+            width: 11% !important;
+        }
+    }
+    .w-text {
+        padding: 0px 5px;
+        @media screen and (max-width: ($xxl)) {
+            width: 82% !important;
+        }
+        @media screen and (max-width: ($xl)) {
+            width: 74% !important;
+        }
+        @include down-screen($xxs) {
+            width: 69% !important;
+        }
+    }
+    .w-arrows {
+        padding: 0px 5px;
+        @media screen and (max-width: ($xxl)) {
+            width: 11% !important;
+        }
+        @media screen and (max-width: ($xl)) {
+            width: 17% !important;
+        }
+        @include down-screen($xxs) {
+            width: 20% !important;
+        }
+    }
+    .nom-plano{
+        padding: 0px 5px;
+        @media screen and (max-width: ($xxl)) {
+            width: 89% !important;
+        }
+        @media screen and (max-width: ($xl)) {
+            width: 83% !important;
+        }
+        @include down-screen($xxs) {
+            width: 80% !important;
+        }
+    }
+}
