@@ -517,10 +517,28 @@ class Usuarios extends Component {
     async inhabilitarUsuario(user, estatus) {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.put(`${URL_DEV}user/bloquear/${user.id}`, { detenido: estatus }, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        const { key } = this.state
+        let tipo = 0;
+        switch(key){
+            case 'administrador':
+                tipo = 1;
+                break;
+            case 'empleados':
+                tipo = 2;
+                break;
+            case 'clientes':
+                tipo = 3;
+                break;
+            default: break;
+        }
+        await axios.put(`${URL_DEV}user/bloquear/${user.id}`, { detenido: estatus, tipo: tipo }, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { key, modal } = this.state
+                
                 modal.inhabilitar = false
+                modal.inhabilitados = false
+
                 if(key === 'administrador')
                     this.getAdministradorAxios()
                 if(key === 'empleados')
@@ -531,7 +549,7 @@ class Usuarios extends Component {
                     doneAlert('El usuario fue inhabilitado con éxito.')
                 else
                     doneAlert('El usuario fue habilitado con éxito.')
-                this.setState({...this.state, detenidos: [], modal })
+                this.setState({...this.state,modal})
             },
             (error) => {
                 printResponseErrorAlert(error)
@@ -553,10 +571,10 @@ class Usuarios extends Component {
             case 'administrador':
                 tipo = 1;
                 break;
-            case 'empleado':
+            case 'empleados':
                 tipo = 2;
                 break;
-            case 'cliente':
+            case 'clientes':
                 tipo = 3;
                 break;
             default: break;
@@ -595,7 +613,6 @@ class Usuarios extends Component {
     render(){
         const { modal, title, user, form, options, key, detenidos } = this.state
         const { formulario } = this.props
-        console.log(this.state)
         return (
             <Layout active = { 'usuarios' }  { ...this.props } >
                 <Tabs defaultActiveKey="administrador" activeKey={key} onSelect = { (value) =>  { this.controlledTab(value)} }>
