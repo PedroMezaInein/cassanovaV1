@@ -17,8 +17,8 @@ import { EditorState, convertToRaw } from 'draft-js'
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css'
 import RVAnualInein from '../../components/pdfs/ReporteVentasAnual/RVAnualInein'
 import RVAnualIm from '../../components/pdfs/ReporteVentasAnual/RVAnualIm'
-import RVMensualIm from '../../components/pdfs/ReporteVentasMensual/RVMensualInein'
-import RVMensualInein from '../../components/pdfs/ReporteVentasMensual/RVMensualIm'
+import RVMensualIm from '../../components/pdfs/ReporteVentasMensual/RVMensualIm'
+import RVMensualInein from '../../components/pdfs/ReporteVentasMensual/RVMensualInein'
 import { Modal } from '../../components/singles'
 import { dataSimpleBar, monthGroupBar, percentBar } from '../../constantes/barOptions'
 
@@ -125,8 +125,8 @@ class ReporteVentas extends Component {
                     )
                 else
                     return (
-                        <RVMensualIm form={form} images={images} anteriores={leadsAnteriores}
-                            lista={lista} mes={mes.toUpperCase()} data={data} />
+                        <RVMensualInein form={form} images={images} anteriores={leadsAnteriores}
+                            conclusiones = { lista } sugerencias = { sugerencias } mes={mes.toUpperCase()} data={data} />
                     )
             case 'INFRAESTRUCTURA MÉDICA':
                 if(form.rango === 'semestral' || form.rango === 'anual')
@@ -136,8 +136,8 @@ class ReporteVentas extends Component {
                     )
                 else
                 return (
-                    <RVMensualInein form={form} images={images} anteriores={leadsAnteriores}
-                        lista={lista} mes={mes.toUpperCase()} data={data} />
+                    <RVMensualIm form={form} images={images} anteriores={leadsAnteriores}
+                        conclusiones = { lista } sugerencias = { sugerencias } mes={mes.toUpperCase()} data={data} />
                 )
             default:
                 break;
