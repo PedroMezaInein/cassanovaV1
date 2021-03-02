@@ -79,6 +79,7 @@ export const URL_ASSETS = 'http://127.0.0.1:8000'; */
 /* export const PROD_LINK = 'https://demo.proyectosadmin.com/api/' */
 export const PROD_LINK = 'https://proyectosadmin.xyz/api/'
 export const DEV_LINK = 'http://localhost:8000/api/'
+// export const DEV_LINK = 'https://api-app1.test/api/'
 /* export const DEV_LINK = 'https://demo.proyectosadmin.com/api/' */
 /* export const DEV_LINK = 'https://proyectosadmin.xyz/api/' */
 
