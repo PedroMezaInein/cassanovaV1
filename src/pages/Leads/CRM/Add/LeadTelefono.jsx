@@ -205,7 +205,7 @@ class LeadTelefono extends Component {
                                     <Form.Check key = { key } id = { `motivo-rechazo-${option.id}` } 
                                         type="radio" label = { option.motivo } name = 'motivoRechazo'
                                         className="text-justify mb-3" value = { option.motivo } 
-                                        // onChange = { this.onChangeMotivoRechazo }
+                                        onChange = { this.onChangeMotivoRechazo }
                                     />
                                 )
                             })
