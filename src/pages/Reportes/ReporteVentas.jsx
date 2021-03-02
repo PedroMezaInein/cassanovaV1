@@ -335,6 +335,7 @@ class ReporteVentas extends Component {
         let aux = []
         arreglo.map((elemento) => {
             aux.push(elemento + string)
+            return '';
         })
         return aux
     }
