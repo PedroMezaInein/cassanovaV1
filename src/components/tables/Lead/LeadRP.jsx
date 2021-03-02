@@ -56,13 +56,13 @@ class LeadRP extends Component {
                                             <tr key={index}>
                                                 <td className="pl-0 py-8">
                                                     <div className="d-flex align-items-center">
-                                                        <div className="symbol symbol-45 symbol-light-danger mr-3">
-                                                            <span className="symbol-label font-size-h5">
+                                                        <div className="symbol symbol-45 mr-3">
+                                                            <span className="symbol-label font-size-h5 text-orange bg-light-orange">
                                                                 {lead.nombre.charAt(0)}
                                                             </span>
                                                         </div>
                                                         <div>
-                                                            <a href={`mailto:+${lead.email}`} className="text-dark-75 font-weight-bolder text-hover-danger mb-1 font-size-lg">
+                                                            <a href={`mailto:+${lead.email}`} className="text-dark-75 font-weight-bolder text-hover-orange mb-1 font-size-lg">
                                                                 {lead.nombre}
                                                             </a>
                                                             {
@@ -130,13 +130,13 @@ class LeadRP extends Component {
                                                 <td className="pr-0 text-center">
                                                     <OverlayTrigger overlay={<Tooltip>EDITAR INFORMACIÓN GENERAL</Tooltip>}>
                                                         <span onClick={(e) => { openModalEditar(lead) }}
-                                                            className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-info" id="info-general">
-                                                            <i className="fas fa-edit icon-nm"></i>
+                                                            className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-orange">
+                                                            <i className="fas fa-edit icon-md"></i>
                                                         </span>
                                                     </OverlayTrigger>
                                                     <OverlayTrigger overlay={<Tooltip>HSITORIAL DE CONTACTO</Tooltip>}>
-                                                        <span onClick={(e) => { openModalHistorial(lead) }} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-orange">
-                                                            <i className="fas fa-clipboard-list icon-nm"></i>
+                                                        <span onClick={(e) => { openModalHistorial(lead) }} className="btn btn-default btn-icon btn-sm btn-hover-text-orange">
+                                                            <i className="fas fa-clipboard-list icon-md"></i>
                                                         </span>
                                                     </OverlayTrigger>
                                                 </td>
