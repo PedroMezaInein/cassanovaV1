@@ -14,13 +14,13 @@ class HappyBirthday extends Component{
         };
         return(
             <div className="mx-auto">
-                <Lottie 
+                {/* <Lottie 
                     options = { defaultOptions }
                     isStopped = { false }
                     isPaused = { false }
                     height={234}
                     width={300}
-                />
+                /> */}
             </div>
         )
     }

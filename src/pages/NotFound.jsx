@@ -37,11 +37,11 @@ class NotFound extends Component {
                 </div>
                 <div className="row mx-0 col-md-6 row-paddingless d-flex align-items-center justify-content-center">
                     <div className="col-md-11">
-                        <Lottie
+                        {/* <Lottie
                             options={defaultOptions}
                             isStopped={false}
                             isPaused={false}
-                        />
+                        /> */}
                     </div>
                 </div>
             </div>

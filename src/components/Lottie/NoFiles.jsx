@@ -14,11 +14,11 @@ class NoFiles extends Component{
         };
         return(
             <div className="mx-auto">
-                <Lottie options={defaultOptions}
+                {/* <Lottie options={defaultOptions}
                     height={200}
                     width={325}
                     isStopped={false}
-                    isPaused={false}/>
+                    isPaused={false}/> */}
             </div>
         )
     }
