@@ -14,10 +14,10 @@ class Sending extends Component{
         };
         return(
             <div className="mx-auto">
-                <Lottie 
+                {/* <Lottie 
                     options = { defaultOptions }
                     isStopped = { false }
-                    isPaused = { false } />
+                    isPaused = { false } /> */}
             </div>
         )
     }

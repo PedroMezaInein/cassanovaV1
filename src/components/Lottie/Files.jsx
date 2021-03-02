@@ -14,12 +14,12 @@ class Files extends Component {
         };
         return (
             <div className="mx-auto">
-                <Lottie
+                {/* <Lottie
                     options={defaultOptions}
                     width={370}
                     isStopped={false}
                     isPaused={false}
-                />
+                /> */}
             </div>
         )
     }
