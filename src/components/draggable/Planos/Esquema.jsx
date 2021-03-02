@@ -24,34 +24,32 @@ class Esquema extends Component{
                     planos.map((item, index)=>{
                         if(item.id)
                             return(
-                                <div className = 'row borderBottom mx-0 py-2 my-3' key = { index } >
-                                    <div className = 'col-1 px-1 align-self-center text-justify'>
-                                        <Button icon = '' onClick = { () => { deletePlano(item.id) } } className = "btn btn-icon btn-light-danger btn-xs mr-2" 
-                                            only_icon = "flaticon2-delete icon-xs" tooltip={{text:'Eliminar'}} />
+                                <div className = 'row options-planos' key = { index } >
+                                    <div className = 'w-eliminar'>
+                                        <Button icon = '' onClick = { () => { deletePlano(item.id) } } className = "btn btn-icon btn-light-danger btn-circle btn-xxs" 
+                                            only_icon = "flaticon2-delete icon-xs" tooltip={{text:'ELIMINAR'}} />
                                     </div>
-                                    <div className = 'col-9 w-100 px-2 align-self-center text-justify'>
+                                    <div className = 'w-text'>
                                         { item.nombre }
                                     </div>
-                                    <div className = 'col-2 w-100 px-2 align-self-center'>
-                                        <div className = 'row mx-0'>
-                                            <div className = 'col-6 px-1 align-self-center'>
+                                    <div className = 'w-arrows row mx-0'>
+                                            <span className = 'col pr-1 p-0 text-center'>
                                                 {
                                                     this.isUpActiveButton(item, index) ?
-                                                        <Button icon = '' onClick = { () => { changePosicionPlano(item, 'up') } } className = "btn btn-icon btn-light-primary btn-xs mr-2" 
-                                                            only_icon = "flaticon2-up icon-xs" tooltip={{text:'Subir'}} />
+                                                        <Button icon = '' onClick = { () => { changePosicionPlano(item, 'up') } } className = "btn btn-icon btn-light-primary btn-xxs" 
+                                                            only_icon = "flaticon2-up icon-xs" tooltip={{text:'SUBIR'}} />
                                                     : ''
                                                 }
-                                            </div>
-                                            <div className = 'col-6 px-1 align-self-center'>
+                                            </span>
+                                            <span className = 'col pr-1 p-0 text-center'>
                                                 {
                                                     this.isDownActiveButton(item, index) ?
-                                                        <Button icon = '' onClick = { () => { changePosicionPlano(item, 'down') } } className = "btn btn-icon btn-light-info btn-xs mr-2" 
-                                                            only_icon = "flaticon2-down icon-xs" tooltip={{text:'Bajar'}} />
+                                                        <Button icon = '' onClick = { () => { changePosicionPlano(item, 'down') } } className = "btn btn-icon btn-light-primary btn-xxs" 
+                                                            only_icon = "flaticon2-down icon-xs" tooltip={{text:'BAJAR'}} />
                                                     : ''
                                                 }
-                                            </div>
+                                            </span>
                                         </div>
-                                    </div>
                                 </div>
                             )
                         return <></>

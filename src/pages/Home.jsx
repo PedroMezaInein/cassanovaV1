@@ -8,15 +8,15 @@ class Home extends Component{
         const { user : { permisos } } = this.props.authUser
         const { history } = this.props
         
-        const crm = permisos.find(function(element, index) {
+        const crm = permisos ? permisos.find(function(element, index) {
             return element.modulo.slug === 'crm'
-        });
-        const tareas = permisos.find(function(element, index) {
+        }) : null;
+        const tareas = permisos ? permisos.find(function(element, index) {
             return element.modulo.slug === 'tareas'
-        });
-        const proyecto = permisos.find(function(element, index) {
+        }) : null;
+        const proyecto = permisos ? permisos.find(function(element, index) {
             return element.modulo.slug === 'mi-proyecto'
-        });
+        }) : null;
         
         if(crm){
             history.push('/leads/crm')
@@ -29,7 +29,10 @@ class Home extends Component{
                 if(proyecto){
                     history.push('/mi-proyecto')
                 }else{
-                    history.push(permisos[0].modulo.url)
+                    if(permisos === undefined)
+                        history.push('/login')
+                    else    
+                        history.push(permisos[0].modulo.url)
                 }
             }
         }

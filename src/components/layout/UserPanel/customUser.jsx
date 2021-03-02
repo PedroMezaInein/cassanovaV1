@@ -16,7 +16,6 @@ class customUser extends Component{
         <>               
 			<div className="d-flex flex-column">
 				<div className="font-weight-bold font-size-h5 text-dark-75 text-justify "><Navbar as={NameUser} userName={userName}> </Navbar></div>
-				<div className="text-muted mt-1"></div>
 					<div className="navi mt-1"> 
 							<span className="navi-link p-0 pb-1">
 								<span className="navi-icon mr-1">

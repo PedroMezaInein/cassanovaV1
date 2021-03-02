@@ -1481,16 +1481,16 @@ class ReporteVentas extends Component {
                                                     <th></th>
                                                 </tr>
                                                 <tr className="bg-light-gray text-dark-75">
-                                                    <th className="py-0 font-size-lg font-weight-bolder text-justify">
+                                                    <th className="py-0 font-size-lg font-weight-bolder text-align-last-justify">
                                                         NOMBRE
                                                     </th>
-                                                    <th className="py-0 font-size-lg font-weight-bolder text-justify">
+                                                    <th className="py-0 font-size-lg font-weight-bolder text-align-last-justify">
                                                         PROYECTO
                                                     </th>
-                                                    <th className="py-0 font-size-lg font-weight-bolder text-justify">
+                                                    <th className="py-0 font-size-lg font-weight-bolder text-align-last-justify">
                                                         SERVICIOS
                                                     </th>
-                                                    <th className="py-0 font-size-lg font-weight-bolder text-justify">
+                                                    <th className="py-0 font-size-lg font-weight-bolder text-align-last-justify">
                                                         ORIGEN
                                                     </th>
                                                     <th className="py-0 font-size-lg font-weight-bolder text-center">
