@@ -974,7 +974,7 @@ class Ventas extends Component {
                     onClickExport={() => this.exportVentasAxios()}
                     accessToken={this.props.authUser.access_token}
                     setter={this.setVentas}
-                    urlRender={URL_DEV + 'ventas'}
+                    urlRender = { `${URL_DEV}v2/proyectos/ventas`}
                     // validateFactura={true}
                     // elementClass = 'total'
                     // zeroRed = { true }
