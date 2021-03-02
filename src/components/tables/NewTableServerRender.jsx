@@ -101,7 +101,7 @@ class NewTableServerRender extends Component {
     }
     componentDidMount() {
         const { actions, mostrar_acciones, elementClass, accessToken, setter, urlRender, tipo_validacion, cardTable,
-            cardTableHeader, cardBody, isTab, checkbox, isNav } = this.props
+            cardTableHeader, cardBody, isTab, checkbox, isNav, idTable } = this.props
         global_variable["mostrar_acciones"] = mostrar_acciones;
 
         $("body").addClass("card-sticky-on")
@@ -180,7 +180,7 @@ class NewTableServerRender extends Component {
                     let cellIndex = $(this)[0].cellIndex
                     cellIndex = header[cellIndex].accessor
                     if (global_variable.mostrar_acciones === false || (global_variable.mostrar_acciones && contador !== 0))
-                        $(this).append('<div class="mt-2 separator separator-dashed separator-border-2"></div><div class="mt-2"><input type="text" id=' + cellIndex + ' class="form-control form-control-sm"/></div>');
+                        $(this).append('<div class="mt-2 separator separator-dashed separator-border-2"></div><div class="mt-2"><input type="text" id=' + cellIndex + '-' + idTable + ' class="form-control form-control-sm"/></div>');
                     contador++;
                 });
                 this.api().columns().every(function () {
