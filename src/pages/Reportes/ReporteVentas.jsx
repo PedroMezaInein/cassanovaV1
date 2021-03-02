@@ -464,7 +464,7 @@ class ReporteVentas extends Component {
         let aux = []
         let auxPercent = []
         let auxLabels = []
-        result.total_meses.map((element, index)=>{
+        result.total_meses.forEach((element, index)=>{
             aux.push(element.total)
             if(element.porcentaje)
                 auxPercent.push(element.porcentaje.toFixed(2))
@@ -474,7 +474,7 @@ class ReporteVentas extends Component {
         })
         
         auxColors = [];
-        result.total_meses.map( (color, index) => {
+        result.total_meses.forEach( (color, index) => {
             auxColors.push( COLORES_GRAFICAS_MESES[index] )
         })
         data.comparativa = {
@@ -509,7 +509,7 @@ class ReporteVentas extends Component {
         aux = []
         auxPercent = []
         auxLabels = []
-        result.origenes_organicos.map((element, index)=>{
+        result.origenes_organicos.forEach(element=>{
             aux.push(element.total)
             if(element.porcentaje)
                 auxPercent.push(element.porcentaje.toFixed(2))
@@ -535,7 +535,7 @@ class ReporteVentas extends Component {
         auxPercent = []
         auxLabels = []
 
-        result.origenes_ads.map((element, index)=>{
+        result.origenes_ads.forEach(element=>{
             aux.push(element.total)
             if(element.porcentaje)
                 auxPercent.push(element.porcentaje.toFixed(2))
@@ -560,8 +560,8 @@ class ReporteVentas extends Component {
         auxLabels = []
         aux = []
         let auxColors = []
-        result.origenes_meses.map( (mes, index) => {
-            mes.map( (origen) => {
+        result.origenes_meses.forEach((mes, index) => {
+            mes.forEach(origen => {
                 auxLabels.push(origen.nombre+';'+meses[index])
                 aux.push(origen.total)
                 if(origen.nombre.includes('ADS')) auxColors.push('#FBBC04')
@@ -587,7 +587,7 @@ class ReporteVentas extends Component {
         auxLabels = []
         auxColors = []
 
-        result.servicios.map((element, index)=>{
+        result.servicios.forEach(element=>{
             aux.push(element.total)
             if(element.porcentaje)
                 auxPercent.push(element.porcentaje.toFixed(2))
@@ -625,8 +625,8 @@ class ReporteVentas extends Component {
         auxLabels = []
         aux = []
         auxColors = []
-        result.servicios_meses.map( (mes, index) => {
-            mes.map( (servicio) => {
+        result.servicios_meses.forEach((mes, index) => {
+            mes.forEach(servicio => {
                 auxLabels.push(servicio.nombre+';'+meses[index])
                 aux.push(servicio.total)
                 switch(servicio.nombre){
@@ -702,7 +702,7 @@ class ReporteVentas extends Component {
         auxPercent = []
         auxLabels = []
 
-        result.origenes_no_potenciales.map((element, index)=>{
+        result.origenes_no_potenciales.forEach(element=>{
             aux.push(element.total)
             if(element.porcentaje)
                 auxPercent.push(element.porcentaje.toFixed(2))
@@ -728,7 +728,7 @@ class ReporteVentas extends Component {
         auxPercent = []
         auxLabels = []
 
-        result.origenes_potenciales.map((element, index)=>{
+        result.origenes_potenciales.forEach(element=>{
             aux.push(element.total)
             if(element.porcentaje)
                 auxPercent.push(element.porcentaje.toFixed(2))
@@ -755,7 +755,7 @@ class ReporteVentas extends Component {
             auxPercent = []
             auxLabels = []
 
-            result.origenes_duplicados.map((element, index)=>{
+            result.origenes_duplicados.forEach(element=>{
                 aux.push(element.total)
                 if(element.porcentaje)
                     auxPercent.push(element.porcentaje.toFixed(2))
@@ -781,7 +781,7 @@ class ReporteVentas extends Component {
         auxLabels = []
         aux = []
         auxColors = []
-        result.tipos_meses.map( (mes, index) => {
+        result.tipos_meses.forEach((mes, index) => {
             if(mes.potenciales){
                 auxLabels.push('Potencial'+';'+meses[index])
                 aux.push(mes.potenciales)
@@ -814,7 +814,7 @@ class ReporteVentas extends Component {
         // TIPOS DE PROYECTOS
         auxLabels = []
         aux = []
-        result.tipos_proyectos.map( (element, index) => {
+        result.tipos_proyectos.forEach(element => {
             aux.push(element.total)
             auxLabels.push({ label: element.nombre, value: element.total })
         })
@@ -834,8 +834,8 @@ class ReporteVentas extends Component {
         auxLabels = []
         aux = []
         auxColors = [];
-        result.tipos_proyectos_meses.map( (mes, index) => {
-            mes.map( (proy) => {
+        result.tipos_proyectos_meses.forEach((mes, index) => {
+            mes.forEach(proy => {
                 auxLabels.push(proy.nombre+';'+meses[index])
                 aux.push(proy.total)
                 auxColors.push( COLORES_GRAFICAS_MESES[index] )
@@ -878,7 +878,7 @@ class ReporteVentas extends Component {
         aux = []
         auxColors = []
         auxPercent = []
-        result.estatus.map( (element, index) => {
+        result.estatus.forEach(element => {
             aux.push(element.total)
             if(element.porcentaje)
                 auxPercent.push(element.porcentaje.toFixed(2))
@@ -924,7 +924,7 @@ class ReporteVentas extends Component {
         auxLabels = []
         aux = []
         auxPercent = []
-        result.motivos_cancelacion.map( (element, index) => {
+        result.motivos_cancelacion.forEach(element => {
             aux.push(element.total)
             auxLabels.push({ label: element.nombre, value: element.total })
         })
@@ -944,7 +944,7 @@ class ReporteVentas extends Component {
         auxLabels = []
         aux = []
         auxPercent = []
-        result.motivos_rechazo.map( (element, index) => {
+        result.motivos_rechazo.forEach(element => {
             aux.push(element.total)
             auxLabels.push({ label: element.nombre, value: element.total })
         })
@@ -1060,7 +1060,7 @@ class ReporteVentas extends Component {
         /* -------------------------------------------------------------------------- */
 
         waitAlert()
-        let aux = []
+        // let aux = []
         let imagenes = []
         const { form, data } = this.state
         if(form.rango === 'semestral' || form.rango === 'anual'){
@@ -1280,7 +1280,7 @@ class ReporteVentas extends Component {
     }
 
     render() {
-        const { form, data, options: opciones, key, leadsAnteriores, mes, modal, empresas, empresaActive, tipo } = this.state
+        const { form, data, options: opciones, key, modal, empresas, empresaActive } = this.state
 
         const mesesEspañol = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
 

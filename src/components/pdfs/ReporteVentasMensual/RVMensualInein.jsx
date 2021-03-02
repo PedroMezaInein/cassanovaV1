@@ -446,7 +446,7 @@ export default class RVAnualInein extends Component {
     }
 
     render() {
-        const { conclusiones, sugerencias, images, data, form } = this.props
+        const { conclusiones, sugerencias, images, data } = this.props
         return (
             <Document style = {{ fontFamily: 'Poppins', color: '#525252' }}>
                 <Page size="A4" orientation = "landscape" style = {{ position: 'relative', height: '100%'}}>
@@ -950,7 +950,7 @@ export default class RVAnualInein extends Component {
                                         </View>
                                 }
                                 {
-                                    data.proyectos.map( (element, index) => {
+                                    data.proyectos.forEach((element, index) => {
                                         if(element.prospecto){
                                             return(
                                                 <View key = { index } style = { this.setStyleRowBody(index) } >

@@ -934,7 +934,7 @@ export default class RVAnualInein extends Component {
                                         </View>
                                 }
                                 {
-                                    data.proyectos.map( (element, index) => {
+                                    data.proyectos.forEach((element, index) => {
                                         if(element.prospecto){
                                             return(
                                                 <View key = { index } style = { this.setStyleRowBody(index) } >

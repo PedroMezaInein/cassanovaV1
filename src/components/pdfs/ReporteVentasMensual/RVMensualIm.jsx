@@ -467,7 +467,7 @@ export default class RVAnualIm extends Component {
     }
 
     render() {
-        const {  conclusiones, sugerencias, images,  data, form } = this.props
+        const { conclusiones, sugerencias, images, data } = this.props
         return (
             <Document style = {{ fontFamily: 'Poppins' }}>
                 <Page size="A4" orientation = "landscape" style = {{ position: 'relative', height: '100%'}}>
@@ -958,7 +958,7 @@ export default class RVAnualIm extends Component {
                                 }
                                 {
                                     
-                                    data.proyectos.map( (element, index) => {
+                                    data.proyectos.forEach((element, index) => {
                                         
                                         if(element.prospecto){
                                             return(
