@@ -1100,7 +1100,7 @@ export default class RVAnualInein extends Component {
                         </View>
                         <View style = { styles.imgCenter }>
                             <View style = { styles.table2 }  >
-                            {/* {
+                            {
                                 conclusiones.map((element)=>{
                                     if(element !== '')
                                     return(
@@ -1121,7 +1121,7 @@ export default class RVAnualInein extends Component {
                                     )
                                     return false
                                 })
-                            } */}
+                            }
                         </View>
                         </View>
                         <View style={ styles.lineGray }></View>
@@ -1143,7 +1143,7 @@ export default class RVAnualInein extends Component {
                         </View>
                         <View style = { styles.imgCenter }>
                             <View style = { styles.table2 }  >
-                            {/* {
+                            {
                                 sugerencias.map((element)=>{
                                     if(element !== '')
                                     return(
@@ -1163,7 +1163,7 @@ export default class RVAnualInein extends Component {
                                     )
                                     return false
                                 })
-                            } */}
+                            }
                         </View>
                         </View>
                         <View style={ styles.linePink }></View>
