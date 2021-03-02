@@ -11,6 +11,7 @@ import UserPanel from '../../../src/components/layout/UserPanel/userPanel'
 import { Notificacion } from '../singles'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { errorAlert, printResponseErrorAlert, doneAlert } from '../../functions/alert'
 
 function openUserProfile() {
     if (document.getElementsByClassName("offcanvas")[0].classList.contains("offcanvas-on")) {
@@ -94,6 +95,17 @@ class Layout extends Component {
         ).catch((error) => {
             logout();
             history.push('/login')
+        })
+    }
+
+    cerrarSesionesAxios = async() => {
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}user/close`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {  doneAlert('Sesiones cerradas con éxito') },
+            (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
@@ -195,7 +207,10 @@ class Layout extends Component {
                     this.props ?
                         this.props.authUser ?
                             this.props.authUser.user ?
-                                <UserPanel user = { this.props.authUser.user } avatar = { this.props.authUser.user.avatar } clickResponsiveMenu={this.clickResponsiveMenu} clickLogout={this.logoutUser} {...this.props} />
+                                <UserPanel user = { this.props.authUser.user } avatar = { this.props.authUser.user.avatar } 
+                                    clickResponsiveMenu={this.clickResponsiveMenu} clickLogout={this.logoutUser} 
+                                    cerrarSesiones = { this.cerrarSesionesAxios }
+                                    {...this.props} />
                             : ''
                         : ''
                     : ''

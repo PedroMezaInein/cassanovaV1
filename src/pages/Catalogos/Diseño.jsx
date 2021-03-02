@@ -996,9 +996,9 @@ class Diseño extends Component {
                                 </Nav>
                             </div>
                         </Card.Header>
-                        <Card.Body className="pt-2">
+                        <Card.Body className="pt-2 px-2">
                             <Tab.Container defaultActiveKey="diseño">
-                                <Nav className="nav nav-tabs nav-tabs-space-lg nav-tabs-line nav-bold nav-tabs-line-3x border-0">
+                                <Nav className="nav nav-tabs nav-tabs-space-lg nav-tabs-line nav-bold nav-tabs-line-3x border-0 ml-4">
                                     <Nav.Item className="nav-item">
                                         <Nav.Link className="nav-link" eventKey="diseño">
                                             <span className="nav-icon mr-2">
@@ -1032,7 +1032,7 @@ class Diseño extends Component {
                                 </Nav>
                                 <Tab.Content className="py-5">
                                     <Tab.Pane eventKey="diseño">
-                                    <div className="row">
+                                    <div className="row mx-0">
                                         <div className="col-md-5">
                                             <DiseñoForm
                                                 form={form}
@@ -1069,10 +1069,10 @@ class Diseño extends Component {
                                                 <div className = 'row mx-0'>
                                                     <div className = 'col-md-4 mb-4'>
                                                         <Card className="border-0">
-                                                            <Card.Header className="p-3 border-0 bg-light">
-                                                                <div class="card-label text-dark font-size-h6 font-weight-bold text-center">ESQUEMA 1</div>
+                                                            <Card.Header className="p-3 border-0 bg-gray-200">
+                                                                <div className="card-label text-dark font-size-lg font-weight-bolder text-center">ESQUEMA 1</div>
                                                             </Card.Header>
-                                                            <Card.Body className='py-0 px-0' style={{border:"3px solid #F3F6F9"}} >
+                                                            <Card.Body className='py-0 px-0' style={{border:"3px solid #ECF0F3"}} >
                                                                 <div className="pt-0">
                                                                     <Esquema planos = { form.esquema_1 } deletePlano = { this.deletePlano } 
                                                                         changePosicionPlano = { this.changePosicionPlano } />
@@ -1094,10 +1094,10 @@ class Diseño extends Component {
                                                     </div>
                                                     <div className = 'col-md-4 mb-4'>
                                                         <Card className="border-0">
-                                                            <Card.Header className="p-3 border-0 bg-light">
-                                                                <div class="card-label text-dark font-size-h6 font-weight-bold text-center">ESQUEMA 2</div>
+                                                            <Card.Header className="p-3 border-0 bg-gray-200">
+                                                                <div className="card-label text-dark font-size-lg font-weight-bolder text-center">ESQUEMA 2</div>
                                                             </Card.Header>
-                                                            <Card.Body className='py-0 px-0' style={{border:"3px solid #F3F6F9"}}>
+                                                            <Card.Body className='py-0 px-0' style={{border:"3px solid #ECF0F3"}}>
                                                                 <div className="pt-0">
                                                                     <Esquema planos = { form.esquema_2 } deletePlano = { this.deletePlano } 
                                                                         changePosicionPlano = { this.changePosicionPlano } />
@@ -1119,15 +1119,15 @@ class Diseño extends Component {
                                                     </div>
                                                     <div className = 'col-md-4 mb-4'>
                                                         <Card className="border-0">
-                                                            <Card.Header className="p-3 border-0 bg-light">
-                                                            <div class="card-label text-dark font-size-h6 font-weight-bold text-center">ESQUEMA 3</div>
+                                                            <Card.Header className="p-3 border-0 bg-gray-200">
+                                                            <div className="card-label text-dark font-size-lg font-weight-bolder text-center">ESQUEMA 3</div>
                                                             </Card.Header>
-                                                            <Card.Body className='py-0 px-0' style={{border:"3px solid #F3F6F9"}}>
+                                                            <Card.Body className='py-0 px-0' style={{border:"3px solid #ECF0F3"}}>
                                                                 <div className="pt-0 border-top">
                                                                     <Esquema3 planos = { form.esquema_3 } deletePlano = { this.deletePlano } 
                                                                         changePosicionPlano = { this.changePosicionPlano } changePosicionTipo = { this.changePosicionTipo } />
-                                                                    <div className = 'row mx-0 py-2'>
-                                                                        <div className = 'col-5 w-100 align-self-center text-justify pb-1'>
+                                                                    <div className = 'row mx-0'>
+                                                                        <div className = 'col-md-6 align-self-center text-justify pb-2 px-1'>
                                                                             {/* <InputSinText 
                                                                                     name = 'tipo' 
                                                                                     placeholder = 'TIPO' 
@@ -1149,14 +1149,14 @@ class Diseño extends Component {
                                                                                 options = { options.tipos }
                                                                             />
                                                                         </div>
-                                                                        <div className = 'col-5 w-100 align-self-center text-justify'>
+                                                                        <div className = 'col-md-5 align-self-center text-justify px-2'>
                                                                             <InputSinText name = 'nombre' placeholder = 'PLANO' requireValidation = { 1 } value = { form.esquema_3[form.esquema_3.length - 1].nombre }
                                                                                 onChange = { (e) => { this.handleChangePlanos('esquema_3', e, form.esquema_3.length - 1) }}
                                                                                 customclass="border-top-0 border-left-0 border-right-0 rounded-0 text-center pl-0 w-100" />
                                                                         </div>
-                                                                        <div className='col-2 text-center d-flex align-items-end justify-content-center'>
+                                                                        <div className='col-md-1 text-center d-flex align-items-center justify-content-center px-2'>
                                                                             <Button icon = '' onClick = { () => { this.sendPlano('esquema_3', form.esquema_3.length - 1) } } 
-                                                                                className = "btn btn-icon btn-light-success btn-xs mr-2 px-2" only_icon = "fas fa-plus icon-xs"
+                                                                                className = "btn btn-icon btn-light-success btn-xs" only_icon = "fas fa-plus icon-xs"
                                                                                 tooltip={{text:'ENVIAR'}}/>
                                                                         </div>
                                                                     </div>

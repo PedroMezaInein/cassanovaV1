@@ -52,7 +52,7 @@ class Usuarios extends Component {
             departamentos: [],
             users:[],
         },
-        detenidas: []
+        detenidos: []
     }
 
     componentDidMount() {
@@ -531,7 +531,7 @@ class Usuarios extends Component {
                     doneAlert('El usuario fue inhabilitado con éxito.')
                 else
                     doneAlert('El usuario fue habilitado con éxito.')
-                this.setState({...this.state, modalInhabilitadas: false, detenidas: [], modal })
+                this.setState({...this.state, detenidos: [], modal })
             },
             (error) => {
                 printResponseErrorAlert(error)
@@ -573,7 +573,7 @@ class Usuarios extends Component {
                     ...this.state,
                     modal,
                     title: 'Usuarios inhabilitados',
-                    detenidas: users
+                    detenidos: users
                 })
             },
             (error) => {
@@ -593,8 +593,9 @@ class Usuarios extends Component {
         })
     }
     render(){
-        const { modal, title, user, form, options, key, detenidas } = this.state
+        const { modal, title, user, form, options, key, detenidos } = this.state
         const { formulario } = this.props
+        console.log(this.state)
         return (
             <Layout active = { 'usuarios' }  { ...this.props } >
                 <Tabs defaultActiveKey="administrador" activeKey={key} onSelect = { (value) =>  { this.controlledTab(value)} }>
@@ -737,18 +738,18 @@ class Usuarios extends Component {
                             </thead>
                             <tbody>
                                 {
-                                    detenidas.length > 0 ?
-                                        detenidas.map((detenida, key) => {
+                                    detenidos.length > 0 ?
+                                        detenidos.map((detenido, key) => {
                                             return (
                                                 <tr key={key} >
                                                     <td>
                                                         <span className="text-dark-75 font-weight-bolder d-block font-size-lg">
-                                                            {detenida.name}
+                                                            {detenido.name}
                                                         </span>
                                                     </td>
                                                     <td className="text-center">
                                                         <button className="btn btn-icon btn-light btn-text-primary btn-hover-text-dark font-weight-bold btn-sm mr-2"
-                                                            onClick={(e) => { e.preventDefault(); this.habilitar(detenida) }} >
+                                                            onClick={(e) => { e.preventDefault(); this.habilitar(detenido) }} >
                                                             <i className="fas fa-unlock-alt text-dark-50"></i>
                                                         </button>
                                                     </td>

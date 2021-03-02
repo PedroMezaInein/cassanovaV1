@@ -1235,7 +1235,7 @@ class LeadInfo extends Component {
                             <Form.Check key = { key } id = { `motivo-cancelado-${option.id}` } 
                                 type="radio" label = { option.motivo } name = 'motivoCancelado'
                                 className="text-justify mb-3" value = { option.motivo } 
-                                // onChange = { this.onChangeMotivoCancelado }
+                                onChange = { this.onChangeMotivoCancelado }
                             />
                         )
                     })

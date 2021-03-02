@@ -15,15 +15,14 @@ function closeButton(){
 class UserPanel extends Component {
 	
 	render(){		
-		const { avatar, user } = this.props
+		const { avatar, user, cerrarSesiones } = this.props
 		return (
 		<>   
-			<div className="scroll scroll-pull offcanvas offcanvas-right p-5   ">
-				<div className="offcanvas-header d-flex align-items-center justify-content-between pb-3">
-					<h3 className="font-weight-bold m-0">Perfil de usuario
-					<small className="text-muted font-size-sm ml-2"></small></h3>
-					<button  className="btn btn-xs btn-icon btn-light btn-hover-primary" id="kt_quick_user_close" onClick = { () => { closeButton() } } >
-						<i className="ki ki-close icon-xs text-muted"></i>
+			<div className="scroll scroll-pull offcanvas offcanvas-right p-10">
+				<div className="offcanvas-header d-flex align-items-center justify-content-between pb-5">
+					<div className="font-weight-bolder m-0 font-size-h3">Perfil de usuario</div>
+					<button className="bbtn btn-xs btn-icon btn btn-light btn-hover-danger" onClick = { () => { closeButton() } } >
+						<i className="flaticon2-delete icon-xs text-muted"></i>
 					</button>
 				</div>			
 				<div className="offcanvas-content pr-3 mr-n3">
@@ -35,7 +34,7 @@ class UserPanel extends Component {
 						<CustomUser clickResponsiveMenu={this.clickResponsiveMenu} clickLogout={this.logoutUser} {...this.props}/>
 					</div>
 					<div className="separator separator-dashed mt-4 mb-3"></div>
-					<NavUser user = { user } />
+					<NavUser user = { user } cerrarSesiones = { cerrarSesiones } />
 					{/*<div className="separator separator-dashed mt-4 mb-4"></div>
 					<UserNotifications/>*/}	
 				</div>
