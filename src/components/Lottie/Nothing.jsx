@@ -15,10 +15,10 @@ class Sending extends Component{
         };
         return(
             <div className="mx-auto">
-                {/* <Lottie options={defaultOptions}
+                <Lottie options={defaultOptions}
                     width = { window.innerWidth * 1 / 3 }
                     isStopped={false}
-                    isPaused={false}/> */}
+                    isPaused={false}/>
             </div>
         )
     }

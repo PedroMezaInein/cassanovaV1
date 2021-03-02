@@ -14,13 +14,13 @@ class Build extends Component {
         };
         return (
             <div className="mx-auto">
-                {/* <Lottie
+                <Lottie
                     options={defaultOptions}
                     width={345}
                     height={255}
                     isStopped={false}
                     isPaused={false}
-                /> */}
+                />
             </div>
         )
     }

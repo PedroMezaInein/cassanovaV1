@@ -23,12 +23,12 @@ class Loading extends Component{
         };
         return(
             <div className="">
-                {/* <Lottie 
+                <Lottie 
                     options = { new Date().getMonth() === 11 ? defaultOptionsReno : defaultOptions}
                     height={400}
                     width={400}
                     isStopped={false}
-                    isPaused={false}/> */}
+                    isPaused={false}/>
             </div>
         )
     }
