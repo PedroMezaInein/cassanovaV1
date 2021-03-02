@@ -197,7 +197,6 @@ class LoginForm extends React.Component {
 
     render() {
         const { form, error, tab } = this.state
-        const { token } = this.state
         return (
             <>
                 <Tab.Container activeKey = { tab } >
@@ -214,16 +213,16 @@ class LoginForm extends React.Component {
                                 <InputLPassword name = 'password' value = { form.password } placeholder = 'INGRESA TU CONTRASEÑA'
                                     onChange = { this.handleChange } error = { error } requirevalidation = { 1 } letterCase = { false } />
                                 <div className="form-group d-flex flex-wrap justify-content-end align-items-end pt-2">
-                                    <a className="text-muted text-hover-im font-weight-bold a-hover" onClick = { () => { this.changeTab('recuperar') }}>
+                                    <span className="text-muted text-hover-im font-weight-bold a-hover" onClick = { () => { this.changeTab('recuperar') }}>
                                         ¿Olvidaste tu contraseña?
-                                    </a>
+                                    </span>
                                 </div>
                                 <div className="container-login  px-0">
-                                    <a className = "btn-login btn-1" style = { { color: "#7fa1c9", fontWeight: 500 } } 
+                                    <span className = "btn-login btn-1" style = { { color: "#7fa1c9", fontWeight: 500 } } 
                                         onClick = { (e) => { e.preventDefault(); validateAlert(this.handleSubmit, e, 'form-login') } }>
                                         <svg> <rect x="0" y="0" fill="none" width="100%" height="100%" /> </svg>
                                         INICIAR SESIÓN
-                                    </a>
+                                    </span>
                                 </div>
                             </Form>
                         </Tab.Pane>
@@ -239,13 +238,13 @@ class LoginForm extends React.Component {
                                         onChange = { this.handleChange } error = { error } requirevalidation = { 1 }
                                         letterCase = { false } patterns = { EMAIL } />
                                     <div className="form-group d-flex flex-wrap flex-center mt-10">
-                                        <a className = "btn btn-light btn-shadow-hover font-weight-bolder px-6 py-3" 
+                                        <span className = "btn btn-light btn-shadow-hover font-weight-bolder px-6 py-3" 
                                             onClick = { () => { this.sendRequestNewPassword() } } >
                                             Enviar
-                                        </a>
-                                        <a className="btn btn-light-danger font-weight-bolder px-6 py-3 ml-2" onClick={() => { this.changeTab('login') }}>
+                                        </span>
+                                        <span className="btn btn-light-danger font-weight-bolder px-6 py-3 ml-2" onClick={() => { this.changeTab('login') }}>
                                             Cancelar
-                                        </a>
+                                        </span>
                                     </div>
                                 </div>
                             </Form>
@@ -267,10 +266,10 @@ class LoginForm extends React.Component {
                                     <InputLPassword name = 'password2' value = { form.password2 } placeholder = 'REPITE TU CONTRASEÑA'
                                         onChange = { this.handleChange } error = { error } requirevalidation = { 1 } letterCase = { false } />
                                     <div className="form-group d-flex flex-wrap flex-center mt-10">
-                                        <a className = "btn btn-light btn-shadow-hover font-weight-bolder px-6 py-3" 
+                                        <span className = "btn btn-light btn-shadow-hover font-weight-bolder px-6 py-3" 
                                             onClick = { () => { this.sendNewPassword() } } >
                                             Enviar
-                                        </a>
+                                        </span>
                                     </div>
                                 </div>
                             </Form>
