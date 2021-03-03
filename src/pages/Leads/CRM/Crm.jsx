@@ -2011,7 +2011,7 @@ class Crm extends Component {
                             lead.prospecto ?
                                 lead.prospecto.contactos ?
                                     lead.prospecto.contactos.length > 0 ?
-                                        <Nav className="nav-tabs nav-bold nav-tabs-line nav-tabs-line-3x border-0 mb-4 justify-content-end">
+                                        <Nav className="nav-tabs nav-bold nav-tabs-line nav-tabs-line-3x border-0 mb-8 justify-content-end">
                                             <Nav.Item className="nav-item">
                                                 <Nav.Link eventKey="info">
                                                     <span className="nav-text font-weight-bold">INFORMACIÓN GENERAL</span>
