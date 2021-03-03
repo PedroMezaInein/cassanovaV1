@@ -16,7 +16,6 @@ class Sending extends Component{
         return(
             <div className="mx-auto">
                 <Lottie options={defaultOptions}
-                    /* height={200} */
                     width = { window.innerWidth * 1 / 3 }
                     isStopped={false}
                     isPaused={false}/>

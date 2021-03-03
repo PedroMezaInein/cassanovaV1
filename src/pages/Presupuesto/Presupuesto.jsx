@@ -295,7 +295,7 @@ class Presupuesto extends Component {
                     idTable='kt_datatable2_presupuesto'
                     accessToken={this.props.authUser.access_token}
                     setter={this.setPresupuestos}
-                    urlRender={URL_DEV + 'presupuestos'}
+                    urlRender = { `${URL_DEV}v2/presupuesto/presupuestos` }
                     cardTable='cardTable'
                     cardTableHeader='cardTableHeader'
                     cardBody='cardBody'

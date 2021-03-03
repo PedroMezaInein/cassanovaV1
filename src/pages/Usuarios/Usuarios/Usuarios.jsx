@@ -640,7 +640,8 @@ class Usuarios extends Component {
                             }
                             accessToken={this.props.authUser.access_token}
                             setter={this.setUsers}
-                            urlRender={URL_DEV + 'user/users/admin'}
+                            /* urlRender={URL_DEV + 'user/users/admin'} */
+                            urlRender = { `${URL_DEV}v2/usuarios/usuarios/table/admin` }
                             idTable='admin_table'
                             cardTable='cardTable_admin'
                             cardTableHeader='cardTableHeader_admin'
@@ -670,7 +671,7 @@ class Usuarios extends Component {
                             }}
                             accessToken={this.props.authUser.access_token}
                             setter={this.setUsers}
-                            urlRender={URL_DEV + 'user/users/empleados'}
+                            urlRender = { `${URL_DEV}v2/usuarios/usuarios/table/empleados` }
                             idTable='empleados_table'
                             cardTable='cardTable_empleados'
                             cardTableHeader='cardTableHeader_empleados'
@@ -701,7 +702,7 @@ class Usuarios extends Component {
                             }}
                             accessToken={this.props.authUser.access_token}
                             setter={this.setUsers}
-                            urlRender={URL_DEV + 'user/users/clientes'}
+                            urlRender = { `${URL_DEV}v2/usuarios/usuarios/table/clientes` }
                             idTable='clientes_table'
                             cardTable='cardTable_clientes'
                             cardTableHeader='cardTableHeader_clientes'

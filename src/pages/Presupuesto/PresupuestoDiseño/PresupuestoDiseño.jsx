@@ -164,7 +164,7 @@ class PresupuestoDiseño extends Component {
                         m2: renderToString(setTextTable(presupuesto.m2)),
                         esquema: renderToString(setTextTable(presupuesto.esquema ? presupuesto.esquema.replace('_', ' ') : '')),
                         total: renderToString(setMoneyTable(presupuesto.total)),
-                        cotizacion: renderToString(this.setCotizacion(presupuesto.identificador)),
+                        cotizacion: renderToString(this.setCotizacion(presupuesto.pdfs)),
                         id: presupuesto.id,
                     }
                 )
@@ -174,11 +174,13 @@ class PresupuestoDiseño extends Component {
     }
 
     setCotizacion = cotizaciones => {
+        if(cotizaciones === undefined)
+            return setTextTable('Sin pdfs generados')
         if(cotizaciones.length === 0)
             return setTextTable('Sin pdfs generados')
         let aux = []
         cotizaciones.map((cotizacion) => {
-            aux.push({ numero: cotizacion })
+            aux.push({ numero: cotizacion.pivot.identificador })
             return ''
         })
         return setListTable(aux, 'numero')
@@ -242,7 +244,7 @@ class PresupuestoDiseño extends Component {
                     }}
                     accessToken={this.props.authUser.access_token}
                     setter={this.setPresupuestos}
-                    urlRender={URL_DEV + 'presupuestos-diseño'}
+                    urlRender={`${URL_DEV}v2/presupuesto/presupuestos-diseños`}
                     idTable='kt_datatable2_presupuesto_diseño'
                     cardTable='cardTable'
                     cardTableHeader='cardTableHeader'

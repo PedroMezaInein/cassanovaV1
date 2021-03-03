@@ -49,11 +49,10 @@ export function AsideMenuList({ props }) {
                 {
                     modulos.map( (modulo, key) => {
                         return(
-                            <li
+                            <li className={`menu-item menu-item-submenu`}
                                 /* className={`menu-item menu-item-submenu ${getMenuItemActive(modulo.url)}`} */
-                                className={`menu-item menu-item-submenu`}
                                 key = {key}
-                                aria-haspopup="true"
+                                // aria-haspopup="true"
                                 data-menu-toggle="hover"
                                 onClick = { () => { openSubmenu(modulo.slug) } }>
                                 <div className="menu-link menu-toggle" to={modulo.url}>
@@ -77,7 +76,9 @@ export function AsideMenuList({ props }) {
                                         <div className="menu-submenu submenu-asidemenu" id = {`submenu-${modulo.slug}`}>
                                             <i className="menu-arrow"  />
                                             <ul className="menu-subnav">
-                                                <li className="menu-item  menu-item-parent" aria-haspopup="true">
+                                                <li className="menu-item  menu-item-parent" 
+                                                    // aria-haspopup="true"
+                                                >
                                                     <span className="menu-link">
                                                         <span className="menu-text">{modulo.name}</span>
                                                     </span>
@@ -85,7 +86,9 @@ export function AsideMenuList({ props }) {
                                                 {
                                                     modulo.modulos.map( (submodulo) => {
                                                         return(
-                                                            <li  key={submodulo.url} className={`menu-item `} aria-haspopup="true">
+                                                            <li  key={submodulo.url} className={`menu-item `}
+                                                                // aria-haspopup="true"
+                                                                >
                                                                 <NavLink className="menu-link" to={submodulo.url} onClick = { () => { closeAside() } }>
                                                                     <span className="svg-icon menu-icon">
                                                                         <SVG src={toAbsoluteUrl(submodulo.icon)} />

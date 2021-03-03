@@ -497,7 +497,7 @@ class Empresas extends Component {
                     cardBody='cardBody'
                     accessToken={this.props.authUser.access_token}
                     setter={this.setEmpresas}
-                    urlRender={URL_DEV + 'empresa'}
+                    urlRender = { `${URL_DEV}v2/usuarios/empresas` }
                 />
                 <Modal>
                 </Modal>

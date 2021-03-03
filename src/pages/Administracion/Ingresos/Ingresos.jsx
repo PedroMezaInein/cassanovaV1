@@ -926,7 +926,7 @@ class Ingresos extends Component {
                     onClickExport={() => this.exportIngresosAxios()}
                     accessToken={this.props.authUser.access_token}
                     setter={this.setIngresos}
-                    urlRender={URL_DEV + 'ingresos'}
+                    urlRender = { `${URL_DEV}v2/administracion/ingresos`}
                     elementClass='total'
                     idTable='ingresostable'
                     validateFactura={true}

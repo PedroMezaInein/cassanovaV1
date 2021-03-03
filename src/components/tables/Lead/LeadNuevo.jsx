@@ -244,13 +244,13 @@ class LeadNuevo extends Component {
                                                                 </Dropdown.Item>
                                                                 <Dropdown.Item className="text-hover-info dropdown-pagina-web" onClick={(e) => { changePageLlamadaSalida(lead) }} >
                                                                     <span className="navi-icon">
-                                                                        <i className="fas fa-file pr-3 text"></i>
+                                                                        <i className="far fa-file-alt pr-3 text"></i>
                                                                     </span>
-                                                                    <span className="navi-text align-self-center">SEGUIMIENTO (SCRIPT)</span>
+                                                                    <span className="navi-text align-self-center">SEGUIMIENTO</span>
                                                                 </Dropdown.Item>
                                                                 <Dropdown.Item className="text-hover-info dropdown-pagina-web" onClick={(e) => { openModalHistorial(lead) }} >
                                                                     <span className="navi-icon">
-                                                                        <i className="fas fa-clipboard-list pr-3 text"></i>
+                                                                        <i className="far fa-list-alt pr-3 text"></i>
                                                                     </span>
                                                                     <span className="navi-text align-self-center">HISTORIAL DE CONTACTO</span>
                                                                 </Dropdown.Item>

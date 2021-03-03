@@ -1550,7 +1550,9 @@ span.font-weight-bolder.text-hover-error:hover{
     background-color: #fff7e8;
     border-radius: 0;
 }
-
+.w-10{
+    width: 10%;
+}
 .w-80{
     width: 80%;
 }
@@ -1563,7 +1565,7 @@ span.font-weight-bolder.text-hover-error:hover{
         display: none;
     }
 }
-::-webkit-scrollbar {display: none;}
+// ::-webkit-scrollbar {display: none;}
 
 .row.options-planos{
     padding: 0.75rem  0px;

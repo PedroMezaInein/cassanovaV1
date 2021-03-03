@@ -238,7 +238,7 @@ class LoginForm extends React.Component {
                                         onChange = { this.handleChange } error = { error } requirevalidation = { 1 }
                                         letterCase = { false } patterns = { EMAIL } />
                                     <div className="form-group d-flex flex-wrap flex-center mt-10">
-                                        <span className = "btn btn-light btn-shadow-hover font-weight-bolder px-6 py-3" 
+                                        <span className = "btn btn-light-im btn-shadow-hover font-weight-bolder px-6 py-3" 
                                             onClick = { () => { this.sendRequestNewPassword() } } >
                                             Enviar
                                         </span>
@@ -266,7 +266,7 @@ class LoginForm extends React.Component {
                                     <InputLPassword name = 'password2' value = { form.password2 } placeholder = 'REPITE TU CONTRASEÑA'
                                         onChange = { this.handleChange } error = { error } requirevalidation = { 1 } letterCase = { false } />
                                     <div className="form-group d-flex flex-wrap flex-center mt-10">
-                                        <span className = "btn btn-light btn-shadow-hover font-weight-bolder px-6 py-3" 
+                                        <span className = "btn btn-light-im btn-shadow-hover font-weight-bolder px-6 py-3" 
                                             onClick = { () => { this.sendNewPassword() } } >
                                             Enviar
                                         </span>

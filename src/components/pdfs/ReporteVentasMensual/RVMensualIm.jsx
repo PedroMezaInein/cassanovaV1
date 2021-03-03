@@ -467,7 +467,7 @@ export default class RVAnualIm extends Component {
     }
 
     render() {
-        const {  conclusiones, sugerencias, images,  data, form } = this.props
+        const { conclusiones, sugerencias, images, data } = this.props
         return (
             <Document style = {{ fontFamily: 'Poppins' }}>
                 <Page size="A4" orientation = "landscape" style = {{ position: 'relative', height: '100%'}}>
@@ -958,7 +958,7 @@ export default class RVAnualIm extends Component {
                                 }
                                 {
                                     
-                                    data.proyectos.map( (element, index) => {
+                                    data.proyectos.forEach((element, index) => {
                                         
                                         if(element.prospecto){
                                             return(
@@ -1107,7 +1107,7 @@ export default class RVAnualIm extends Component {
                         </View>
                         <View style = { styles.imgCenter }>
                             <View style = { styles.table2 }  >
-                            {/* {
+                            {
                                 conclusiones.map((element)=>{
                                     if(element !== '')
                                     return(
@@ -1128,7 +1128,7 @@ export default class RVAnualIm extends Component {
                                     )
                                     return false
                                 })
-                            } */}
+                            }
                         </View>
                         </View>
                         <View style={ styles.lineGolden }></View>
@@ -1150,7 +1150,7 @@ export default class RVAnualIm extends Component {
                         </View>
                         <View style = { styles.imgCenter }>
                             <View style = { styles.table2 }  >
-                            {/* {
+                            {
                                 sugerencias.map((element)=>{
                                     if(element !== '')
                                     return(
@@ -1170,7 +1170,7 @@ export default class RVAnualIm extends Component {
                                     )
                                     return false
                                 })
-                            } */}
+                            }
                         </View>
                         </View>
                         <View style={ styles.lineBlue }></View>
