@@ -858,7 +858,7 @@ class egresos extends Component {
                     onClickExport={() => this.exportEgresosAxios()}
                     accessToken={this.props.authUser.access_token}
                     setter={this.setEgresos}
-                    urlRender={URL_DEV + 'egresos'}
+                    urlRender = { `${URL_DEV}v2/administracion/egresos`}
                     validateFactura={true}
                     tipo_validacion='compras'
                     cardTable='cardTable'

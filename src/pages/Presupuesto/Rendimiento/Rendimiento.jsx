@@ -167,7 +167,7 @@ class Rendimientos extends Component {
                     cardBody='cardBody'
                     accessToken={this.props.authUser.access_token}
                     setter={this.setRendimientos}
-                    urlRender={URL_DEV + 'rendimientos'}
+                    urlRender={`${URL_DEV}v2/presupuesto/rendimientos`}
                     />
                 <ModalDelete title={"¿Estás seguro que deseas eliminar el rendimiento?"} show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { e.preventDefault(); this.deleteRendimientoAxios() }}>
                 </ModalDelete>

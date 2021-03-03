@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import Layout from '../../../../components/layout/layout'
 import { Card, Nav, Tab, Col, Row, Form } from 'react-bootstrap'
 import axios from 'axios'
-import { doneAlert, errorAlert, printResponseErrorAlert, questionAlert2, questionAlertY, waitAlert, questionAlert } from '../../../../functions/alert'
+import { doneAlert, errorAlert, printResponseErrorAlert, questionAlert2, questionAlertY, waitAlert } from '../../../../functions/alert'
 import Swal from 'sweetalert2'
 import { setOptions } from '../../../../functions/setters'
 import { URL_DEV } from '../../../../constants'
@@ -210,7 +210,7 @@ class LeadLlamadaSalida extends Component {
                     bontonFunction = { (e, value) => { e.preventDefault(); this.sendWhatsapp(value) } }
                 />
                 <MensajePrincipal
-                    primerTexto={"¡EXCELENTE! TE AGRADEZCO QUE NOS TOMES EN CUENTA PARA TU PROYECTO, PUEDES INDICARME: "}
+                    primerTexto={"¡Excelente! Te agradezco que nos tomes en cuenta para tu proyecto, puedes indicarme: "}
                     primerBoldest={"¿Qué tipo de proyecto es?"}
                     boton={boton}
                     bontonFunction = { (e, value) => { e.preventDefault(); this.sendWhatsapp(value) } }
@@ -346,7 +346,7 @@ class LeadLlamadaSalida extends Component {
         return (
             <>
                 <MensajePrincipal
-                    primerBoldest={"¿EL PROYECTO SE TRATA DE DISEÑO O CONSTRUCCIÓN?"}
+                    primerBoldest={"¿El proyecto se trata de diseño o construcción?"}
                     separator={1}
                     boton={boton}
                     bontonFunction = { (e, value) => { e.preventDefault(); this.sendWhatsapp(value) } }

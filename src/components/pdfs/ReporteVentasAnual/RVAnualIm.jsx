@@ -942,8 +942,7 @@ export default class RVAnualIm extends Component {
                                 }
                                 {
                                     
-                                    data.proyectos.map( (element, index) => {
-                                        
+                                    data.proyectos.forEach( (element, index) => {
                                         if(element.prospecto){
                                             return(
                                                 <View key = { index } style = { this.setStyleRowBody(index) } >

@@ -446,7 +446,7 @@ export default class RVAnualInein extends Component {
     }
 
     render() {
-        const { conclusiones, sugerencias, images, data, form } = this.props
+        const { conclusiones, sugerencias, images, data } = this.props
         return (
             <Document style = {{ fontFamily: 'Poppins', color: '#525252' }}>
                 <Page size="A4" orientation = "landscape" style = {{ position: 'relative', height: '100%'}}>
@@ -950,7 +950,7 @@ export default class RVAnualInein extends Component {
                                         </View>
                                 }
                                 {
-                                    data.proyectos.map( (element, index) => {
+                                    data.proyectos.forEach((element, index) => {
                                         if(element.prospecto){
                                             return(
                                                 <View key = { index } style = { this.setStyleRowBody(index) } >
@@ -1100,7 +1100,7 @@ export default class RVAnualInein extends Component {
                         </View>
                         <View style = { styles.imgCenter }>
                             <View style = { styles.table2 }  >
-                            {/* {
+                            {
                                 conclusiones.map((element)=>{
                                     if(element !== '')
                                     return(
@@ -1121,7 +1121,7 @@ export default class RVAnualInein extends Component {
                                     )
                                     return false
                                 })
-                            } */}
+                            }
                         </View>
                         </View>
                         <View style={ styles.lineGray }></View>
@@ -1143,7 +1143,7 @@ export default class RVAnualInein extends Component {
                         </View>
                         <View style = { styles.imgCenter }>
                             <View style = { styles.table2 }  >
-                            {/* {
+                            {
                                 sugerencias.map((element)=>{
                                     if(element !== '')
                                     return(
@@ -1163,7 +1163,7 @@ export default class RVAnualInein extends Component {
                                     )
                                     return false
                                 })
-                            } */}
+                            }
                         </View>
                         </View>
                         <View style={ styles.linePink }></View>
