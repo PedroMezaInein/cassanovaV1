@@ -18,7 +18,8 @@ class PlanTrabajoForm extends Component{
     transformarOptions = options => {
         options = options ? options : []
         options.map((value) => {
-            value.label = value.text
+            value.label = value.name?value.name:value.text
+            value.value = value.value ?value.value.toString():value.id.toString()
             return ''
         });
         return options
@@ -41,10 +42,18 @@ class PlanTrabajoForm extends Component{
     }
 
     updateUsuarios = value => {
-        const { onChange, onChangeAndAdd, options } = this.props
+        const { onChange, options, onChangeOptions, form } = this.props
         options.usuarios.map((user) => {
-            if (user.value === value)
-                onChangeAndAdd({ target: { value: user.value, name: 'responsable' } }, 'usuarios')
+            if (user.value === value) {
+                let aux = false;
+                form.usuarios.map( (element) => {
+                    if (element.value === value)
+                        aux = true
+                    return false
+                })
+                if (!aux)
+                    onChangeOptions({ target: { value: user.value, name: 'responsable' } }, 'usuarios')
+            }
             return false
         })
         onChange({ target: { value: value, name: 'responsable' } })
