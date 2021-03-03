@@ -198,7 +198,7 @@ class Conceptos extends Component {
                     onClickExport={() => this.exportConceptosAxios()}
                     accessToken={this.props.authUser.access_token}
                     setter={this.setConceptos}
-                    urlRender={URL_DEV + 'conceptos'}
+                    urlRender= { `${URL_DEV}v2/presupuesto/conceptos` }
                     idTable='kt_datatable_conceptos'
                     cardTable='cardTable'
                     cardTableHeader='cardTableHeader'

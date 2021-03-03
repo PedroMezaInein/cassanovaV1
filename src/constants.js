@@ -2039,6 +2039,7 @@ export const PRESUPUESTO_DISEÑO_COLUMNS = [
     {
         Header: '# Cotización',
         accessor: 'cotizacion',
+        orderable: false
     }
 ]
 
