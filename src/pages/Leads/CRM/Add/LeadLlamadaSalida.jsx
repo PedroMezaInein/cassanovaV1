@@ -210,7 +210,7 @@ class LeadLlamadaSalida extends Component {
                     bontonFunction = { (e, value) => { e.preventDefault(); this.sendWhatsapp(value) } }
                 />
                 <MensajePrincipal
-                    primerTexto={"¡EXCELENTE! TE AGRADEZCO QUE NOS TOMES EN CUENTA PARA TU PROYECTO, PUEDES INDICARME: "}
+                    primerTexto={"¡Excelente! Te agradezco que nos tomes en cuenta para tu proyecto, puedes indicarme: "}
                     primerBoldest={"¿Qué tipo de proyecto es?"}
                     boton={boton}
                     bontonFunction = { (e, value) => { e.preventDefault(); this.sendWhatsapp(value) } }
@@ -346,7 +346,7 @@ class LeadLlamadaSalida extends Component {
         return (
             <>
                 <MensajePrincipal
-                    primerBoldest={"¿EL PROYECTO SE TRATA DE DISEÑO O CONSTRUCCIÓN?"}
+                    primerBoldest={"¿El proyecto se trata de diseño o construcción?"}
                     separator={1}
                     boton={boton}
                     bontonFunction = { (e, value) => { e.preventDefault(); this.sendWhatsapp(value) } }
