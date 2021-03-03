@@ -1632,7 +1632,7 @@ class LeadInfo extends Component {
                                     <Tab.Pane eventKey="cotizacion">
                                         <Card.Header className="border-0 mt-4 pt-3">
                                             <h3 className="card-title d-flex justify-content-between">
-                                                <span className="font-weight-bolder text-dark align-self-center">Presupuesto de diseño</span>
+                                                <span className="font-weight-bolder text-dark align-self-center">Cotización de diseño</span>
                                                 {
                                                     lead ?
                                                         lead.presupuesto_diseño ?
