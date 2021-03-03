@@ -179,6 +179,7 @@ class TableForModals extends Component {
                     if (element.id.toString() === id) {
                         return element
                     }
+                return false
             });
             actions[name].function(aux)
         });
