@@ -1467,6 +1467,8 @@ export const EMPRESA_COLUMNS = [
     {
         Header: 'Opciones',
         accessor: 'actions',
+        searchable: false,
+        orderable: false
     },
     {
         Header: 'Nombre',
@@ -1483,6 +1485,8 @@ export const EMPRESA_COLUMNS = [
     {
         Header: 'Logo',
         accessor: 'logo',
+        searchable: false,
+        orderable: false
     },
 ]
 
