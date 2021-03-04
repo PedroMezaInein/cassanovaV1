@@ -942,6 +942,9 @@ export default class RVAnualInein extends Component {
                                     </View>
                                 </View>
                                 {
+                                    console.log('prouyectos', data.proyectos)
+                                }
+                                {
                                     data.proyectos.length === 0 &&
                                         <View>
                                             <Text style = { styles.bodyTextCenterBig } >
@@ -950,7 +953,8 @@ export default class RVAnualInein extends Component {
                                         </View>
                                 }
                                 {
-                                    data.proyectos.forEach((element, index) => {
+                                    data.proyectos.map((element, index) => {
+                                        console.log('ELEMENT', element, index)
                                         if(element.prospecto){
                                             return(
                                                 <View key = { index } style = { this.setStyleRowBody(index) } >
