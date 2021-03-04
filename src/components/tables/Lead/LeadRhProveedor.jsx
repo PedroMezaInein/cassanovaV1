@@ -63,7 +63,9 @@ class LeadRhProveedor extends Component {
                                     <th style={{ minWidth: "140px" }}>Fecha</th>
                                     <th style={{ minWidth: "100px" }}>Tipo</th>
                                     <th style={{ minWidth: "100px" }} className="text-center">Empresa</th>
+                                    <th style={{ minWidth: "200px" }} className="text-center">Origen</th>
                                     <th style={{ minWidth: "100px" }} className="text-center">Comentario</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -114,10 +116,18 @@ class LeadRhProveedor extends Component {
                                                                 : <span className="text-dark-75 font-weight-bolder">{lead.empresa.name}</span>
                                                         }
                                                     </td>
+                                                    <td>
+                                                        <span className="text-dark-75 font-weight-bolder d-block font-size-lg">
+                                                            { lead.origen ? lead.origen.origen : '' }
+                                                        </span>
+                                                    </td>
                                                     <td class="text-justify">
                                                         <span class="text-muted font-weight-bold font-size-sm">
                                                             {lead.comentario}
                                                         </span>
+                                                    </td>
+                                                    <td>
+                                                        
                                                     </td>
                                                 </tr>
                                             )
