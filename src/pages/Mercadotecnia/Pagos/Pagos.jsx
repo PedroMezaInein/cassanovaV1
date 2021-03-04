@@ -298,7 +298,7 @@ class Pagos extends Component {
         form['adjuntos'][item].files = aux
         this.setState({...this.state,form})
         createAlertSA2WithActionOnClose(
-            '¿Deseas agregar el archivo?',
+            '¿DESEAS AGREGAR EL ARCHIVO?',
             '',
             () => this.addAdjuntoPagosAxios(files, item),
             () => this.cleanAdjuntos(item)

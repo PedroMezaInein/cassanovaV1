@@ -13,7 +13,7 @@ import { FacturaTable } from '../../../components/tables'
 import { ComprasCard } from '../../../components/cards'
 import { Form } from 'react-bootstrap'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
-import AdjuntosForm from '../../../components/forms/AdjuntosForm'
+import {AdjuntosForm, FacturaExtranjera} from '../../../components/forms'
 import Select from '../../../components/form-components/Select'
 const $ = require('jquery');
 
@@ -24,6 +24,7 @@ class Compras extends Component {
         modalFacturas: false,
         modalAskFactura: false,
         modalSee: false,
+        modalFacturaExtranjera: false,
         title: 'Nueva compra',
         form: {
             factura: 'Sin factura',
@@ -66,6 +67,15 @@ class Compras extends Component {
                     placeholder: 'Presupuesto',
                     files: []
                 }
+            }
+        },
+        fomFacturaExtranjera:{
+            adjuntos: {
+                factura: {
+                    value: '',
+                    placeholder: 'Factura extranjera',
+                    files: []
+                },
             }
         },
         options: {
@@ -199,7 +209,7 @@ class Compras extends Component {
         form['adjuntos'][item].files = aux
         this.setState({...this.state,form})
         createAlertSA2WithActionOnClose(
-            '¿Deseas agregar el archivo?',
+            '¿DESEAS AGREGAR EL ARCHIVO?',
             '',
             () => this.addAdjuntoCompraAxios(files, item),
             () => this.cleanAdjuntos(item)
@@ -485,7 +495,14 @@ class Compras extends Component {
                 btnclass: 'info',
                 iconclass: 'flaticon-attachment',
                 action: 'adjuntos',
-                tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
+                tooltip: { id: 'adjuntos', text: 'Adjuntos'}
+            },
+            {
+                text: 'Factura&nbsp;extranjera',
+                btnclass: 'turquesa',
+                iconclass: 'flaticon-interface-10',
+                action: 'facturaExtranjera',
+                tooltip: { id: 'facturaExtranjera', text: 'Factura extranjera'},
             }
         )
         if (compra.factura) {
@@ -552,6 +569,22 @@ class Compras extends Component {
     }
     openModalDeleteAdjuntos = adjunto => {
         deleteAlert('¿SEGURO DESEAS BORRAR EL ADJUNTO?', adjunto.name, () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
+    }
+    
+    openFacturaExtranjera = compra => {
+        this.setState({
+            ...this.state,
+            modalFacturaExtranjera: true,
+            compra: compra
+        })
+    }
+    handleCloseFacturaExtranjera = () => {
+        const { modalFacturaExtranjera } = this.state
+        this.setState({
+            ...this.state,
+            modalFacturaExtranjera: !modalFacturaExtranjera,
+            compra: ''
+        })
     }
     openModalSee = compra => {
         this.setState({
@@ -886,9 +919,55 @@ class Compras extends Component {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
-    }    
+    }
+    handleChangeFacturaExtranjera = (files, item)  => {
+        const { form } = this.state
+        let aux = form.adjuntos[item].files
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        form['adjuntos'][item].value = files
+        form['adjuntos'][item].files = aux
+        this.setState({...this.state,form})
+        createAlertSA2WithActionOnClose( 
+            '¿DESEAS AGREGAR EL ARCHIVO?',
+            '',
+            () => this.addFacturaExtranjera(files, item),
+            () => this.cleanAdjuntos(item)
+        )
+    }
+    addFacturaExtranjera= async(files, item)=>{
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const data = new FormData();
+        files.map((file) => {
+            data.append(`files_name_${item}[]`, file.name)
+            data.append(`files_${item}[]`, file)
+            return ''
+        })
+        await axios.post(`${URL_DEV}compras/adjuntos`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.setState({ ...this.state })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Archivo adjuntado con éxito.')
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     render() {
-        const {modalDelete, modalFacturas, modalAdjuntos, form, options, compras, facturas, compra, data, modalSee } = this.state
+        const {modalDelete, modalFacturas, modalAdjuntos, form, options, compras, facturas, compra, data, modalSee, modalFacturaExtranjera, fomFacturaExtranjera } = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
                 <NewTableServerRender columns={COMPRAS_COLUMNS} data={compras}
@@ -902,7 +981,8 @@ class Compras extends Component {
                         'delete': { function: this.openModalDelete },
                         'facturas': { function: this.openModalFacturas },
                         'adjuntos': { function: this.openModalAdjuntos },
-                        'see': { function: this.openModalSee }
+                        'see': { function: this.openModalSee },
+                        'facturaExtranjera': { function: this.openFacturaExtranjera}
                     }}
                     elements={data.compras}
                     idTable='kt_datatable2_compras'
@@ -967,6 +1047,9 @@ class Compras extends Component {
                     <ComprasCard
                         compra={compra}
                     />
+                </Modal>
+                <Modal size="lg" title="Factura extranjera" show={modalFacturaExtranjera} handleClose={this.handleCloseFacturaExtranjera} >
+                    <FacturaExtranjera form={fomFacturaExtranjera} onChangeAdjunto = { this.handleChangeFacturaExtranjera } deleteFile = { this.openModalDeleteAdjuntos }/>
                 </Modal>
             </Layout>
         )

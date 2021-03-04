@@ -1628,3 +1628,132 @@ span.font-weight-bolder.text-hover-error:hover{
 .text-align-last-justify{
     text-align-last:justify;
 }
+.btn.btn-text-turquesa {
+    color: #0097A7;
+}
+
+.btn.btn-text-turquesa i {
+    color: #0097A7;
+}
+
+.btn.btn-text-turquesa .svg-icon svg g [fill] {
+    -webkit-transition: fill 0.3s ease;
+    transition: fill 0.3s ease;
+    fill: #0097A7;
+}
+
+.btn.btn-text-turquesa .svg-icon svg:hover g [fill] {
+    -webkit-transition: fill 0.3s ease;
+    transition: fill 0.3s ease;
+}
+
+.btn.btn-text-turquesa.dropdown-toggle:after {
+    color: #0097A7;
+}
+
+.btn.btn-text-turquesa.disabled,
+.btn.btn-text-turquesa:disabled {
+    color: #0097A7;
+}
+
+.btn.btn-text-turquesa.disabled i,
+.btn.btn-text-turquesa:disabled i {
+    color: #0097A7;
+}
+
+.btn.btn-text-turquesa.disabled .svg-icon svg g [fill],
+.btn.btn-text-turquesa:disabled .svg-icon svg g [fill] {
+    -webkit-transition: fill 0.3s ease;
+    transition: fill 0.3s ease;
+    fill: #0097A7;
+}
+
+.btn.btn-text-turquesa.disabled .svg-icon svg:hover g [fill],
+.btn.btn-text-turquesa:disabled .svg-icon svg:hover g [fill] {
+    -webkit-transition: fill 0.3s ease;
+    transition: fill 0.3s ease;
+}
+
+.btn.btn-text-turquesa.disabled.dropdown-toggle:after,
+.btn.btn-text-turquesa:disabled.dropdown-toggle:after {
+    color: #0097A7;
+}
+
+.btn.btn-hover-turquesa:hover:not(.btn-text),
+.btn.btn-hover-turquesa:focus:not(.btn-text),
+.btn.btn-hover-turquesa.focus:not(.btn-text) {
+    color: #ffffff !important;
+    background-color: #0097A7 !important;
+    border-color: #0097A7 !important;
+}
+
+.btn.btn-hover-turquesa:hover:not(.btn-text) i,
+.btn.btn-hover-turquesa:focus:not(.btn-text) i,
+.btn.btn-hover-turquesa.focus:not(.btn-text) i {
+    color: #ffffff !important;
+}
+
+.btn.btn-hover-turquesa:hover:not(.btn-text) .svg-icon svg g [fill],
+.btn.btn-hover-turquesa:focus:not(.btn-text) .svg-icon svg g [fill],
+.btn.btn-hover-turquesa.focus:not(.btn-text) .svg-icon svg g [fill] {
+    -webkit-transition: fill 0.3s ease;
+    transition: fill 0.3s ease;
+    fill: #ffffff !important;
+}
+
+.btn.btn-hover-turquesa:hover:not(.btn-text) .svg-icon svg:hover g [fill],
+.btn.btn-hover-turquesa:focus:not(.btn-text) .svg-icon svg:hover g [fill],
+.btn.btn-hover-turquesa.focus:not(.btn-text) .svg-icon svg:hover g [fill] {
+    -webkit-transition: fill 0.3s ease;
+    transition: fill 0.3s ease;
+}
+
+.btn.btn-hover-turquesa:hover:not(.btn-text).dropdown-toggle:after,
+.btn.btn-hover-turquesa:focus:not(.btn-text).dropdown-toggle:after,
+.btn.btn-hover-turquesa.focus:not(.btn-text).dropdown-toggle:after {
+    color: #ffffff !important;
+}
+
+.btn.btn-hover-turquesa:not(:disabled):not(.disabled):active:not(.btn-text),
+.btn.btn-hover-turquesa:not(:disabled):not(.disabled).active,
+.show>.btn.btn-hover-turquesa.dropdown-toggle,
+.show .btn.btn-hover-turquesa.btn-dropdown {
+    color: #ffffff !important;
+    background-color: #0097A7 !important;
+    border-color: #0097A7 !important;
+}
+
+.btn.btn-hover-turquesa:not(:disabled):not(.disabled):active:not(.btn-text) i,
+.btn.btn-hover-turquesa:not(:disabled):not(.disabled).active i,
+.show>.btn.btn-hover-turquesa.dropdown-toggle i,
+.show .btn.btn-hover-turquesa.btn-dropdown i {
+    color: #ffffff !important;
+}
+
+.btn.btn-hover-turquesa:not(:disabled):not(.disabled):active:not(.btn-text) .svg-icon svg g [fill],
+.btn.btn-hover-turquesa:not(:disabled):not(.disabled).active .svg-icon svg g [fill],
+.show>.btn.btn-hover-turquesa.dropdown-toggle .svg-icon svg g [fill],
+.show .btn.btn-hover-turquesa.btn-dropdown .svg-icon svg g [fill] {
+    -webkit-transition: fill 0.3s ease;
+    transition: fill 0.3s ease;
+    fill: #ffffff !important;
+}
+
+.btn.btn-hover-turquesa:not(:disabled):not(.disabled):active:not(.btn-text) .svg-icon svg:hover g [fill],
+.btn.btn-hover-turquesa:not(:disabled):not(.disabled).active .svg-icon svg:hover g [fill],
+.show>.btn.btn-hover-turquesa.dropdown-toggle .svg-icon svg:hover g [fill],
+.show .btn.btn-hover-turquesa.btn-dropdown .svg-icon svg:hover g [fill] {
+    -webkit-transition: fill 0.3s ease;
+    transition: fill 0.3s ease;
+}
+
+.btn.btn-hover-turquesa:not(:disabled):not(.disabled):active:not(.btn-text).dropdown-toggle:after,
+.btn.btn-hover-turquesa:not(:disabled):not(.disabled).active.dropdown-toggle:after,
+.show>.btn.btn-hover-turquesa.dropdown-toggle.dropdown-toggle:after,
+.show .btn.btn-hover-turquesa.btn-dropdown.dropdown-toggle:after {
+    color: #ffffff !important;
+}
+
+.btn.btn-hover-turquesa.btn-clean {
+    border: 0 !important;
+}

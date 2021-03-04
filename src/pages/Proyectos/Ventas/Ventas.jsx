@@ -9,7 +9,7 @@ import { waitAlert, errorAlert, createAlert, printResponseErrorAlert, deleteAler
 import Layout from '../../../components/layout/layout'
 import { Button, FileInput } from '../../../components/form-components'
 import { Modal, ModalDelete } from '../../../components/singles'
-import { FacturaForm, AdjuntosForm } from '../../../components/forms'
+import { FacturaForm, AdjuntosForm, FacturaExtranjera } from '../../../components/forms'
 import { FacturaTable } from '../../../components/tables'
 import { Form } from 'react-bootstrap'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
@@ -26,6 +26,7 @@ class Ventas extends Component {
         // modalAskFactura: false,
         modalAdjuntos: false,
         modalSee: false,
+        modalFacturaExtranjera: false,
         porcentaje: 0,
         title: 'Nueva venta',
         ventas: [],
@@ -94,7 +95,16 @@ class Ventas extends Component {
                     files: []
                 }
             }
-        }
+        },
+        fomFacturaExtranjera:{
+            adjuntos: {
+                factura: {
+                    value: '',
+                    placeholder: 'Factura extranjera',
+                    files: []
+                },
+            }
+        },
     }
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
@@ -190,7 +200,7 @@ class Ventas extends Component {
         form['adjuntos'][item].files = aux
         this.setState({...this.state,form})
         createAlertSA2WithActionOnClose(
-            '¿Deseas agregar el archivo?',
+            '¿DESEAS AGREGAR EL ARCHIVO?',
             '',
             () => this.addAdjuntoVentaAxios(files, item),
             () => this.cleanAdjuntos(item)
@@ -481,6 +491,13 @@ class Ventas extends Component {
                 iconclass: 'flaticon-attachment',
                 action: 'adjuntos',
                 tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
+            },
+            {
+                text: 'Factura&nbsp;extranjera',
+                btnclass: 'turquesa',
+                iconclass: 'flaticon-interface-10',
+                action: 'facturaExtranjera',
+                tooltip: { id: 'facturaExtranjera', text: 'Factura extranjera'},
             }
         )
         if (venta.factura) {
@@ -564,6 +581,23 @@ class Ventas extends Component {
     openModalDeleteAdjuntos = adjunto => {
         deleteAlert('¿SEGURO DESEAS BORRAR EL ADJUNTO?', adjunto.name, () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
     }
+    
+    openFacturaExtranjera = venta => {
+        this.setState({
+            ...this.state,
+            modalFacturaExtranjera: true,
+            venta: venta
+        })
+    }
+    handleCloseFacturaExtranjera = () => {
+        const { modalFacturaExtranjera } = this.state
+        this.setState({
+            ...this.state,
+            modalFacturaExtranjera: !modalFacturaExtranjera,
+            venta: ''
+        })
+    }
+
     openModalSee = venta => {
         this.setState({
             ...this.state,
@@ -950,8 +984,54 @@ class Ventas extends Component {
             form
         })
     }
+    handleChangeFacturaExtranjera = (files, item)  => {
+        const { form } = this.state
+        let aux = form.adjuntos[item].files
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        form['adjuntos'][item].value = files
+        form['adjuntos'][item].files = aux
+        this.setState({...this.state,form})
+        createAlertSA2WithActionOnClose( 
+            '¿DESEAS AGREGAR EL ARCHIVO?',
+            '',
+            () => this.addFacturaExtranjera(files, item),
+            () => this.cleanAdjuntos(item)
+        )
+    }
+    addFacturaExtranjera= async(files, item)=>{
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const data = new FormData();
+        files.map((file) => {
+            data.append(`files_name_${item}[]`, file.name)
+            data.append(`files_${item}[]`, file)
+            return ''
+        })
+        await axios.post(`${URL_DEV}ventas/adjuntos`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.getVentasAxios()
+                this.setState({ ...this.state })
+                doneAlert('Archivo adjuntado con éxito.')
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     render() {
-        const { modalDelete, modalFacturas, modalAdjuntos, options, form, ventas, venta, facturas, data, formeditado, modalSee, active } = this.state
+        const { modalDelete, modalFacturas, modalAdjuntos, options, form, ventas, venta, facturas, data, formeditado, modalSee, active, modalFacturaExtranjera, fomFacturaExtranjera } = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
                 <NewTableServerRender columns={VENTAS_COLUMNS} data={ventas}
@@ -967,6 +1047,7 @@ class Ventas extends Component {
                         // 'bills': { function: this.openModalAskFactura },
                         'adjuntos': { function: this.openModalAdjuntos },
                         'see': { function: this.openModalSee },
+                        'facturaExtranjera': { function: this.openFacturaExtranjera},
                     }}
                     elements={data.ventas}
                     idTable='kt_datatable2_ventas'
@@ -1049,6 +1130,9 @@ class Ventas extends Component {
                 </Modal>
                 <Modal size="lg" title="Ventas" show={modalSee} handleClose={this.handleCloseSee} >
                     <VentasCard venta={venta} />
+                </Modal>
+                <Modal size="lg" title="Factura extranjera" show={modalFacturaExtranjera} handleClose={this.handleCloseFacturaExtranjera} >
+                    <FacturaExtranjera form={fomFacturaExtranjera} onChangeAdjunto = { this.handleChangeFacturaExtranjera } deleteFile = { this.openModalDeleteAdjuntos }/>
                 </Modal>
             </Layout>
         )
