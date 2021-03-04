@@ -473,7 +473,7 @@ class Herramienta extends Component {
                     }
                     accessToken={this.props.authUser.access_token}
                     setter={this.setHerramientas}
-                    urlRender={URL_DEV + 'herramientas'}
+                    urlRender = { `${URL_DEV}v2/proyectos/herramientas` }
                     idTable='kt_datatable_herramientas'
                     cardTable='cardTable'
                     cardTableHeader='cardTableHeader'
