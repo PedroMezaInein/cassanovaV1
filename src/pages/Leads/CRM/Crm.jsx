@@ -1136,17 +1136,15 @@ class Crm extends Component {
     }
 
     addRRHHP = async () => {
-        const { lead, formRRHHP } = this.state
+        const { formRRHHP } = this.state
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.post(URL_DEV + 'crm/table/lead-rh-proveedor' + lead.id, formRRHHP, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(URL_DEV + 'crm/table/lead-rh-proveedor', formRRHHP, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                this.getUltimosIngresados()
-                this.getSinContactar()
-                this.getUltimosContactos()
+                this.getLeadsRhProveedores();
                 this.setState({
                     ...this.state,
-                    formRRHHP,
+                    formRRHHP: this.clearFormRRHHP(),
                     modal_formRRHHP: false
                 })
                 doneAlert('Fue agregado con éxito');
@@ -1366,7 +1364,6 @@ class Crm extends Component {
         })
         return formRRHHP;
     }
-
 
     handleCloseFormRRHHP = () => {
         const { modal_formRRHHP } = this.state
@@ -1905,10 +1902,10 @@ class Crm extends Component {
                                                 : ''
                                         }
                                         <div className="col-md-1 text-center" onClick={(e) => { e.preventDefault(); this.changeActiveTable(activeTable) }} >
-                                            <span className="btn btn-light-primary px-6 font-weight-bold">Buscar</span>
+                                            <span className="btn btn-light-primary px-6 font-weight-bold mt-md-0 mt-2">Buscar</span>
                                         </div>
                                         <div className="col-md-1 text-center" onClick={this.cleanForm} >
-                                            <span className="btn btn-light-danger px-6 font-weight-bold">Limpiar</span>
+                                            <span className="btn btn-light-danger px-6 font-weight-bold mt-md-0 mt-2">Limpiar</span>
                                         </div>
                                     </div>
                                 </div>
