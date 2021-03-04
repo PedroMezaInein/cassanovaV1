@@ -181,7 +181,9 @@ class Crm extends Component {
         modal_formRRHHP:false,
         showForm: false,
         itemsPerPage: 5,
-        activePage: 1
+        activePage: 1,
+        title: 'Nuevo RRHH O PROVEEDOR',
+        formeditado:0,
     }
 
     componentDidMount() {
@@ -1156,6 +1158,29 @@ class Crm extends Component {
             console.log(error, 'error')
         })
     }
+
+    editRRHHP = async () => {
+        const { access_token } = this.props.authUser
+        const { form, lead, formRRHHP} = this.state
+        waitAlert()
+        await axios.patch(URL_DEV + 'crm/table/lead-rh-proveedor', lead.id, formRRHHP, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.getLeadsRhProveedores();
+                this.setState({
+                    ...this.state,
+                    formRRHHP: this.clearFormRRHHP(),
+                    modal_formRRHHP: false
+                })
+                doneAlert('Fue agregado con éxito');
+                this.getLeadsWeb()
+            },
+            (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     refreshActualTable = (activeTable) => {
         switch (activeTable) {
             case 'rh-proveedores':
@@ -1340,6 +1365,7 @@ class Crm extends Component {
         this.getOptionsAxiosRRHHPP()
         this.setState({
             ...this.state,
+            formeditado: 0,
             modal_formRRHHP: true,
             formRRHHP: this.clearFormRRHHP(),
         })
@@ -1369,7 +1395,8 @@ class Crm extends Component {
         const { modal_formRRHHP } = this.state
         this.setState({
             ...this.state,
-            modal_formRRHHP: !modal_formRRHHP
+            modal_formRRHHP: !modal_formRRHHP,
+            title: 'Nuevo RRHH O PROVEEDOR',
         })
     }
 
@@ -1402,6 +1429,33 @@ class Crm extends Component {
         this.setState({
             ...this.state,
             modal_editar: false,
+            lead: ''
+        })
+    }
+
+    openModalEditarRRHHP = lead => {
+        this.getOptionsAxiosRRHHPP()
+        const { formRRHHP } = this.state
+        formRRHHP.fecha = new Date(lead.created_at)
+        formRRHHP.nombre = lead.nombre.toUpperCase()
+        formRRHHP.empresa = lead.empresa_id.toString()
+        formRRHHP.origen = lead.origen.id.toString()
+        formRRHHP.comentario = lead.comentario
+        formRRHHP.opcionrhp = lead.proveedor===1?'Proveedor':'RRHH'
+        this.setState({
+            ...this.state,
+            lead: lead,
+            formRRHHP,
+            formeditado: 1,
+            modal_formRRHHP: true,
+            title: 'EDITAR RRHH O PROVEEDOR'
+        })
+    }
+
+    handleCloseModalEditarRRHHP = () => {
+        this.setState({
+            ...this.state,
+            modal_formRRHHP: false,
             lead: ''
         })
     }
@@ -1713,10 +1767,21 @@ class Crm extends Component {
             </tr>
         )
     }
+
+    onSubmitRRHHPP = e => {
+        e.preventDefault()
+        const { title } = this.state
+        waitAlert()
+        if (title === 'EDITAR RRHH O PROVEEDOR')
+            this.editRRHHP()
+        else
+            this.addRRHHP()
+    }
+
     render() {
         const { ultimos_contactados, prospectos_sin_contactar, ultimos_ingresados, lead_web, activeTable, leads_en_contacto, leads_en_negociacion, modal_one_lead,
             leads_contratados, leads_cancelados, leads_detenidos, modal_agendar, form, lead, lead_rh_proveedores, options, modal_editar, formEditar, modal_historial,
-            formHistorial, itemsPerPage, activePage, leads_rp, modal_formRRHHP, formRRHHP} = this.state
+            formHistorial, itemsPerPage, activePage, leads_rp, modal_formRRHHP, formRRHHP, title, formeditado} = this.state
         return (
             <Layout active='leads' {...this.props} >
                 <Row>
@@ -1917,6 +1982,9 @@ class Crm extends Component {
                                             onClickPrev={this.prevPageRhProveedor}
                                             sendEmail={this.sendEmailNewWebLead}
                                             openModalFormRRHHP={this.openModalFormRRHHP}
+                                            options = { options }
+                                            changeOrigen = { this.changeOrigen }
+                                            openModalEditarRRHHP = { this.openModalEditarRRHHP}
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="web">
@@ -2306,12 +2374,13 @@ class Crm extends Component {
                         </Tab.Content>
                     </Tab.Container>
                 </Modal>
-                <Modal size="xl" title="Nuevo RRHH O PROVEEDOR" show={modal_formRRHHP} handleClose={this.handleCloseFormRRHHP} >
+                <Modal size="xl" title={title} show={modal_formRRHHP} handleClose={this.handleCloseFormRRHHP} >
                     <FormProveedoresRRHH
                         onChange={this.onChangeRRHHP}
                         onSubmit={this.addRRHHP}
                         form={formRRHHP}
                         options={options}
+                        formeditado={formeditado}
                     /> 
                 </Modal>
             </Layout>
