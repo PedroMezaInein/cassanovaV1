@@ -115,6 +115,8 @@ class RangeCalendar extends Component {
                 direction = "horizontal"
                 locale = { es }
                 initialFocusedRange = { [0,0] }
+                startDatePlaceholder = "Fecha de inicio"
+                endDatePlaceholder="Fecha Final"
                 staticRanges = {
                     [
                         {

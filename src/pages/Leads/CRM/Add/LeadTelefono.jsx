@@ -298,6 +298,21 @@ class LeadTelefono extends Component {
                             }
                             {...this.props}>
                             <div className="form-group row form-group-marginless mt-4 mb-0">
+                                <div className="col-md-12">
+                                    <InputGray
+                                        withtaglabel={1}
+                                        withtextlabel={1}
+                                        withplaceholder={1}
+                                        withicon={0}
+                                        withformgroup={1}
+                                        placeholder="COMENTARIO"
+                                        name="comentario"
+                                        value={form.comentario}
+                                        onChange={this.onChange}
+                                        rows={3}
+                                        as='textarea'
+                                    />
+                                </div>
                                 <div className="col-md-4">
                                     <InputGray
                                         withtaglabel={1}
@@ -319,7 +334,7 @@ class LeadTelefono extends Component {
                                         iconclass="fas fa-mobile-alt"
                                         name="telefono"
                                         value={form.telefono}
-                                        requirevalidation={1}
+                                        requirevalidation={0}
                                         onChange={this.onChange}
                                         patterns={TEL}
                                         thousandseparator={false}
@@ -447,25 +462,6 @@ class LeadTelefono extends Component {
                                             />
                                         </div>
                                         : ''
-                                }
-                                {
-                                    form.email !== '' ?
-                                        <div className="col-md-12">
-                                            <InputGray
-                                                withtaglabel={1}
-                                                withtextlabel={1}
-                                                withplaceholder={1}
-                                                withicon={0}
-                                                withformgroup={1}
-                                                placeholder="COMENTARIO"
-                                                name="comentario"
-                                                value={form.comentario}
-                                                onChange={this.onChange}
-                                                rows={3}
-                                                as='textarea'
-                                            />
-                                        </div>
-                                    : ''
                                 }
                             </div>
                             <div className="card-footer px-0 pb-0 pt-5 text-right">
