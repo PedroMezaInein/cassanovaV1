@@ -308,26 +308,6 @@ class PlanTrabajo extends Component {
         })
     }
 
-    onChangeAndAdd = (e, arreglo) => {
-        const { value } = e.target
-        const { options, form } = this.state
-        let auxArray = form[arreglo]
-        let aux = []
-        options[arreglo].find(function (_aux) {
-            if (_aux.value.toString() === value.toString())
-                auxArray.push(_aux)
-            else
-                aux.push(_aux)
-            return false
-        })
-        options[arreglo] = aux
-        form[arreglo] = auxArray
-        this.setState({
-            ...this.state,
-            form,
-            options
-        })
-    }
 
     handleChangeCreate = newValue => {
         const { form } = this.state
@@ -585,21 +565,38 @@ class PlanTrabajo extends Component {
         }
     }
 
-    deleteOption = (option, arreglo) => {
-        const { form, options } = this.state
-        let aux = []
-        form[arreglo].map((element, key) => {
-            if (option.value.toString() !== element.value.toString())
-                aux.push(element)
-            else
-                options[arreglo].push(element)
+    deleteOption = (element, array) => {
+        let { form } = this.state
+        let auxForm = []
+        form[array].map((elemento, key) => {
+            if (element !== elemento)
+                auxForm.push(elemento)
             return false
         })
-        form[arreglo] = aux
+        form[array] = auxForm
         this.setState({
             ...this.state,
-            options,
             form
+        })
+    }
+
+    onChangeOptions = (e, arreglo) => {
+        const { value } = e.target
+        const { form, options } = this.state
+        let auxArray = form[arreglo]
+        let aux = []
+        options[arreglo].find(function (_aux) {
+            if (_aux.value.toString() === value.toString())
+                auxArray.push(_aux)
+            else 
+                aux.push(_aux)
+            return false
+        })
+        form[arreglo] = auxArray
+        this.setState({
+            ...this.state,
+            form,
+            options
         })
     }
 
@@ -705,9 +702,9 @@ class PlanTrabajo extends Component {
                 </Card>
                 <Modal size="xl" title={title} show={modal.form} handleClose={this.handleCloseForm}>
                     <PlanTrabajoForm form = { form } onChange = { this.onChange } options = { options } onSubmit = { this.onSubmit }
-                        onChangeAndAdd = { this.onChangeAndAdd } deleteOption = { this.deleteOption } formeditado = { formeditado }
+                        deleteOption = { this.deleteOption } formeditado = { formeditado }
                         handleChangeCreate = { this.handleChangeCreate } handleCreateOption = { this.handleCreateOption } 
-                        title = { title } deletePlanAlert = { this.deletePlanAlert } />
+                        title = { title } deletePlanAlert = { this.deletePlanAlert } onChangeOptions={this.onChangeOptions} />
                 </Modal>
             </Layout>
         )
