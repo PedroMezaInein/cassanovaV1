@@ -13,7 +13,7 @@ class FormProveedoresRRHH extends Component {
         onChange({ target: { value: value, name: 'origen' } })
     }
     render() {
-        const { form, onChange, options, onSubmit } = this.props
+        const { form, onChange, options, onSubmit, formeditado } = this.props
         return (
             <Form id="form-rrhh-p"
                 onSubmit={
@@ -34,6 +34,7 @@ class FormProveedoresRRHH extends Component {
                         <div className="form-group row form-group-marginless mt-4 mb-0">
                             <div className="col-md-4">
                                 <InputGray
+                                    formeditado={formeditado}
                                     withtaglabel={1}
                                     withtextlabel={1}
                                     withplaceholder={1}
@@ -50,6 +51,7 @@ class FormProveedoresRRHH extends Component {
                             </div>
                             <div className="col-md-4">
                                 <SelectSearchGray
+                                    formeditado={formeditado}
                                     withtaglabel={1}
                                     withtextlabel={1}
                                     name='empresa'
@@ -63,6 +65,7 @@ class FormProveedoresRRHH extends Component {
                             </div>
                             <div className="col-md-4">
                                 <SelectSearchGray
+                                    formeditado={formeditado}
                                     withtaglabel={1}
                                     withtextlabel={1}
                                     name='origen'
@@ -79,6 +82,7 @@ class FormProveedoresRRHH extends Component {
                         <div className="form-group row form-group-marginless">
                             <div className="col-md-4 align-self-center">
                                 <RadioGroupGray
+                                    formeditado={formeditado}
                                     placeholder="Selecciona el tipo"
                                     name={'opcionrhp'}
                                     onChange={onChange}
@@ -99,6 +103,7 @@ class FormProveedoresRRHH extends Component {
                             </div>
                             <div className="col-md-8">
                                 <InputGray
+                                    formeditado={formeditado}
                                     withtaglabel={1}
                                     withtextlabel={1}
                                     withplaceholder={1}
