@@ -1163,7 +1163,7 @@ class Crm extends Component {
         const { access_token } = this.props.authUser
         const { lead, formRRHHP} = this.state
         waitAlert()
-        await axios.patch(URL_DEV + 'crm/table/lead-rh-proveedor', lead.id, formRRHHP, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.put(URL_DEV + 'crm/table/lead-rh-proveedor/update/' + lead.id, formRRHHP, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 this.getLeadsRhProveedores();
                 this.setState({
