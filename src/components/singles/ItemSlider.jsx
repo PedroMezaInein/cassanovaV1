@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import { DropZone } from '../form-components'
-import { Small} from '../texts'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../functions/routers"
+import { ShowFile } from './ShowFile';
 
 class ItemSlider extends Component {
 
@@ -162,7 +162,8 @@ class ItemSlider extends Component {
                                 :
                                 items.length > 0 ?
                                     <>
-                                        <div>
+                                        <ShowFile item = { items[active] } />
+                                        {/* <div>
                                             {
                                                 (items[active].name.substring(items[active].name.length - 3)).toUpperCase() === 'PDF' ?
                                                     <div className="w-100 pb-2">
@@ -188,7 +189,7 @@ class ItemSlider extends Component {
                                                                 </div>
                                                             </div>
                                             }
-                                        </div>
+                                        </div> */}
                                         {
                                             deleteFile && items[active].id ?
                                                 <div className="d-flex justify-content-center">
