@@ -1161,7 +1161,7 @@ class Crm extends Component {
 
     editRRHHP = async () => {
         const { access_token } = this.props.authUser
-        const { form, lead, formRRHHP} = this.state
+        const { lead, formRRHHP} = this.state
         waitAlert()
         await axios.patch(URL_DEV + 'crm/table/lead-rh-proveedor', lead.id, formRRHHP, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -1171,7 +1171,7 @@ class Crm extends Component {
                     formRRHHP: this.clearFormRRHHP(),
                     modal_formRRHHP: false
                 })
-                doneAlert('Fue agregado con éxito');
+                doneAlert('Fue editado con éxito');
                 this.getLeadsWeb()
             },
             (error) => { printResponseErrorAlert(error) }
@@ -2377,7 +2377,7 @@ class Crm extends Component {
                 <Modal size="xl" title={title} show={modal_formRRHHP} handleClose={this.handleCloseFormRRHHP} >
                     <FormProveedoresRRHH
                         onChange={this.onChangeRRHHP}
-                        onSubmit={this.addRRHHP}
+                        onSubmit={this.onSubmitRRHHPP}
                         form={formRRHHP}
                         options={options}
                         formeditado={formeditado}
