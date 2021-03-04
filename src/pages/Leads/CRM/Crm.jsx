@@ -1343,9 +1343,31 @@ class Crm extends Component {
         this.setState({
             ...this.state,
             modal_formRRHHP: true,
-            formRRHHP: this.clearForm(),
+            formRRHHP: this.clearFormRRHHP(),
         })
     }
+
+    clearFormRRHHP = () => {
+        const { formRRHHP } = this.state
+        let aux = Object.keys(formRRHHP)
+        aux.map((element) => {
+            switch (element) {
+                case 'opcionrhp':
+                    formRRHHP[element] = 'Proveedor'
+                    break;
+                case 'fecha':
+                    formRRHHP[element] = new Date()
+                    break;
+                default:
+                    formRRHHP[element] = ''
+                    break;
+            }
+            return false
+        })
+        return formRRHHP;
+    }
+
+
     handleCloseFormRRHHP = () => {
         const { modal_formRRHHP } = this.state
         this.setState({
