@@ -560,6 +560,7 @@ class ReporteVentas extends Component {
         // ORIGEN DE LEADS MENSUAL
         auxLabels = []
         aux = []
+        auxColors = []
         result.origenes_meses.forEach((mes, index) => {
             mes.forEach(origen => {
                 auxLabels.push(origen.nombre+';'+meses[index])
@@ -581,6 +582,7 @@ class ReporteVentas extends Component {
                 maxBarThickness: 200
             }]
         }
+        console.log(data.origenesComparativa.datasets, 'DATRASETR')
         // SERVICIOS SOLICITADOS
         aux = []
         auxPercent = []
@@ -1344,7 +1346,7 @@ class ReporteVentas extends Component {
                                     : <></>
                                 }
                                 {
-                                    this.isActivePane(data.origenesComparativa) ?
+                                    this.isActivePane(data.origenesOrganicos) ?
                                         <Tab.Pane eventKey='4'>
                                             {this.setButtons('3', '5', null, empresa, '04', 'ORIGEN DE LEADS ORGÁNICOS')}
                                             <Bar ref={this.chartOrigenesOrganicosReference} data={data.origenesOrganicos} options = { percentBar } />

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { OverlayTrigger, Tooltip, Dropdown } from 'react-bootstrap'
 import { setDateTableLG } from '../../../functions/setters'
 class LeadRhProveedor extends Component {
     isActiveButton(direction) {
@@ -39,7 +39,7 @@ class LeadRhProveedor extends Component {
         return true
     }
     render() {
-        const { leads, onClickPrev, onClickNext, openModalFormRRHHP} = this.props
+        const { leads, onClickPrev, onClickNext, openModalFormRRHHP, options, changeOrigen,openModalEditarRRHHP} = this.props
         return (
             <>
                 <div className="d-flex justify-content-end">
@@ -60,10 +60,12 @@ class LeadRhProveedor extends Component {
                                     <th style={{ minWidth: "100px" }} className="pl-7">
                                         <span>Nombre</span>
                                     </th>
-                                    <th style={{ minWidth: "140px" }}>Fecha</th>
+                                    <th style={{ minWidth: "151px" }}>Fecha</th>
                                     <th style={{ minWidth: "100px" }}>Tipo</th>
                                     <th style={{ minWidth: "100px" }} className="text-center">Empresa</th>
+                                    <th style={{ minWidth: "150px" }} className="text-center">Origen</th>
                                     <th style={{ minWidth: "100px" }} className="text-center">Comentario</th>
+                                    <th></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -114,10 +116,63 @@ class LeadRhProveedor extends Component {
                                                                 : <span className="text-dark-75 font-weight-bolder">{lead.empresa.name}</span>
                                                         }
                                                     </td>
+                                                    <td className="text-center">
+                                                            <div className="text-dark-75 font-weight-bolder font-size-lg">
+                                                                {
+                                                                    lead.origen ?
+                                                                        <span className="text-dark-75 font-weight-bolder d-block font-size-lg">
+                                                                            <Dropdown>
+                                                                                <Dropdown.Toggle
+                                                                                    style={
+                                                                                        {
+                                                                                            backgroundColor: '#F3F6F9', color: '#80808F', border: 'transparent', padding: '2.8px 5.6px',
+                                                                                            width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '11.5px',
+                                                                                            fontWeight: 500
+                                                                                        }
+                                                                                    }
+                                                                                >
+                                                                                    {lead.origen.origen.toUpperCase()}
+                                                                                </Dropdown.Toggle>
+                                                                                <Dropdown.Menu className="p-0">
+                                                                                    <Dropdown.Header>
+                                                                                        <span className="font-size-sm">Elige una opción</span>
+                                                                                    </Dropdown.Header>
+                                                                                    {
+                                                                                        options.origenes.map((origen, key) => {
+                                                                                            return (
+                                                                                                <div key={key}>
+                                                                                                    <Dropdown.Item className="p-0" key={key} onClick={() => { changeOrigen(origen.value, lead.id) }} >
+                                                                                                        <span className="navi-link w-100">
+                                                                                                            <span className="navi-text">
+                                                                                                                <span className="label label-xl label-inline  text-gray rounded-0 w-100 font-weight-bolder">
+                                                                                                                    {origen.text}
+                                                                                                                </span>
+                                                                                                            </span>
+                                                                                                        </span>
+                                                                                                    </Dropdown.Item>
+                                                                                                    <Dropdown.Divider className="m-0" style={{ borderTop: '1px solid #fff' }} />
+                                                                                                </div>
+                                                                                            )
+                                                                                        })
+                                                                                    }
+                                                                                </Dropdown.Menu>
+                                                                            </Dropdown>
+                                                                        </span>
+                                                                        : ''
+                                                                }
+                                                            </div>
+                                                        </td>
                                                     <td class="text-justify">
                                                         <span class="text-muted font-weight-bold font-size-sm">
                                                             {lead.comentario}
                                                         </span>
+                                                    </td>
+                                                    <td class="text-center">
+                                                    <OverlayTrigger overlay={<Tooltip>EDITAR INFORMACIÓN GENERAL</Tooltip>}>
+                                                        <span onClick={(e) => { openModalEditarRRHHP(lead) }}className="btn btn-default btn-icon btn-sm">
+                                                            <i className="fas fa-edit icon-md"></i>
+                                                        </span>
+                                                    </OverlayTrigger>
                                                     </td>
                                                 </tr>
                                             )
