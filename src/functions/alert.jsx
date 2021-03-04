@@ -198,6 +198,11 @@ export function createAlertSA2WithActionOnClose(title, text, action, closeAction
         confirmButtonText: 'ACEPTAR',
         cancelButtonText: 'CANCELAR',
         reverseButtons: true,
+        customClass: {
+            content: text?text:'d-none',
+            confirmButton: 'btn-light-primary-sweetalert2',
+            cancelButton:'btn-light-gray-sweetalert2'
+        }
     }).then((result) => {
         if(result.dismiss)
             closeAction()
