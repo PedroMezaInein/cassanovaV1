@@ -30,7 +30,7 @@ class Login extends Component{
                             </div>
                         </div>
                     </div>
-                    <div className="login-aside order-1 order-lg-2 bgi-no-repeat">
+                    <div className="login-aside order-1 order-lg-2 bgi-no-repeat d-none d-md-block">
                         <div className="login-conteiner bgi-no-repeat" style ={ { backgroundImage: "url('/architecture-plan.jpg')" } }>
                         </div>
                     </div>
