@@ -14,7 +14,7 @@ import { FacturaTable } from '../../../components/tables'
 import { Form } from 'react-bootstrap'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import Select from '../../../components/form-components/Select'
-import AdjuntosForm from '../../../components/forms/AdjuntosForm'
+import { AdjuntosForm, FacturaExtranjera} from '../../../components/forms'
 import { IngresosCard } from '../../../components/cards'
 import { Tab, Tabs } from 'react-bootstrap'
 const $ = require('jquery');
@@ -30,6 +30,7 @@ class Ingresos extends Component {
         // modalAskFacturas: false,
         modalAdjuntos: false,
         modalSee: false,
+        modalFacturaExtranjera: false,
         facturas: [],
         porcentaje: 0,
         data: {
@@ -65,6 +66,15 @@ class Ingresos extends Component {
                     placeholder: 'Presupuesto',
                     files: []
                 }
+            }
+        },
+        fomFacturaExtranjera:{
+            adjuntos: {
+                factura: {
+                    value: '',
+                    placeholder: 'Factura extranjera',
+                    files: []
+                },
             }
         },
         formeditado: 0,
@@ -167,7 +177,7 @@ class Ingresos extends Component {
         form['adjuntos'][item].files = aux
         this.setState({...this.state,form})
         createAlertSA2WithActionOnClose(
-            '¿Deseas agregar el archivo?',
+            '¿DESEAS AGREGAR EL ARCHIVO?',
             '',
             () => this.addAdjuntoEgresoAxios(files, item),
             () => this.cleanAdjuntos(item)
@@ -459,6 +469,13 @@ class Ingresos extends Component {
                 iconclass: 'flaticon-attachment',
                 action: 'adjuntos',
                 tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
+            },
+            {
+                text: 'Factura&nbsp;extranjera',
+                btnclass: 'turquesa',
+                iconclass: 'flaticon-interface-10',
+                action: 'facturaExtranjera',
+                tooltip: { id: 'facturaExtranjera', text: 'Factura extranjera'},
             }
         )
         if (ingreso.factura) {
@@ -573,7 +590,21 @@ class Ingresos extends Component {
     openModalDeleteAdjuntos = adjunto => {
         deleteAlert('¿SEGURO DESEAS BORRAR EL ADJUNTO?', adjunto.name, () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
     }
-
+    openFacturaExtranjera = ingreso => {
+        this.setState({
+            ...this.state,
+            modalFacturaExtranjera: true,
+            ingreso: ingreso
+        })
+    }
+    handleCloseFacturaExtranjera = () => {
+        const { modalFacturaExtranjera } = this.state
+        this.setState({
+            ...this.state,
+            modalFacturaExtranjera: !modalFacturaExtranjera,
+            ingreso: ''
+        })
+    }
     openModalSee = ingreso => {
         this.setState({
             ...this.state,
@@ -903,8 +934,53 @@ class Ingresos extends Component {
             form
         })
     }
+    handleChangeFacturaExtranjera = (files, item)  => {
+        const { form } = this.state
+        let aux = form.adjuntos[item].files
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        form['adjuntos'][item].value = files
+        form['adjuntos'][item].files = aux
+        this.setState({...this.state,form})
+        createAlertSA2WithActionOnClose( 
+            '¿DESEAS AGREGAR EL ARCHIVO?',
+            '',
+            () => this.addFacturaExtranjera(files, item),
+            () => this.cleanAdjuntos(item)
+        )
+    }
+    addFacturaExtranjera= async(files, item)=>{
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const data = new FormData();
+        files.map((file) => {
+            data.append(`files_name_${item}[]`, file.name)
+            data.append(`files_${item}[]`, file)
+            return ''
+        })
+        await axios.post(`${URL_DEV}ingresos/adjuntos`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.getIngresosAxios()
+                this.setState({ ...this.state })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Archivo adjuntado con éxito.')
+            }, (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     render() {
-        const { ingresos, form, options, modalDelete, modalFacturas, modalAdjuntos, facturas, data, formeditado, modalSee, ingreso, active } = this.state
+        const { ingresos, form, options, modalDelete, modalFacturas, modalAdjuntos, facturas, data, formeditado, modalSee, ingreso, active, modalFacturaExtranjera, fomFacturaExtranjera } = this.state
         return (
             <Layout active={'administracion'}  {...this.props}>
                 <NewTableServerRender columns={INGRESOS_COLUMNS} data={ingresos}
@@ -920,6 +996,7 @@ class Ingresos extends Component {
                         // 'askFacturas': { function: this.openModalAskFactura },
                         'adjuntos': { function: this.openModalAdjuntos },
                         'see': { function: this.openModalSee },
+                        'facturaExtranjera': { function: this.openFacturaExtranjera}
                     }}
                     elements={data.ingresos}
                     exportar_boton={true}
@@ -1007,6 +1084,9 @@ class Ingresos extends Component {
                 </Modal>
                 <Modal size="lg" title="Ingreso" show={modalSee} handleClose={this.handleCloseSee} >
                     <IngresosCard ingreso={ingreso} />
+                </Modal>
+                <Modal size="lg" title="Factura extranjera" show={modalFacturaExtranjera} handleClose={this.handleCloseFacturaExtranjera} >
+                    <FacturaExtranjera form={fomFacturaExtranjera} onChangeAdjunto = { this.handleChangeFacturaExtranjera } deleteFile = { this.openModalDeleteAdjuntos }/>
                 </Modal>
             </Layout>
         )
