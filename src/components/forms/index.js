@@ -86,6 +86,7 @@ import planTrabajoForm from './mercadotecnia/PlanTrabajoForm'
 import rolesMercadotecniaForm from './catalogos/RolesMercadotecniaForm'
 import pagosForm from './mercadotecnia/PagosForm'
 import agendarReunionGoogle from './leads/AgendarReunionGoogle'
+import formProveedoresRRHH from './leads/FormProveedoresRRHH'
 
 export const RegisterUserForm = registerUserForm
 export const EmpresaForm = empresaForm
@@ -175,3 +176,4 @@ export const PlanTrabajoForm = planTrabajoForm
 export const RolesMercadotecniaForm = rolesMercadotecniaForm
 export const PagosForm = pagosForm
 export const AgendarReunionGoogle = agendarReunionGoogle
+export const FormProveedoresRRHH = formProveedoresRRHH

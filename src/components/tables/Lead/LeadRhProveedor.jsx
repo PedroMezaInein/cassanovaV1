@@ -39,9 +39,14 @@ class LeadRhProveedor extends Component {
         return true
     }
     render() {
-        const { leads, onClickPrev, onClickNext } = this.props
+        const { leads, onClickPrev, onClickNext, openModalFormRRHHP} = this.props
         return (
             <>
+                <div className="d-flex justify-content-end">
+                    <span className="btn btn-hover-icon-success font-weight-bolder btn-hover-bg-light text-hover-success" onClick = { openModalFormRRHHP } >
+                        <i className="fas fa-plus text-pink mb-1"></i> Nuevo
+                    </span>
+                </div>
                 <div className="tab-content">
                     <div className="table-responsive-lg">
                         <table className="table table-borderless table-vertical-center">
@@ -58,6 +63,7 @@ class LeadRhProveedor extends Component {
                                     <th style={{ minWidth: "140px" }}>Fecha</th>
                                     <th style={{ minWidth: "100px" }}>Tipo</th>
                                     <th style={{ minWidth: "100px" }} className="text-center">Empresa</th>
+                                    <th style={{ minWidth: "100px" }} className="text-center">Comentario</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -107,6 +113,11 @@ class LeadRhProveedor extends Component {
                                                                 })
                                                                 : <span className="text-dark-75 font-weight-bolder">{lead.empresa.name}</span>
                                                         }
+                                                    </td>
+                                                    <td class="text-justify">
+                                                        <span class="text-muted font-weight-bold font-size-sm">
+                                                            {lead.comentario}
+                                                        </span>
                                                     </td>
                                                 </tr>
                                             )
