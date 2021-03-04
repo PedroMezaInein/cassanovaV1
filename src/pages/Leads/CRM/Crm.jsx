@@ -16,7 +16,7 @@ import LeadNoContratado from '../../../components/tables/Lead/LeadNoContratado'
 import LeadDetenido from '../../../components/tables/Lead/LeadDetenido'
 import LeadRP from '../../../components/tables/Lead/LeadRP'
 import { Modal, } from '../../../components/singles'
-import { AgendaLlamada, InformacionGeneral, HistorialContactoForm } from '../../../components/forms'
+import { AgendaLlamada, InformacionGeneral, HistorialContactoForm, FormProveedoresRRHH} from '../../../components/forms'
 import InputGray from '../../../components/form-components/Gray/InputGray'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
@@ -166,10 +166,19 @@ class Crm extends Component {
         formMotivo:{
             motivo:''
         },
+        formRRHHP:{
+            nombre: '',
+            fecha: new Date(),
+            empresa: '',
+            origen: 0,
+            comentario: '',
+            opcionrhp: 'Proveedor',
+        },
         modal_agendar: false,
         modal_editar: false,
         modal_historial: false,
         modal_one_lead: false,
+        modal_formRRHHP:false,
         showForm: false,
         itemsPerPage: 5,
         activePage: 1
@@ -1103,6 +1112,50 @@ class Crm extends Component {
         })
     }
 
+    /* --------------------OPTIONS RR.PP -------------------- */
+    getOptionsAxiosRRHHPP = async () => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'crm/table/lead-rh-proveedor/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                Swal.close()
+                const { empresas, origenes} = response.data
+                const { options,  } = this.state
+                options.empresas = setOptions(empresas, 'name', 'id')
+                options.origenes = setOptions(origenes, 'origen', 'id')
+                this.setState({
+                    ...this.state,
+                    options
+                })
+            },
+            (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    addRRHHP = async () => {
+        const { formRRHHP } = this.state
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.post(URL_DEV + 'crm/table/lead-rh-proveedor', formRRHHP, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.getLeadsRhProveedores();
+                this.setState({
+                    ...this.state,
+                    formRRHHP: this.clearFormRRHHP(),
+                    modal_formRRHHP: false
+                })
+                doneAlert('Fue agregado con éxito');
+                this.getLeadsWeb()
+            },
+            (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     refreshActualTable = (activeTable) => {
         switch (activeTable) {
             case 'rh-proveedores':
@@ -1177,6 +1230,16 @@ class Crm extends Component {
         this.setState({
             ...this.state,
             formHistorial
+        })
+    }
+
+    onChangeRRHHP = e => {
+        const { formRRHHP } = this.state
+        const { name, value } = e.target
+        formRRHHP[name] = value
+        this.setState({
+            ...this.state,
+            formRRHHP
         })
     }
 
@@ -1270,6 +1333,43 @@ class Crm extends Component {
             ...this.state,
             modal_agendar: true,
             lead: lead
+        })
+    }
+
+    openModalFormRRHHP = () =>{
+        this.getOptionsAxiosRRHHPP()
+        this.setState({
+            ...this.state,
+            modal_formRRHHP: true,
+            formRRHHP: this.clearFormRRHHP(),
+        })
+    }
+
+    clearFormRRHHP = () => {
+        const { formRRHHP } = this.state
+        let aux = Object.keys(formRRHHP)
+        aux.map((element) => {
+            switch (element) {
+                case 'opcionrhp':
+                    formRRHHP[element] = 'Proveedor'
+                    break;
+                case 'fecha':
+                    formRRHHP[element] = new Date()
+                    break;
+                default:
+                    formRRHHP[element] = ''
+                    break;
+            }
+            return false
+        })
+        return formRRHHP;
+    }
+
+    handleCloseFormRRHHP = () => {
+        const { modal_formRRHHP } = this.state
+        this.setState({
+            ...this.state,
+            modal_formRRHHP: !modal_formRRHHP
         })
     }
 
@@ -1613,11 +1713,10 @@ class Crm extends Component {
             </tr>
         )
     }
-
     render() {
         const { ultimos_contactados, prospectos_sin_contactar, ultimos_ingresados, lead_web, activeTable, leads_en_contacto, leads_en_negociacion, modal_one_lead,
             leads_contratados, leads_cancelados, leads_detenidos, modal_agendar, form, lead, lead_rh_proveedores, options, modal_editar, formEditar, modal_historial,
-            formHistorial, itemsPerPage, activePage, leads_rp} = this.state
+            formHistorial, itemsPerPage, activePage, leads_rp, modal_formRRHHP, formRRHHP} = this.state
         return (
             <Layout active='leads' {...this.props} >
                 <Row>
@@ -1803,10 +1902,10 @@ class Crm extends Component {
                                                 : ''
                                         }
                                         <div className="col-md-1 text-center" onClick={(e) => { e.preventDefault(); this.changeActiveTable(activeTable) }} >
-                                            <span className="btn btn-light-primary px-6 font-weight-bold">Buscar</span>
+                                            <span className="btn btn-light-primary px-6 font-weight-bold mt-md-0 mt-2">Buscar</span>
                                         </div>
                                         <div className="col-md-1 text-center" onClick={this.cleanForm} >
-                                            <span className="btn btn-light-danger px-6 font-weight-bold">Limpiar</span>
+                                            <span className="btn btn-light-danger px-6 font-weight-bold mt-md-0 mt-2">Limpiar</span>
                                         </div>
                                     </div>
                                 </div>
@@ -1817,6 +1916,7 @@ class Crm extends Component {
                                             onClickNext={this.nextPageRhProveedor}
                                             onClickPrev={this.prevPageRhProveedor}
                                             sendEmail={this.sendEmailNewWebLead}
+                                            openModalFormRRHHP={this.openModalFormRRHHP}
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="web">
@@ -2205,6 +2305,14 @@ class Crm extends Component {
                             </Tab.Pane>
                         </Tab.Content>
                     </Tab.Container>
+                </Modal>
+                <Modal size="xl" title="Nuevo RRHH O PROVEEDOR" show={modal_formRRHHP} handleClose={this.handleCloseFormRRHHP} >
+                    <FormProveedoresRRHH
+                        onChange={this.onChangeRRHHP}
+                        onSubmit={this.addRRHHP}
+                        form={formRRHHP}
+                        options={options}
+                    /> 
                 </Modal>
             </Layout>
         );
