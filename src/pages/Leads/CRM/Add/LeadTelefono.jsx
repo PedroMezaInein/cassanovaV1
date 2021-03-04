@@ -4,7 +4,7 @@ import Layout from '../../../../components/layout/layout'
 import { Form } from 'react-bootstrap'
 import { InputGray, SelectSearchGray, InputPhoneGray, Button } from '../../../../components/form-components'
 import axios from 'axios'
-import { doneAlert, errorAlert, printResponseErrorAlert, validateAlert, waitAlert, questionAlert2} from '../../../../functions/alert'
+import { doneAlert, errorAlert, printResponseErrorAlert, validateAlert, waitAlert, questionAlert2, questionAlert } from '../../../../functions/alert'
 import Swal from 'sweetalert2'
 import { setOptions } from '../../../../functions/setters'
 import { TEL, URL_DEV, EMAIL } from '../../../../constants'
@@ -232,6 +232,23 @@ class LeadTelefono extends Component {
                 </div>
         )
     }
+
+    eliminarLeadDuplicadoAxios = async () => {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        waitAlert();
+        await axios.post(`${URL_DEV}crm/add/lead/telefono/duplicado`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { history } = this.props
+                doneAlert('El lead fue registrado como duplicado.')
+                history.push({ pathname: '/leads/crm' });
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     changeEstatusRechazadoAxios = async (data) => {
         const { estatus } = data
         const { access_token } = this.props.authUser
@@ -474,6 +491,14 @@ class LeadTelefono extends Component {
                                             onClick={(e) => { e.preventDefault(); this.openModalWithInput('Rechazado') }}
                                             text='RECHAZAR'
                                         />
+                                    : ''
+                                }
+                                {
+                                    form.name ?
+                                        <Button iconv = '' id = "lead_duplicado" className = "btn btn-light-warning font-weight-bold mx-3"
+                                            onClick={(e) => { e.preventDefault(); 
+                                                questionAlert('¡NO PODRÁS REVERTIR ESTO!', 'INGRESARÁS UN LEAD DUPLICADO', () => this.eliminarLeadDuplicadoAxios())
+                                            }} text='LEAD DUPLICADO' />
                                     : ''
                                 }
                                 {
