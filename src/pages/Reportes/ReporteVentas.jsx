@@ -582,7 +582,6 @@ class ReporteVentas extends Component {
                 maxBarThickness: 200
             }]
         }
-        console.log(data.origenesComparativa.datasets, 'DATRASETR')
         // SERVICIOS SOLICITADOS
         aux = []
         auxPercent = []

@@ -722,6 +722,23 @@ class MiProyecto extends Component {
         return ''
     }
 
+    showFase (proyecto){
+        let aux = ''
+        if(proyecto.fase1)
+            aux = 'Fase 1'
+        if(proyecto.fase2)
+            aux =  'Fase 2'
+        if(proyecto.fase3)
+            aux =  'Fase 3'
+        if(proyecto.fase1 && proyecto.fase2)
+            aux = 'Fase 1 y 2'
+        if(proyecto.fase2 && proyecto.fase3)
+            aux = 'Fase 2 y 3'
+        if(proyecto.fase1 && proyecto.fase2 && proyecto.fase3)
+            aux = 'Fase 1, 2 y 3'
+        return aux
+    }
+
     render() {
         const { options, proyecto, form, adjuntos, showadjuntos, primeravista, defaultactivekey, subActiveKey, formeditado, tickets, data, 
             modal, ticket, modalDetalles, /* openModalVideo */ } = this.state
@@ -780,6 +797,7 @@ class MiProyecto extends Component {
                                 <div className="col-md-12 wow fadeIn" data-wow-delay="1.7s" data-wow-duration="1.5s">
                                     <div className="overflow-hidden px-5">
                                         <h1 className="text-white mb-3 letter-spacing-1">{proyecto.nombre}</h1>
+                                        <div className="text-white mb-3 letter-spacing-1">{this.showFase(proyecto)}</div>
                                     </div>
                                     <div className="overflow-hidden">
                                         <div className="mt-3">

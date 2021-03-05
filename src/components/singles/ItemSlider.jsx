@@ -132,107 +132,79 @@ class ItemSlider extends Component {
         const { active } = this.state
         return (
             <>
-                <div className="d-flex justify-content-center align-items-center">
-                    {
-                        this.isEnablePrevButton() ?
-                            <div className="cursor" onClick={(e) => { e.preventDefault(); this.sliderBack(); }}>
-                                <div className="btn btn-default font-weight-bold small-button">
-                                    <span className="svg-icon svg-icon-lg mr-0">
-                                        <SVG src={toAbsoluteUrl('/images/svg/double-arrow-left.svg')} />
-                                    </span>
-                                </div>
-                            </div>
-                            : ''
-                    }
-                    <div className="text-center p-2">
+                <div className="row mx-auto w-100">
+                    <div className="w-10 align-self-center">
                         {
-                            items.length === active && handleChange ?
-                                <div className="rounded w-100 d-flex justify-content-center align-items-center">
-                                    <DropZone accept = { accept } multiple = { multiple === true || multiple === false ? multiple : true} handleChange={this.handleChange} >
-                                        <div className="dropzone-msg dz-message needsclick">
-                                            <div className="row d-flex justify-content-center align-items-center">
-                                                <span className=" col-md-12 pb-3 svg-icon svg-icon-primary svg-icon svg-icon-5x">
-                                                    <SVG src={toAbsoluteUrl('/images/svg/upload-arrow.svg')} />
-                                                </span>
-                                                <p className="font-size-h4 lead pb-2">Haga clic para cargar los archivos</p>
-                                            </div>
-                                        </div>
-                                    </DropZone>
+                            this.isEnablePrevButton() ?
+                                <div className="cursor" onClick={(e) => { e.preventDefault(); this.sliderBack(); }}>
+                                    <div className="btn btn-default font-weight-bold small-button mx-auto">
+                                        <span className="svg-icon svg-icon-lg mr-0">
+                                            <SVG src={toAbsoluteUrl('/images/svg/double-arrow-left.svg')} />
+                                        </span>
+                                    </div>
                                 </div>
-                                :
-                                items.length > 0 ?
-                                    <>
-                                        <ShowFile item = { items[active] } />
-                                        {/* <div>
-                                            {
-                                                (items[active].name.substring(items[active].name.length - 3)).toUpperCase() === 'PDF' ?
-                                                    <div className="w-100 pb-2">
-                                                        <iframe title = {items[active].name} src={items[active].url} className="pdfview" />
-                                                    </div>
-                                                    :
-                                                    this.isImage(items[active].name) ?
-                                                        <img alt = '' className="p-2 rounded pdfview-img" src={items[active].url} style={{ width: "100", height: "100" }} />
-                                                    :
-                                                        this.isVideo(items[active].name) ?
-                                                            <video className = 'w-100' controls>
-                                                                <source src = { items[active].url } type="video/mp4" />
-                                                                Your browser does not support the video tag.
-                                                            </video>
-                                                        :
-                                                            <div id="descarga" className="btn btn-hover p-2 rounded pdfview d-flex align-items-center justify-content-center mx-auto" onClick={() => { this.downloadFile(items[active]) }}>
-                                                                <div>
-                                                                    <i className={"fas fa-file m-0 kt-font-boldest text-primary"}></i>
-                                                                    <br />
-                                                                    <Small className="text-center" color="gold">
-                                                                        Descarga
-                                                                    </Small>
-                                                                </div>
-                                                            </div>
-                                            }
-                                        </div> */}
-                                        {
-                                            deleteFile && items[active].id ?
-                                                <div className="d-flex justify-content-center">
-
-                                                    <span className="btn btn-text-danger btn-hover-danger" onClick={(e) => { e.preventDefault(); deleteFile(items[active]) }} >
-                                                        <i className='fas fa-trash pr-0'></i>
+                            : ''
+                        }
+                    </div>
+                    <div className="w-80">
+                        {
+                                items.length === active && handleChange ?
+                                    <div className="rounded w-80 d-flex justify-content-center align-items-center mx-auto">
+                                        <DropZone accept = { accept } multiple = { multiple === true || multiple === false ? multiple : true} handleChange={this.handleChange} >
+                                            <div className="dropzone-msg dz-message needsclick">
+                                                <div className="row d-flex justify-content-center align-items-center">
+                                                    <span className=" col-md-12 pb-3 svg-icon svg-icon-primary svg-icon svg-icon-5x">
+                                                        <SVG src={toAbsoluteUrl('/images/svg/upload-arrow.svg')} />
                                                     </span>
-
+                                                    <p className="font-size-h4 lead pb-2">Haga clic para cargar los archivos</p>
                                                 </div>
-                                                : ''
-                                        }
-                                    </>
+                                            </div>
+                                        </DropZone>
+                                    </div>
+                                    :
+                                    items.length > 0 ?
+                                        <ShowFile item = { items[active] } />
                                     : ''
                         }
                     </div>
-                    {
-                        this.isEnableNextButton() ?
-                            <div className="cursor" onClick={(e) => { e.preventDefault(); this.sliderNext(); }}>
-                                <div className="btn btn-default font-weight-bold small-button">
-                                    <span className="svg-icon svg-icon-lg mr-0">
-                                        <SVG src={toAbsoluteUrl('/images/svg/double-arrow-right.svg')} />
-                                    </span>
+                    <div className="w-10 align-self-center">
+                        {
+                            this.isEnableNextButton() ?
+                                <div className="cursor" onClick={(e) => { e.preventDefault(); this.sliderNext(); }}>
+                                    <div className="btn btn-default font-weight-bold small-button mx-auto">
+                                        <span className="svg-icon svg-icon-lg mr-0">
+                                            <SVG src={toAbsoluteUrl('/images/svg/double-arrow-right.svg')} />
+                                        </span>
+                                    </div>
                                 </div>
-                            </div>
                             : ''
-                    }
+                        }
+                    </div>
                 </div>
-                <div className="text-center">
-                    {
-                        items.length > 0 && active !== items.length ? 
-                        <div className="text-center">
-                            <a href={items[active].url} target='_blank' rel="noopener noreferrer" className="text-muted text-hover-primary font-weight-bold mr-lg-8 mr-5 mb-lg-0 mb-2 pl-4">
-                                <span className="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
-                                    <SVG src={toAbsoluteUrl('/images/svg/Attachment1.svg')} />
-								</span>
-                                    Ver archivo
-                                    {/* {
-                                        items[active].name
-                                    } */}
-                            </a>
+                <div className="d-flex justify-content-center align-items-center mt-3">
+                        <div>
+                            {
+                                items.length > 0 && active !== items.length ? 
+                                    deleteFile && items[active].id ?
+                                        <span className="btn btn-text-danger btn-hover-danger p-2" onClick={(e) => { e.preventDefault(); deleteFile(items[active]) }} >
+                                            <i className='fas fa-trash pr-0'></i>
+                                        </span>
+                                    : ''
+                                : ''
+                            }
+                            {
+                                items.length > 0 && active !== items.length ? 
+                                <div className="text-center">
+                                    <a href={items[active].url} target='_blank' rel="noopener noreferrer" className="text-muted text-hover-primary font-weight-bold">
+                                        <span className="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
+                                            <SVG src={toAbsoluteUrl('/images/svg/Attachment1.svg')} />
+                                        </span>
+                                            Ver archivo
+                                    </a>
+                                </div>
+                                : ''
+                            }
                         </div>
-                        : ''
-                    }
                 </div>
             </>
         )

@@ -28,7 +28,8 @@ class LeadTelefono extends Component {
             empresas: [],
             tipos: [],
             origenes: [],
-            motivosRechazo: []
+            motivosRechazo: [],
+            servicios:[]
         }
     }
     componentDidMount() {
@@ -71,6 +72,9 @@ class LeadTelefono extends Component {
     }
     updateOrigen = value => {
         this.onChange({ target: { value: value, name: 'origen' } })
+    }
+    updateServicio = value => {
+        this.onChange({ target: { value: value, name: 'servicio' } })
     }
 
     onChange = e => {
@@ -146,10 +150,11 @@ class LeadTelefono extends Component {
         await axios.get(URL_DEV + 'crm/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 Swal.close()
-                const { empresas, origenes, motivosRechazo } = response.data
+                const { empresas, origenes, motivosRechazo,servicios } = response.data
                 const { options } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['origenes'] = setOptions(origenes, 'origen', 'id')
+                options['servicios']= setOptions(servicios, 'servicio', 'id')
                 options.motivosRechazo = motivosRechazo
                 options.motivosRechazo.map((motivo)=>{
                     motivo.checked = false
@@ -330,7 +335,7 @@ class LeadTelefono extends Component {
                                         as='textarea'
                                     />
                                 </div>
-                                <div className="col-md-4">
+                                <div className="col-md-3">
                                     <InputGray
                                         withtaglabel={1}
                                         withtextlabel={1}
@@ -344,7 +349,7 @@ class LeadTelefono extends Component {
                                         iconclass='fas fa-building'
                                     />
                                 </div>
-                                <div className="col-md-4">
+                                <div className="col-md-3">
                                     <InputPhoneGray
                                         placeholder="TELÉFONO DE CONTACTO"
                                         withicon={1}
@@ -359,7 +364,7 @@ class LeadTelefono extends Component {
                                         messageinc="Incorrecto. Ingresa el teléfono de contacto."
                                     />
                                 </div>
-                                <div className="col-md-4">
+                                <div className="col-md-3">
                                     <SelectSearchGray
                                         requirevalidation={1}
                                         options={options.origenes}
@@ -369,6 +374,20 @@ class LeadTelefono extends Component {
                                         onChange={this.updateOrigen}
                                         iconclass="fas fa-mail-bulk"
                                         messageinc="Incorrecto. Selecciona el origen para el lead."
+                                        withtaglabel={1}
+                                        withtextlabel={1}
+                                    />
+                                </div>
+                                <div className="col-md-3">
+                                    <SelectSearchGray
+                                        requirevalidation={1}
+                                        options={options.servicios}
+                                        placeholder="SELECCIONA EL SERVICIO"
+                                        name="servicio"
+                                        value={form.servicio}
+                                        onChange={this.updateServicio}
+                                        iconclass="fas fa-mail-bulk"
+                                        messageinc="Incorrecto. Selecciona el servicio."
                                         withtaglabel={1}
                                         withtextlabel={1}
                                     />
