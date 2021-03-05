@@ -108,16 +108,16 @@ a.text-hover-danger2:hover,
 
 .pdfview {
     @include screen ($lg) {
-        width: 275px;
+        // width: 275px;
         height: 418.984px;
     }
 
     @include screen ($xxl) {
-        width: 468px;
+        // width: 468px;
         height: 418.984px;
     }
 
-    width: 468px;
+    width: 88%;
     height: 418.984px;
 }
 
@@ -1756,4 +1756,18 @@ span.font-weight-bolder.text-hover-error:hover{
 
 .btn.btn-hover-turquesa.btn-clean {
     border: 0 !important;
+}
+
+.xml-view{
+    text-align: justify;
+    font-size: 12px;
+    overflow-x: auto;
+    text-align-last: start!important;
+    border: 6px solid #ECF0F3;
+    border-bottom: 0px;
+    padding: 0.6rem;
+}
+
+.text-align-last-center{
+    text-align-last: center;
 }

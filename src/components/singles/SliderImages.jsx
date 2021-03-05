@@ -48,7 +48,7 @@ class SliderImages extends Component {
                             elements[active].descripcion ?
                                 <>
                                     <div>
-                                        <img alt = '' src={elements[active].adjunto.url} className="p-2 rounded pdfview-img"/>
+                                        <img alt = '' src={elements[active].adjunto.url} className="rounded pdfview-img"/>
                                     </div>
                                     <p className="font-weight-bolder font-size-lg">
                                         {

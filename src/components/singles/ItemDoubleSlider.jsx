@@ -54,7 +54,7 @@ export class ItemDoubleSlider extends Component {
                             </div>
                         : <></>
                     }
-                    <div className="text-center p-2">
+                    <div>
                         {
                             items.length === active && handleChange ?
                                 <div className="rounded w-100 d-flex justify-content-center align-items-center mt-4 pt-4">
