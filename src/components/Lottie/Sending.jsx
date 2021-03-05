@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import * as animationData from '../../assets/animate/plane.json'
 import * as animationData2 from '../../assets/animate/arbol.json'
-import Lottie from 'react-lottie-player';
+import Lottie from 'react-lottie';
 
 class Sending extends Component{
     render(){
@@ -15,10 +15,6 @@ class Sending extends Component{
         };
         return(
             <div className="mx-auto">
-                {/* <Lottie 
-                    loop
-                    animationData = { new Date().getMonth() === 11 ? animationData2.default : animationData.default }
-                    play /> */}
                 <Lottie options={defaultOptions}
                     height={200}
                     width={200}
