@@ -8,13 +8,8 @@ class FacturaExtranjera extends Component {
             <Form {...props}>
                 <div className="col-md-12 text-center">
                     <label className="col-form-label my-2 font-weight-bolder">{form.adjuntos.factura.placeholder}</label>
-                    <ItemSlider
-                        items={form.adjuntos.factura.files}
-                        item='factura'
-                        handleChange={onChangeAdjunto}
-                        multiple={true}
-                        deleteFile={deleteFile}
-                    />
+                    <ItemSlider items = { form.adjuntos.factura.files } item = 'factura' handleChange = { onChangeAdjunto }
+                        multiple = { true } deleteFile = { deleteFile } accept = "application/pdf" />
                 </div>
             </Form>
         )

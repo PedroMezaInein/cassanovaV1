@@ -69,7 +69,7 @@ class Compras extends Component {
                 }
             }
         },
-        fomFacturaExtranjera:{
+        formFacturaExtranjera:{
             adjuntos: {
                 factura: {
                     value: '',
@@ -226,6 +226,18 @@ class Compras extends Component {
         form.adjuntos[item].value = ''
         form.adjuntos[item].files = aux
         this.setState({...this.state,form})
+    }
+
+    cleanAdjuntosExtranjero = (item) => {
+        const { formFacturaExtranjera } = this.state
+        let aux = []
+        formFacturaExtranjera.adjuntos[item].files.map((file) => {
+            if(file.id) aux.push(file)
+            return ''
+        })
+        formFacturaExtranjera.adjuntos[item].value = ''
+        formFacturaExtranjera.adjuntos[item].files = aux
+        this.setState({...this.state,formFacturaExtranjera})
     }
     
     onChangeAdjunto = e => {
@@ -570,14 +582,18 @@ class Compras extends Component {
     openModalDeleteAdjuntos = adjunto => {
         deleteAlert('¿SEGURO DESEAS BORRAR EL ADJUNTO?', adjunto.name, () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
     }
-    
+
     openFacturaExtranjera = compra => {
+        const { formFacturaExtranjera } = this.state
+        formFacturaExtranjera.adjuntos.factura.files = compra.facturas_pdf
         this.setState({
             ...this.state,
             modalFacturaExtranjera: true,
-            compra: compra
+            compra: compra,
+            formFacturaExtranjera
         })
     }
+    
     handleCloseFacturaExtranjera = () => {
         const { modalFacturaExtranjera } = this.state
         this.setState({
@@ -921,8 +937,8 @@ class Compras extends Component {
         })
     }
     handleChangeFacturaExtranjera = (files, item)  => {
-        const { form } = this.state
-        let aux = form.adjuntos[item].files
+        const { formFacturaExtranjera } = this.state
+        let aux = formFacturaExtranjera.adjuntos[item].files
         for (let counter = 0; counter < files.length; counter++) {
             aux.push(
                 {
@@ -933,14 +949,14 @@ class Compras extends Component {
                 }
             )
         }
-        form['adjuntos'][item].value = files
-        form['adjuntos'][item].files = aux
-        this.setState({...this.state,form})
+        formFacturaExtranjera['adjuntos'][item].value = files
+        formFacturaExtranjera['adjuntos'][item].files = aux
+        this.setState({...this.state,formFacturaExtranjera})
         createAlertSA2WithActionOnClose( 
             '¿DESEAS AGREGAR EL ARCHIVO?',
             '',
-            () => this.addFacturaExtranjera(files, item),
-            () => this.cleanAdjuntos(item)
+            () => this.addAdjuntoCompraAxios(files, 'facturas_pdf'),
+            () => this.cleanAdjuntosExtranjero(item)
         )
     }
     addFacturaExtranjera= async(files, item)=>{
@@ -967,7 +983,7 @@ class Compras extends Component {
     }
 
     render() {
-        const {modalDelete, modalFacturas, modalAdjuntos, form, options, compras, facturas, compra, data, modalSee, modalFacturaExtranjera, fomFacturaExtranjera } = this.state
+        const {modalDelete, modalFacturas, modalAdjuntos, form, options, compras, facturas, compra, data, modalSee, modalFacturaExtranjera, formFacturaExtranjera } = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
                 <NewTableServerRender columns={COMPRAS_COLUMNS} data={compras}
@@ -1049,7 +1065,7 @@ class Compras extends Component {
                     />
                 </Modal>
                 <Modal size="lg" title="Factura extranjera" show={modalFacturaExtranjera} handleClose={this.handleCloseFacturaExtranjera} >
-                    <FacturaExtranjera form={fomFacturaExtranjera} onChangeAdjunto = { this.handleChangeFacturaExtranjera } deleteFile = { this.openModalDeleteAdjuntos }/>
+                    <FacturaExtranjera form={formFacturaExtranjera} onChangeAdjunto = { this.handleChangeFacturaExtranjera } deleteFile = { this.openModalDeleteAdjuntos }/>
                 </Modal>
             </Layout>
         )

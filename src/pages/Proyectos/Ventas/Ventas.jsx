@@ -96,7 +96,7 @@ class Ventas extends Component {
                 }
             }
         },
-        fomFacturaExtranjera:{
+        formFacturaExtranjera:{
             adjuntos: {
                 factura: {
                     value: '',
@@ -217,6 +217,18 @@ class Ventas extends Component {
         form.adjuntos[item].value = ''
         form.adjuntos[item].files = aux
         this.setState({...this.state,form})
+    }
+
+    cleanAdjuntosExtranjero = (item) => {
+        const { formFacturaExtranjera } = this.state
+        let aux = []
+        formFacturaExtranjera.adjuntos[item].files.map((file) => {
+            if(file.id) aux.push(file)
+            return ''
+        })
+        formFacturaExtranjera.adjuntos[item].value = ''
+        formFacturaExtranjera.adjuntos[item].files = aux
+        this.setState({...this.state,formFacturaExtranjera})
     }
     
     onChangeAdjunto = e => {
@@ -581,14 +593,18 @@ class Ventas extends Component {
     openModalDeleteAdjuntos = adjunto => {
         deleteAlert('¿SEGURO DESEAS BORRAR EL ADJUNTO?', adjunto.name, () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
     }
-    
+
     openFacturaExtranjera = venta => {
+        const { formFacturaExtranjera } = this.state
+        formFacturaExtranjera.adjuntos.factura.files = venta.facturas_pdf
         this.setState({
             ...this.state,
             modalFacturaExtranjera: true,
-            venta: venta
+            venta: venta,
+            formFacturaExtranjera
         })
     }
+
     handleCloseFacturaExtranjera = () => {
         const { modalFacturaExtranjera } = this.state
         this.setState({
@@ -985,8 +1001,8 @@ class Ventas extends Component {
         })
     }
     handleChangeFacturaExtranjera = (files, item)  => {
-        const { form } = this.state
-        let aux = form.adjuntos[item].files
+        const { formFacturaExtranjera } = this.state
+        let aux = formFacturaExtranjera.adjuntos[item].files
         for (let counter = 0; counter < files.length; counter++) {
             aux.push(
                 {
@@ -997,14 +1013,14 @@ class Ventas extends Component {
                 }
             )
         }
-        form['adjuntos'][item].value = files
-        form['adjuntos'][item].files = aux
-        this.setState({...this.state,form})
+        formFacturaExtranjera['adjuntos'][item].value = files
+        formFacturaExtranjera['adjuntos'][item].files = aux
+        this.setState({...this.state,formFacturaExtranjera})
         createAlertSA2WithActionOnClose( 
             '¿DESEAS AGREGAR EL ARCHIVO?',
             '',
-            () => this.addFacturaExtranjera(files, item),
-            () => this.cleanAdjuntos(item)
+            () => this.addAdjuntoVentaAxios(files, 'facturas_pdf'),
+            () => this.cleanAdjuntosExtranjero(item)
         )
     }
     addFacturaExtranjera= async(files, item)=>{
@@ -1031,7 +1047,7 @@ class Ventas extends Component {
         })
     }
     render() {
-        const { modalDelete, modalFacturas, modalAdjuntos, options, form, ventas, venta, facturas, data, formeditado, modalSee, active, modalFacturaExtranjera, fomFacturaExtranjera } = this.state
+        const { modalDelete, modalFacturas, modalAdjuntos, options, form, ventas, venta, facturas, data, formeditado, modalSee, active, modalFacturaExtranjera, formFacturaExtranjera } = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
                 <NewTableServerRender columns={VENTAS_COLUMNS} data={ventas}
@@ -1132,7 +1148,7 @@ class Ventas extends Component {
                     <VentasCard venta={venta} />
                 </Modal>
                 <Modal size="lg" title="Factura extranjera" show={modalFacturaExtranjera} handleClose={this.handleCloseFacturaExtranjera} >
-                    <FacturaExtranjera form={fomFacturaExtranjera} onChangeAdjunto = { this.handleChangeFacturaExtranjera } deleteFile = { this.openModalDeleteAdjuntos }/>
+                    <FacturaExtranjera form={formFacturaExtranjera} onChangeAdjunto = { this.handleChangeFacturaExtranjera } deleteFile = { this.openModalDeleteAdjuntos }/>
                 </Modal>
             </Layout>
         )
