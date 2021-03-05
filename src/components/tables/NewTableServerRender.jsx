@@ -228,31 +228,51 @@ class NewTableServerRender extends Component {
             createdRow: function (row, data) {
                 if (tipo_validacion) {
                     const { objeto } = data
+                    let pdfFlag = false
+                    console.log('OBJETO', objeto)
                     switch (tipo_validacion) {
                         case 'compras':
-                            if (objeto.factura) {
-                                if (objeto.total_facturas - objeto.monto > 1) {
-                                    $(row).addClass('verde');
-                                } else if (objeto.total_facturas - objeto.monto >= -1 && objeto.total_facturas - objeto.monto <= -1) {
-                                    $(row).addClass('blanco');
-                                } else if (objeto.total_facturas - objeto.monto < -1) {
-                                    $(row).addClass('rojo');
+                            if(objeto.facturas_pdf){
+                                if(objeto.facturas_pdf.length){
+                                    pdfFlag = true
                                 }
-                            } else {
+                            }
+                            if(pdfFlag){
                                 $(row).addClass('blanco');
+                            }else{
+                                if (objeto.factura) {
+                                    if (objeto.total_facturas - objeto.monto > 1) {
+                                        $(row).addClass('verde');
+                                    } else if (objeto.total_facturas - objeto.monto >= -1 && objeto.total_facturas - objeto.monto <= -1) {
+                                        $(row).addClass('blanco');
+                                    } else if (objeto.total_facturas - objeto.monto < -1) {
+                                        $(row).addClass('rojo');
+                                    }
+                                } else {
+                                    $(row).addClass('blanco');
+                                }
                             }
                             break;
                         case 'ventas':
-                            if (objeto.factura) {
-                                if (objeto.total_facturas - objeto.monto > 1) {
-                                    $(row).addClass('rojo');
-                                } else if (objeto.total_facturas - objeto.monto >= -1 && objeto.total_facturas - objeto.monto <= -1) {
-                                    $(row).addClass('blanco');
-                                } else if (objeto.total_facturas - objeto.monto < -1) {
-                                    $(row).addClass('verde');
+                            if(objeto.facturas_pdf){
+                                if(objeto.facturas_pdf.length){
+                                    pdfFlag = true
                                 }
-                            } else {
+                            }
+                            if(pdfFlag){
                                 $(row).addClass('blanco');
+                            }else{
+                                if (objeto.factura) {
+                                    if (objeto.total_facturas - objeto.monto > 1) {
+                                        $(row).addClass('rojo');
+                                    } else if (objeto.total_facturas - objeto.monto >= -1 && objeto.total_facturas - objeto.monto <= -1) {
+                                        $(row).addClass('blanco');
+                                    } else if (objeto.total_facturas - objeto.monto < -1) {
+                                        $(row).addClass('verde');
+                                    }
+                                } else {
+                                    $(row).addClass('blanco');
+                                }
                             }
                             break;
                         default:

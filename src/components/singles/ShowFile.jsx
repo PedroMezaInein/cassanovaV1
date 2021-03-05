@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Small} from '../texts'
-
+import FileXMLViewer from '../form-components/FileXMLViewer'
 export class ShowFile extends Component {
 
     downloadFile = item => {
@@ -11,7 +11,14 @@ export class ShowFile extends Component {
         document.body.appendChild(link);
         link.click();
     }
-
+    xml(url) {
+        var req = new XMLHttpRequest();
+        req.open('GET', url, false);
+        req.overrideMimeType('text/plain; charset=x-user-defined');
+        req.send(null);
+        if (req.status != 200) return '';
+        return req.responseText;
+    }
     printSelectiveFile = () => {
         const { item } = this.props
         let arreglo = []
@@ -19,11 +26,11 @@ export class ShowFile extends Component {
         if(item.name)
             arreglo = item.name.split('.')
         if(arreglo.length)
-            extension = arreglo[arreglo.length - 1].toUpperCase() 
+            extension = arreglo[arreglo.length - 1].toUpperCase()
         switch(extension){
             case 'PDF':
                 return(
-                    <div className="w-100 pb-2">
+                    <div className="w-100 text-align-last-center">
                         <iframe title = { item.name} src = { item.url} className="pdfview" />
                     </div>
                 )
@@ -32,14 +39,20 @@ export class ShowFile extends Component {
             case 'GIF':
             case 'PNG':
                 return(
-                    <img alt = '' className="p-2 rounded pdfview-img" src = { item.url } style={{ width: "100", height: "100" }} />
+                    <img alt = '' className="rounded pdfview-img" src = { item.url } style={{ width: "100", height: "100" }} />
                 )
             case 'MP4':
                 return(
-                    <video className = 'w-100' controls>
+                    <video className = 'w-100 text-align-last-center' controls>
                         <source src = { item.url } type="video/mp4" />
                         Your browser does not support the video tag.
                     </video>
+                )
+            case 'XML':
+                return(
+                    <div className="xml-view">
+                        <FileXMLViewer xml={this.xml(item.url)}/>
+                    </div>
                 )
             default:
                 return(

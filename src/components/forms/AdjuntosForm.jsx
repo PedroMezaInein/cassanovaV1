@@ -29,12 +29,12 @@ class AdjuntosForm extends Component{
                             adjuntos === undefined 
                                 ?
                                     <>
-                                        <div className="col-md-6 px-2 text-center">
+                                        <div className="col-md-6 px-2 text-center align-self-center">
                                             <label className="col-form-label my-2 font-weight-bolder">{form.adjuntos.presupuesto.placeholder}</label>
                                             <ItemSlider items = { form.adjuntos.presupuesto.files } item = 'presupuesto'
                                                 handleChange = { onChangeAdjunto } multiple = { true } deleteFile = { deleteFile } />
                                         </div>
-                                        <div className="col-md-6 px-2 text-center">
+                                        <div className="col-md-6 px-2 text-center align-self-center">
                                             <label className="col-form-label my-2 font-weight-bolder">{form.adjuntos.pago.placeholder}</label>
                                             <ItemSlider items = { form.adjuntos.pago.files } item = 'pago' 
                                                 handleChange = { onChangeAdjunto } multiple = { true } deleteFile = { deleteFile } />
