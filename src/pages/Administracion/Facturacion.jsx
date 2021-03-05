@@ -14,7 +14,6 @@ import NewTableServerRender from '../../components/tables/NewTableServerRender'
 import { FacturacionCard } from '../../components/cards'
 import NumberFormat from 'react-number-format'
 import Swal from 'sweetalert2'
-
 const $ = require('jquery');
 class Facturacion extends Component {
     state = {
@@ -23,6 +22,7 @@ class Facturacion extends Component {
         modalCancelar: false,
         modalSee: false,
         modalRestante: false,
+        modalFacturaRelacionada: false,
         facturas: [],
         factura: '',
         empresas: [],
@@ -165,6 +165,13 @@ class Facturacion extends Component {
                 iconclass: 'flaticon2-magnifier-tool',
                 action: 'see',
                 tooltip: { id: 'see', text: 'Mostrar', type: 'primary' },
+            },
+            {
+                text: 'Factura&nbsp;extranjera',
+                btnclass: 'turquesa',
+                iconclass: 'flaticon-interface-10',
+                action: 'facturaRelacionada',
+                tooltip: { id: 'facturaRelacionada', text: 'Factura extranjera'},
             }
         )
         if (!factura.detenida) {
@@ -491,6 +498,21 @@ class Facturacion extends Component {
         })
     }
 
+    openFacturaRelacionada = factura => {
+        this.setState({
+            ...this.state,
+            modalFacturaRelacionada: true,
+            factura: factura
+        })
+    }
+    handleCloseFacturaRelacionada = () => {
+        const { modalFacturaRelacionada } = this.state
+        this.setState({
+            ...this.state,
+            modalFacturaRelacionada: !modalFacturaRelacionada,
+            factura: ''
+        })
+    }
     onChangeAdjuntoFacturas = e => {
         const { form, data } = this.state
         const { files, value, name } = e.target
@@ -798,7 +820,7 @@ class Facturacion extends Component {
     }
 
     render() {
-        const { factura, modalSee, modalCancelar, form, modalFacturas, key, modalRestante, empresas } = this.state
+        const { factura, modalSee, modalCancelar, form, modalFacturas, key, modalRestante, empresas, modalFacturaRelacionada} = this.state
         return (
             <Layout active = 'administracion'  {...this.props} >
                 <Tabs defaultActiveKey = "ventas" activeKey = { key } onSelect = { (value) => { this.controlledTab(value) } } >
@@ -818,6 +840,7 @@ class Facturacion extends Component {
                                     'see': { function: this.openModalSee },
                                     'cancelarFactura': { function: this.cancelarFactura },
                                     'inhabilitar': { function: this.inhabilitar },
+                                    'facturaRelacionada': { function: this.openFacturaRelacionada}
                                 }
                             }
                             idTable = 'kt_datatable_ventas'
@@ -849,6 +872,7 @@ class Facturacion extends Component {
                                     'see': { function: this.openModalSee },
                                     'cancelarFactura': { function: this.cancelarFactura },
                                     'inhabilitar': { function: this.inhabilitar },
+                                    'facturaRelacionada': { function: this.openFacturaRelacionada}
                                 }
                             }
                             idTable = 'kt_datatable_compras'
@@ -960,6 +984,9 @@ class Facturacion extends Component {
                             </tbody>
                         </table>
                     </div>
+                </Modal>
+                <Modal size="lg" title="Facturas relacionadas" show={modalFacturaRelacionada} handleClose={this.handleCloseFacturaRelacionada} > 
+
                 </Modal>
             </Layout>
         )
