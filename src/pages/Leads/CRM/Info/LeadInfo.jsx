@@ -1548,7 +1548,7 @@ class LeadInfo extends Component {
                                                     // solicitarFechaCita={() => { waitAlert(); this.solicitarFechaCita() }}
                                                     onSubmit = { () => { waitAlert(); this.agendarEvento() } }
                                                     tagInputChange = { (e) => this.tagInputChange(e) }
-                                                    onChangeAgendaLC = { this.onChangeAgendaLC }   
+                                                    onChangeAgendaLC = { this.onChangeAgendaLC } lead={lead}
                                                 />
                                             </div>
                                             <div className="col-md-8">
