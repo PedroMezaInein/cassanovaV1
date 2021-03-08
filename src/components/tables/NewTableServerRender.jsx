@@ -113,8 +113,6 @@ class NewTableServerRender extends Component {
             w++;
         })
 
-        console.log(noOrdereableHeaders)
-
         $("body").addClass("card-sticky-on")
 
         let tableWidth = $("#" + cardTable).width()
@@ -229,7 +227,6 @@ class NewTableServerRender extends Component {
                 if (tipo_validacion) {
                     const { objeto } = data
                     let pdfFlag = false
-                    console.log('OBJETO', objeto)
                     switch (tipo_validacion) {
                         case 'compras':
                             if(objeto.facturas_pdf){

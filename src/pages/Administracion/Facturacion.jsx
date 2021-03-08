@@ -6,16 +6,18 @@ import axios from 'axios'
 import { URL_DEV, FACTURAS_COLUMNS } from '../../constants'
 import { Small, B } from '../../components/texts'
 import { setTextTable, setMoneyTable, setDateTable, setOptions, setLabelTable } from '../../functions/setters'
-import { errorAlert, doneAlert, waitAlert, createAlert, questionAlertY, printResponseErrorAlert } from '../../functions/alert'
-import { Modal, ItemSlider } from '../../components/singles'
+import { errorAlert, doneAlert, waitAlert, createAlert, questionAlertY, printResponseErrorAlert, createAlertSA2WithActionOnClose, deleteAlert } from '../../functions/alert'
+import { Modal, ItemSlider, ItemDoubleSlider } from '../../components/singles'
 import { Button, FileInput } from '../../components/form-components'
 import { Tabs, Tab, Form } from 'react-bootstrap'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
 import { FacturacionCard } from '../../components/cards'
 import NumberFormat from 'react-number-format'
 import Swal from 'sweetalert2'
+import { element } from 'prop-types'
 const $ = require('jquery');
 class Facturacion extends Component {
+
     state = {
         formeditado: 0,
         modalFacturas: false,
@@ -48,10 +50,13 @@ class Facturacion extends Component {
                     value: '',
                     placeholder: 'Factura',
                     files: []
-                },
-                adjuntos: {
+                }, adjuntos: {
                     value: '',
                     placeholder: 'Ingresa los adjuntos',
+                    files: []
+                },relacionados:{
+                    value: '',
+                    placeholder: 'Facturas relacionadas',
                     files: []
                 }
             }
@@ -59,6 +64,7 @@ class Facturacion extends Component {
         tipo: 'Ventas',
         key: 'ventas'
     }
+
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
         let { history: { location: { pathname } } } = this.props
@@ -72,6 +78,7 @@ class Facturacion extends Component {
         this.getOptionsAxios()
         this.getRestante()
     }
+
     async getOptionsAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -94,6 +101,7 @@ class Facturacion extends Component {
             console.log(error, 'error')
         })
     }
+
     async getRestante() {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -114,6 +122,7 @@ class Facturacion extends Component {
             console.log(error, 'error')
         })
     }
+
     setFactura = facturas => {
         let aux = []
         facturas.map((factura) => {
@@ -142,6 +151,7 @@ class Facturacion extends Component {
         })
         return aux
     }
+
     openModalSee = factura => {
         this.setState({
             ...this.state,
@@ -149,6 +159,7 @@ class Facturacion extends Component {
             factura: factura
         })
     }
+
     handleCloseSee = () => {
         this.setState({
             ...this.state,
@@ -156,6 +167,7 @@ class Facturacion extends Component {
             factura: ''
         })
     }
+
     setActions = factura => {
         let aux = []
         aux.push(
@@ -167,7 +179,7 @@ class Facturacion extends Component {
                 tooltip: { id: 'see', text: 'Mostrar', type: 'primary' },
             },
             {
-                text: 'Factura&nbsp;extranjera',
+                text: 'Factura&nbsp;relacionada',
                 btnclass: 'turquesa',
                 iconclass: 'flaticon-interface-10',
                 action: 'facturaRelacionada',
@@ -207,8 +219,39 @@ class Facturacion extends Component {
         return aux
     }
 
+    deleteRelacionada = element => {
+        deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', '', () => this.deleteAdjuntoAxios(element.id))
+    }
+
     inhabilitar = (factura) => {
         questionAlertY('¿ESTÁS SEGURO?', '¿DESEAS INHABILITAR LA FACTURA?', () => this.inhabilitarFactura(factura))
+    }
+
+    deleteAdjuntoAxios = async (id) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { factura, form } = this.state
+        await axios.delete(`${URL_DEV}v2/administracion/facturas/${factura.id}/relacionadas/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { key } = this.state
+                const { factura } = response.data
+                form.adjuntos.relacionados.files = []
+                factura.relacionadas.forEach(element => {
+                    form.adjuntos.relacionados.files.push(element)
+                });
+                if (key === 'compras') 
+                    this.getComprasAxios()
+                if (key === 'ventas') 
+                    this.getVentasAxios()
+                doneAlert('La factura fue inhabilitado con éxito.')
+                this.setState({ ...this.state,form })
+            }, (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
     }
 
     async inhabilitarFactura(factura) {
@@ -260,6 +303,7 @@ class Facturacion extends Component {
         }
         return setLabelTable(text)
     }
+
     setAdjuntosTable = factura => {
         return (
             <div>
@@ -285,6 +329,7 @@ class Facturacion extends Component {
             </div>
         )
     }
+
     setInfoTable = (rfc, nombre) => {
         return (
             <div>
@@ -308,6 +353,7 @@ class Facturacion extends Component {
             </div>
         )
     }
+
     cancelarFactura = (factura) => {
         const { form } = this.state
         let aux = []
@@ -327,6 +373,7 @@ class Facturacion extends Component {
             form
         })
     }
+    
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
@@ -338,10 +385,13 @@ class Facturacion extends Component {
                             value: '',
                             placeholder: 'Ingresa los adjuntos',
                             files: []
-                        },
-                        factura: {
+                        }, factura: {
                             value: '',
                             placeholder: 'Factura',
+                            files: []
+                        }, relacionados:{
+                            value: '',
+                            placeholder: 'Facturas relacionadas',
                             files: []
                         }
                     }
@@ -354,9 +404,64 @@ class Facturacion extends Component {
         })
         return form;
     }
-    handleChange = (files, item) => {
-        this.onChangeAdjunto({ target: { name: item, value: files, files: files } })
+
+    handleChangeRelacionadas = ( files, item ) => {
+        const { form } = this.state
+        let arreglo = { xml: {
+            name: '',
+            file: null,
+            url: ''
+        }, pdf: {
+            name: '',
+            file: null,
+            url: ''
+        }}
+        if(files.length <= 2 && files.length > 0){
+            files.forEach(element => {
+                switch(element.type){
+                    case 'application/pdf':
+                        arreglo.pdf = {
+                            name: element.name,
+                            file: element,
+                            url: URL.createObjectURL(element),
+                        }
+                        break;
+                    case 'text/xml':
+                        arreglo.xml = {
+                            name: element.name,
+                            file: element,
+                            url: URL.createObjectURL(element),
+                        }
+                        break;
+                }
+            });    
+            form.adjuntos.relacionados.files.push(arreglo)
+        }
+        
+        this.setState({ ...this.state,form })
+        createAlertSA2WithActionOnClose(
+            '¿DESEAS AGREGAR LA FACTURA RELACIONADA?',
+            '',
+            () => this.addFacturaRelacionada(files, item),
+            () => this.cleanAdjuntos(item)
+        )
+        /* this.onChangeRelacionados({ target: { name: item, value: files, files: files } }) */
     }
+
+    cleanAdjuntos = (item) => {
+        const { form } = this.state
+        let aux = []
+        form.adjuntos[item].files.map((file) => {
+            if(file.id) aux.push(file)
+            return ''
+        })
+        form.adjuntos[item].value = ''
+        form.adjuntos[item].files = aux
+        this.setState({...this.state,form})
+    }
+
+    handleChange = (files, item) => { this.onChangeAdjunto({ target: { name: item, value: files, files: files } }) }
+
     onChangeAdjunto = e => {
         const { form } = this.state
         const { files, value, name } = e.target
@@ -373,11 +478,44 @@ class Facturacion extends Component {
         }
         form['adjuntos'][name].value = value
         form['adjuntos'][name].files = aux
-        this.setState({
-            ...this.state,
-            form
+        this.setState({ ...this.state, form })
+    }
+
+    addFacturaRelacionada = async(files, item) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { factura } = this.state
+        const data = new FormData()
+        files.map((file) => {
+            data.append(`files_name[]`, file.name)
+            data.append(`files[]`, file)
+            return ''
+        })
+        await axios.post(`${URL_DEV}v2/administracion/facturas/${factura.id}/relacionadas`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { key, form } = this.state
+                const { factura } = response.data
+                form.adjuntos.relacionados.files = []
+                factura.relacionadas.forEach(element => {
+                    form.adjuntos.relacionados.files.push(element)    
+                });
+                if (key === 'compras') {
+                    this.getComprasAxios()
+                }
+                if (key === 'ventas') {
+                    this.getVentasAxios()
+                }
+                doneAlert('Factura relacionada con éxito')
+                this.setState({ ...this.state,form })
+            }, (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
+
     async cancelarFacturaAxios() {
         const { access_token } = this.props.authUser
         const { form, factura } = this.state
@@ -418,6 +556,7 @@ class Facturacion extends Component {
             console.log(error, 'error')
         })
     }
+
     async getFacturas() {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'facturas', { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -437,6 +576,7 @@ class Facturacion extends Component {
             console.log(error, 'error')
         })
     }
+
     handleClose = () => {
         const { modalCancelar } = this.state
         this.setState({
@@ -445,11 +585,13 @@ class Facturacion extends Component {
             form: this.clearForm()
         })
     }
+
     onSubmit = e => {
         e.preventDefault()
         waitAlert()
         this.cancelarFacturaAxios(e)
     }
+
     openModal = () => {
         this.setState({
             ...this.state,
@@ -460,6 +602,7 @@ class Facturacion extends Component {
             formeditado: 0
         })
     }
+
     handleCloseFacturas = () => {
         const { modalFacturas } = this.state
         this.setState({
@@ -499,20 +642,24 @@ class Facturacion extends Component {
     }
 
     openFacturaRelacionada = factura => {
-        this.setState({
-            ...this.state,
-            modalFacturaRelacionada: true,
-            factura: factura
-        })
+        const { form } = this.state
+        form.adjuntos.relacionados.files = []
+        factura.relacionadas.forEach(element => {
+            form.adjuntos.relacionados.files.push(element)    
+        });
+        this.setState({ ...this.state, modalFacturaRelacionada: true, factura: factura,form })
     }
+
     handleCloseFacturaRelacionada = () => {
-        const { modalFacturaRelacionada } = this.state
+        const { modalFacturaRelacionada, form } = this.state
         this.setState({
             ...this.state,
             modalFacturaRelacionada: !modalFacturaRelacionada,
-            factura: ''
+            factura: '',
+            form: this.clearForm()
         })
     }
+
     onChangeAdjuntoFacturas = e => {
         const { form, data } = this.state
         const { files, value, name } = e.target
@@ -643,26 +790,21 @@ class Facturacion extends Component {
         }
         form['adjuntos'][name].value = value
         form['adjuntos'][name].files = aux
-        this.setState({
-            ...this.state,
-            form
-        })
+        this.setState({ ...this.state, form })
     }
+
     setOptions = (name, array) => {
         const { options } = this.state
         options[name] = setOptions(array, 'nombre', 'id')
-        this.setState({
-            ...this.state,
-            options
-        })
+        this.setState({ ...this.state, options })
     }
+
     clearFiles = (name, key) => {
         const { form } = this.state
         let aux = []
         for (let counter = 0; counter < form['adjuntos'][name].files.length; counter++) {
-            if (counter !== key) {
+            if (counter !== key)
                 aux.push(form['adjuntos'][name].files[counter])
-            }
         }
         if (aux.length < 1) {
             form['adjuntos'][name].value = ''
@@ -670,29 +812,20 @@ class Facturacion extends Component {
                 form['facturaObject'] = ''
         }
         form['adjuntos'][name].files = aux
-        this.setState({
-            ...this.state,
-            form
-        })
+        this.setState({ ...this.state, form })
     }
-    async getComprasAxios() {
-        $('#kt_datatable_compras').DataTable().ajax.reload();
-    }
-    async getVentasAxios() {
-        $('#kt_datatable_ventas').DataTable().ajax.reload();
-    }
+
+    async getComprasAxios() { $('#kt_datatable_compras').DataTable().ajax.reload(); }
+    async getVentasAxios() { $('#kt_datatable_ventas').DataTable().ajax.reload(); }
+
     controlledTab = value => {
-        if (value === 'compras') {
+        if (value === 'compras')
             this.getComprasAxios()
-        }
-        if (value === 'ventas') {
+        if (value === 'ventas')
             this.getVentasAxios()
-        }
-        this.setState({
-            ...this.state,
-            key: value
-        })
+        this.setState({ ...this.state, key: value })
     }
+    
     async sendFacturaAxios() {
         waitAlert();
         const { access_token } = this.props.authUser
@@ -725,11 +858,7 @@ class Facturacion extends Component {
         await axios.post(URL_DEV + 'facturas/new', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 this.getVentasAxios()
-                this.setState({
-                    ...this.state,
-                    form: this.clearForm(),
-                    modalFacturas: false
-                })
+                this.setState({ ...this.state, form: this.clearForm(), modalFacturas: false })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
             }, (error) => {
                 printResponseErrorAlert(error)
@@ -739,6 +868,7 @@ class Facturacion extends Component {
             console.log(error, 'error')
         })
     }
+    
     async addClienteAxios(obj) {
         const { access_token } = this.props.authUser
         const data = new FormData();
@@ -761,12 +891,7 @@ class Facturacion extends Component {
                         form.cliente = cliente.empresa
                     return false
                 })
-                this.setState({
-                    ...this.state,
-                    form,
-                    data,
-                    options
-                })
+                this.setState({ ...this.state, form, data, options })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
             }, (error) => {
                 printResponseErrorAlert(error)
@@ -810,9 +935,7 @@ class Facturacion extends Component {
                 document.body.appendChild(link);
                 link.click();
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-            }, (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -825,16 +948,9 @@ class Facturacion extends Component {
             <Layout active = 'administracion'  {...this.props} >
                 <Tabs defaultActiveKey = "ventas" activeKey = { key } onSelect = { (value) => { this.controlledTab(value) } } >
                     <Tab eventKey = "ventas" title = "Ventas">
-                        <NewTableServerRender
-                            columns = { FACTURAS_COLUMNS }
-                            title = 'Facturas'
-                            subtitle = 'Listado de facturas'
-                            mostrar_boton = { true }
-                            abrir_modal = { true }
-                            mostrar_acciones = { true }
-                            onClick = { this.openModal }
-                            restante_empresa = { true }
-                            onClickRestante = { this.openModalRestante }
+                        <NewTableServerRender columns = { FACTURAS_COLUMNS } title = 'Facturas' subtitle = 'Listado de facturas'
+                            mostrar_boton = { true } abrir_modal = { true } mostrar_acciones = { true } onClick = { this.openModal }
+                            restante_empresa = { true } onClickRestante = { this.openModalRestante }
                             actions = {
                                 {
                                     'see': { function: this.openModalSee },
@@ -843,30 +959,15 @@ class Facturacion extends Component {
                                     'facturaRelacionada': { function: this.openFacturaRelacionada}
                                 }
                             }
-                            idTable = 'kt_datatable_ventas'
-                            accessToken = { this.props.authUser.access_token }
-                            setter = { this.setFactura }
-                            urlRender ={ URL_DEV + 'facturas/ventas' }
-                            cardTable = 'cardTable_ventas'
-                            cardTableHeader = 'cardTableHeader_ventas'
-                            cardBody = 'cardBody_ventas'
-                            isTab = { true }
-                            tipo_validacion = 'facturas'
-                            exportar_boton = { true }
-                            onClickExport = { () => this.getExcelFacturasVentas() }
-                        />
+                            idTable = 'kt_datatable_ventas' accessToken = { this.props.authUser.access_token } setter = { this.setFactura }
+                            urlRender = { URL_DEV + 'facturas/ventas' } cardTable = 'cardTable_ventas' cardTableHeader = 'cardTableHeader_ventas'
+                            cardBody = 'cardBody_ventas' isTab = { true } tipo_validacion = 'facturas' exportar_boton = { true }
+                            onClickExport = { () => this.getExcelFacturasVentas() } />
                     </Tab>
                     <Tab eventKey = "compras" title = "Compras">
-                        <NewTableServerRender
-                            columns = { FACTURAS_COLUMNS }
-                            title = 'Facturas'
-                            subtitle = 'Listado de facturas'
-                            mostrar_boton = { true }
-                            abrir_modal = { true }
-                            mostrar_acciones = { true }
-                            onClick = { this.openModal }
-                            restante_empresa = { true }
-                            onClickRestante = { this.openModalRestante }
+                        <NewTableServerRender columns = { FACTURAS_COLUMNS } title = 'Facturas' subtitle = 'Listado de facturas'
+                            mostrar_boton = { true } abrir_modal = { true } mostrar_acciones = { true } onClick = { this.openModal }
+                            restante_empresa = { true } onClickRestante = { this.openModalRestante }
                             actions = {
                                 {
                                     'see': { function: this.openModalSee },
@@ -874,59 +975,32 @@ class Facturacion extends Component {
                                     'inhabilitar': { function: this.inhabilitar },
                                     'facturaRelacionada': { function: this.openFacturaRelacionada}
                                 }
-                            }
-                            idTable = 'kt_datatable_compras'
-                            accessToken = { this.props.authUser.access_token }
-                            setter = { this.setFactura }
-                            urlRender = { URL_DEV + 'facturas/compras' }
-                            cardTable = 'cardTable_compras'
-                            cardTableHeader = 'cardTableHeader_compras'
-                            cardBody = 'cardBody_compras'
-                            isTab = { true }
-                            tipo_validacion = 'facturas'
-                            exportar_boton = { true }
-                            onClickExport = { () => this.getExcelFacturasCompras() }
-                        />
+                            } idTable = 'kt_datatable_compras' accessToken = { this.props.authUser.access_token } setter = { this.setFactura }
+                            urlRender = { URL_DEV + 'facturas/compras' } cardTable = 'cardTable_compras' cardTableHeader = 'cardTableHeader_compras'
+                            cardBody = 'cardBody_compras' isTab = { true } tipo_validacion = 'facturas' exportar_boton = { true }
+                            onClickExport = { () => this.getExcelFacturasCompras() } />
                     </Tab>
                 </Tabs>
                 <Modal size="lg" title={"Agregar adjuntos"} show={modalCancelar} handleClose={this.handleClose} >
                     <div className="mt-4 mb-4">
-                        <ItemSlider
-                            items={form.adjuntos.adjuntos.files}
-                            handleChange={this.handleChange}
-                            item="adjuntos"
-                            multiple={true}
-                        />
+                        <ItemSlider items={form.adjuntos.adjuntos.files} handleChange={this.handleChange} item="adjuntos" multiple={true} />
                     </div>
                     <div className="card-footer py-3 pr-1">
                         <div className="row">
                             <div className="col-lg-12 text-right pr-0 pb-0">
-                                <Button
-                                    icon=''
-                                    text='ENVIAR'
-                                    onClick={(e) => { e.preventDefault(); waitAlert(); this.cancelarFacturaAxios() }}
-                                    className="btn btn-primary mr-2" />
+                                <Button icon = '' text = 'ENVIAR' className="btn btn-primary mr-2"
+                                    onClick={(e) => { e.preventDefault(); waitAlert(); this.cancelarFacturaAxios() }} />
                             </div>
                         </div>
                     </div>
                 </Modal>
 
-                <Modal title={"Agregar facturas"} show={modalFacturas} handleClose={this.handleCloseFacturas} >
-                    <Form
-                    // onSubmit = { (e) => { e.preventDefault(); waitAlert(); this.sendFacturaAxios();}}
-                    >
+                <Modal title = "Agregar facturas" show = { modalFacturas } handleClose = { this.handleCloseFacturas }>
+                    <Form /*onSubmit = { (e) => { e.preventDefault(); waitAlert(); this.sendFacturaAxios();}} */ >
                         <div className="mt-3 mb-4">
-                            <FileInput
-                                onChangeAdjunto={this.onChangeAdjuntoFacturas}
-                                placeholder={form['adjuntos']['factura']['placeholder']}
-                                value={form['adjuntos']['factura']['value']}
-                                name={'factura'}
-                                id={'factura'}
-                                accept="text/xml, application/pdf"
-                                files={form['adjuntos']['factura']['files']}
-                                deleteAdjunto={this.clearFiles}
-                                multiple
-                            />
+                            <FileInput onChangeAdjunto = { this.onChangeAdjuntoFacturas } placeholder = { form.adjuntos.factura.placeholder }
+                                value = { form.adjuntos.factura.value} name = 'factura' id = 'factura' accept = "text/xml, application/pdf"
+                                files = {form.adjuntos.factura.files } deleteAdjunto = { this.clearFiles } multiple />
                         </div>
                         <div className="card-footer py-3 pr-1">
                             <div className="row">
@@ -939,7 +1013,7 @@ class Facturacion extends Component {
                     </Form>
                 </Modal>
                 <Modal size="lg" title="Factura" show={modalSee} handleClose={this.handleCloseSee} >
-                    <FacturacionCard factura={factura} />
+                    <FacturacionCard factura = { factura } />
                 </Modal>
 
                 <Modal title="Restante por empresa" show={modalRestante} handleClose={this.handleCloseRestante} >
@@ -966,13 +1040,9 @@ class Facturacion extends Component {
                                                     </td>
                                                     <td className="text-right">
                                                         <span className="text-dark-75 font-weight-bolder d-block font-size-lg">
-                                                            <NumberFormat
-                                                                value={empresa.restante}
-                                                                displayType={'text'}
-                                                                thousandSeparator={true}
-                                                                prefix={'$'}
-                                                                renderText={value => <div>{value}</div>}
-                                                            />
+                                                            <NumberFormat value = { empresa.restante } displayType = 'text'
+                                                                thousandSeparator = { true } prefix = '$'
+                                                                renderText = { value => <div>{value}</div> } />
                                                         </span>
                                                     </td>
                                                 </tr>
@@ -985,21 +1055,15 @@ class Facturacion extends Component {
                         </table>
                     </div>
                 </Modal>
-                <Modal size="lg" title="Facturas relacionadas" show={modalFacturaRelacionada} handleClose={this.handleCloseFacturaRelacionada} > 
-
+                <Modal size = "xl" title = "Facturas relacionadas" show = { modalFacturaRelacionada } handleClose = { this.handleCloseFacturaRelacionada } >
+                    <ItemDoubleSlider items = { form.adjuntos.relacionados.files } handleChange = { this.handleChangeRelacionadas } item = 'relacionados' 
+                        deleteFile = { this.deleteRelacionada } /> 
                 </Modal>
             </Layout>
         )
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        authUser: state.authUser
-    }
-}
-
-const mapDispatchToProps = dispatch => ({
-})
-
+const mapStateToProps = state => { return {authUser: state.authUser}}
+const mapDispatchToProps = dispatch => ({})
 export default connect(mapStateToProps, mapDispatchToProps)(Facturacion);
