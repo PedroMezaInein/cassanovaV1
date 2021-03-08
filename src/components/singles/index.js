@@ -3,6 +3,7 @@ import modal from './Modal'
 import customToggle from './CustomToggle'
 import slider from './Slider'
 import itemSlider from './ItemSlider'
+import itemDoubleSlider from './ItemDoubleSlider'
 import modalDelete from './ModalDelete'
 import sliderImages from './SliderImages'
 import floatButtons from './FloatButtons'
@@ -27,3 +28,4 @@ export const Folder = folder
 export const FileItem = fileItem
 export const SymbolIcon = symbolIcon
 export const FolderStatic = folderStatic
+export const ItemDoubleSlider = itemDoubleSlider
