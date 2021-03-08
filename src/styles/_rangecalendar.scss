@@ -20,31 +20,31 @@
 }
 
 // Recuadros de rangos
-.rdrDateDisplay {
-    color: transparent !important;
-}
+// .rdrDateDisplay {
+//     color: transparent !important;
+// }
 
-.rdrSelected,
-.rdrInRange,
-.rdrStartEdge,
-.rdrEndEdge {
-    background-color: #E1F0FF !important;
-}
+// .rdrSelected,
+// .rdrInRange,
+// .rdrStartEdge,
+// .rdrEndEdge {
+//     background-color: #E1F0FF !important;
+// }
 
-.rdrDay:not(.rdrDayPassive) .rdrInRange~.rdrDayNumber span,
-.rdrDay:not(.rdrDayPassive) .rdrStartEdge~.rdrDayNumber span,
-.rdrDay:not(.rdrDayPassive) .rdrEndEdge~.rdrDayNumber span,
-.rdrDay:not(.rdrDayPassive) .rdrSelected~.rdrDayNumber span {
-    color: #2171c1 !important;
-}
+// .rdrDay:not(.rdrDayPassive) .rdrInRange~.rdrDayNumber span,
+// .rdrDay:not(.rdrDayPassive) .rdrStartEdge~.rdrDayNumber span,
+// .rdrDay:not(.rdrDayPassive) .rdrEndEdge~.rdrDayNumber span,
+// .rdrDay:not(.rdrDayPassive) .rdrSelected~.rdrDayNumber span {
+//     color: #2171c1 !important;
+// }
 
-// Linea today
-.rdrDayToday:not(.rdrDayPassive) .rdrInRange~.rdrDayNumber span:after,
-.rdrDayToday:not(.rdrDayPassive) .rdrStartEdge~.rdrDayNumber span:after,
-.rdrDayToday:not(.rdrDayPassive) .rdrEndEdge~.rdrDayNumber span:after,
-.rdrDayToday:not(.rdrDayPassive) .rdrSelected~.rdrDayNumber span:after {
-    background: #2171c1 !important;
-}
+// // Linea today
+// .rdrDayToday:not(.rdrDayPassive) .rdrInRange~.rdrDayNumber span:after,
+// .rdrDayToday:not(.rdrDayPassive) .rdrStartEdge~.rdrDayNumber span:after,
+// .rdrDayToday:not(.rdrDayPassive) .rdrEndEdge~.rdrDayNumber span:after,
+// .rdrDayToday:not(.rdrDayPassive) .rdrSelected~.rdrDayNumber span:after {
+//     background: #2171c1 !important;
+// }
 
 .rdrDateRangePickerWrapper {
     @include down-screen($md) {
