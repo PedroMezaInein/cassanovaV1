@@ -27,7 +27,7 @@ class AgendarCitaForm extends Component {
         }
     }
     render() {
-        const { formAgenda, onChange, onSubmit, tagInputChange, onChangeAgendaLC} = this.props
+        const { formAgenda, onChange, onSubmit, tagInputChange, onChangeAgendaLC, lead} = this.props
         return (
             <Form>
                 <div className="row">
@@ -128,7 +128,7 @@ class AgendarCitaForm extends Component {
                                 formAgenda.lugar === 'presencial' ?
                                     <div className='col-md-4 text-left'>
                                         <RadioGroupGray
-                                            placeholder = "¿La cita es en la empresa?"
+                                            placeholder = {`¿La cita es en ${lead?lead.empresa.name:""}?`}
                                             name = 'cita_empresa'
                                             onChange = { onChange }
                                             options = {
