@@ -148,23 +148,21 @@ class ItemSlider extends Component {
                     </div>
                     <div className="w-80">
                         {
-                                items.length === active && handleChange ?
-                                    <div className="rounded w-80 d-flex justify-content-center align-items-center mx-auto">
-                                        <DropZone accept = { accept } multiple = { multiple === true || multiple === false ? multiple : true} handleChange={this.handleChange} >
-                                            <div className="dropzone-msg dz-message needsclick">
-                                                <div className="row d-flex justify-content-center align-items-center">
-                                                    <span className=" col-md-12 pb-3 svg-icon svg-icon-primary svg-icon svg-icon-5x">
-                                                        <SVG src={toAbsoluteUrl('/images/svg/upload-arrow.svg')} />
-                                                    </span>
-                                                    <p className="font-size-h4 lead pb-2">Haga clic para cargar los archivos</p>
-                                                </div>
+                            items.length === active && handleChange ?
+                                <div className="rounded w-80 d-flex justify-content-center align-items-center mx-auto">
+                                    <DropZone accept = { accept } multiple = { multiple === true || multiple === false ? multiple : true} handleChange={this.handleChange} >
+                                        <div className="dropzone-msg dz-message needsclick">
+                                            <div className="row d-flex justify-content-center align-items-center">
+                                                <span className=" col-md-12 pb-3 svg-icon svg-icon-primary svg-icon svg-icon-5x">
+                                                    <SVG src={toAbsoluteUrl('/images/svg/upload-arrow.svg')} />
+                                                </span>
+                                                <p className="font-size-h4 lead pb-2">Haga clic para cargar los archivos</p>
                                             </div>
-                                        </DropZone>
-                                    </div>
-                                    :
-                                    items.length > 0 ?
-                                        <ShowFile item = { items[active] } />
-                                    : ''
+                                        </div>
+                                    </DropZone>
+                                </div>
+                            :
+                                items.length > 0 ? <ShowFile item = { items[active] } /> : ''
                         }
                     </div>
                     <div className="w-10 align-self-center">
@@ -182,29 +180,29 @@ class ItemSlider extends Component {
                     </div>
                 </div>
                 <div className="d-flex justify-content-center align-items-center mt-3">
-                        <div>
-                            {
-                                items.length > 0 && active !== items.length ? 
-                                    deleteFile && items[active].id ?
-                                        <span className="btn btn-text-danger btn-hover-danger p-2" onClick={(e) => { e.preventDefault(); deleteFile(items[active]) }} >
-                                            <i className='fas fa-trash pr-0'></i>
-                                        </span>
-                                    : ''
+                    <div>
+                        {
+                            items.length > 0 && active !== items.length ? 
+                                deleteFile && items[active].id ?
+                                    <span className="btn btn-text-danger btn-hover-danger p-2" onClick={(e) => { e.preventDefault(); deleteFile(items[active]) }} >
+                                        <i className='fas fa-trash pr-0'></i>
+                                    </span>
                                 : ''
-                            }
-                            {
-                                items.length > 0 && active !== items.length ? 
+                            : ''
+                        }
+                        {
+                            items.length > 0 && active !== items.length ? 
                                 <div className="text-center">
                                     <a href={items[active].url} target='_blank' rel="noopener noreferrer" className="text-muted text-hover-primary font-weight-bold">
                                         <span className="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
                                             <SVG src={toAbsoluteUrl('/images/svg/Attachment1.svg')} />
                                         </span>
-                                            Ver archivo
+                                        Ver archivo
                                     </a>
                                 </div>
-                                : ''
-                            }
-                        </div>
+                            : ''
+                        }
+                    </div>
                 </div>
             </>
         )
