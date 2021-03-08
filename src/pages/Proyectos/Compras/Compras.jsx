@@ -851,7 +851,7 @@ class Compras extends Component {
         let documento = ''
         COMPRAS_COLUMNS.map((columna, key) => {
             if (columna !== 'actions' && columna !== 'adjuntos') {
-                documento = document.getElementById(columna.accessor)
+                documento = document.getElementById(columna.accessor+'-compras')
                 if (documento) {
                     if (documento.value) {
                         headers.push({
@@ -865,7 +865,7 @@ class Compras extends Component {
         })
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.post(URL_DEV + 'exportar/compras', { columnas: headers }, { responseType: 'blob', headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}v2/exportar/proyectos/compras`, { columnas: headers }, { responseType: 'blob', headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const url = window.URL.createObjectURL(new Blob([response.data]));
                 const link = document.createElement('a');
@@ -1001,7 +1001,7 @@ class Compras extends Component {
                         'facturaExtranjera': { function: this.openFacturaExtranjera}
                     }}
                     elements={data.compras}
-                    idTable='kt_datatable2_compras'
+                    idTable='compras'
                     exportar_boton={true}
                     onClickExport={() => this.exportComprasAxios()}
                     accessToken={this.props.authUser.access_token}
