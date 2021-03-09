@@ -660,13 +660,13 @@ class PlanTrabajo extends Component {
                             </div>
                         </div>
                         <div className="table-responsive-xl">
-                            <table className="table table-responsive table-bordered table-vertical-center">
+                            <table id="parrilla" className="table table-responsive table-bordered table-vertical-center border-0">
                                 <thead className="text-center">
                                     <tr>
-                                        <th>Empresa</th>
+                                        <th className="font-weight-bolder border-0">Empresa</th>
                                         {
                                             [...Array(dias)].map((element, key) => {
-                                                return (<th key={key}>{key <= 8 ? "0" + (key + 1) : key + 1}</th>)
+                                                return (<th className="border-top-0" key={key}>{key <= 8 ? "0" + (key + 1) : key + 1}</th>)
                                             })
                                         }
                                     </tr>
@@ -680,7 +680,7 @@ class PlanTrabajo extends Component {
                                                         <tr key={`${index}-${conteo}-index-row-${empresa.name}`} className = 'h-30px'>
                                                             {
                                                                 conteo === 0 ?
-                                                                    <td key = { `rowspan-${index}-${conteo}-index-row-${empresa.name}` }
+                                                                    <td className="empresa-parrilla" key = { `rowspan-${index}-${conteo}-index-row-${empresa.name}` }
                                                                         rowSpan = { empresa.rowSpanSize} >{empresa.name}</td>
                                                                 : <></>
                                                             }

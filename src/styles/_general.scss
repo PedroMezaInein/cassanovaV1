@@ -1771,3 +1771,17 @@ span.font-weight-bolder.text-hover-error:hover{
 .text-align-last-center{
     text-align-last: center;
 }
+
+.empresa-parrilla{
+    font-weight: 600;
+    text-align: center;
+    border-bottom: 0px!important;
+}
+
+#parrilla th:last-child, #parrilla th:first-child, #parrilla td:last-child, #parrilla td:first-child{
+    border-left: none;
+    border-right: none;
+}
+#parrilla tr:last-child td {
+    border-bottom:none;
+}

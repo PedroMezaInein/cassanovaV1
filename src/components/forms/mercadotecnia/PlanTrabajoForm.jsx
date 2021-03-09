@@ -1,20 +1,40 @@
 import React, { Component } from 'react'
 import { Form, Row, Col } from 'react-bootstrap'
 import { validateAlert } from '../../../functions/alert';
-import { Button, Input, RangeCalendar, TagSelectSearch, CircleColor, SelectCreate, SelectSearch } from '../../form-components';
+import { Button, Input, MultipleRangeCalendar, TagSelectSearch, CircleColor, SelectCreate, SelectSearch } from '../../form-components';
 import { COLORS } from '../../../constants'
 const $ = require('jquery');
 class PlanTrabajoForm extends Component{
     state = {
-        color: ''
+        color: '',
+        selection1:{
+            startDate: new Date(),
+            endDate: new Date(),
+            key: 'selection1',
+        },
+        selection2:{
+            startDate: new Date(),
+            endDate: new Date(),
+            key: 'selection2',
+        },
+        selection3:{
+            startDate: new Date(),
+            endDate: new Date(),
+            key: 'selection3',
+            autoFocus: false
+        }
     }
     updateRangeCalendar = range => {
         const { startDate, endDate } = range
         const { onChange } = this.props
-        onChange({ target: { value: startDate, name: 'fechaInicio' } })
-        onChange({ target: { value: endDate, name: 'fechaFin' } })
+        // onChange({ target: { value: startDate, name: 'fechaInicio' } })
+        // onChange({ target: { value: endDate, name: 'fechaFin' } })
+        
     }
 
+    onClickAddDate = () => {
+        console.log("clic")
+    }
     transformarOptions = options => {
         options = options ? options : []
         options.map((value) => {
@@ -62,7 +82,10 @@ class PlanTrabajoForm extends Component{
     handleChangeColor = (color) => {
         const { onChange } = this.props
         onChange({ target: { value: color.hex, name: 'color' } })
-        this.setState({...this.state,color:color});
+        this.setState({
+            ...this.state,
+            color:color
+        });
     }
 
     updateEmpresa = value => {
@@ -72,6 +95,7 @@ class PlanTrabajoForm extends Component{
 
     render(){
         const { title, options, form, onChange, onSubmit, formeditado, handleChangeCreate, handleCreateOption, deletePlanAlert } = this.props
+        const { selection1, selection2, selection3 } = this.state
         return(
             <Form id="form-plan" onSubmit={(e) => { e.preventDefault(); validateAlert(onSubmit, e, 'form-plan') }}>
                 <Row>
@@ -79,8 +103,15 @@ class PlanTrabajoForm extends Component{
                         <div className="form-group row form-group-marginless mt-4">
                             <div className="col-md-12 text-center">
                                 <label className="col-form-label my-2 font-weight-bolder">Fecha de inicio - Fecha final</label><br/>
-                                <RangeCalendar onChange = { this.updateRangeCalendar } start = { form.fechaInicio }
-                                    end = { form.fechaFin } />
+                                <MultipleRangeCalendar
+                                    onChange = { this.updateRangeCalendar }
+                                    start = { form.fechaInicio }
+                                    end = { form.fechaFin }
+                                    selection1={selection1}
+                                    selection2={selection2}
+                                    selection3={selection3}
+                                    onClickAddDate={this.onClickAddDate}
+                                />
                             </div>
                         </div>
                     </Col>

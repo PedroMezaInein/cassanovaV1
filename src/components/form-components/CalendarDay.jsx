@@ -48,6 +48,7 @@ export default class CalendarDay extends Component {
                         onChange={ (item) => { this.updateDate(item)} }
                         locale = { es }
                         date = { date }
+                        color = {"#2171c1"}
                         disabledDay = {
                             (date) => {
                                 if(disabledWeekends){
