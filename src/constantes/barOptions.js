@@ -21,7 +21,7 @@ export const dataSimpleBar = {
             {
                 ticks: {
                     beginAtZero: true,
-                    fontSize: 16,
+                    fontSize: 20,
                     fontColor: '#808080',
                     fontStyle: "bold",
                     lineWidth: 10,
@@ -72,7 +72,7 @@ export const dataSimpleBar = {
         labels: {
             boxWidth: 20,
             padding: 5,
-            fontSize: 12,
+            fontSize: 20,
             fontColor: '#808080'
         }
     },
@@ -86,7 +86,7 @@ export const percentBar =  {
             font: function(context) {
                 var w = context.dataset.data.length;
                 return {
-                    size: w < 6 ? 25 : w < 13 ? 16 : 12,
+                    size: w < 6 ? 25 : w < 13 ? 23 : 20,
                     weight: 'bold',
                 };
             },
@@ -96,10 +96,11 @@ export const percentBar =  {
                 if(context.dataset.percent){
                     if(context['dataset']['percent'][context['dataIndex']] > 1)
                         return context['dataset']['percent'][context['dataIndex']] + '%'
-                    else return ''
+                    else return value
                 }
-                else
+                else{
                     return value
+                }
             }
         }
     },
@@ -126,17 +127,18 @@ export const percentBar =  {
                     position: 'bottom',
                     autoSkip: false,
                     callback: function (value, index, values) {
+                        value.label = value.label.toUpperCase()
                         let auxiliar = []
                         let arreglo = []
                         let cadena = ''
-                        switch(value.label){
-                            case 'Bolsa de trabajo':
+                        switch(value.label.toUpperCase()){
+                            case 'BOLSA DE TRABAJO':
                                 auxiliar.push('BOLSA DE','TRABAJO')
                                 break;
-                            case 'Quiero ser proveedor':
+                            case 'QUIERO SER PROVEEDOR':
                                 auxiliar.push('QUIERO SER','PROVEEDOR')
                                 break;
-                            case 'Aún no lo se':
+                            case 'AÚN NO LO SE':
                                 auxiliar.push('AÚN NO LO SE')
                                 break;
                             default:
