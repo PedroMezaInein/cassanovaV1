@@ -29,7 +29,12 @@ class PlanTrabajo extends Component {
             color: '',
             usuarios: [],
             rolTarget: {taget: '', value: ''},
-            mostrarColor: false
+            mostrarColor: false,
+            fechas: [{
+                startDate: new Date(),
+                endDate: new Date(),
+                key: 'selection_0'
+            }]
         },
         mes: meses[new Date().getMonth()],
         año: new Date().getFullYear(),
@@ -109,7 +114,7 @@ class PlanTrabajo extends Component {
     addPlanAxios = async() => {
         const { form } = this.state
         const { access_token } = this.props.authUser
-        await axios.post(`${URL_DEV}mercadotecnia/plan-trabajo`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}v2/mercadotecnia/plan-de-trabajo`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { mes, año } = this.state
                 this.getContentAxios( mes, año )
@@ -126,7 +131,7 @@ class PlanTrabajo extends Component {
     updatePlanoAxios = async() => {
         const { form, evento } = this.state
         const { access_token } = this.props.authUser
-        await axios.put(`${URL_DEV}mercadotecnia/plan-trabajo/${evento.id}`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.put(`${URL_DEV}v2/mercadotecnia/plan-de-trabajo/${evento.id}`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { mes, año } = this.state
                 this.getContentAxios( mes, año )
@@ -243,14 +248,19 @@ class PlanTrabajo extends Component {
     clickedEvent = evento => {
         const { modal, form } = this.state
         modal.form = true
-        form.fechaInicio = moment(evento.fechaInicio)
-        form.fechaFin = moment(evento.fechaFin)
         form.descripcion = evento.descripcion
         form.nombre = evento.nombre
         form.empresa = evento.empresa_id.toString()
         form.rol = evento.rol ? evento.rol.id : ''
         form.rolTarget = evento.rol ? { value: evento.rol.id.toString(), label: evento.rol.nombre, text: evento.rol.nombre } : { value: '', label: '', text: ''}
         form.usuarios = []
+        form.fechas = [
+            {
+                startDate: new Date(moment(evento.fechaInicio)),
+                endDate: new Date(moment(evento.fechaFin)),
+                key: 'selection_0'
+            }
+        ]
         evento.usuarios.map((user)=>{
             form.usuarios.push({
                 value: user.id.toString(),
@@ -275,6 +285,13 @@ class PlanTrabajo extends Component {
                     break;
                 case 'usuarios':
                     form[element] = [];
+                    break;
+                case 'fechas':
+                    form[element] = [{
+                        startDate: new Date(),
+                        endDate: new Date(),
+                        key: 'selection_0'
+                    }]
                     break;
                 default:
                     form[element] = '';
@@ -301,13 +318,8 @@ class PlanTrabajo extends Component {
         const { name, value } = event.target
         const { form } = this.state
         form[name] = value
-        this.setState({
-            ...this.setState({
-                form
-            })
-        })
+        this.setState({ ...this.state, form })
     }
-
 
     handleChangeCreate = newValue => {
         const { form } = this.state
@@ -600,6 +612,25 @@ class PlanTrabajo extends Component {
         })
     }
 
+    clickAddRange = () => {
+        const { form } = this.state
+        form.fechas.push(
+            { 
+                startDate: new Date(),
+                endDate: new Date(),
+                key: 'selection_'+(form.fechas.length),  
+            }
+        )
+        this.setState({...this.state,form})
+    }
+
+    clickDeleteRange = () => {
+        const { form } = this.state
+        if(form.fechas.length > 1)
+            form.fechas.pop();
+        this.setState({...this.state,form})
+    }
+
     render() {
         const { mes, año, data, form, modal, title, options, dias, formeditado } = this.state
         return (
@@ -704,7 +735,8 @@ class PlanTrabajo extends Component {
                     <PlanTrabajoForm form = { form } onChange = { this.onChange } options = { options } onSubmit = { this.onSubmit }
                         deleteOption = { this.deleteOption } formeditado = { formeditado }
                         handleChangeCreate = { this.handleChangeCreate } handleCreateOption = { this.handleCreateOption } 
-                        title = { title } deletePlanAlert = { this.deletePlanAlert } onChangeOptions={this.onChangeOptions} />
+                        title = { title } deletePlanAlert = { this.deletePlanAlert } onChangeOptions={this.onChangeOptions} 
+                        clickAddRange = { this.clickAddRange } clickDeleteRange = { this.clickDeleteRange } />
                 </Modal>
             </Layout>
         )

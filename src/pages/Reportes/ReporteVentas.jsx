@@ -447,50 +447,26 @@ class ReporteVentas extends Component {
         // let aux = []
         let imagenes = []
         const { form, data } = this.state
-        if(form.rango === 'semestral' || form.rango === 'anual'){
-            imagenes = {
-                total: this.chartTotalReference.current === null ? null : this.chartTotalReference.current.chartInstance.toBase64Image(),
-                totalMeses: this.chartTotalComparativaReference.current === null ? null : this.chartTotalComparativaReference.current.chartInstance.toBase64Image(),
-                origenes: this.chartTotalOrigenesReference.current === null ? null : this.chartTotalOrigenesReference.current.chartInstance.toBase64Image(),
-                origenesOrganicos: this.chartOrigenesOrganicosReference.current === null ? null : this.chartOrigenesOrganicosReference.current.chartInstance.toBase64Image(),
-                origenesAds: this.chartOrigenesAdsReference.current === null ? null : this.chartOrigenesAdsReference.current.chartInstance.toBase64Image(),
-                origenesMeses: this.chartComparativaOrigenesReference.current === null ? null : this.chartComparativaOrigenesReference.current.chartInstance.toBase64Image(),
-                servicios: this.chartServiciosReference.current === null ? null : this.chartServiciosReference.current.chartInstance.toBase64Image(),
-                serviciosMeses: this.chartServiciosComparativaReference.current === null ? null : this.chartServiciosComparativaReference.current.chartInstance.toBase64Image(),
-                tipos: this.chartTiposReference.current === null ? null : this.chartTiposReference.current.chartInstance.toBase64Image(),
-                origenesNoPotenciales: this.chartOrigenesNoPotencialesReference.current === null ? null : this.chartOrigenesNoPotencialesReference.current.chartInstance.toBase64Image(),
-                origenesPotenciales: this.chartOrigenesPotencialesReference.current === null ? null : this.chartOrigenesPotencialesReference.current.chartInstance.toBase64Image(),
-                origenesDuplicados: this.chartOrigenesDuplicadosReference.current === null ? null : this.chartOrigenesDuplicadosReference.current.chartInstance.toBase64Image(),
-                tiposMeses: this.chartTiposComparativaReference.current === null ? null : this.chartTiposComparativaReference.current.chartInstance.toBase64Image(),
-                tiposProyectos: this.chartTiposProyectosReference.current === null ? null : this.chartTiposProyectosReference.current.chartInstance.toBase64Image(),
-                tiposProyectosMeses: this.chartTiposProyectosComparativaReference.current === null ? null : this.chartTiposProyectosComparativaReference.current.chartInstance.toBase64Image(),
-                contactados: this.chartContactadosReference.current === null ? null : this.chartContactadosReference.current.chartInstance.toBase64Image(),
-                estatus: this.chartEstatusReference.current === null ? null : this.chartEstatusReference.current.chartInstance.toBase64Image(),
-                motivosCancelacion: this.chartMotivosCancelacionReference.current === null ? null : this.chartMotivosCancelacionReference.current.chartInstance.toBase64Image(),
-                motivosRechazo: this.chartMotivosRechazoReference.current === null ? null : this.chartMotivosRechazoReference.current.chartInstance.toBase64Image(),
-            }
-        }else{
-            imagenes = {
-                total: this.chartTotalReference.current === null ? null : this.chartTotalReference.current.chartInstance.toBase64Image(),
-                totalMeses: this.chartTotalComparativaReference.current === null ? null : this.chartTotalComparativaReference.current.chartInstance.toBase64Image(),
-                origenes: this.chartTotalOrigenesReference.current === null ? null : this.chartTotalOrigenesReference.current.chartInstance.toBase64Image(),
-                origenesOrganicos: this.chartOrigenesOrganicosReference.current === null ? null : this.chartOrigenesOrganicosReference.current.chartInstance.toBase64Image(),
-                origenesAds: this.chartOrigenesAdsReference.current === null ? null : this.chartOrigenesAdsReference.current.chartInstance.toBase64Image(),
-                origenesMeses: this.chartComparativaOrigenesReference.current === null ? null : this.chartComparativaOrigenesReference.current.chartInstance.toBase64Image(),
-                servicios: this.chartServiciosReference.current === null ? null : this.chartServiciosReference.current.chartInstance.toBase64Image(),
-                serviciosMeses: this.chartServiciosComparativaReference.current === null ? null : this.chartServiciosComparativaReference.current.chartInstance.toBase64Image(),
-                tipos: this.chartTiposReference.current === null ? null : this.chartTiposReference.current.chartInstance.toBase64Image(),
-                origenesNoPotenciales: this.chartOrigenesNoPotencialesReference.current === null ? null : this.chartOrigenesNoPotencialesReference.current.chartInstance.toBase64Image(),
-                origenesPotenciales: this.chartOrigenesPotencialesReference.current === null ? null : this.chartOrigenesPotencialesReference.current.chartInstance.toBase64Image(),
-                origenesDuplicados: this.chartOrigenesDuplicadosReference.current === null ? null : this.chartOrigenesDuplicadosReference.current.chartInstance.toBase64Image(),
-                tiposMeses: this.chartTiposComparativaReference.current === null ? null : this.chartTiposComparativaReference.current.chartInstance.toBase64Image(),
-                tiposProyectos: this.chartTiposProyectosReference.current === null ? null : this.chartTiposProyectosReference.current.chartInstance.toBase64Image(),
-                tiposProyectosMeses: this.chartTiposProyectosComparativaReference.current === null ? null : this.chartTiposProyectosComparativaReference.current.chartInstance.toBase64Image(),
-                contactados: this.chartContactadosReference.current === null ? null : this.chartContactadosReference.current.chartInstance.toBase64Image(),
-                estatus: this.chartEstatusReference.current === null ? null : this.chartEstatusReference.current.chartInstance.toBase64Image(),
-                motivosCancelacion: this.chartMotivosCancelacionReference.current === null ? null : this.chartMotivosCancelacionReference.current.chartInstance.toBase64Image(),
-                motivosRechazo: this.chartMotivosRechazoReference.current === null ? null : this.chartMotivosRechazoReference.current.chartInstance.toBase64Image(),
-            }
+        imagenes = {
+            total: this.chartTotalReference.current === null ? null : this.chartTotalReference.current.chartInstance.toBase64Image(),
+            totalMeses: this.chartTotalComparativaReference.current === null ? null : this.chartTotalComparativaReference.current.chartInstance.toBase64Image(),
+            origenes: this.chartTotalOrigenesReference.current === null ? null : this.chartTotalOrigenesReference.current.chartInstance.toBase64Image(),
+            origenesOrganicos: this.chartOrigenesOrganicosReference.current === null ? null : this.chartOrigenesOrganicosReference.current.chartInstance.toBase64Image(),
+            origenesAds: this.chartOrigenesAdsReference.current === null ? null : this.chartOrigenesAdsReference.current.chartInstance.toBase64Image(),
+            origenesMeses: this.chartComparativaOrigenesReference.current === null ? null : this.chartComparativaOrigenesReference.current.chartInstance.toBase64Image(),
+            servicios: this.chartServiciosReference.current === null ? null : this.chartServiciosReference.current.chartInstance.toBase64Image(),
+            serviciosMeses: this.chartServiciosComparativaReference.current === null ? null : this.chartServiciosComparativaReference.current.chartInstance.toBase64Image(),
+            tipos: this.chartTiposReference.current === null ? null : this.chartTiposReference.current.chartInstance.toBase64Image(),
+            origenesNoPotenciales: this.chartOrigenesNoPotencialesReference.current === null ? null : this.chartOrigenesNoPotencialesReference.current.chartInstance.toBase64Image(),
+            origenesPotenciales: this.chartOrigenesPotencialesReference.current === null ? null : this.chartOrigenesPotencialesReference.current.chartInstance.toBase64Image(),
+            origenesDuplicados: this.chartOrigenesDuplicadosReference.current === null ? null : this.chartOrigenesDuplicadosReference.current.chartInstance.toBase64Image(),
+            tiposMeses: this.chartTiposComparativaReference.current === null ? null : this.chartTiposComparativaReference.current.chartInstance.toBase64Image(),
+            tiposProyectos: this.chartTiposProyectosReference.current === null ? null : this.chartTiposProyectosReference.current.chartInstance.toBase64Image(),
+            tiposProyectosMeses: this.chartTiposProyectosComparativaReference.current === null ? null : this.chartTiposProyectosComparativaReference.current.chartInstance.toBase64Image(),
+            contactados: this.chartContactadosReference.current === null ? null : this.chartContactadosReference.current.chartInstance.toBase64Image(),
+            estatus: this.chartEstatusReference.current === null ? null : this.chartEstatusReference.current.chartInstance.toBase64Image(),
+            motivosCancelacion: this.chartMotivosCancelacionReference.current === null ? null : this.chartMotivosCancelacionReference.current.chartInstance.toBase64Image(),
+            motivosRechazo: this.chartMotivosRechazoReference.current === null ? null : this.chartMotivosRechazoReference.current.chartInstance.toBase64Image(),
         }
 
         let lista = convertToRaw(form.listados.conclusiones.getCurrentContent())
@@ -506,10 +482,7 @@ class ReporteVentas extends Component {
             return ''
         })
 
-        const blob = await pdf((
-            this.setReporte(imagenes, conclusiones, sugerencias, data)
-        )).toBlob();
-
+        const blob = await pdf((this.setReporte(imagenes, conclusiones, sugerencias, data))).toBlob();
         form.adjuntos.reportes.files = [
             {
                 name: 'reporte.pdf',
@@ -518,19 +491,9 @@ class ReporteVentas extends Component {
             }
         ]
 
-        this.setState({
-            ...this.state,
-            form
-        })
-
+        this.setState({...this.state,form})
         Swal.close()
-
-        questionAlert2(
-            '¿ESTÁS SEGURO?', '',
-            () => this.saveReporteAxios(),
-            this.getTextAlert()
-        )
-
+        questionAlert2('¿ESTÁS SEGURO?', '',() => this.saveReporteAxios(),this.getTextAlert())
     }
 
     setData = (result, meses) => {
@@ -1071,11 +1034,7 @@ class ReporteVentas extends Component {
                                 REPORTE DE VENTAS
                             </a>
                         </u>
-                    {
-                        form.rango === 'mensual' ?
-                            `${empresa} ${mes} ${form.año}?`
-                        : ''
-                    }
+                    { form.rango === 'mensual' ? `${empresa} ${mes} ${form.año}?` : ''}
                     {
                         form.rango === 'semestral' ?
                             form.periodo === '1' ? 
@@ -1083,11 +1042,7 @@ class ReporteVentas extends Component {
                             : `${empresa} JULIO - DICIEMBRE ${form.año}?`
                         : ''
                     }
-                    {
-                        form.rango === 'anual' ?
-                            `${empresa} anual ${form.año}?`
-                        : ''
-                    }
+                    { form.rango === 'anual' ? `${empresa} anual ${form.año}?` : '' }
                 </span>
             </div>
         )
@@ -1134,48 +1089,41 @@ class ReporteVentas extends Component {
         return false
     }
 
+    setPageNumber = numero => {
+        if(numero < 10)
+            return '0'+numero.toString()
+        return numero.toString()
+    }
+
     render() {
         const { form, data, options: opciones, key, modal, empresas, empresaActive } = this.state
         const mesesEspañol = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
         const { empresa } = this.state
+        let valor = 0;
         return (
             <Layout active='reportes'  {...this.props}>
-                <Card className="card-custom">
+                <Card className = "card-custom">
                     <Card.Header>
-                        <div className="card-title">
-                            <h3 className="card-label">Reporte de ventas</h3>
-                        </div>
+                        <div className = "card-title">  <h3 className = "card-label">Reporte de ventas</h3> </div>
                         <div className="card-toolbar">
-                            <Button
-                                icon=''
-                                className="btn btn-icon btn-xs w-auto p-3 btn-light"
-                                onClick={() => { this.getReporteAxios() }}
-                                only_icon="far fa-file-pdf mr-2"
-                                text='REPORTES GENERADOS'
-                            />
+                            <Button icon = '' className = "btn btn-icon btn-xs w-auto p-3 btn-light" only_icon = "far fa-file-pdf mr-2"
+                                onClick = { () => { this.getReporteAxios() } } text = 'REPORTES GENERADOS' />
                         </div>
                     </Card.Header>
                     <Card.Body>
-                        <FlujosReportesVentas
-                            form={form}
-                            options={opciones}
-                            onChange={this.onChange}
-                            className="mb-3"
-                            onSubmit={this.onSubmit}
-                            onSubmitAdjunto={this.onSubmitAdjunto}
-                            handleChange={this.handleChange}
-                        />
-                        
+                        <FlujosReportesVentas form = { form } options = { opciones } onChange = { this.onChange }
+                            className = "mb-3" onSubmit = { this.onSubmit } onSubmitAdjunto = { this.onSubmitAdjunto }
+                            handleChange = { this.handleChange } />
                         {/* -------------------------------------------------------------------------- */
                         /*                               ANCHOR GRAFICAS                              */
                         /* -------------------------------------------------------------------------- */}
-                        <Tab.Container activeKey={key}>
+                        <Tab.Container activeKey = { key } >
                             <Tab.Content>
                                 <div className="separator separator-solid separator-border-1 my-4"></div>
                                 {
                                     this.isActivePane(data.total) ?
                                         <Tab.Pane eventKey='1'>
-                                            {this.setButtons(null, '2', null, empresa, '01', 'ENTRADA TOTAL DE LEADS')}
+                                            {this.setButtons(null, '2', null, empresa, this.setPageNumber(++valor), 'ENTRADA TOTAL DE LEADS')}
                                             <Bar ref={this.chartTotalReference} data={data.total} options = { dataSimpleBar } />
                                         </Tab.Pane>
                                     : <></>
@@ -1183,7 +1131,7 @@ class ReporteVentas extends Component {
                                 {
                                     this.isActivePane(data.comparativa) ?
                                         <Tab.Pane eventKey='2'>
-                                            {this.setButtons('1', '3', null, empresa, '02', 'ENTRADA DE LEADS MENSUAL')}
+                                            {this.setButtons('1', '3', null, empresa, this.setPageNumber(++valor), 'ENTRADA DE LEADS MENSUAL')}
                                             <Bar ref = { this.chartTotalComparativaReference } data = { data.comparativa } options = { percentBar } />
                                         </Tab.Pane>
                                     : <></>
@@ -1191,7 +1139,7 @@ class ReporteVentas extends Component {
                                 {
                                     this.isActivePane(data.origenes) ?
                                         <Tab.Pane eventKey='3'>
-                                            {this.setButtons('2', '4', null, empresa, '03', 'ORIGEN DE LEADS')}
+                                            {this.setButtons('2', '4', null, empresa, this.setPageNumber(++valor), 'ORIGEN DE LEADS')}
                                             <Bar ref={this.chartTotalOrigenesReference} data={data.origenes} options = { percentBar }/>
                                         </Tab.Pane>
                                     : <></>
@@ -1199,7 +1147,7 @@ class ReporteVentas extends Component {
                                 {
                                     this.isActivePane(data.origenesOrganicos) ?
                                         <Tab.Pane eventKey='4'>
-                                            {this.setButtons('3', '5', null, empresa, '04', 'ORIGEN DE LEADS ORGÁNICOS')}
+                                            {this.setButtons('3', '5', null, empresa, this.setPageNumber(++valor), 'ORIGEN DE LEADS ORGÁNICOS')}
                                             <Bar ref={this.chartOrigenesOrganicosReference} data={data.origenesOrganicos} options = { percentBar } />
                                         </Tab.Pane>
                                     : <></>
@@ -1207,7 +1155,7 @@ class ReporteVentas extends Component {
                                 {
                                     this.isActivePane(data.origenesAds) ?
                                         <Tab.Pane eventKey='5'>
-                                            {this.setButtons('4', '6', null, empresa, '05', 'ORIGEN DE LEADS ADS')}
+                                            {this.setButtons('4', '6', null, empresa, this.setPageNumber(++valor), 'ORIGEN DE LEADS ADS')}
                                             <Bar ref = { this.chartOrigenesAdsReference } data = { data.origenesAds } options = { percentBar } />
                                         </Tab.Pane>
                                     : <></>
@@ -1215,7 +1163,7 @@ class ReporteVentas extends Component {
                                 {
                                     this.isActivePane(data.origenesComparativa) ?
                                         <Tab.Pane eventKey='6'>
-                                            {this.setButtons('5', '7', null, empresa, '06', 'ORIGEN DE LEADS MENSUAL')}
+                                            {this.setButtons('5', '7', null, empresa, this.setPageNumber(++valor), 'ORIGEN DE LEADS MENSUAL')}
                                             <Bar ref = { this.chartComparativaOrigenesReference } data = { data.origenesComparativa } options = { monthGroupBar } />
                                         </Tab.Pane>
                                     : <></>
@@ -1223,7 +1171,7 @@ class ReporteVentas extends Component {
                                 {
                                     this.isActivePane(data.servicios) ?
                                         <Tab.Pane eventKey='7'>
-                                            {this.setButtons('6', '8', null, empresa, '07', 'SERVICIOS SOLICITADOS')}
+                                            {this.setButtons('6', '8', null, empresa, this.setPageNumber(++valor), 'SERVICIOS SOLICITADOS')}
                                             <Bar ref = { this.chartServiciosReference } data = { data.servicios } options = { percentBar } />
                                         </Tab.Pane>
                                     : <></>
@@ -1231,7 +1179,7 @@ class ReporteVentas extends Component {
                                 {
                                     this.isActivePane(data.serviciosComparativa) ?
                                         <Tab.Pane eventKey='8'>
-                                            {this.setButtons('7', '9', null, empresa, '08', 'SERVICIOS SOLICITADOS MENSUAL')}
+                                            {this.setButtons('7', '9', null, empresa, this.setPageNumber(++valor), 'SERVICIOS SOLICITADOS MENSUAL')}
                                             <Bar ref = { this.chartServiciosComparativaReference } data = { data.serviciosComparativa } options = { monthGroupBar } />
                                         </Tab.Pane>
                                     : <></>
@@ -1239,7 +1187,7 @@ class ReporteVentas extends Component {
                                 {
                                     this.isActivePane(data.tipos) ? 
                                         <Tab.Pane eventKey='9'>
-                                            {this.setButtons('8', '10', null, empresa, '09', 'TIPO DE LEADS')}
+                                            {this.setButtons('8', '10', null, empresa, this.setPageNumber(++valor), 'TIPO DE LEADS')}
                                             <Bar ref = { this.chartTiposReference } data = { data.tipos } options = { percentBar } />
                                         </Tab.Pane>
                                     : <></>
@@ -1247,7 +1195,7 @@ class ReporteVentas extends Component {
                                 {
                                     this.isActivePane(data.origenesNoPotenciales) ?
                                         <Tab.Pane eventKey='10'>
-                                            {this.setButtons('9', '11', null, empresa, '10', 'ORIGEN DE LEADS NO POTENCIALES')}
+                                            {this.setButtons('9', '11', null, empresa, this.setPageNumber(++valor), 'ORIGEN DE LEADS NO POTENCIALES')}
                                             <Bar ref = { this.chartOrigenesNoPotencialesReference } data = { data.origenesNoPotenciales } options = { percentBar } />
                                         </Tab.Pane>
                                     : <></>
@@ -1255,7 +1203,7 @@ class ReporteVentas extends Component {
                                 {
                                     this.isActivePane(data.origenesPotenciales) ?
                                         <Tab.Pane eventKey='11'>
-                                            {this.setButtons('10', this.isActivePane(data.origenesDuplicados) ? '12' : '13', null, empresa, '11', 'ORIGEN DE LEADS POTENCIALES')}
+                                            {this.setButtons('10', this.isActivePane(data.origenesDuplicados) ? '12' : '13', null, empresa, this.setPageNumber(++valor), 'ORIGEN DE LEADS POTENCIALES')}
                                             <Bar ref = { this.chartOrigenesPotencialesReference } data = { data.origenesPotenciales } options = { percentBar } />
                                         </Tab.Pane>
                                     : <></>
@@ -1263,7 +1211,7 @@ class ReporteVentas extends Component {
                                 {
                                     this.isActivePane(data.origenesDuplicados) ?
                                         <Tab.Pane eventKey='12'>
-                                            {this.setButtons('11', '13', null, empresa, '12', 'ORIGEN DE LEADS DUPLICADOS')}
+                                            {this.setButtons('11', '13', null, empresa, this.setPageNumber(++valor), 'ORIGEN DE LEADS DUPLICADOS')}
                                             <Bar ref={this.chartOrigenesDuplicadosReference} data={data.origenesDuplicados} options = { percentBar } />
                                         </Tab.Pane>
                                     : <></>
@@ -1271,7 +1219,7 @@ class ReporteVentas extends Component {
                                 {
                                     this.isActivePane(data.tipoLeadsComparativa) ?
                                         <Tab.Pane eventKey = '13'>
-                                            {this.setButtons(this.isActivePane(data.origenesDuplicados) ? '12' : '11', '14', null, empresa, this.isActivePane(data.origenesDuplicados) ? '13' : '12', 'TIPO DE LEADS MENSUAL')}
+                                            {this.setButtons(this.isActivePane(data.origenesDuplicados) ? '12' : '11', '14', null, empresa, this.setPageNumber(++valor), 'TIPO DE LEADS MENSUAL')}
                                             <Bar ref={this.chartTiposComparativaReference} data={data.tipoLeadsComparativa} options = { monthGroupBar } />
                                         </Tab.Pane>
                                     : <></>
@@ -1279,7 +1227,7 @@ class ReporteVentas extends Component {
                                 {
                                     this.isActivePane(data.tiposProyectos) ?
                                         <Tab.Pane eventKey = '14'>
-                                            { this.setButtons( '13', '15', null, empresa, this.isActivePane(data.origenesDuplicados) ? '14' : '13',  'TIPOS DE PROYECTOS' ) }
+                                            { this.setButtons( '13', '15', null, empresa, this.setPageNumber(++valor),  'TIPOS DE PROYECTOS' ) }
                                             <Bar ref={this.chartTiposProyectosReference} data={data.tiposProyectos} options = { percentBar } />
                                         </Tab.Pane>
                                     : <></>
@@ -1287,7 +1235,7 @@ class ReporteVentas extends Component {
                                 {
                                     this.isActivePane(data.tiposProyectosComparativa) ?
                                         <Tab.Pane eventKey = '15'>
-                                            { this.setButtons( '14', '16', null, empresa, this.isActivePane(data.origenesDuplicados) ? '15' : '14',  'TIPO DE PROYECTO MENSUAL' ) }
+                                            { this.setButtons( '14', '16', null, empresa, this.setPageNumber(++valor),  'TIPO DE PROYECTO MENSUAL' ) }
                                             <Bar ref={this.chartTiposProyectosComparativaReference} data={data.tiposProyectosComparativa} options = { monthGroupBar } />
                                         </Tab.Pane>
                                     : <></>
@@ -1295,7 +1243,7 @@ class ReporteVentas extends Component {
                                 {
                                     this.isActivePane(data.contactados) ?
                                         <Tab.Pane eventKey = '16'>
-                                            { this.setButtons( '15', '17', null, empresa, this.isActivePane(data.origenesDuplicados) ? '16' : '15',  'LEADS CONVERTIDOS A PROSPECTOS' ) }
+                                            { this.setButtons( '15', '17', null, empresa, this.setPageNumber(++valor),  'LEADS CONVERTIDOS A PROSPECTOS' ) }
                                             <Bar ref={this.chartContactadosReference} data={data.contactados} options = { percentBar } />
                                         </Tab.Pane>
                                     : <></>
@@ -1303,7 +1251,7 @@ class ReporteVentas extends Component {
                                 {
                                     this.isActivePane(data.estatus) ?
                                         <Tab.Pane eventKey='17'>
-                                            {this.setButtons('16', '18', null, empresa, this.isActivePane(data.origenesDuplicados) ? '17' : '16', 'STATUS DE PROSPECTOS')}
+                                            {this.setButtons('16', '18', null, empresa, this.setPageNumber(++valor), 'STATUS DE PROSPECTOS')}
                                             <Bar ref = { this.chartEstatusReference } data = {data.estatus} options = { percentBar } />
                                         </Tab.Pane>
                                     : <></>
@@ -1311,7 +1259,7 @@ class ReporteVentas extends Component {
                                 {
                                     this.isActivePane(data.motivosCancelacion) ?
                                         <Tab.Pane eventKey='18'>
-                                            {this.setButtons('17', '19', null, empresa, this.isActivePane(data.origenesDuplicados) ? '18' : '17', 'PRINCIPALES MOTIVOS DE CANCELACIÓN')}
+                                            {this.setButtons('17', '19', null, empresa, this.setPageNumber(++valor), 'PRINCIPALES MOTIVOS DE CANCELACIÓN')}
                                             <Bar ref = { this.chartMotivosCancelacionReference } data = {data.motivosCancelacion} options = { percentBar } />
                                         </Tab.Pane>
                                     : <></>
@@ -1319,13 +1267,13 @@ class ReporteVentas extends Component {
                                 {
                                     this.isActivePane(data.motivosRechazo) ?
                                         <Tab.Pane eventKey='19'>
-                                            {this.setButtons('18', '20', null, empresa, this.isActivePane(data.origenesDuplicados) ? '19' : '18', 'PRINCIPALES MOTIVOS DE RECHAZO')}
+                                            {this.setButtons('18', '20', null, empresa, this.setPageNumber(++valor), 'PRINCIPALES MOTIVOS DE RECHAZO')}
                                             <Bar ref = { this.chartMotivosRechazoReference } data = {data.motivosRechazo} options = { percentBar } />
                                         </Tab.Pane>
                                     : <></>
                                 }
                                 <Tab.Pane eventKey='20'>
-                                    {this.setButtons('19', '21', null, empresa, this.isActivePane(data.origenesDuplicados) ? '20' : '19', 'OBSERVACIONES CONTRATADOS')}
+                                    {this.setButtons('19', '21', null, empresa, this.setPageNumber(++valor), 'OBSERVACIONES CONTRATADOS')}
                                     <div className="table-responsive d-flex justify-content-center">
                                         <table className="table table-responsive-lg table-vertical-center w-100">
                                             <thead>
@@ -1446,15 +1394,13 @@ class ReporteVentas extends Component {
                                     </div>
                                 </Tab.Pane>
                                 <Tab.Pane eventKey='21'>
-                                    { this.setButtons('20', '22', null, empresa, this.isActivePane(data.origenesDuplicados) ? '21' : '20', 
-                                        'CONCLUSIONES')}
+                                    { this.setButtons('20', '22', null, empresa, this.setPageNumber(++valor), 'CONCLUSIONES')}
                                     <Editor editorClassName = "editor-class" editorState = { form.listados.conclusiones }
                                         toolbar = { { options: ['list'], list: { inDropdown: false, options: ['unordered'], }, } }
                                         onEditorStateChange = { (editorState) => this.onEditorStateChange(editorState, 'conclusiones') } />
                                 </Tab.Pane>
                                 <Tab.Pane eventKey='22'>
-                                    { this.setButtons('21', null, true, empresa, this.isActivePane(data.origenesDuplicados) ? '22' : '21', 
-                                        'SUGERENCIAS') }
+                                    { this.setButtons('21', null, true, empresa, this.setPageNumber(++valor), 'SUGERENCIAS') }
                                     <Editor editorClassName = "editor-class"  editorState = { form.listados.sugerencias }
                                         toolbar = { { options: ['list'], list: { inDropdown: false, options: ['unordered'], }, } }
                                         onEditorStateChange = { (editable) => this.onEditorStateChange(editable, 'sugerencias') } />
