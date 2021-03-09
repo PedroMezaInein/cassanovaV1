@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { DateRange  } from 'react-date-range';
 import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css'; // theme css file
-// import { addDays } from 'date-fns';
+import moment from 'moment'
 import es from "date-fns/locale/es";
 class MultipleRangeCalendar extends Component {
 
@@ -11,55 +11,42 @@ class MultipleRangeCalendar extends Component {
     }
 
     onClickDeleteDate = () => {
-        const { colors} = this.state
-        let { arraySelection } = this.props
-        if(arraySelection.length>1){
-            arraySelection.pop()
-            colors.pop() 
-            this.setState({
-                colors
-            })
+        const { clickDeleteRange } = this.props
+        const { colors } = this.state
+        if(colors.length>1){
+            colors.pop()
+            clickDeleteRange()
         }
+        this.setState({...this.state, colors })
     }
     onClickAddDate = () => {
-        let { arraySelection } = this.props
+        const { clickAddRange } = this.props
         const { colors} = this.state
-        arraySelection.push(
-            { 
-                startDate: new Date(),
-                endDate: new Date(),
-                key: 'selection'+(arraySelection.length),  
-            }
-        )
         colors.push("#"+ Math.floor(Math.random()*16777215).toString(16))
-        this.setState({
-            colors
-        })
+        clickAddRange()
+        this.setState({ ...this.state, colors })
     }
+
     updateRange = item => { 
-        let { arraySelection } = this.props
-        console.log(item) 
+        let { arraySelection, updateRango } = this.props
         let selectionActual = Object.keys(item)[0]
-        console.log(selectionActual) 
-        
         arraySelection.map((actual) => {
             if(actual.key===selectionActual){
-                actual.startDate=item[selectionActual].startDate
-                actual.endDate=item[selectionActual].endDate
+                actual.startDate = new Date(moment(item[selectionActual].startDate))
+                actual.endDate = new Date(moment(item[selectionActual].endDate))
             }
             return actual
         });
+        updateRango(arraySelection)
     }
 
     render() {
         const { colors} = this.state
-        const { disabledDates, arraySelection } = this.props
+        const { disabledDates, arraySelection, clickDeleteRange, clickAddRange } = this.props
         return (
             <div>
-                <DateRange 
-                    disabledDates = { disabledDates }
-                    onChange={ (item) => { this.updateRange(item)} }
-                    ranges = {arraySelection}
+                <DateRange disabledDates = { disabledDates } onChange = { (item) => { this.updateRange(item)} }
+                    ranges = {arraySelection }
                     direction = "horizontal"
                     locale = { es } 
                     initialFocusedRange = { [0,0] }
@@ -68,12 +55,18 @@ class MultipleRangeCalendar extends Component {
                     rangeColors={colors}
                 />
                 <div className="d-flex justify-content-between">
-                    <a className="btn text-dark-50 btn-icon-primary btn-hover-icon-danger font-weight-bolder btn-hover-bg-light" onClick={this.onClickDeleteDate}>
-                        <i className="far fa-calendar-times mr-2"></i>Borrar
-                    </a>
-                    <a className="btn text-dark-50 btn-icon-primary btn-hover-icon-success font-weight-bolder btn-hover-bg-light" onClick={this.onClickAddDate}>
-                        <i className="far fa-calendar-plus mr-2"></i>Fecha
-                    </a>
+                    {
+                        clickDeleteRange && 
+                            <a className="btn text-dark-50 btn-icon-primary btn-hover-icon-danger font-weight-bolder btn-hover-bg-light" onClick={this.onClickDeleteDate}>
+                                <i className="far fa-calendar-times mr-2"></i>Borrar
+                            </a>
+                    }
+                    {
+                        clickAddRange && 
+                            <a className="btn text-dark-50 btn-icon-primary btn-hover-icon-success font-weight-bolder btn-hover-bg-light" onClick={this.onClickAddDate}>
+                                <i className="far fa-calendar-plus mr-2"></i>Fecha
+                            </a>
+                    }
                 </div>
             </div>
         );

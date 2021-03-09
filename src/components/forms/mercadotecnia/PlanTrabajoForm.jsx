@@ -6,14 +6,7 @@ import { COLORS } from '../../../constants'
 const $ = require('jquery');
 class PlanTrabajoForm extends Component{
     state = {
-        color: '',
-        arraySelection:[
-            { 
-                startDate: new Date(),
-                endDate: new Date(),
-                key: 'selection0',  
-            }
-        ]
+        color: ''
     }
 
     transformarOptions = options => {
@@ -74,9 +67,14 @@ class PlanTrabajoForm extends Component{
         onChange({ target: { value: value, name: 'empresa' } })
     }
 
+    updateRango = value => {
+        const { onChange } = this.props
+        onChange({ target: { value: value, name: 'fechas' } })
+    }
+
     render(){
-        const { title, options, form, onChange, onSubmit, formeditado, handleChangeCreate, handleCreateOption, deletePlanAlert } = this.props
-        const {arraySelection } = this.state
+        const { title, options, form, onChange, onSubmit, formeditado, handleChangeCreate, handleCreateOption, deletePlanAlert,
+            clickAddRange, clickDeleteRange } = this.props
         return(
             <Form id="form-plan" onSubmit={(e) => { e.preventDefault(); validateAlert(onSubmit, e, 'form-plan') }}>
                 <Row>
@@ -84,12 +82,9 @@ class PlanTrabajoForm extends Component{
                         <div className="form-group row form-group-marginless mt-4">
                             <div className="col-md-12 text-center">
                                 <label className="col-form-label my-2 font-weight-bolder">Fecha de inicio - Fecha final</label><br/>
-                                <MultipleRangeCalendar
-                                    onChange = { this.updateRangeCalendar }
-                                    start = { form.fechaInicio }
-                                    end = { form.fechaFin }
-                                    arraySelection={arraySelection}
-                                />
+                                <MultipleRangeCalendar onChange = { this.updateRangeCalendar } start = { form.fechaInicio }
+                                    end = { form.fechaFin } arraySelection = { form.fechas } updateRango = { this.updateRango }
+                                    clickAddRange = { clickAddRange } clickDeleteRange = { clickDeleteRange } />
                             </div>
                         </div>
                     </Col>
