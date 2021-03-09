@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
-import { Form } from 'react-bootstrap'
+import { Form, Row, Col } from 'react-bootstrap'
 import { Input, SelectSearch, Button, RangeCalendar, InputNumber, InputPhone, TagSelectSearch, TagInput } from '../../form-components'
-// import { faPlus} from '@fortawesome/free-solid-svg-icons'
 import { TEL } from '../../../constants'
 import { openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
 import { validateAlert } from '../../../functions/alert'
@@ -33,19 +32,6 @@ class ProyectosForm extends Component {
             alert("La dirección de email es incorrecta.");
         }
     }
-
-    // handleChangeDateInicio = date => {
-    //     const { onChange, form } = this.props
-    //     if (form.fechaInicio > form.fechaFin) {
-    //         onChange({ target: { name: 'fechaFin', value: date } })
-    //     }
-    //     onChange({ target: { name: 'fechaInicio', value: date } })
-    // }
-
-    // handleChangeDateFin = date => {
-    //     const { onChange } = this.props
-    //     onChange({ target: { name: 'fechaFin', value: date } })
-    // }
     nuevoUpdateCliente = seleccionados =>{
         const { form,deleteOption } = this.props
         seleccionados = seleccionados?seleccionados:[];
@@ -79,11 +65,6 @@ class ProyectosForm extends Component {
         onChange({ target: { value: value, name: 'cliente' } })
     }
 
-    updateEmpresa = value => {
-        const { onChange } = this.props
-        onChange({ target: { name: 'empresa', value: value } })
-    }
-
     updateColonia = value => {
         const { onChange } = this.props
         onChange({ target: { name: 'colonia', value: value } })
@@ -110,6 +91,23 @@ class ProyectosForm extends Component {
         return options
     }
 
+    updateEmpresa = value => {
+        const { onChange, setOptions } = this.props
+        onChange({ target: { value: value, name: 'empresa' } })
+        onChange({ target: { value: '', name: 'tipoProyecto' } })
+        const { options: { empresas } } = this.props
+        empresas.find(function (element, index) {
+            console.log(value.toString(), element.value.toString())
+            if (value.toString() === element.value.toString()) {
+                setOptions('tipos', element.tipos)
+            }
+            return false
+        })
+    }
+    updateTipo = value => {
+        const { onChange } = this.props
+        onChange({ target: { name: 'tipos', value: value.toString() } })
+    }
     render() {
         const { title, children, form, onChange, onChangeCP, onChangeAdjunto, onChangeAdjuntoGrupo, clearFiles, clearFilesGrupo, options, onSubmit, removeCorreo, formeditado, deleteOption, onChangeOptions, action,handleChange, onChangeRange, tagInputChange,...props } = this.props
         return (
@@ -154,8 +152,8 @@ class ProyectosForm extends Component {
                             <div id="wizard-1-content" className="pb-3 px-2" data-wizard-type="step-content" data-wizard-state="current">
                                 <h5 className="mb-4 font-weight-bold text-dark">Ingresa los datos de generales</h5>
                                 <div className="form-group row form-group-marginless">
-                                    <div className = 'col-md-2 mt-2'>
-                                        <div className="d-flex">
+                                    <div className = 'col-md-2 mt-2 align-self-center'>
+                                        <div className="d-flex justify-content-space-around">
                                             <div className="mr-5">
                                                 <div className="text-center">
                                                     <p className="font-size-sm font-weight-bold">FASE 1</p>
@@ -221,20 +219,20 @@ class ProyectosForm extends Component {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-md-5">
+                                    <div className="col-md-3">
                                         <Input
                                             requirevalidation={1}
                                             formeditado={formeditado}
-                                            name="nombre"
-                                            value={form.nombre}
+                                            name="contacto"
+                                            value={form.contacto}
                                             onChange={onChange}
                                             type="text"
-                                            placeholder="NOMBRE DEL PROYECTO"
-                                            iconclass={"far fa-folder-open"}
-                                            messageinc="Incorrecto. Ingresa el nombre del proyecto."
+                                            placeholder="NOMBRE DEL CONTACTO"
+                                            iconclass={"far fa-user-circle"}
+                                            messageinc="Ingresa el nombre de contacto."
                                         />
                                     </div>
-                                    <div className="col-md-5">
+                                    <div className="col-md-3">
                                         <InputPhone
                                             requirevalidation={1}
                                             formeditado={formeditado}
@@ -245,27 +243,35 @@ class ProyectosForm extends Component {
                                             onChange={onChange}
                                             placeholder="NÚMERO DE CONTACTO"
                                             iconclass={"fas fa-mobile-alt"}
-                                            messageinc="Incorrecto. Ingresa el número de contacto."
+                                            messageinc="Ingresa el número de contacto."
                                             patterns={TEL}
+                                        />
+                                    </div>
+                                    <div className="col-md-4">
+                                        <Input
+                                            requirevalidation={1}
+                                            formeditado={formeditado}
+                                            name="nombre"
+                                            value={form.nombre}
+                                            onChange={onChange}
+                                            type="text"
+                                            placeholder="NOMBRE DEL PROYECTO"
+                                            iconclass={"far fa-folder-open"}
+                                            messageinc="Ingresa el nombre del proyecto."
                                         />
                                     </div>
                                 </div>
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">
-                                    <div className="col-md-6">
-                                        <Input
-                                            requirevalidation={1}
-                                            formeditado={formeditado}
-                                            name="contacto"
-                                            value={form.contacto}
-                                            onChange={onChange}
-                                            type="text"
-                                            placeholder="NOMBRE DEL CONTACTO"
-                                            iconclass={"far fa-user-circle"}
-                                            messageinc="Incorrecto. Ingresa el nombre de contacto."
+                                    <div className="col-md-5">
+                                        <TagInput
+                                            tags={form.correos} 
+                                            onChange={tagInputChange} 
+                                            placeholder={"CORREO DE CONTACTO"}
+                                            iconclass={"far fa-folder-open"}
                                         />
                                     </div>
-                                    <div className="col-md-6">
+                                    <div className="col-md-7">
                                         {
                                             formeditado && form.clientes.length ? 
                                                 <>
@@ -276,7 +282,7 @@ class ProyectosForm extends Component {
                                                         onChange={this.nuevoUpdateCliente}
                                                         iconclass={"far fa-folder-open"}
                                                         requirevalidation={1}
-                                                        messageinc="Incorrecto. Selecciona el cliente"
+                                                        messageinc="Selecciona el cliente"
                                                     />
                                                 </>
                                             :   
@@ -288,21 +294,10 @@ class ProyectosForm extends Component {
                                                         onChange={this.nuevoUpdateCliente}
                                                         iconclass={"far fa-folder-open"}
                                                         requirevalidation={1}
-                                                        messageinc="Incorrecto. Selecciona el cliente"
+                                                        messageinc="Selecciona el cliente"
                                                     />
                                             </>
                                         }
-                                    </div>
-                                </div>
-                                <div className="separator separator-dashed mt-1 mb-2"></div>
-                                <div className="form-group row form-group-marginless">
-                                    <div className="col-md-12">
-                                        <TagInput
-                                            tags={form.correos} 
-                                            onChange={tagInputChange} 
-                                            placeholder={"CORREO DE CONTACTO"}
-                                            iconclass={"far fa-folder-open"}
-                                        />
                                     </div>
                                 </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
@@ -326,7 +321,7 @@ class ProyectosForm extends Component {
                                             placeholder="CÓDIGO POSTAL"
                                             iconclass={"far fa-envelope"}
                                             maxLength="5"
-                                            messageinc="Incorrecto. Ingresa el código postal."
+                                            messageinc="Ingresa el código postal."
                                         />
                                     </div>
                                     <div className="col-md-4" hidden={options.colonias.length <= 0 ? true : false}>
@@ -370,7 +365,7 @@ class ProyectosForm extends Component {
                                                 value={form.colonia}
                                                 defaultValue={form.colonia}
                                                 onChange={this.updateColonia}
-                                                messageinc="Incorrecto. Selecciona la colonia"
+                                                messageinc="Selecciona la colonia"
                                             />
                                         }
                                         {
@@ -396,7 +391,7 @@ class ProyectosForm extends Component {
                                             type="text"
                                             placeholder="CALLE Y NÚMERO"
                                             iconclass={"fas fa-map-signs"}
-                                            messageinc="Incorrecto. Ingresa la calle y número."
+                                            messageinc="Ingresa la calle y número."
                                         />
                                     </div>
                                 </div>
@@ -411,82 +406,73 @@ class ProyectosForm extends Component {
                             </div>
                             <div id="wizard-3-content" className="pb-3" data-wizard-type="step-content">
                                 <h5 className="mb-4 font-weight-bold text-dark">Ingresa las fechas e imagenes</h5>
-                                <div className="form-group row form-group-marginless">
-                                    {
-                                        action === 'edit' ?
-                                            <div className={action === 'edit' ? "col-md-2" : "col-md-6"}>
-                                                <SelectSearch
-                                                    formeditado = { formeditado }
-                                                    options = { options.estatus }
-                                                    placeholder = "SELECCIONA EL ESTADO"
-                                                    name = "cliente"
-                                                    value={form.estatus}
-                                                    onChange = { this.updateEstatus }
-                                                    iconclass={"far fa-user"}
-                                                    messageinc="Incorrecto. Selecciona el estado"
+                                <Row className="mx-0">
+                                    <Col md="4" className="text-center">
+                                        <label className="col-form-label my-2 font-weight-bolder">Fecha de inicio - Fecha final</label><br/>
+                                        <RangeCalendar
+                                            onChange={onChangeRange}
+                                            start={form.fechaInicio}
+                                            end={form.fechaFin}
+                                        />
+                                    </Col>
+                                    <Col md="8" className="align-self-center">
+                                        <div className="form-group row form-group-marginless">
+                                            <div className="col-md-4">
+                                                <InputNumber
+                                                    requirevalidation={0}
+                                                    formeditado={formeditado}
+                                                    placeholder="M²"
+                                                    value={form.m2}
+                                                    name="m2"
+                                                    onChange={onChange}
+                                                    iconclass={"fas fa-ruler-combined"}
+                                                    messageinc="Ingresa los m²."
                                                 />
                                             </div>
-                                        :''
-                                    }
-                                    <div className={form.estatus? "col-md-3":"col-md-6"}>
-                                        <SelectSearch
-                                            formeditado={formeditado}
-                                            options={options.empresas}
-                                            placeholder="SELECCIONA LA EMPRESA"
-                                            name="empresa"
-                                            value={form.empresa}
-                                            onChange={this.updateEmpresa}
-                                            iconclass={"far fa-building"}
-                                            messageinc="Incorrecto. Selecciona la empresa"
-                                        />
-                                    </div>
-                                    <div className={form.estatus? "col-md-7":"col-md-6"}>
-                                        <Input
-                                            requirevalidation={0}
-                                            formeditado={formeditado}
-                                            rows="1"
-                                            as="textarea"
-                                            placeholder="DESCRIPCIÓN"
-                                            name="descripcion"
-                                            onChange={onChange}
-                                            value={form.descripcion}
-                                            style={{ paddingLeft: "10px" }}
-                                            messageinc="Incorrecto. Ingresa una descripción."
-                                        />
-                                    </div>
-                                    {/* <div className={form.estatus? "col-md-3":"col-md-4"}>
-                                        <Calendar
-                                            formeditado={formeditado}
-                                            onChangeCalendar={this.handleChangeDateInicio}
-                                            placeholder="FECHA DE INICIO"
-                                            name="fechaInicio"
-                                            value={form.fechaInicio}
-                                            selectsStart
-                                            startDate={form.fechaInicio}
-                                            endDate={form.fechaFin}
-                                            patterns={DATE}
-                                        />
-                                    </div>
-                                    <div className={form.estatus? "col-md-3":"col-md-4"}>
-                                        <Calendar
-                                            formeditado={formeditado}
-                                            onChangeCalendar={this.handleChangeDateFin}
-                                            placeholder="FECHA FINAL"
-                                            name="fechaFin"
-                                            value={form.fechaFin}
-                                            selectsEnd
-                                            startDate={form.fechaInicio}
-                                            endDate={form.fechaFin}
-                                            minDate={form.fechaInicio}
-                                            iconclass={"far fa-calendar-alt"}
-                                            patterns={DATE}
-                                        />
-                                    </div> */}
-                                </div>
-                                {/* <div className="separator separator-dashed mt-1 mb-2"></div>
-                                <div className="form-group row form-group-marginless">
-                                    
-                                </div> */}
+                                            <div className="col-md-4">
+                                                <SelectSearch
+                                                    formeditado={formeditado}
+                                                    options={options.empresas}
+                                                    placeholder="EMPRESA"
+                                                    name="empresa"
+                                                    value={form.empresa}
+                                                    onChange={this.updateEmpresa}
+                                                    iconclass={"far fa-building"}
+                                                    messageinc="Selecciona la empresa"
+                                                />
+                                            </div>
+                                            <div className="col-md-4">
+                                                <SelectSearch
+                                                    formeditado = { formeditado }
+                                                    options = { options.tipos }
+                                                    placeholder = "TIPO DE PROYECTO"
+                                                    name = "tipoProyecto"
+                                                    value = { form.tipoProyecto }
+                                                    onChange = { this.updateTipo } 
+                                                    iconclass = "far fa-building"
+                                                    messageinc = "Selecciona el tipo de proyecto"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="separator separator-dashed mt-1 mb-2"></div>
+                                        <div className="form-group row form-group-marginless">
+                                            <div className="col-md-12">
+                                                <Input
+                                                    requirevalidation={0}
+                                                    formeditado={formeditado}
+                                                    rows="3"
+                                                    as="textarea"
+                                                    placeholder="DESCRIPCIÓN"
+                                                    name="descripcion"
+                                                    onChange={onChange}
+                                                    value={form.descripcion}
+                                                    style={{ paddingLeft: "10px" }}
+                                                    messageinc="Ingresa una descripción."
+                                                />
+                                            </div>
+                                        </div>
+                                    </Col>
+                                </Row>
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless justify-content-center mt-3">
                                     <div className="col-md-6 text-center">
@@ -496,14 +482,6 @@ class ProyectosForm extends Component {
                                             item='image' 
                                             handleChange={handleChange}
                                             multiple={false} 
-                                        />
-                                    </div>
-                                    <div className="col-md-6 text-center">
-                                        <label className="col-form-label my-2 font-weight-bolder">Fecha de inicio - Fecha final</label><br/>
-                                        <RangeCalendar
-                                            onChange={onChangeRange}
-                                            start={form.fechaInicio}
-                                            end={form.fechaFin}
                                         />
                                     </div>
                                 </div>

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
-import { Card, Accordion } from 'react-bootstrap'
+import { Card, Accordion, Dropdown } from 'react-bootstrap'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import { faEye } from '@fortawesome/free-solid-svg-icons'
@@ -23,6 +23,7 @@ class ProyectosForm extends Component {
             clientes: [],
             colonias: [],
             estatus: [],
+            tipos:[]
         },
         data: {
             proyectos: []
@@ -54,6 +55,8 @@ class ProyectosForm extends Component {
             correo: '',
             correos: [],
             clientes: [],
+            tipoProyecto:'',
+            m2:'',
             adjuntos_grupo: [
                 {
                     text: 'Inicio y planeación',
@@ -712,8 +715,10 @@ class ProyectosForm extends Component {
     changeEstatus = estatus =>  {
         estatus === 'Detenido'?
             questionAlert('¿ESTÁS SEGURO?', 'DETENDRÁS EL PROYECTO ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios(estatus))
-        :
+        : estatus === 'Terminado' ?
             questionAlert('¿ESTÁS SEGURO?', 'DARÁS POR TEMINADO EL PROYECTO ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios(estatus))
+        : 
+            questionAlert('¿ESTÁS SEGURO?', 'EL PROYECTO ESTARÁ EN PROCESO ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios(estatus))
     }
 
     async getNameProyectoAxios(name){
@@ -1102,6 +1107,14 @@ class ProyectosForm extends Component {
             form
         })
     }
+    setOptions = (name, array) => {
+        const { options } = this.state
+        options[name] = setOptions(array, 'tipo', 'id')
+        this.setState({
+            ...this.state,
+            options
+        })
+    }
     render() {
         const { title, form, options, formeditado, prospecto, action, proyecto } = this.state
         return (
@@ -1114,20 +1127,49 @@ class ProyectosForm extends Component {
                         {
                             title === 'Editar proyecto' ?
                                 <div className="card-toolbar">
-                                    <Button
-                                        icon=''
-                                        onClick={() => { this.changeEstatus('Detenido') }}
-                                        className={"btn btn-icon btn-light-danger btn-sm mr-2 ml-auto"}
-                                        only_icon={"far fa-clock icon-md"}
-                                        tooltip={{ text: 'Detener' }}
-                                    />
-                                    <Button
-                                        icon=''
-                                        onClick={() => { this.changeEstatus('Terminado') }}
-                                        className={"btn btn-icon btn-light-primary btn-sm"}
-                                        only_icon={"fas fa-check icon-md"}
-                                        tooltip={{ text: 'Terminar' }}
-                                    />
+                                    {
+                                        proyecto?
+                                            proyecto.estatus?
+                                                <Dropdown>
+                                                    <Dropdown.Toggle
+                                                        style={
+                                                            {
+                                                                backgroundColor: proyecto.estatus.fondo, color: proyecto.estatus.letra, border: 'transparent', padding: '0.4rem 0.75rem',
+                                                                width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '1rem',
+                                                                fontWeight: 600
+                                                            }}>
+                                                        {proyecto.estatus.estatus.toUpperCase()}
+                                                    </Dropdown.Toggle>
+                                                    <Dropdown.Menu className="p-0" >
+                                                        <Dropdown.Header>
+                                                            <span className="font-size-sm">Elige una opción</span>
+                                                        </Dropdown.Header>
+                                                        <Dropdown.Item className="p-0"  onClick={() => { this.changeEstatus('Detenido') }} >
+                                                            <span className="navi-link w-100">
+                                                                <span className="navi-text">
+                                                                    <span className="label label-xl label-inline label-light-danger rounded-0 w-100">DETENIDO</span>
+                                                                </span>
+                                                            </span>
+                                                        </Dropdown.Item>
+                                                        <Dropdown.Item className="p-0" onClick={() => { this.changeEstatus('Terminado') }} >
+                                                            <span className="navi-link w-100">
+                                                                <span className="navi-text">
+                                                                    <span className="label label-xl label-inline label-light-primary rounded-0 w-100">TERMINADO</span>
+                                                                </span>
+                                                            </span>
+                                                        </Dropdown.Item>
+                                                        <Dropdown.Item className="p-0" onClick={() => { this.changeEstatus('En proceso') }} >
+                                                            <span className="navi-link w-100">
+                                                                <span className="navi-text">
+                                                                    <span className="label label-xl label-inline label-light-success rounded-0 w-100">EN PROCESO</span>
+                                                                </span>
+                                                            </span>
+                                                        </Dropdown.Item>
+                                                    </Dropdown.Menu>
+                                                </Dropdown>
+                                            :''
+                                        :''
+                                    }
                                 </div>
                                 : ''
                         }
@@ -1153,6 +1195,7 @@ class ProyectosForm extends Component {
                             onChangeRange={this.onChangeRange}
                             className="px-3"
                             tagInputChange={(e) => this.tagInputChange(e)}
+                            setOptions = { this.setOptions }
                         >
                             <Accordion>
                                 {
