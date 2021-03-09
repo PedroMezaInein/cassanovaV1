@@ -112,6 +112,7 @@ class RangeCalendar extends Component {
                 moveRangeOnFirstSelection = { true }
                 editableDateInputs = { true }
                 ranges = { range }
+                rangeColors = {["#357ec7"]}
                 direction = "horizontal"
                 locale = { es }
                 initialFocusedRange = { [0,0] }

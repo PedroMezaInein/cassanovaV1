@@ -384,6 +384,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                             <Calendar
                                                 locale={es}
                                                 date={date}
+                                                color = {"#2171c1"}
                                             />
                                         </div>
                                     </div>

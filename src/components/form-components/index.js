@@ -24,6 +24,7 @@ import video from './Video'
 import datePickerMulti from './DatePickerMulti'
 import circleColor from './CircleColor'
 import selectCreate from './SelectCreate'
+import multipleRangeCalendar from './MultipleRangeCalendar'
 // Validado, pero sin texto de error
 import inputMoneySinText from './SinText/InputMoneySinText'
 import selectSearchSinText from './SinText/SelectSearchSinText'
@@ -80,6 +81,7 @@ export const Video = video
 export const DatePickerMulti = datePickerMulti
 export const CircleColor = circleColor
 export const SelectCreate = selectCreate
+export const MultipleRangeCalendar = multipleRangeCalendar
 // Validado, pero sin texto de error
 export const InputMoneySinText = inputMoneySinText
 export const SelectSearchSinText = selectSearchSinText

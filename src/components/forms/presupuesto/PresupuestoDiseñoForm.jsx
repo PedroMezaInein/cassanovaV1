@@ -327,7 +327,7 @@ class PresupuestoDiseñoForm extends Component {
                                             </table>
                                         </div>
                                         <div className="d-flex justify-content-center">
-                                            <Calendar locale={es} date={date} />
+                                            <Calendar locale={es} date={date} color = {"#2171c1"}/>
                                         </div>
                                     </div>
                                 </div>
