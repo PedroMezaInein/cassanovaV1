@@ -96,23 +96,11 @@ class ReporteVentas extends Component {
         this.chartEstatusReference = React.createRef();
         this.chartMotivosCancelacionReference = React.createRef();
         this.chartMotivosRechazoReference = React.createRef();
-
-        this.chartTotalServiciosReference = React.createRef();
-        this.chartComparativaServiciosReference = React.createRef();
-        this.chartComparativaTiposReference = React.createRef();
-        this.chartProspectosReference = React.createRef();
-        this.chartComparativaProspectosReference = React.createRef();
-        this.chartComparativaEstatusReference = React.createRef();
-        /* this.chartCerradosReference = React.createRef(); */
     }
 
     componentDidMount() { this.getOptionsAxios() }
-
     handleCloseModal = () => { this.setState({...this.state,modal: false}) }
-
-    onClickEmpresa = select => {
-        this.setState({...this.state, empresaActive: select})
-    }
+    onClickEmpresa = select => { this.setState({...this.state, empresaActive: select}) }
 
     setReporte = (images, lista, sugerencias) => {
         const { empresa, form, leadsAnteriores, mes, data } = this.state
@@ -144,72 +132,12 @@ class ReporteVentas extends Component {
         }
     }
 
-    setOpacity = array => {
-        let aux = [];
-        array.map((element) => {
-            aux.push(element + 'D9')
-            return false
-        })
-        return aux
-    }
-
-    setOpacity75 = array => {
-        let aux = [];
-        array.map((element) => {
-            aux.push(element + 'BF')
-            return false
-        })
-        return aux
-    }
-
-    setOpacity65 = array => {
-        let aux = [];
-        array.map((element) => {
-            aux.push(element + 'A6')
-            return false
-        })
-        return aux
-    }
-
-    setOpacity2 = array => {
-        let aux = [];
-        array.map((element) => {
-            aux.push(element + '5F')
-            return false
-        })
-        return aux
-    }
-
     setLabel = (estatus) => {
         let text = {}
         text.letra = estatus.color_texto
         text.fondo = estatus.color_fondo
         text.estatus = estatus.estatus
         return setLabelVentas(text)
-    }
-
-    getBG = tamaño => {
-        const { empresa } = this.state
-        let aux = []
-        switch (empresa) {
-            case 'INEIN':
-                for (let i = 0; i < tamaño; i++) {
-                    aux.push(
-                        COLORES_GRAFICAS_INEIN[i]
-                    )
-                }
-                break;
-            case 'INFRAESTRUCTURA MÉDICA':
-                for (let i = 0; i < tamaño; i++) {
-                    aux.push(
-                        COLORES_GRAFICAS_IM[i]
-                    )
-                }
-                break;
-            default:
-                break;
-        }
-        return aux
     }
 
     setButtons = (left, right, generar, empresa, page, textHeader) => {
@@ -268,12 +196,7 @@ class ReporteVentas extends Component {
         )
     }
 
-    changeTabe = value => {
-        this.setState({
-            ...this.state,
-            key: value
-        })
-    }
+    changeTabe = value => { this.setState({ ...this.state, key: value }) }
 
     setColor = () => {
         const { empresa } = this.state
@@ -307,28 +230,13 @@ class ReporteVentas extends Component {
             }
             form[name] = checked
         }
-        if (name === 'empresa') {
+        if (name === 'empresa')
             options.empresas.map((emp) => {
                 if (emp.value === value)
                     empresa = emp.name
                 return false
             })
-        }
-        this.setState({
-            ...this.state,
-            form,
-            empresa
-        })
-    }
-
-    onChangeObservaciones = e => {
-        const { name, value } = e.target
-        let { form } = this.state
-        form.leads[name].observacion = value
-        this.setState({
-            ...this.state,
-            form
-        })
+        this.setState({ ...this.state, form, empresa })
     }
 
     addOpacityToColors = (arreglo, string) => {
@@ -440,6 +348,189 @@ class ReporteVentas extends Component {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
+    }
+
+    getReporteVentasAxios2 = async() => {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        waitAlert()
+        await axios.post(`${URL_DEV}reportes/ventas/add/${form.rango}`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { data: result, meses } = response.data;
+                Swal.close()
+
+                /* -------------------------------------------------------------------------- */
+                /* ------------------------- ENTRADA TOTAL DE LEADS ------------------------- */
+                /* -------------------- ANCHOR GET TOTAL DE LEADS ANUALES ------------------- */
+                /* -------------------------------------------------------------------------- */
+                this.setState({
+                    ...this.state, 
+                    data: this.setData(result, meses), 
+                    key: '1',
+                    tipo: 'anual'
+                })
+
+            },
+            (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    getReporteVentasAxios = async() => {
+
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        waitAlert()
+        await axios.post(URL_DEV + 'reportes/ventas', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { data: result, meses } = response.data;
+                Swal.close()
+
+                /* -------------------------------------------------------------------------- */
+                /* ------------------------- ENTRADA TOTAL DE LEADS ------------------------- */
+                /* -------------------- ANCHOR GET TOTAL DE LEADS ANUALES ------------------- */
+                /* -------------------------------------------------------------------------- */
+                this.setState({
+                    ...this.state, 
+                    data: this.setData(result, meses), 
+                    key: '1',
+                    tipo: 'mensual'
+                })
+
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async getReporteAxios() {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'reportes/ventas/guardados', { responseType: 'json', headers: { 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { empresas } = response.data
+                let { empresaActive } = this.state
+                Swal.close()
+                if (empresas.length)
+                    empresaActive = empresas[0].id
+                this.setState({
+                    ...this.state,
+                    modal: true,
+                    empresas: empresas,
+                    empresaActive
+                })
+            },
+            (error) => {
+                Swal.close()
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            Swal.close()
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async generarPDF() {
+
+        /* -------------------------------------------------------------------------- */
+        /*                  ANCHOR LLAMADA ASYNC PARA GENERAR EL PDF                  */
+        /* -------------------------------------------------------------------------- */
+
+        waitAlert()
+        // let aux = []
+        let imagenes = []
+        const { form, data } = this.state
+        if(form.rango === 'semestral' || form.rango === 'anual'){
+            imagenes = {
+                total: this.chartTotalReference.current === null ? null : this.chartTotalReference.current.chartInstance.toBase64Image(),
+                totalMeses: this.chartTotalComparativaReference.current === null ? null : this.chartTotalComparativaReference.current.chartInstance.toBase64Image(),
+                origenes: this.chartTotalOrigenesReference.current === null ? null : this.chartTotalOrigenesReference.current.chartInstance.toBase64Image(),
+                origenesOrganicos: this.chartOrigenesOrganicosReference.current === null ? null : this.chartOrigenesOrganicosReference.current.chartInstance.toBase64Image(),
+                origenesAds: this.chartOrigenesAdsReference.current === null ? null : this.chartOrigenesAdsReference.current.chartInstance.toBase64Image(),
+                origenesMeses: this.chartComparativaOrigenesReference.current === null ? null : this.chartComparativaOrigenesReference.current.chartInstance.toBase64Image(),
+                servicios: this.chartServiciosReference.current === null ? null : this.chartServiciosReference.current.chartInstance.toBase64Image(),
+                serviciosMeses: this.chartServiciosComparativaReference.current === null ? null : this.chartServiciosComparativaReference.current.chartInstance.toBase64Image(),
+                tipos: this.chartTiposReference.current === null ? null : this.chartTiposReference.current.chartInstance.toBase64Image(),
+                origenesNoPotenciales: this.chartOrigenesNoPotencialesReference.current === null ? null : this.chartOrigenesNoPotencialesReference.current.chartInstance.toBase64Image(),
+                origenesPotenciales: this.chartOrigenesPotencialesReference.current === null ? null : this.chartOrigenesPotencialesReference.current.chartInstance.toBase64Image(),
+                origenesDuplicados: this.chartOrigenesDuplicadosReference.current === null ? null : this.chartOrigenesDuplicadosReference.current.chartInstance.toBase64Image(),
+                tiposMeses: this.chartTiposComparativaReference.current === null ? null : this.chartTiposComparativaReference.current.chartInstance.toBase64Image(),
+                tiposProyectos: this.chartTiposProyectosReference.current === null ? null : this.chartTiposProyectosReference.current.chartInstance.toBase64Image(),
+                tiposProyectosMeses: this.chartTiposProyectosComparativaReference.current === null ? null : this.chartTiposProyectosComparativaReference.current.chartInstance.toBase64Image(),
+                contactados: this.chartContactadosReference.current === null ? null : this.chartContactadosReference.current.chartInstance.toBase64Image(),
+                estatus: this.chartEstatusReference.current === null ? null : this.chartEstatusReference.current.chartInstance.toBase64Image(),
+                motivosCancelacion: this.chartMotivosCancelacionReference.current === null ? null : this.chartMotivosCancelacionReference.current.chartInstance.toBase64Image(),
+                motivosRechazo: this.chartMotivosRechazoReference.current === null ? null : this.chartMotivosRechazoReference.current.chartInstance.toBase64Image(),
+            }
+        }else{
+            imagenes = {
+                total: this.chartTotalReference.current === null ? null : this.chartTotalReference.current.chartInstance.toBase64Image(),
+                totalMeses: this.chartTotalComparativaReference.current === null ? null : this.chartTotalComparativaReference.current.chartInstance.toBase64Image(),
+                origenes: this.chartTotalOrigenesReference.current === null ? null : this.chartTotalOrigenesReference.current.chartInstance.toBase64Image(),
+                origenesOrganicos: this.chartOrigenesOrganicosReference.current === null ? null : this.chartOrigenesOrganicosReference.current.chartInstance.toBase64Image(),
+                origenesAds: this.chartOrigenesAdsReference.current === null ? null : this.chartOrigenesAdsReference.current.chartInstance.toBase64Image(),
+                origenesMeses: this.chartComparativaOrigenesReference.current === null ? null : this.chartComparativaOrigenesReference.current.chartInstance.toBase64Image(),
+                servicios: this.chartServiciosReference.current === null ? null : this.chartServiciosReference.current.chartInstance.toBase64Image(),
+                serviciosMeses: this.chartServiciosComparativaReference.current === null ? null : this.chartServiciosComparativaReference.current.chartInstance.toBase64Image(),
+                tipos: this.chartTiposReference.current === null ? null : this.chartTiposReference.current.chartInstance.toBase64Image(),
+                origenesNoPotenciales: this.chartOrigenesNoPotencialesReference.current === null ? null : this.chartOrigenesNoPotencialesReference.current.chartInstance.toBase64Image(),
+                origenesPotenciales: this.chartOrigenesPotencialesReference.current === null ? null : this.chartOrigenesPotencialesReference.current.chartInstance.toBase64Image(),
+                origenesDuplicados: this.chartOrigenesDuplicadosReference.current === null ? null : this.chartOrigenesDuplicadosReference.current.chartInstance.toBase64Image(),
+                tiposMeses: this.chartTiposComparativaReference.current === null ? null : this.chartTiposComparativaReference.current.chartInstance.toBase64Image(),
+                tiposProyectos: this.chartTiposProyectosReference.current === null ? null : this.chartTiposProyectosReference.current.chartInstance.toBase64Image(),
+                tiposProyectosMeses: this.chartTiposProyectosComparativaReference.current === null ? null : this.chartTiposProyectosComparativaReference.current.chartInstance.toBase64Image(),
+                contactados: this.chartContactadosReference.current === null ? null : this.chartContactadosReference.current.chartInstance.toBase64Image(),
+                estatus: this.chartEstatusReference.current === null ? null : this.chartEstatusReference.current.chartInstance.toBase64Image(),
+                motivosCancelacion: this.chartMotivosCancelacionReference.current === null ? null : this.chartMotivosCancelacionReference.current.chartInstance.toBase64Image(),
+                motivosRechazo: this.chartMotivosRechazoReference.current === null ? null : this.chartMotivosRechazoReference.current.chartInstance.toBase64Image(),
+            }
+        }
+
+        let lista = convertToRaw(form.listados.conclusiones.getCurrentContent())
+        let conclusiones = []
+        lista.blocks.map((element) => {
+            conclusiones.push(element.text.toUpperCase())
+            return ''
+        })
+        lista = convertToRaw(form.listados.sugerencias.getCurrentContent())
+        let sugerencias = []
+        lista.blocks.map((element) => {
+            sugerencias.push(element.text.toUpperCase())
+            return ''
+        })
+
+        const blob = await pdf((
+            this.setReporte(imagenes, conclusiones, sugerencias, data)
+        )).toBlob();
+
+        form.adjuntos.reportes.files = [
+            {
+                name: 'reporte.pdf',
+                file: new File([blob], "reporte.pdf"),
+                url: URL.createObjectURL(blob)
+            }
+        ]
+
+        this.setState({
+            ...this.state,
+            form
+        })
+
+        Swal.close()
+
+        questionAlert2(
+            '¿ESTÁS SEGURO?', '',
+            () => this.saveReporteAxios(),
+            this.getTextAlert()
+        )
+
     }
 
     setData = (result, meses) => {
@@ -967,189 +1058,6 @@ class ReporteVentas extends Component {
         return data
     }
 
-    getReporteVentasAxios2 = async() => {
-        const { access_token } = this.props.authUser
-        const { form } = this.state
-        waitAlert()
-        await axios.post(`${URL_DEV}reportes/ventas/add/${form.rango}`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { data: result, meses } = response.data;
-                Swal.close()
-
-                /* -------------------------------------------------------------------------- */
-                /* ------------------------- ENTRADA TOTAL DE LEADS ------------------------- */
-                /* -------------------- ANCHOR GET TOTAL DE LEADS ANUALES ------------------- */
-                /* -------------------------------------------------------------------------- */
-                this.setState({
-                    ...this.state, 
-                    data: this.setData(result, meses), 
-                    key: '1',
-                    tipo: 'anual'
-                })
-
-            },
-            (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-
-    getReporteVentasAxios = async() => {
-
-        const { access_token } = this.props.authUser
-        const { form } = this.state
-        waitAlert()
-        await axios.post(URL_DEV + 'reportes/ventas', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { data: result, meses } = response.data;
-                Swal.close()
-
-                /* -------------------------------------------------------------------------- */
-                /* ------------------------- ENTRADA TOTAL DE LEADS ------------------------- */
-                /* -------------------- ANCHOR GET TOTAL DE LEADS ANUALES ------------------- */
-                /* -------------------------------------------------------------------------- */
-                this.setState({
-                    ...this.state, 
-                    data: this.setData(result, meses), 
-                    key: '1',
-                    tipo: 'mensual'
-                })
-
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-
-    async getReporteAxios() {
-        waitAlert()
-        const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'reportes/ventas/guardados', { responseType: 'json', headers: { 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { empresas } = response.data
-                let { empresaActive } = this.state
-                Swal.close()
-                if (empresas.length)
-                    empresaActive = empresas[0].id
-                this.setState({
-                    ...this.state,
-                    modal: true,
-                    empresas: empresas,
-                    empresaActive
-                })
-            },
-            (error) => {
-                Swal.close()
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            Swal.close()
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-
-    async generarPDF() {
-
-        /* -------------------------------------------------------------------------- */
-        /*                  ANCHOR LLAMADA ASYNC PARA GENERAR EL PDF                  */
-        /* -------------------------------------------------------------------------- */
-
-        waitAlert()
-        // let aux = []
-        let imagenes = []
-        const { form, data } = this.state
-        if(form.rango === 'semestral' || form.rango === 'anual'){
-            imagenes = {
-                total: this.chartTotalReference.current === null ? null : this.chartTotalReference.current.chartInstance.toBase64Image(),
-                totalMeses: this.chartTotalComparativaReference.current === null ? null : this.chartTotalComparativaReference.current.chartInstance.toBase64Image(),
-                origenes: this.chartTotalOrigenesReference.current === null ? null : this.chartTotalOrigenesReference.current.chartInstance.toBase64Image(),
-                origenesOrganicos: this.chartOrigenesOrganicosReference.current === null ? null : this.chartOrigenesOrganicosReference.current.chartInstance.toBase64Image(),
-                origenesAds: this.chartOrigenesAdsReference.current === null ? null : this.chartOrigenesAdsReference.current.chartInstance.toBase64Image(),
-                origenesMeses: this.chartComparativaOrigenesReference.current === null ? null : this.chartComparativaOrigenesReference.current.chartInstance.toBase64Image(),
-                servicios: this.chartServiciosReference.current === null ? null : this.chartServiciosReference.current.chartInstance.toBase64Image(),
-                serviciosMeses: this.chartServiciosComparativaReference.current === null ? null : this.chartServiciosComparativaReference.current.chartInstance.toBase64Image(),
-                tipos: this.chartTiposReference.current === null ? null : this.chartTiposReference.current.chartInstance.toBase64Image(),
-                origenesNoPotenciales: this.chartOrigenesNoPotencialesReference.current === null ? null : this.chartOrigenesNoPotencialesReference.current.chartInstance.toBase64Image(),
-                origenesPotenciales: this.chartOrigenesPotencialesReference.current === null ? null : this.chartOrigenesPotencialesReference.current.chartInstance.toBase64Image(),
-                origenesDuplicados: this.chartOrigenesDuplicadosReference.current === null ? null : this.chartOrigenesDuplicadosReference.current.chartInstance.toBase64Image(),
-                tiposMeses: this.chartTiposComparativaReference.current === null ? null : this.chartTiposComparativaReference.current.chartInstance.toBase64Image(),
-                tiposProyectos: this.chartTiposProyectosReference.current === null ? null : this.chartTiposProyectosReference.current.chartInstance.toBase64Image(),
-                tiposProyectosMeses: this.chartTiposProyectosComparativaReference.current === null ? null : this.chartTiposProyectosComparativaReference.current.chartInstance.toBase64Image(),
-                contactados: this.chartContactadosReference.current === null ? null : this.chartContactadosReference.current.chartInstance.toBase64Image(),
-                estatus: this.chartEstatusReference.current === null ? null : this.chartEstatusReference.current.chartInstance.toBase64Image(),
-                motivosCancelacion: this.chartMotivosCancelacionReference.current === null ? null : this.chartMotivosCancelacionReference.current.chartInstance.toBase64Image(),
-                motivosRechazo: this.chartMotivosRechazoReference.current === null ? null : this.chartMotivosRechazoReference.current.chartInstance.toBase64Image(),
-            }
-        }else{
-            imagenes = {
-                total: this.chartTotalReference.current === null ? null : this.chartTotalReference.current.chartInstance.toBase64Image(),
-                totalMeses: this.chartTotalComparativaReference.current === null ? null : this.chartTotalComparativaReference.current.chartInstance.toBase64Image(),
-                origenes: this.chartTotalOrigenesReference.current === null ? null : this.chartTotalOrigenesReference.current.chartInstance.toBase64Image(),
-                origenesOrganicos: this.chartOrigenesOrganicosReference.current === null ? null : this.chartOrigenesOrganicosReference.current.chartInstance.toBase64Image(),
-                origenesAds: this.chartOrigenesAdsReference.current === null ? null : this.chartOrigenesAdsReference.current.chartInstance.toBase64Image(),
-                origenesMeses: this.chartComparativaOrigenesReference.current === null ? null : this.chartComparativaOrigenesReference.current.chartInstance.toBase64Image(),
-                servicios: this.chartServiciosReference.current === null ? null : this.chartServiciosReference.current.chartInstance.toBase64Image(),
-                serviciosMeses: this.chartServiciosComparativaReference.current === null ? null : this.chartServiciosComparativaReference.current.chartInstance.toBase64Image(),
-                tipos: this.chartTiposReference.current === null ? null : this.chartTiposReference.current.chartInstance.toBase64Image(),
-                origenesNoPotenciales: this.chartOrigenesNoPotencialesReference.current === null ? null : this.chartOrigenesNoPotencialesReference.current.chartInstance.toBase64Image(),
-                origenesPotenciales: this.chartOrigenesPotencialesReference.current === null ? null : this.chartOrigenesPotencialesReference.current.chartInstance.toBase64Image(),
-                origenesDuplicados: this.chartOrigenesDuplicadosReference.current === null ? null : this.chartOrigenesDuplicadosReference.current.chartInstance.toBase64Image(),
-                tiposMeses: this.chartTiposComparativaReference.current === null ? null : this.chartTiposComparativaReference.current.chartInstance.toBase64Image(),
-                tiposProyectos: this.chartTiposProyectosReference.current === null ? null : this.chartTiposProyectosReference.current.chartInstance.toBase64Image(),
-                tiposProyectosMeses: this.chartTiposProyectosComparativaReference.current === null ? null : this.chartTiposProyectosComparativaReference.current.chartInstance.toBase64Image(),
-                contactados: this.chartContactadosReference.current === null ? null : this.chartContactadosReference.current.chartInstance.toBase64Image(),
-                estatus: this.chartEstatusReference.current === null ? null : this.chartEstatusReference.current.chartInstance.toBase64Image(),
-                motivosCancelacion: this.chartMotivosCancelacionReference.current === null ? null : this.chartMotivosCancelacionReference.current.chartInstance.toBase64Image(),
-                motivosRechazo: this.chartMotivosRechazoReference.current === null ? null : this.chartMotivosRechazoReference.current.chartInstance.toBase64Image(),
-            }
-        }
-
-        let lista = convertToRaw(form.listados.conclusiones.getCurrentContent())
-        let conclusiones = []
-        lista.blocks.map((element) => {
-            conclusiones.push(element.text.toUpperCase())
-            return ''
-        })
-        lista = convertToRaw(form.listados.sugerencias.getCurrentContent())
-        let sugerencias = []
-        lista.blocks.map((element) => {
-            sugerencias.push(element.text.toUpperCase())
-            return ''
-        })
-
-        const blob = await pdf((
-            this.setReporte(imagenes, conclusiones, sugerencias, data)
-        )).toBlob();
-
-        form.adjuntos.reportes.files = [
-            {
-                name: 'reporte.pdf',
-                file: new File([blob], "reporte.pdf"),
-                url: URL.createObjectURL(blob)
-            }
-        ]
-
-        this.setState({
-            ...this.state,
-            form
-        })
-
-        Swal.close()
-
-        questionAlert2(
-            '¿ESTÁS SEGURO?', '',
-            () => this.saveReporteAxios(),
-            this.getTextAlert()
-        )
-
-    }
-
     getTextAlert = () => {
         const { empresa, form } = this.state
         let meses = ['', 'ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
@@ -1185,53 +1093,6 @@ class ReporteVentas extends Component {
         )
     }
 
-    setComentario = lead => {
-        let aux = '';
-        if (lead.estatus) {
-            switch (lead.estatus.estatus) {
-                case 'Rechazado':
-                case 'Cancelado':
-                    if (lead.motivo === '' || lead.motivo === null) {
-                        if (lead.rh)
-                            aux += "RR.HH.\n "
-                        if (lead.proveedor)
-                            aux += "PROVEEDOR.\n "
-                    }
-                    else
-                        aux += lead.motivo + "\n"
-                    break;
-                default: break;
-            }
-        }
-        if (lead.prospecto) {
-            if (aux === '') {
-                if (lead.prospecto.estatus_prospecto) {
-                    switch (lead.prospecto.estatus_prospecto.estatus) {
-                        case 'Rechazado':
-                        case 'Cancelado':
-                            if (lead.motivo === '' || lead.motivo === null) {
-                                if (lead.rh)
-                                    aux += "RR.HH.\n "
-                                if (lead.proveedor)
-                                    aux += "PROVEEDOR.\n "
-                            }
-                            else
-                                aux += lead.motivo + "\n"
-                            aux += lead.motivo + "\n"
-                            break;
-                        default: break;
-                    }
-                }
-            }
-            if (lead.prospecto.contactos) {
-                if (lead.prospecto.contactos.length) {
-                    aux += lead.prospecto.contactos[0].comentario
-                }
-            }
-        }
-        return aux
-    }
-
     handleChange = (files, item) => {
         const { form } = this.state
         let aux = []
@@ -1247,10 +1108,7 @@ class ReporteVentas extends Component {
         }
         form['adjuntos'][item].value = files
         form['adjuntos'][item].files = aux
-        this.setState({
-            ...this.state,
-            form
-        })
+        this.setState({ ...this.state, form })
     }
 
     onSubmitAdjunto = e => {
@@ -1264,27 +1122,21 @@ class ReporteVentas extends Component {
 
     isActivePane = (dato) => {
         if(dato){
-            if(Object.keys(dato).length > 0){
-                return true
-            }
+            if(Object.keys(dato).length > 0) return true
         }
         return false
     }
 
     hasElementOnArray = dato => {
         if(dato){
-            if(dato.length){
-                return true
-            }
+            if(dato.length) return true
         }
         return false
     }
 
     render() {
         const { form, data, options: opciones, key, modal, empresas, empresaActive } = this.state
-
         const mesesEspañol = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
-
         const { empresa } = this.state
         return (
             <Layout active='reportes'  {...this.props}>
