@@ -377,9 +377,11 @@ class PlanTrabajo extends Component {
             let bandera = false;
             let diffInf = fechaInicio.diff(mesActualInicio, 'days')
             let diffSup = mesActualFin.diff(fechaFin, 'days')
+            
             if(diffInf >= 0 && diffSup >= 0){
                 for(let x = 0; x < arregloOfCalendars.length; x++){
                     if(arregloOfCalendars[x][numeroFechaInicio] === null){
+                        dato.duracion = numeroFechaFin - numeroFechaInicio + 1
                         arregloOfCalendars[x][numeroFechaInicio] = dato
                         for(let y = numeroFechaInicio + 1; y <= numeroFechaFin; y++)
                             arregloOfCalendars[x][y] = 'filled';
@@ -491,6 +493,7 @@ class PlanTrabajo extends Component {
                     return ''
                 })
                 arregloOfCalendars.push(_arreglo)
+                dato.duracion = numeroFechaFin - numeroFechaInicio + 1
                 arregloOfCalendars[arregloOfCalendars.length - 1][numeroFechaInicio] = dato
                 for(let y = numeroFechaInicio + 1; y <= numeroFechaFin; y++) {
                     arregloOfCalendars[arregloOfCalendars.length - 1][y] = 'filled';
