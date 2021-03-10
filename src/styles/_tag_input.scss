@@ -18,6 +18,12 @@
     text-transform: uppercase;
 }
 
+.text-transform-none{
+    .react-tag-input__input {
+        text-transform: none!important;
+    }
+}
+
 .react-tag-input__input::placeholder,
 .react-tag-input__input:-moz-placeholder,
 .react-tag-input__input:-ms-input-placeholder,
