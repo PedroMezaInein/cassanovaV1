@@ -28,7 +28,7 @@ class InformacionGeneral extends Component {
                 <Form>
                     <Row className="mx-0 mb-5">
                         <Col md={lead.relaciones_publicas === 1 || this.estatus()==="En espera" ?12:4} className={lead.relaciones_publicas === 1 || this.estatus()==="En espera" ?"order-2":"order-1"}>
-                            <div className="col-md-12 text-center align-self-center">
+                            <div className="col-md-12 px-0 text-center align-self-center">
                                 <div className="d-flex justify-content-center" style={{ height: '1px' }}>
                                     <label className="text-center font-weight-bold text-dark-60">Fecha de ingreso</label>
                                 </div>
