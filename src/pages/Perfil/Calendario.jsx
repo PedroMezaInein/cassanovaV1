@@ -95,14 +95,20 @@ class Calendario extends Component {
         await axios.get(`${URL_DEV}vacaciones/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 Swal.close()
-                const { form, modal } = this.state
+                const { evento } = response.data
+                const { formEvento, modal } = this.state
+                if(evento.googleEvent){
+                    const { start, end } = evento.googleEvent
+                    let fecha = new Date( moment( start.dateTime ) )
+                    let fechaFin = new Date( moment( end.dateTime ) )
+                    formEvento.hora_final = this.setTimer(fechaFin.getHours());
+                    formEvento.hora = this.setTimer(fecha.getHours());
+                    formEvento.minuto_final = this.setTimer(fechaFin.getMinutes());
+                    formEvento.minuto = this.setTimer(fecha.getMinutes());
+                    formEvento.fecha = fecha
+                }
                 modal.form_event = true
-                this.setState({
-                    ...this.state,
-                    form,
-                    modal,
-                    title: 'Información el evento',
-                })
+                this.setState({ ...this.state, formEvento, modal, evento: evento, title: 'Información el evento' })
             },
             (error) => {
                 printResponseErrorAlert(error)
@@ -129,6 +135,7 @@ class Calendario extends Component {
             formeditado: 0,
         })
     }
+
     openModalEstatusVacaciones = () => {
         const { modal } = this.state
         modal.status_vacaciones = true
@@ -151,13 +158,12 @@ class Calendario extends Component {
             form: this.clearForm(),
         })
     }
+
     handleCloseEvent = () => {
-        const { modal } = this.state
+        const { modal, formEvento } = this.state
+        formEvento.correos = []
         modal.form_event = false
-        this.setState({
-            ...this.state,
-            modal
-        })
+        this.setState({ ...this.state, modal, formEvento })
     }
 
     clearForm = () => {
@@ -177,68 +183,43 @@ class Calendario extends Component {
         })
         return form;
     }
+
     handleClose = () => {
         const { modal, options } = this.state
         modal.solicitar_vacaciones = false
-        this.setState({
-            ...this.state,
-            modal,
-            options,
-            title: 'Solicitar vacaciones',
-            form: this.clearForm()
-        })
+        this.setState({ ...this.state, modal, options, title: 'Solicitar vacaciones', form: this.clearForm() })
     }
+
     handleCloseEstatus = () => {
         const { modal } = this.state
         modal.status_vacaciones = false
-        this.setState({
-            ...this.state,
-            modal,
-            title: 'Estatus de vacaciones',
-            form: this.clearForm()
-        })
+        this.setState({ ...this.state, modal, title: 'Estatus de vacaciones', form: this.clearForm() })
     }
 
     handleCloseDate = () => {
         const { modal } = this.state
         modal.date = false
-        this.setState({
-            ...this.state,
-            modal,
-            date: '',
-            activeKey: '',
-            eventos: ''
-        })
+        this.setState({ ...this.state, modal, date: '', activeKey: '', eventos: '' })
     }
+
     handleCloseEstacionamiento = () => {
         const { modal, options } = this.state
         modal.estacionamiento = false
-        this.setState({
-            ...this.state,
-            modal,
-            options,
-            title: 'Solicitud de espacio de estacionamiento',
-        })
+        this.setState({ ...this.state, modal, options, title: 'Solicitud de espacio de estacionamiento', })
     }
 
     onChange = e => {
         const { name, value } = e.target
         const { form } = this.state
         form[name] = value
-        this.setState({
-            ...this.state,
-            form
-        })
+        this.setState({ ...this.state, form })
     }
 
     onChangeEvento = e => {
         const { name, value } = e.target
         const { formEvento } = this.state
         formEvento[name] = value
-        this.setState({
-            ...this.state,
-            formEvento
-        })
+        this.setState({ ...this.state, formEvento })
     }
 
     getDiasDisponibles = (empleado, vacaciones_totales) => {
@@ -537,6 +518,44 @@ class Calendario extends Component {
             (error) => {
                 printResponseErrorAlert(error)
             }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    onSubmitFormEvent = async () => {
+        const { evento, formEvento } = this.state
+        const { access_token } = this.props.authUser
+        waitAlert()
+        await axios.put(`${URL_DEV}vacaciones/google-calendar/${evento.googleEvent.id}`, formEvento ,{ headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { modal } = this.state
+                modal.form_event = false
+                doneAlert('Evento editado con éxito')
+                this.setState({ ...this.state, modal, evento: '' })
+                this.getVacacionesAxios()
+            },
+            (error) => {printResponseErrorAlert(error)}
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    deleteEvent = async() => {
+        const { evento } = this.state
+        const { access_token } = this.props.authUser
+        waitAlert()
+        await axios.delete(`${URL_DEV}vacaciones/google-calendar/${evento.googleEvent.id}`,{ headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { modal } = this.state
+                modal.form_event = false
+                doneAlert('Evento eliminado con éxito')
+                this.setState({ ...this.state, modal, evento: '' })
+                this.getVacacionesAxios()
+            },
+            (error) => {printResponseErrorAlert(error)}
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -1009,13 +1028,8 @@ class Calendario extends Component {
         this.setState({
             formEvento
         })
-    }
-    deleteEvent=() =>{
+    } 
 
-    }
-    onSubmitFormEvent=() =>{
-        
-    }
     render() {
         const { events, form, title, formeditado, modal, estatus, disponibles, disabledDates, date, eventos, activeKey, formEvento } = this.state
         return (
@@ -1180,13 +1194,9 @@ class Calendario extends Component {
                     </div>
                 </Modal> */}
                 <Modal title={title} show={modal.form_event} handleClose={this.handleCloseEvent}>
-                    <AgendarReunionGoogle
-                        form={formEvento}
-                        onChange={this.onChangeEvento}
-                        onSubmit={this.onSubmitFormEvent}
-                        deleteEvent={this.deleteEvent}
-                        tagInputChange={(e) => this.tagInputChange(e)}
-                    />
+                    <AgendarReunionGoogle form = { formEvento } onChange = { this.onChangeEvento }
+                        onSubmit = { this.onSubmitFormEvent } deleteEvent = { this.deleteEvent }
+                        tagInputChange = { (e) => this.tagInputChange(e) } />
                 </Modal>
             </Layout>
 

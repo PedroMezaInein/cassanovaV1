@@ -108,7 +108,7 @@ class LeadInfo extends Component {
                 },
                 {
                     value: '',
-                    text: 'JUNTA PRESENCIAL/REMOTA PARA SEGUNDA REVISIÓN DE LA PROPUESTA DE DISEÑO ,MODELO 3D Y V.º B.º DE DISEÑO ',
+                    text: 'JUNTA PRESENCIAL/REMOTA PARA SEGUNDA REVISIÓN DE LA PROPUESTA DE DISEÑO, MODELO 3D Y VISTO BUENO DEL DISEÑO ',
                     name: 'concepto5'
                 },
                 {
@@ -232,7 +232,7 @@ class LeadInfo extends Component {
                         },
                         {
                             value: '5',
-                            text: 'JUNTA PRESENCIAL/REMOTA PARA SEGUNDA REVISIÓN DE LA PROPUESTA DE DISEÑO ,MODELO 3D Y V.º B.º DE DISEÑO ',
+                            text: 'JUNTA PRESENCIAL/REMOTA PARA SEGUNDA REVISIÓN DE LA PROPUESTA DE DISEÑO, MODELO 3D Y VISTO BUENO DEL DISEÑO ',
                             name: 'concepto5'
                         },
                         {
