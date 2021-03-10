@@ -21,7 +21,7 @@ class ChangePasswordFrom extends Component {
 	}
 
 	render() {
-		const { user, onSubmit, form, onChange, sendAvatar, clearAvatar, handleChange, sendCorreo, empresas, onClickEmpresa, activeKey } = this.props
+		const { user, onSubmit, form, onChange, sendAvatar, clearAvatar, handleChange, sendCorreo, empresas, onClickEmpresa, activeKey, formeditado } = this.props
 		return (<>
 			<Tab.Container defaultActiveKey="1" className="p-5">
 				<Row>
@@ -271,6 +271,7 @@ class ChangePasswordFrom extends Component {
 																				messageinc="Incorrecto. Ej. usuario@dominio.com"
 																				letterCase={false}
 																				patterns={EMAIL}
+																				formeditado={formeditado}
 																			/>
 																		</div>
 																	</div>

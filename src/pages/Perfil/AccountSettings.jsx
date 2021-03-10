@@ -27,7 +27,8 @@ class AccountSettings extends Component {
         },
         empresas: [],
         user: '',
-        activeKey: ''
+        activeKey: '',
+        formeditado: 0
     }
 
     componentDidMount() {
@@ -252,7 +253,7 @@ class AccountSettings extends Component {
         })
     }
     render() {
-        const { form, empresas, activeKey,user } = this.state
+        const { form, empresas, activeKey, user, formeditado } = this.state
         return (
             <>
                 <Layout {...this.props}>
@@ -268,6 +269,7 @@ class AccountSettings extends Component {
                         user={user}
                         onClickEmpresa={this.onClickEmpresa}
                         activeKey={activeKey}
+                        formeditado = { formeditado }
                     />
                 </Layout>
             </>
