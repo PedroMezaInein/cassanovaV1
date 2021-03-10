@@ -1031,7 +1031,7 @@ class Calendario extends Component {
     } 
 
     render() {
-        const { events, form, title, formeditado, modal, estatus, disponibles, disabledDates, date, eventos, activeKey, formEvento } = this.state
+        const { events, form, title, formeditado, modal, estatus, disponibles, disabledDates, date, eventos, activeKey, formEvento, evento } = this.state
         return (
             <Layout {...this.props}>
                 {/* <Tab.Container defaultActiveKey={activeKeyTab} activeKey={activeKeyTab} className="p-5"> */}
@@ -1193,10 +1193,10 @@ class Calendario extends Component {
                         />
                     </div>
                 </Modal> */}
-                <Modal title={title} show={modal.form_event} handleClose={this.handleCloseEvent}>
+                <Modal size="lg" title={title} show={modal.form_event} handleClose={this.handleCloseEvent}>
                     <AgendarReunionGoogle form = { formEvento } onChange = { this.onChangeEvento }
                         onSubmit = { this.onSubmitFormEvent } deleteEvent = { this.deleteEvent }
-                        tagInputChange = { (e) => this.tagInputChange(e) } />
+                        tagInputChange = { (e) => this.tagInputChange(e) } evento={evento}/>
                 </Modal>
             </Layout>
 
