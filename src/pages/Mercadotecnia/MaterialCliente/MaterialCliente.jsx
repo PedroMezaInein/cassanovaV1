@@ -219,7 +219,7 @@ class MaterialCliente extends Component {
                 const { empresa } = response.data
                 form.adjuntos.adjuntos.files = []
                 form.adjuntos.adjuntos.value = ''
-                this.setState({...this.state,modal:false,form,empresa:empresa})
+                this.setState({...this.state,form,empresa:empresa})
             },
             (error) => {
                 printResponseErrorAlert(error)
@@ -254,7 +254,7 @@ class MaterialCliente extends Component {
                 form.adjuntos.adjuntos.files = []
                 form.adjuntos.adjuntos.value = ''
                 levelItem = carpeta
-                this.setState({...this.state, modal:false, form, empresa:empresa, levelItem})
+                this.setState({...this.state, form, empresa:empresa, levelItem})
             },
             (error) => {
                 printResponseErrorAlert(error)
@@ -284,7 +284,7 @@ class MaterialCliente extends Component {
                 form.adjuntos.adjuntos.files = []
                 form.adjuntos.adjuntos.value = ''
                 levelItem = carpeta
-                this.setState({...this.state, modal:false, form, empresa:empresa, levelItem})
+                this.setState({...this.state, form, empresa:empresa, levelItem})
             },
             (error) => {
                 printResponseErrorAlert(error)
