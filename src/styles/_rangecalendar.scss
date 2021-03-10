@@ -198,7 +198,7 @@ span.rdrDayStartPreview,
 }
 .rdrMonthAndYearWrapper{
     height: 50px;
-    padding-top: 0;
+    padding-top: 0!important;
 }
 // .rdrMonthsVertical {
 //     padding-top: 20px;
@@ -206,13 +206,35 @@ span.rdrDayStartPreview,
 /* .rdrDateDisplayWrapper{
     display: none;
 } */
+div#info.rdrMonths.rdrMonthsVertical{
+    font-size: 11px;
+}
 @media screen and (max-width: 1280px) {
     .col-md-4{
         .rdrCalendarWrapper{
             @include down-screen($xs) {
-                font-size: 9.7px !important;
+                font-size: 10px !important;
             }
             font-size: 10.7px !important;
         }
+        .rdrMonths.rdrMonthsHorizontal, span.rdrMonthAndYearPickers{
+            font-size: 12px;
+            @include down-screen($xs) {
+                font-size: 10px !important;
+            }
+        }
+        .rdrMonth{
+            @include down-screen($xs) {
+                padding: 0px!important;
+            }
+        }
+        .rdrMonths.rdrMonthsVertical{
+            @include down-screen($xs) {
+                font-size: 9.7px;
+            }
+        }
     }
+}
+.rdrCalendarWrapper.rdrDateRangeWrapper{
+    margin-top: 0px;
 }
