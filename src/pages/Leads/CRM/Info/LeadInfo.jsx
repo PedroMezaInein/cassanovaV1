@@ -36,6 +36,7 @@ class LeadInfo extends Component {
             telefono: '',
             proyecto: '',
             fecha: '',
+            estado: ''
         },
         formHistorial: {
             comentario: '',
@@ -1514,8 +1515,8 @@ class LeadInfo extends Component {
                                         <Card.Body className="py-0">
                                             <InformacionGeneral form = { form } onChange = { this.onChange }
                                                 onSubmit = { this.addLeadInfoAxios } user = { this.props.authUser.user }
-                                                lead = { lead } formeditado = { formeditado } options = { options } 
-                                                showComment1={true} showComment2={false}/>
+                                                lead = { lead } formeditado = { formeditado } options = { options }
+                                            />
                                         </Card.Body>
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="historial-contacto">
