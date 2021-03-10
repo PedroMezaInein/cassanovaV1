@@ -104,7 +104,6 @@ class RangeCalendar extends Component {
         const rangeAñoPasado = this.getLastYear()
         
         return (
-            
             <DateRange 
                 disabledDates = { disabledDates }
                 onChange={ (item) => { this.updateRange(item)} }
@@ -118,6 +117,7 @@ class RangeCalendar extends Component {
                 initialFocusedRange = { [0,0] }
                 startDatePlaceholder = "Fecha de inicio"
                 endDatePlaceholder="Fecha Final"
+                showDateDisplay={false}
                 staticRanges = {
                     [
                         {
