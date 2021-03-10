@@ -4,9 +4,9 @@ import "@pathofdev/react-tag-input/build/index.css";
 
 class TagInput extends Component {
     render() {
-        const { placeholder, tags, onChange,iconclass } = this.props
+        const { placeholder, tags, onChange,iconclass, uppercase } = this.props
         return (
-            <div >
+            <div className = { uppercase === false ? 'text-transform-none' : '' }>
                 <label className="col-form-label">{placeholder}</label>
                 <div className="input-icon">
                     <span className="input-icon input-icon-right">
@@ -19,6 +19,7 @@ class TagInput extends Component {
                         readOnly={false}
                         removeOnBackspace={true}
                         onChange={onChange}
+                        className = { uppercase === false ? 'text-transform-none' : '' }
                     />
                 </div>
                 

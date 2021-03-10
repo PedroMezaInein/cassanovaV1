@@ -13,12 +13,10 @@ class ProyectosForm extends Component {
         let aux = false
         let array = []
         if (/^(?:[^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*|"[^\n"]+")@(?:[^<>()[\].,;:\s@"]+\.)+[^<>()[\].,;:\s@"]{2,63}$/i.test(form.correo)) {
-            // if (/^(?:[^<>()[\].,;:\s@"]+(\.[^<>()[\].,;:\s@"]+)*|"[^\n"]+")@(?:[^<>()[\].,;:\s@"]+\.)+[^<>()[\]\.,;:\s@"]{2,63}$/i.test(form.correo)) {
             if (form.correo) {
                 form.correos.map((correo) => {
-                    if (correo === form.correo) {
+                    if (correo === form.correo)
                         aux = true
-                    }
                     return false
                 })
                 if (!aux) {
@@ -28,10 +26,9 @@ class ProyectosForm extends Component {
                     onChange({ target: { name: 'correo', value: '' } })
                 }
             }
-        } else {
-            alert("La dirección de email es incorrecta.");
-        }
+        } else { alert("La dirección de email es incorrecta."); }
     }
+
     nuevoUpdateCliente = seleccionados =>{
         const { form,deleteOption } = this.props
         seleccionados = seleccionados?seleccionados:[];
@@ -47,6 +44,7 @@ class ProyectosForm extends Component {
             })
         }
     }
+
     updateCliente = value => { 
         const { onChange, options, onChangeOptions, form } = this.props
         options.clientes.map((cliente) => {
@@ -82,12 +80,11 @@ class ProyectosForm extends Component {
     }
 
     transformarOptions = options => {  
-        options = options?options:[]
-        options.map((value)=>{
+        options = options ? options : []
+        options.map( (value) => {
             value.label = value.name 
             return ''
-        } );
-    
+        });
         return options
     }
 
@@ -97,19 +94,20 @@ class ProyectosForm extends Component {
         onChange({ target: { value: '', name: 'tipoProyecto' } })
         const { options: { empresas } } = this.props
         empresas.find(function (element, index) {
-            console.log(value.toString(), element.value.toString())
-            if (value.toString() === element.value.toString()) {
+            if (value.toString() === element.value.toString())
                 setOptions('tipos', element.tipos)
-            }
             return false
         })
     }
+
     updateTipo = value => {
         const { onChange } = this.props
-        onChange({ target: { name: 'tipos', value: value.toString() } })
+        onChange({ target: { name: 'tipoProyecto', value: value.toString() } })
     }
+    
     render() {
-        const { title, children, form, onChange, onChangeCP, onChangeAdjunto, onChangeAdjuntoGrupo, clearFiles, clearFilesGrupo, options, onSubmit, removeCorreo, formeditado, deleteOption, onChangeOptions, action,handleChange, onChangeRange, tagInputChange,...props } = this.props
+        const { title, children, form, onChange, onChangeCP, onChangeAdjunto, onChangeAdjuntoGrupo, clearFiles, clearFilesGrupo, options, onSubmit, 
+            removeCorreo, formeditado, deleteOption, onChangeOptions, action,handleChange, onChangeRange, tagInputChange,...props } = this.props
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
@@ -139,15 +137,7 @@ class ProyectosForm extends Component {
                 </div>
                 <div className="row justify-content-center">
                     <div className="col-md-12">
-                        <Form
-                            onSubmit={
-                                (e) => {
-                                    e.preventDefault();
-                                    validateAlert(onSubmit, e, 'wizard-3-content')
-                                }
-                            }
-                            {...props}
-                        >
+                        <Form onSubmit = { (e) => { e.preventDefault(); validateAlert(onSubmit, e, 'wizard-3-content') } } {...props} >
                             {children}
                             <div id="wizard-1-content" className="pb-3 px-2" data-wizard-type="step-content" data-wizard-state="current">
                                 <h5 className="mb-4 font-weight-bold text-dark">Ingresa los datos de generales</h5>
@@ -162,13 +152,8 @@ class ProyectosForm extends Component {
                                                     <Form.Group>
                                                         <div className="checkbox-list pt-2">
                                                             <label className="checkbox checkbox-outline checkbox-outline-2x checkbox-primary">
-                                                                <input
-                                                                    name = 'fase1'
-                                                                    type="checkbox"
-                                                                    checked = { form.fase1 }
-                                                                    onChange={e => this.handleToggler(e)}
-                                                                    disabled = { form.fase1_relacionado === false ? false : form.fase1_relacionado }
-                                                                    />
+                                                                <input name = 'fase1' type = "checkbox" checked = { form.fase1 } onChange = { e => this.handleToggler(e) }
+                                                                    disabled = { form.fase1_relacionado === false ? false : form.fase1_relacionado } />
                                                                 <span className = { form.fase1_relacionado === false ? '' : 'disabled-label-span' } ></span>
                                                             </label>
                                                         </div>
@@ -183,13 +168,8 @@ class ProyectosForm extends Component {
                                                     <Form.Group>
                                                         <div className="checkbox-list pt-2">
                                                             <label className="checkbox checkbox-outline checkbox-outline-2x checkbox-primary">
-                                                                <input
-                                                                    name = 'fase2'
-                                                                    type="checkbox"
-                                                                    checked = { form.fase2 }
-                                                                    onChange={e => this.handleToggler(e)}
-                                                                    disabled = { form.fase2_relacionado === false ? false : form.fase2_relacionado }
-                                                                    />
+                                                                <input name = 'fase2' type = "checkbox" checked = { form.fase2 } onChange = { e => this.handleToggler(e) }
+                                                                    disabled = { form.fase2_relacionado === false ? false : form.fase2_relacionado } />
                                                                 <span className = { form.fase2_relacionado === false ? '' : 'disabled-label-span' } ></span>
                                                             </label>
                                                         </div>
@@ -204,13 +184,8 @@ class ProyectosForm extends Component {
                                                     <Form.Group>
                                                         <div className="checkbox-list pt-2">
                                                             <label className="checkbox checkbox-outline checkbox-outline-2x checkbox-primary">
-                                                                <input
-                                                                    name = 'fase3'
-                                                                    type="checkbox"
-                                                                    checked = { form.fase3 }
-                                                                    onChange={e => this.handleToggler(e)}
-                                                                    disabled = { form.fase3_relacionado === false ? false : form.fase3_relacionado }
-                                                                    />
+                                                                <input name = 'fase3' type = "checkbox" checked = { form.fase3 } onChange={e => this.handleToggler(e)}
+                                                                    disabled = { form.fase3_relacionado === false ? false : form.fase3_relacionado } />
                                                                 <span className = { form.fase3_relacionado === false ? '' : 'disabled-label-span' } ></span>
                                                             </label>
                                                         </div>
@@ -220,84 +195,33 @@ class ProyectosForm extends Component {
                                         </div>
                                     </div>
                                     <div className="col-md-3">
-                                        <Input
-                                            requirevalidation={1}
-                                            formeditado={formeditado}
-                                            name="contacto"
-                                            value={form.contacto}
-                                            onChange={onChange}
-                                            type="text"
-                                            placeholder="NOMBRE DEL CONTACTO"
-                                            iconclass={"far fa-user-circle"}
-                                            messageinc="Ingresa el nombre de contacto."
-                                        />
+                                        <Input requirevalidation = { 1 } formeditado = { formeditado } name = "contacto" value = { form.contacto } 
+                                            onChange = { onChange } type = "text" placeholder="NOMBRE DEL CONTACTO" iconclass = "far fa-user-circle"
+                                            messageinc="Ingresa el nombre de contacto." />
                                     </div>
                                     <div className="col-md-3">
-                                        <InputPhone
-                                            requirevalidation={1}
-                                            formeditado={formeditado}
-                                            //thousandseparator={false}
-                                            prefix={''}
-                                            name="numeroContacto"
-                                            value={form.numeroContacto}
-                                            onChange={onChange}
-                                            placeholder="NÚMERO DE CONTACTO"
-                                            iconclass={"fas fa-mobile-alt"}
-                                            messageinc="Ingresa el número de contacto."
-                                            patterns={TEL}
-                                        />
+                                        <InputPhone requirevalidation = { 1 } formeditado = { formeditado } prefix = '' name="numeroContacto"
+                                            value = { form.numeroContacto } onChange = { onChange } placeholder = "NÚMERO DE CONTACTO"
+                                            iconclass = "fas fa-mobile-alt" messageinc = "Ingresa el número de contacto."
+                                            patterns = { TEL } />
                                     </div>
                                     <div className="col-md-4">
-                                        <Input
-                                            requirevalidation={1}
-                                            formeditado={formeditado}
-                                            name="nombre"
-                                            value={form.nombre}
-                                            onChange={onChange}
-                                            type="text"
-                                            placeholder="NOMBRE DEL PROYECTO"
-                                            iconclass={"far fa-folder-open"}
-                                            messageinc="Ingresa el nombre del proyecto."
-                                        />
+                                        <Input requirevalidation = { 1 } formeditado = { formeditado } name = "nombre" value = { form.nombre }
+                                            onChange = { onChange } type = "text" placeholder = "NOMBRE DEL PROYECTO" iconclass = "far fa-folder-open"
+                                            messageinc="Ingresa el nombre del proyecto." />
                                     </div>
                                 </div>
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-5">
-                                        <TagInput
-                                            tags={form.correos} 
-                                            onChange={tagInputChange} 
-                                            placeholder={"CORREO DE CONTACTO"}
-                                            iconclass={"far fa-folder-open"}
-                                        />
+                                        <TagInput tags = { form.correos } onChange = { tagInputChange }  placeholder = "CORREO DE CONTACTO"
+                                            iconclass = "far fa-folder-open" uppercase = { false } />
                                     </div>
                                     <div className="col-md-7">
-                                        {
-                                            formeditado && form.clientes.length ? 
-                                                <>
-                                                    <TagSelectSearch
-                                                        placeholder="SELECCIONA EL CLIENTE"
-                                                        options={this.transformarOptions(options.clientes)}
-                                                        defaultvalue={this.transformarOptions(form.clientes)}
-                                                        onChange={this.nuevoUpdateCliente}
-                                                        iconclass={"far fa-folder-open"}
-                                                        requirevalidation={1}
-                                                        messageinc="Selecciona el cliente"
-                                                    />
-                                                </>
-                                            :   
-                                            <>
-                                                <TagSelectSearch
-                                                        placeholder="SELECCIONA EL CLIENTE"
-                                                        options={this.transformarOptions(options.clientes)}
-                                                        defaultvalue={this.transformarOptions(form.clientes)}
-                                                        onChange={this.nuevoUpdateCliente}
-                                                        iconclass={"far fa-folder-open"}
-                                                        requirevalidation={1}
-                                                        messageinc="Selecciona el cliente"
-                                                    />
-                                            </>
-                                        }
+                                        <TagSelectSearch placeholder = "SELECCIONA EL CLIENTE" iconclass = "far fa-folder-open"
+                                            options = { this.transformarOptions(options.clientes) } requirevalidation = { 1 }
+                                            defaultvalue = { this.transformarOptions(form.clientes) } onChange = { this.nuevoUpdateCliente }
+                                            messageinc = "Selecciona el cliente" />
                                     </div>
                                 </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
@@ -311,44 +235,19 @@ class ProyectosForm extends Component {
                                 <h5 className="mb-4 font-weight-bold text-dark">Escribe la ubicación</h5>
                                 <div className="form-group row form-group-marginless">
                                     <div className="col-md-4">
-                                        <InputNumber
-                                            requirevalidation={1}
-                                            formeditado={formeditado}
-                                            name="cp"
-                                            onChange={onChangeCP}
-                                            value={form.cp}
-                                            type="text"
-                                            placeholder="CÓDIGO POSTAL"
-                                            iconclass={"far fa-envelope"}
-                                            maxLength="5"
-                                            messageinc="Ingresa el código postal."
-                                        />
+                                        <InputNumber requirevalidation = { 1 } formeditado = { formeditado } name = "cp" onChange = { onChangeCP }
+                                            value = { form.cp } type = "text" placeholder = "CÓDIGO POSTAL" iconclass = "far fa-envelope"
+                                            maxLength = "5" messageinc = "Ingresa el código postal." />
                                     </div>
                                     <div className="col-md-4" hidden={options.colonias.length <= 0 ? true : false}>
-                                        <Input
-                                            requirevalidation={0}
-                                            formeditado={formeditado}
-                                            readOnly={options.colonias.length <= 0 ? true : false}
-                                            value={form.estado}
-                                            name="estado"
-                                            type="text"
-                                            placeholder="ESTADO"
-                                            iconclass={"fas fa-map-marked-alt"}
-                                            disabled
-                                        />
+                                        <Input requirevalidation = { 0 } formeditado = { formeditado } name = "estado" type = "text"
+                                            readOnly = { options.colonias.length <= 0 ? true : false } value = { form.estado } 
+                                            iconclass = "fas fa-map-marked-alt" disabled placeholder = "ESTADO" />
                                     </div>
                                     <div className="col-md-4" hidden={options.colonias.length <= 0 ? true : false}>
-                                        <Input
-                                            requirevalidation={0}
-                                            formeditado={formeditado}
-                                            readOnly={options.colonias.length <= 0 ? true : false}
-                                            value={form.municipio}
-                                            name="municipio"
-                                            type="text"
-                                            placeholder="MUNICIPIO/DELEGACIÓN"
-                                            iconclass={"fas fa-map-marker-alt"}
-                                            disabled
-                                        />
+                                        <Input requirevalidation = { 0 } formeditado = { formeditado } value = { form.municipio }
+                                            readOnly = { options.colonias.length <= 0 ? true : false } name = "municipio" type = "text"
+                                            placeholder = "MUNICIPIO/DELEGACIÓN" iconclass = "fas fa-map-marker-alt" disabled />
                                     </div>
                                 </div>
                                 <div className="separator separator-dashed mt-1 mb-2" hidden={options.colonias.length <= 0 ? true : false}></div>
@@ -356,43 +255,22 @@ class ProyectosForm extends Component {
                                     <div className="col-md-5" hidden={options.colonias.length <= 0 ? true : false}>
                                         {
                                             options.colonias.length > 0 &&
-                                            <SelectSearch
-                                                formeditado={formeditado}
-                                                options={options.colonias}
-                                                placeholder="SELECCIONA LA COLONIA"
-                                                name="colonia"
-                                                iconclass={"fas fa-map-pin"}
-                                                value={form.colonia}
-                                                defaultValue={form.colonia}
-                                                onChange={this.updateColonia}
-                                                messageinc="Selecciona la colonia"
-                                            />
+                                                <SelectSearch formeditado = { formeditado } options = { options.colonias }
+                                                    placeholder = "SELECCIONA LA COLONIA" name = "colonia" iconclass = "fas fa-map-pin"
+                                                    value = { form.colonia } defaultValue = { form.colonia } onChange = { this.updateColonia }
+                                                    messageinc = "Selecciona la colonia" />
                                         }
                                         {
                                             options.colonias.length <= 0 &&
-                                            <Input
-                                                requirevalidation={1}
-                                                formeditado={formeditado}
-                                                readOnly
-                                                value={form.colonia}
-                                                name="colonia" type="text"
-                                                placeholder="SELECCIONA LA COLONIA"
-                                                iconclass={"fas fa-map-pin"}
-                                            />
+                                                <Input requirevalidation = { 1 } formeditado = { formeditado } readOnly
+                                                    value = { form.colonia } name = "colonia" type = "text"
+                                                    placeholder = "SELECCIONA LA COLONIA" iconclass = "fas fa-map-pin" />
                                         }
                                     </div>
                                     <div className="col-md-7" hidden={options.colonias.length <= 0 ? true : false}>
-                                        <Input
-                                            requirevalidation={1}
-                                            formeditado={formeditado}
-                                            name="calle"
-                                            value={form.calle}
-                                            onChange={onChange}
-                                            type="text"
-                                            placeholder="CALLE Y NÚMERO"
-                                            iconclass={"fas fa-map-signs"}
-                                            messageinc="Ingresa la calle y número."
-                                        />
+                                        <Input requirevalidation = { 1 } formeditado = { formeditado } name = "calle"
+                                            value = { form.calle } onChange = { onChange } type = "text" placeholder = "CALLE Y NÚMERO"
+                                            iconclass = "fas fa-map-signs" messageinc = "Ingresa la calle y número." />
                                     </div>
                                 </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
@@ -409,66 +287,33 @@ class ProyectosForm extends Component {
                                 <Row className="mx-0">
                                     <Col md="4" className="text-center">
                                         <label className="col-form-label my-2 font-weight-bolder">Fecha de inicio - Fecha final</label><br/>
-                                        <RangeCalendar
-                                            onChange={onChangeRange}
-                                            start={form.fechaInicio}
-                                            end={form.fechaFin}
-                                        />
+                                        <RangeCalendar onChange = { onChangeRange } start = { form.fechaInicio } end = { form.fechaFin } />
                                     </Col>
                                     <Col md="8" className="align-self-center">
                                         <div className="form-group row form-group-marginless">
                                             <div className="col-md-4">
-                                                <InputNumber
-                                                    requirevalidation={0}
-                                                    formeditado={formeditado}
-                                                    placeholder="M²"
-                                                    value={form.m2}
-                                                    name="m2"
-                                                    onChange={onChange}
-                                                    iconclass={"fas fa-ruler-combined"}
-                                                    messageinc="Ingresa los m²."
-                                                />
+                                                <InputNumber requirevalidation = { 0 } formeditado = { formeditado } placeholder = "M²"
+                                                    value = { form.m2 } name = "m2" onChange = { onChange } iconclass = "fas fa-ruler-combined"
+                                                    messageinc = "Ingresa los m²." />
                                             </div>
                                             <div className="col-md-4">
-                                                <SelectSearch
-                                                    formeditado={formeditado}
-                                                    options={options.empresas}
-                                                    placeholder="EMPRESA"
-                                                    name="empresa"
-                                                    value={form.empresa}
-                                                    onChange={this.updateEmpresa}
-                                                    iconclass={"far fa-building"}
-                                                    messageinc="Selecciona la empresa"
-                                                />
+                                                <SelectSearch formeditado = { formeditado } options = { options.empresas }
+                                                    placeholder = "EMPRESA" name = "empresa" value = { form.empresa }
+                                                    onChange = { this.updateEmpresa } iconclass = "far fa-building"
+                                                    messageinc = "Selecciona la empresa" />
                                             </div>
                                             <div className="col-md-4">
-                                                <SelectSearch
-                                                    formeditado = { formeditado }
-                                                    options = { options.tipos }
-                                                    placeholder = "TIPO DE PROYECTO"
-                                                    name = "tipoProyecto"
-                                                    value = { form.tipoProyecto }
-                                                    onChange = { this.updateTipo } 
-                                                    iconclass = "far fa-building"
-                                                    messageinc = "Selecciona el tipo de proyecto"
-                                                />
+                                                <SelectSearch formeditado = { formeditado } options = { options.tipos } placeholder = "TIPO DE PROYECTO"
+                                                    name = "tipoProyecto" value = { form.tipoProyecto } onChange = { this.updateTipo }  
+                                                    iconclass = "far fa-building" messageinc = "Selecciona el tipo de proyecto" />
                                             </div>
                                         </div>
                                         <div className="separator separator-dashed mt-1 mb-2"></div>
                                         <div className="form-group row form-group-marginless">
                                             <div className="col-md-12">
-                                                <Input
-                                                    requirevalidation={0}
-                                                    formeditado={formeditado}
-                                                    rows="3"
-                                                    as="textarea"
-                                                    placeholder="DESCRIPCIÓN"
-                                                    name="descripcion"
-                                                    onChange={onChange}
-                                                    value={form.descripcion}
-                                                    style={{ paddingLeft: "10px" }}
-                                                    messageinc="Ingresa una descripción."
-                                                />
+                                                <Input requirevalidation = { 0 } formeditado = { formeditado } rows = "3" onChange = { onChange }
+                                                    as = "textarea" placeholder = "DESCRIPCIÓN" name = "descripcion" value = { form.descripcion }
+                                                    style = { { paddingLeft: "10px" } } messageinc = "Ingresa una descripción." />
                                             </div>
                                         </div>
                                     </Col>
@@ -477,12 +322,8 @@ class ProyectosForm extends Component {
                                 <div className="form-group row form-group-marginless justify-content-center mt-3">
                                     <div className="col-md-6 text-center">
                                     <label className="col-form-label my-2 font-weight-bolder">{form.adjuntos.image.placeholder}</label>
-                                        <ItemSlider
-                                            items={form.adjuntos.image.files}
-                                            item='image' 
-                                            handleChange={handleChange}
-                                            multiple={false} 
-                                        />
+                                        <ItemSlider items = { form.adjuntos.image.files } item = 'image'  handleChange = { handleChange }
+                                            multiple = { false } />
                                     </div>
                                 </div>
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
@@ -490,13 +331,8 @@ class ProyectosForm extends Component {
                                         <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase" onClick={() => { openWizard2() }} data-wizard-type="action-prev">Anterior</button>
                                     </div>
                                     <div>
-                                        <Button icon='' className="btn btn-primary font-weight-bold text-uppercase"
-                                            onClick={
-                                                (e) => {
-                                                    e.preventDefault();
-                                                    validateAlert(onSubmit, e, 'wizard-3-content')
-                                                }
-                                            }
+                                        <Button icon='' className = "btn btn-primary font-weight-bold text-uppercase"
+                                            onClick = { (e) => { e.preventDefault(); validateAlert(onSubmit, e, 'wizard-3-content') } }
                                             text="ENVIAR" />
                                     </div>
                                 </div>
