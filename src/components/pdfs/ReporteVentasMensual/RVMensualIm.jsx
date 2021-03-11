@@ -220,22 +220,31 @@ const styles = StyleSheet.create({
     //     width: '43%',
     //     padding:'4px'
     // },
-    cell16: {
+    cell19: {
         display: 'flex',
         justifyContent: 'center',
         alignContent: 'center',
         textAlign: 'center',
         flexWrap: 'wrap',
-        width: '16.66%',
+        width: '19%',
         padding:'4px'
     },
-    cell46: {
+    cell20: {
         display: 'flex',
         justifyContent: 'center',
         alignContent: 'center',
         textAlign: 'center',
         flexWrap: 'wrap',
-        width: '46%',
+        width: '20%',
+        padding:'4px'
+    },
+    cell45: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignContent: 'center',
+        textAlign: 'center',
+        flexWrap: 'wrap',
+        width: '45%',
         padding:'4px'
     },
     cell_8: {
@@ -447,47 +456,29 @@ export default class RVAnualIm extends Component {
         return element.replace(/&nbsp;/gi,'')
     }
 
-    setComentario = lead => {
+    setComentario = element => {
         let aux = '';
-        if(lead.estatus){
-            switch(lead.estatus.estatus){
-                case 'Rechazado':
-                case 'Cancelado':
-                    if(lead.motivo === '' || lead.motivo === null){
-                        if(lead.rh)
-                            aux += "RR.HH.\n "
-                        if(lead.proveedor)
-                            aux += "PROVEEDOR.\n "
-                    }
-                        else
-                        aux += lead.motivo + "\n"
-                    break;
-                default: break;
-            }
-        }
-        if( lead.prospecto ){
-            if(aux === ''){
-                if(lead.prospecto.estatus_prospecto){
-                    switch(lead.prospecto.estatus_prospecto.estatus){
-                        case 'Rechazado':
-                        case 'Cancelado':
-                            if(lead.motivo === '' || lead.motivo === null){
-                                if(lead.rh)
-                                    aux += "RR.HH.\n "
-                                if(lead.proveedor)
-                                    aux += "PROVEEDOR.\n "
-                            }
+        if(element.lead.rh || element.lead.proveedor){
+            if(element.estatus_prospecto){
+                switch(element.estatus_prospecto.estatus){
+                    case 'Rechazado':
+                    case 'Cancelado':
+                        if(element.lead.motivo === '' || element.lead.motivo === null){
+                            if(element.lead.rh)
+                                aux += "RR.HH.\n "
+                            if(element.lead.proveedor)
+                                aux += "PROVEEDOR.\n "
+                        }
                             else
-                                aux += lead.motivo + "\n"
-                            aux += lead.motivo + "\n"
-                            break;
-                        default: break;
-                    }
+                            aux += element.lead.motivo + "\n"
+                        break;
+                    default: break;
                 }
             }
-            if(lead.prospecto.contactos){
-                if(lead.prospecto.contactos.length){
-                    aux += lead.prospecto.contactos[0].comentario
+        }else{
+            if(element.contactos){
+                if(element.contactos.length){
+                    aux += element.contactos[0].comentario
                 }
             }
         }
@@ -900,22 +891,22 @@ export default class RVAnualIm extends Component {
                         <View style = { styles.imgCenter }>
                             <View style = { styles.table2}  >
                                 <View style = { styles.tableRowHeader } >
-                                    <View style = { styles.cell_15 }>
-                                        <Text style = { styles.headerText} >
+                                    <View style = { styles.cell19 }>
+                                        <Text style = { styles.headerTextJustify} >
                                             NOMBRE
                                         </Text>
                                     </View>
-                                    <View style = { styles.cell_15 }>
-                                        <Text style = { styles.headerText} >
+                                    <View style = { styles.cell10 }>
+                                        <Text style = { styles.headerTextJustify} >
                                             PROYECTO
                                         </Text>
                                     </View>
-                                    <View style = { styles.cell46 }>
+                                    <View style = { styles.cell45 }>
                                         <Text style = { styles.headerText } >
                                             OBSERVACIONES
                                         </Text>
                                     </View>
-                                    <View style = { styles.cell_8 }>
+                                    <View style = { styles.cell10 }>
                                         <Text style = { styles.headerText } >
                                             ESTATUS
                                         </Text>
@@ -931,50 +922,76 @@ export default class RVAnualIm extends Component {
                                         </Text>
                                     </View>
                                 </View>
-                                {/* {
-                                    data.proyectos.length === 0 &&
+                                {
+                                    data.listado_prospectos.length === 0 &&
                                         <View>
                                             <Text style = { styles.bodyTextCenterBig } >
-                                                NO SE CERRARON PROSPECTOS DURANTE ESTE AÑO
+                                                NO SE ENCONTRARON OBSERVACIONESN DE PROSPECTOS DURANTE ESTE MES
                                             </Text>
                                         </View>
-                                } */}
-                                <View style = { styles.tableRowBodyNon }>
-                                    <View style = { styles.cell_15 }>
-                                        <Text style = { styles.bodyText}>
-                                            ISAÍAS OZIEL ORTEGA MARTÍNEZ
-                                        </Text>
-                                    </View>
-                                    <View style = { styles.cell_15 }>
-                                        <Text style = { styles.bodyText}>
-                                            REMODELACIÓN DE OFICINA
-                                        </Text>
-                                    </View>
-                                    <View style = { styles.cell46 }>
-                                        <Text style = { styles.bodyText}>
-                                            ENVÍO DE NEGATIVA DE SERVICIO DEBIDO A QUE LAS ADECUACIONES QUE QUERÍAN
-                                            REALIZAR POR MAGNITUD NO ES ALGO QUE SEA POTENCIAL Y/O DE RETORNO PARA LA
-                                            EMPRESA. LA PROPUESTA QUE NOS COMPARTIERON DE ANTE PROYECTO NO ES TAMPOCO
-                                            VIABLE POR QUE EN SITIO VERIFICAMOS LAS MEDIDAS Y TIENE UN A RANGO DE DIFERENCIA DE MEDIO METRO. AGREGANDO A ESTO A LO EXPRESADO POR ESTE CLIENTE DE NO
-                                            QUERER GASTAR EN NADA, RECUPERAR TODO Y QUE NO LE IMPARTA EL DISEÑO.
-                                        </Text>
-                                    </View>
-                                    <View style = { styles.cell_8 }>
-                                        <Text style = { styles.bodyTextCenter } >
-                                            EN PROCESO
-                                        </Text>
-                                    </View>
-                                    <View style = { styles.cell_8 }>
-                                        <Text style = { styles.bodyTextCenter } >
-                                            14/11/2020
-                                        </Text>
-                                    </View>
-                                    <View style = { styles.cell_8 }>
-                                        <Text style = { styles.bodyTextCenter } >
-                                            14/11/2020
-                                        </Text>
-                                    </View>
-                                </View>
+                                }
+                                {
+                                    data.listado_prospectos.map((element, index) => {
+                                        return(
+                                            <View key = { index } style = { this.setStyleRowBody(index) }>
+                                                <View style = { styles.cell19 }>
+                                                    <Text style = { styles.bodyText}>
+                                                        {element.lead.nombre.toUpperCase()}
+                                                    </Text>
+                                                </View>
+                                                <View style = { styles.cell10 }>
+                                                    <Text style = { styles.bodyText}>
+                                                        {
+                                                            element.tipo_proyecto!==null?
+                                                            element.tipo_proyecto.tipo:'-'
+                                                        }
+                                                    </Text>
+                                                </View>
+                                                <View style = { styles.cell45 }>
+                                                    <Text style = { styles.bodyText}>
+                                                        { this.setComentario(element) }
+                                                    </Text>
+                                                </View>
+                                                <View style = { styles.cell10 }>
+                                                    <Text style = { styles.bodyTextCenter } >
+                                                        {
+                                                            element.estatus_prospecto ?
+                                                                <Text style={
+                                                                    {
+                                                                        color: element.estatus_prospecto.color_texto, fontWeight:600
+                                                                    }}>
+                                                                    { element.estatus_prospecto.estatus.toUpperCase()}
+                                                                </Text>
+                                                            :''
+                                                        }
+                                                    </Text>
+                                                </View>
+                                                <View style = { styles.cell_8 }>
+                                                    <Text style = { styles.bodyTextCenter } >
+                                                        {
+                                                            element.contactos ?
+                                                                element.contactos.length ?
+                                                                    this.getFechaText(element.contactos[element.contactos.length - 1].created_at)
+                                                                : '-'
+                                                            : '-'
+                                                        }
+                                                    </Text>
+                                                </View>
+                                                <View style = { styles.cell_8 }>
+                                                    <Text style = { styles.bodyTextCenter } >
+                                                        {
+                                                            element.contactos ?
+                                                                element.contactos.length ?
+                                                                    this.getFechaText(element.contactos[0].created_at)
+                                                                : '-'
+                                                            : '-'
+                                                        }
+                                                    </Text>
+                                                </View>
+                                            </View>
+                                        )
+                                    })
+                                }
                             </View>
                         </View>
                         <View style={ styles.lineGolden }></View>
@@ -1037,22 +1054,22 @@ export default class RVAnualIm extends Component {
                         <View style = { styles.imgCenter }>
                             <View style = { styles.table2}  >
                                 <View style = { styles.tableRowHeader } >
-                                    <View style = { styles.cell_15 }>
-                                        <Text style = { styles.headerText} >
+                                    <View style = { styles.cell19 }>
+                                        <Text style = { styles.headerTextJustify} >
                                             NOMBRE
                                         </Text>
                                     </View>
-                                    <View style = { styles.cell_15 }>
-                                        <Text style = { styles.headerText} >
+                                    <View style = { styles.cell10 }>
+                                        <Text style = { styles.headerTextJustify} >
                                             PROYECTO
                                         </Text>
                                     </View>
-                                    <View style = { styles.cell46 }>
+                                    <View style = { styles.cell45 }>
                                         <Text style = { styles.headerText } >
-                                            MOTIVO
+                                            OBSERVACIONES
                                         </Text>
                                     </View>
-                                    <View style = { styles.cell_8 }>
+                                    <View style = { styles.cell10 }>
                                         <Text style = { styles.headerText } >
                                             ESTATUS
                                         </Text>
@@ -1068,50 +1085,76 @@ export default class RVAnualIm extends Component {
                                         </Text>
                                     </View>
                                 </View>
-                                {/* {
-                                    data.proyectos.length === 0 &&
+                                {
+                                    data.listado_prospectos_anteriores.length === 0 &&
                                         <View>
                                             <Text style = { styles.bodyTextCenterBig } >
-                                                NO SE CERRARON PROSPECTOS DURANTE ESTE AÑO
+                                                NO SE ENCONTRARON PROSPECTOS LOS MESES ANTERIORES
                                             </Text>
                                         </View>
-                                } */}
-                                <View style = { styles.tableRowBodyNon }>
-                                    <View style = { styles.cell_15 }>
-                                        <Text style = { styles.bodyText}>
-                                            ISAÍAS OZIEL ORTEGA MARTÍNEZ
-                                        </Text>
-                                    </View>
-                                    <View style = { styles.cell_15 }>
-                                        <Text style = { styles.bodyText}>
-                                            REMODELACIÓN DE OFICINA
-                                        </Text>
-                                    </View>
-                                    <View style = { styles.cell46 }>
-                                        <Text style = { styles.bodyText}>
-                                            ENVÍO DE NEGATIVA DE SERVICIO DEBIDO A QUE LAS ADECUACIONES QUE QUERÍAN
-                                            REALIZAR POR MAGNITUD NO ES ALGO QUE SEA POTENCIAL Y/O DE RETORNO PARA LA
-                                            EMPRESA. LA PROPUESTA QUE NOS COMPARTIERON DE ANTE PROYECTO NO ES TAMPOCO
-                                            VIABLE POR QUE EN SITIO VERIFICAMOS LAS MEDIDAS Y TIENE UN A RANGO DE DIFERENCIA DE MEDIO METRO. AGREGANDO A ESTO A LO EXPRESADO POR ESTE CLIENTE DE NO
-                                            QUERER GASTAR EN NADA, RECUPERAR TODO Y QUE NO LE IMPARTA EL DISEÑO.
-                                        </Text>
-                                    </View>
-                                    <View style = { styles.cell_8 }>
-                                        <Text style = { styles.bodyTextCenter } >
-                                            EN PROCESO
-                                        </Text>
-                                    </View>
-                                    <View style = { styles.cell_8 }>
-                                        <Text style = { styles.bodyTextCenter } >
-                                            14/11/2020
-                                        </Text>
-                                    </View>
-                                    <View style = { styles.cell_8 }>
-                                        <Text style = { styles.bodyTextCenter } >
-                                            14/11/2020
-                                        </Text>
-                                    </View>
-                                </View>
+                                }
+                                {
+                                    data.listado_prospectos_anteriores.map((element, index) => {
+                                        return(
+                                            <View key = { index } style = { this.setStyleRowBody(index) }>
+                                                <View style = { styles.cell19 }>
+                                                    <Text style = { styles.bodyText}>
+                                                        {element.lead.nombre.toUpperCase()}
+                                                    </Text>
+                                                </View>
+                                                <View style = { styles.cell10 }>
+                                                    <Text style = { styles.bodyText}>
+                                                        {
+                                                            element.tipo_proyecto!==null?
+                                                            element.tipo_proyecto.tipo:'-'
+                                                        }
+                                                    </Text>
+                                                </View>
+                                                <View style = { styles.cell45 }>
+                                                    <Text style = { styles.bodyText}>
+                                                        { this.setComentario(element) }
+                                                    </Text>
+                                                </View>
+                                                <View style = { styles.cell10 }>
+                                                    <Text style = { styles.bodyTextCenter } >
+                                                        {
+                                                            element.estatus_prospecto ?
+                                                                <Text style={
+                                                                    {
+                                                                        color: element.estatus_prospecto.color_texto, fontWeight:600
+                                                                    }}>
+                                                                    { element.estatus_prospecto.estatus.toUpperCase()}
+                                                                </Text>
+                                                            :''
+                                                        }
+                                                    </Text>
+                                                </View>
+                                                <View style = { styles.cell_8 }>
+                                                    <Text style = { styles.bodyTextCenter } >
+                                                        {
+                                                            element.contactos ?
+                                                                element.contactos.length ?
+                                                                    this.getFechaText(element.contactos[element.contactos.length - 1].created_at)
+                                                                : '-'
+                                                            : '-'
+                                                        }
+                                                    </Text>
+                                                </View>
+                                                <View style = { styles.cell_8 }>
+                                                    <Text style = { styles.bodyTextCenter } >
+                                                        {
+                                                            element.contactos ?
+                                                                element.contactos.length ?
+                                                                    this.getFechaText(element.contactos[0].created_at)
+                                                                : '-'
+                                                            : '-'
+                                                        }
+                                                    </Text>
+                                                </View>
+                                            </View>
+                                        )
+                                    })
+                                }
                             </View>
                         </View>
                         <View style={ styles.lineGray }></View>
@@ -1190,7 +1233,6 @@ export default class RVAnualIm extends Component {
                                 }
                                 {
                                     data.proyectos.map((element, index) => {
-                                        console.log('ELEMENT', element)
                                         if(element.prospecto){
                                             return(
                                                 <View key = { index } style = { this.setStyleRowBody(index) } >
