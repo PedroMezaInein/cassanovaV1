@@ -146,6 +146,7 @@ class Crm extends Component {
             telefono: '',
             proyecto: '',
             fecha: '',
+            estado: ''
         },
         formHistorial: {
             comentario: '',
@@ -2066,16 +2067,14 @@ class Crm extends Component {
                         lead={lead}
                     />
                 </Modal>
-                <Modal size="lg" title='Editar información general' show={modal_editar} handleClose={this.handleCloseModalEditar}>
-                    <div className="mt-3">
+                <Modal size="xl" title='Editar información general' show={modal_editar} handleClose={this.handleCloseModalEditar}>
+                    <div className="mt-7">
                         <InformacionGeneral
                             form={formEditar}
                             onChange={this.onChangeEditar}
                             onSubmit={this.submitForm}
                             lead={lead}
                             formeditado={false}
-                            showComment1={false}
-                            showComment2={true}
                         />
                     </div>
                 </Modal>

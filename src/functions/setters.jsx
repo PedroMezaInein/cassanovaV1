@@ -496,3 +496,40 @@ export const getAños = () => {
         );
     return arreglo
 }
+
+export function getEstados (){
+    return [
+        { name: "Aguascalientes", value: "Aguascalientes" },
+        { name: "Baja California", value: "Baja California" },
+        { name: "Baja California Sur", value: "Baja California Sur" },
+        { name: "Campeche", value: "Campeche" },
+        { name: "Chiapas", value: "Chiapas" },
+        { name: "Chihuahua", value: "Chihuahua" },
+        { name: "Ciudad de México", value: "Ciudad de México" },
+        { name: "Coahuila", value: "Coahuila" },
+        { name: "Colima", value: "Colima" },
+        { name: "Durango", value: "Durango" },
+        { name: "Estado de México", value: "Estado de México" },
+        { name: "Guanajuato", value: "Guanajuato" },
+        { name: "Guerrero", value: "Guerrero" },
+        { name: "Hidalgo", value: "Hidalgo" },
+        { name: "Jalisco", value: "Jalisco" },
+        { name: "Michoacán", value: "Michoacán" },
+        { name: "Morelos", value: "Morelos" },
+        { name: "Nayarit", value: "Nayarit" },
+        { name: "Nuevo León", value: "Nuevo León" },
+        { name: "Oaxaca", value: "Oaxaca" },
+        { name: "Puebla", value: "Puebla" },
+        { name: "Querétaro", value: "Querétaro" },
+        { name: "Quintana Roo", value: "Quintana Roo" },
+        { name: "San Luis Potosí", value: "San Luis Potosí" },
+        { name: "Sinaloa", value: "Sinaloa" },
+        { name: "Sonora", value: "Sonora" },
+        { name: "Tabasco", value: "Tabasco" },
+        { name: "Tamaulipas", value: "Tamaulipas" },
+        { name: "Tlaxcala", value: "Tlaxcala" },
+        { name: "Veracruz", value: "Veracruz" },
+        { name: "Yucatán", value: "Yucatán" },
+        { name: "Zacatecas", value: "Zacatecas" },
+    ]
+}

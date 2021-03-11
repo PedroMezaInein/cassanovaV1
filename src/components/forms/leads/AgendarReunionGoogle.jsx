@@ -5,25 +5,25 @@ import SelectHorario from '../../form-components/SelectHorario'
 import { validateAlert, deleteAlert} from '../../../functions/alert'
 class AgendarReunionGoogle extends Component {
     render() {
-        const { form, onChange, onSubmit, tagInputChange, deleteEvent } = this.props
+        const { form, onChange, onSubmit, tagInputChange, deleteEvent, evento} = this.props
         return (
             <Form id="form-agendar">
                 <Row>
-                    <Col md="12" className="text-center">
+                    <Col md="6" className="text-center">
                         <div className="d-flex justify-content-center mt-5" style={{ height: '1px' }}>
-                            <label className="text-center font-weight-bolder">Fecha del evento</label>
+                            <label className="font-weight-bolder">Fecha del evento</label>
                         </div>
                         <CalendarDay value = { form.fecha } name = 'fecha' onChange = { onChange } date = { form.fecha } withformgroup={0} />
                         <div className="d-flex justify-content-center">
-                            <div className="col-md-4">
-                                <label className="col-form-label text-center font-weight-bolder">Hora de inicio</label>
+                            <div className="col-md-6">
+                                <label className="col-form-label font-weight-bolder">Hora de inicio</label>
                                 <div className="form-group row d-flex justify-content-center">
                                     <SelectHorario onChange = { onChange } minuto = {{ value: form.minuto, name: 'minuto'}}
                                         hora = {{ value: form.hora, name: 'hora'}} />
                                 </div>
                             </div>
-                            <div className="col-md-4">
-                                <label className="col-form-label text-center font-weight-bolder">Hora final</label>
+                            <div className="col-md-6">
+                                <label className="col-form-label font-weight-bolder">Hora final</label>
                                 <div className="form-group row d-flex justify-content-center">
                                     <SelectHorario onChange = { onChange } minuto = {{ value: form.minuto_final, name: 'minuto_final'}}
                                         hora = {{ value: form.hora_final, name: 'hora_final'}} />
@@ -31,7 +31,25 @@ class AgendarReunionGoogle extends Component {
                             </div>
                         </div>
                     </Col>
-                    <Col md="12">
+                    <Col md="6" className="align-self-center">
+                        <div class="w-80 mt-5 mx-auto card card-custom bg-diagonal shadow-sm gutter-b">
+                            <div class="card-body p-2">
+                                <div class="p-4">
+                                    <div class="d-flex flex-column text-center">
+                                        <div class="font-size-h6 font-weight-bolder text-primary mb-3">Correos de los asistentes</div>
+                                            {
+                                                evento.googleEvent?
+                                                    evento.googleEvent.attendees.map((email, key) => {
+                                                        return (
+                                                            <div class="text-dark-50 font-weight-light text-lowercase" key={key}>{email.email}</div>
+                                                        )
+                                                    })
+                                                :""
+                                            }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                         <div className="form-group row form-group-marginless d-flex justify-content-center">
                             <div className="col-md-12">
                                 <TagInputGray
