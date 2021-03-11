@@ -215,13 +215,20 @@ class ProyectosForm extends Component {
                             })
                             form.correos = aux
                         }
+                        form.m2 = proyecto.m2
+                        if(proyecto.empresa.tipos){
+                            options.tipos = setOptions(proyecto.empresa.tipos, 'tipo', 'id')
+                            if(proyecto.tipo_proyecto)
+                                form.tipoProyecto = proyecto.tipo_proyecto.id.toString()
+                        }
                         this.setState({
                             ...this.state,
                             proyecto: proyecto,
                             form,
                             formeditado: 1,
                             title: 'Contratar fases',
-                            action: 'contratar-fases'
+                            action: 'contratar-fases',
+                            options
                         })
                     }
                     else
@@ -545,6 +552,21 @@ class ProyectosForm extends Component {
         })
     }
 
+    async editProyectoAxios() {
+        const { access_token } = this.props.authUser
+        const { form, proyecto } = this.state
+        await axios.put(`${URL_DEV}v2/proyectos/proyectos/${proyecto.id}`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue editado con éxito.')
+                const { history } = this.props
+                history.push({ pathname: '/proyectos/proyectos' });
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     async addCajaChicaAxios(proyecto){
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'cuentas/proyecto/caja/' + proyecto.id, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
@@ -572,7 +594,6 @@ class ProyectosForm extends Component {
                     data.append(element, (new Date(form[element])).toDateString())
                     break
                 case 'adjuntos':
-                case 'adjuntos_grupo':
                     break;
                 case 'correos':
                 case 'clientes':
@@ -588,96 +609,26 @@ class ProyectosForm extends Component {
         aux.map((element) => {
             if (form.adjuntos[element].value !== '') {
                 for (var i = 0; i < form.adjuntos[element].files.length; i++) {
-                    data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
-                    data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
+                    if(form.adjuntos[element].files.id === ''){
+                        data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
+                        data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
+                    }
                 }
             }
             return false
         })
-        form.adjuntos_grupo.map((grupo) => {
-            grupo.adjuntos.map((adjunto) => {
-                adjunto.files.map((file) => {
-                    data.append(`files_name_${adjunto.id}[]`, file.name)
-                    data.append(`files_${adjunto.id}[]`, file.file)
-                    return false
-                })
-                if (adjunto.files.length)
-                    data.append('adjuntos[]', adjunto.id)
-                return false
-            })
-            return false
-        })
-        await axios.post(URL_DEV + 'proyectos/'+proyecto.id+'/relacionado', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}v2/proyectos/proyectos/${proyecto.id}`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue creado con éxito.')
                 const { history } = this.props
-                history.push({
-                    pathname: '/proyectos/proyectos'
-                });
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                history.push({ pathname: '/proyectos/proyectos' });
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
-    async editProyectoAxios() {
-        const { access_token } = this.props.authUser
-        const { form, prospecto, proyecto } = this.state
-        const data = new FormData();
-        let aux = Object.keys(form)
-        aux.map((element) => {
-            switch (element) {
-                case 'fechaInicio':
-                case 'fechaFin':
-                    data.append(element, (new Date(form[element])).toDateString())
-                    break
-                case 'adjuntos':
-                    break;
-                case 'correos':
-                case 'clientes':
-                    data.append(element, JSON.stringify(form[element]))
-                    break;
-
-                default:
-                    data.append(element, form[element])
-                    break
-            }
-            return false
-        })
-        aux = Object.keys(form.adjuntos)
-        aux.map((element) => {
-            if (form.adjuntos[element].value !== '') {
-                for (var i = 0; i < form.adjuntos[element].files.length; i++) {
-                    data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
-                    data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
-                }
-                if (element.toString() !== 'image')
-                    data.append('adjuntos[]', element)
-            }
-            return false
-        })
-        if (prospecto) {
-            data.append('prospecto', prospecto.id)
-        }
-        await axios.post(URL_DEV + 'proyectos/' + proyecto.id, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue editado con éxito.')
-                const { history } = this.props
-                history.push({
-                    pathname: '/proyectos/proyectos'
-                });
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
+    
     async getProspectoAxios(id) {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'prospecto/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -859,7 +810,7 @@ class ProyectosForm extends Component {
                             className = "px-3" tagInputChange = { (e) => this.tagInputChange(e) } setOptions = { this.setOptions } >
                             <Accordion>
                                 {
-                                    prospecto !== '' || proyecto !== '' ? 
+                                    (prospecto !== '' || proyecto !== '') && title !== 'Editar proyecto' ? 
                                         <div className="d-flex justify-content-end">
                                             <Accordion.Toggle as = { Button } icon = { faEye } pulse = "pulse-ring" 
                                                 eventKey = { prospecto !== '' ? 'prospecto' : proyecto !== '' ? proyecto ?  'proyecto' : '' : '' } 

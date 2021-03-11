@@ -318,14 +318,19 @@ class ProyectosForm extends Component {
                                         </div>
                                     </Col>
                                 </Row>
-                                <div className="separator separator-dashed mt-1 mb-2"></div>
-                                <div className="form-group row form-group-marginless justify-content-center mt-3">
-                                    <div className="col-md-6 text-center">
-                                    <label className="col-form-label my-2 font-weight-bolder">{form.adjuntos.image.placeholder}</label>
-                                        <ItemSlider items = { form.adjuntos.image.files } item = 'image'  handleChange = { handleChange }
-                                            multiple = { false } />
-                                    </div>
-                                </div>
+                                {
+                                    title !== 'Editar proyecto' && 
+                                    <>
+                                        <div className="separator separator-dashed mt-1 mb-2"></div>
+                                        <div className="form-group row form-group-marginless justify-content-center mt-3">
+                                            <div className="col-md-6 text-center">
+                                                <label className="col-form-label my-2 font-weight-bolder">{form.adjuntos.image.placeholder}</label>
+                                                <ItemSlider items = { form.adjuntos.image.files } item = 'image'  handleChange = { handleChange }
+                                                    multiple = { false } />
+                                            </div>
+                                        </div>
+                                    </>
+                                }
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2">
                                         <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase" onClick={() => { openWizard2() }} data-wizard-type="action-prev">Anterior</button>
