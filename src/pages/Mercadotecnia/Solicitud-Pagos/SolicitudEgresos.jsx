@@ -300,7 +300,7 @@ class SolicitudEgresos extends Component {
                     }
                     cardTable = 'cardTable' cardTableHeader = 'cardTableHeader' cardBody = 'cardBody'
                     idTable = 'kt_datatable_solicitudes_egresos' accessToken = { this.props.authUser.access_token }
-                    setter = { this.setSolicitudes } urlRender = { URL_DEV + 'mercadotecnia/pagos' } />
+                    setter = { this.setSolicitudes } urlRender = { `${URL_DEV}v2/mercadotecnia/solicitud-de-pago` } />
                 <ModalDelete title = "¿Quieres eliminar la solicitud de egreso?" show = { modalDelete } 
                     handleClose = { this.handleCloseDelete } onClick={(e) => { e.preventDefault(); this.deleteSolicitudAxios() }} />
                 <Modal size = "lg" title = "Solicitud de egreso" show = { modalSee } handleClose = { this.handleCloseSee } >
