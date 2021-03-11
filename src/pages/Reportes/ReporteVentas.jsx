@@ -1111,6 +1111,35 @@ class ReporteVentas extends Component {
         return numero.toString()
     }
 
+    setComentario = element => {
+        let aux = '';
+        if(element.lead.rh || element.lead.proveedor){
+            if(element.estatus_prospecto){
+                switch(element.estatus_prospecto.estatus){
+                    case 'Rechazado':
+                    case 'Cancelado':
+                        if(element.lead.motivo === '' || element.lead.motivo === null){
+                            if(element.lead.rh)
+                                aux += "RR.HH.\n "
+                            if(element.lead.proveedor)
+                                aux += "PROVEEDOR.\n "
+                        }
+                            else
+                            aux += element.lead.motivo + "\n"
+                        break;
+                    default: break;
+                }
+            }
+        }else{
+            if(element.contactos){
+                if(element.contactos.length){
+                    aux += element.contactos[0].comentario
+                }
+            }
+        }
+        return aux
+    }
+
     render() {
         const { form, data, options: opciones, key, modal, empresas, empresaActive } = this.state
         let { table_observaciones, table_prospecto_anteriores } = this.state
@@ -1281,59 +1310,96 @@ class ReporteVentas extends Component {
                                             table_observaciones=true
                                         }
                                         {this.setButtons('17', '19', null, empresa, this.setPageNumber(++valor), 'OBSERVACIONES DE PROSPECTOS')}
-                                        <div className="table-responsive d-flex justify-content-center">
-                                            <table className="table table-responsive-lg table-vertical-center w-100">
-                                                <thead>
-                                                    <tr className="bg-light-gray text-dark-75">
-                                                        <th colSpan="4" className="py-0"></th>
-                                                        <th className="py-0 font-size-lg font-weight-bolder text-center">PRIMER</th>
-                                                        <th className="py-0 font-size-lg font-weight-bolder text-center">ÚLTIMO</th>
-                                                    </tr>
-                                                    <tr className="bg-light-gray text-dark-75">
-                                                        <th className="py-0 font-size-lg font-weight-bolder text-align-last-justify">
-                                                            NOMBRE
-                                                        </th>
-                                                        <th className="py-0 font-size-lg font-weight-bolder text-align-last-justify">
-                                                            PROYECTO
-                                                        </th>
-                                                        <th className="py-0 font-size-lg font-weight-bolder text-align-last-justify">
-                                                            OBSERVACIONES
-                                                        </th>
-                                                        <th className="py-0 font-size-lg font-weight-bolder text-align-last-justify">
-                                                            ESTATUS
-                                                        </th>
-                                                        <th className="py-0 font-size-lg font-weight-bolder text-center">
-                                                            CONTACTO
-                                                        </th>
-                                                        <th className="py-0 font-size-lg font-weight-bolder text-center">
-                                                            CONTACTO
-                                                        </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td className="font-size-sm text-justify white-space-nowrap">
-                                                        </td>
-                                                        <td className="font-size-sm text-justify white-space-nowrap">
-                                                        </td>
-                                                        <td className="font-size-sm text-justify white-space-nowrap">
-                                                        </td>
-                                                        <td className="font-size-sm text-justify white-space-nowrap">
-                                                        </td>
-                                                        <td className="font-size-sm text-center white-space-nowrap">
-                                                        </td>
-                                                        <td className="font-size-sm text-center white-space-nowrap">
-                                                        </td>                   
-                                                    </tr>
-                                                    {/* <tr>
-                                                        <td colSpan = "9" className="font-size-sm text-center white-space-nowrap">
-                                                            NO SE CONTRATARON OBSERVACIONES DE PROSPECTOS
-                                                        </td>
+                                            <div className="table-responsive d-flex justify-content-center">
+                                                <table className="table table-responsive-lg table-vertical-center w-100">
+                                                    <thead>
+                                                        <tr className="bg-light-gray text-dark-75">
+                                                            <th rowSpan="2" className="py-0 font-size-lg font-weight-bolder text-align-last-justify" style={{minWidth:"170px"}}>
+                                                                NOMBRE
+                                                            </th>
+                                                            <th rowSpan="2" className="py-0 font-size-lg font-weight-bolder text-align-last-justify" style={{minWidth:"132px"}}>
+                                                                PROYECTO
+                                                            </th>
+                                                            <th rowSpan="2" className="py-0 font-size-lg font-weight-bolder text-center">
+                                                                OBSERVACIONES
+                                                            </th>
+                                                            <th rowSpan="2" className="py-0 font-size-lg font-weight-bolder text-center" style={{minWidth:"112px"}}>
+                                                                ESTATUS
+                                                            </th>
+                                                            <th className="py-0 font-size-lg font-weight-bolder text-center">PRIMER</th>
+                                                            <th className="py-0 font-size-lg font-weight-bolder text-center">ÚLTIMO</th>
                                                         </tr>
-                                                    */}
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                                        <tr className="bg-light-gray text-dark-75">
+                                                            <th className="py-0 font-size-lg font-weight-bolder text-center">
+                                                                CONTACTO
+                                                            </th>
+                                                            <th className="py-0 font-size-lg font-weight-bolder text-center">
+                                                                CONTACTO
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {
+                                                            this.hasElementOnArray(data.listado_prospectos) ?
+                                                                data.listado_prospectos.map((element, index) => {
+                                                                    return (
+                                                                        <tr key={index}>
+                                                                            <td className="font-size-sm text-justify">
+                                                                                {element.lead.nombre.toUpperCase()}
+                                                                            </td>
+                                                                            <td className="font-size-sm text-justify">
+                                                                                {
+                                                                                    element.tipo_proyecto !== null ?
+                                                                                        element.tipo_proyecto.tipo : '-'
+                                                                                }
+                                                                            </td>
+                                                                            <td className="font-size-sm text-justify">
+                                                                                {this.setComentario(element)}
+                                                                            </td>
+                                                                            <td className="font-size-sm text-center">
+                                                                                {
+                                                                                    element.estatus_prospecto ?
+                                                                                        <span style={
+                                                                                            {
+                                                                                                backgroundColor: element.estatus_prospecto.color_fondo, color: element.estatus_prospecto.color_texto, border: 'transparent', padding: '2.8px 5.6px',
+                                                                                                width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '10.7px',
+                                                                                                fontWeight: 500, borderRadius:'.25rem'
+                                                                                            }
+                                                                                        }>{element.estatus_prospecto.estatus.toUpperCase()}</span>
+                                                                                        : ''
+                                                                                }
+                                                                            </td>
+                                                                            <td className="font-size-sm text-center">
+                                                                                {
+                                                                                    element.contactos ?
+                                                                                        element.contactos.length ?
+                                                                                            setDateTableLG(element.contactos[element.contactos.length - 1].created_at)
+                                                                                            : '-'
+                                                                                        : '-'
+                                                                                }
+                                                                            </td>
+                                                                            <td className="font-size-sm text-center">
+                                                                                {
+                                                                                    element.contactos ?
+                                                                                        element.contactos.length ?
+                                                                                            setDateTableLG(element.contactos[0].created_at)
+                                                                                            : '-'
+                                                                                        : '-'
+                                                                                }
+                                                                            </td>
+                                                                        </tr>
+                                                                    )
+                                                                })
+                                                                :
+                                                                <tr>
+                                                                    <td colSpan="6" className="font-size-sm text-center">
+                                                                        NO SE ENCONTRARON OBSERVACIONESN DE PROSPECTOS DURANTE ESTE MES
+                                                                    </td>
+                                                                </tr>
+                                                        }
+                                                        </tbody>
+                                                </table>
+                                            </div>
                                     </Tab.Pane>
                                     :''
                                 }
@@ -1364,23 +1430,22 @@ class ReporteVentas extends Component {
                                                 <table className="table table-responsive-lg table-vertical-center w-100">
                                                     <thead>
                                                         <tr className="bg-light-gray text-dark-75">
-                                                            <th colSpan="4" className="py-0"></th>
+                                                            <th rowSpan="2" className="py-0 font-size-lg font-weight-bolder text-align-last-justify" style={{minWidth:"170px"}}>
+                                                                NOMBRE
+                                                            </th>
+                                                            <th rowSpan="2" className="py-0 font-size-lg font-weight-bolder text-align-last-justify" style={{minWidth:"132px"}}>
+                                                                PROYECTO
+                                                            </th>
+                                                            <th rowSpan="2" className="py-0 font-size-lg font-weight-bolder text-center">
+                                                                OBSERVACIONES
+                                                            </th>
+                                                            <th rowSpan="2" className="py-0 font-size-lg font-weight-bolder text-center" style={{minWidth:"112px"}}>
+                                                                ESTATUS
+                                                            </th>
                                                             <th className="py-0 font-size-lg font-weight-bolder text-center">PRIMER</th>
                                                             <th className="py-0 font-size-lg font-weight-bolder text-center">ÚLTIMO</th>
                                                         </tr>
                                                         <tr className="bg-light-gray text-dark-75">
-                                                            <th className="py-0 font-size-lg font-weight-bolder text-align-last-justify">
-                                                                NOMBRE
-                                                            </th>
-                                                            <th className="py-0 font-size-lg font-weight-bolder text-align-last-justify">
-                                                                PROYECTO
-                                                            </th>
-                                                            <th className="py-0 font-size-lg font-weight-bolder text-align-last-justify">
-                                                                MOTIVO
-                                                            </th>
-                                                            <th className="py-0 font-size-lg font-weight-bolder text-align-last-justify">
-                                                                ESTATUS
-                                                            </th>
                                                             <th className="py-0 font-size-lg font-weight-bolder text-center">
                                                                 CONTACTO
                                                             </th>
@@ -1390,27 +1455,64 @@ class ReporteVentas extends Component {
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr>
-                                                            <td className="font-size-sm text-justify white-space-nowrap">
-                                                            </td>
-                                                            <td className="font-size-sm text-justify white-space-nowrap">
-                                                            </td>
-                                                            <td className="font-size-sm text-justify white-space-nowrap">
-                                                            </td>
-                                                            <td className="font-size-sm text-justify white-space-nowrap">
-                                                            </td>
-                                                            <td className="font-size-sm text-center white-space-nowrap">
-                                                            </td>
-                                                            <td className="font-size-sm text-center white-space-nowrap">
-                                                            </td>
-                                                        </tr>
-                                                        {/* 
+                                                        {
+                                                            this.hasElementOnArray(data.listado_prospectos_anteriores) ?
+                                                                data.listado_prospectos_anteriores.map((element, index) => {
+                                                                    return(
+                                                                            <tr key= {index}>
+                                                                                <td className="font-size-sm text-justify">
+                                                                                    {element.lead.nombre.toUpperCase()}
+                                                                                </td>
+                                                                                <td className="font-size-sm text-justify">
+                                                                                    {
+                                                                                        element.tipo_proyecto!==null?
+                                                                                        element.tipo_proyecto.tipo:'-'
+                                                                                    }
+                                                                                </td>
+                                                                                <td className="font-size-sm text-justify">
+                                                                                    { this.setComentario(element) }
+                                                                                </td>
+                                                                                <td className="font-size-sm text-center">
+                                                                                    {
+                                                                                        element.estatus_prospecto ?
+                                                                                            <span style={
+                                                                                                {
+                                                                                                    backgroundColor: element.estatus_prospecto.color_fondo, color: element.estatus_prospecto.color_texto, border: 'transparent', padding: '2.8px 5.6px',
+                                                                                                    width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '10.7px',
+                                                                                                    fontWeight: 500, borderRadius:'.25rem'
+                                                                                                }
+                                                                                            }>{element.estatus_prospecto.estatus.toUpperCase()}</span>
+                                                                                            : ''
+                                                                                    }
+                                                                                </td>
+                                                                                <td className="font-size-sm text-center">
+                                                                                    {
+                                                                                        element.contactos ?
+                                                                                            element.contactos.length ?
+                                                                                                setDateTableLG(element.contactos[element.contactos.length - 1].created_at)
+                                                                                            : '-'
+                                                                                        : '-'
+                                                                                    }
+                                                                                </td>
+                                                                                <td className="font-size-sm text-center">
+                                                                                    {
+                                                                                        element.contactos ?
+                                                                                            element.contactos.length ?
+                                                                                                setDateTableLG(element.contactos[0].created_at)
+                                                                                            : '-'
+                                                                                        : '-'
+                                                                                    }
+                                                                                </td>
+                                                                            </tr>
+                                                                    )
+                                                                })
+                                                            :
                                                             <tr>
-                                                                <td colSpan = "6" className="font-size-sm text-center white-space-nowrap">
-                                                                    NO SE CONTRATARON LEADS EN ESTE PERIODO
+                                                                <td colSpan = "6" className="font-size-sm text-center">
+                                                                    NO SE ENCONTRARON PROSPECTOS LOS MESES ANTERIORES
                                                                 </td>
-                                                            </tr> 
-                                                        */}
+                                                            </tr>
+                                                        }
                                                     </tbody>
                                                 </table>
                                             </div>
