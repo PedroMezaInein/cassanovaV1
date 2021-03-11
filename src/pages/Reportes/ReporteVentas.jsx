@@ -1226,7 +1226,8 @@ class ReporteVentas extends Component {
                                     this.isActivePane(data.serviciosComparativa) ?
                                         <Tab.Pane eventKey='8'>
                                             {this.setButtons('7', '9', null, empresa, this.setPageNumber(++valor), 'SERVICIOS SOLICITADOS MENSUAL')}
-                                            <Bar ref = { this.chartServiciosComparativaReference } data = { data.serviciosComparativa } options = { monthGroupBarBreak } />
+                                            <Bar ref = { this.chartServiciosComparativaReference } data = { data.serviciosComparativa } 
+                                                options = { tipo === 'mensual' ? monthGroupBarBreak : monthGroupBar } />
                                         </Tab.Pane>
                                     : <></>
                                 }
@@ -1266,7 +1267,8 @@ class ReporteVentas extends Component {
                                     this.isActivePane(data.tipoLeadsComparativa) ?
                                         <Tab.Pane eventKey = '13'>
                                             {this.setButtons(this.isActivePane(data.origenesDuplicados) ? '12' : '11', '14', null, empresa, this.setPageNumber(++valor), 'TIPO DE LEADS MENSUAL')}
-                                            <Bar ref={this.chartTiposComparativaReference} data={data.tipoLeadsComparativa} options = { monthGroupBarBreak } />
+                                            <Bar ref={this.chartTiposComparativaReference} data={data.tipoLeadsComparativa} 
+                                                options = { tipo === 'mensual' ? monthGroupBarBreak : monthGroupBar } />
                                         </Tab.Pane>
                                     : <></>
                                 }
@@ -1282,7 +1284,8 @@ class ReporteVentas extends Component {
                                     this.isActivePane(data.tiposProyectosComparativa) ?
                                         <Tab.Pane eventKey = '15'>
                                             { this.setButtons( '14', '16', null, empresa, this.setPageNumber(++valor),  'TIPO DE PROYECTO MENSUAL' ) }
-                                            <Bar ref={this.chartTiposProyectosComparativaReference} data={data.tiposProyectosComparativa} options = { monthGroupBarBreak2 } />
+                                            <Bar ref={this.chartTiposProyectosComparativaReference} data={data.tiposProyectosComparativa} 
+                                                options = { tipo === 'mensual' ? monthGroupBarBreak2 : monthGroupBar } />
                                         </Tab.Pane>
                                     : <></>
                                 }
