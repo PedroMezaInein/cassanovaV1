@@ -383,22 +383,15 @@ class ReporteVentas extends Component {
         const { access_token } = this.props.authUser
         const { form } = this.state
         waitAlert()
-        await axios.post(URL_DEV + 'reportes/ventas', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}v2/reportes/ventas`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { data: result, meses } = response.data;
                 Swal.close()
-
                 /* -------------------------------------------------------------------------- */
                 /* ------------------------- ENTRADA TOTAL DE LEADS ------------------------- */
                 /* -------------------- ANCHOR GET TOTAL DE LEADS ANUALES ------------------- */
                 /* -------------------------------------------------------------------------- */
-                this.setState({
-                    ...this.state, 
-                    data: this.setData(result, meses), 
-                    key: '1',
-                    tipo: 'mensual'
-                })
-
+                this.setState({ ...this.state,  data: this.setData(result, meses),  key: '1', tipo: 'mensual' })
             },
             (error) => {
                 printResponseErrorAlert(error)
@@ -1278,37 +1271,35 @@ class ReporteVentas extends Component {
                                         <table className="table table-responsive-lg table-vertical-center w-100">
                                             <thead>
                                                 <tr className="bg-light-gray text-dark-75">
-                                                    <th colSpan="6" className="py-0"></th>
-                                                    <th colSpan="2" className="py-0 font-size-lg font-weight-bolder text-center">FECHA</th>
-                                                    <th></th>
-                                                </tr>
-                                                <tr className="bg-light-gray text-dark-75">
-                                                    <th className="py-0 font-size-lg font-weight-bolder text-align-last-justify">
+                                                    <th rowSpan="2" className="py-0 font-size-lg font-weight-bolder text-align-last-justify">
                                                         NOMBRE
                                                     </th>
-                                                    <th className="py-0 font-size-lg font-weight-bolder text-align-last-justify">
+                                                    <th rowSpan="2" className="py-0 font-size-lg font-weight-bolder text-align-last-justify">
                                                         PROYECTO
                                                     </th>
-                                                    <th className="py-0 font-size-lg font-weight-bolder text-align-last-justify">
+                                                    <th rowSpan="2" className="py-0 font-size-lg font-weight-bolder text-align-last-justify">
                                                         SERVICIOS
                                                     </th>
-                                                    <th className="py-0 font-size-lg font-weight-bolder text-align-last-justify">
+                                                    <th rowSpan="2" className="py-0 font-size-lg font-weight-bolder text-align-last-justify">
                                                         ORIGEN
                                                     </th>
-                                                    <th className="py-0 font-size-lg font-weight-bolder text-center">
+                                                    <th rowSpan="2" className="py-0 font-size-lg font-weight-bolder text-center">
                                                         MONTO
                                                     </th>
-                                                    <th className="py-0 font-size-lg font-weight-bolder text-center">
+                                                    <th rowSpan="2" className="py-0 font-size-lg font-weight-bolder text-center">
                                                         M²
                                                     </th>
+                                                    <th colSpan="2" className="py-0 font-size-lg font-weight-bolder text-center">FECHA</th>
+                                                    <th rowSpan = "2" className="py-0 font-size-lg font-weight-bolder text-center">
+                                                        VENDEDOR
+                                                    </th>
+                                                </tr>
+                                                <tr className="bg-light-gray text-dark-75">
                                                     <th className="py-0 font-size-lg font-weight-bolder text-center">
                                                         INGRESO
                                                     </th>
                                                     <th className="py-0 font-size-lg font-weight-bolder text-center">
                                                         CONTRATO
-                                                    </th>
-                                                    <th className="py-0 font-size-lg font-weight-bolder text-center">
-                                                        VENDEDOR
                                                     </th>
                                                 </tr>
                                             </thead>
