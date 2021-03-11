@@ -64,7 +64,9 @@ class ReporteVentas extends Component {
             tiposComparativa: {},
             prospectosComparativa: {},
             estatusComparativa: {},
-            cerrados: []
+            cerrados: [],
+            listado_prospectos:{},
+            listado_prospectos_anteriores:{}
         },
         leads: [],
         leadsAnteriores: [],
@@ -1030,7 +1032,8 @@ class ReporteVentas extends Component {
         }
 
         data.proyectos = result.proyectos
-        
+        data.listado_prospectos = result.listado_prospectos
+        data.listado_prospectos_anteriores = result.listado_prospectos_anteriores
         return data
     }
 
@@ -1540,7 +1543,7 @@ class ReporteVentas extends Component {
                                         onEditorStateChange = { (editorState) => this.onEditorStateChange(editorState, 'conclusiones') } />
                                 </Tab.Pane>
                                 <Tab.Pane eventKey={table_prospecto_anteriores?'24':'22'}>
-                                    { this.setButtons(table_prospecto_anteriores?'23':null, table_prospecto_anteriores?'21':null, true, empresa, this.setPageNumber(++valor), 'SUGERENCIAS') }
+                                    { this.setButtons(table_prospecto_anteriores?'23':'21', null, true, empresa, this.setPageNumber(++valor), 'SUGERENCIAS') }
                                     <Editor editorClassName = "editor-class"  editorState = { form.listados.sugerencias }
                                         toolbar = { { options: ['list'], list: { inDropdown: false, options: ['unordered'], }, } }
                                         onEditorStateChange = { (editable) => this.onEditorStateChange(editable, 'sugerencias') } />
