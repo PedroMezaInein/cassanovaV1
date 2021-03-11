@@ -9,7 +9,7 @@ import { ProyectosForm as ProyectoFormulario } from '../../../components/forms'
 import { URL_DEV, CP_URL } from '../../../constants'
 import { Button } from '../../../components/form-components'
 import { ProyectoCard, ProyectosCard } from '../../../components/cards'
-import { waitAlert, printResponseErrorAlert, errorAlert, doneAlert, questionAlert, createAlert } from '../../../functions/alert'
+import { waitAlert, printResponseErrorAlert, errorAlert, doneAlert, questionAlert, createAlertSA2WithClose } from '../../../functions/alert'
 import { setOptions } from '../../../functions/setters'
 class ProyectosForm extends Component {
     state = {
@@ -57,314 +57,13 @@ class ProyectosForm extends Component {
             clientes: [],
             tipoProyecto:'',
             m2:'',
-            adjuntos_grupo: [
-                {
-                    text: 'Inicio y planeación',
-                    id: 'inicio_y_planeacion',
-                    adjuntos: [
-                        {
-                            placeholder: 'Fotografías levantamiento',
-                            id: 'fotografias_levantamiento',
-                            value: '',
-                            files: []
-                        },
-                        {
-                            placeholder: 'Manuales de adaptación',
-                            id: 'manuales_de_adaptacion',
-                            value: '',
-                            files: []
-                        },
-                        {
-                            placeholder: 'Minutas',
-                            id: 'minutas',
-                            value: '',
-                            files: []
-                        },
-                        {
-                            placeholder: 'Oficios',
-                            id: 'oficios',
-                            value: '',
-                            files: []
-                        },
-                        {
-                            placeholder: 'Planos entregados por cliente',
-                            id: 'planos_entregados_por_cliente',
-                            value: '',
-                            files: []
-                        },
-                        {
-                            placeholder: 'Propuestas arquitectónicas preliminares',
-                            id: 'propuestas_arquitectonicas_preliminares',
-                            value: '',
-                            files: []
-                        },
-                        {
-                            placeholder: 'Referencias del diseño del proyecto',
-                            id: 'referencias_del_diseño_del_proyecto',
-                            value: '',
-                            files: []
-                        },
-                        {
-                            placeholder: 'Renders',
-                            id: 'renders',
-                            value: '',
-                            files: []
-                        },
-                        {
-                            placeholder: 'Sketch Up',
-                            id: 'sketch_up',
-                            value: '',
-                            files: []
-                        },
-                        {
-                            placeholder: 'Presupuestos preliminares',
-                            id: 'presupuestos_preliminares',
-                            value: '',
-                            files: []
-                        },
-                        {
-                            placeholder: 'Carta oferta',
-                            id: 'carta_oferta',
-                            value: '',
-                            files: []
-                        }
-                    ]
-                },
-                {
-                    text: 'Ejecución de obra',
-                    id: 'ejecucion_de_obra',
-                    adjuntos: [
-                        {
-                            placeholder: 'Datos de cliente',
-                            id: 'datos_de_cliente',
-                            value: '',
-                            files: []
-                        },
-                        {
-                            placeholder: 'Contrato cliente',
-                            id: 'contrato_cliente',
-                            value: '',
-                            files: []
-                        },
-                        {
-                            placeholder: 'Contrato proveedores y contratistas',
-                            id: 'contrato_proveedores_y_contratistas',
-                            value: '',
-                            files: []
-                        },
-                        {
-                            placeholder: 'Firmas de aprobación',
-                            id: 'firmas_de_aprobacion',
-                            value: '',
-                            files: []
-                        },
-                        {
-                            placeholder: 'Reporte fotográfico de avance de obra',
-                            id: 'reporte_fotografico_de_avance_de_obra',
-                            value: '',
-                            files: []
-                        },
-                        {
-                            placeholder: 'Reporte de materiales',
-                            id: 'reporte_de_materiales',
-                            value: '',
-                            files: []
-                        },
-                        {
-                            placeholder: 'Reporte de proyecto vs ejecutado',
-                            id: 'reporte_de_proyecto_vs_ejecutado',
-                            value: '',
-                            files: []
-                        },
-                        {
-                            placeholder: 'Minutas de obra',
-                            id: 'minutas_de_obra',
-                            value: '',
-                            files: []
-                        },
-                        {
-                            placeholder: 'Presupuesto aprobado por cliente',
-                            id: 'presupuesto_aprobado_por_cliente',
-                            value: '',
-                            files: []
-                        },
-                        {
-                            placeholder: 'Programa de obra',
-                            id: 'programa_de_obra',
-                            value: '',
-                            files: []
-                        },
-                        {
-                            placeholder: 'Planos durante obra',
-                            id: 'planos_durante_obra',
-                            value: '',
-                            files: []
-                        },
-                        {
-                            placeholder: 'Sketch Up aprobados',
-                            id: 'sketch_up_aprobados',
-                            value: '',
-                            files: []
-                        },
-                        {
-                            placeholder: 'Renders aprobados',
-                            id: 'renders_aprobados',
-                            value: '',
-                            files: []
-                        },
-                        {
-                            placeholder: 'Estados de cuenta',
-                            id: 'estados_de_cuenta',
-                            value: '',
-                            files: []
-                        },
-                        {
-                            placeholder: 'Estimaciones y cierre',
-                            id: 'estimaciones_y_cierre',
-                            value: '',
-                            files: []
-                        },
-                        {
-                            placeholder: 'Fianzas y seguros',
-                            id: 'fianzas_y_seguros',
-                            value: '',
-                            files: []
-                        },
-                        {
-                            placeholder: 'Permisos de obra ante dependencias',
-                            id: 'permisos_de_obra_ante_dependencias',
-                            value: '',
-                            files: []
-                        },
-                        {
-                            placeholder: 'Presupuestos extras',
-                            id: 'presupuestos_extras',
-                            value: '',
-                            files: []
-                        }
-                    ]
-                },
-                {
-                    text: 'Entrega',
-                    id: 'entrega',
-                    adjuntos: [
-                        {
-                            placeholder: 'Catálogo de conceptos ASBUILT',
-                            id: 'catalogo_de_conceptos_asbuilt',
-                            value: '',
-                            files: []
-                        },
-                        {
-                            placeholder: 'Consignas de matenimiento',
-                            id: 'consignas_de_matenimiento',
-                            value: '',
-                            files: []
-                        },
-                        {
-                            placeholder: 'Planos aprobados',
-                            id: 'planos_aprobados',
-                            value: '',
-                            files: []
-                        },
-                        {
-                            placeholder: 'Garantía de los equipos',
-                            id: 'garantia_de_los_equipos',
-                            value: '',
-                            files: []
-                        },
-                        {
-                            placeholder: 'Garantía de vicios ocultos',
-                            id: 'garantia_de_vicios_ocultos',
-                            value: '',
-                            files: []
-                        },
-                        {
-                            placeholder: 'Memorias de cálculo',
-                            id: 'memorias_de_calculo',
-                            value: '',
-                            files: []
-                        },
-                        {
-                            placeholder: 'Memorias descriptivas',
-                            id: 'memorias_descriptivas',
-                            value: '',
-                            files: []
-                        },
-                        {
-                            placeholder: 'Fichas técnicas',
-                            id: 'fichas_tecnicas',
-                            value: '',
-                            files: []
-                        },
-                        {
-                            placeholder: 'Pruebas de instalaciones',
-                            id: 'pruebas_de_instalaciones',
-                            value: '',
-                            files: []
-                        },
-                        {
-                            placeholder: 'Fotografías fin de obra',
-                            id: 'fotografias_fin_de_obra',
-                            value: '',
-                            files: []
-                        },
-                        {
-                            placeholder: 'Acta de entrega',
-                            id: 'acta_de_entrega',
-                            value: '',
-                            files: []
-                        },
-                        {
-                            placeholder: 'Carpeta de entrega ZIP',
-                            id: 'carpeta_de_entrega_zip',
-                            value: '',
-                            files: []
-                        },
-                    ]
-                },
-                {
-                    text: 'Mantenimiento',
-                    id: 'mantenimiento',
-                    adjuntos: [
-                        {
-                            placeholder: 'Fallas y reparaciones por vicios ocultos',
-                            id: 'fallas_y_reparaciones_por_vicios_ocultos',
-                            value: '',
-                            files: []
-                        },
-                        {
-                            placeholder: 'Mantenimiento preventivo',
-                            id: 'mantenimiento_preventivo',
-                            value: '',
-                            files: []
-                        },
-                        {
-                            placeholder: 'Mantenimiento correctivo',
-                            id: 'mantenimiento_correctivo',
-                            value: '',
-                            files: []
-                        },
-                    ]
-                },
-            ],
             adjuntos: {
                 image: {
                     value: '',
                     placeholder: 'Imagen',
                     files: []
                 }
-            },
-            avances: [
-                {
-                    descripcion: '',
-                    avance: '',
-                    adjuntos: {
-                        value: '',
-                        placeholder: 'Fotos del avance',
-                        files: []
-                    }
-                }
-            ]
+            }
         }
     }
     componentDidMount() {
@@ -376,6 +75,7 @@ class ProyectosForm extends Component {
             const { modulo: { url } } = element
             return pathname === url + '/' + action
         });
+        const { options } = this.state
         switch (action) {
             case 'add':
                 this.setState({
@@ -400,6 +100,7 @@ class ProyectosForm extends Component {
                         form.fechaFin = new Date(proyecto.fecha_fin)
                         form.porcentaje = proyecto.porcentaje
                         form.descripcion = proyecto.descripcion
+                        form.m2 = proyecto.m2
                         let aux = []
                         if (proyecto.clientes) {
                             proyecto.clientes.forEach(cliente => {
@@ -412,12 +113,10 @@ class ProyectosForm extends Component {
                             });
                             form.clientes = aux
                         }
-                        if (proyecto.imagen) {
+                        if (proyecto.imagen)
                             form.adjuntos.image.files = [{ name: proyecto.imagen.name, file: '', url: proyecto.imagen.url, key: 0 }]
-                        }
-                        if (proyecto.estatus) {
+                        if (proyecto.estatus) 
                             form.estatus = proyecto.estatus.id.toString();
-                        }
                         form.fase1 = proyecto.fase1 === 0 ? false : true
                         form.fase2 = proyecto.fase2 === 0 ? false : true
                         form.fase3 = proyecto.fase3 === 0 ? false : true
@@ -432,13 +131,13 @@ class ProyectosForm extends Component {
                             })
                             form.correos = aux
                         }
-                        this.setState({
-                            ...this.state,
-                            proyecto: proyecto,
-                            form,
-                            formeditado: 1,
-                            title: 'Editar proyecto',
-                            action: 'edit'
+                        if(proyecto.empresa.tipos){
+                            options.tipos = setOptions(proyecto.empresa.tipos, 'tipo', 'id')
+                            if(proyecto.tipo_proyecto)
+                                form.tipoProyecto = proyecto.tipo_proyecto.id.toString()
+                        }
+                        this.setState({ ...this.state, proyecto: proyecto, form, formeditado: 1, title: 'Editar proyecto',
+                            action: 'edit', options
                         })
                     }
                     else
@@ -516,13 +215,20 @@ class ProyectosForm extends Component {
                             })
                             form.correos = aux
                         }
+                        form.m2 = proyecto.m2
+                        if(proyecto.empresa.tipos){
+                            options.tipos = setOptions(proyecto.empresa.tipos, 'tipo', 'id')
+                            if(proyecto.tipo_proyecto)
+                                form.tipoProyecto = proyecto.tipo_proyecto.id.toString()
+                        }
                         this.setState({
                             ...this.state,
                             proyecto: proyecto,
                             form,
                             formeditado: 1,
                             title: 'Contratar fases',
-                            action: 'contratar-fases'
+                            action: 'contratar-fases',
+                            options
                         })
                     }
                     else
@@ -795,6 +501,7 @@ class ProyectosForm extends Component {
             console.log(error, 'error')
         })
     }
+
     async addProyectoAxios() {
         const { access_token } = this.props.authUser
         const { form, prospecto } = this.state
@@ -807,7 +514,6 @@ class ProyectosForm extends Component {
                     data.append(element, (new Date(form[element])).toDateString())
                     break
                 case 'adjuntos':
-                case 'adjuntos_grupo':
                     break;
                 case 'correos':
                 case 'clientes':
@@ -829,39 +535,32 @@ class ProyectosForm extends Component {
             }
             return false
         })
-        if (prospecto) {
-            data.append('prospecto', prospecto.id)
-        }
-        form.adjuntos_grupo.map((grupo) => {
-            grupo.adjuntos.map((adjunto) => {
-                adjunto.files.map((file) => {
-                    data.append(`files_name_${adjunto.id}[]`, file.name)
-                    data.append(`files_${adjunto.id}[]`, file.file)
-                    return false
-                })
-                if (adjunto.files.length)
-                    data.append('adjuntos[]', adjunto.id)
-                return false
-            })
-            return false
-        })
-        await axios.post(URL_DEV + 'proyectos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        if (prospecto) data.append('prospecto', prospecto.id)
+        await axios.post(`${URL_DEV}v2/proyectos/proyectos`, data, 
+            { headers: {'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { proyecto } = response.data
-                /* doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue creado con éxito.') */
-                createAlert(
-                    '¡FELICIDADES CREASTE EL PROYECTO!',
-                    '¿DESEAS CREAR LA CAJA CHICA?',
-                    () => this.addCajaChicaAxios(proyecto)
-                )
                 const { history } = this.props
-                history.push({
-                    pathname: '/proyectos/proyectos'
-                });
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                createAlertSA2WithClose(
+                    '¡FELICIDADES CREASTE EL PROYECTO!', '¿DESEAS CREAR LA CAJA CHICA?',
+                    () => this.addCajaChicaAxios(proyecto), history, '/proyectos/proyectos'
+                )
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async editProyectoAxios() {
+        const { access_token } = this.props.authUser
+        const { form, proyecto } = this.state
+        await axios.put(`${URL_DEV}v2/proyectos/proyectos/${proyecto.id}`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue editado con éxito.')
+                const { history } = this.props
+                history.push({ pathname: '/proyectos/proyectos' });
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -895,7 +594,6 @@ class ProyectosForm extends Component {
                     data.append(element, (new Date(form[element])).toDateString())
                     break
                 case 'adjuntos':
-                case 'adjuntos_grupo':
                     break;
                 case 'correos':
                 case 'clientes':
@@ -911,96 +609,26 @@ class ProyectosForm extends Component {
         aux.map((element) => {
             if (form.adjuntos[element].value !== '') {
                 for (var i = 0; i < form.adjuntos[element].files.length; i++) {
-                    data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
-                    data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
+                    if(form.adjuntos[element].files.id === ''){
+                        data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
+                        data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
+                    }
                 }
             }
             return false
         })
-        form.adjuntos_grupo.map((grupo) => {
-            grupo.adjuntos.map((adjunto) => {
-                adjunto.files.map((file) => {
-                    data.append(`files_name_${adjunto.id}[]`, file.name)
-                    data.append(`files_${adjunto.id}[]`, file.file)
-                    return false
-                })
-                if (adjunto.files.length)
-                    data.append('adjuntos[]', adjunto.id)
-                return false
-            })
-            return false
-        })
-        await axios.post(URL_DEV + 'proyectos/'+proyecto.id+'/relacionado', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}v2/proyectos/proyectos/${proyecto.id}`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue creado con éxito.')
                 const { history } = this.props
-                history.push({
-                    pathname: '/proyectos/proyectos'
-                });
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                history.push({ pathname: '/proyectos/proyectos' });
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
-    async editProyectoAxios() {
-        const { access_token } = this.props.authUser
-        const { form, prospecto, proyecto } = this.state
-        const data = new FormData();
-        let aux = Object.keys(form)
-        aux.map((element) => {
-            switch (element) {
-                case 'fechaInicio':
-                case 'fechaFin':
-                    data.append(element, (new Date(form[element])).toDateString())
-                    break
-                case 'adjuntos':
-                    break;
-                case 'correos':
-                case 'clientes':
-                    data.append(element, JSON.stringify(form[element]))
-                    break;
-
-                default:
-                    data.append(element, form[element])
-                    break
-            }
-            return false
-        })
-        aux = Object.keys(form.adjuntos)
-        aux.map((element) => {
-            if (form.adjuntos[element].value !== '') {
-                for (var i = 0; i < form.adjuntos[element].files.length; i++) {
-                    data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
-                    data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
-                }
-                if (element.toString() !== 'image')
-                    data.append('adjuntos[]', element)
-            }
-            return false
-        })
-        if (prospecto) {
-            data.append('prospecto', prospecto.id)
-        }
-        await axios.post(URL_DEV + 'proyectos/' + proyecto.id, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue editado con éxito.')
-                const { history } = this.props
-                history.push({
-                    pathname: '/proyectos/proyectos'
-                });
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
+    
     async getProspectoAxios(id) {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'prospecto/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -1095,18 +723,17 @@ class ProyectosForm extends Component {
             form
         })
     }
+    
     tagInputChange = (nuevosCorreos) => {
-        const uppercased = nuevosCorreos.map(tipo => tipo.toUpperCase()); 
         const { form } = this.state 
         let unico = {};
-        uppercased.forEach(function (i) {
+        nuevosCorreos.forEach(function (i) {
             if (!unico[i]) { unico[i] = true }
         })
-        form.correos = uppercased ? Object.keys(unico) : [];
-        this.setState({
-            form
-        })
+        form.correos = nuevosCorreos ? Object.keys(unico) : [];
+        this.setState({ ...this.state, form })
     }
+
     setOptions = (name, array) => {
         const { options } = this.state
         options[name] = setOptions(array, 'tipo', 'id')
@@ -1175,41 +802,24 @@ class ProyectosForm extends Component {
                         }
                     </Card.Header>
                     <Card.Body className="pt-0">
-                        <ProyectoFormulario
-                            action = { action }
-                            title={title}
-                            form={form}
-                            options={options}
-                            formeditado={formeditado}
-                            onChange={this.onChange}
-                            onChangeAdjunto={this.onChangeAdjunto}
-                            deleteOption={this.deleteOption}
-                            onChangeOptions={this.onChangeOptions}
-                            clearFiles={this.clearFiles}
-                            onChangeCP={this.onChangeCP}
-                            onSubmit={this.onSubmit}
-                            onChangeAdjuntoGrupo={this.onChangeAdjuntoGrupo}
-                            clearFilesGrupo={this.clearFilesGrupo}
-                            removeCorreo={this.removeCorreo}
-                            handleChange={this.handleChange}
-                            onChangeRange={this.onChangeRange}
-                            className="px-3"
-                            tagInputChange={(e) => this.tagInputChange(e)}
-                            setOptions = { this.setOptions }
-                        >
+                        <ProyectoFormulario action = { action } title = { title } form = { form } options = { options } formeditado = { formeditado }
+                            onChange = { this.onChange } onChangeAdjunto = { this.onChangeAdjunto } deleteOption = { this.deleteOption }
+                            onChangeOptions = { this.onChangeOptions } clearFiles = { this.clearFiles } onChangeCP = { this.onChangeCP }
+                            onSubmit = { this.onSubmit } onChangeAdjuntoGrupo = { this.onChangeAdjuntoGrupo } clearFilesGrupo = { this.clearFilesGrupo }
+                            removeCorreo = { this.removeCorreo } handleChange = { this.handleChange } onChangeRange = { this.onChangeRange }
+                            className = "px-3" tagInputChange = { (e) => this.tagInputChange(e) } setOptions = { this.setOptions } >
                             <Accordion>
                                 {
-                                    prospecto !== '' || proyecto !== '' ? 
+                                    (prospecto !== '' || proyecto !== '') && title !== 'Editar proyecto' ? 
                                         <div className="d-flex justify-content-end">
-                                            <Accordion.Toggle as={Button} icon={faEye} pulse="pulse-ring" eventKey = { prospecto !== '' ? 'prospecto' : proyecto !== '' ? proyecto ?  'proyecto' : '' : '' } className="btn btn-icon btn-light-info pulse pulse-info" />
+                                            <Accordion.Toggle as = { Button } icon = { faEye } pulse = "pulse-ring" 
+                                                eventKey = { prospecto !== '' ? 'prospecto' : proyecto !== '' ? proyecto ?  'proyecto' : '' : '' } 
+                                                className = "btn btn-icon btn-light-info pulse pulse-info" />
                                         </div>
                                     : ''
                                 }
-                                
                                 <Accordion.Collapse eventKey='prospecto' className="px-md-5 px-2" >
-                                    <div>
-                                        <ProyectoCard data={prospecto} />
-                                    </div>
+                                    <div> <ProyectoCard data={prospecto} /> </div>
                                 </Accordion.Collapse>
                                 <Accordion.Collapse eventKey='proyecto' className="px-md-5 px-2" >
                                     <div className="m-4">

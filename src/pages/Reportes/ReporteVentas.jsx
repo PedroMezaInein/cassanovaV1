@@ -72,7 +72,9 @@ class ReporteVentas extends Component {
             empresas: []
         },
         empresaActive: '',
-        tipo: ''
+        tipo: '',
+        table_observaciones:false,
+        table_prospecto_anteriores:false
     }
 
     constructor(props) {
@@ -383,22 +385,18 @@ class ReporteVentas extends Component {
         const { access_token } = this.props.authUser
         const { form } = this.state
         waitAlert()
-        await axios.post(URL_DEV + 'reportes/ventas', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}v2/reportes/ventas`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { data: result, meses } = response.data;
+                let { data: result, meses } = response.data;
+                meses = meses.map(function (e) { 
+                    return e.toUpperCase()
+                });
                 Swal.close()
-
                 /* -------------------------------------------------------------------------- */
                 /* ------------------------- ENTRADA TOTAL DE LEADS ------------------------- */
                 /* -------------------- ANCHOR GET TOTAL DE LEADS ANUALES ------------------- */
                 /* -------------------------------------------------------------------------- */
-                this.setState({
-                    ...this.state, 
-                    data: this.setData(result, meses), 
-                    key: '1',
-                    tipo: 'mensual'
-                })
-
+                this.setState({ ...this.state,  data: this.setData(result, meses),  key: '1', tipo: 'mensual' })
             },
             (error) => {
                 printResponseErrorAlert(error)
@@ -497,6 +495,7 @@ class ReporteVentas extends Component {
     }
 
     setData = (result, meses) => {
+        const { form } = this.state
         // ENTRADA TOTAL DE LEADS
         let data = {}
         data.total = {
@@ -530,7 +529,12 @@ class ReporteVentas extends Component {
         
         auxColors = [];
         result.total_meses.forEach( (color, index) => {
-            auxColors.push( COLORES_GRAFICAS_MESES[index] )
+            if(form.rango === 'mensual'){
+                auxColors[0] = this.setColor()
+                auxColors.push( COLORES_GRAFICAS_MESES[index] )
+            }else{
+                auxColors.push( COLORES_GRAFICAS_MESES[index] )
+            }
         })
         data.comparativa = {
             labels: auxLabels,
@@ -838,17 +842,17 @@ class ReporteVentas extends Component {
         auxColors = []
         result.tipos_meses.forEach((mes, index) => {
             if(mes.potenciales){
-                auxLabels.push('Potencial;'+meses[index])
+                auxLabels.push('POTENCIAL;'+meses[index])
                 aux.push(mes.potenciales)
-                auxColors.push('#F79646')
-            }
-            if(mes.noPotenciales){
-                auxLabels.push('No potencial;'+meses[index])
-                aux.push(mes.noPotenciales)
                 auxColors.push('#8064A2')
             }
+            if(mes.noPotenciales){
+                auxLabels.push('NO POTENCIAL;'+meses[index])
+                aux.push(mes.noPotenciales)
+                auxColors.push('#F79646')
+            }
             if(mes.duplicados){
-                auxLabels.push('Duplicado;'+meses[index])
+                auxLabels.push('DUPLICADO;'+meses[index])
                 aux.push(mes.duplicados)
                 auxColors.push('#A6A6A6')
             }
@@ -893,7 +897,16 @@ class ReporteVentas extends Component {
             mes.forEach(proy => {
                 auxLabels.push(proy.nombre+';'+meses[index])
                 aux.push(proy.total)
-                auxColors.push( COLORES_GRAFICAS_MESES[index] )
+                if(form.rango === 'mensual'){
+                    if(index===0){
+                        auxColors.push(this.setColor());
+                    }
+                    if(index!==0){
+                        auxColors.push( COLORES_GRAFICAS_MESES[index] )
+                    }
+                }else{
+                    auxColors.push( COLORES_GRAFICAS_MESES[index] )
+                }
             })
         })
         // TIPOS DE PROYECTOS MENSUAL
@@ -911,8 +924,8 @@ class ReporteVentas extends Component {
         // LEADS CONVERTIDOS A PROSPECTOS
         data.contactados = {
             labels: [
-                {label: 'Sin convertir', value: result.contactados.sinConvertir.total},
-                {label: 'Convertidos', value: result.contactados.contactados.total},
+                {label: 'SIN RESPUESTA', value: result.contactados.sinConvertir.total},
+                {label: 'CONTACTADOS', value: result.contactados.contactados.total},
             ],
             datasets: [{
                 data: [
@@ -1097,6 +1110,7 @@ class ReporteVentas extends Component {
 
     render() {
         const { form, data, options: opciones, key, modal, empresas, empresaActive } = this.state
+        let { table_observaciones, table_prospecto_anteriores } = this.state
         const mesesEspañol = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
         const { empresa } = this.state
         let valor = 0;
@@ -1251,64 +1265,190 @@ class ReporteVentas extends Component {
                                 {
                                     this.isActivePane(data.estatus) ?
                                         <Tab.Pane eventKey='17'>
-                                            {this.setButtons('16', '18', null, empresa, this.setPageNumber(++valor), 'STATUS DE PROSPECTOS')}
+                                            {this.setButtons('16', '18', null, empresa, this.setPageNumber(++valor), 'ESTATUS DE PROSPECTOS')}
                                             <Bar ref = { this.chartEstatusReference } data = {data.estatus} options = { percentBar } />
                                         </Tab.Pane>
                                     : <></>
                                 }
                                 {
+                                    
+                                    form.rango === 'mensual' ?
+                                    <Tab.Pane eventKey='18'>
+                                        {
+                                            table_observaciones=true
+                                        }
+                                        {this.setButtons('17', '19', null, empresa, this.setPageNumber(++valor), 'OBSERVACIONES DE PROSPECTOS')}
+                                        <div className="table-responsive d-flex justify-content-center">
+                                            <table className="table table-responsive-lg table-vertical-center w-100">
+                                                <thead>
+                                                    <tr className="bg-light-gray text-dark-75">
+                                                        <th colSpan="4" className="py-0"></th>
+                                                        <th className="py-0 font-size-lg font-weight-bolder text-center">PRIMER</th>
+                                                        <th className="py-0 font-size-lg font-weight-bolder text-center">ÚLTIMO</th>
+                                                    </tr>
+                                                    <tr className="bg-light-gray text-dark-75">
+                                                        <th className="py-0 font-size-lg font-weight-bolder text-align-last-justify">
+                                                            NOMBRE
+                                                        </th>
+                                                        <th className="py-0 font-size-lg font-weight-bolder text-align-last-justify">
+                                                            PROYECTO
+                                                        </th>
+                                                        <th className="py-0 font-size-lg font-weight-bolder text-align-last-justify">
+                                                            OBSERVACIONES
+                                                        </th>
+                                                        <th className="py-0 font-size-lg font-weight-bolder text-align-last-justify">
+                                                            ESTATUS
+                                                        </th>
+                                                        <th className="py-0 font-size-lg font-weight-bolder text-center">
+                                                            CONTACTO
+                                                        </th>
+                                                        <th className="py-0 font-size-lg font-weight-bolder text-center">
+                                                            CONTACTO
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <tr>
+                                                        <td className="font-size-sm text-justify white-space-nowrap">
+                                                        </td>
+                                                        <td className="font-size-sm text-justify white-space-nowrap">
+                                                        </td>
+                                                        <td className="font-size-sm text-justify white-space-nowrap">
+                                                        </td>
+                                                        <td className="font-size-sm text-justify white-space-nowrap">
+                                                        </td>
+                                                        <td className="font-size-sm text-center white-space-nowrap">
+                                                        </td>
+                                                        <td className="font-size-sm text-center white-space-nowrap">
+                                                        </td>                   
+                                                    </tr>
+                                                    {/* <tr>
+                                                        <td colSpan = "9" className="font-size-sm text-center white-space-nowrap">
+                                                            NO SE CONTRATARON OBSERVACIONES DE PROSPECTOS
+                                                        </td>
+                                                        </tr>
+                                                    */}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </Tab.Pane>
+                                    :''
+                                }
+                                {
                                     this.isActivePane(data.motivosCancelacion) ?
-                                        <Tab.Pane eventKey='18'>
-                                            {this.setButtons('17', '19', null, empresa, this.setPageNumber(++valor), 'PRINCIPALES MOTIVOS DE CANCELACIÓN')}
+                                        <Tab.Pane eventKey={table_observaciones?'19':'18'}>
+                                            {this.setButtons(table_observaciones?'18':'17', table_observaciones?'20':'19', null, empresa, this.setPageNumber(++valor), 'PRINCIPALES MOTIVOS DE CANCELACIÓN')}
                                             <Bar ref = { this.chartMotivosCancelacionReference } data = {data.motivosCancelacion} options = { percentBar } />
                                         </Tab.Pane>
                                     : <></>
                                 }
                                 {
                                     this.isActivePane(data.motivosRechazo) ?
-                                        <Tab.Pane eventKey='19'>
-                                            {this.setButtons('18', '20', null, empresa, this.setPageNumber(++valor), 'PRINCIPALES MOTIVOS DE RECHAZO')}
+                                        <Tab.Pane eventKey={table_observaciones?'20':'19'}>
+                                            {this.setButtons(table_observaciones?'19':'18', table_observaciones?'21':'20', null, empresa, this.setPageNumber(++valor), 'PRINCIPALES MOTIVOS DE RECHAZO')}
                                             <Bar ref = { this.chartMotivosRechazoReference } data = {data.motivosRechazo} options = { percentBar } />
                                         </Tab.Pane>
                                     : <></>
                                 }
-                                <Tab.Pane eventKey='20'>
-                                    {this.setButtons('19', '21', null, empresa, this.setPageNumber(++valor), 'OBSERVACIONES CONTRATADOS')}
+                                {
+                                    form.rango === 'mensual' ?
+                                        <Tab.Pane eventKey='21'>
+                                            {
+                                                table_prospecto_anteriores=true
+                                            }
+                                            {this.setButtons('20', '22', null, empresa, this.setPageNumber(++valor), 'LISTADO DE PROSPECTO DE MESES ANTERIORES')}
+                                            <div className="table-responsive d-flex justify-content-center">
+                                                <table className="table table-responsive-lg table-vertical-center w-100">
+                                                    <thead>
+                                                        <tr className="bg-light-gray text-dark-75">
+                                                            <th colSpan="4" className="py-0"></th>
+                                                            <th className="py-0 font-size-lg font-weight-bolder text-center">PRIMER</th>
+                                                            <th className="py-0 font-size-lg font-weight-bolder text-center">ÚLTIMO</th>
+                                                        </tr>
+                                                        <tr className="bg-light-gray text-dark-75">
+                                                            <th className="py-0 font-size-lg font-weight-bolder text-align-last-justify">
+                                                                NOMBRE
+                                                            </th>
+                                                            <th className="py-0 font-size-lg font-weight-bolder text-align-last-justify">
+                                                                PROYECTO
+                                                            </th>
+                                                            <th className="py-0 font-size-lg font-weight-bolder text-align-last-justify">
+                                                                MOTIVO
+                                                            </th>
+                                                            <th className="py-0 font-size-lg font-weight-bolder text-align-last-justify">
+                                                                ESTATUS
+                                                            </th>
+                                                            <th className="py-0 font-size-lg font-weight-bolder text-center">
+                                                                CONTACTO
+                                                            </th>
+                                                            <th className="py-0 font-size-lg font-weight-bolder text-center">
+                                                                CONTACTO
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <tr>
+                                                            <td className="font-size-sm text-justify white-space-nowrap">
+                                                            </td>
+                                                            <td className="font-size-sm text-justify white-space-nowrap">
+                                                            </td>
+                                                            <td className="font-size-sm text-justify white-space-nowrap">
+                                                            </td>
+                                                            <td className="font-size-sm text-justify white-space-nowrap">
+                                                            </td>
+                                                            <td className="font-size-sm text-center white-space-nowrap">
+                                                            </td>
+                                                            <td className="font-size-sm text-center white-space-nowrap">
+                                                            </td>
+                                                        </tr>
+                                                        {/* 
+                                                            <tr>
+                                                                <td colSpan = "6" className="font-size-sm text-center white-space-nowrap">
+                                                                    NO SE CONTRATARON LEADS EN ESTE PERIODO
+                                                                </td>
+                                                            </tr> 
+                                                        */}
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </Tab.Pane>
+                                    :''
+                                }
+                                <Tab.Pane eventKey={table_prospecto_anteriores?'22':'20'}>
+                                    {this.setButtons(table_prospecto_anteriores?'21':'19', table_prospecto_anteriores?'23':'21', null, empresa, this.setPageNumber(++valor), 'OBSERVACIONES CONTRATADOS')}
                                     <div className="table-responsive d-flex justify-content-center">
                                         <table className="table table-responsive-lg table-vertical-center w-100">
                                             <thead>
                                                 <tr className="bg-light-gray text-dark-75">
-                                                    <th colSpan="6" className="py-0"></th>
-                                                    <th colSpan="2" className="py-0 font-size-lg font-weight-bolder text-center">FECHA</th>
-                                                    <th></th>
-                                                </tr>
-                                                <tr className="bg-light-gray text-dark-75">
-                                                    <th className="py-0 font-size-lg font-weight-bolder text-align-last-justify">
+                                                    <th rowSpan="2" className="py-0 font-size-lg font-weight-bolder text-align-last-justify">
                                                         NOMBRE
                                                     </th>
-                                                    <th className="py-0 font-size-lg font-weight-bolder text-align-last-justify">
+                                                    <th rowSpan="2" className="py-0 font-size-lg font-weight-bolder text-align-last-justify">
                                                         PROYECTO
                                                     </th>
-                                                    <th className="py-0 font-size-lg font-weight-bolder text-align-last-justify">
+                                                    <th rowSpan="2" className="py-0 font-size-lg font-weight-bolder text-align-last-justify">
                                                         SERVICIOS
                                                     </th>
-                                                    <th className="py-0 font-size-lg font-weight-bolder text-align-last-justify">
+                                                    <th rowSpan="2" className="py-0 font-size-lg font-weight-bolder text-align-last-justify">
                                                         ORIGEN
                                                     </th>
-                                                    <th className="py-0 font-size-lg font-weight-bolder text-center">
+                                                    <th rowSpan="2" className="py-0 font-size-lg font-weight-bolder text-center">
                                                         MONTO
                                                     </th>
-                                                    <th className="py-0 font-size-lg font-weight-bolder text-center">
+                                                    <th rowSpan="2" className="py-0 font-size-lg font-weight-bolder text-center">
                                                         M²
                                                     </th>
+                                                    <th colSpan="2" className="py-0 font-size-lg font-weight-bolder text-center">FECHA</th>
+                                                    <th rowSpan = "2" className="py-0 font-size-lg font-weight-bolder text-center">
+                                                        VENDEDOR
+                                                    </th>
+                                                </tr>
+                                                <tr className="bg-light-gray text-dark-75">
                                                     <th className="py-0 font-size-lg font-weight-bolder text-center">
                                                         INGRESO
                                                     </th>
                                                     <th className="py-0 font-size-lg font-weight-bolder text-center">
                                                         CONTRATO
-                                                    </th>
-                                                    <th className="py-0 font-size-lg font-weight-bolder text-center">
-                                                        VENDEDOR
                                                     </th>
                                                 </tr>
                                             </thead>
@@ -1393,14 +1533,14 @@ class ReporteVentas extends Component {
                                         </table>
                                     </div>
                                 </Tab.Pane>
-                                <Tab.Pane eventKey='21'>
-                                    { this.setButtons('20', '22', null, empresa, this.setPageNumber(++valor), 'CONCLUSIONES')}
+                                <Tab.Pane eventKey={table_prospecto_anteriores?'23':'21'}>
+                                    { this.setButtons(table_prospecto_anteriores?'22':'20', table_prospecto_anteriores?'24':'22', null, empresa, this.setPageNumber(++valor), 'CONCLUSIONES')}
                                     <Editor editorClassName = "editor-class" editorState = { form.listados.conclusiones }
                                         toolbar = { { options: ['list'], list: { inDropdown: false, options: ['unordered'], }, } }
                                         onEditorStateChange = { (editorState) => this.onEditorStateChange(editorState, 'conclusiones') } />
                                 </Tab.Pane>
-                                <Tab.Pane eventKey='22'>
-                                    { this.setButtons('21', null, true, empresa, this.setPageNumber(++valor), 'SUGERENCIAS') }
+                                <Tab.Pane eventKey={table_prospecto_anteriores?'24':'22'}>
+                                    { this.setButtons(table_prospecto_anteriores?'23':null, table_prospecto_anteriores?'21':null, true, empresa, this.setPageNumber(++valor), 'SUGERENCIAS') }
                                     <Editor editorClassName = "editor-class"  editorState = { form.listados.sugerencias }
                                         toolbar = { { options: ['list'], list: { inDropdown: false, options: ['unordered'], }, } }
                                         onEditorStateChange = { (editable) => this.onEditorStateChange(editable, 'sugerencias') } />
