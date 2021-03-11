@@ -273,7 +273,7 @@ class Contratar extends Component {
         let sendCorreoValue = document.sendCorreoForm.sendCorreo.value;
         if(sendCorreoValue === 'si' || sendCorreoValue === 'no'){
             formProyecto.sendCorreo = sendCorreoValue
-            await axios.post(URL_DEV + 'crm/convert/' + lead.id, formProyecto, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            await axios.post( `${URL_DEV}v2/leads/crm/convert/${lead.id}`, formProyecto, { headers: { Authorization: `Bearer ${access_token}` } }).then(
                 (response) => {
                     const { proyecto } = response.data
                     const { history } = this.props
@@ -479,26 +479,14 @@ class Contratar extends Component {
                 </Card>
                 <Modal size = 'xl' title = 'Nuevo cliente' show = { modal }
                     handleClose = { this.handleClose }>
-                        <ClienteForm
-                            formeditado = { 0 }
-                            form = { form }
-                            onChange = { this.onChange }
-                            changeCP = { this.changeCP }
-                            onSubmit = { this.onSubmitCliente }
-                            className="mt-4"
-                        />
+                        <ClienteForm formeditado = { 0 } form = { form } onChange = { this.onChange } changeCP = { this.changeCP } onSubmit = { this.onSubmitCliente } 
+                            className="mt-4" />
                 </Modal>
             </Layout>
         )
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        authUser: state.authUser
-    }
-}
-
+const mapStateToProps = (state) => { return { authUser: state.authUser } }
 const mapDispatchToProps = dispatch => ({})
-
 export default connect(mapStateToProps, mapDispatchToProps)(Contratar)
