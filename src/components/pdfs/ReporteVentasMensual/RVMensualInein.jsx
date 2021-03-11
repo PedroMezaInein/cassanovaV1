@@ -186,15 +186,42 @@ const styles = StyleSheet.create({
     //     width: '30%',
     //     padding:'4px'
     // },  
-    // cell43: {
-    //     display: 'flex',
-    //     justifyContent: 'center',
-    //     alignContent: 'center',
-    //     textAlign: 'center',
-    //     flexWrap: 'wrap',
-    //     width: '43%',
-    //     padding:'4px'
-    // },
+    cell16: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignContent: 'center',
+        textAlign: 'center',
+        flexWrap: 'wrap',
+        width: '16.66%',
+        padding:'4px'
+    },
+    cell46: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignContent: 'center',
+        textAlign: 'center',
+        flexWrap: 'wrap',
+        width: '46%',
+        padding:'4px'
+    },
+    cell_8: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignContent: 'center',
+        textAlign: 'center',
+        flexWrap: 'wrap',
+        width: '8%',
+        padding:'4px'
+    },
+    cell_15: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignContent: 'center',
+        textAlign: 'center',
+        flexWrap: 'wrap',
+        width: '15%',
+        padding:'4px'
+    },
     headerText:{
         color: 'white',
         fontWeight: 'bold',        
@@ -482,7 +509,7 @@ export default class RVAnualInein extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    ENTRADA <Text style = { styles.textPink }>TOTAL</Text> DE LEADS ({this.getMes()})
+                                    ENTRADA <Text style = { styles.textPink }>TOTAL </Text>DE LEADS ({this.getMes()})
                                 </Text>
                             </View>
                         </View>
@@ -527,7 +554,7 @@ export default class RVAnualInein extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    <Text style = { styles.textPink }>ORIGEN</Text> DE LEADS ({this.getMes()})
+                                    <Text style = { styles.textPink }>ORIGEN </Text>DE LEADS ({this.getMes()})
                                 </Text>
                             </View>
                         </View>
@@ -545,7 +572,7 @@ export default class RVAnualInein extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    <Text style = { styles.textPink }>ORIGEN </Text> DE LEADS ORGÁNICOS ({this.getMes()})
+                                    <Text style = { styles.textPink }>ORIGEN </Text>DE LEADS ORGÁNICOS ({this.getMes()})
                                 </Text>
                             </View>
                         </View>
@@ -563,7 +590,7 @@ export default class RVAnualInein extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    <Text style = { styles.textPink }>ORIGEN </Text> DE LEADS ADS ({this.getMes()})
+                                    <Text style = { styles.textPink }>ORIGEN </Text>DE LEADS ADS ({this.getMes()})
                                 </Text>
                             </View>
                         </View>
@@ -671,7 +698,7 @@ export default class RVAnualInein extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    <Text style = { styles.textPink }>ORIGEN </Text>DE LEADS <Text style = { styles.textPink }>NO POTENCIALES </Text> ({this.getMes()})
+                                    <Text style = { styles.textPink }>ORIGEN </Text>DE LEADS <Text style = { styles.textPink }>NO POTENCIALES </Text>({this.getMes()})
                                 </Text>
                             </View>
                         </View>
@@ -689,7 +716,7 @@ export default class RVAnualInein extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    <Text style = { styles.textPink }>ORIGEN </Text>DE LEADS <Text style = { styles.textPink }>POTENCIALES</Text> ({this.getMes()})
+                                    <Text style = { styles.textPink }>ORIGEN </Text>DE LEADS <Text style = { styles.textPink }>POTENCIALES </Text>({this.getMes()})
                                 </Text>
                             </View>
                         </View>
@@ -709,7 +736,7 @@ export default class RVAnualInein extends Component {
                                     </View>
                                     <View>
                                         <Text style = { styles.titulo }>    
-                                            <Text style = { styles.textPink }>ORIGEN </Text>DE LEADS <Text style = { styles.textPink }>DUPLICADOS</Text> ({this.getMes()})
+                                            <Text style = { styles.textPink }>ORIGEN </Text>DE LEADS <Text style = { styles.textPink }>DUPLICADOS </Text>({this.getMes()})
                                         </Text>
                                     </View>
                                 </View>
@@ -759,7 +786,7 @@ export default class RVAnualInein extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    TOTAL DE <Text style = { styles.textPink }>TIPOS DE PROYECTO</Text> ({this.getMes()})
+                                    TOTAL DE <Text style = { styles.textPink }>TIPOS DE PROYECTO </Text>({this.getMes()})
                                 </Text>
                             </View>
                         </View>
@@ -808,7 +835,7 @@ export default class RVAnualInein extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    LEADS <Text style = { styles.textPink }>CONTACTADOS</Text> ({this.getMes()})
+                                    LEADS <Text style = { styles.textPink }>CONTACTADOS </Text>({this.getMes()})
                                 </Text>
                             </View>
                         </View>
@@ -828,7 +855,7 @@ export default class RVAnualInein extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    ESTATUS DE LEADS <Text style = { styles.textPink }>CONTACTADOS</Text> ({this.getMes()})
+                                    ESTATUS DE LEADS <Text style = { styles.textPink }>CONTACTADOS </Text>({this.getMes()})
                                 </Text>
                             </View>
                         </View>
@@ -848,7 +875,104 @@ export default class RVAnualInein extends Component {
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    PRINCIPALES MOTIVOS DE <Text style = { styles.textPink }>CANCELACIÓN</Text> ({this.getMes()})
+                                    OBSERVACIONES DE PROSPECTOS
+                                </Text>
+                            </View>
+                        </View>
+                        <View style = { styles.imgCenter }>
+                            <View style = { styles.table2}  >
+                                <View style = { styles.tableRowHeader } >
+                                    <View style = { styles.cell_15 }>
+                                        <Text style = { styles.headerText} >
+                                            NOMBRE
+                                        </Text>
+                                    </View>
+                                    <View style = { styles.cell_15 }>
+                                        <Text style = { styles.headerText} >
+                                            PROYECTO
+                                        </Text>
+                                    </View>
+                                    <View style = { styles.cell46 }>
+                                        <Text style = { styles.headerText } >
+                                            OBSERVACIONES
+                                        </Text>
+                                    </View>
+                                    <View style = { styles.cell_8 }>
+                                        <Text style = { styles.headerText } >
+                                            ESTATUS
+                                        </Text>
+                                    </View>
+                                    <View style = { styles.cell_8 }>
+                                        <Text style = { styles.headerText } >
+                                            PRIMER CONTACTO
+                                        </Text>
+                                    </View>
+                                    <View style = { styles.cell_8 }>
+                                        <Text style = { styles.headerText } >
+                                            ÚLTIMO CONTACTO
+                                        </Text>
+                                    </View>
+                                </View>
+                                {/* {
+                                    data.proyectos.length === 0 &&
+                                        <View>
+                                            <Text style = { styles.bodyTextCenterBig } >
+                                                NO SE CERRARON PROSPECTOS DURANTE ESTE AÑO
+                                            </Text>
+                                        </View>
+                                } */}
+                                <View style = { styles.tableRowBodyNon }>
+                                    <View style = { styles.cell_15 }>
+                                        <Text style = { styles.bodyText}>
+                                            ISAÍAS OZIEL ORTEGA MARTÍNEZ
+                                        </Text>
+                                    </View>
+                                    <View style = { styles.cell_15 }>
+                                        <Text style = { styles.bodyText}>
+                                            REMODELACIÓN DE OFICINA
+                                        </Text>
+                                    </View>
+                                    <View style = { styles.cell46 }>
+                                        <Text style = { styles.bodyText}>
+                                            ENVÍO DE NEGATIVA DE SERVICIO DEBIDO A QUE LAS ADECUACIONES QUE QUERÍAN
+                                            REALIZAR POR MAGNITUD NO ES ALGO QUE SEA POTENCIAL Y/O DE RETORNO PARA LA
+                                            EMPRESA. LA PROPUESTA QUE NOS COMPARTIERON DE ANTE PROYECTO NO ES TAMPOCO
+                                            VIABLE POR QUE EN SITIO VERIFICAMOS LAS MEDIDAS Y TIENE UN A RANGO DE DIFERENCIA DE MEDIO METRO. AGREGANDO A ESTO A LO EXPRESADO POR ESTE CLIENTE DE NO
+                                            QUERER GASTAR EN NADA, RECUPERAR TODO Y QUE NO LE IMPARTA EL DISEÑO.
+                                        </Text>
+                                    </View>
+                                    <View style = { styles.cell_8 }>
+                                        <Text style = { styles.bodyTextCenter } >
+                                            EN PROCESO
+                                        </Text>
+                                    </View>
+                                    <View style = { styles.cell_8 }>
+                                        <Text style = { styles.bodyTextCenter } >
+                                            14/11/2020
+                                        </Text>
+                                    </View>
+                                    <View style = { styles.cell_8 }>
+                                        <Text style = { styles.bodyTextCenter } >
+                                            14/11/2020
+                                        </Text>
+                                    </View>
+                                </View>
+                            </View>
+                        </View>
+                        <View style={ styles.lineGray }></View>
+                    </View>
+                </Page>
+                <Page size="A4" orientation = "landscape" >
+                    <View style = { styles.pagePadding } >
+                        <View style = { styles.numberTitle } >
+                            <View >
+                                <Text style = { styles.paginacion}>
+                                    {images.origenesDuplicados !== null ? 26 : 25}
+                                </Text>
+                            </View>
+                            <View>
+                                <Text style = { styles.titulo }>    
+                                    PRINCIPALES MOTIVOS DE <Text style = { styles.textPink }>CANCELACIÓN </Text>({this.getMes()})
                                 </Text>
                             </View>
                         </View>
@@ -863,12 +987,12 @@ export default class RVAnualInein extends Component {
                         <View style = { styles.numberTitle } >
                             <View >
                                 <Text style = { styles.paginacion}>
-                                    {images.origenesDuplicados !== null ? 26 : 25}
+                                    {images.origenesDuplicados !== null ? 27 : 26}
                                 </Text>
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    PRINCIPALES MOTIVOS DE <Text style = { styles.textPink }>RECHAZO</Text> ({this.getMes()})
+                                    PRINCIPALES MOTIVOS DE <Text style = { styles.textPink }>RECHAZO </Text>({this.getMes()})
                                 </Text>
                             </View>
                         </View>
@@ -878,17 +1002,114 @@ export default class RVAnualInein extends Component {
                         <View style={ styles.lineGray }></View>
                     </View>
                 </Page>
+                <Page size="A4" orientation = "landscape" >
+                    <View style = { styles.pagePadding } >
+                        <View style = { styles.numberTitle } >
+                            <View >
+                                <Text style = { styles.paginacion}>
+                                    {images.origenesDuplicados !== null ? 28 : 27}
+                                </Text>
+                            </View>
+                            <View>
+                                <Text style = { styles.titulo }>    
+                                    LISTADO DE PROSPECTO DE MESES ANTERIORES
+                                </Text>
+                            </View>
+                        </View>
+                        <View style = { styles.imgCenter }>
+                            <View style = { styles.table2}  >
+                                <View style = { styles.tableRowHeader } >
+                                    <View style = { styles.cell_15 }>
+                                        <Text style = { styles.headerText} >
+                                            NOMBRE
+                                        </Text>
+                                    </View>
+                                    <View style = { styles.cell_15 }>
+                                        <Text style = { styles.headerText} >
+                                            PROYECTO
+                                        </Text>
+                                    </View>
+                                    <View style = { styles.cell46 }>
+                                        <Text style = { styles.headerText } >
+                                            MOTIVO
+                                        </Text>
+                                    </View>
+                                    <View style = { styles.cell_8 }>
+                                        <Text style = { styles.headerText } >
+                                            ESTATUS
+                                        </Text>
+                                    </View>
+                                    <View style = { styles.cell_8 }>
+                                        <Text style = { styles.headerText } >
+                                            PRIMER CONTACTO
+                                        </Text>
+                                    </View>
+                                    <View style = { styles.cell_8 }>
+                                        <Text style = { styles.headerText } >
+                                            ÚLTIMO CONTACTO
+                                        </Text>
+                                    </View>
+                                </View>
+                                {/* {
+                                    data.proyectos.length === 0 &&
+                                        <View>
+                                            <Text style = { styles.bodyTextCenterBig } >
+                                                NO SE CERRARON PROSPECTOS DURANTE ESTE AÑO
+                                            </Text>
+                                        </View>
+                                } */}
+                                <View style = { styles.tableRowBodyNon }>
+                                    <View style = { styles.cell_15 }>
+                                        <Text style = { styles.bodyText}>
+                                            ISAÍAS OZIEL ORTEGA MARTÍNEZ
+                                        </Text>
+                                    </View>
+                                    <View style = { styles.cell_15 }>
+                                        <Text style = { styles.bodyText}>
+                                            REMODELACIÓN DE OFICINA
+                                        </Text>
+                                    </View>
+                                    <View style = { styles.cell46 }>
+                                        <Text style = { styles.bodyText}>
+                                            ENVÍO DE NEGATIVA DE SERVICIO DEBIDO A QUE LAS ADECUACIONES QUE QUERÍAN
+                                            REALIZAR POR MAGNITUD NO ES ALGO QUE SEA POTENCIAL Y/O DE RETORNO PARA LA
+                                            EMPRESA. LA PROPUESTA QUE NOS COMPARTIERON DE ANTE PROYECTO NO ES TAMPOCO
+                                            VIABLE POR QUE EN SITIO VERIFICAMOS LAS MEDIDAS Y TIENE UN A RANGO DE DIFERENCIA DE MEDIO METRO. AGREGANDO A ESTO A LO EXPRESADO POR ESTE CLIENTE DE NO
+                                            QUERER GASTAR EN NADA, RECUPERAR TODO Y QUE NO LE IMPARTA EL DISEÑO.
+                                        </Text>
+                                    </View>
+                                    <View style = { styles.cell_8 }>
+                                        <Text style = { styles.bodyTextCenter } >
+                                            EN PROCESO
+                                        </Text>
+                                    </View>
+                                    <View style = { styles.cell_8 }>
+                                        <Text style = { styles.bodyTextCenter } >
+                                            14/11/2020
+                                        </Text>
+                                    </View>
+                                    <View style = { styles.cell_8 }>
+                                        <Text style = { styles.bodyTextCenter } >
+                                            14/11/2020
+                                        </Text>
+                                    </View>
+                                </View>
+                            </View>
+                        </View>
+                        <View style={ styles.lineGray }></View>
+                    </View>
+                </Page>
                 <Page size="A4" orientation = "landscape">
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
                                 <Text style = { styles.paginacion}>
-                                    {images.origenesDuplicados !== null ? 27 : 26}
+                                    {images.origenesDuplicados !== null ? 29 : 28}
                                 </Text>
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
-                                    OBSERVACIONES <Text style = { styles.textPink }>CONTRATADOS</Text> ({this.getMes()})
+                                    OBSERVACIONES <Text style = { styles.textPink }>CONTRATADOS </Text>({this.getMes()})
                                 </Text>
                             </View>
                         </View>
@@ -941,9 +1162,9 @@ export default class RVAnualInein extends Component {
                                         </Text>
                                     </View>
                                 </View>
-                                {
+                                {/* {
                                     console.log('prouyectos', data.proyectos)
-                                }
+                                } */}
                                 {
                                     data.proyectos.length === 0 &&
                                         <View>
@@ -954,7 +1175,7 @@ export default class RVAnualInein extends Component {
                                 }
                                 {
                                     data.proyectos.map((element, index) => {
-                                        console.log('ELEMENT', element, index)
+                                        // console.log('ELEMENT', element, index)
                                         if(element.prospecto){
                                             return(
                                                 <View key = { index } style = { this.setStyleRowBody(index) } >
@@ -1093,7 +1314,7 @@ export default class RVAnualInein extends Component {
                         <View style = { styles.numberTitle } >
                             <View >
                                 <Text style = { styles.paginacion}>
-                                    {images.origenesDuplicados !== null ? 29 : 28}
+                                    {images.origenesDuplicados !== null ? 31 : 30}
                                 </Text>
                             </View>
                             <View>
@@ -1136,7 +1357,7 @@ export default class RVAnualInein extends Component {
                         <View style = { styles.numberTitle } >
                             <View >
                                 <Text style = { styles.paginacion}>
-                                    {images.origenesDuplicados !== null ? 30 : 29}
+                                    {images.origenesDuplicados !== null ? 32 : 31}
                                 </Text>
                             </View>
                             <View>
