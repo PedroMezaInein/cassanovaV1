@@ -66,16 +66,7 @@ export const dataSimpleBar = {
             },
         ],
     },
-    legend: {
-        display: false,
-        fullWidth: true,
-        labels: {
-            boxWidth: 20,
-            padding: 5,
-            fontSize: 20,
-            fontColor: '#808080'
-        }
-    },
+    legend: { display: false }
 }
 
 export const percentBar =  {
@@ -119,7 +110,7 @@ export const percentBar =  {
             {
                 ticks: {
                     beginAtZero: true,
-                    fontSize: 16,
+                    fontSize: 18,
                     fontColor: '#808080',
                     fontStyle: "bold",
                     lineWidth: 10,
@@ -167,16 +158,7 @@ export const percentBar =  {
             },
         ],
     },
-    legend: {
-        display: false,
-        fullWidth: true,
-        labels: {
-            boxWidth: 20,
-            padding: 5,
-            fontSize: 12,
-            fontColor: '#808080'
-        },    
-    }
+    legend: { display: false }
 }
 
 export const percentBarReplaceAds =  {
@@ -271,16 +253,7 @@ export const percentBarReplaceAds =  {
             },
         ],
     },
-    legend: {
-        display: false,
-        fullWidth: true,
-        labels: {
-            boxWidth: 20,
-            padding: 5,
-            fontSize: 12,
-            fontColor: '#808080'
-        },    
-    }
+    legend: { display: false }
 }
 
 export const monthGroupBar =  {
@@ -305,7 +278,7 @@ export const monthGroupBar =  {
                 ticks: {
                     labelOffset:0,
                     beginAtZero: true,
-                    fontSize: 15,
+                    fontSize: 18,
                     fontColor: '#808080',
                     fontStyle: "bold",
                     padding: 5,
@@ -355,7 +328,7 @@ export const monthGroupBarBreak =  {
                 ticks: {
                     labelOffset:0,
                     beginAtZero: true,
-                    fontSize: 15,
+                    fontSize: 18,
                     fontColor: '#808080',
                     fontStyle: "bold",
                     padding: 5,
@@ -433,7 +406,7 @@ export const monthGroupBarBreak2 =  {
                 ticks: {
                     labelOffset:0,
                     beginAtZero: true,
-                    fontSize: 15,
+                    fontSize: 18,
                     fontColor: '#808080',
                     fontStyle: "bold",
                     padding: 5,
@@ -518,16 +491,7 @@ export const singleBar = {
             },
         ],
     },
-    legend: {
-        display: false,
-        fullWidth: true,
-        labels: {
-            boxWidth: 20,
-            padding: 5,
-            fontSize: 12,
-            fontColor: '#808080'
-        }
-    },
+    legend: { display: false },
 }
 
 export const monthGroupBarServicios = (value) => ({
@@ -551,7 +515,7 @@ export const monthGroupBarServicios = (value) => ({
                 ticks: {
                     labelOffset:0,
                     beginAtZero: true,
-                    fontSize: 15,
+                    fontSize: 18,
                     fontColor: '#808080',
                     fontStyle: "bold",
                     padding: 5,
