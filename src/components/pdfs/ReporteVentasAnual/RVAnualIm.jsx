@@ -46,7 +46,9 @@ const styles = StyleSheet.create({
     },
     tableRow:{
         display: 'flex',
-        flexDirection: 'row'
+        flexDirection: 'row',
+        
+        flexWrap: 'wrap'
     },
     tableRowCenter:{
         display: 'flex',
@@ -1106,23 +1108,26 @@ export default class RVAnualIm extends Component {
                             <View style = { styles.table2 }  >
                             {
                                 conclusiones.map((element)=>{
-                                    if(element !== '')
-                                    return(
-                                        <View style = { styles.tableRow} >
-                                            <View style = { styles.cellListaDot }>
-                                                <View style = { styles.dot } >
-                                                    
+                                    if(element.texto !== '')
+                                        return(
+                                            <View style = { styles.tableRow} >
+                                                <View style = { styles.cellListaDot }>
+                                                    <View style = { styles.dot } >
+                                                    </View>
+                                                </View>
+                                                <View style = { styles.cellLista }>
+                                                    <View style = { styles.tableRow} >
+                                                        { 
+                                                            element.texto.split("").map(( letra, index) =>  {
+                                                                return(
+                                                                    <Text key = { index } style = { { fontWeight: element.estilos.includes(index) ? 'bold' : '100' } } >{letra}</Text>
+                                                                )
+                                                            })
+                                                        }
+                                                    </View>
                                                 </View>
                                             </View>
-                                            <View style = { styles.cellLista }>
-                                                <Text>
-                                                    {
-                                                        element
-                                                    }
-                                                </Text>
-                                            </View>
-                                        </View>
-                                    )
+                                        )
                                     return false
                                 })
                             }
@@ -1145,24 +1150,28 @@ export default class RVAnualIm extends Component {
                         </View>
                         <View style = { styles.imgCenter }>
                             <View style = { styles.table2 }  >
-                            {
-                                sugerencias.map((element)=>{
-                                    if(element !== '')
-                                    return(
-                                        <View style = { styles.tableRow} >
-                                            <View style = { styles.cellListaDot }>
-                                                <View style = { styles.dot } >
+                            { 
+                                sugerencias.map( (element) => {
+                                    if(element.texto !== '')
+                                        return(
+                                            <View style = { styles.tableRow} >
+                                                <View style = { styles.cellListaDot }>
+                                                    <View style = { styles.dot } >
+                                                    </View>
+                                                </View>
+                                                <View style = { styles.cellLista }>
+                                                    <View style = { styles.tableRow} >
+                                                        { 
+                                                            element.texto.split("").map(( letra, index) =>  {
+                                                                return(
+                                                                    <Text key = { index } style = { { fontWeight: element.estilos.includes(index) ? 'bold' : '100' } } >{letra}</Text>
+                                                                )
+                                                            })
+                                                        }
+                                                    </View>
                                                 </View>
                                             </View>
-                                            <View style = { styles.cellLista }>
-                                                <Text>
-                                                    {
-                                                        element
-                                                    }
-                                                </Text>
-                                            </View>
-                                        </View>
-                                    )
+                                        )
                                     return false
                                 })
                             }
