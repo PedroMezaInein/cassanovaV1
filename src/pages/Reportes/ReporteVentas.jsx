@@ -76,7 +76,8 @@ class ReporteVentas extends Component {
         empresaActive: '',
         tipo: '',
         table_observaciones:false,
-        table_prospecto_anteriores:false
+        table_prospecto_anteriores:false,
+        meses: []
     }
 
     constructor(props) {
@@ -106,18 +107,18 @@ class ReporteVentas extends Component {
     handleCloseModal = () => { this.setState({...this.state,modal: false}) }
     onClickEmpresa = select => { this.setState({...this.state, empresaActive: select}) }
 
-    setReporte = (images, lista, sugerencias) => {
-        const { empresa, form, leadsAnteriores, mes, data } = this.state
+    setReporte = (images, lista, sugerencias ) => {
+        const { empresa, form, leadsAnteriores, mes, data, meses } = this.state
         switch (empresa) {
             case 'INEIN':
                 if(form.rango === 'semestral' || form.rango === 'anual')
                     return(
-                        <RVAnualInein form = { form } images = { images } data = { data }
+                        <RVAnualInein form = { form } images = { images } data = { data } meses = { meses }
                             conclusiones = { lista } sugerencias = { sugerencias } mes = { mes.toUpperCase() } />
                     )
                 else
                     return (
-                        <RVMensualInein form={form} images={images} anteriores={leadsAnteriores}
+                        <RVMensualInein form={form} images={images} anteriores={leadsAnteriores} meses = { meses }
                             conclusiones = { lista } sugerencias = { sugerencias } mes={mes.toUpperCase()} data={data} />
                     )
             case 'INFRAESTRUCTURA MÉDICA':
@@ -367,12 +368,7 @@ class ReporteVentas extends Component {
                 /* ------------------------- ENTRADA TOTAL DE LEADS ------------------------- */
                 /* -------------------- ANCHOR GET TOTAL DE LEADS ANUALES ------------------- */
                 /* -------------------------------------------------------------------------- */
-                this.setState({
-                    ...this.state, 
-                    data: this.setData(result, meses, 'anual'), 
-                    key: '1',
-                    tipo: 'anual'
-                })
+                this.setState({ ...this.state,  data: this.setData(result, meses, 'anual'),  key: '1', tipo: 'anual', meses: meses })
 
             },
             (error) => { printResponseErrorAlert(error) }
@@ -398,7 +394,10 @@ class ReporteVentas extends Component {
                 /* ------------------------- ENTRADA TOTAL DE LEADS ------------------------- */
                 /* -------------------- ANCHOR GET TOTAL DE LEADS ANUALES ------------------- */
                 /* -------------------------------------------------------------------------- */
-                this.setState({ ...this.state,  data: this.setData(result, meses, 'mensual'),  key: '1', tipo: 'mensual' })
+                let auxData = this.setData(result, meses, 'mensual')
+                console.log('DATA   ', auxData)
+                console.log('MESES  ', meses)
+                this.setState({ ...this.state,  data: auxData,  key: '1', tipo: 'mensual', meses: meses })
             },
             (error) => {
                 printResponseErrorAlert(error)
@@ -517,6 +516,7 @@ class ReporteVentas extends Component {
     }
 
     setData = (result, meses, tipo) => {
+        const mesesEspañol = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
         const { form } = this.state
         // ENTRADA TOTAL DE LEADS
         let data = {}
@@ -551,11 +551,15 @@ class ReporteVentas extends Component {
         
         auxColors = [];
         result.total_meses.forEach( (color, index) => {
-            if(form.rango === 'mensual'){
-                auxColors[0] = this.setColor()
-                auxColors.push( COLORES_GRAFICAS_MESES[index] )
+            if(tipo === 'mensual'){
+                if(index===0){
+                    auxColors.push(this.setColor());
+                }
+                if(index!==0){
+                    auxColors.push( COLORES_GRAFICAS_MESES[ mesesEspañol.findIndex( elemento => elemento.toUpperCase() === meses[index]) - 1 ] )
+                }
             }else{
-                auxColors.push( COLORES_GRAFICAS_MESES[index] )
+                auxColors.push( COLORES_GRAFICAS_MESES[ mesesEspañol.findIndex( elemento => elemento.toUpperCase() === meses[index]) - 1 ] )
             }
         })
         data.comparativa = {
@@ -706,17 +710,19 @@ class ReporteVentas extends Component {
         auxLabels = []
         aux = []
         auxColors = []
+        console.log(mesesEspañol, 'MESES ESPAÑOL')
         result.servicios_meses.forEach((mes, index) => {
+            console.log(meses[index], 'MESES INDEX')
             mes.forEach(servicio => {
                 if(tipo === 'mensual'){
                     if(index===0){
                         auxColors.push(this.setColor());
                     }
                     if(index!==0){
-                        auxColors.push( COLORES_GRAFICAS_MESES[index] )
+                        auxColors.push( COLORES_GRAFICAS_MESES[ mesesEspañol.findIndex( elemento => elemento.toUpperCase() === meses[index]) - 1 ] )
                     }
                 }else{
-                    auxColors.push( COLORES_GRAFICAS_MESES[index] )
+                    auxColors.push( COLORES_GRAFICAS_MESES[ mesesEspañol.findIndex( elemento => elemento.toUpperCase() === meses[index]) - 1 ] )
                 }
                 auxLabels.push(servicio.nombre+';'+meses[index])
                 aux.push(servicio.total)
@@ -920,10 +926,10 @@ class ReporteVentas extends Component {
                         auxColors.push(this.setColor());
                     }
                     if(index!==0){
-                        auxColors.push( COLORES_GRAFICAS_MESES[index] )
+                        auxColors.push( COLORES_GRAFICAS_MESES[ mesesEspañol.findIndex( elemento => elemento.toUpperCase() === meses[index]) - 1 ] )
                     }
                 }else{
-                    auxColors.push( COLORES_GRAFICAS_MESES[index] )
+                    auxColors.push( COLORES_GRAFICAS_MESES[ mesesEspañol.findIndex( elemento => elemento.toUpperCase() === meses[index]) - 1 ] )
                 }
             })
         })
