@@ -5,7 +5,7 @@ import { Card, Nav, Tab } from 'react-bootstrap'
 import { Button } from '../../components/form-components'
 import { waitAlert, errorAlert, printResponseErrorAlert, questionAlert2, doneAlert, deleteAlert } from '../../functions/alert'
 import Swal from 'sweetalert2'
-import { COLORES_GRAFICAS_IM, COLORES_GRAFICAS_INEIN, COLORES_GRAFICAS_MESES, IM_AZUL, INEIN_RED, URL_DEV } from '../../constants'
+import { COLORES_GRAFICAS_MESES, IM_AZUL, INEIN_RED, URL_DEV } from '../../constants'
 import axios from 'axios'
 import { pdf } from '@react-pdf/renderer'
 import { Bar } from 'react-chartjs-2'
@@ -20,7 +20,7 @@ import RVAnualIm from '../../components/pdfs/ReporteVentasAnual/RVAnualIm'
 import RVMensualIm from '../../components/pdfs/ReporteVentasMensual/RVMensualIm'
 import RVMensualInein from '../../components/pdfs/ReporteVentasMensual/RVMensualInein'
 import { Modal } from '../../components/singles'
-import { dataSimpleBar, monthGroupBar, percentBar, percentBarReplaceAds, monthGroupBarBreak, monthGroupBarBreak2 } from '../../constantes/barOptions'
+import { dataSimpleBar, monthGroupBar, percentBar, percentBarReplaceAds, monthGroupBarBreak, monthGroupBarBreak2, monthGroupBarServicios } from '../../constantes/barOptions'
 
 class ReporteVentas extends Component {
 
@@ -76,7 +76,8 @@ class ReporteVentas extends Component {
         empresaActive: '',
         tipo: '',
         table_observaciones:false,
-        table_prospecto_anteriores:false
+        table_prospecto_anteriores:false,
+        meses: []
     }
 
     constructor(props) {
@@ -106,29 +107,29 @@ class ReporteVentas extends Component {
     handleCloseModal = () => { this.setState({...this.state,modal: false}) }
     onClickEmpresa = select => { this.setState({...this.state, empresaActive: select}) }
 
-    setReporte = (images, lista, sugerencias) => {
-        const { empresa, form, leadsAnteriores, mes, data } = this.state
+    setReporte = (images, lista, sugerencias ) => {
+        const { empresa, form, leadsAnteriores, mes, data, meses } = this.state
         switch (empresa) {
             case 'INEIN':
                 if(form.rango === 'semestral' || form.rango === 'anual')
                     return(
-                        <RVAnualInein form = { form } images = { images } data = { data }
+                        <RVAnualInein form = { form } images = { images } data = { data } meses = { meses }
                             conclusiones = { lista } sugerencias = { sugerencias } mes = { mes.toUpperCase() } />
                     )
                 else
                     return (
-                        <RVMensualInein form={form} images={images} anteriores={leadsAnteriores}
+                        <RVMensualInein form={form} images={images} anteriores={leadsAnteriores} meses = { meses }
                             conclusiones = { lista } sugerencias = { sugerencias } mes={mes.toUpperCase()} data={data} />
                     )
             case 'INFRAESTRUCTURA MÉDICA':
                 if(form.rango === 'semestral' || form.rango === 'anual')
                     return(
-                        <RVAnualIm form = { form } images = { images } data = { data }
+                        <RVAnualIm form = { form } images = { images } data = { data } meses = { meses }
                             conclusiones = { lista } sugerencias = { sugerencias } mes = { mes.toUpperCase() } />
                     )
                 else
                 return (
-                    <RVMensualIm form={form} images={images} anteriores={leadsAnteriores}
+                    <RVMensualIm form={form} images={images} anteriores={leadsAnteriores} meses = { meses }
                         conclusiones = { lista } sugerencias = { sugerencias } mes={mes.toUpperCase()} data={data} />
                 )
             default:
@@ -367,12 +368,7 @@ class ReporteVentas extends Component {
                 /* ------------------------- ENTRADA TOTAL DE LEADS ------------------------- */
                 /* -------------------- ANCHOR GET TOTAL DE LEADS ANUALES ------------------- */
                 /* -------------------------------------------------------------------------- */
-                this.setState({
-                    ...this.state, 
-                    data: this.setData(result, meses), 
-                    key: '1',
-                    tipo: 'anual'
-                })
+                this.setState({ ...this.state,  data: this.setData(result, meses, 'anual'),  key: '1', tipo: 'anual', meses: meses })
 
             },
             (error) => { printResponseErrorAlert(error) }
@@ -398,7 +394,10 @@ class ReporteVentas extends Component {
                 /* ------------------------- ENTRADA TOTAL DE LEADS ------------------------- */
                 /* -------------------- ANCHOR GET TOTAL DE LEADS ANUALES ------------------- */
                 /* -------------------------------------------------------------------------- */
-                this.setState({ ...this.state,  data: this.setData(result, meses),  key: '1', tipo: 'mensual' })
+                let auxData = this.setData(result, meses, 'mensual')
+                console.log('DATA   ', auxData)
+                console.log('MESES  ', meses)
+                this.setState({ ...this.state,  data: auxData,  key: '1', tipo: 'mensual', meses: meses })
             },
             (error) => {
                 printResponseErrorAlert(error)
@@ -472,13 +471,33 @@ class ReporteVentas extends Component {
         let lista = convertToRaw(form.listados.conclusiones.getCurrentContent())
         let conclusiones = []
         lista.blocks.map((element) => {
-            conclusiones.push(element.text.toUpperCase())
+            let estilos = [];
+            element.inlineStyleRanges.map((estilo) => {
+                if(estilo.style === 'BOLD')
+                    for(let i = 0; i < estilo.length; i++){
+                        estilos.push(i + estilo.offset)
+                    }
+            })
+            conclusiones.push({
+                estilos: estilos,
+                texto: element.text.toUpperCase()
+            })
             return ''
         })
         lista = convertToRaw(form.listados.sugerencias.getCurrentContent())
         let sugerencias = []
         lista.blocks.map((element) => {
-            sugerencias.push(element.text.toUpperCase())
+            let estilos = [];
+            element.inlineStyleRanges.map((estilo) => {
+                if(estilo.style === 'BOLD')
+                    for(let i = 0; i < estilo.length; i++){
+                        estilos.push(i + estilo.offset)
+                    }
+            })
+            sugerencias.push({
+                estilos: estilos,
+                texto: element.text.toUpperCase()
+            })
             return ''
         })
 
@@ -496,7 +515,8 @@ class ReporteVentas extends Component {
         questionAlert2('¿ESTÁS SEGURO?', '',() => this.saveReporteAxios(),this.getTextAlert())
     }
 
-    setData = (result, meses) => {
+    setData = (result, meses, tipo) => {
+        const mesesEspañol = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
         const { form } = this.state
         // ENTRADA TOTAL DE LEADS
         let data = {}
@@ -531,11 +551,15 @@ class ReporteVentas extends Component {
         
         auxColors = [];
         result.total_meses.forEach( (color, index) => {
-            if(form.rango === 'mensual'){
-                auxColors[0] = this.setColor()
-                auxColors.push( COLORES_GRAFICAS_MESES[index] )
+            if(tipo === 'mensual'){
+                if(index===0){
+                    auxColors.push(this.setColor());
+                }
+                if(index!==0){
+                    auxColors.push( COLORES_GRAFICAS_MESES[ mesesEspañol.findIndex( elemento => elemento.toUpperCase() === meses[index]) - 1 ] )
+                }
             }else{
-                auxColors.push( COLORES_GRAFICAS_MESES[index] )
+                auxColors.push( COLORES_GRAFICAS_MESES[ mesesEspañol.findIndex( elemento => elemento.toUpperCase() === meses[index]) - 1 ] )
             }
         })
         data.comparativa = {
@@ -687,25 +711,22 @@ class ReporteVentas extends Component {
         aux = []
         auxColors = []
         result.servicios_meses.forEach((mes, index) => {
+            console.log(meses[index], 'MESES INDEX')
             mes.forEach(servicio => {
+                if(tipo === 'mensual'){
+                    if(index===0){
+                        auxColors.push(this.setColor());
+                    }
+                    if(index!==0){
+                        auxColors.push( COLORES_GRAFICAS_MESES[ mesesEspañol.findIndex( elemento => elemento.toUpperCase() === meses[index]) - 1 ] )
+                    }
+                }else{
+                    auxColors.push( COLORES_GRAFICAS_MESES[ mesesEspañol.findIndex( elemento => elemento.toUpperCase() === meses[index]) - 1 ] )
+                }
                 auxLabels.push(servicio.nombre+';'+meses[index])
                 aux.push(servicio.total)
-                switch(servicio.nombre){
-                    case 'Quiero ser proveedor':
-                    case 'Bolsa de trabajo':
-                    case 'Otro':
-                    case 'Spam':
-                    case 'SPAM':
-                    case 'Aún no lo se':
-                        auxColors.push('#A6A6A6');
-                        break;
-                    default:
-                        auxColors.push(this.setColor());
-                        break;
-                }
             })
         })
-
         data.serviciosComparativa = {
             labels: auxLabels,
             datasets: [{
@@ -904,10 +925,10 @@ class ReporteVentas extends Component {
                         auxColors.push(this.setColor());
                     }
                     if(index!==0){
-                        auxColors.push( COLORES_GRAFICAS_MESES[index] )
+                        auxColors.push( COLORES_GRAFICAS_MESES[ mesesEspañol.findIndex( elemento => elemento.toUpperCase() === meses[index]) - 1 ] )
                     }
                 }else{
-                    auxColors.push( COLORES_GRAFICAS_MESES[index] )
+                    auxColors.push( COLORES_GRAFICAS_MESES[ mesesEspañol.findIndex( elemento => elemento.toUpperCase() === meses[index]) - 1 ] )
                 }
             })
         })
@@ -1141,10 +1162,10 @@ class ReporteVentas extends Component {
     }
 
     render() {
-        const { form, data, options: opciones, key, modal, empresas, empresaActive } = this.state
+        const { form, data, options: opciones, key, modal, empresas, empresaActive, tipo, empresa } = this.state
         let { table_observaciones, table_prospecto_anteriores } = this.state
+        let { } = this.state
         const mesesEspañol = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
-        const { empresa } = this.state
         let valor = 0;
         return (
             <Layout active='reportes'  {...this.props}>
@@ -1226,7 +1247,8 @@ class ReporteVentas extends Component {
                                     this.isActivePane(data.serviciosComparativa) ?
                                         <Tab.Pane eventKey='8'>
                                             {this.setButtons('7', '9', null, empresa, this.setPageNumber(++valor), 'SERVICIOS SOLICITADOS MENSUAL')}
-                                            <Bar ref = { this.chartServiciosComparativaReference } data = { data.serviciosComparativa } options = { monthGroupBarBreak } />
+                                            <Bar ref = { this.chartServiciosComparativaReference } data = { data.serviciosComparativa } 
+                                                options = { tipo === 'mensual' ? monthGroupBarServicios(this.setColor()) : monthGroupBar } />
                                         </Tab.Pane>
                                     : <></>
                                 }
@@ -1266,7 +1288,8 @@ class ReporteVentas extends Component {
                                     this.isActivePane(data.tipoLeadsComparativa) ?
                                         <Tab.Pane eventKey = '13'>
                                             {this.setButtons(this.isActivePane(data.origenesDuplicados) ? '12' : '11', '14', null, empresa, this.setPageNumber(++valor), 'TIPO DE LEADS MENSUAL')}
-                                            <Bar ref={this.chartTiposComparativaReference} data={data.tipoLeadsComparativa} options = { monthGroupBarBreak } />
+                                            <Bar ref={this.chartTiposComparativaReference} data={data.tipoLeadsComparativa} 
+                                                options = { tipo === 'mensual' ? monthGroupBar : monthGroupBar } />
                                         </Tab.Pane>
                                     : <></>
                                 }
@@ -1282,7 +1305,8 @@ class ReporteVentas extends Component {
                                     this.isActivePane(data.tiposProyectosComparativa) ?
                                         <Tab.Pane eventKey = '15'>
                                             { this.setButtons( '14', '16', null, empresa, this.setPageNumber(++valor),  'TIPO DE PROYECTO MENSUAL' ) }
-                                            <Bar ref={this.chartTiposProyectosComparativaReference} data={data.tiposProyectosComparativa} options = { monthGroupBarBreak2 } />
+                                            <Bar ref={this.chartTiposProyectosComparativaReference} data={data.tiposProyectosComparativa} 
+                                                options = { tipo === 'mensual' ? monthGroupBarBreak2 : monthGroupBar } />
                                         </Tab.Pane>
                                     : <></>
                                 }
@@ -1641,13 +1665,15 @@ class ReporteVentas extends Component {
                                 <Tab.Pane eventKey={table_prospecto_anteriores?'23':'21'}>
                                     { this.setButtons(table_prospecto_anteriores?'22':'20', table_prospecto_anteriores?'24':'22', null, empresa, this.setPageNumber(++valor), 'CONCLUSIONES')}
                                     <Editor editorClassName = "editor-class" editorState = { form.listados.conclusiones }
-                                        toolbar = { { options: ['list'], list: { inDropdown: false, options: ['unordered'], }, } }
+                                        toolbar = { { options: ['list', 'inline'], list: { inDropdown: false, options: ['unordered'], },
+                                            inline: { options: ['bold']} } }
                                         onEditorStateChange = { (editorState) => this.onEditorStateChange(editorState, 'conclusiones') } />
                                 </Tab.Pane>
                                 <Tab.Pane eventKey={table_prospecto_anteriores?'24':'22'}>
                                     { this.setButtons(table_prospecto_anteriores?'23':'21', null, true, empresa, this.setPageNumber(++valor), 'SUGERENCIAS') }
                                     <Editor editorClassName = "editor-class"  editorState = { form.listados.sugerencias }
-                                        toolbar = { { options: ['list'], list: { inDropdown: false, options: ['unordered'], }, } }
+                                        toolbar = { { options: ['list', 'inline'], list: { inDropdown: false, options: ['unordered'], },
+                                            inline: { options: ['bold']} } }
                                         onEditorStateChange = { (editable) => this.onEditorStateChange(editable, 'sugerencias') } />
                                 </Tab.Pane>
                             </Tab.Content>
