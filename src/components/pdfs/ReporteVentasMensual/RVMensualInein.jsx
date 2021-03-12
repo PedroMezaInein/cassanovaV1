@@ -46,10 +46,15 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'column'
     },
+    tableRowContacto:{
+        display:'flex',
+        flexDirection:'row'
+    },
     tableRow:{
         display: 'flex',
         flexDirection: 'row',
-        flexWrap: 'wrap'
+        flexWrap: 'wrap',
+        textAlign:'justify'
     },
     tableRowHeader:{
         display: 'flex',
@@ -142,6 +147,25 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         flexWrap: 'wrap',
         width: '5%',
+        padding:'4px'
+    },
+    cell1: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignContent: 'center',
+        textAlign: 'center',
+        flexWrap: 'wrap',
+        width: '1%',
+        padding:'4px'
+    },
+    
+    cell99: {
+        display: 'flex',
+        justifyContent: 'center',
+        alignContent: 'center',
+        textAlign: 'center',
+        flexWrap: 'wrap',
+        width: '99%',
         padding:'4px'
     },
     cell8: {
@@ -1541,7 +1565,7 @@ export default class RVAnualInein extends Component {
                     <Image src = { INEIN } style = { styles.logoFin } />
                     <View style = {{ width: '85%', marginRight: 'auto', marginLeft: 'auto', top: '85%'}}>
                         <View style = { styles.table}  >
-                            <View style = { styles.tableRow } >
+                            <View style = { styles.tableRowContacto } >
                                 <View style = { styles.footerTable1 }>
                                     <View>
                                         <Text style = {{ fontSize: 13, fontWeight: 'bold', fontFamily: 'Poppins', color: '#525252', textAlign: 'right', paddingRight: 5 }}>

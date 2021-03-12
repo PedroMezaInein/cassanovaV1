@@ -44,9 +44,14 @@ const styles = StyleSheet.create({
         display: 'flex',
         flexDirection: 'column'
     },
-    tableRow:{
+    tableRowContacto:{
         display: 'flex',
         flexDirection: 'row'
+    },
+    tableRow:{
+        display: 'flex',
+        flexDirection: 'row',
+        flexWrap: 'wrap'
     },
     tableRowHeader:{
         display: 'flex',
@@ -1175,7 +1180,7 @@ export default class RVAnualInein extends Component {
                     <Image src = { INEIN } style = { styles.logoFin } />
                     <View style = {{ width: '85%', marginRight: 'auto', marginLeft: 'auto', top: '85%'}}>
                         <View style = { styles.table}  >
-                            <View style = { styles.tableRow } >
+                            <View style = { styles.tableRowContacto } >
                                 <View style = { styles.footerTable1 }>
                                     <View>
                                         <Text style = {{ fontSize: 13, fontWeight: 'bold', fontFamily: 'Poppins', color: '#525252', textAlign: 'right', paddingRight: 5 }}>
