@@ -46,7 +46,9 @@ const styles = StyleSheet.create({
     },
     tableRow:{
         display: 'flex',
-        flexDirection: 'row'
+        flexDirection: 'row',
+        
+        flexWrap: 'wrap'
     },
     tableRowCenter:{
         display: 'flex',
@@ -364,7 +366,9 @@ const styles = StyleSheet.create({
     justifyContentCenter:{
         display:'flex', 
         justifyContent:'center'
-    }
+    },
+    page: { padding: 23 },
+    box: { width: '100%', marginBottom: 30},
 });
 
 export default class RVAnualIm extends Component {
@@ -453,8 +457,33 @@ export default class RVAnualIm extends Component {
         return formatter.format(value);
     }
 
+    tablePage(listado){
+        let totalElementos = listado.length 
+        let total_paginas = Math.ceil(totalElementos / 10)
+        let arregloNumPaginas =[ ]  
+        let contador=0
+        
+        for(let i=0;i<total_paginas;i++){
+            let arregloElementos =[]
+            for(let j=0;j<10;j++){
+                arregloElementos.push(contador)
+                contador++;
+                if(contador==totalElementos){
+                    break
+                }
+            }
+            let objetoPagina ={
+                pagina:i,
+                elementos:arregloElementos
+            }
+            arregloNumPaginas.push(objetoPagina)
+        }
+        return arregloNumPaginas
+    }
     render() {
-        const {  conclusiones, sugerencias, images,  data, form} = this.props
+        const {  conclusiones, sugerencias, images, data, form} = this.props
+        
+        let objectlist_proyectos = data.proyectos
         return (
             <Document style = {{ fontFamily: 'Poppins' }}>
                 <Page size="A4" orientation = "landscape" style = {{ position: 'relative', height: '100%'}}>
@@ -481,7 +510,7 @@ export default class RVAnualIm extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View>
-                                <Text style = { styles.paginacion}>03</Text>
+                                <Text style = { styles.paginacion} render={({ pageNumber }) => (`0${pageNumber}`)} fixed />
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -499,7 +528,7 @@ export default class RVAnualIm extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>04</Text>
+                                <Text style = { styles.paginacion} render={({ pageNumber }) => (`0${pageNumber}`)} fixed />
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -524,7 +553,7 @@ export default class RVAnualIm extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>06</Text>
+                                <Text style = { styles.paginacion} render={({ pageNumber }) => (`0${pageNumber}`)} fixed />
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -542,7 +571,7 @@ export default class RVAnualIm extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>07</Text>
+                                <Text style = { styles.paginacion} render={({ pageNumber }) => (`0${pageNumber}`)} fixed />
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -560,7 +589,7 @@ export default class RVAnualIm extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>08</Text>
+                                <Text style = { styles.paginacion} render={({ pageNumber }) => (`0${pageNumber}`)} fixed />
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -578,7 +607,7 @@ export default class RVAnualIm extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>09</Text>
+                                <Text style = { styles.paginacion} render={({ pageNumber }) => (`0${pageNumber}`)} fixed />
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -603,7 +632,7 @@ export default class RVAnualIm extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>11</Text>
+                                <Text style = { styles.paginacion} render={({ pageNumber }) => (`${pageNumber}`)} fixed />
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -614,14 +643,14 @@ export default class RVAnualIm extends Component {
                         <View style = { styles.imgCenter }>
                             <Image style = { styles.imagenCentrada }  src = { images.servicios }/>
                         </View>
-                        <View style={ styles.lineBlue }></View>
+                        <View style={ styles.lineGolden }></View>
                     </View>
                 </Page>
                 <Page size="A4" orientation = "landscape" >
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>12</Text>
+                                <Text style = { styles.paginacion} render={({ pageNumber }) => (`${pageNumber}`)} fixed />
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -632,7 +661,7 @@ export default class RVAnualIm extends Component {
                         <View style = { styles.imgCenter }>
                             <Image style = { styles.imagenCentrada }  src = { images.serviciosMeses }/>
                         </View>
-                        <View style={ styles.lineGolden }></View>
+                        <View style={ styles.lineBlue }></View>
                     </View>
                 </Page>
                 <Page size="A4" orientation = "landscape" style = { styles.justifyContentCenter }>
@@ -646,7 +675,7 @@ export default class RVAnualIm extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>14</Text>
+                                <Text style = { styles.paginacion} render={({ pageNumber }) => (`${pageNumber}`)} fixed />
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -664,7 +693,7 @@ export default class RVAnualIm extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>15</Text>
+                                <Text style = { styles.paginacion} render={({ pageNumber }) => (`${pageNumber}`)} fixed />
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -682,7 +711,7 @@ export default class RVAnualIm extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>16</Text>
+                                <Text style = { styles.paginacion} render={({ pageNumber }) => (`${pageNumber}`)} fixed />
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -702,7 +731,7 @@ export default class RVAnualIm extends Component {
                             <View style = { styles.pagePadding } >
                                 <View style = { styles.numberTitle } >
                                     <View >
-                                        <Text style = { styles.paginacion}>17</Text>
+                                        <Text style = { styles.paginacion} render={({ pageNumber }) => (`${pageNumber}`)} fixed />
                                     </View>
                                     <View>
                                         <Text style = { styles.titulo }>    
@@ -713,7 +742,7 @@ export default class RVAnualIm extends Component {
                                 <View style = { styles.imgCenter }>
                                     <Image style = { styles.imagenCentrada }  src = { images.origenesDuplicados }/>
                                 </View>
-                                <View style={ styles.lineBlue }></View>
+                                <View style={ styles.lineGolden }></View>
                             </View>
                         </Page>
                 }
@@ -721,9 +750,7 @@ export default class RVAnualIm extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>
-                                    {images.origenesDuplicados !== null ? 18 : 17}
-                                </Text>
+                                <Text style = { styles.paginacion} render={({ pageNumber }) => (`${pageNumber}`)} fixed />
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -734,7 +761,7 @@ export default class RVAnualIm extends Component {
                         <View style = { styles.imgCenter }>
                             <Image style = { styles.imagenCentrada }  src = { images.tiposMeses }/>
                         </View>
-                        <View style={ styles.lineGolden }></View>
+                        <View style={ styles.lineBlue }></View>
                     </View>
                 </Page>
                 <Page size="A4" orientation = "landscape" style = { styles.justifyContentCenter }>
@@ -748,9 +775,7 @@ export default class RVAnualIm extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>
-                                    {images.origenesDuplicados !== null ? 20 : 19}
-                                </Text>
+                                <Text style = { styles.paginacion} render={({ pageNumber }) => (`${pageNumber}`)} fixed />
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -761,16 +786,14 @@ export default class RVAnualIm extends Component {
                         <View style = { styles.imgCenter }>
                             <Image style = { styles.imagenCentrada }  src = { images.tiposProyectos }/>
                         </View>
-                        <View style={ styles.lineBlue }></View>
+                        <View style={ styles.lineGolden }></View>
                     </View>
                 </Page>
                 <Page size="A4" orientation = "landscape" >
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>
-                                    {images.origenesDuplicados !== null ? 21 : 20}
-                                </Text>
+                                <Text style = { styles.paginacion} render={({ pageNumber }) => (`${pageNumber}`)} fixed />
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -781,7 +804,7 @@ export default class RVAnualIm extends Component {
                         <View style = { styles.imgCenter }>
                             <Image style = { styles.imagenCentrada }  src = { images.tiposProyectosMeses }/>
                         </View>
-                        <View style={ styles.lineGolden }></View>
+                        <View style={ styles.lineBlue }></View>
                     </View>
                 </Page>
                 <Page size="A4" orientation = "landscape" style = { styles.justifyContentCenter }>
@@ -795,9 +818,7 @@ export default class RVAnualIm extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>
-                                    {images.origenesDuplicados !== null ? 23 : 22}
-                                </Text>
+                                <Text style = { styles.paginacion} render={({ pageNumber }) => (`${pageNumber}`)} fixed />
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -808,16 +829,14 @@ export default class RVAnualIm extends Component {
                         <View style = { styles.imgCenter }>
                             <Image style = { styles.imagenCentrada }  src = { images.contactados }/>
                         </View>
-                        <View style={ styles.lineBlue }></View>
+                        <View style={ styles.lineGolden }></View>
                     </View>
                 </Page>
                 <Page size="A4" orientation = "landscape" >
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>
-                                    {images.origenesDuplicados !== null ? 24 : 23}
-                                </Text>
+                                <Text style = { styles.paginacion} render={({ pageNumber }) => (`${pageNumber}`)} fixed />
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -828,16 +847,14 @@ export default class RVAnualIm extends Component {
                         <View style = { styles.imgCenter }>
                             <Image style = { styles.imagenCentrada }  src = { images.estatus }/>
                         </View>
-                        <View style={ styles.lineGolden }></View>
+                        <View style={ styles.lineBlue }></View>
                     </View>
                 </Page>
                 <Page size="A4" orientation = "landscape" >
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>
-                                    {images.origenesDuplicados !== null ? 25 : 24}
-                                </Text>
+                                <Text style = { styles.paginacion} render={({ pageNumber }) => (`${pageNumber}`)} fixed />
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -848,14 +865,14 @@ export default class RVAnualIm extends Component {
                         <View style = { styles.imgCenter }>
                             <Image style = { styles.imagenCentrada }  src = { images.motivosCancelacion }/>
                         </View>
-                        <View style={ styles.lineBlue }></View>
+                        <View style={ styles.lineGolden }></View>
                     </View>
                 </Page>
                 <Page size="A4" orientation = "landscape" >
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>26</Text>
+                                <Text style = { styles.paginacion} render={({ pageNumber }) => (`${pageNumber}`)} fixed />
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -866,206 +883,207 @@ export default class RVAnualIm extends Component {
                         <View style = { styles.imgCenter }>
                             <Image style = { styles.imagenCentrada }  src = { images.motivosRechazo }/>
                         </View>
-                        <View style={ styles.lineGolden }></View>
-                    </View>
-                </Page>
-                <Page size="A4" orientation = "landscape">
-                    <View style = { styles.pagePadding } >
-                        <View style = { styles.numberTitle } >
-                            <View >
-                                <Text style = { styles.paginacion}>
-                                    {images.origenesDuplicados !== null ? 27 : 26}
-                                </Text>
-                            </View>
-                            <View>
-                                <Text style = { styles.titulo }>    
-                                    OBSERVACIONES <Text style = { styles.textBlue }>CONTRATADOS</Text>
-                                </Text>
-                            </View>
-                        </View>
-                        <View style = { styles.imgCenter }>
-                            <View style = { styles.table}  >
-                                <View style = { styles.tableRowHeader } >
-                                    <View style = { styles.cell15 }>
-                                        <Text style = { styles.headerTextJustify } >
-                                            NOMBRE
-                                        </Text>
-                                    </View>
-                                    <View style = { styles.cell15 }>
-                                        <Text style = { styles.headerTextJustify } >
-                                            PROYECTO
-                                        </Text>
-                                    </View>
-                                    <View style = { styles.cell15 }>
-                                        <Text style = { styles.headerTextJustify } >
-                                            SERVICIOS
-                                        </Text>
-                                    </View>
-                                    <View style = { styles.cell15 }>
-                                        <Text style = { styles.headerTextJustify } >
-                                            ORIGEN
-                                        </Text>
-                                    </View>
-                                    <View style = { styles.cell10 }>
-                                        <Text style = { styles.headerText } >
-                                            MONTO
-                                        </Text>
-                                    </View>
-                                    <View style = { styles.cell5 }>
-                                        <Text style = { styles.headerText } >
-                                            M²
-                                        </Text>
-                                    </View>
-                                    <View style = { styles.cell7 }>
-                                        <Text style = { styles.headerText } >
-                                            INGRESO
-                                        </Text>
-                                    </View>
-                                    <View style = { styles.cell8 }>
-                                        <Text style = { styles.headerText } >
-                                            CONTRATO
-                                        </Text>
-                                    </View>
-                                    <View style = { styles.cell11 }>
-                                        <Text style = { styles.headerText } >
-                                            VENDEDOR
-                                        </Text>
-                                    </View>
-                                </View>
-                                {
-                                    data.proyectos.length === 0 &&
-                                        <View>
-                                            <Text style = { styles.bodyTextCenterBig } >
-                                                NO SE CERRARON PROSPECTOS DURANTE ESTE AÑO
-                                            </Text>
-                                        </View>
-                                }
-                                {
-                                    
-                                    data.proyectos.forEach( (element, index) => {
-                                        if(element.prospecto){
-                                            return(
-                                                <View key = { index } style = { this.setStyleRowBody(index) } >
-                                                    <View style = { styles.cell15 }>
-                                                        <Text style = { styles.bodyText}>
-                                                            {
-                                                                element.prospecto ?
-                                                                    element.prospecto.lead ?
-                                                                        element.prospecto.lead.nombre.toUpperCase()
-                                                                    : ''
-                                                                : ''
-                                                            }
-                                                        </Text>
-                                                    </View>
-                                                    <View style = { styles.cell15 }>
-                                                        <Text style = { styles.bodyText}>
-                                                            { element.nombre.toUpperCase() }
-                                                        </Text>
-                                                    </View>
-                                                    <View style = { styles.cell15 }>
-                                                        {
-                                                            element.prospecto.lead.servicios ?
-                                                                element.prospecto.lead.servicios.length ?
-                                                                    element.prospecto.lead.servicios.map((servicio)=>{
-                                                                        return(
-                                                                            <Text style = { styles.bodyText}>
-                                                                                {servicio.servicio}
-                                                                            </Text>
-                                                                        )
-                                                                    })
-                                                                : <Text style = { styles.bodyText}>-</Text>
-                                                            : <Text style = { styles.bodyText}>-</Text>
-                                                        }
-                                                    </View>
-                                                    <View style = { styles.cell15 }>
-                                                        <Text style = { styles.bodyText } >
-                                                            {
-                                                                element.prospecto ?
-                                                                    element.prospecto.lead ?
-                                                                        element.prospecto.lead.origen ?
-                                                                            element.prospecto.lead.origen.origen.toUpperCase()
-                                                                        : ''
-                                                                    : ''
-                                                                : ''
-                                                            }
-                                                        </Text>
-                                                    </View>
-                                                    <View style = { styles.cell10 }>
-                                                        <Text style = { styles.bodyTextCenter } >
-                                                            {
-                                                                element.prospecto ?
-                                                                    element.prospecto.lead ?
-                                                                        element.prospecto.lead.presupuesto_diseño ?
-                                                                            this.setMoney(element.prospecto.lead.presupuesto_diseño.total)
-                                                                        : '-'
-                                                                    : '-'
-                                                                : '-'
-                                                            }        
-                                                        </Text>
-                                                    </View>
-                                                    <View style = { styles.cell5 }>
-                                                        <Text style = { styles.bodyTextCenter } >
-                                                            {
-                                                                element.prospecto ?
-                                                                    element.prospecto.lead ?
-                                                                        element.prospecto.lead.presupuesto_diseño ?
-                                                                            element.prospecto.lead.presupuesto_diseño.m2
-                                                                        : '-'
-                                                                    : '-'
-                                                                : '-'
-                                                            }
-                                                        </Text>
-                                                    </View>
-                                                    <View style = { styles.cell7 }>
-                                                        <Text style = { styles.bodyTextCenter } >
-                                                            {
-                                                                element.prospecto ?
-                                                                    element.prospecto.lead ?
-                                                                        element.prospecto.lead.presupuesto_diseño ?
-                                                                            this.getFechaText(element.prospecto.lead.created_at)
-                                                                        : '-'
-                                                                    : '-'
-                                                                : '-'
-                                                            }
-                                                        </Text>
-                                                    </View>
-                                                    <View style = { styles.cell8 }>
-                                                        <Text style = { styles.bodyTextCenter } >
-                                                            { this.getFechaText(element.created_at) }
-                                                        </Text>
-                                                    </View>
-                                                    <View style = { styles.cell11 }>
-                                                        <Text style = { styles.bodyTextCenter } >
-                                                            {
-                                                                element.prospecto ?
-                                                                    element.prospecto.vendedores ?
-                                                                        element.prospecto.vendedores.length > 0 ?
-                                                                            <View>
-                                                                                {
-                                                                                    element.prospecto.vendedores.map((vendedor, index)=>{
-                                                                                        return(
-                                                                                            <Text style = { styles.bodyTextCenter } key = { index }>
-                                                                                                {vendedor.name.toUpperCase()}
-                                                                                            </Text>
-                                                                                        )
-                                                                                    })
-                                                                                }
-                                                                            </View>
-                                                                        : '-'
-                                                                    : '-'
-                                                                : '-'
-                                                            }
-                                                        </Text>
-                                                    </View>
-                                                </View>
-                                            )
-                                        }
-                                    })
-                                }
-                            </View>
-                        </View>
                         <View style={ styles.lineBlue }></View>
                     </View>
+                </Page>
+                <Page style={styles.page} size="A4" orientation = "landscape" wrap>
+                    <View style = { styles.numberTitle } fixed>
+                        <View>
+                            <Text style = { styles.paginacion} render={({ pageNumber }) => (`${pageNumber}`)} fixed />
+                        </View>
+                        <View>
+                            <Text style = { styles.titulo }>    
+                                OBSERVACIONES <Text style = { styles.textPink }>CONTRATADOS </Text>
+                            </Text>
+                        </View>
+                    </View>
+                    {
+                        objectlist_proyectos.length === 0 &&
+                            <View style={[styles.box, styles.justifyContentCenter, { height: 485 }]}>
+                                <Text style = { styles.bodyTextCenterBig } >
+                                    NO SE CERRARON PROSPECTOS ESTE MES
+                                </Text>
+                            </View>
+                    }
+                    {
+                        this.tablePage(objectlist_proyectos).map((value,key)=>{
+                            return (
+                                <View key={key} style={[styles.box, styles.justifyContentCenter, { height: 485 }]}>
+                                    <View>
+                                        <View style = { styles.table2}  >
+                                            <View style = { styles.tableRowHeader } >
+                                                <View style = { styles.cell15 }>
+                                                    <Text style = { styles.headerTextJustify } >
+                                                        NOMBRE
+                                                    </Text>
+                                                </View>
+                                                <View style = { styles.cell15 }>
+                                                    <Text style = { styles.headerTextJustify } >
+                                                        PROYECTO
+                                                    </Text>
+                                                </View>
+                                                <View style = { styles.cell15 }>
+                                                    <Text style = { styles.headerTextJustify } >
+                                                        SERVICIOS
+                                                    </Text>
+                                                </View>
+                                                <View style = { styles.cell15 }>
+                                                    <Text style = { styles.headerTextJustify } >
+                                                        ORIGEN
+                                                    </Text>
+                                                </View>
+                                                <View style = { styles.cell10 }>
+                                                    <Text style = { styles.headerText } >
+                                                        MONTO
+                                                    </Text>
+                                                </View>
+                                                <View style = { styles.cell5 }>
+                                                    <Text style = { styles.headerText } >
+                                                        M²
+                                                    </Text>
+                                                </View>
+                                                <View style = { styles.cell7 }>
+                                                    <Text style = { styles.headerText } >
+                                                        INGRESO
+                                                    </Text>
+                                                </View>
+                                                <View style = { styles.cell8 }>
+                                                    <Text style = { styles.headerText } >
+                                                        CONTRATO
+                                                    </Text>
+                                                </View>
+                                                <View style = { styles.cell11 }>
+                                                    <Text style = { styles.headerText } >
+                                                        VENDEDOR
+                                                    </Text>
+                                                </View>
+                                            </View>
+                                            {
+                                                value.elementos.map((indice,key2)=>{ 
+                                                    return (
+                                                        <View key={indice} style = { this.setStyleRowBody(indice) }>
+                                                            <View style = { styles.cell15 }>
+                                                                <Text style = { styles.bodyText}>
+                                                                    {
+                                                                        objectlist_proyectos[indice].prospecto ?
+                                                                            objectlist_proyectos[indice].prospecto.lead ?
+                                                                                objectlist_proyectos[indice].prospecto.lead.nombre.toUpperCase()
+                                                                            : ''
+                                                                        : ''
+                                                                    }
+                                                                </Text>
+                                                            </View>
+                                                            <View style = { styles.cell15 }>
+                                                                <Text style = { styles.bodyText}>
+                                                                    { objectlist_proyectos[indice].nombre.toUpperCase() }
+                                                                </Text>
+                                                            </View>
+                                                            <View style = { styles.cell15 }>
+                                                                {
+                                                                    objectlist_proyectos[indice].prospecto.lead.servicios ?
+                                                                        objectlist_proyectos[indice].prospecto.lead.servicios.length ?
+                                                                            objectlist_proyectos[indice].prospecto.lead.servicios.map((servicio)=>{
+                                                                                return(
+                                                                                    <Text style = { styles.bodyText}>
+                                                                                        {servicio.servicio}
+                                                                                    </Text>
+                                                                                )
+                                                                            })
+                                                                        : <Text style = { styles.bodyText}>-</Text>
+                                                                    : <Text style = { styles.bodyText}>-</Text>
+                                                                }
+                                                            </View>
+                                                            <View style = { styles.cell15 }>
+                                                                <Text style = { styles.bodyText } >
+                                                                    {
+                                                                        objectlist_proyectos[indice].prospecto ?
+                                                                            objectlist_proyectos[indice].prospecto.lead ?
+                                                                                objectlist_proyectos[indice].prospecto.lead.origen ?
+                                                                                    objectlist_proyectos[indice].prospecto.lead.origen.origen.toUpperCase()
+                                                                                : '-'
+                                                                            : '-'
+                                                                        : '-'
+                                                                    }
+                                                                </Text>
+                                                            </View>
+                                                            <View style = { styles.cell10 }>
+                                                                <Text style = { styles.bodyTextCenter } >
+                                                                    {
+                                                                        objectlist_proyectos[indice].prospecto ?
+                                                                            objectlist_proyectos[indice].prospecto.lead ?
+                                                                                objectlist_proyectos[indice].prospecto.lead.presupuesto_diseño ?
+                                                                                    this.setMoney(objectlist_proyectos[indice].prospecto.lead.presupuesto_diseño.total)
+                                                                                : '-'
+                                                                            : '-'
+                                                                        : '-'
+                                                                    }
+                                                                </Text>
+                                                            </View>
+                                                            <View style = { styles.cell5 }>
+                                                                <Text style = { styles.bodyTextCenter } >
+                                                                    {
+                                                                        objectlist_proyectos[indice].prospecto ?
+                                                                            objectlist_proyectos[indice].prospecto.lead ?
+                                                                                objectlist_proyectos[indice].prospecto.lead.presupuesto_diseño ?
+                                                                                    objectlist_proyectos[indice].prospecto.lead.presupuesto_diseño.m2
+                                                                                : '-'
+                                                                            : '-'
+                                                                        : '-'
+                                                                    }
+                                                                </Text>
+                                                            </View>
+                                                            <View style = { styles.cell7 }>
+                                                                <Text style = { styles.bodyTextCenter } >
+                                                                    {
+                                                                        objectlist_proyectos[indice].prospecto ?
+                                                                            objectlist_proyectos[indice].prospecto.lead ?
+                                                                                objectlist_proyectos[indice].prospecto.lead.presupuesto_diseño ?
+                                                                                    this.getFechaText(objectlist_proyectos[indice].prospecto.lead.created_at)
+                                                                                : '-'
+                                                                            : '-'
+                                                                        : '-'
+                                                                    }
+                                                                </Text>
+                                                            </View>
+                                                            <View style = { styles.cell8 }>
+                                                                <Text style = { styles.bodyTextCenter } >
+                                                                    { this.getFechaText(objectlist_proyectos[indice].created_at) }
+                                                                </Text>
+                                                            </View>
+                                                            <View style = { styles.cell11 }>
+                                                                <Text style = { styles.bodyTextCenter } >
+                                                                    {
+                                                                        objectlist_proyectos[indice].prospecto ?
+                                                                            objectlist_proyectos[indice].prospecto.vendedores ?
+                                                                                objectlist_proyectos[indice].prospecto.vendedores.length > 0 ?
+                                                                                    <View>
+                                                                                        {
+                                                                                            objectlist_proyectos[indice].prospecto.vendedores.map((vendedor, index)=>{
+                                                                                                return(
+                                                                                                    <Text style = { styles.bodyTextCenter } key = { index }>
+                                                                                                        {vendedor.name.toUpperCase()}
+                                                                                                    </Text>
+                                                                                                )
+                                                                                            })
+                                                                                        }
+                                                                                    </View>
+                                                                                : '-'
+                                                                            : '-'
+                                                                        : '-'
+                                                                    }
+                                                                </Text>
+                                                            </View>
+                                                        </View>
+                                                    )
+                                                })
+                                            }
+                                        </View>
+                                    </View>
+                                </View>
+                            )
+                        })
+                    }
+                    <View style={ styles.lineGolden } fixed></View>
                 </Page>
                 <Page size="A4" orientation = "landscape" style = { styles.justifyContentCenter }>
                     <View>
@@ -1078,9 +1096,7 @@ export default class RVAnualIm extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>
-                                    {images.origenesDuplicados !== null ? 29 : 28}
-                                </Text>
+                                <Text style = { styles.paginacion} render={({ pageNumber }) => (`${pageNumber}`)} fixed />
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -1092,38 +1108,39 @@ export default class RVAnualIm extends Component {
                             <View style = { styles.table2 }  >
                             {
                                 conclusiones.map((element)=>{
-                                    if(element !== '')
-                                    return(
-                                        <View style = { styles.tableRow} >
-                                            <View style = { styles.cellListaDot }>
-                                                <View style = { styles.dot } >
-                                                    
+                                    if(element.texto !== '')
+                                        return(
+                                            <View style = { styles.tableRow} >
+                                                <View style = { styles.cellListaDot }>
+                                                    <View style = { styles.dot } >
+                                                    </View>
+                                                </View>
+                                                <View style = { styles.cellLista }>
+                                                    <View style = { styles.tableRow} >
+                                                        { 
+                                                            element.texto.split("").map(( letra, index) =>  {
+                                                                return(
+                                                                    <Text key = { index } style = { { fontWeight: element.estilos.includes(index) ? 'bold' : '100' } } >{letra}</Text>
+                                                                )
+                                                            })
+                                                        }
+                                                    </View>
                                                 </View>
                                             </View>
-                                            <View style = { styles.cellLista }>
-                                                <Text>
-                                                    {
-                                                        element
-                                                    }
-                                                </Text>
-                                            </View>
-                                        </View>
-                                    )
+                                        )
                                     return false
                                 })
                             }
                         </View>
                         </View>
-                        <View style={ styles.lineGolden }></View>
+                        <View style={ styles.lineBlue }></View>
                     </View>
                 </Page>
                 <Page size="A4" orientation = "landscape">
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>
-                                    {images.origenesDuplicados !== null ? 30 : 29}
-                                </Text>
+                                <Text style = { styles.paginacion} render={({ pageNumber }) => (`${pageNumber}`)} fixed />
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -1133,30 +1150,34 @@ export default class RVAnualIm extends Component {
                         </View>
                         <View style = { styles.imgCenter }>
                             <View style = { styles.table2 }  >
-                            {
-                                sugerencias.map((element)=>{
-                                    if(element !== '')
-                                    return(
-                                        <View style = { styles.tableRow} >
-                                            <View style = { styles.cellListaDot }>
-                                                <View style = { styles.dot } >
+                            { 
+                                sugerencias.map( (element) => {
+                                    if(element.texto !== '')
+                                        return(
+                                            <View style = { styles.tableRow} >
+                                                <View style = { styles.cellListaDot }>
+                                                    <View style = { styles.dot } >
+                                                    </View>
+                                                </View>
+                                                <View style = { styles.cellLista }>
+                                                    <View style = { styles.tableRow} >
+                                                        { 
+                                                            element.texto.split("").map(( letra, index) =>  {
+                                                                return(
+                                                                    <Text key = { index } style = { { fontWeight: element.estilos.includes(index) ? 'bold' : '100' } } >{letra}</Text>
+                                                                )
+                                                            })
+                                                        }
+                                                    </View>
                                                 </View>
                                             </View>
-                                            <View style = { styles.cellLista }>
-                                                <Text>
-                                                    {
-                                                        element
-                                                    }
-                                                </Text>
-                                            </View>
-                                        </View>
-                                    )
+                                        )
                                     return false
                                 })
                             }
                         </View>
                         </View>
-                        <View style={ styles.lineBlue }></View>
+                        <View style={ styles.lineGolden }></View>
                     </View>
                 </Page>
                 <Page style = {{ position: 'relative', height: '100%' }} size="A4" orientation = "landscape">

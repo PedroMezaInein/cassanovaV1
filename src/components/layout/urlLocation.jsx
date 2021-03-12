@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../functions/routers"
-import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 class UrlLocation extends Component {
     state = {
         paths: [],
@@ -116,10 +115,10 @@ class UrlLocation extends Component {
                                                     only_icon="fas fa-phone pr-0"
                                                     tooltip={{ text: 'TELÉFONO' }}
                                                 /> */}
-                                                    <a onClick={() => { this.changePageAdd('telefono') }} className="btn text-dark-50 btn-icon-primary btn-hover-icon-success font-weight-bolder btn-hover-bg-light">
+                                                    <span onClick={() => { this.changePageAdd('telefono') }} className="btn text-dark-50 btn-icon-primary btn-hover-icon-success font-weight-bolder btn-hover-bg-light">
                                                         <i className="fas fa-phone">
                                                         </i> Llamada entrante
-                                                    </a>
+                                                    </span>
                                             </>
                                             : ''
                                     }

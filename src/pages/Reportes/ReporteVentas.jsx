@@ -5,7 +5,7 @@ import { Card, Nav, Tab } from 'react-bootstrap'
 import { Button } from '../../components/form-components'
 import { waitAlert, errorAlert, printResponseErrorAlert, questionAlert2, doneAlert, deleteAlert } from '../../functions/alert'
 import Swal from 'sweetalert2'
-import { COLORES_GRAFICAS_IM, COLORES_GRAFICAS_INEIN, COLORES_GRAFICAS_MESES, IM_AZUL, INEIN_RED, URL_DEV } from '../../constants'
+import { COLORES_GRAFICAS_MESES, IM_AZUL, INEIN_RED, URL_DEV } from '../../constants'
 import axios from 'axios'
 import { pdf } from '@react-pdf/renderer'
 import { Bar } from 'react-chartjs-2'
@@ -20,7 +20,7 @@ import RVAnualIm from '../../components/pdfs/ReporteVentasAnual/RVAnualIm'
 import RVMensualIm from '../../components/pdfs/ReporteVentasMensual/RVMensualIm'
 import RVMensualInein from '../../components/pdfs/ReporteVentasMensual/RVMensualInein'
 import { Modal } from '../../components/singles'
-import { dataSimpleBar, monthGroupBar, percentBar } from '../../constantes/barOptions'
+import { dataSimpleBar, monthGroupBar, percentBar, percentBarReplaceAds, monthGroupBarBreak, monthGroupBarBreak2, monthGroupBarServicios } from '../../constantes/barOptions'
 
 class ReporteVentas extends Component {
 
@@ -64,7 +64,9 @@ class ReporteVentas extends Component {
             tiposComparativa: {},
             prospectosComparativa: {},
             estatusComparativa: {},
-            cerrados: []
+            cerrados: [],
+            listado_prospectos:{},
+            listado_prospectos_anteriores:{}
         },
         leads: [],
         leadsAnteriores: [],
@@ -74,7 +76,8 @@ class ReporteVentas extends Component {
         empresaActive: '',
         tipo: '',
         table_observaciones:false,
-        table_prospecto_anteriores:false
+        table_prospecto_anteriores:false,
+        meses: []
     }
 
     constructor(props) {
@@ -104,29 +107,29 @@ class ReporteVentas extends Component {
     handleCloseModal = () => { this.setState({...this.state,modal: false}) }
     onClickEmpresa = select => { this.setState({...this.state, empresaActive: select}) }
 
-    setReporte = (images, lista, sugerencias) => {
-        const { empresa, form, leadsAnteriores, mes, data } = this.state
+    setReporte = (images, lista, sugerencias ) => {
+        const { empresa, form, leadsAnteriores, mes, data, meses } = this.state
         switch (empresa) {
             case 'INEIN':
                 if(form.rango === 'semestral' || form.rango === 'anual')
                     return(
-                        <RVAnualInein form = { form } images = { images } data = { data }
+                        <RVAnualInein form = { form } images = { images } data = { data } meses = { meses }
                             conclusiones = { lista } sugerencias = { sugerencias } mes = { mes.toUpperCase() } />
                     )
                 else
                     return (
-                        <RVMensualInein form={form} images={images} anteriores={leadsAnteriores}
+                        <RVMensualInein form={form} images={images} anteriores={leadsAnteriores} meses = { meses }
                             conclusiones = { lista } sugerencias = { sugerencias } mes={mes.toUpperCase()} data={data} />
                     )
             case 'INFRAESTRUCTURA MÉDICA':
                 if(form.rango === 'semestral' || form.rango === 'anual')
                     return(
-                        <RVAnualIm form = { form } images = { images } data = { data }
+                        <RVAnualIm form = { form } images = { images } data = { data } meses = { meses }
                             conclusiones = { lista } sugerencias = { sugerencias } mes = { mes.toUpperCase() } />
                     )
                 else
                 return (
-                    <RVMensualIm form={form} images={images} anteriores={leadsAnteriores}
+                    <RVMensualIm form={form} images={images} anteriores={leadsAnteriores} meses = { meses }
                         conclusiones = { lista } sugerencias = { sugerencias } mes={mes.toUpperCase()} data={data} />
                 )
             default:
@@ -365,12 +368,7 @@ class ReporteVentas extends Component {
                 /* ------------------------- ENTRADA TOTAL DE LEADS ------------------------- */
                 /* -------------------- ANCHOR GET TOTAL DE LEADS ANUALES ------------------- */
                 /* -------------------------------------------------------------------------- */
-                this.setState({
-                    ...this.state, 
-                    data: this.setData(result, meses), 
-                    key: '1',
-                    tipo: 'anual'
-                })
+                this.setState({ ...this.state,  data: this.setData(result, meses, 'anual'),  key: '1', tipo: 'anual', meses: meses })
 
             },
             (error) => { printResponseErrorAlert(error) }
@@ -396,7 +394,10 @@ class ReporteVentas extends Component {
                 /* ------------------------- ENTRADA TOTAL DE LEADS ------------------------- */
                 /* -------------------- ANCHOR GET TOTAL DE LEADS ANUALES ------------------- */
                 /* -------------------------------------------------------------------------- */
-                this.setState({ ...this.state,  data: this.setData(result, meses),  key: '1', tipo: 'mensual' })
+                let auxData = this.setData(result, meses, 'mensual')
+                console.log('DATA   ', auxData)
+                console.log('MESES  ', meses)
+                this.setState({ ...this.state,  data: auxData,  key: '1', tipo: 'mensual', meses: meses })
             },
             (error) => {
                 printResponseErrorAlert(error)
@@ -470,13 +471,33 @@ class ReporteVentas extends Component {
         let lista = convertToRaw(form.listados.conclusiones.getCurrentContent())
         let conclusiones = []
         lista.blocks.map((element) => {
-            conclusiones.push(element.text.toUpperCase())
+            let estilos = [];
+            element.inlineStyleRanges.map((estilo) => {
+                if(estilo.style === 'BOLD')
+                    for(let i = 0; i < estilo.length; i++){
+                        estilos.push(i + estilo.offset)
+                    }
+            })
+            conclusiones.push({
+                estilos: estilos,
+                texto: element.text.toUpperCase()
+            })
             return ''
         })
         lista = convertToRaw(form.listados.sugerencias.getCurrentContent())
         let sugerencias = []
         lista.blocks.map((element) => {
-            sugerencias.push(element.text.toUpperCase())
+            let estilos = [];
+            element.inlineStyleRanges.map((estilo) => {
+                if(estilo.style === 'BOLD')
+                    for(let i = 0; i < estilo.length; i++){
+                        estilos.push(i + estilo.offset)
+                    }
+            })
+            sugerencias.push({
+                estilos: estilos,
+                texto: element.text.toUpperCase()
+            })
             return ''
         })
 
@@ -494,7 +515,8 @@ class ReporteVentas extends Component {
         questionAlert2('¿ESTÁS SEGURO?', '',() => this.saveReporteAxios(),this.getTextAlert())
     }
 
-    setData = (result, meses) => {
+    setData = (result, meses, tipo) => {
+        const mesesEspañol = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
         const { form } = this.state
         // ENTRADA TOTAL DE LEADS
         let data = {}
@@ -529,11 +551,15 @@ class ReporteVentas extends Component {
         
         auxColors = [];
         result.total_meses.forEach( (color, index) => {
-            if(form.rango === 'mensual'){
-                auxColors[0] = this.setColor()
-                auxColors.push( COLORES_GRAFICAS_MESES[index] )
+            if(tipo === 'mensual'){
+                if(index===0){
+                    auxColors.push(this.setColor());
+                }
+                if(index!==0){
+                    auxColors.push( COLORES_GRAFICAS_MESES[ mesesEspañol.findIndex( elemento => elemento.toUpperCase() === meses[index]) - 1 ] )
+                }
             }else{
-                auxColors.push( COLORES_GRAFICAS_MESES[index] )
+                auxColors.push( COLORES_GRAFICAS_MESES[ mesesEspañol.findIndex( elemento => elemento.toUpperCase() === meses[index]) - 1 ] )
             }
         })
         data.comparativa = {
@@ -685,25 +711,22 @@ class ReporteVentas extends Component {
         aux = []
         auxColors = []
         result.servicios_meses.forEach((mes, index) => {
+            console.log(meses[index], 'MESES INDEX')
             mes.forEach(servicio => {
+                if(tipo === 'mensual'){
+                    if(index===0){
+                        auxColors.push(this.setColor());
+                    }
+                    if(index!==0){
+                        auxColors.push( COLORES_GRAFICAS_MESES[ mesesEspañol.findIndex( elemento => elemento.toUpperCase() === meses[index]) - 1 ] )
+                    }
+                }else{
+                    auxColors.push( COLORES_GRAFICAS_MESES[ mesesEspañol.findIndex( elemento => elemento.toUpperCase() === meses[index]) - 1 ] )
+                }
                 auxLabels.push(servicio.nombre+';'+meses[index])
                 aux.push(servicio.total)
-                switch(servicio.nombre){
-                    case 'Quiero ser proveedor':
-                    case 'Bolsa de trabajo':
-                    case 'Otro':
-                    case 'Spam':
-                    case 'SPAM':
-                    case 'Aún no lo se':
-                        auxColors.push('#A6A6A6');
-                        break;
-                    default:
-                        auxColors.push(this.setColor());
-                        break;
-                }
             })
         })
-
         data.serviciosComparativa = {
             labels: auxLabels,
             datasets: [{
@@ -902,10 +925,10 @@ class ReporteVentas extends Component {
                         auxColors.push(this.setColor());
                     }
                     if(index!==0){
-                        auxColors.push( COLORES_GRAFICAS_MESES[index] )
+                        auxColors.push( COLORES_GRAFICAS_MESES[ mesesEspañol.findIndex( elemento => elemento.toUpperCase() === meses[index]) - 1 ] )
                     }
                 }else{
-                    auxColors.push( COLORES_GRAFICAS_MESES[index] )
+                    auxColors.push( COLORES_GRAFICAS_MESES[ mesesEspañol.findIndex( elemento => elemento.toUpperCase() === meses[index]) - 1 ] )
                 }
             })
         })
@@ -1030,7 +1053,8 @@ class ReporteVentas extends Component {
         }
 
         data.proyectos = result.proyectos
-        
+        data.listado_prospectos = result.listado_prospectos
+        data.listado_prospectos_anteriores = result.listado_prospectos_anteriores
         return data
     }
 
@@ -1108,11 +1132,40 @@ class ReporteVentas extends Component {
         return numero.toString()
     }
 
+    setComentario = element => {
+        let aux = '';
+        if(element.lead.rh || element.lead.proveedor){
+            if(element.estatus_prospecto){
+                switch(element.estatus_prospecto.estatus){
+                    case 'Rechazado':
+                    case 'Cancelado':
+                        if(element.lead.motivo === '' || element.lead.motivo === null){
+                            if(element.lead.rh)
+                                aux += "RR.HH.\n "
+                            if(element.lead.proveedor)
+                                aux += "PROVEEDOR.\n "
+                        }
+                            else
+                            aux += element.lead.motivo + "\n"
+                        break;
+                    default: break;
+                }
+            }
+        }else{
+            if(element.contactos){
+                if(element.contactos.length){
+                    aux += element.contactos[0].comentario
+                }
+            }
+        }
+        return aux
+    }
+
     render() {
-        const { form, data, options: opciones, key, modal, empresas, empresaActive } = this.state
+        const { form, data, options: opciones, key, modal, empresas, empresaActive, tipo, empresa } = this.state
         let { table_observaciones, table_prospecto_anteriores } = this.state
+        let { } = this.state
         const mesesEspañol = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
-        const { empresa } = this.state
         let valor = 0;
         return (
             <Layout active='reportes'  {...this.props}>
@@ -1162,7 +1215,7 @@ class ReporteVentas extends Component {
                                     this.isActivePane(data.origenesOrganicos) ?
                                         <Tab.Pane eventKey='4'>
                                             {this.setButtons('3', '5', null, empresa, this.setPageNumber(++valor), 'ORIGEN DE LEADS ORGÁNICOS')}
-                                            <Bar ref={this.chartOrigenesOrganicosReference} data={data.origenesOrganicos} options = { percentBar } />
+                                            <Bar ref={this.chartOrigenesOrganicosReference} data={data.origenesOrganicos} options = { percentBarReplaceAds } />
                                         </Tab.Pane>
                                     : <></>
                                 }
@@ -1170,7 +1223,7 @@ class ReporteVentas extends Component {
                                     this.isActivePane(data.origenesAds) ?
                                         <Tab.Pane eventKey='5'>
                                             {this.setButtons('4', '6', null, empresa, this.setPageNumber(++valor), 'ORIGEN DE LEADS ADS')}
-                                            <Bar ref = { this.chartOrigenesAdsReference } data = { data.origenesAds } options = { percentBar } />
+                                            <Bar ref = { this.chartOrigenesAdsReference } data = { data.origenesAds } options = { percentBarReplaceAds } />
                                         </Tab.Pane>
                                     : <></>
                                 }
@@ -1194,7 +1247,8 @@ class ReporteVentas extends Component {
                                     this.isActivePane(data.serviciosComparativa) ?
                                         <Tab.Pane eventKey='8'>
                                             {this.setButtons('7', '9', null, empresa, this.setPageNumber(++valor), 'SERVICIOS SOLICITADOS MENSUAL')}
-                                            <Bar ref = { this.chartServiciosComparativaReference } data = { data.serviciosComparativa } options = { monthGroupBar } />
+                                            <Bar ref = { this.chartServiciosComparativaReference } data = { data.serviciosComparativa } 
+                                                options = { tipo === 'mensual' ? monthGroupBarServicios(this.setColor()) : monthGroupBar } />
                                         </Tab.Pane>
                                     : <></>
                                 }
@@ -1234,7 +1288,8 @@ class ReporteVentas extends Component {
                                     this.isActivePane(data.tipoLeadsComparativa) ?
                                         <Tab.Pane eventKey = '13'>
                                             {this.setButtons(this.isActivePane(data.origenesDuplicados) ? '12' : '11', '14', null, empresa, this.setPageNumber(++valor), 'TIPO DE LEADS MENSUAL')}
-                                            <Bar ref={this.chartTiposComparativaReference} data={data.tipoLeadsComparativa} options = { monthGroupBar } />
+                                            <Bar ref={this.chartTiposComparativaReference} data={data.tipoLeadsComparativa} 
+                                                options = { tipo === 'mensual' ? monthGroupBar : monthGroupBar } />
                                         </Tab.Pane>
                                     : <></>
                                 }
@@ -1250,7 +1305,8 @@ class ReporteVentas extends Component {
                                     this.isActivePane(data.tiposProyectosComparativa) ?
                                         <Tab.Pane eventKey = '15'>
                                             { this.setButtons( '14', '16', null, empresa, this.setPageNumber(++valor),  'TIPO DE PROYECTO MENSUAL' ) }
-                                            <Bar ref={this.chartTiposProyectosComparativaReference} data={data.tiposProyectosComparativa} options = { monthGroupBar } />
+                                            <Bar ref={this.chartTiposProyectosComparativaReference} data={data.tiposProyectosComparativa} 
+                                                options = { tipo === 'mensual' ? monthGroupBarBreak2 : monthGroupBar } />
                                         </Tab.Pane>
                                     : <></>
                                 }
@@ -1278,59 +1334,96 @@ class ReporteVentas extends Component {
                                             table_observaciones=true
                                         }
                                         {this.setButtons('17', '19', null, empresa, this.setPageNumber(++valor), 'OBSERVACIONES DE PROSPECTOS')}
-                                        <div className="table-responsive d-flex justify-content-center">
-                                            <table className="table table-responsive-lg table-vertical-center w-100">
-                                                <thead>
-                                                    <tr className="bg-light-gray text-dark-75">
-                                                        <th colSpan="4" className="py-0"></th>
-                                                        <th className="py-0 font-size-lg font-weight-bolder text-center">PRIMER</th>
-                                                        <th className="py-0 font-size-lg font-weight-bolder text-center">ÚLTIMO</th>
-                                                    </tr>
-                                                    <tr className="bg-light-gray text-dark-75">
-                                                        <th className="py-0 font-size-lg font-weight-bolder text-align-last-justify">
-                                                            NOMBRE
-                                                        </th>
-                                                        <th className="py-0 font-size-lg font-weight-bolder text-align-last-justify">
-                                                            PROYECTO
-                                                        </th>
-                                                        <th className="py-0 font-size-lg font-weight-bolder text-align-last-justify">
-                                                            OBSERVACIONES
-                                                        </th>
-                                                        <th className="py-0 font-size-lg font-weight-bolder text-align-last-justify">
-                                                            ESTATUS
-                                                        </th>
-                                                        <th className="py-0 font-size-lg font-weight-bolder text-center">
-                                                            CONTACTO
-                                                        </th>
-                                                        <th className="py-0 font-size-lg font-weight-bolder text-center">
-                                                            CONTACTO
-                                                        </th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td className="font-size-sm text-justify white-space-nowrap">
-                                                        </td>
-                                                        <td className="font-size-sm text-justify white-space-nowrap">
-                                                        </td>
-                                                        <td className="font-size-sm text-justify white-space-nowrap">
-                                                        </td>
-                                                        <td className="font-size-sm text-justify white-space-nowrap">
-                                                        </td>
-                                                        <td className="font-size-sm text-center white-space-nowrap">
-                                                        </td>
-                                                        <td className="font-size-sm text-center white-space-nowrap">
-                                                        </td>                   
-                                                    </tr>
-                                                    {/* <tr>
-                                                        <td colSpan = "9" className="font-size-sm text-center white-space-nowrap">
-                                                            NO SE CONTRATARON OBSERVACIONES DE PROSPECTOS
-                                                        </td>
+                                            <div className="table-responsive d-flex justify-content-center">
+                                                <table className="table table-responsive-lg table-vertical-center w-100">
+                                                    <thead>
+                                                        <tr className="bg-light-gray text-dark-75">
+                                                            <th rowSpan="2" className="py-0 font-size-lg font-weight-bolder text-align-last-justify" style={{minWidth:"170px"}}>
+                                                                NOMBRE
+                                                            </th>
+                                                            <th rowSpan="2" className="py-0 font-size-lg font-weight-bolder text-align-last-justify" style={{minWidth:"132px"}}>
+                                                                PROYECTO
+                                                            </th>
+                                                            <th rowSpan="2" className="py-0 font-size-lg font-weight-bolder text-center">
+                                                                OBSERVACIONES
+                                                            </th>
+                                                            <th rowSpan="2" className="py-0 font-size-lg font-weight-bolder text-center" style={{minWidth:"112px"}}>
+                                                                ESTATUS
+                                                            </th>
+                                                            <th className="py-0 font-size-lg font-weight-bolder text-center">PRIMER</th>
+                                                            <th className="py-0 font-size-lg font-weight-bolder text-center">ÚLTIMO</th>
                                                         </tr>
-                                                    */}
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                                        <tr className="bg-light-gray text-dark-75">
+                                                            <th className="py-0 font-size-lg font-weight-bolder text-center">
+                                                                CONTACTO
+                                                            </th>
+                                                            <th className="py-0 font-size-lg font-weight-bolder text-center">
+                                                                CONTACTO
+                                                            </th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        {
+                                                            this.hasElementOnArray(data.listado_prospectos) ?
+                                                                data.listado_prospectos.map((element, index) => {
+                                                                    return (
+                                                                        <tr key={index}>
+                                                                            <td className="font-size-sm text-justify">
+                                                                                {element.lead.nombre.toUpperCase()}
+                                                                            </td>
+                                                                            <td className="font-size-sm text-justify">
+                                                                                {
+                                                                                    element.tipo_proyecto !== null ?
+                                                                                        element.tipo_proyecto.tipo : '-'
+                                                                                }
+                                                                            </td>
+                                                                            <td className="font-size-sm text-justify">
+                                                                                {this.setComentario(element)}
+                                                                            </td>
+                                                                            <td className="font-size-sm text-center">
+                                                                                {
+                                                                                    element.estatus_prospecto ?
+                                                                                        <span style={
+                                                                                            {
+                                                                                                backgroundColor: element.estatus_prospecto.color_fondo, color: element.estatus_prospecto.color_texto, border: 'transparent', padding: '2.8px 5.6px',
+                                                                                                width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '10.7px',
+                                                                                                fontWeight: 500, borderRadius:'.25rem'
+                                                                                            }
+                                                                                        }>{element.estatus_prospecto.estatus.toUpperCase()}</span>
+                                                                                        : ''
+                                                                                }
+                                                                            </td>
+                                                                            <td className="font-size-sm text-center">
+                                                                                {
+                                                                                    element.contactos ?
+                                                                                        element.contactos.length ?
+                                                                                            setDateTableLG(element.contactos[element.contactos.length - 1].created_at)
+                                                                                            : '-'
+                                                                                        : '-'
+                                                                                }
+                                                                            </td>
+                                                                            <td className="font-size-sm text-center">
+                                                                                {
+                                                                                    element.contactos ?
+                                                                                        element.contactos.length ?
+                                                                                            setDateTableLG(element.contactos[0].created_at)
+                                                                                            : '-'
+                                                                                        : '-'
+                                                                                }
+                                                                            </td>
+                                                                        </tr>
+                                                                    )
+                                                                })
+                                                                :
+                                                                <tr>
+                                                                    <td colSpan="6" className="font-size-sm text-center">
+                                                                        NO SE ENCONTRARON OBSERVACIONESN DE PROSPECTOS DURANTE ESTE MES
+                                                                    </td>
+                                                                </tr>
+                                                        }
+                                                        </tbody>
+                                                </table>
+                                            </div>
                                     </Tab.Pane>
                                     :''
                                 }
@@ -1361,23 +1454,22 @@ class ReporteVentas extends Component {
                                                 <table className="table table-responsive-lg table-vertical-center w-100">
                                                     <thead>
                                                         <tr className="bg-light-gray text-dark-75">
-                                                            <th colSpan="4" className="py-0"></th>
+                                                            <th rowSpan="2" className="py-0 font-size-lg font-weight-bolder text-align-last-justify" style={{minWidth:"170px"}}>
+                                                                NOMBRE
+                                                            </th>
+                                                            <th rowSpan="2" className="py-0 font-size-lg font-weight-bolder text-align-last-justify" style={{minWidth:"132px"}}>
+                                                                PROYECTO
+                                                            </th>
+                                                            <th rowSpan="2" className="py-0 font-size-lg font-weight-bolder text-center">
+                                                                OBSERVACIONES
+                                                            </th>
+                                                            <th rowSpan="2" className="py-0 font-size-lg font-weight-bolder text-center" style={{minWidth:"112px"}}>
+                                                                ESTATUS
+                                                            </th>
                                                             <th className="py-0 font-size-lg font-weight-bolder text-center">PRIMER</th>
                                                             <th className="py-0 font-size-lg font-weight-bolder text-center">ÚLTIMO</th>
                                                         </tr>
                                                         <tr className="bg-light-gray text-dark-75">
-                                                            <th className="py-0 font-size-lg font-weight-bolder text-align-last-justify">
-                                                                NOMBRE
-                                                            </th>
-                                                            <th className="py-0 font-size-lg font-weight-bolder text-align-last-justify">
-                                                                PROYECTO
-                                                            </th>
-                                                            <th className="py-0 font-size-lg font-weight-bolder text-align-last-justify">
-                                                                MOTIVO
-                                                            </th>
-                                                            <th className="py-0 font-size-lg font-weight-bolder text-align-last-justify">
-                                                                ESTATUS
-                                                            </th>
                                                             <th className="py-0 font-size-lg font-weight-bolder text-center">
                                                                 CONTACTO
                                                             </th>
@@ -1387,27 +1479,64 @@ class ReporteVentas extends Component {
                                                         </tr>
                                                     </thead>
                                                     <tbody>
-                                                        <tr>
-                                                            <td className="font-size-sm text-justify white-space-nowrap">
-                                                            </td>
-                                                            <td className="font-size-sm text-justify white-space-nowrap">
-                                                            </td>
-                                                            <td className="font-size-sm text-justify white-space-nowrap">
-                                                            </td>
-                                                            <td className="font-size-sm text-justify white-space-nowrap">
-                                                            </td>
-                                                            <td className="font-size-sm text-center white-space-nowrap">
-                                                            </td>
-                                                            <td className="font-size-sm text-center white-space-nowrap">
-                                                            </td>
-                                                        </tr>
-                                                        {/* 
+                                                        {
+                                                            this.hasElementOnArray(data.listado_prospectos_anteriores) ?
+                                                                data.listado_prospectos_anteriores.map((element, index) => {
+                                                                    return(
+                                                                            <tr key= {index}>
+                                                                                <td className="font-size-sm text-justify">
+                                                                                    {element.lead.nombre.toUpperCase()}
+                                                                                </td>
+                                                                                <td className="font-size-sm text-justify">
+                                                                                    {
+                                                                                        element.tipo_proyecto!==null?
+                                                                                        element.tipo_proyecto.tipo:'-'
+                                                                                    }
+                                                                                </td>
+                                                                                <td className="font-size-sm text-justify">
+                                                                                    { this.setComentario(element) }
+                                                                                </td>
+                                                                                <td className="font-size-sm text-center">
+                                                                                    {
+                                                                                        element.estatus_prospecto ?
+                                                                                            <span style={
+                                                                                                {
+                                                                                                    backgroundColor: element.estatus_prospecto.color_fondo, color: element.estatus_prospecto.color_texto, border: 'transparent', padding: '2.8px 5.6px',
+                                                                                                    width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '10.7px',
+                                                                                                    fontWeight: 500, borderRadius:'.25rem'
+                                                                                                }
+                                                                                            }>{element.estatus_prospecto.estatus.toUpperCase()}</span>
+                                                                                            : ''
+                                                                                    }
+                                                                                </td>
+                                                                                <td className="font-size-sm text-center">
+                                                                                    {
+                                                                                        element.contactos ?
+                                                                                            element.contactos.length ?
+                                                                                                setDateTableLG(element.contactos[element.contactos.length - 1].created_at)
+                                                                                            : '-'
+                                                                                        : '-'
+                                                                                    }
+                                                                                </td>
+                                                                                <td className="font-size-sm text-center">
+                                                                                    {
+                                                                                        element.contactos ?
+                                                                                            element.contactos.length ?
+                                                                                                setDateTableLG(element.contactos[0].created_at)
+                                                                                            : '-'
+                                                                                        : '-'
+                                                                                    }
+                                                                                </td>
+                                                                            </tr>
+                                                                    )
+                                                                })
+                                                            :
                                                             <tr>
-                                                                <td colSpan = "6" className="font-size-sm text-center white-space-nowrap">
-                                                                    NO SE CONTRATARON LEADS EN ESTE PERIODO
+                                                                <td colSpan = "6" className="font-size-sm text-center">
+                                                                    NO SE ENCONTRARON PROSPECTOS LOS MESES ANTERIORES
                                                                 </td>
-                                                            </tr> 
-                                                        */}
+                                                            </tr>
+                                                        }
                                                     </tbody>
                                                 </table>
                                             </div>
@@ -1536,13 +1665,15 @@ class ReporteVentas extends Component {
                                 <Tab.Pane eventKey={table_prospecto_anteriores?'23':'21'}>
                                     { this.setButtons(table_prospecto_anteriores?'22':'20', table_prospecto_anteriores?'24':'22', null, empresa, this.setPageNumber(++valor), 'CONCLUSIONES')}
                                     <Editor editorClassName = "editor-class" editorState = { form.listados.conclusiones }
-                                        toolbar = { { options: ['list'], list: { inDropdown: false, options: ['unordered'], }, } }
+                                        toolbar = { { options: ['list', 'inline'], list: { inDropdown: false, options: ['unordered'], },
+                                            inline: { options: ['bold']} } }
                                         onEditorStateChange = { (editorState) => this.onEditorStateChange(editorState, 'conclusiones') } />
                                 </Tab.Pane>
                                 <Tab.Pane eventKey={table_prospecto_anteriores?'24':'22'}>
-                                    { this.setButtons(table_prospecto_anteriores?'23':null, table_prospecto_anteriores?'21':null, true, empresa, this.setPageNumber(++valor), 'SUGERENCIAS') }
+                                    { this.setButtons(table_prospecto_anteriores?'23':'21', null, true, empresa, this.setPageNumber(++valor), 'SUGERENCIAS') }
                                     <Editor editorClassName = "editor-class"  editorState = { form.listados.sugerencias }
-                                        toolbar = { { options: ['list'], list: { inDropdown: false, options: ['unordered'], }, } }
+                                        toolbar = { { options: ['list', 'inline'], list: { inDropdown: false, options: ['unordered'], },
+                                            inline: { options: ['bold']} } }
                                         onEditorStateChange = { (editable) => this.onEditorStateChange(editable, 'sugerencias') } />
                                 </Tab.Pane>
                             </Tab.Content>

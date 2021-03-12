@@ -57,15 +57,15 @@ class MultipleRangeCalendar extends Component {
                 <div className="d-flex justify-content-between">
                     {
                         clickDeleteRange && 
-                            <a className="btn text-dark-50 btn-icon-primary btn-hover-icon-danger font-weight-bolder btn-hover-bg-light" onClick={this.onClickDeleteDate}>
+                            <span className="btn text-dark-50 btn-icon-primary btn-hover-icon-danger font-weight-bolder btn-hover-bg-light" onClick={this.onClickDeleteDate}>
                                 <i className="far fa-calendar-times mr-2"></i>Borrar
-                            </a>
+                            </span>
                     }
                     {
                         clickAddRange && 
-                            <a className="btn text-dark-50 btn-icon-primary btn-hover-icon-success font-weight-bolder btn-hover-bg-light" onClick={this.onClickAddDate}>
+                            <span className="btn text-dark-50 btn-icon-primary btn-hover-icon-success font-weight-bolder btn-hover-bg-light" onClick={this.onClickAddDate}>
                                 <i className="far fa-calendar-plus mr-2"></i>Fecha
-                            </a>
+                            </span>
                     }
                 </div>
             </div>
