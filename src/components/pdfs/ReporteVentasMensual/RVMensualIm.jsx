@@ -4,7 +4,7 @@ import IM from '../../../assets/logos/im.png'
 import PoppinsBold from '../../../assets/fonts/Poppins-Bold.ttf'
 import Poppins from '../../../assets/fonts/Poppins-ExtraLight.ttf'
 import moment from 'moment'
-import { IM_AZUL, IM_DORADO } from '../../../constants'
+import { COLORES_GRAFICAS_MESES, IM_AZUL, IM_DORADO } from '../../../constants'
 
 Font.register({
     family: 'Poppins',
@@ -13,6 +13,8 @@ Font.register({
         { src: PoppinsBold, fontWeight: 700 }
     ]
 })
+
+const mesesEspañol = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
 const styles = StyleSheet.create({
     dot:{
         width: 3,
@@ -521,7 +523,7 @@ export default class RVAnualIm extends Component {
     }
 
     render() {
-        const { conclusiones, sugerencias, images, data } = this.props
+        const { conclusiones, sugerencias, images, data, meses } = this.props
         let objectlist_prospectos = data.listado_prospectos
         let objectlist_pa = data.listado_prospectos_anteriores
         let objectlist_proyectos = data.proyectos
@@ -579,6 +581,28 @@ export default class RVAnualIm extends Component {
                                     ENTRADA DE LEADS <Text style = { styles.textBlue }>MESES ANTERIORES</Text>
                                 </Text>
                             </View>
+                        </View>
+                        <View style = {{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                            {
+                                meses.map((mes, index) => {
+                                    return(
+                                        <View style = {{ display: 'flex', flexDirection: 'row', alignItems: 'center', marginRight: '5px'}}>
+                                            <View style = {{ 
+                                                backgroundColor: index === 0  ? IM_AZUL : COLORES_GRAFICAS_MESES[ mesesEspañol.findIndex( elemento => elemento.toUpperCase() === meses[index]) - 1 ],
+                                                height: '10px',
+                                                width: '10px',
+                                                marginRight: '5px'
+                                            }}>
+                                            </View>
+                                            <View>
+                                                <Text style = {{ fontSize: 12, color: '#808080' }} key = { index }>
+                                                    {mes}
+                                                </Text>
+                                            </View>
+                                        </View>
+                                    )
+                                })
+                            }
                         </View>
                         <View style = { styles.imgCenter }>
                             <Image style = { styles.imagenCentrada }  src = { images.totalMeses }/>
@@ -701,6 +725,28 @@ export default class RVAnualIm extends Component {
                                     SERVICIOS SOLICITADOS <Text style = { styles.textBlue }>MESES ANTERIORES</Text>
                                 </Text>
                             </View>
+                        </View>
+                        <View style = {{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                            {
+                                meses.map((mes, index) => {
+                                    return(
+                                        <View style = {{ display: 'flex', flexDirection: 'row', alignItems: 'center', marginRight: '5px'}}>
+                                            <View style = {{ 
+                                                backgroundColor: index === 0  ? IM_AZUL : COLORES_GRAFICAS_MESES[ mesesEspañol.findIndex( elemento => elemento.toUpperCase() === meses[index]) - 1 ],
+                                                height: '10px',
+                                                width: '10px',
+                                                marginRight: '5px'
+                                            }}>
+                                            </View>
+                                            <View>
+                                                <Text style = {{ fontSize: 12, color: '#808080' }} key = { index }>
+                                                    {mes}
+                                                </Text>
+                                            </View>
+                                        </View>
+                                    )
+                                })
+                            }
                         </View>
                         <View style = { styles.imgCenter }>
                             <Image style = { styles.imagenCentrada }  src = { images.serviciosMeses }/>
@@ -844,6 +890,28 @@ export default class RVAnualIm extends Component {
                                     TIPO DE PROYECTO <Text style = { styles.textBlue }>MESES ANTERIORES</Text>
                                 </Text>
                             </View>
+                        </View>
+                        <View style = {{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                            {
+                                meses.map((mes, index) => {
+                                    return(
+                                        <View style = {{ display: 'flex', flexDirection: 'row', alignItems: 'center', marginRight: '5px'}}>
+                                            <View style = {{ 
+                                                backgroundColor: index === 0  ? IM_AZUL : COLORES_GRAFICAS_MESES[ mesesEspañol.findIndex( elemento => elemento.toUpperCase() === meses[index]) - 1 ],
+                                                height: '10px',
+                                                width: '10px',
+                                                marginRight: '5px'
+                                            }}>
+                                            </View>
+                                            <View>
+                                                <Text style = {{ fontSize: 12, color: '#808080' }} key = { index }>
+                                                    {mes}
+                                                </Text>
+                                            </View>
+                                        </View>
+                                    )
+                                })
+                            }
                         </View>
                         <View style = { styles.imgCenter }>
                             <Image style = { styles.imagenCentrada }  src = { images.tiposProyectosMeses }/>
