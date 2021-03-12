@@ -639,5 +639,5 @@ export const monthGroupBarServicios = (value) => ({
             },
         }
     },
-    legend: { display: true }
+    legend: { display: false }
 })
