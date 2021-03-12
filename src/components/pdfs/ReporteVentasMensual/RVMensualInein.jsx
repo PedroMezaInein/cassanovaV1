@@ -1047,7 +1047,7 @@ export default class RVAnualInein extends Component {
                         <View style={ styles.lineGray }></View>
                     </View>
                 </Page>
-                <Page size="A4" orientation = "landscape" wrap>
+                {/* <Page size="A4" orientation = "landscape" wrap>
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
@@ -1167,7 +1167,7 @@ export default class RVAnualInein extends Component {
                         </View>
                         <View style={ styles.lineGray }></View>
                     </View>
-                </Page>
+                </Page> */}
                 <Page style={styles.page} size="A4" orientation = "landscape" wrap>
                     <View style = { styles.numberTitle } fixed>
                         <View>
