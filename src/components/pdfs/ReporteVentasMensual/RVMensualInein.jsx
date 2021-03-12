@@ -46,7 +46,8 @@ const styles = StyleSheet.create({
     },
     tableRow:{
         display: 'flex',
-        flexDirection: 'row'
+        flexDirection: 'row',
+        flexWrap: 'wrap'
     },
     tableRowHeader:{
         display: 'flex',

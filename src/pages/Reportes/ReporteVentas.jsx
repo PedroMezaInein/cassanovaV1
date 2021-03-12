@@ -1158,10 +1158,10 @@ class ReporteVentas extends Component {
     }
 
     render() {
-        const { form, data, options: opciones, key, modal, empresas, empresaActive, tipo} = this.state
-        let { table_observaciones, table_prospecto_anteriores} = this.state
+        const { form, data, options: opciones, key, modal, empresas, empresaActive, tipo, empresa } = this.state
+        let { table_observaciones, table_prospecto_anteriores } = this.state
+        let { } = this.state
         const mesesEspañol = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
-        const { empresa, tipo } = this.state
         let valor = 0;
         return (
             <Layout active='reportes'  {...this.props}>
