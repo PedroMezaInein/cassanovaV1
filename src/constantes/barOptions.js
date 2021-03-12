@@ -628,7 +628,6 @@ export const monthGroupBarServicios = (value) => ({
                     label = label + element + ' '
                 });
                 label = label.trim();
-                console.log('LABEL', label)
                 return grises.includes(label) ? '#808080' : value
             },
             font: function(context) {
@@ -640,5 +639,5 @@ export const monthGroupBarServicios = (value) => ({
             },
         }
     },
-    legend: { display: false }
+    legend: { display: true }
 })

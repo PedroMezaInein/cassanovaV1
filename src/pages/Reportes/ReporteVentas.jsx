@@ -369,7 +369,7 @@ class ReporteVentas extends Component {
                 /* -------------------------------------------------------------------------- */
                 this.setState({
                     ...this.state, 
-                    data: this.setData(result, meses), 
+                    data: this.setData(result, meses, 'anual'), 
                     key: '1',
                     tipo: 'anual'
                 })
@@ -398,7 +398,7 @@ class ReporteVentas extends Component {
                 /* ------------------------- ENTRADA TOTAL DE LEADS ------------------------- */
                 /* -------------------- ANCHOR GET TOTAL DE LEADS ANUALES ------------------- */
                 /* -------------------------------------------------------------------------- */
-                this.setState({ ...this.state,  data: this.setData(result, meses),  key: '1', tipo: 'mensual' })
+                this.setState({ ...this.state,  data: this.setData(result, meses, 'mensual'),  key: '1', tipo: 'mensual' })
             },
             (error) => {
                 printResponseErrorAlert(error)
@@ -516,8 +516,8 @@ class ReporteVentas extends Component {
         questionAlert2('¿ESTÁS SEGURO?', '',() => this.saveReporteAxios(),this.getTextAlert())
     }
 
-    setData = (result, meses) => {
-        const { form, tipo } = this.state
+    setData = (result, meses, tipo) => {
+        const { form } = this.state
         // ENTRADA TOTAL DE LEADS
         let data = {}
         data.total = {
@@ -722,7 +722,6 @@ class ReporteVentas extends Component {
                 aux.push(servicio.total)
             })
         })
-
         data.serviciosComparativa = {
             labels: auxLabels,
             datasets: [{
@@ -1285,7 +1284,7 @@ class ReporteVentas extends Component {
                                         <Tab.Pane eventKey = '13'>
                                             {this.setButtons(this.isActivePane(data.origenesDuplicados) ? '12' : '11', '14', null, empresa, this.setPageNumber(++valor), 'TIPO DE LEADS MENSUAL')}
                                             <Bar ref={this.chartTiposComparativaReference} data={data.tipoLeadsComparativa} 
-                                                options = { tipo === 'mensual' ? monthGroupBarBreak : monthGroupBar } />
+                                                options = { tipo === 'mensual' ? monthGroupBar : monthGroupBar } />
                                         </Tab.Pane>
                                     : <></>
                                 }
