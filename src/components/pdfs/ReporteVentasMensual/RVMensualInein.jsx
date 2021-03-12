@@ -385,7 +385,11 @@ const styles = StyleSheet.create({
     justifyContentCenter:{
         display:'flex', 
         justifyContent:'center'
+    },
+    textInline:{
+        display: 'flex',
     }
+
 });
 
 export default class RVAnualInein extends Component {
@@ -474,6 +478,7 @@ export default class RVAnualInein extends Component {
 
     render() {
         const { conclusiones, sugerencias, images, data } = this.props
+        console.log('SUGERENCIAS INEIN', sugerencias)
         return (
             <Document style = {{ fontFamily: 'Poppins', color: '#525252' }}>
                 <Page size="A4" orientation = "landscape" style = {{ position: 'relative', height: '100%'}}>
@@ -1341,6 +1346,7 @@ export default class RVAnualInein extends Component {
                                                 </View>
                                             )
                                         }
+                                        return false
                                     })
                                 }
                             </View>
@@ -1375,23 +1381,26 @@ export default class RVAnualInein extends Component {
                             <View style = { styles.table2 }  >
                             {
                                 conclusiones.map((element)=>{
-                                    if(element !== '')
-                                    return(
-                                        <View style = { styles.tableRow} >
-                                            <View style = { styles.cellListaDot }>
-                                                <View style = { styles.dot } >
-                                                    
+                                    if(element.texto !== '')
+                                        return(
+                                            <View style = { styles.tableRow} >
+                                                <View style = { styles.cellListaDot }>
+                                                    <View style = { styles.dot } >
+                                                    </View>
+                                                </View>
+                                                <View style = { styles.cellLista }>
+                                                    <View style = { styles.tableRow} >
+                                                        { 
+                                                            element.texto.split("").map(( letra, index) =>  {
+                                                                return(
+                                                                    <Text key = { index } style = { { fontWeight: element.estilos.includes(index) ? 'bold' : '100' } } >{letra}</Text>
+                                                                )
+                                                            })
+                                                        }
+                                                    </View>
                                                 </View>
                                             </View>
-                                            <View style = { styles.cellLista }>
-                                                <Text>
-                                                    {
-                                                        element
-                                                    }
-                                                </Text>
-                                            </View>
-                                        </View>
-                                    )
+                                        )
                                     return false
                                 })
                             }
@@ -1416,28 +1425,30 @@ export default class RVAnualInein extends Component {
                         </View>
                         <View style = { styles.imgCenter }>
                             <View style = { styles.table2 }  >
-                            {
-                                sugerencias.map((element)=>{
-                                    if(element !== '')
-                                    return(
-                                        <View style = { styles.tableRow} >
-                                            <View style = { styles.cellListaDot }>
-                                                <View style = { styles.dot } >
+                                { sugerencias.map( (element) => {
+                                    if(element.texto !== '')
+                                        return(
+                                            <View style = { styles.tableRow} >
+                                                <View style = { styles.cellListaDot }>
+                                                    <View style = { styles.dot } >
+                                                    </View>
+                                                </View>
+                                                <View style = { styles.cellLista }>
+                                                    <View style = { styles.tableRow} >
+                                                        { 
+                                                            element.texto.split("").map(( letra, index) =>  {
+                                                                return(
+                                                                    <Text key = { index } style = { { fontWeight: element.estilos.includes(index) ? 'bold' : '100' } } >{letra}</Text>
+                                                                )
+                                                            })
+                                                        }
+                                                    </View>
                                                 </View>
                                             </View>
-                                            <View style = { styles.cellLista }>
-                                                <Text>
-                                                    {
-                                                        element
-                                                    }
-                                                </Text>
-                                            </View>
-                                        </View>
-                                    )
+                                        )
                                     return false
-                                })
-                            }
-                        </View>
+                                })}
+                            </View>
                         </View>
                         <View style={ styles.linePink }></View>
                     </View>

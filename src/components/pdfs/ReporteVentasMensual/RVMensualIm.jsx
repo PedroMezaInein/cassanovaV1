@@ -1350,6 +1350,7 @@ export default class RVAnualIm extends Component {
                                                 </View>
                                             )
                                         }
+                                        return false
                                     })
                                 }
                             </View>

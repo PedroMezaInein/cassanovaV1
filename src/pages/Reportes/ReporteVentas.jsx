@@ -5,7 +5,7 @@ import { Card, Nav, Tab } from 'react-bootstrap'
 import { Button } from '../../components/form-components'
 import { waitAlert, errorAlert, printResponseErrorAlert, questionAlert2, doneAlert, deleteAlert } from '../../functions/alert'
 import Swal from 'sweetalert2'
-import { COLORES_GRAFICAS_IM, COLORES_GRAFICAS_INEIN, COLORES_GRAFICAS_MESES, IM_AZUL, INEIN_RED, URL_DEV } from '../../constants'
+import { COLORES_GRAFICAS_MESES, IM_AZUL, INEIN_RED, URL_DEV } from '../../constants'
 import axios from 'axios'
 import { pdf } from '@react-pdf/renderer'
 import { Bar } from 'react-chartjs-2'
@@ -20,7 +20,7 @@ import RVAnualIm from '../../components/pdfs/ReporteVentasAnual/RVAnualIm'
 import RVMensualIm from '../../components/pdfs/ReporteVentasMensual/RVMensualIm'
 import RVMensualInein from '../../components/pdfs/ReporteVentasMensual/RVMensualInein'
 import { Modal } from '../../components/singles'
-import { dataSimpleBar, monthGroupBar, percentBar, percentBarReplaceAds, monthGroupBarBreak, monthGroupBarBreak2 } from '../../constantes/barOptions'
+import { dataSimpleBar, monthGroupBar, percentBar, percentBarReplaceAds, monthGroupBarBreak, monthGroupBarBreak2, monthGroupBarServicios } from '../../constantes/barOptions'
 
 class ReporteVentas extends Component {
 
@@ -472,13 +472,33 @@ class ReporteVentas extends Component {
         let lista = convertToRaw(form.listados.conclusiones.getCurrentContent())
         let conclusiones = []
         lista.blocks.map((element) => {
-            conclusiones.push(element.text.toUpperCase())
+            let estilos = [];
+            element.inlineStyleRanges.map((estilo) => {
+                if(estilo.style === 'BOLD')
+                    for(let i = 0; i < estilo.length; i++){
+                        estilos.push(i + estilo.offset)
+                    }
+            })
+            conclusiones.push({
+                estilos: estilos,
+                texto: element.text.toUpperCase()
+            })
             return ''
         })
         lista = convertToRaw(form.listados.sugerencias.getCurrentContent())
         let sugerencias = []
         lista.blocks.map((element) => {
-            sugerencias.push(element.text.toUpperCase())
+            let estilos = [];
+            element.inlineStyleRanges.map((estilo) => {
+                if(estilo.style === 'BOLD')
+                    for(let i = 0; i < estilo.length; i++){
+                        estilos.push(i + estilo.offset)
+                    }
+            })
+            sugerencias.push({
+                estilos: estilos,
+                texto: element.text.toUpperCase()
+            })
             return ''
         })
 
@@ -497,7 +517,7 @@ class ReporteVentas extends Component {
     }
 
     setData = (result, meses) => {
-        const { form } = this.state
+        const { form, tipo } = this.state
         // ENTRADA TOTAL DE LEADS
         let data = {}
         data.total = {
@@ -688,21 +708,18 @@ class ReporteVentas extends Component {
         auxColors = []
         result.servicios_meses.forEach((mes, index) => {
             mes.forEach(servicio => {
+                if(tipo === 'mensual'){
+                    if(index===0){
+                        auxColors.push(this.setColor());
+                    }
+                    if(index!==0){
+                        auxColors.push( COLORES_GRAFICAS_MESES[index] )
+                    }
+                }else{
+                    auxColors.push( COLORES_GRAFICAS_MESES[index] )
+                }
                 auxLabels.push(servicio.nombre+';'+meses[index])
                 aux.push(servicio.total)
-                switch(servicio.nombre){
-                    case 'Quiero ser proveedor':
-                    case 'Bolsa de trabajo':
-                    case 'Otro':
-                    case 'Spam':
-                    case 'SPAM':
-                    case 'Aún no lo se':
-                        auxColors.push('#A6A6A6');
-                        break;
-                    default:
-                        auxColors.push(this.setColor());
-                        break;
-                }
             })
         })
 
@@ -1227,7 +1244,7 @@ class ReporteVentas extends Component {
                                         <Tab.Pane eventKey='8'>
                                             {this.setButtons('7', '9', null, empresa, this.setPageNumber(++valor), 'SERVICIOS SOLICITADOS MENSUAL')}
                                             <Bar ref = { this.chartServiciosComparativaReference } data = { data.serviciosComparativa } 
-                                                options = { tipo === 'mensual' ? monthGroupBarBreak : monthGroupBar } />
+                                                options = { tipo === 'mensual' ? monthGroupBarServicios(this.setColor()) : monthGroupBar } />
                                         </Tab.Pane>
                                     : <></>
                                 }
@@ -1644,13 +1661,15 @@ class ReporteVentas extends Component {
                                 <Tab.Pane eventKey={table_prospecto_anteriores?'23':'21'}>
                                     { this.setButtons(table_prospecto_anteriores?'22':'20', table_prospecto_anteriores?'24':'22', null, empresa, this.setPageNumber(++valor), 'CONCLUSIONES')}
                                     <Editor editorClassName = "editor-class" editorState = { form.listados.conclusiones }
-                                        toolbar = { { options: ['list'], list: { inDropdown: false, options: ['unordered'], }, } }
+                                        toolbar = { { options: ['list', 'inline'], list: { inDropdown: false, options: ['unordered'], },
+                                            inline: { options: ['bold']} } }
                                         onEditorStateChange = { (editorState) => this.onEditorStateChange(editorState, 'conclusiones') } />
                                 </Tab.Pane>
                                 <Tab.Pane eventKey={table_prospecto_anteriores?'24':'22'}>
                                     { this.setButtons(table_prospecto_anteriores?'23':'21', null, true, empresa, this.setPageNumber(++valor), 'SUGERENCIAS') }
                                     <Editor editorClassName = "editor-class"  editorState = { form.listados.sugerencias }
-                                        toolbar = { { options: ['list'], list: { inDropdown: false, options: ['unordered'], }, } }
+                                        toolbar = { { options: ['list', 'inline'], list: { inDropdown: false, options: ['unordered'], },
+                                            inline: { options: ['bold']} } }
                                         onEditorStateChange = { (editable) => this.onEditorStateChange(editable, 'sugerencias') } />
                                 </Tab.Pane>
                             </Tab.Content>
