@@ -350,11 +350,12 @@ const styles = StyleSheet.create({
         alignItems: 'start'
     },
     imgCenter:{
-        backgroundColor: 'white',
+        // backgroundColor: 'white',
         display:'flex',
         height: '90%',
         justifyContent:'center',
-        textAlign: "center"
+        textAlign: "center",
+        backgroundColor: 'tomato' 
     },
     lineGray:{
         backgroundColor: '#525252',
@@ -385,7 +386,9 @@ const styles = StyleSheet.create({
     justifyContentCenter:{
         display:'flex', 
         justifyContent:'center'
-    }
+    },
+    page: { padding: 23 },
+    box: { width: '100%', marginBottom: 30, borderRadius: 5 },
 });
 
 export default class RVAnualInein extends Component {
@@ -505,7 +508,7 @@ export default class RVAnualInein extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View>
-                                <Text style = { styles.paginacion}>03</Text>
+                                <Text style = { styles.paginacion} render={({ pageNumber }) => (`0${pageNumber}`)} fixed />
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -523,7 +526,7 @@ export default class RVAnualInein extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>04</Text>
+                                <Text style = { styles.paginacion} render={({ pageNumber }) => (`0${pageNumber}`)} fixed />
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -550,7 +553,7 @@ export default class RVAnualInein extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>06</Text>
+                                <Text style = { styles.paginacion} render={({ pageNumber }) => (`0${pageNumber}`)} fixed />
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -568,7 +571,7 @@ export default class RVAnualInein extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>07</Text>
+                                <Text style = { styles.paginacion} render={({ pageNumber }) => (`0${pageNumber}`)} fixed />
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -586,7 +589,7 @@ export default class RVAnualInein extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>08</Text>
+                                <Text style = { styles.paginacion} render={({ pageNumber }) => (`0${pageNumber}`)} fixed />
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -604,7 +607,7 @@ export default class RVAnualInein extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>09</Text>
+                                <Text style = { styles.paginacion} render={({ pageNumber }) => (`0${pageNumber}`)} fixed />
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -631,7 +634,7 @@ export default class RVAnualInein extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>11</Text>
+                                <Text style = { styles.paginacion} render={({ pageNumber }) => (`${pageNumber}`)} fixed />
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -649,7 +652,7 @@ export default class RVAnualInein extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>12</Text>
+                                <Text style = { styles.paginacion} render={({ pageNumber }) => (`${pageNumber}`)} fixed />
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -676,7 +679,7 @@ export default class RVAnualInein extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>14</Text>
+                                <Text style = { styles.paginacion} render={({ pageNumber }) => (`${pageNumber}`)} fixed />
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -694,7 +697,7 @@ export default class RVAnualInein extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>15</Text>
+                                <Text style = { styles.paginacion} render={({ pageNumber }) => (`${pageNumber}`)} fixed />
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -712,7 +715,7 @@ export default class RVAnualInein extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>16</Text>
+                                <Text style = { styles.paginacion} render={({ pageNumber }) => (`${pageNumber}`)} fixed />
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -732,7 +735,7 @@ export default class RVAnualInein extends Component {
                             <View style = { styles.pagePadding } >
                                 <View style = { styles.numberTitle } >
                                     <View >
-                                        <Text style = { styles.paginacion}>17</Text>
+                                        <Text style = { styles.paginacion} render={({ pageNumber }) => (`${pageNumber}`)} fixed />
                                     </View>
                                     <View>
                                         <Text style = { styles.titulo }>    
@@ -751,9 +754,7 @@ export default class RVAnualInein extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>
-                                    {images.origenesDuplicados !== null ? 18 : 17}
-                                </Text>
+                                <Text style = { styles.paginacion} render={({ pageNumber }) => (`${pageNumber}`)} fixed />
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -780,9 +781,7 @@ export default class RVAnualInein extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>
-                                    {images.origenesDuplicados !== null ? 20 : 19}
-                                </Text>
+                                <Text style = { styles.paginacion} render={({ pageNumber }) => (`${pageNumber}`)} fixed />
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -800,9 +799,7 @@ export default class RVAnualInein extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>
-                                    {images.origenesDuplicados !== null ? 21 : 20}
-                                </Text>
+                                <Text style = { styles.paginacion} render={({ pageNumber }) => (`${pageNumber}`)} fixed />
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -829,9 +826,7 @@ export default class RVAnualInein extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>
-                                    {images.origenesDuplicados !== null ? 23 : 22}
-                                </Text>
+                                <Text style = { styles.paginacion} render={({ pageNumber }) => (`${pageNumber}`)} fixed />
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -849,9 +844,7 @@ export default class RVAnualInein extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>
-                                    {images.origenesDuplicados !== null ? 24 : 23}
-                                </Text>
+                                <Text style = { styles.paginacion} render={({ pageNumber }) => (`${pageNumber}`)} fixed />
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -865,13 +858,11 @@ export default class RVAnualInein extends Component {
                         <View style={ styles.lineGray }></View>
                     </View>
                 </Page>
-                <Page size="A4" orientation = "landscape" >
+                <Page size="A4" orientation = "landscape" wrap >
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>
-                                    {images.origenesDuplicados !== null ? 25 : 24}
-                                </Text>
+                                <Text style = { styles.paginacion} render={({ pageNumber }) => (`${pageNumber}`)} fixed />
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -992,9 +983,7 @@ export default class RVAnualInein extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>
-                                    {images.origenesDuplicados !== null ? 26 : 25}
-                                </Text>
+                                <Text style = { styles.paginacion} render={({ pageNumber }) => (`${pageNumber}`)} fixed />
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -1012,9 +1001,7 @@ export default class RVAnualInein extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>
-                                    {images.origenesDuplicados !== null ? 27 : 26}
-                                </Text>
+                                <Text style = { styles.paginacion} render={({ pageNumber }) => (`${pageNumber}`)} fixed />
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -1028,13 +1015,11 @@ export default class RVAnualInein extends Component {
                         <View style={ styles.lineGray }></View>
                     </View>
                 </Page>
-                <Page size="A4" orientation = "landscape" >
+                <Page size="A4" orientation = "landscape" wrap>
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>
-                                    {images.origenesDuplicados !== null ? 28 : 27}
-                                </Text>
+                                <Text style = { styles.paginacion} render={({ pageNumber }) => (`${pageNumber}`)} fixed />
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -1151,13 +1136,28 @@ export default class RVAnualInein extends Component {
                         <View style={ styles.lineGray }></View>
                     </View>
                 </Page>
+                <Page style={styles.page} size="A4" orientation = "landscape" wrap>
+                    <View style = { styles.numberTitle } fixed>
+                        <View>
+                            <Text style = { styles.paginacion} render={({ pageNumber }) => (`${pageNumber}`)} fixed />
+                        </View>
+                        <View>
+                            <Text style = { styles.titulo }>    
+                                LISTADO DE PROSPECTO DE MESES ANTERIORES
+                            </Text>
+                        </View>
+                    </View>
+                    <View style={[styles.box, { height: 485, backgroundColor: 'tomato' }]}>
+                        
+                    </View>
+                    <View style={[styles.box, { height: 280, backgroundColor: 'crimson' }]} />
+                    <View style={ styles.lineGray } fixed></View>
+                </Page>
                 <Page size="A4" orientation = "landscape">
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>
-                                    {images.origenesDuplicados !== null ? 29 : 28}
-                                </Text>
+                                <Text style = { styles.paginacion} render={({ pageNumber }) => (`${pageNumber}`)} fixed />
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -1361,9 +1361,7 @@ export default class RVAnualInein extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>
-                                    {images.origenesDuplicados !== null ? 31 : 30}
-                                </Text>
+                                <Text style = { styles.paginacion} render={({ pageNumber }) => (`${pageNumber}`)} fixed />
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
@@ -1404,9 +1402,7 @@ export default class RVAnualInein extends Component {
                     <View style = { styles.pagePadding } >
                         <View style = { styles.numberTitle } >
                             <View >
-                                <Text style = { styles.paginacion}>
-                                    {images.origenesDuplicados !== null ? 32 : 31}
-                                </Text>
+                                <Text style = { styles.paginacion} render={({ pageNumber }) => (`${pageNumber}`)} fixed />
                             </View>
                             <View>
                                 <Text style = { styles.titulo }>    
