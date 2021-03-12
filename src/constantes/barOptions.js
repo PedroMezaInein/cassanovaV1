@@ -552,11 +552,7 @@ export const monthGroupBarServicios = (value) => ({
                     labelOffset:0,
                     beginAtZero: true,
                     fontSize: 15,
-                    fontColor: function(contexto){
-                        console.log(contexto, 'label')
-                        return '#808080'
-                    },
-                    /* fontColor: '#808080', */
+                    fontColor: '#808080',
                     fontStyle: "bold",
                     padding: 5,
                     position: 'bottom',
