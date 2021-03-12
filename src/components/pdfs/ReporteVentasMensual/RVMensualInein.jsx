@@ -474,9 +474,41 @@ export default class RVAnualInein extends Component {
         });
         return formatter.format(value);
     }
+    
 
     render() {
         const { conclusiones, sugerencias, images, data } = this.props
+        let totalElementos = data.listado_prospectos_anteriores.length 
+        let total_paginas = Math.ceil(totalElementos / 10)
+        let objectlist = data.listado_prospectos_anteriores
+        let arregloNumPaginas =[ ]  
+        let contador=0
+        console.log(objectlist)
+        console.log(totalElementos)
+        console.log(total_paginas)
+        for(let i=0;i<total_paginas;i++){
+            let arregloElementos =[]
+            for(let j=0;j<10;j++){
+                console.log(contador)
+                arregloElementos.push(contador)
+                contador++;
+                if(contador==totalElementos){
+                    break
+                }
+            }
+            let objetoPagina ={
+                pagina:i,
+                elementos:arregloElementos
+            }
+            console.log(objetoPagina)
+            arregloNumPaginas.push(objetoPagina)
+
+        }
+        
+ 
+
+        console.log(arregloNumPaginas)
+        
         return (
             <Document style = {{ fontFamily: 'Poppins', color: '#525252' }}>
                 <Page size="A4" orientation = "landscape" style = {{ position: 'relative', height: '100%'}}>
@@ -915,7 +947,7 @@ export default class RVAnualInein extends Component {
                                 {
                                     data.listado_prospectos.map((element, index) => {
                                         return(
-                                            <View key = { index } style = { this.setStyleRowBody(index) }>
+                                            <View style = { this.setStyleRowBody(index) }>
                                                 <View style = { styles.cell19 }>
                                                     <Text style = { styles.bodyText}>
                                                         {element.lead.nombre.toUpperCase()}
@@ -1147,9 +1179,126 @@ export default class RVAnualInein extends Component {
                             </Text>
                         </View>
                     </View>
-                    <View style={[styles.box, { height: 485, backgroundColor: 'tomato' }]}>
-                        
-                    </View>
+                    {
+                         
+                        arregloNumPaginas.map((value,key)=>{
+                            
+                            {console.log("Fila ",value)}
+                            return (
+                                
+                                <View key={key} style={[styles.box, { height: 485, backgroundColor: 'tomato' }]}>
+                                <View style = { styles.imgCenter }>
+                                        <View style = { styles.table2}  >
+                                            <View style = { styles.tableRowHeader } >
+                                                <View style = { styles.cell19 }>
+                                                    <Text style = { styles.headerTextJustify} >
+                                                        NOMBRE
+                                                    </Text>
+                                                </View>
+                                                <View style = { styles.cell13 }>
+                                                    <Text style = { styles.headerTextJustify} >
+                                                        PROYECTO
+                                                    </Text>
+                                                </View>
+                                                <View style = { styles.cell42 }>
+                                                    <Text style = { styles.headerText } >
+                                                        OBSERVACIONES
+                                                    </Text>
+                                                </View>
+                                                <View style = { styles.cell10 }>
+                                                    <Text style = { styles.headerText } >
+                                                        ESTATUS
+                                                    </Text>
+                                                </View>
+                                                <View style = { styles.cell_8 }>
+                                                    <Text style = { styles.headerText } >
+                                                        PRIMER CONTACTO
+                                                    </Text>
+                                                </View>
+                                                <View style = { styles.cell_8 }>
+                                                    <Text style = { styles.headerText } >
+                                                        ÚLTIMO CONTACTO
+                                                    </Text>
+                                                </View>
+                                            </View>
+                                            {
+                                                
+                                                value.elementos.map((indice,key2)=>{ 
+                                                   return (
+                                                <View key={indice} style = { styles.tableRowBodyNon }>
+                                                    <View style = { styles.cell19 }>
+                                                        <Text style = { styles.bodyText}>
+                                                             
+                                                            {objectlist[indice].lead.nombre.toUpperCase()}
+                                                        </Text>
+                                                    </View>
+                                                    <View style = { styles.cell13 }>
+                                                        <Text style = { styles.bodyText}>
+                                                             
+                                                        {
+                                                            objectlist[indice].tipo_proyecto!==null?
+                                                            objectlist[indice].tipo_proyecto.tipo:'-'
+                                                        }
+                                                        </Text>
+                                                    </View>
+                                                    <View style = { styles.cell42 }>
+                                                        <Text style = { styles.bodyText}>
+                                                             
+                                                        { this.setComentario( objectlist[indice]) }
+                                                        </Text>
+                                                    </View>
+                                                    <View style = { styles.cell10 }>
+                                                        <Text style = { styles.bodyTextCenter } >
+                                                             
+                                                        {
+                                                            objectlist[indice].estatus_prospecto ?
+                                                                <Text style={
+                                                                    {
+                                                                        color: objectlist[indice].estatus_prospecto.color_texto, fontWeight:600
+                                                                    }}>
+                                                                    { objectlist[indice].estatus_prospecto.estatus.toUpperCase()}
+                                                                </Text>
+                                                            :''
+                                                        }
+                                                        </Text>
+                                                    </View>
+                                                    <View style = { styles.cell_8 }>
+                                                        <Text style = { styles.bodyTextCenter } >
+                                                             
+                                                        {
+                                                            objectlist[indice].contactos ?
+                                                            objectlist[indice].contactos.length ?
+                                                                    this.getFechaText(objectlist[indice].contactos[objectlist[indice].contactos.length - 1].created_at)
+                                                                : '-'
+                                                            : '-'
+                                                        }
+                                                        </Text>
+                                                    </View>
+                                                    <View style = { styles.cell_8 }>
+                                                        <Text style = { styles.bodyTextCenter } >
+                                                             
+                                                        {
+                                                            objectlist[indice].contactos ?
+                                                            objectlist[indice].contactos.length ?
+                                                                    this.getFechaText(objectlist[indice].contactos[0].created_at)
+                                                                : '-'
+                                                            : '-'
+                                                        }
+                                                        </Text>
+                                                    </View>
+                                                </View>
+                                                )
+                                                })
+                                            }
+                                            
+                                        </View>
+                                    </View>
+                                </View>
+                            
+                            )
+                        })
+                    }
+                  
                     <View style={[styles.box, { height: 280, backgroundColor: 'crimson' }]} />
                     <View style={ styles.lineGray } fixed></View>
                 </Page>
