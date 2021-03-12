@@ -366,7 +366,7 @@ const styles = StyleSheet.create({
         justifyContent:'center'
     },
     page: { padding: 23 },
-    box: { width: '100%', marginBottom: 30}
+    box: { width: '100%', marginBottom: 30},
 });
 
 export default class RVAnualIm extends Component {
