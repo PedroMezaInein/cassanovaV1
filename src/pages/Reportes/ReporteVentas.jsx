@@ -124,12 +124,12 @@ class ReporteVentas extends Component {
             case 'INFRAESTRUCTURA MÉDICA':
                 if(form.rango === 'semestral' || form.rango === 'anual')
                     return(
-                        <RVAnualIm form = { form } images = { images } data = { data }
+                        <RVAnualIm form = { form } images = { images } data = { data } meses = { meses }
                             conclusiones = { lista } sugerencias = { sugerencias } mes = { mes.toUpperCase() } />
                     )
                 else
                 return (
-                    <RVMensualIm form={form} images={images} anteriores={leadsAnteriores}
+                    <RVMensualIm form={form} images={images} anteriores={leadsAnteriores} meses = { meses }
                         conclusiones = { lista } sugerencias = { sugerencias } mes={mes.toUpperCase()} data={data} />
                 )
             default:
@@ -710,7 +710,6 @@ class ReporteVentas extends Component {
         auxLabels = []
         aux = []
         auxColors = []
-        console.log(mesesEspañol, 'MESES ESPAÑOL')
         result.servicios_meses.forEach((mes, index) => {
             console.log(meses[index], 'MESES INDEX')
             mes.forEach(servicio => {

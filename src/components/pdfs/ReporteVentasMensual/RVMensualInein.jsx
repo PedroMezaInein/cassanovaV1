@@ -4,7 +4,9 @@ import INEIN from '../../../assets/logos/inein.png'
 import PoppinsBold from '../../../assets/fonts/Poppins-Bold.ttf'
 import Poppins from '../../../assets/fonts/Poppins-ExtraLight.ttf'
 import moment from 'moment'
-import { INEIN_RED } from '../../../constants'
+import { INEIN_RED, COLORES_GRAFICAS_MESES } from '../../../constants'
+
+const mesesEspañol = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
 
 Font.register({
     family: 'Poppins',
@@ -523,7 +525,7 @@ export default class RVAnualInein extends Component {
     }
 
     render() {
-        const { conclusiones, sugerencias, images, data } = this.props
+        const { conclusiones, sugerencias, images, data, meses } = this.props
         let objectlist_prospectos = data.listado_prospectos
         let objectlist_pa = data.listado_prospectos_anteriores
         let objectlist_proyectos = data.proyectos
@@ -583,6 +585,28 @@ export default class RVAnualInein extends Component {
                                     ENTRADA DE LEADS <Text style = { styles.textPink }>MESES ANTERIORES</Text>
                                 </Text>
                             </View>
+                        </View>
+                        <View style = {{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                            {
+                                meses.map((mes, index) => {
+                                    return(
+                                        <View style = {{ display: 'flex', flexDirection: 'row', alignItems: 'center', marginRight: '5px'}}>
+                                            <View style = {{ 
+                                                backgroundColor: index === 0  ? INEIN_RED : COLORES_GRAFICAS_MESES[ mesesEspañol.findIndex( elemento => elemento.toUpperCase() === meses[index]) - 1 ],
+                                                height: '10px',
+                                                width: '10px',
+                                                marginRight: '5px'
+                                            }}>
+                                            </View>
+                                            <View>
+                                                <Text style = {{ fontSize: 12, color: '#808080' }} key = { index }>
+                                                    {mes}
+                                                </Text>
+                                            </View>
+                                        </View>
+                                    )
+                                })
+                            }
                         </View>
                         <View style = { styles.imgCenter }>
                             <Image style = { styles.imagenCentrada }  src = { images.totalMeses }/>
@@ -709,6 +733,28 @@ export default class RVAnualInein extends Component {
                                     SERVICIOS SOLICITADOS <Text style = { styles.textPink }>MESES ANTERIORES</Text>
                                 </Text>
                             </View>
+                        </View>
+                        <View style = {{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                            {
+                                meses.map((mes, index) => {
+                                    return(
+                                        <View style = {{ display: 'flex', flexDirection: 'row', alignItems: 'center', marginRight: '5px'}}>
+                                            <View style = {{ 
+                                                backgroundColor: index === 0  ? INEIN_RED : COLORES_GRAFICAS_MESES[ mesesEspañol.findIndex( elemento => elemento.toUpperCase() === meses[index]) - 1 ],
+                                                height: '10px',
+                                                width: '10px',
+                                                marginRight: '5px'
+                                            }}>
+                                            </View>
+                                            <View>
+                                                <Text style = {{ fontSize: 12, color: '#808080' }} key = { index }>
+                                                    {mes}
+                                                </Text>
+                                            </View>
+                                        </View>
+                                    )
+                                })
+                            }
                         </View>
                         <View style = { styles.imgCenter }>
                             <Image style = { styles.imagenCentrada }  src = { images.serviciosMeses }/>
@@ -856,6 +902,28 @@ export default class RVAnualInein extends Component {
                                     TIPO DE PROYECTO <Text style = { styles.textPink }>MESES ANTERIORES</Text>
                                 </Text>
                             </View>
+                        </View>
+                        <View style = {{ display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center'}}>
+                            {
+                                meses.map((mes, index) => {
+                                    return(
+                                        <View style = {{ display: 'flex', flexDirection: 'row', alignItems: 'center', marginRight: '5px'}}>
+                                            <View style = {{ 
+                                                backgroundColor: index === 0  ? INEIN_RED : COLORES_GRAFICAS_MESES[ mesesEspañol.findIndex( elemento => elemento.toUpperCase() === meses[index]) - 1 ],
+                                                height: '10px',
+                                                width: '10px',
+                                                marginRight: '5px'
+                                            }}>
+                                            </View>
+                                            <View>
+                                                <Text style = {{ fontSize: 12, color: '#808080' }} key = { index }>
+                                                    {mes}
+                                                </Text>
+                                            </View>
+                                        </View>
+                                    )
+                                })
+                            }
                         </View>
                         <View style = { styles.imgCenter }>
                             <Image style = { styles.imagenCentrada }  src = { images.tiposProyectosMeses }/>
