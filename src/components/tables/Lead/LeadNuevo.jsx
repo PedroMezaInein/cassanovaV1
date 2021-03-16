@@ -208,6 +208,13 @@ class LeadNuevo extends Component {
                                                                                     </span>
                                                                                 </span>
                                                                             </Dropdown.Item>
+                                                                            <Dropdown.Item className="p-0" onClick={(e) => { questionAlert('¿ESTÁS SEGURO?', 'ESTE LEAD SERÁ MARCADO COMO DUPLICADO', () => deleteDuplicado(lead)) }} >
+                                                                                <span className="navi-link w-100">
+                                                                                    <span className="navi-text">
+                                                                                        <span className="label label-xl label-inline label-light-warning rounded-0 w-100">LEAD DUPLICADO</span>
+                                                                                    </span>
+                                                                                </span>
+                                                                            </Dropdown.Item>
                                                                         </Dropdown.Menu>
                                                                     </Dropdown>
                                                                     : ''

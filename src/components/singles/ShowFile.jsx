@@ -16,7 +16,7 @@ export class ShowFile extends Component {
         req.open('GET', url, false);
         req.overrideMimeType('text/plain; charset=x-user-defined');
         req.send(null);
-        if (req.status != 200) return '';
+        if (req.status !== 200) return '';
         return req.responseText;
     }
     printSelectiveFile = () => {
