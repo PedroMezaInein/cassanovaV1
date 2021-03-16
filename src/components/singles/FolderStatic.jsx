@@ -14,16 +14,16 @@ class FolderFijo extends Component {
                     onMouseLeave={() => this.setState({ ...this.state, hover: false })}
                 >
                     <div className="card-body">
-                        <div className="mr-6 text-center">
+                        <div className="text-center">
                             {
                                 hover ?
-                                    <i className="fas fa-folder-open text-primary hover-primary text-hover-primary icon-4x text-hover mr-2"></i>
+                                    <i className="fas fa-folder-open text-primary hover-primary text-hover-primary icon-4x text-hover"></i>
                                     :
-                                    <i className="fas fa-folder text-primary hover-primary text-hover-primary icon-4x text-hover mr-2"></i>
+                                    <i className="fas fa-folder text-primary hover-primary text-hover-primary icon-4x text-hover"></i>
                             }
                         </div>
                         <div className="d-flex flex-column">
-                            <div className="text-dark font-weight-bold font-size-h4 text-center mt-3">{text}</div>
+                            <div className="text-dark font-weight-bold font-size-h4 text-center mt-3 text-truncate">{text}</div>
                         </div>
                     </div>
                 </div>
