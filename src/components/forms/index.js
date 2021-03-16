@@ -14,6 +14,7 @@ import egresosForm from './administracion/EgresosForm'
 import proveedorForm from './administracion/ProveedorForm'
 import contratoForm from './administracion/ContratoForm'
 import areasForm from './catalogos/AreaForm'
+import servicioForm from './catalogos/ServicioForm'
 import partidaForm from './catalogos/PartidaForm'
 import unidadForm from './catalogos/UnidadForm'
 import origenLeadForm from './catalogos/OrigenLeadForm'
@@ -105,6 +106,7 @@ export const EgresosForm = egresosForm
 export const ProveedorForm = proveedorForm
 export const ContratoForm = contratoForm
 export const AreasForm = areasForm
+export const ServicioForm = servicioForm
 export const PartidaForm = partidaForm
 export const UnidadForm = unidadForm
 export const OrigenLeadForm = origenLeadForm
