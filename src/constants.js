@@ -2141,3 +2141,18 @@ export const DETAILS_CUENTAS = [
         accessor: 'monto'
     }
 ]
+
+export const SERVICIOS_COLUMNS = [
+    {
+        Header: 'OPCIONES',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Servicio',
+        accessor: 'servicio',
+    },
+    {
+        Header: 'Empresa',
+        accessor: 'empresa'
+    }
+]

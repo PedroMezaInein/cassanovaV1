@@ -509,7 +509,7 @@ export default class RVAnualIm extends Component {
             for(let j=0;j<10;j++){
                 arregloElementos.push(contador)
                 contador++;
-                if(contador==totalElementos){
+                if(contador===totalElementos){
                     break
                 }
             }
