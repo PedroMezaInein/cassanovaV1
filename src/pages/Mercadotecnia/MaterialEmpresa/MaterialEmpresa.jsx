@@ -44,6 +44,18 @@ class MaterialEmpresa extends Component {
                 icono: 'fas fa-user-tie',
                 isActive: false,
                 slug: 'imagenes_personal'
+            },
+            {
+                nombre: 'TIPOGRAFÍA',
+                icono: 'fas fa-pen-nib',
+                isActive: false,
+                slug: 'tipografía'
+            },
+            {
+                nombre: 'FOLDER',
+                icono: 'far fa-folder-open',
+                isActive: false,
+                slug: 'folder'
             }
         ],
         form: {
