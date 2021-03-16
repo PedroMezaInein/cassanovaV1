@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import Layout from '../../components/layout/layout'
-import { Modal } from '../../components/singles'
+import { Modal, ModalDelete } from '../../components/singles'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
 import { SERVICIOS_COLUMNS, URL_DEV } from '../../constants'
 import { setOptions, setTextTable } from '../../functions/setters'
@@ -16,6 +16,7 @@ class Servicios extends Component{
     state = {
         servicio: '',
         modal: false,
+        modalDelete: false,
         form: {
             servicio: '',
             empresa: ''
@@ -58,7 +59,7 @@ class Servicios extends Component{
         })
     }
 
-    addServicioAxios = async(e) => {
+    addServicioAxios = async() => {
         waitAlert()
         const { access_token } = this.props.authUser
         const { form } = this.state
@@ -66,6 +67,38 @@ class Servicios extends Component{
             (response) => {
                 this.setState({ ...this.state, form: this.clearForm(), modal: false })
                 doneAlert('Servicios generados con éxito.')
+                this.updateTable()
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    updateServicioAxios = async() => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { form, servicio } = this.state
+        await axios.put(`${URL_DEV}v2/catalogos/servicios/${servicio.id}`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.setState({ ...this.state, form: this.clearForm(), modal: false, servicio: '' })
+                doneAlert('Servicios actualizado con éxito.')
+                this.updateTable()
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    deleteServicioAxios = async() => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { servicio } = this.state
+        await axios.delete(`${URL_DEV}v2/catalogos/servicios/${servicio.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.setState({ ...this.state, modalDelete: false, servicio: '' })
+                doneAlert('Servicios eliminado con éxito.')
                 this.updateTable()
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -84,7 +117,6 @@ class Servicios extends Component{
     }
 
     openModal = () => { this.setState({ ...this.state, modal: true, form: this.clearForm(), title: 'Nuevo servicio', formeditado: 0 }) }
-
     openModalEdit = servicio => {
         const { form } = this.state
         if(servicio.empresa)
@@ -92,6 +124,7 @@ class Servicios extends Component{
         form.servicio = servicio.servicio
         this.setState({ ...this.state, modal: true, form, servicio: servicio, title: 'Editar servicio', formeditado: 1 })
     }
+    openModalDelete = servicio => { this.setState({ modalDelete: true, servicio: servicio }) }
 
     handleClose = () => {
         const { form } = this.state
@@ -99,6 +132,7 @@ class Servicios extends Component{
         form.servicio = ''
         this.setState({ ...this.state, modal: false, form, servicio: '' })
     }
+    handleCloseDelete = () => { this.setState({ ...this.state, modalDelete: false, servicio: '' }) }
 
     setServicio = servicios => {
         let aux = []
@@ -123,7 +157,14 @@ class Servicios extends Component{
                 iconclass: 'flaticon2-pen',
                 action: 'edit',
                 tooltip: { id: 'edit', text: 'Editar' }
-            }
+            },
+            {
+                text: 'Eliminar',
+                btnclass: 'danger',
+                iconclass: 'flaticon2-rubbish-bin',
+                action: 'delete',
+                tooltip: { id: 'delete', text: 'Eliminar', type: 'error' }
+            },
         )
         return aux
     }
@@ -142,12 +183,12 @@ class Servicios extends Component{
         this.setState({...this.state,form})
     }
     render(){
-        const { modal, title, form, options, formeditado } = this.state
+        const { modal, modalDelete, title, form, options, formeditado } = this.state
         return(
             <Layout active = 'catalogos' {...this.props} >
                 <NewTableServerRender columns = { SERVICIOS_COLUMNS } title = 'Servicios solicitados' subtitle = 'Listado de servicios solicitados'
                     mostrar_boton = { true } abrir_modal = { true } mostrar_acciones = { true } onClick = { this.openModal } 
-                    actions = { { 'edit': { function: this.openModalEdit } } }
+                    actions = { { 'edit': { function: this.openModalEdit }, 'delete': { function: this.openModalDelete } } }
                     idTable = 'kt_datatable_servicios' accessToken = { this.props.authUser.access_token } setter = { this.setServicio }
                     urlRender = { `${URL_DEV}v2/catalogos/servicios` } cadTable = 'cardTable' cardTableHeader ='cardTableHeader'
                     cardBody = 'cardBody' />
@@ -155,6 +196,9 @@ class Servicios extends Component{
                     <ServicioForm form = { form } title = { title } options = { options } onChange = { this.onChange } formeditado = { formeditado } 
                         onSubmit = { this.onSubmit } />
                 </Modal>
+
+                <ModalDelete title = '¿Deseas eliminar el servicio?' show = { modalDelete } handleClose = { this.handleCloseDelete }
+                    onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteServicioAxios() }} />
             </Layout>
         )
     }
