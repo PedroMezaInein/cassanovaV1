@@ -172,6 +172,29 @@ class MaterialCliente extends Component {
         })
     }
 
+    /* ANCHOR AGREGANDO NUEVA CARPETA EN LAS FOTOGRAFÍAS */
+    onSubmitNewDirectoryFotografías = async () => {
+        const { access_token } = this.props.authUser
+        const { form, empresa, url, submenuactive } = this.state
+        waitAlert()
+        await axios.post(`${URL_DEV}mercadotecnia/material-clientes/empresas/${empresa.id}/fotografías`, 
+            { carpeta: form.carpeta, tipo: url[url.length - 1], categoria: submenuactive },
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                Swal.close()
+                const { empresa } = response.data
+                const { form } = this.state
+                form.carpeta = ''
+                this.setState({...this.state, empresa: empresa, form, newFolder: false})
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     /* ANCHOR NEW DIRECTORY FOR CASOS DE EXITO */
     onSubmitNewDirectoryCasosExito = async () => {
         const { access_token } = this.props.authUser
@@ -659,7 +682,7 @@ class MaterialCliente extends Component {
             case 3:
                 if(submenuactive === ''){
                     return(
-                        <div>
+                        <div className='col-md-12'>
                             <div className='row mx-0 my-3'>
                                 <div className='col-md-12'>
                                     <div> <Files /> </div>
@@ -674,8 +697,8 @@ class MaterialCliente extends Component {
                 switch(level){
                     case 0:
                         return(
-                            <div>
-                                <div className='row mx-0 my-3'>
+                            <div className="col-md-12">
+                                <div className="form-group row form-group-marginless">
                                     <div className='col-md-3'>
                                         <FolderStatic text = "SUBPORTAFOLIO" onClick = { this.onClickFolder} element = 'subportafolio' />
                                     </div>
@@ -692,10 +715,15 @@ class MaterialCliente extends Component {
                                         <FolderStatic text = "RENDERS" onClick = { this.onClickFolder } element = 'renders' />
                                     </div>
                                 </div>
+                                <div className="form-group row form-group-marginless">
+                                    <div className='col-md-3'>
+                                        <FolderStatic text = "FOTOGRAFÍAS" onClick = { this.onClickFolder } element = 'fotografías' />
+                                    </div>
+                                </div>
                             </div>
                         )
                     case 1:
-                        if(levelName !== 'renders'){
+                        if(levelName !== 'renders' && levelName !== 'fotografías' ){
                             empresa.tipos.map((tipo)=>{
                                 if(tipo.id === submenuactive){
                                     tipo.adjuntos.map((adjunto)=>{
@@ -731,7 +759,7 @@ class MaterialCliente extends Component {
                                     </div>
                                 </div>
                             )
-                        }else{
+                        }else if(levelName === 'renders'){
                             return(
                                 <div>
                                     <div className='d-flex justify-content-between'>
@@ -749,6 +777,28 @@ class MaterialCliente extends Component {
                                         </div>
                                         <div className='col-md-3'>
                                             <FolderStatic text = 'inventados' onClick = { this.onClickFolder } element = 'inventados' />
+                                        </div>
+                                    </div>
+                                </div>
+                            )
+                        }else if(levelName === 'fotografías'){
+                            return(
+                                <div>
+                                    <div className='d-flex justify-content-between'>
+                                        <div className=''>
+                                            <BtnBackUrl id_boton = "regresar" icon = "" classname_boton = "btn btn-outline-secondary btn-icon btn-sm"
+                                                onclick_boton={(e) => { e.preventDefault(); this.goBackFolderSubmenu() }}
+                                                only_icon="fas fa-angle-left icon-md text-primary" tooltip={{ text: 'REGRESAR' }}
+                                                url_1 = { this.getUrl() } url_2 = { url[url.length - 1] } />
+                                        </div>
+                                        <div></div>
+                                    </div>
+                                    <div className='row mx-0 my-3 justify-content-center'>
+                                        <div className='col-md-3'>
+                                            <FolderStatic text = 'proceso' onClick = { this.onClickFolder } element = 'proceso' />
+                                        </div>
+                                        <div className='col-md-3'>
+                                            <FolderStatic text = 'terminado' onClick = { this.onClickFolder } element = 'terminado' />
                                         </div>
                                     </div>
                                 </div>
@@ -775,7 +825,15 @@ class MaterialCliente extends Component {
                                         newFolder &&
                                         <div className='col-md-3 col-lg-2'>
                                             <NewFolderInput
-                                                newFolder = { this.newFolder } onSubmit={(e) => { e.preventDefault(); this.onSubmitNewDirectoryRender() }}
+                                                newFolder = { this.newFolder } 
+                                                onSubmit={(e) => {
+                                                    e.preventDefault();
+                                                    if(levelName === 'proceso' || levelName === 'terminado'){
+                                                        this.onSubmitNewDirectoryFotografías()
+                                                    }else{
+                                                        this.onSubmitNewDirectoryRender()
+                                                    }
+                                                }}
                                                 customclass = "input-folder" name = 'carpeta' value = { form.carpeta } onChange = { this.onChange } />
                                         </div>
                                     }
@@ -930,7 +988,7 @@ class MaterialCliente extends Component {
     }
     
     render() {
-        const { data, opciones_adjuntos, empresa, submenuactive, modal, form } = this.state
+        const { data, opciones_adjuntos, empresa, submenuactive, modal, form, menuactive, level} = this.state
         return (
             <Layout active = 'mercadotecnia' {...this.props}>
                 <Tab.Container className = "p-5" >
@@ -1025,7 +1083,7 @@ class MaterialCliente extends Component {
                                         </Nav>
                                     </div>
                                 </Card.Header>
-                                <Card.Body>
+                                <Card.Body className={menuactive === 3 && level===0 ? 'd-flex align-items-center': ''}>
                                     {
                                         empresa !== '' ?
                                             this.printFiles()
