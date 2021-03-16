@@ -81,26 +81,23 @@ class FileItem extends Component {
                     </span>
                 </td>
                 {
-                    anotherDate ?
-                        <td className="text-center">
+                    anotherDate &&
+                        <td className="text-center border-bottom">
                             <span className="text-muted font-weight-bold">
                                 <Moment format="DD/MM/YYYY">
                                     {anotherDate}
                                 </Moment>
                             </span>
                         </td>
-                    : ''
                 }
                 {
-                    onClickDelete ?
+                    onClickDelete &&
                         <td className="pr-0 text-right">
                             <span className='btn btn-icon btn-s text-danger text-hover-danger my-2' onClick={(e) => { e.preventDefault(); onClickDelete(item) }} >
                                 <i className="fas fa-trash icon-md text-muted text-hover-danger"></i>
                             </span>
                         </td>
-                    : ''
                 }
-                
             </tr>
         )
     }

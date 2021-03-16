@@ -28,19 +28,15 @@ class TablePagination extends Component {
                             <th className="pr-0 text-right" style={{ minWidth: "70px" }}></th>
                         </tr>
                     </thead>
-                    <tbody >
-                        {
+                    <tbody>{
                             adjuntos.map((adjunto, key) => {
                                 let limiteInferior = (activePage - 1) * itemsPerPage
                                 let limiteSuperior = limiteInferior + (itemsPerPage - 1)
                                 if (adjunto.length < itemsPerPage || (key >= limiteInferior && key <= limiteSuperior))
-                                    return (
-                                        <FileItem item={adjunto} onClickDelete={delete_onclick} key={key} />
-                                    )
+                                    return(<FileItem item={adjunto} onClickDelete={delete_onclick} key={key}/>)
                                 return false
                             })
-                        }
-                    </tbody>
+                        }</tbody>
                 </table>
             </div >
             {
