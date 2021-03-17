@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import { Modal } from '../singles'
 import { Form } from 'react-bootstrap'
 import { Button, RangeCalendar } from '../form-components'
-import { doneAlert, errorAlert, printResponseErrorAlert, validateAlert, waitAlert } from '../../functions/alert'
+import { doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../functions/alert'
 import axios from 'axios'
 import { URL_DEV } from '../../constants'
 class UrlLocation extends Component {
@@ -116,9 +116,11 @@ class UrlLocation extends Component {
                             <label className="col-form-label my-2 font-weight-bolder">Fecha de inicio - Fecha final</label><br/>
                             <RangeCalendar onChange = { this.onChange } start = { form.fechaInicio } end = { form.fechaFin } />
                         </div>
-                        <div className="row">
-                            <div className="col-lg-12 text-center pr-0 pb-0">
-                                <Button icon='' className="btn btn-primary mr-2" onClick={ this.onSubmit } text="ENVIAR" />
+                        <div className="card-footer py-3 pr-1">
+                            <div className="row">
+                                <div className="col-lg-12 text-right pr-0 pb-0">
+                                    <Button icon='' className="btn btn-primary mr-2" onClick={ this.onSubmit } text="ENVIAR" />
+                                </div>
                             </div>
                         </div>
                     </Form>
