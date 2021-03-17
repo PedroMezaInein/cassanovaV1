@@ -4,7 +4,7 @@ import Layout from '../../../../components/layout/layout'
 import { Form } from 'react-bootstrap'
 import { InputGray, SelectSearchGray, InputPhoneGray, Button } from '../../../../components/form-components'
 import axios from 'axios'
-import { doneAlert, errorAlert, printResponseErrorAlert, validateAlert, waitAlert, questionAlert2, questionAlert } from '../../../../functions/alert'
+import { doneAlert, errorAlert, printResponseErrorAlert, validateAlert, waitAlert, questionAlert2, questionAlert, steps } from '../../../../functions/alert'
 import Swal from 'sweetalert2'
 import { setOptions } from '../../../../functions/setters'
 import { TEL, URL_DEV, EMAIL } from '../../../../constants'
@@ -525,16 +525,17 @@ class LeadTelefono extends Component {
                                         <Button icon='' className="btn btn-light-primary font-weight-bold ml-2" text='ENVIAR'
                                             onClick = { (e) => { 
                                                 e.preventDefault();
-                                                questionAlert2(
-                                                    '¿EL FORMULARIO SE LLENÓ POR MEDIO DE UNA LLAMADA?', '',
-                                                    () => this.onSubmit(),
-                                                    <div>
-                                                        <Form.Check type="radio" label="SI" name="respuesta_correo"
-                                                            className="px-0 mb-2" id = 'radio-si' />
-                                                        <Form.Check type="radio" label="NO" name="respuesta_correo"
-                                                            className="px-0 mb-2" id = 'radio-no'  />
-                                                    </div>
-                                                )
+                                                steps()
+                                                // questionAlert2(
+                                                //     '¿EL FORMULARIO SE LLENÓ POR MEDIO DE UNA LLAMADA?', '',
+                                                //     () => this.onSubmit(),
+                                                //     <div>
+                                                //         <Form.Check type="radio" label="SI" name="respuesta_correo"
+                                                //             className="px-0 mb-2" id = 'radio-si' />
+                                                //         <Form.Check type="radio" label="NO" name="respuesta_correo"
+                                                //             className="px-0 mb-2" id = 'radio-no'  />
+                                                //     </div>
+                                                // )
                                             }}
                                         />
                                     : ''
