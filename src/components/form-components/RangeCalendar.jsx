@@ -108,7 +108,7 @@ class RangeCalendar extends Component {
                 disabledDates = { disabledDates }
                 onChange={ (item) => { this.updateRange(item)} }
                 showSelectionPreview = { true }
-                moveRangeOnFirstSelection = { true }
+                // moveRangeOnFirstSelection = { true }
                 editableDateInputs = { true }
                 ranges = { range }
                 rangeColors = {["#357ec7"]}

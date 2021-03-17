@@ -1,10 +1,23 @@
 import React, { Component } from 'react'
-import SVG from "react-inlinesvg";
+import SVG from "react-inlinesvg"
 import { toAbsoluteUrl } from "../../functions/routers"
+import { connect } from 'react-redux'
+import { Modal } from '../singles'
+import { Form } from 'react-bootstrap'
+import { Button, RangeCalendar } from '../form-components'
+import { doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../functions/alert'
+import axios from 'axios'
+import { URL_DEV } from '../../constants'
 class UrlLocation extends Component {
+
     state = {
         paths: [],
-        url: []
+        url: [],
+        modal: false,
+        form: {
+            fechaInicio: new Date(),
+            fechaFin: new Date()
+        }
     }
 
     componentDidMount() {
@@ -12,22 +25,54 @@ class UrlLocation extends Component {
         let aux = pathname.substr(1, pathname.length - 1)
         let url_direccion = pathname.substr(1, pathname.length - 1)
         aux = aux.split('/')
-        if (!Array.isArray(aux)) {
+        if (!Array.isArray(aux))
             aux = [aux]
-        }
         this.setState({
             paths: aux,
             url: url_direccion
         })
     }
+    
     changePageAdd = tipo => {
         const { history } = this.props
-        history.push({
-            pathname: '/leads/crm/add/' + tipo
-        });
+        history.push({ pathname: '/leads/crm/add/' + tipo });
     }
+
+    onChange = range => {
+        const { startDate, endDate } = range
+        const { form } = this.state
+        form.fechaInicio = startDate
+        form.fechaFin = endDate
+        this.setState({ ...this.state, form })
+    }
+
+    openModal = () => { this.setState({...this.state,modal:true}) }
+    handleClose = () => { this.setState({...this.state, modal: false}) }
+
+    onSubmit = async(e) => {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        e.preventDefault();
+        waitAlert()
+        await axios.post(`${URL_DEV}v2/exportar/leads`, form, { responseType:'blob', headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', 'leads.xlsx');
+                document.body.appendChild(link);
+                link.click();
+                doneAlert('Leads consultados con éxito')
+            },
+            (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    
     render() {
-        const { paths, url } = this.state
+        const { paths, url, modal, form } = this.state
         const modulos = this.props.authUser.modulos
         const active = this.props.active;
         let icon;
@@ -46,7 +91,6 @@ class UrlLocation extends Component {
             } else {
                 for (let i = 0; i < modulos.length; i++) {
                     if (modulos[i].slug === active) {
-
                         icon = modulos[i].icon
                         modulo_name = modulos[i].name
                         submodulo = modulos[i].modulos
@@ -54,11 +98,9 @@ class UrlLocation extends Component {
                             if (submodulo[j].slug === paths[1]) {
                                 submodulo_name = submodulo[j].name
                                 break;
-                            } else {
                             }
                         }
                         break;
-                    } else {
                     }
                 }
             }
@@ -66,8 +108,22 @@ class UrlLocation extends Component {
 
         return (
             <>
+                <Modal show = { modal } title = 'Descargar leads' handleClose = { this.handleClose } >
+                    <Form onSubmit = { this.onSubmit} >
+                        <div className="text-center">
+                            <label className="col-form-label my-2 font-weight-bolder">Fecha de inicio - Fecha final</label><br/>
+                            <RangeCalendar onChange = { this.onChange } start = { form.fechaInicio } end = { form.fechaFin } />
+                        </div>
+                        <div className="card-footer py-3 pr-1">
+                            <div className="row">
+                                <div className="col-lg-12 text-right pr-0 pb-0">
+                                    <Button icon='' className="btn btn-primary mr-2" onClick={ this.onSubmit } text="ENVIAR" />
+                                </div>
+                            </div>
+                        </div>
+                    </Form>
+                </Modal>
                 {
-
                     paths.length > 0 ?
                         <div className="subheader py-2 py-lg-4 subheader-solid" id="kt_subheader">
                             <div className="container-fluid d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
@@ -115,12 +171,17 @@ class UrlLocation extends Component {
                                                     only_icon="fas fa-phone pr-0"
                                                     tooltip={{ text: 'TELÉFONO' }}
                                                 /> */}
-                                                    <span onClick={() => { this.changePageAdd('telefono') }} className="btn text-dark-50 btn-icon-primary btn-hover-icon-success font-weight-bolder btn-hover-bg-light">
-                                                        <i className="fas fa-phone">
-                                                        </i> Nuevo lead
-                                                    </span>
+                                                <span onClick = { (e) => { e.preventDefault(); this.openModal() }} 
+                                                    className="btn text-dark-50 btn-icon-primary btn-hover-icon-success font-weight-bolder btn-hover-bg-light mr-2">
+                                                    <i className="fas fa-file-excel">
+                                                    </i> Decargar leads
+                                                </span>
+                                                <span onClick={() => { this.changePageAdd('telefono') }} className="btn text-dark-50 btn-icon-primary btn-hover-icon-success font-weight-bolder btn-hover-bg-light">
+                                                    <i className="fas fa-user-plus">
+                                                    </i> Nuevo lead
+                                                </span>
                                             </>
-                                            : ''
+                                        : ''
                                     }
                                 </div>
                             </div>
@@ -133,4 +194,6 @@ class UrlLocation extends Component {
     }
 }
 
-export default UrlLocation
+const mapStateToProps = (state) => { return { authUser: state.authUser } }
+const mapDispatchToProps = (dispatch) => ({})
+export default connect(mapStateToProps, mapDispatchToProps)(UrlLocation)
