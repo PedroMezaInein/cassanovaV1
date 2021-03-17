@@ -13,7 +13,6 @@ class NavUser extends Component{
 
 	printChecador = () => {
 		const { checador, actualizarChecador } = this.props
-		console.log('CHECADOR', checador)
 		if(checador.length){
 			if(checador[0].fecha_fin === null)
 				return(
