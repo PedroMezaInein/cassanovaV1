@@ -186,12 +186,23 @@ class Servicios extends Component{
         const { modal, modalDelete, title, form, options, formeditado } = this.state
         return(
             <Layout active = 'catalogos' {...this.props} >
-                <NewTableServerRender columns = { SERVICIOS_COLUMNS } title = 'Servicios solicitados' subtitle = 'Listado de servicios solicitados'
-                    mostrar_boton = { true } abrir_modal = { true } mostrar_acciones = { true } onClick = { this.openModal } 
+                <NewTableServerRender
+                    columns = { SERVICIOS_COLUMNS }
+                    title = 'Servicios solicitados'
+                    subtitle = 'Listado de servicios solicitados'
+                    mostrar_boton = { true }
+                    abrir_modal = { true }
+                    mostrar_acciones = { true }
+                    onClick = { this.openModal } 
                     actions = { { 'edit': { function: this.openModalEdit }, 'delete': { function: this.openModalDelete } } }
-                    idTable = 'kt_datatable_servicios' accessToken = { this.props.authUser.access_token } setter = { this.setServicio }
-                    urlRender = { `${URL_DEV}v2/catalogos/servicios` } cadTable = 'cardTable' cardTableHeader ='cardTableHeader'
-                    cardBody = 'cardBody' />
+                    idTable = 'kt_datatable_servicios'
+                    cardTable = 'cardTable'
+                    cardTableHeader = 'cardTableHeader'
+                    cardBody = 'cardBody'
+                    accessToken = { this.props.authUser.access_token }
+                    setter = { this.setServicio }
+                    urlRender = { `${URL_DEV}v2/catalogos/servicios` }
+                />
                 <Modal show = { modal } size = 'lg' title = { title } handleClose = { this.handleClose }>
                     <ServicioForm form = { form } title = { title } options = { options } onChange = { this.onChange } formeditado = { formeditado } 
                         onSubmit = { this.onSubmit } />
