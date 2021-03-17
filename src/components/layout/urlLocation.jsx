@@ -116,7 +116,7 @@ class UrlLocation extends Component {
                                                     tooltip={{ text: 'TELÉFONO' }}
                                                 /> */}
                                                     <span onClick={() => { this.changePageAdd('telefono') }} className="btn text-dark-50 btn-icon-primary btn-hover-icon-success font-weight-bolder btn-hover-bg-light">
-                                                        <i className="fas fa-phone">
+                                                        <i className="fas fa-user-plus">
                                                         </i> Nuevo lead
                                                     </span>
                                             </>
