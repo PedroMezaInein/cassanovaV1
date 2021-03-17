@@ -177,7 +177,7 @@ class UrlLocation extends Component {
                                                     </i> Decargar leads
                                                 </span>
                                                 <span onClick={() => { this.changePageAdd('telefono') }} className="btn text-dark-50 btn-icon-primary btn-hover-icon-success font-weight-bolder btn-hover-bg-light">
-                                                    <i className="fas fa-phone">
+                                                    <i className="fas fa-user-plus">
                                                     </i> Nuevo lead
                                                 </span>
                                             </>

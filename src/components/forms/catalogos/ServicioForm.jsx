@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
 import { validateAlert } from '../../../functions/alert'
-import { Input, Button, SelectSearch, SelectSearchTrue } from '../../form-components'
+import { Input, Button, SelectSearchTrue } from '../../form-components'
 
 class ServicioForm extends Component{
 
@@ -17,7 +17,7 @@ class ServicioForm extends Component{
                 <div className = 'form-group row form-group-marginless pt-4 justify-content-around'>
                     <div className = 'col-md-5'>
                         <Input requirevalidation = { 1 } formeditado = { formeditado } name = 'servicio' value = { form.servicio }
-                            placeholder = 'Servicio de interés' onChange = { onChange } iconclass = 'fab fa-wordpress-simple'
+                            placeholder = 'SERVICIO DE INTERÉS' onChange = { onChange } iconclass = 'fab fa-wordpress-simple'
                             messageinc = 'Incorrecto. Ingresa el servicio de interés' />
                     </div>
                     <div className = 'col-md-5'>

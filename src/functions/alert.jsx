@@ -297,45 +297,75 @@ export function questionAlert2(title, text, action, html) {
     })
 }
 
-export function steps(title, text, action, html) {
-    const steps = ['1', '2', '3']
+export function steps() {
+    const steps = ['1', '2']
+    const textQuestion = ['¿EL FORMULARIO SE LLENÓ POR MEDIO DE UNA LLAMADA?', '¿DESEAS ENVIAR EL CUESTIONARIO DE PROYECTO?']
     const swalQueueStep = Swal.mixin({
-    confirmButtonText: 'Forward',
-    cancelButtonText: 'Back',
-    progressSteps: steps,
-    input: 'text',
-    inputAttributes: {
-        required: true
-    },
-    reverseButtons: true,
-    validationMessage: 'This field is required'
-    })
-
-    async function backAndForth () {
-    const values = []
-    let currentStep
-
-    for (currentStep = 0; currentStep < steps.length;) {
-        const result = await swalQueueStep.fire({
-        title: 'Question ' + steps[currentStep],
-        inputValue: values[currentStep],
-        showCancelButton: currentStep > 0,
-        currentProgressStep: currentStep
-        })
-
-        if (result.value) {
-        values[currentStep] = result.value
-        currentStep++
-        } else if (result.dismiss === 'cancel') {
-        currentStep--
-        } else {
-        break
+        confirmButtonText: 'SIGUIENTE',
+        cancelButtonText: 'REGRESAR',
+        progressSteps: steps,
+        input: 'radio',
+        inputOptions: {
+            SI: 'SI',
+            NO: 'NO'
+        },
+        inputAttributes: {
+            required: true
+        },    
+        reverseButtons: true,
+        customClass: {
+            validationMessage:'width-content-validation',
+            title:'mt-4'
+        },
+        inputValidator: (value) => {
+            if (!value) {
+                return 'NECESITAS ELEGIR UNA OPCIÓN'
+            }
         }
-    }
-
-    if (currentStep === steps.length) {
-        Swal.fire(JSON.stringify(values))
-    }
+    })
+    async function backAndForth () {
+        const values = []
+        let currentStep
+        for (currentStep = 0; currentStep < steps.length;) {
+            const result = await swalQueueStep.fire({
+                title: textQuestion[currentStep],
+                inputValue: values[currentStep],
+                showCancelButton: currentStep > 0,
+                currentProgressStep: currentStep
+            })
+            if (result.value) {
+                values[currentStep] = result.value
+                currentStep++
+            } else if (result.dismiss === 'cancel') {
+                currentStep--
+            } else {
+            break
+            }
+        }
+        // if (currentStep === steps.length) {
+        //     Swal.fire(JSON.stringify(values))
+        // }
+        if (currentStep === steps.length) {
+            Swal.fire({
+                title: '¿ESTÁS SEGURO DE TUS RESPUESTAS?',
+                html: `
+                    <div class="form-group row row-paddingless form-group-marginless mt-4">
+                        <div class="col-md-12 font-weight-light text-center font-size-lg">
+                            ¿EL FORMULARIO SE LLENÓ POR MEDIO DE UNA LLAMADA?
+                            <div class="font-weight-boldest">${values[0]}</div>
+                        </div>
+                    </div>
+                    <div class="row row-paddingless form-group-marginless">
+                        <div class="col-md-12 font-weight-light text-center font-size-lg">
+                            ¿DESEAS ENVIAR EL CUESTIONARIO DE PROYECTO?
+                            <div class="font-weight-boldest">${values[1]}</div>
+                        </div>
+                    </div>
+                `,
+                confirmButtonText: 'ENVIAR'
+            })
+        }
+        
     }
     backAndForth()
 }

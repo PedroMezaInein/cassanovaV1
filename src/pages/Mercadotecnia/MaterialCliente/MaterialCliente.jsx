@@ -632,7 +632,7 @@ class MaterialCliente extends Component {
 
     handleChange = (files, item) => {
         const { menuactive, level, url} = this.state
-        let tipoSubCarpeta = url[url.length - 2];
+        let tipoSubCarpeta = url[url.length - 3];
         this.onChangeAdjuntos({ target: { name: item, value: files, files: files } })
         switch(menuactive){
             case 3:
@@ -676,13 +676,17 @@ class MaterialCliente extends Component {
 
     printCarpetasLevel2 = () => {
         const { submenuactive, url, empresa } = this.state
-        var tipoSubCarpeta = url[url.length - 2];
+        let tipoSubCarpeta = url[url.length - 2];
         let carpetas = []
+        console.log(empresa,'empresa')
+        console.log(tipoSubCarpeta,'tipoSubCarpeta')
         empresa.tipos.map((tipo) => {
             if(tipo.id === submenuactive){
-                tipo[`${tipoSubCarpeta}`].map((render)=>{
-                    if(render.nombre === url[url.length - 1]){
-                        render.carpetas.map((carpeta)=>{
+                console.log(tipo,'tipo')
+                tipo[`${tipoSubCarpeta}`].map((tipo)=>{
+                    console.log('map tipoSubCarpeta')
+                    if(tipo.nombre === url[url.length - 1]){
+                        tipo.carpetas.map((carpeta)=>{
                             carpetas.push(carpeta)
                             return ''
                         })
@@ -726,17 +730,15 @@ class MaterialCliente extends Component {
 
     onClickDelete = (element) => {
         const { menuactive, level, url} = this.state
-        let tipoSubCarpeta = url[url.length - 2];
+        let tipoSubCarpeta = url[url.length - 3];
         switch(menuactive){
             case 3:
                 if(level === 1){
                     deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', element.name, () => this.deleteAdjunto(element.id, element.pivot.tipo))
                 }else{
                     if(tipoSubCarpeta === 'renders'){
-                        console.log('eliminar renders')
                         deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', element.name, () => this.deleteAdjuntoInRender(element))
                     }else{
-                        console.log('eliminar fotografias')
                         deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', element.name, () => this.deleteAdjuntoInFotografias(element))
                     }
                 }
