@@ -1515,7 +1515,8 @@ class LeadInfo extends Component {
                                         <Card.Body className="py-0">
                                             <InformacionGeneral form = { form } onChange = { this.onChange }
                                                 onSubmit = { this.addLeadInfoAxios } user = { this.props.authUser.user }
-                                                lead = { lead } formeditado = { formeditado } options = { options }
+                                                lead = { lead } formeditado = { formeditado } options = { options } 
+                                                formeditado={formeditado}
                                             />
                                         </Card.Body>
                                     </Tab.Pane>
@@ -1550,6 +1551,7 @@ class LeadInfo extends Component {
                                                     onSubmit = { () => { waitAlert(); this.agendarEvento() } }
                                                     tagInputChange = { (e) => this.tagInputChange(e) }
                                                     onChangeAgendaLC = { this.onChangeAgendaLC } lead={lead}
+                                                    formeditado={formeditado}
                                                 />
                                             </div>
                                             <div className="col-md-8">
