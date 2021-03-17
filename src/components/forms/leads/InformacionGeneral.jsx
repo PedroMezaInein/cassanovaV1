@@ -64,18 +64,9 @@ class InformacionGeneral extends Component {
                                     messageinc="Ingresa el teléfono de contacto." />
                             </div>
                             <div className={lead.relaciones_publicas === 1 || this.estatus() === "En espera" ? "col-md-6" : "col-md-4"}>
-                                <SelectSearchGray
-                                    options={ getEstados() }
-                                    placeholder="SELECCIONA EL ESTADO"
-                                    name="estado"
-                                    value={form.estado}
-                                    onChange={this.updateEstados}
-                                    requirevalidation={1}
-                                    messageinc="Selecciona el estado."
-                                    customdiv="mb-0"
-                                    withtaglabel={1}
-                                    withtextlabel={1}
-                                />
+                                <SelectSearchGray options = { getEstados() } placeholder = "SELECCIONA EL ESTADO" name = "estado"
+                                    value = { form.estado } onChange = { this.updateEstados } requirevalidation = { 1 }
+                                    messageinc = "Selecciona el estado." customdiv = "mb-0" withtaglabel = { 1 } withtextlabel = { 1 } />
                             </div>
                             {
                             lead.relaciones_publicas === 1 || this.estatus() === "En espera" ? ""
