@@ -1967,11 +1967,9 @@ class Crm extends Component {
                                                 </div>
                                                 : ''
                                         }
-                                        <div className="col-md-1 text-center" onClick={(e) => { e.preventDefault(); this.changeActiveTable(activeTable) }} >
-                                            <span className="btn btn-light-primary px-6 font-weight-bold mt-md-0 mt-2">Buscar</span>
-                                        </div>
-                                        <div className="col-md-1 text-center" onClick={this.cleanForm} >
-                                            <span className="btn btn-light-danger px-6 font-weight-bold mt-md-0 mt-2">Limpiar</span>
+                                        <div className="col-md-2">
+                                            <span className="btn btn-light-primary px-3 font-weight-bold mt-md-0 mt-2 mr-3" onClick={(e) => { e.preventDefault(); this.changeActiveTable(activeTable) }}>Buscar</span>
+                                            <span className="btn btn-light-danger px-3 font-weight-bold mt-md-0 mt-2" onClick={this.cleanForm}>Limpiar</span>
                                         </div>
                                     </div>
                                 </div>

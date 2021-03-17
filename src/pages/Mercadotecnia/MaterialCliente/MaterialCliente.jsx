@@ -177,7 +177,7 @@ class MaterialCliente extends Component {
         const { access_token } = this.props.authUser
         const { form, empresa, url, submenuactive } = this.state
         waitAlert()
-        await axios.post(`${URL_DEV}mercadotecnia/material-clientes/empresas/${empresa.id}/fotografías`, 
+        await axios.post(`${URL_DEV}v2/mercadotecnia/material-clientes/empresas/${empresa.id}/fotografias`, 
             { carpeta: form.carpeta, tipo: url[url.length - 1], categoria: submenuactive },
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -287,6 +287,41 @@ class MaterialCliente extends Component {
             console.log(error, 'error')
         })
     }
+
+    /* ANCHOR ADD ADJUNTO RENDER */
+    addAdjuntoInFotografias = async() => {
+        const { url, levelItem, form, submenuactive, empresa } = this.state
+        const { access_token } = this.props.authUser
+        const data = new FormData();
+        let tipo = ''
+        if(url.length > 2)
+            tipo = url[url.length - 2]
+        data.append('empresa', empresa.id)
+        form.adjuntos.adjuntos.files.map((file)=>{
+            data.append(`files_name[]`, file.name)
+            data.append(`files[]`, file.file)
+            return ''
+        })
+        data.append('tipo', tipo)
+        data.append('categoria', submenuactive)
+        await axios.post(`${URL_DEV}v2/mercadotecnia/material-clientes/empresas/${empresa.id}/fotografias/carpeta/${levelItem.id}`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                Swal.close()
+                const { empresa, carpeta } = response.data
+                let { levelItem } = this.state
+                form.adjuntos.adjuntos.files = []
+                form.adjuntos.adjuntos.value = ''
+                levelItem = carpeta
+                this.setState({...this.state, form, empresa:empresa, levelItem})
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     
     /* ANCHOR ADD ADJUNTO CASOS EXITO */
     addAdjuntoInCasoExito = async() => {
@@ -346,6 +381,30 @@ class MaterialCliente extends Component {
             tipo = url[url.length - 2]
         }
         await axios.delete(`${URL_DEV}mercadotecnia/material-clientes/empresas/${empresa.id}/tipo/${submenuactive}/renders/${tipo}/adjuntos/${element.id}`, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert('ADJUNTO ELIMINADO CON ÉXITO')
+                const { empresa, carpeta } = response.data
+                this.setState({...this.state,empresa:empresa, levelItem: carpeta})
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    /* ANCHOR DELETE ADJUNTO IN RENDER */
+    deleteAdjuntoInFotografias = async element => {
+        const { access_token } = this.props.authUser
+        const { empresa, submenuactive, url } = this.state
+        let tipo = ''
+        if(url.length > 2){
+            tipo = url[url.length - 2]
+        }
+        await axios.delete(`${URL_DEV}v2/mercadotecnia/material-clientes/empresas/${empresa.id}/tipo/${submenuactive}/fotografias/${tipo}/adjuntos/${element.id}`, 
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert('ADJUNTO ELIMINADO CON ÉXITO')
@@ -451,6 +510,30 @@ class MaterialCliente extends Component {
         })
     }
 
+    /* ANCHOR DELETE FOLDER IN FOTOGRAFÍA */
+    deleteFolderInFotografiaAxios = async(id) => {
+        const { access_token } = this.props.authUser
+        const { empresa } = this.state
+        waitAlert()
+        await axios.delete(`${URL_DEV}v2/mercadotecnia/material-clientes/empresas/${empresa.id}/fotografias/carpeta/${id}`, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                Swal.close()
+                const { empresa } = response.data
+                this.setState({ ...this.state, empresa: empresa })
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+            return true
+        })
+    }
+
+
+
     /* ANCHOR DELETE FOLDER IN CASO EXITO */
     deleteFolderInCasoExitoAxios = async(id) => {
         const { access_token } = this.props.authUser
@@ -548,15 +631,22 @@ class MaterialCliente extends Component {
     }
 
     handleChange = (files, item) => {
-        const { menuactive, level } = this.state
+        const { menuactive, level, url} = this.state
+        let tipoSubCarpeta = url[url.length - 3];
         this.onChangeAdjuntos({ target: { name: item, value: files, files: files } })
         switch(menuactive){
             case 3:
-                if(level === 1)
+                if(level === 1){
                     questionAlert('ENVIAR ARCHIVO', '¿ESTÁS SEGURO QUE DESEAS ENVIARLO?', () => { waitAlert(); this.addAdjunto() })
-                else
-                    questionAlert('ENVIAR ARCHIVO', '¿ESTÁS SEGURO QUE DESEAS ENVIARLO?', () => { waitAlert(); this.addAdjuntoInRender() })
-                break;
+                }else{
+                    if(tipoSubCarpeta === 'renders'){
+                        questionAlert('ENVIAR ARCHIVO', '¿ESTÁS SEGURO QUE DESEAS ENVIARLO?', () => { waitAlert(); this.addAdjuntoInRender() })
+                    }else{
+                        console.log('fotografias agregar')
+                        questionAlert('ENVIAR ARCHIVO', '¿ESTÁS SEGURO QUE DESEAS ENVIARLO?', () => { waitAlert(); this.addAdjuntoInFotografias() })
+                    }
+                    break;
+                }
             case 6:
                 questionAlert('ENVIAR ARCHIVO', '¿ESTÁS SEGURO QUE DESEAS ENVIARLO?', () => { waitAlert(); this.addAdjuntoInCasoExito() })
                 break;
@@ -584,14 +674,19 @@ class MaterialCliente extends Component {
         this.setState({ ...this.state, form })
     }
 
-    printCarpetasRender = () => {
+    printCarpetasLevel2 = () => {
         const { submenuactive, url, empresa } = this.state
+        let tipoSubCarpeta = url[url.length - 2];
         let carpetas = []
+        console.log(empresa,'empresa')
+        console.log(tipoSubCarpeta,'tipoSubCarpeta')
         empresa.tipos.map((tipo) => {
             if(tipo.id === submenuactive){
-                tipo.renders.map((render)=>{
-                    if(render.nombre === url[url.length - 1]){
-                        render.carpetas.map((carpeta)=>{
+                console.log(tipo,'tipo')
+                tipo[`${tipoSubCarpeta}`].map((tipo)=>{
+                    console.log('map tipoSubCarpeta')
+                    if(tipo.nombre === url[url.length - 1]){
+                        tipo.carpetas.map((carpeta)=>{
                             carpetas.push(carpeta)
                             return ''
                         })
@@ -634,13 +729,18 @@ class MaterialCliente extends Component {
     }
 
     onClickDelete = (element) => {
-        const { menuactive, level } = this.state
+        const { menuactive, level, url} = this.state
+        let tipoSubCarpeta = url[url.length - 3];
         switch(menuactive){
             case 3:
                 if(level === 1){
                     deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', element.name, () => this.deleteAdjunto(element.id, element.pivot.tipo))
                 }else{
-                    deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', element.name, () => this.deleteAdjuntoInRender(element))
+                    if(tipoSubCarpeta === 'renders'){
+                        deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', element.name, () => this.deleteAdjuntoInRender(element))
+                    }else{
+                        deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', element.name, () => this.deleteAdjuntoInFotografias(element))
+                    }
                 }
                 break;
             case 6:
@@ -653,10 +753,15 @@ class MaterialCliente extends Component {
     }
 
     onClickDeleteFolder = async (element) => {
-        const { menuactive } = this.state
+        const { menuactive, url } = this.state
+        let tipoSubCarpeta = url[url.length - 2];
         switch(menuactive){
             case 3:
-                deleteAlert('¿DESEAS ELIMINAR LA CARPETA?', element.nombre, () => this.deleteFolderInRenderAxios(element.id))
+                if(tipoSubCarpeta === 'renders'){
+                    deleteAlert('¿DESEAS ELIMINAR LA CARPETA?', element.nombre, () => this.deleteFolderInRenderAxios(element.id))
+                }else{
+                    deleteAlert('¿DESEAS ELIMINAR LA CARPETA?', element.nombre, () => this.deleteFolderInFotografiaAxios(element.id))
+                }
                 break;
             case 6:
                 deleteAlert('¿DESEAS ELIMINAR LA CARPETA?', element.tipo, () => this.deleteFolderInCasoExitoAxios(element.id))
@@ -717,13 +822,13 @@ class MaterialCliente extends Component {
                                 </div>
                                 <div className="form-group row form-group-marginless">
                                     <div className='col-md-3'>
-                                        <FolderStatic text = "FOTOGRAFÍAS" onClick = { this.onClickFolder } element = 'fotografías' />
+                                        <FolderStatic text = "FOTOGRAFÍAS" onClick = { this.onClickFolder } element = 'fotografias' />
                                     </div>
                                 </div>
                             </div>
                         )
                     case 1:
-                        if(levelName !== 'renders' && levelName !== 'fotografías' ){
+                        if(levelName !== 'renders' && levelName !== 'fotografias' ){
                             empresa.tipos.map((tipo)=>{
                                 if(tipo.id === submenuactive){
                                     tipo.adjuntos.map((adjunto)=>{
@@ -781,7 +886,7 @@ class MaterialCliente extends Component {
                                     </div>
                                 </div>
                             )
-                        }else if(levelName === 'fotografías'){
+                        }else if(levelName === 'fotografias'){
                             return(
                                 <div>
                                     <div className='d-flex justify-content-between'>
@@ -838,7 +943,7 @@ class MaterialCliente extends Component {
                                         </div>
                                     }
                                     { 
-                                        this.printCarpetasRender().map((carpeta, index) =>{
+                                        this.printCarpetasLevel2().map((carpeta, index) =>{
                                             return(
                                                 <div className='col-md-3 col-lg-2' key = { index } >
                                                     <Folder text = { carpeta.nombre } onClick = { this.onClickFolder }
