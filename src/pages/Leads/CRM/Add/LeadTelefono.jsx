@@ -6,7 +6,7 @@ import { InputGray, SelectSearchGray, InputPhoneGray, Button } from '../../../..
 import axios from 'axios'
 import { doneAlert, errorAlert, printResponseErrorAlert, validateAlert, waitAlert, questionAlert2, questionAlert, steps } from '../../../../functions/alert'
 import Swal from 'sweetalert2'
-import { setOptions } from '../../../../functions/setters'
+import { getEstados, setOptions } from '../../../../functions/setters'
 import { TEL, URL_DEV, EMAIL } from '../../../../constants'
 class LeadTelefono extends Component {
     state = {
@@ -21,7 +21,8 @@ class LeadTelefono extends Component {
             obra: '',
             email: '',
             tipoProyectoNombre: '',
-            origen: ''
+            origen: '',
+            estado: ''
         },
         tipo: '',
         options: {
@@ -88,6 +89,9 @@ class LeadTelefono extends Component {
     updateServicio = value => {
         this.onChange({ target: { value: value, name: 'servicio' } })
     }
+    /* updateServicio = value => {
+        this.onChange({ target: { value: value, name: 'servicio' } })
+    } */
 
     onChange = e => {
         const { name, value, checked, type } = e.target
@@ -251,7 +255,7 @@ class LeadTelefono extends Component {
         const { access_token } = this.props.authUser
         const { form } = this.state
         waitAlert();
-        await axios.post(`${URL_DEV}crm/add/lead/telefono/duplicado`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}v2/leads/crm/add/lead/telefono/duplicado`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { history } = this.props
                 doneAlert('El lead fue registrado como duplicado.')
@@ -282,13 +286,11 @@ class LeadTelefono extends Component {
                     elemento = motivo
             form.motivo_rechazo = elemento
             waitAlert();
-            await axios.post(`${URL_DEV}crm/add/lead/telefono/rechazar`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            await axios.post(`${URL_DEV}v2/leads/crm/add/lead/telefono/rechazar`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
                 (response) => {
                     const { history } = this.props
                     doneAlert('El lead fue rechazado con éxito.')
-                    history.push({
-                        pathname: '/leads/crm'
-                    });
+                    history.push({ pathname: '/leads/crm' });
                 },
                 (error) => { printResponseErrorAlert(error) }
             ).catch((error) => {
@@ -335,25 +337,31 @@ class LeadTelefono extends Component {
                                         name = "comentario" value = { form.comentario } onChange = { this.onChange }
                                         rows = { 3 } as = 'textarea' />
                                 </div>
-                                <div className="col-md-4">
+                                <div className="col-md-3">
                                     <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 }
                                         withicon = { 0 } withformgroup = { 1 } name = 'empresa'
                                         value = { form.empresa } placeholder = 'EMPRESA DEL LEAD'
                                         onChange = { this.onChange } iconclass = 'fas fa-building' />
                                 </div>
-                                <div className="col-md-4">
+                                <div className="col-md-3">
                                     <InputPhoneGray placeholder = "TELÉFONO DE CONTACTO" withicon = { 1 }
                                         iconclass = "fas fa-mobile-alt" name = "telefono" value = { form.telefono }
                                         requirevalidation = { 0 } onChange = { this.onChange } patterns = { TEL }
                                         thousandseparator = { false } prefix = '' 
                                         messageinc = "Incorrecto. Ingresa el teléfono de contacto." />
                                 </div>
-                                <div className="col-md-4">
+                                <div className="col-md-3">
                                     <SelectSearchGray requirevalidation = { 1 } options = { options.origenes }
                                         placeholder = "SELECCIONA EL ORIGEN PARA EL LEAD" name = "origen"
                                         value = { form.origen } onChange = { this.updateOrigen } withtaglabel = { 1 }
                                         iconclass = "fas fa-mail-bulk" withtextlabel = { 1 }
                                         messageinc="Incorrecto. Selecciona el origen para el lead." />
+                                </div>
+                                <div className="col-md-3">
+                                    <SelectSearchGray options = { getEstados() } placeholder = "SELECCIONA EL ESTADO" name = "estado"
+                                        value = { form.estado } onChange = {  (value) => { this.onChange({ target: { value: value, name: 'estado' } }) } } 
+                                        requirevalidation = { 1 } messageinc = "Selecciona el estado." customdiv = "mb-0" withtaglabel = { 1 } 
+                                        withtextlabel = { 1 } />
                                 </div>
                                 <div className="col-md-3">
                                     <SelectSearchGray options = { options.empresas } name = "empresa_dirigida"
