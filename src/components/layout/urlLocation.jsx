@@ -91,7 +91,6 @@ class UrlLocation extends Component {
             } else {
                 for (let i = 0; i < modulos.length; i++) {
                     if (modulos[i].slug === active) {
-
                         icon = modulos[i].icon
                         modulo_name = modulos[i].name
                         submodulo = modulos[i].modulos
@@ -99,7 +98,6 @@ class UrlLocation extends Component {
                             if (submodulo[j].slug === paths[1]) {
                                 submodulo_name = submodulo[j].name
                                 break;
-                            } else {
                             }
                         }
                         break;
