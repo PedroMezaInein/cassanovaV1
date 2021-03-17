@@ -297,7 +297,7 @@ export function questionAlert2(title, text, action, html) {
     })
 }
 
-export function steps(title, text, action, html) {
+export function steps() {
     const steps = ['1', '2']
     const textQuestion = ['¿EL FORMULARIO SE LLENÓ POR MEDIO DE UNA LLAMADA?', '¿DESEAS ENVIAR EL CUESTIONARIO DE PROYECTO?']
     const swalQueueStep = Swal.mixin({
@@ -306,8 +306,8 @@ export function steps(title, text, action, html) {
         progressSteps: steps,
         input: 'radio',
         inputOptions: {
-            si: 'SI',
-            no: 'NO'
+            SI: 'SI',
+            NO: 'NO'
         },
         inputAttributes: {
             required: true
@@ -346,11 +346,21 @@ export function steps(title, text, action, html) {
         //     Swal.fire(JSON.stringify(values))
         // }
         if (currentStep === steps.length) {
-            const answers = JSON.stringify(values)
             Swal.fire({
                 title: '¿ESTÁS SEGURO DE TUS RESPUESTAS?',
                 html: `
-                    <code>${answers}</code>
+                    <div class="form-group row row-paddingless form-group-marginless mt-4">
+                        <div class="col-md-12 font-weight-light text-center font-size-lg">
+                            ¿EL FORMULARIO SE LLENÓ POR MEDIO DE UNA LLAMADA?
+                            <div class="font-weight-boldest">${values[0]}</div>
+                        </div>
+                    </div>
+                    <div class="row row-paddingless form-group-marginless">
+                        <div class="col-md-12 font-weight-light text-center font-size-lg">
+                            ¿DESEAS ENVIAR EL CUESTIONARIO DE PROYECTO?
+                            <div class="font-weight-boldest">${values[1]}</div>
+                        </div>
+                    </div>
                 `,
                 confirmButtonText: 'ENVIAR'
             })
