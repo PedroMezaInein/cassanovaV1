@@ -11,16 +11,16 @@ import UserPanel from '../../../src/components/layout/UserPanel/userPanel'
 import { Notificacion } from '../singles'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
-import { errorAlert, printResponseErrorAlert, doneAlert } from '../../functions/alert'
+import { errorAlert, printResponseErrorAlert, doneAlert, waitAlert } from '../../functions/alert'
 
-function openUserProfile() {
+/* function openUserProfile() {
     if (document.getElementsByClassName("offcanvas")[0].classList.contains("offcanvas-on")) {
         document.getElementsByClassName("offcanvas")[0].classList.remove("offcanvas-on");
     }
     else {
         document.getElementsByClassName("offcanvas")[0].classList.add("offcanvas-on");
     }
-}
+} */
 function clickShowAside() {
     document.body.classList.remove('aside-on');
     document.getElementById("openbuerger").classList.remove("mobile-toggle-active");
@@ -37,11 +37,14 @@ function clickShowHeader() {
 class Layout extends Component {
 
     state = {
-        menu: false
+        menu: false,
+        json: {},
+        checador: []
     }
 
     componentDidMount() {
         this.getNotificacionesAxios()
+        this.getIpInfo()
     }
 
     logoutUser = () => {
@@ -51,6 +54,35 @@ class Layout extends Component {
     clickResponsiveMenu = () => {
         this.setState({
             menu: !this.state.menu
+        })
+    }
+
+    openUserProfile = () => {
+        const { json } = this.state
+        if(document.getElementsByClassName("offcanvas")[0].classList.contains("offcanvas-on")) {
+            document.getElementsByClassName("offcanvas")[0].classList.remove("offcanvas-on");
+        }else{
+            this.getUserChecador()
+            document.getElementsByClassName("offcanvas")[0].classList.add("offcanvas-on");
+        }
+    }
+
+    getIpInfo = async () => {
+        axios.get('https://ipapi.co/json').then((response) => {
+            this.setState({json: response.data})
+        }).catch((error) => { console.log(error); });
+    }
+
+    getUserChecador = async() => {
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}v2/usuarios/usuarios/checador`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { usuario } = response.data
+                this.setState({...this.state, checador: usuario.checadores})
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
 
@@ -98,6 +130,25 @@ class Layout extends Component {
         })
     }
 
+    actualizarChecadorAxios = async(tipo) => {
+        const { access_token } = this.props.authUser
+        const { json } = this.state
+        waitAlert()
+        await axios.put(`${URL_DEV}v2/usuarios/usuarios/checador/${tipo}`, {ip: json}, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => { 
+                const { usuario } = response.data
+                if(tipo === 'entrada')
+                    doneAlert('Entrada checada con éxito')
+                else
+                    doneAlert('Salida checada con éxito')
+                this.setState({...this.state, checador: usuario.checadores})
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     cerrarSesionesAxios = async() => {
         const { access_token } = this.props.authUser
         await axios.get(`${URL_DEV}user/close`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -111,7 +162,7 @@ class Layout extends Component {
 
     render() {
         const { children, authUser } = this.props
-        const { menu } = this.state
+        const { menu, json, checador } = this.state
         let tipo_usuario = authUser ? 
                             authUser.user ? 
                                 authUser.user.tipo ? 
@@ -149,7 +200,7 @@ class Layout extends Component {
                                     <div id="showheader" onClick={() => { clickShowHeader() }}></div>
                                     <div className="topbar" >
                                         <div className="topbar-item">
-                                            <div className="btn btn-icon w-auto btn-clean d-flex align-items-center btn-lg px-2" id="kt_quick_user_toggle" onClick={() => { openUserProfile() }}>
+                                            <div className="btn btn-icon w-auto btn-clean d-flex align-items-center btn-lg px-2" id="kt_quick_user_toggle" onClick={() => { this.openUserProfile() }}>
                                                 <span className="text-muted font-weight-bold font-size-base d-none d-md-inline mr-1">Hola,</span>
                                                 <br />
                                                 <span className="text-dark-50 font-weight-bolder font-size-base d-none d-md-inline mr-2">
@@ -209,8 +260,8 @@ class Layout extends Component {
                             this.props.authUser.user ?
                                 <UserPanel user = { this.props.authUser.user } avatar = { this.props.authUser.user.avatar } 
                                     clickResponsiveMenu={this.clickResponsiveMenu} clickLogout={this.logoutUser} 
-                                    cerrarSesiones = { this.cerrarSesionesAxios }
-                                    {...this.props} />
+                                    cerrarSesiones = { this.cerrarSesionesAxios } checador = { checador } 
+                                    actualizarChecador = { this.actualizarChecadorAxios } {...this.props} />
                             : ''
                         : ''
                     : ''

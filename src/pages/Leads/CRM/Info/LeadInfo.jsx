@@ -204,6 +204,7 @@ class LeadInfo extends Component {
                 form.email = lead.email.toUpperCase()
                 form.telefono = lead.telefono
                 form.proyecto = lead.prospecto?lead.prospecto.nombre_proyecto:''
+                form.estado = lead.estado !== null ? lead.estado.toString() : ''
                 form.fecha = new Date(lead.created_at)
                 
                 if(formDiseño.esquema === 'esquema_1'){
@@ -690,7 +691,7 @@ class LeadInfo extends Component {
     addLeadInfoAxios = async() => {
         const { access_token } = this.props.authUser
         const { form, lead } = this.state
-        await axios.put(URL_DEV + 'crm/update/lead-en-contacto/' + lead.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.put(`${URL_DEV}v2/leads/crm/update/lead-en-contacto/${lead.id}`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito el lead.')
                 this.getOneLead(lead)

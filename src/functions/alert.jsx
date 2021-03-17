@@ -440,7 +440,7 @@ export function questionAlert2(title, text, action, html) {
     })
 }
 
-export function steps() {
+export function steps(action) {
     const steps = ['1', '2']
     const textQuestion = ['¿EL FORMULARIO SE LLENÓ POR MEDIO DE UNA LLAMADA?', '¿DESEAS ENVIAR EL CUESTIONARIO DE PROYECTO?']
     const swalQueueStep = Swal.mixin({
@@ -506,6 +506,10 @@ export function steps() {
                     </div>
                 `,
                 confirmButtonText: 'ENVIAR'
+            }).then((result) => {
+                if (result.value) {
+                    action(values)
+                }
             })
         }
         

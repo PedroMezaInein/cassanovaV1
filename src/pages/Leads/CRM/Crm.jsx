@@ -963,7 +963,7 @@ class Crm extends Component {
     addLeadInfoAxios = async () => {
         const { access_token } = this.props.authUser
         const { formEditar, lead } = this.state
-        await axios.put(URL_DEV + 'crm/update/lead-en-contacto/' + lead.id, formEditar, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.put(`${URL_DEV}v2/leads/crm/update/lead-en-contacto/${lead.id}`, formEditar, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito el lead.')
                 const { formEditar, activeTable } = this.state
@@ -1423,6 +1423,7 @@ class Crm extends Component {
         formEditar.email = lead.email!==null?lead.email:''
         formEditar.telefono = lead.telefono
         formEditar.fecha = new Date(lead.created_at)
+        formEditar.estado = lead.estado ? lead.estado.toString() : ''
         this.setState({...this.state, modal_editar: true, lead: lead, formEditar, formeditado: true})
     }
 
@@ -2067,13 +2068,8 @@ class Crm extends Component {
                 </Modal>
                 <Modal size="xl" title='Editar información general' show={modal_editar} handleClose={this.handleCloseModalEditar}>
                     <div className="mt-7">
-                        <InformacionGeneral
-                            form={formEditar}
-                            onChange={this.onChangeEditar}
-                            onSubmit={this.submitForm}
-                            lead={lead}
-                            formeditado={false}
-                        />
+                        <InformacionGeneral form = { formEditar } onChange = { this.onChangeEditar }
+                            onSubmit = { this.submitForm } lead = { lead } formeditado = { false } />
                     </div>
                 </Modal>
                 <Modal size="xl" title='HISTORIAL DE CONTACTO' show={modal_historial} handleClose={this.handleCloseModalHistorial}>

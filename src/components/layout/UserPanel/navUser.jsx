@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux'
 class NavUser extends Component{
 
 	isCliente = usuario => {
@@ -8,6 +9,44 @@ class NavUser extends Component{
 					if(usuario.tipo.tipo === 'Cliente')
 						return true
 		return false
+	}
+
+	printChecador = () => {
+		const { checador, actualizarChecador } = this.props
+		if(checador.length){
+			if(checador[0].fecha_fin === null)
+				return(
+					<span className="navi-item mb-2"
+						onClick = { (e) => { e.preventDefault(); actualizarChecador('salida') } } >
+						<div className="navi-link btn btn-clean py-1">
+							<div className="symbol symbol-40 bg-light mr-3">
+								<div className="symbol-label">
+									<i className="flaticon2-hourglass text-primary icon-lg p-0"></i>
+								</div>
+							</div>
+							<div className="navi-text text-left font-weight-bold text-dark text-hover-primary">
+								Checar salida
+							</div>
+						</div>
+					</span>
+				)
+		}else{
+			return(
+				<span className="navi-item mb-2"
+					onClick = { (e) => { e.preventDefault(); actualizarChecador('entrada') } } >
+					<div className="navi-link btn btn-clean py-1">
+						<div className="symbol symbol-40 bg-light mr-3">
+							<div className="symbol-label">
+								<i className="flaticon2-hourglass-1 text-success icon-lg p-0"></i>
+							</div>
+						</div>
+						<div className="navi-text text-left font-weight-bold text-dark text-hover-success">
+							Checar entrada
+						</div>
+					</div>
+				</span>
+			)
+		}
 	}
 
 	render(){
@@ -73,10 +112,15 @@ class NavUser extends Component{
 							</div>
 						</div>
 					</span>
+					{
+						!this.isCliente(usuario) && this.printChecador()
+					}
 				</div>
         	</>
 		)
 	}
 }
 
-export default NavUser
+const mapStateToProps = (state) => {return {authUser: state.authUser}}
+const mapDispatchToProps = (dispatch) => ({})
+export default connect(mapStateToProps, mapDispatchToProps)(NavUser)

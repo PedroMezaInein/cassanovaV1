@@ -6,7 +6,7 @@ import { InputGray, SelectSearchGray, InputPhoneGray, Button } from '../../../..
 import axios from 'axios'
 import { doneAlert, errorAlert, printResponseErrorAlert, validateAlert, waitAlert, questionAlert2, questionAlert, steps } from '../../../../functions/alert'
 import Swal from 'sweetalert2'
-import { setOptions } from '../../../../functions/setters'
+import { getEstados, setOptions } from '../../../../functions/setters'
 import { TEL, URL_DEV, EMAIL } from '../../../../constants'
 class LeadTelefono extends Component {
     state = {
@@ -21,7 +21,8 @@ class LeadTelefono extends Component {
             obra: '',
             email: '',
             tipoProyectoNombre: '',
-            origen: ''
+            origen: '',
+            estado: ''
         },
         tipo: '',
         options: {
@@ -30,7 +31,8 @@ class LeadTelefono extends Component {
             origenes: [],
             motivosRechazo: [],
             servicios:[]
-        }
+        },
+        data:{ servicios: [] }
     }
     componentDidMount() {
         this.getOptionsAxios()
@@ -45,16 +47,27 @@ class LeadTelefono extends Component {
     updateEmpresa = value => {
         this.onChange({ target: { name: 'empresa_dirigida', value: value } })
         let empresa = ''
-        const { options: { empresas } } = this.state
+        const { options: { empresas }, data: {servicios}, options } = this.state
         empresas.map(element => {
             if (value.toString() === element.value.toString()) {
                 empresa = element
-                this.setOptions('tipos', element.tipos)
+                options['tipos'] = setOptions(element.tipos, 'tipo', 'id')
             }
             return false
         })
+        let aux = []
+        servicios.map((servicio) => {
+            if(servicio.empresa){
+                if(servicio.empresa.id.toString() === value)
+                    aux.push(servicio)
+            }else
+                aux.push(servicio)
+        })
+        options['servicios'] = setOptions(aux, 'servicio', 'id')
         this.setState({
-            empresa: empresa
+            ...this.state,
+            empresa: empresa,
+            options
         })
     }
 
@@ -76,6 +89,9 @@ class LeadTelefono extends Component {
     updateServicio = value => {
         this.onChange({ target: { value: value, name: 'servicio' } })
     }
+    /* updateServicio = value => {
+        this.onChange({ target: { value: value, name: 'servicio' } })
+    } */
 
     onChange = e => {
         const { name, value, checked, type } = e.target
@@ -151,10 +167,11 @@ class LeadTelefono extends Component {
             (response) => {
                 Swal.close()
                 const { empresas, origenes, motivosRechazo,servicios } = response.data
-                const { options } = this.state
+                const { options, data } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['origenes'] = setOptions(origenes, 'origen', 'id')
                 options['servicios']= setOptions(servicios, 'servicio', 'id')
+                data.servicios = servicios
                 options.motivosRechazo = motivosRechazo
                 options.motivosRechazo.map((motivo)=>{
                     motivo.checked = false
@@ -162,7 +179,8 @@ class LeadTelefono extends Component {
                 })
                 this.setState({
                     ...this.state,
-                    options
+                    options,
+                    data
                 })
             },
             (error) => {
@@ -174,22 +192,17 @@ class LeadTelefono extends Component {
         })
     }
 
-    onSubmit = async (e) => {
+    onSubmit = async (values) => {
         const { form } = this.state
         const { access_token } = this.props.authUser
-        if(document.getElementById('radio-si').checked)
-            form.llamada = true
-        if(document.getElementById('radio-no').checked)
-            form.llamada = false
+        form.llamada = values[0] === 'SI' ? true : false
+        form.sendCorreo = values[1] === 'SI' ? true : false
         waitAlert();
-        await axios.post(URL_DEV + 'crm/add/lead/telefono', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post( `${URL_DEV}v2/leads/crm/add/lead/telefono`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Actualizaste los permisos.',)
                 const { history } = this.props
-                history.push({
-                    pathname: '/leads/crm',
-                    state: { tipo: 'lead-telefono' }
-                });
+                history.push({ pathname: '/leads/crm', state: { tipo: 'lead-telefono' } });
             },
             (error) => {
                 printResponseErrorAlert(error)
@@ -242,7 +255,7 @@ class LeadTelefono extends Component {
         const { access_token } = this.props.authUser
         const { form } = this.state
         waitAlert();
-        await axios.post(`${URL_DEV}crm/add/lead/telefono/duplicado`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}v2/leads/crm/add/lead/telefono/duplicado`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { history } = this.props
                 doneAlert('El lead fue registrado como duplicado.')
@@ -273,13 +286,11 @@ class LeadTelefono extends Component {
                     elemento = motivo
             form.motivo_rechazo = elemento
             waitAlert();
-            await axios.post(`${URL_DEV}crm/add/lead/telefono/rechazar`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            await axios.post(`${URL_DEV}v2/leads/crm/add/lead/telefono/rechazar`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
                 (response) => {
                     const { history } = this.props
                     doneAlert('El lead fue rechazado con éxito.')
-                    history.push({
-                        pathname: '/leads/crm'
-                    });
+                    history.push({ pathname: '/leads/crm' });
                 },
                 (error) => { printResponseErrorAlert(error) }
             ).catch((error) => {
@@ -321,211 +332,122 @@ class LeadTelefono extends Component {
                             {...this.props}>
                             <div className="form-group row form-group-marginless mt-4 mb-0">
                                 <div className="col-md-12">
-                                    <InputGray
-                                        withtaglabel={1}
-                                        withtextlabel={1}
-                                        withplaceholder={1}
-                                        withicon={0}
-                                        withformgroup={1}
-                                        placeholder="COMENTARIO"
-                                        name="comentario"
-                                        value={form.comentario}
-                                        onChange={this.onChange}
-                                        rows={3}
-                                        as='textarea'
-                                    />
+                                    <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 }
+                                        withicon = { 0 } withformgroup = { 1 } placeholder = "COMENTARIO"
+                                        name = "comentario" value = { form.comentario } onChange = { this.onChange }
+                                        rows = { 3 } as = 'textarea' />
                                 </div>
                                 <div className="col-md-3">
-                                    <InputGray
-                                        withtaglabel={1}
-                                        withtextlabel={1}
-                                        withplaceholder={1}
-                                        withicon={1}
-                                        withformgroup={1}
-                                        name='empresa'
-                                        value={form.empresa}
-                                        placeholder='EMPRESA DEL LEAD'
-                                        onChange={this.onChange}
-                                        iconclass='fas fa-building'
-                                    />
+                                    <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 }
+                                        withicon = { 0 } withformgroup = { 1 } name = 'empresa'
+                                        value = { form.empresa } placeholder = 'EMPRESA DEL LEAD'
+                                        onChange = { this.onChange } iconclass = 'fas fa-building' />
                                 </div>
                                 <div className="col-md-3">
-                                    <InputPhoneGray
-                                        placeholder="TELÉFONO DE CONTACTO"
-                                        withicon={1}
-                                        iconclass="fas fa-mobile-alt"
-                                        name="telefono"
-                                        value={form.telefono}
-                                        requirevalidation={0}
-                                        onChange={this.onChange}
-                                        patterns={TEL}
-                                        thousandseparator={false}
-                                        prefix=''
-                                        messageinc="Incorrecto. Ingresa el teléfono de contacto."
-                                    />
+                                    <InputPhoneGray placeholder = "TELÉFONO DE CONTACTO" withicon = { 1 }
+                                        iconclass = "fas fa-mobile-alt" name = "telefono" value = { form.telefono }
+                                        requirevalidation = { 0 } onChange = { this.onChange } patterns = { TEL }
+                                        thousandseparator = { false } prefix = '' 
+                                        messageinc = "Incorrecto. Ingresa el teléfono de contacto." />
                                 </div>
                                 <div className="col-md-3">
-                                    <SelectSearchGray
-                                        requirevalidation={1}
-                                        options={options.origenes}
-                                        placeholder="SELECCIONA EL ORIGEN PARA EL LEAD"
-                                        name="origen"
-                                        value={form.origen}
-                                        onChange={this.updateOrigen}
-                                        iconclass="fas fa-mail-bulk"
-                                        messageinc="Incorrecto. Selecciona el origen para el lead."
-                                        withtaglabel={1}
-                                        withtextlabel={1}
-                                    />
+                                    <SelectSearchGray requirevalidation = { 1 } options = { options.origenes }
+                                        placeholder = "SELECCIONA EL ORIGEN PARA EL LEAD" name = "origen"
+                                        value = { form.origen } onChange = { this.updateOrigen } withtaglabel = { 1 }
+                                        iconclass = "fas fa-mail-bulk" withtextlabel = { 1 }
+                                        messageinc="Incorrecto. Selecciona el origen para el lead." />
                                 </div>
                                 <div className="col-md-3">
-                                    <SelectSearchGray
-                                        requirevalidation={1}
-                                        options={options.servicios}
-                                        placeholder="SELECCIONA EL SERVICIO"
-                                        name="servicio"
-                                        value={form.servicio}
-                                        onChange={this.updateServicio}
-                                        iconclass="fas fa-mail-bulk"
-                                        messageinc="Incorrecto. Selecciona el servicio."
-                                        withtaglabel={1}
-                                        withtextlabel={1}
-                                    />
+                                    <SelectSearchGray options = { getEstados() } placeholder = "SELECCIONA EL ESTADO" name = "estado"
+                                        value = { form.estado } onChange = {  (value) => { this.onChange({ target: { value: value, name: 'estado' } }) } } 
+                                        requirevalidation = { 1 } messageinc = "Selecciona el estado." customdiv = "mb-0" withtaglabel = { 1 } 
+                                        withtextlabel = { 1 } />
                                 </div>
-                                <div className="col-md-4">
-                                    <SelectSearchGray
-                                        options={options.empresas}
-                                        placeholder="¿A QUÉ EMPRESA VA DIRIGIDA EL LEAD?"
-                                        name="empresa_dirigida"
-                                        value={form.empresa_dirigida}
-                                        onChange={this.updateEmpresa}
-                                        iconclass="fas fa-building"
-                                        withtaglabel={1}
-                                        withtextlabel={1}
-                                    />
+                                <div className="col-md-3">
+                                    <SelectSearchGray options = { options.empresas } name = "empresa_dirigida"
+                                        placeholder = "¿A QUÉ EMPRESA VA DIRIGIDA EL LEAD?" value = { form.empresa_dirigida }
+                                        onChange = { this.updateEmpresa } iconclass = "fas fa-building" withtaglabel = { 1 }
+                                        withtextlabel = { 1 } />
                                 </div>
                                 {
-                                    form.empresa_dirigida !== '' ?
-                                        <div className="col-md-4">
-                                            <InputGray
-                                                withtaglabel={1}
-                                                withtextlabel={1}
-                                                withplaceholder={1}
-                                                withicon={1}
-                                                withformgroup={1}
-                                                placeholder='NOMBRE DEL LEAD'
-                                                iconclass="far fa-user"
-                                                name='name'
-                                                value={form.name}
-                                                onChange={this.onChange}
-                                            />
-                                        </div>
-                                        : ''
-                                }
-                                {
-                                    form.name !== '' ?
-                                        <div className="col-md-4">
-                                            <SelectSearchGray
-                                                options={options.tipos}
-                                                placeholder="SELECCIONA EL TIPO DE PROYECTO"
-                                                onChange={this.updateTipoProyecto}
-                                                name="tipoProyecto"
-                                                value={form.tipoProyecto}
-                                                withtaglabel={1}
-                                                withtextlabel={1}
-                                            />
-                                        </div>
-                                        : ''
-                                }
-                                {
-                                    form.tipoProyecto !== '' ?
+                                    form.empresa_dirigida !== '' &&
                                         <>
-                                            <div className="col-md-4 d-flex align-items-center">
-                                                <div className="col-md-12">
-                                                    <div className="row">
-                                                        <div className="col-md-7 px-0">
-                                                            <label className='col-form-label font-weight-bold text-dark-60'>¿Es un proyecto de obra y/o diseño?</label>
-                                                        </div>
-                                                        <div className="col-md-5 px-0">
-                                                            <div className="checkbox-inline mt-2">
-                                                                <label className="checkbox checkbox-outline checkbox-outline-2x checkbox-secondary mr-3">
-                                                                    <input
-                                                                        type="checkbox"
-                                                                        onChange={(e) => this.onChange(e)}
-                                                                        name='diseño'
-                                                                        checked={form.diseño}
-                                                                        value={form.diseño}
-                                                                    />
-                                                                    DISEÑO
-                                                            <span></span>
-                                                                </label>
-                                                                <label className="checkbox checkbox-outline checkbox-outline-2x checkbox-secondary">
-                                                                    <input
-                                                                        type="checkbox"
-                                                                        onChange={(e) => this.onChange(e)}
-                                                                        name='obra'
-                                                                        checked={form.obra}
-                                                                        value={form.obra}
-                                                                    />
-                                                                    Obra
-                                                            <span></span>
-                                                                </label>
-                                                            </div>
+                                            <div className="col-md-3">
+                                                <SelectSearchGray requirevalidation = { 1 } options = { options.servicios }
+                                                    placeholder = "SELECCIONA EL SERVICIO" name = "servicio" value = { form.servicio }
+                                                    onChange = { this.updateServicio } iconclass = "fas fa-mail-bulk"
+                                                    messageinc = "Incorrecto. Selecciona el servicio." withtaglabel = { 1 }
+                                                    withtextlabel = { 1 } />
+                                            </div>
+                                            <div className="col-md-3">
+                                                <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 }
+                                                    withicon = { 1 } withformgroup = { 1 } placeholder = 'NOMBRE DEL LEAD'
+                                                    iconclass = "far fa-user" name = 'name' value = { form.name }
+                                                    onChange = { this.onChange } />
+                                            </div>
+                                        </>
+                                }
+                                {
+                                    form.name !== '' &&
+                                        <div className="col-md-3">
+                                            <SelectSearchGray options = { options.tipos } placeholder = "SELECCIONA EL TIPO DE PROYECTO"
+                                                onChange = { this.updateTipoProyecto } name = "tipoProyecto" value = { form.tipoProyecto }
+                                                withtaglabel = { 1 } withtextlabel = { 1 } />
+                                        </div>
+                                }
+                                {
+                                    form.tipoProyecto !== '' &&
+                                        <div className="col-md-4 d-flex align-items-center">
+                                            <div className="col-md-12">
+                                                <div className="row">
+                                                    <div className="col-md-7 px-0">
+                                                        <label className='col-form-label font-weight-bold text-dark-60'>¿Es un proyecto de obra y/o diseño?</label>
+                                                    </div>
+                                                    <div className="col-md-5 px-0">
+                                                        <div className="checkbox-inline mt-2">
+                                                            <label className="checkbox checkbox-outline checkbox-outline-2x checkbox-secondary mr-3">
+                                                                <input type = "checkbox" onChange = { (e) => this.onChange(e) } name = 'diseño'
+                                                                    checked = { form.diseño } value = { form.diseño } /> DISEÑO
+                                                                    <span></span>
+                                                            </label>
+                                                            <label className = "checkbox checkbox-outline checkbox-outline-2x checkbox-secondary">
+                                                                <input type = "checkbox" onChange = { (e) => this.onChange(e) }
+                                                                    name = 'obra' checked = { form.obra } value = { form.obra } /> Obra
+                                                                    <span></span>
+                                                            </label>
                                                         </div>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </>
-                                        : ''
+                                        </div>
                                 }
                                 {
-                                    form.diseño || form.obra !== '' ?
+                                    (form.diseño || form.obra !== '') &&
                                         <div className="col-md-4">
-                                            <InputGray
-                                                withtaglabel={1}
-                                                withtextlabel={1}
-                                                withplaceholder={1}
-                                                withicon={1}
-                                                withformgroup={1}
-                                                placeholder="CORREO ELECTRÓNICO DE CONTACTO"
-                                                iconclass="fas fa-envelope"
-                                                type="email"
-                                                name="email"
-                                                value={form.email}
-                                                onChange={this.onChange}
-                                                patterns={EMAIL}
-                                                letterCase = { false }
-                                            />
+                                            <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 1 }
+                                                withformgroup = { 1 } placeholder = "CORREO ELECTRÓNICO DE CONTACTO"
+                                                iconclass = "fas fa-envelope" type = "email" name = "email" value = { form.email }
+                                                onChange = { this.onChange } patterns = { EMAIL } letterCase = { false } />
                                         </div>
-                                        : ''
                                 }
                             </div>
                             <div className="card-footer px-0 pb-0 pt-5 text-right">
                                 {
-                                    form.name ?
-                                        <Button
-                                            icon=''
-                                            id="solicitar_cita"
-                                            className="btn btn-light-danger font-weight-bold"
-                                            onClick={(e) => { e.preventDefault(); this.openModalWithInput('Rechazado') }}
-                                            text='RECHAZAR'
-                                        />
-                                    : ''
+                                    form.name &&
+                                        <>
+                                            <Button icon = '' id = "solicitar_cita" className = "btn btn-light-danger font-weight-bold"
+                                                onClick = { (e) => { e.preventDefault(); this.openModalWithInput('Rechazado') } }
+                                                text = 'RECHAZAR' />
+                                            <Button iconv = '' id = "lead_duplicado" className = "btn btn-light-warning font-weight-bold mx-3"
+                                                onClick={(e) => { e.preventDefault(); 
+                                                    questionAlert('¡NO PODRÁS REVERTIR ESTO!', 'INGRESARÁS UN LEAD DUPLICADO', () => this.eliminarLeadDuplicadoAxios())
+                                                }} text='LEAD DUPLICADO' />
+                                        </>
                                 }
                                 {
-                                    form.name ?
-                                        <Button iconv = '' id = "lead_duplicado" className = "btn btn-light-warning font-weight-bold mx-3"
-                                            onClick={(e) => { e.preventDefault(); 
-                                                questionAlert('¡NO PODRÁS REVERTIR ESTO!', 'INGRESARÁS UN LEAD DUPLICADO', () => this.eliminarLeadDuplicadoAxios())
-                                            }} text='LEAD DUPLICADO' />
-                                    : ''
-                                }
-                                {
-                                    form.email ?
+                                    form.email &&
                                         <Button icon='' className="btn btn-light-primary font-weight-bold ml-2" text='ENVIAR'
-                                            onClick = { (e) => { 
-                                                e.preventDefault();
-                                                steps()
+                                            onClick = { (e) => {  e.preventDefault(); steps(this.onSubmit)
                                                 // questionAlert2(
                                                 //     '¿EL FORMULARIO SE LLENÓ POR MEDIO DE UNA LLAMADA?', '',
                                                 //     () => this.onSubmit(),
@@ -537,8 +459,8 @@ class LeadTelefono extends Component {
                                                 //     </div>
                                                 // )
                                             }}
-                                        />
-                                    : ''
+                                            />
+                                    
                                 }
                             </div>
                         </Form>
@@ -549,13 +471,6 @@ class LeadTelefono extends Component {
     }
 }
 
-const mapStateToProps = (state) => {
-    return {
-        authUser: state.authUser
-    }
-}
-
-const mapDispatchToProps = dispatch => ({
-})
-
+const mapStateToProps = (state) => {return {authUser: state.authUser}}
+const mapDispatchToProps = dispatch => ({})
 export default connect(mapStateToProps, mapDispatchToProps)(LeadTelefono)
