@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { CalendarDay, Button } from '../../form-components'
 import { Col, Form } from 'react-bootstrap'
 import SelectHorario from '../../form-components/SelectHorario'
-import { validateAlert } from '../../../functions/alert'
+import { confirmarCita } from '../../../functions/alert'
 class AgendaLlamada extends Component {
     render() {
         const { form, onChange, onSubmit, lead, cierre_reviso, cita_reviso} = this.props
@@ -94,10 +94,7 @@ class AgendaLlamada extends Component {
                         <div className="col-lg-12 text-right pr-0 pb-0">
                             <Button icon='' className="btn btn-primary mr-2"
                                 onClick={
-                                    (e) => {
-                                        e.preventDefault();
-                                        validateAlert(onSubmit, e, 'form-agendar') 
-                                    }
+                                    (e) => { e.preventDefault(); confirmarCita('¿ESTÁS SEGURO DE ENVIAR LOS SIGUIENTES DATOS?', form, lead, () => onSubmit(), e, 'form-agendar') }
                                 }
                                 text="ENVIAR"
                             />
