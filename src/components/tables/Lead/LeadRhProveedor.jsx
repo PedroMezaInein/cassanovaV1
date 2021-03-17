@@ -44,7 +44,7 @@ class LeadRhProveedor extends Component {
             <>
                 <div className="d-flex justify-content-end">
                     <span className="btn btn-hover-icon-success font-weight-bolder btn-hover-bg-light text-hover-success" onClick = { openModalFormRRHHP } >
-                        <i className="fas fa-plus text-pink mb-1"></i> Nuevo
+                        <i className="fas fa-user-plus text-pink mb-1"></i> Nuevo
                     </span>
                 </div>
                 <div className="tab-content">

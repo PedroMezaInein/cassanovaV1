@@ -223,14 +223,14 @@ class Contratar extends Component {
         options.tipos = setOptions(state.lead.empresa.tipos, 'tipo', 'id')
         let arreglo = []
         formProyecto.numeroContacto = state.lead.telefono
-        formProyecto.contacto = state.lead.nombre
+        formProyecto.contacto = state.lead.nombre.toUpperCase()
         formProyecto.nombre = state.lead.prospecto.nombre_proyecto
         if(state.lead.email){
             arreglo.push(state.lead.email)
             formProyecto.correos = arreglo
         }
         formProyecto.tipoProyecto = state.lead.prospecto.tipo_proyecto.id.toString()
-        formProyecto.m2 = state.lead.presupuesto_diseño.m2
+        formProyecto.m2 = state.lead.presupuesto_diseño!==null?state.lead.presupuesto_diseño.m2:''
         this.setState({
             ...this.state,
             lead: state.lead,

@@ -224,7 +224,7 @@ class LeadNuevo extends Component {
                                                             <DropdownButton
                                                                     menualign="right"
                                                                     title={<i className="fas fa-chevron-down icon-nm p-0"></i>}
-                                                                    id={`dropdown-button-drop-left-crm`} 
+                                                                    id={`dropdown-button-drop-left-nuevo`} 
                                                                 >
                                                                 <Dropdown.Item className="text-hover-info dropdown-pagina-web" onClick={(e) => { openModalEditar(lead) }} >
                                                                     <span className="navi-icon">

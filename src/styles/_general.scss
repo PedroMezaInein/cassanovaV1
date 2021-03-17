@@ -408,6 +408,53 @@ td.concepto {
     // }
 }
 
+//Inicio: Dropdown para: CRM NUEVO
+
+#dropdown-button-drop-left-nuevo {
+    color: #f1eaff;
+    background-color: #f1eaff;
+    border-color: transparent;
+    height: 30px;
+    width: 30px;
+    justify-content: center;
+    display: inline-flex;
+    align-items: center;
+
+    // align-self:center;
+    &:hover {
+        background-color: #f3f6f9;
+        border-color: transparent;
+        color:white,
+
+        
+    }
+
+    &:active {
+        background-color: #f3f6f9;
+        border-color: transparent;
+        color:white
+    }
+
+    i {
+        display: inline-flex;
+        -webkit-box-align: center;
+        align-items: center;
+        -webkit-box-pack: center;
+        justify-content: center;
+        color: #8950FC;
+
+        &:hover {
+            color: #8950FC;
+        }
+
+        &:active {
+            color: #8950FC;
+        }
+
+    }
+}
+
+
 a#rh-proveedores, a#cancelados-rechazados, a#rp {
     font-weight: 500;
     color: #7f7f7f;
