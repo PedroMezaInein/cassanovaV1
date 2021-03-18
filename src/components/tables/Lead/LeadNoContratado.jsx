@@ -2,8 +2,18 @@ import React, { Component } from 'react'
 import { DropdownButton, OverlayTrigger, Tooltip, Dropdown } from 'react-bootstrap'
 import { setDateTableLG } from '../../../functions/setters'
 import { questionAlert } from '../../../functions/alert'
+import { Modal } from '../../singles'
+import { PresupuestoGenerado } from '../../forms'
 
 class LeadNoContratado extends Component {
+
+    state = {
+        modal: {
+            presupuesto: false
+        },
+        lead: ''
+    }
+
     isActiveButton(direction) {
         const { leads } = this.props
         if (leads.total_paginas > 1) {
@@ -40,8 +50,38 @@ class LeadNoContratado extends Component {
         return false
     }
 
+    hasPresupuesto= lead => {
+        if(lead)
+            if(lead.presupuesto_diseño)
+                if(lead.presupuesto_diseño.pdfs)
+                    if(lead.presupuesto_diseño.pdfs.length)
+                        return true
+        return false
+    }
+
+    openModalPresupuesto = lead => {
+        const { modal } = this.state
+        modal.presupuesto = true
+        this.setState({
+            ...this.state,
+            modal,
+            lead: lead
+        })
+    }
+
+    handleClose = () => {
+        const { modal } = this.state
+        modal.presupuesto = false
+        this.setState({
+            ...this.state,
+            modal,
+            lead: ''
+        })
+    }
+
     render() {
         const { leads, onClickNext, onClickPrev, changePageDetails, changeEstatus, openModalHistorial } = this.props
+        const { modal, lead } = this.state
         return (
             <div className="tab-content">
                 <div className="table-responsive-lg">
@@ -183,6 +223,16 @@ class LeadNoContratado extends Component {
                                                                     <span className="navi-text align-self-center">Historial de contacto</span>
                                                                 </Dropdown.Item>
                                                         }
+                                                        {
+                                                            this.hasPresupuesto(lead) &&
+                                                                <Dropdown.Item className = "text-hover-danger dropdown-danger" 
+                                                                    onClick={(e) => { this.openModalPresupuesto(lead) }}>
+                                                                    <span className="navi-icon">
+                                                                        <i className="fas fa-file-invoice-dollar pr-3 text"></i>
+                                                                    </span>
+                                                                    <span className="navi-text align-self-center">Presupuesto de diseño</span>
+                                                                </Dropdown.Item>
+                                                        }
                                                     </DropdownButton>
                                                 </td>
                                             </tr>
@@ -213,6 +263,19 @@ class LeadNoContratado extends Component {
                         }
                     </div>
                 </div>
+                <Modal show = { modal.presupuesto } handleClose = { this.handleClose } title = 'Presupuesto generados'>
+                    {
+                        lead ?
+                            lead.presupuesto_diseño ?
+                                lead.presupuesto_diseño.pdfs ?
+                                    lead.presupuesto_diseño.pdfs.length ?
+                                        <PresupuestoGenerado pdfs={lead.presupuesto_diseño.pdfs} />
+                                        : ''
+                                    : ''
+                                : ''
+                            : ''
+                    }
+                </Modal>
             </div>
         )
     }
