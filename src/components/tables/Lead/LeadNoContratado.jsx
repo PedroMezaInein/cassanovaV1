@@ -32,7 +32,6 @@ class LeadNoContratado extends Component {
     }
 
     hasContactos = (lead) => {
-        console.log(lead, 'lead')
         if(lead)
             if(lead.prospecto)
                 if(lead.prospecto.contactos)
