@@ -15,7 +15,11 @@ class PresupuestoGenerado extends Component {
                             </th>
                             <th className="text-center text-muted font-size-sm">IDENTIFICADOR</th>
                             <th className="text-center text-muted font-size-sm">ESTATUS</th>
-                            <th className="text-center text-muted font-size-sm">ENVIAR</th>
+                            {
+                                onClick &&
+                                    <th className="text-center text-muted font-size-sm">ENVIAR</th>
+                            }
+                            
                         </tr>
                     </thead>
                     <tbody>
@@ -49,13 +53,17 @@ class PresupuestoGenerado extends Component {
                                                 
                                             </span>
                                         </td>
-                                        <td className="text-center">
-                                            <span onClick = { (e) => { e.preventDefault(); onClick(pdf); } } className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-success">
-                                                <span className="svg-icon svg-icon-md svg-icon-primary">
-                                                    <SVG src={toAbsoluteUrl('/images/svg/Sending-mail.svg')} />
-                                                </span>
-                                            </span>
-                                        </td>
+                                        {
+                                            onClick &&
+                                                <td className="text-center">
+                                                    <span onClick = { (e) => { e.preventDefault(); onClick(pdf); } } className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-success">
+                                                        <span className="svg-icon svg-icon-md svg-icon-primary">
+                                                            <SVG src={toAbsoluteUrl('/images/svg/Sending-mail.svg')} />
+                                                        </span>
+                                                    </span>
+                                                </td>
+                                        }
+                                        
                                     </tr>
                                 )
                             })

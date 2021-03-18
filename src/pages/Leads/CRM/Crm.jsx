@@ -2070,7 +2070,6 @@ class Crm extends Component {
                     </div>
                 </Modal>
                 <Modal size="xl" title='HISTORIAL DE CONTACTO' show={modal_historial} handleClose={this.handleCloseModalHistorial}>
-                    {console.log('lead', lead)}
                     {
                         lead ? 
                             lead.prospecto ?
