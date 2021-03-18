@@ -722,6 +722,21 @@ class MiProyecto extends Component {
         return ''
     }
 
+    setImage(proyecto){
+        console.log(proyecto)
+        if(proyecto){
+            if(proyecto.empresa.name==='INEIN'){
+                return 'url("/inein_proyecto1.jpg")'
+            }else if (proyecto.empresa.name==='INFRAESTRUCTURA MÉDICA'){
+                return 'url("/im_proyecto1.jpg")'
+            }else{
+                return 'url("/header_1.jpg")'
+            }
+        }else{
+            return 'url("/header_1.jpg")'
+        }
+    }
+
     showFase (proyecto){
         let aux = ''
         if(proyecto.fase1)
@@ -746,7 +761,7 @@ class MiProyecto extends Component {
 
             <Layout {...this.props}>
                 <section className="py-10 overflow-hidden text-center section-proyecto">
-                    <div className="background-holder overlay overlay-1 parallax" style={{ backgroundImage: "url('/header_1.jpg')"}}>
+                    <div className="background-holder overlay overlay-1 parallax" style={{ backgroundImage: this.setImage(proyecto) }}>
                     </div>
                     <div className="container">
                         <div className="row d-flex justify-content-center">

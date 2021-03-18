@@ -890,7 +890,7 @@ class Crm extends Component {
     changeEstatusAxios = async (data) => {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.put(URL_DEV + 'crm/lead/estatus/' + data.id, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.put(`${URL_DEV}v2/leads/crm/lead/estatus/${data.id}`, data, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { activeTable } = this.state
                 this.changeActiveTable(activeTable)
@@ -2045,6 +2045,7 @@ class Crm extends Component {
                                             onClickNext={this.nextPageLeadCancelados}
                                             onClickPrev={this.prevPageLeadCancelados}
                                             changePageDetails={this.changePageDetailsCR}
+                                            changeEstatus = { this.changeEstatusAxios }
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="rp">

@@ -419,22 +419,17 @@ td.concepto {
     justify-content: center;
     display: inline-flex;
     align-items: center;
-
     // align-self:center;
     &:hover {
         background-color: #f3f6f9;
         border-color: transparent;
         color:white,
-
-        
     }
-
     &:active {
         background-color: #f3f6f9;
         border-color: transparent;
         color:white
     }
-
     i {
         display: inline-flex;
         -webkit-box-align: center;
@@ -442,18 +437,41 @@ td.concepto {
         -webkit-box-pack: center;
         justify-content: center;
         color: #8950FC;
-
-        &:hover {
-            color: #8950FC;
-        }
-
-        &:active {
-            color: #8950FC;
-        }
-
+        &:hover { color: #8950FC; }
+        &:active { color: #8950FC; }
     }
 }
 
+#dropdown-button-drop-left-danger {
+    color: #F64E60;
+    background-color: #FFE2E5;
+    border-color: transparent;
+    height: 30px;
+    width: 30px;
+    justify-content: center;
+    display: inline-flex;
+    align-items: center;
+    &:hover {
+        background-color: #f3f6f9;
+        border-color: transparent;
+        color:white
+    }
+    &:active {
+        background-color: #f3f6f9;
+        border-color: transparent;
+        color:white
+    }
+    i {
+        display: inline-flex;
+        -webkit-box-align: center;
+        align-items: center;
+        -webkit-box-pack: center;
+        justify-content: center;
+        color: #F64E60;
+        &:hover { color: #F64E60; }
+        &:active { color: #F64E60; }
+    }
+}
 
 a#rh-proveedores, a#cancelados-rechazados, a#rp {
     font-weight: 500;
@@ -509,6 +527,29 @@ a#cancelados-rechazados.text-hover-primary.dropdown-item.active,  a#rh-proveedor
     i {
         color: #8950FC;
     }
+}
+
+.dropdown-danger {
+    font-weight: 500;
+    color: #7f7f7f;
+    &:hover {
+        color: #F64E60;
+        text-decoration: none;
+        background-color: #FFE2E5;
+    }
+    &:active {
+        color: #F64E60 ;
+        text-decoration: none;
+        background-color: #FFE2E5;
+    }
+}
+
+.dropdown-danger.dropdown-item.active{
+    color: #F64E60;
+    text-decoration: none;
+    background-color: #FFE2E5;
+    font-weight: 500;
+    i { color: #F64E60;}
 }
 
 // .btn.btn-primary:hover:not(.btn-text), .btn.btn-primary:focus:not(.btn-text), .btn.btn-primary.focus:not(.btn-text) {
@@ -1507,6 +1548,9 @@ span.font-weight-bolder.text-hover-error:hover{
 }
 .font-size-14px{
     font-size: 14px;
+}
+.font-size-13px{
+    font-size: 13px;
 }
 
 .input-folder{
