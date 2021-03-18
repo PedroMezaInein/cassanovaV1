@@ -31,8 +31,18 @@ class LeadNoContratado extends Component {
         return 'En proceso'
     }
 
+    hasContactos = (lead) => {
+        console.log(lead, 'lead')
+        if(lead)
+            if(lead.prospecto)
+                if(lead.prospecto.contactos)
+                    if(lead.prospecto.contactos.length)
+                        return true
+        return false
+    }
+
     render() {
-        const { leads, onClickNext, onClickPrev, changePageDetails, changeEstatus } = this.props
+        const { leads, onClickNext, onClickPrev, changePageDetails, changeEstatus, openModalHistorial } = this.props
         return (
             <div className="tab-content">
                 <div className="table-responsive-lg">
@@ -158,12 +168,22 @@ class LeadNoContratado extends Component {
                                                                         estatus: this.getMoveStatus(lead)
                                                                     })
                                                                 ) 
-                                                            }} >
+                                                            }}>
                                                             <span className="navi-icon">
                                                                 <i className="far fa-play-circle pr-3 text"></i>
                                                             </span>
                                                             <span className="navi-text align-self-center">REACTIVAR</span>
                                                         </Dropdown.Item>
+                                                        {
+                                                            this.hasContactos(lead) &&
+                                                                <Dropdown.Item className = "text-hover-danger dropdown-danger" 
+                                                                    onClick={(e) => { openModalHistorial(lead) }}>
+                                                                    <span className="navi-icon">
+                                                                        <i className="far fa-list-alt pr-3 text"></i>
+                                                                    </span>
+                                                                    <span className="navi-text align-self-center">Historial de contacto</span>
+                                                                </Dropdown.Item>
+                                                        }
                                                     </DropdownButton>
                                                 </td>
                                             </tr>

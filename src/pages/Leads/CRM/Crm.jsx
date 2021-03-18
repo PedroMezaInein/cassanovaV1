@@ -2040,13 +2040,9 @@ class Crm extends Component {
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="cancelados">
-                                        <LeadNoContratado
-                                            leads={leads_cancelados}
-                                            onClickNext={this.nextPageLeadCancelados}
-                                            onClickPrev={this.prevPageLeadCancelados}
-                                            changePageDetails={this.changePageDetailsCR}
-                                            changeEstatus = { this.changeEstatusAxios }
-                                        />
+                                        <LeadNoContratado leads = { leads_cancelados } onClickNext = { this.nextPageLeadCancelados }
+                                            onClickPrev = { this.prevPageLeadCancelados } changePageDetails = { this.changePageDetailsCR }
+                                            changeEstatus = { this.changeEstatusAxios } openModalHistorial = { this.openModalHistorial }  />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="rp">
                                         <LeadRP leads = { leads_rp } onClickNext = { this.nextPageLeadRP }
@@ -2074,15 +2070,22 @@ class Crm extends Component {
                     </div>
                 </Modal>
                 <Modal size="xl" title='HISTORIAL DE CONTACTO' show={modal_historial} handleClose={this.handleCloseModalHistorial}>
-                    <div className="d-flex justify-content-end mt-4">
-                        <Button
-                            icon=''
-                            className={"btn btn-light btn-hover-secondary font-weight-bolder p-2"}
-                            onClick={() => { this.mostrarFormulario() }}
-                            only_icon={"flaticon2-plus icon-13px mr-2"}
-                            text='NUEVO CONTACTO'
-                        />
-                    </div>
+                    {console.log('lead', lead)}
+                    {
+                        lead ? 
+                            lead.prospecto ?
+                                lead.prospecto.estatus_prospecto ?
+                                    lead.prospecto.estatus_prospecto.estatus !== 'Cancelado' && lead.prospecto.estatus_prospecto.estatus !== 'Rechazado' ?
+                                        <div className="d-flex justify-content-end mt-4">
+                                            <Button icon='' className="btn btn-light btn-hover-secondary font-weight-bolder p-2"
+                                                onClick={() => { this.mostrarFormulario() }} only_icon="flaticon2-plus icon-13px mr-2"
+                                                text='NUEVO CONTACTO' />
+                                        </div>
+                                    : ''
+                                : ''
+                            : ''
+                        : ''
+                    }
                     <div className={this.state.showForm ? 'col-md-12 mb-5' : 'd-none'}>
                         <HistorialContactoForm
                             options={options}
