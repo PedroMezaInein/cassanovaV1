@@ -31,8 +31,12 @@ export default function MobileHeader() {
     return (
         <>   
             <div className="header-mobile align-items-center header-mobile-fixed">
-				<a href="/mi-proyecto">
-					<img alt="Logo" src="/dashboard.png" />
+				<a href="/mi-proyecto" className="brand-logo">
+					<span className="svg-icon svg-icon-xl">
+                		<i className = 'fas fa-home home-icon-menu d-block'></i>	
+					</span>
+					{/* Eliminar */}
+					{/* <img alt="Logo" src="/dashboard.png" /> */}
 				</a>
 				<div className="d-flex align-items-center">
 					<button id="openbuerger"className="btn p-0 burger-icon burger-icon-left" onClick = { () => { openMobileAside() } }>

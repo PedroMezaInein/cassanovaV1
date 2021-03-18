@@ -4,6 +4,8 @@ import { Message } from '../components/Lottie/'
 import React from 'react'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+import Moment from 'react-moment'
+import { collapseTextChangeRangesAcrossMultipleVersions } from 'typescript'
 const MySwal = withReactContent(Swal)
 
 export async function waitAlert() {
@@ -260,6 +262,147 @@ export function questionAlert(title, text, action) {
     }).then((result) => {
         if (result.value) {
             action()
+        }
+    })
+}
+
+export function confirmarCita(title, form, lead, action, e, name) {
+    console.log(form)
+    let fecha = new Date(form.fecha)
+    let months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
+    let days = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18','19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31']
+    fecha = days[fecha.getDate()]  + "/" + months[fecha.getMonth()] + "/" + fecha.getFullYear()
+    
+    function reunion(){
+        switch (form.lugar) {
+            case 'presencial':
+                switch (form.cita_empresa) {
+                    case 'si_empresa':
+                        return lead?lead.empresa.name:""
+                    case 'no_empresa':
+                        return form.ubicacion
+                    default:
+                        break;
+                }
+            break;
+            case 'remota':
+                return form.url
+            default:
+            break;
+        }
+    }
+    
+    function reunionPR(){
+        switch (form.lugar) {
+            case 'presencial':
+                return 'LA CITA ES PRESENCIAL EN:'
+            case 'remota':
+                return 'URL DE LA CITA REMOTA:'
+            default:
+            break;
+        }
+    }
+    function correos(){
+        var temp = "";
+        var array = form.correos
+        if(array.length ===0){
+            temp='-'
+        }else{
+            for(var i= 0; i < array.length; i++) {
+                console.log(array.length)
+                if(array.length === 1){
+                    temp += array[i];
+                }else{
+                    temp += '&#8226 ' + array[i] + '<br>';
+                }
+            }
+        }
+        return temp
+    }
+
+    MySwal.fire({
+        title: title,
+        html:  `
+                ${form.agendarCita ? 
+                    `
+                    <div class="px-4 font-size-13px">
+                        <div class="row row-paddingless form-group-marginless text-left d-flex justify-content-center mb-2 mt-3">
+                            <div class="col-md-6 font-weight-bold pr-1">NOMBRE DE LA REUNIÓN:</div>
+                            <div class="col-md-6 font-weight-light pl-1">${form.titulo?form.titulo:'-'}</div>
+                        </div>
+                        <div class="row row-paddingless form-group-marginless text-left d-flex justify-content-center mb-2">
+                            <div class="col-md-6 font-weight-bold pr-1">${reunionPR()}</div>
+                            <div class="col-md-6 font-weight-light pl-1">${reunion()}</div>
+                        </div>
+                        <div class="row row-paddingless form-group-marginless text-left d-flex justify-content-center mb-2">
+                            <div class="col-md-6 font-weight-bold pr-1">FECHAL:</div>
+                            <div class="col-md-6 font-weight-light pl-1">${fecha}</div>
+                        </div>
+                        <div class="row row-paddingless form-group-marginless text-left d-flex justify-content-center mb-2">
+                            <div class="col-md-6 font-weight-bold pr-1">HORA DE INICIO:</div>
+                            <div class="col-md-6 font-weight-light pl-1">${form.hora_inicio}:${form.minuto_inicio}</div>
+                        </div>
+                        <div class="row row-paddingless form-group-marginless text-left d-flex justify-content-center mb-2">
+                            <div class="col-md-6 font-weight-bold pr-1">HORA FINAL:</div>
+                            <div class="col-md-6 font-weight-light pl-1">${form.hora_final}:${form.minuto_final}</div>
+                        </div>
+                        <div class="row row-paddingless form-group-marginless text-left d-flex justify-content-center">
+                            <div class="col-md-6 font-weight-bold pr-1">Correo(s):</div>
+                            <div class="col-md-6 font-weight-light pl-1">${correos()}</div>
+                        </div>
+                    </div>
+                    `
+                    :
+                        (form.agendarLlamada ? 
+                            `
+                            <div class="row row-paddingless form-group-marginless text-left d-flex justify-content-center mb-2 mt-3 font-size-13px">
+                                <div class="col-md-4 font-weight-bold pr-1">FECHAL:</div>
+                                <div class="col-md-3 font-weight-light pl-1 text-center">${fecha}</div>
+                            </div>
+                            <div class="row row-paddingless form-group-marginless text-left d-flex justify-content-center mb-2 font-size-13px">
+                                <div class="col-md-4 font-weight-bold pr-1">HORA DE INICIO:</div>
+                                <div class="col-md-3 font-weight-light pl-1 text-center">${form.hora_inicio}:${form.minuto_inicio}</div>
+                            </div>
+                            <div class="row row-paddingless form-group-marginless text-left d-flex justify-content-center font-size-13px">
+                                <div class="col-md-4 font-weight-bold pr-1">HORA FINAL:</div>
+                                <div class="col-md-3 font-weight-light pl-1 text-center">${form.hora_final}:${form.minuto_final}</div>
+                            </div>
+                            `
+                        :
+                            `
+                            <div class="row row-paddingless form-group-marginless text-left d-flex justify-content-center mb-2 mt-3 font-size-13px">
+                                <div class="col-md-4 font-weight-bold pr-1">FECHAL:</div>
+                                <div class="col-md-3 font-weight-light pl-1 text-center">${fecha}</div>
+                            </div>
+                            <div class="row row-paddingless form-group-marginless text-left d-flex justify-content-center mb-2 font-size-13px">
+                                <div class="col-md-4 font-weight-bold pr-1">HORA:</div>
+                                <div class="col-md-3 font-weight-light pl-1 text-center">${form.hora}:${form.minuto}</div>
+                            </div>
+                            `
+                        )
+                }
+            `,
+        icon: "question",
+        showCancelButton: true,
+        confirmButtonText: "ENVIAR",
+        cancelButtonText: "CANCELAR",
+        reverseButtons: true,
+    }).then((result) => {
+        var elementsInvalid = document.getElementById(name).getElementsByClassName("is-invalid");
+        if (elementsInvalid.length === 0) {
+            if (result.value) {
+                action()
+            }
+        } else {
+            Swal.fire({
+                title: '¡LO SENTIMOS!',
+                text: 'Llena todos los campos requeridos',
+                icon: 'warning',
+                customClass: {
+                    actions: 'd-none'
+                },
+                timer: 2500,
+            })
         }
     })
 }

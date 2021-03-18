@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { CalendarDay, Button, InputGray, TagInputGray, SelectHorario, RadioGroupGray} from '../../../form-components'
 import { Col, Form } from 'react-bootstrap'
-import { messageAlert } from '../../../../functions/alert'
+import { messageAlert, confirmarCita } from '../../../../functions/alert'
 class AgendarCitaForm extends Component {
     addCorreo = () => {
         const { onChange, formAgenda } = this.props
@@ -27,9 +27,9 @@ class AgendarCitaForm extends Component {
         }
     }
     render() {
-        const { formAgenda, onChange, onSubmit, tagInputChange, onChangeAgendaLC, lead} = this.props
+        const { formAgenda, onChange, onSubmit, tagInputChange, onChangeAgendaLC, lead, formeditado} = this.props
         return (
-            <Form>
+            <Form id="form-agendar">
                 <div className="row">
                     <Col md="12" className="text-center align-self-center">
                         <div className="form-group row form-group-marginless d-flex justify-content-center pb-0">
@@ -87,22 +87,29 @@ class AgendarCitaForm extends Component {
                         </div>
                     </Col>
                     <Col md="6" className={`text-center align-self-center ${formAgenda.agendarLlamada?"d-none":""}`}>
-                        <div className="form-group row form-group-marginless mt-4 pb-0 mb-0">
-                            <div className="col-md-8 text-left">
-                                <InputGray
-                                    withtaglabel={1}
-                                    withtextlabel={1}
-                                    withplaceholder={1}
-                                    withicon={1}
-                                    withformgroup={1}
-                                    placeholder='NOMBRE DE LA REUNIÓN'
-                                    iconclass="fas fa-users"
-                                    name='titulo'
-                                    value={formAgenda.titulo}
-                                    onChange={onChange}
-                                />
-                            </div>
-                        </div>
+                        {
+                            formAgenda.agendarCita?
+                                <div className="form-group row form-group-marginless mt-4 pb-0 mb-0">
+                                    <div className="col-md-8 text-left">
+                                        <InputGray
+                                            withtaglabel={1}
+                                            withtextlabel={1}
+                                            withplaceholder={1}
+                                            withicon={1}
+                                            withformgroup={1}
+                                            placeholder='NOMBRE DE LA REUNIÓN'
+                                            iconclass="fas fa-users"
+                                            name='titulo'
+                                            value={formAgenda.titulo}
+                                            onChange={onChange}
+                                            requirevalidation={1}
+                                            messageinc={"Ingresa el nombre de la reunión."}
+                                            formeditado={formeditado}
+                                        />
+                                    </div>
+                                </div>
+                            :''
+                        }
                         <div className="form-group row form-group-marginless pb-0 mb-0">
                             <div className={formAgenda.lugar === 'presencial' ?'col-md-4 text-left':'col-md-8 text-left'}>
                                 <RadioGroupGray
@@ -163,6 +170,9 @@ class AgendarCitaForm extends Component {
                                             name = { formAgenda.lugar === 'presencial' ? 'ubicacion' : 'url' }
                                             value = { formAgenda.lugar === 'presencial' ? formAgenda.ubicacion : formAgenda.url }
                                             onChange = { onChange }
+                                            requirevalidation={formAgenda.agendarCita?1:0}
+                                            messageinc={formAgenda.agendarCita?`INGRESA LA ${formAgenda.lugar === 'presencial' ? 'UBICACIÓN' : 'URL'}`:''}
+                                            formeditado={formeditado}
                                         />
                                     </div>
                                 :''
@@ -184,10 +194,7 @@ class AgendarCitaForm extends Component {
                         <div className="col-lg-12 text-right pr-0 pb-0">
                             <Button icon='' className="btn btn-primary mr-2"
                                 onClick={
-                                    (e) => {
-                                        e.preventDefault();
-                                        onSubmit()
-                                    }
+                                    (e) => { e.preventDefault(); confirmarCita('¿ESTÁS SEGURO DE ENVIAR LOS SIGUIENTES DATOS?', formAgenda, lead, () => onSubmit(), e, 'form-agendar' )}
                                 }
                             text="AGENDAR" 
                             />
