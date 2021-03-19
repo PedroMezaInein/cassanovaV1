@@ -101,7 +101,7 @@ export function notFoundAlert(){
         html:
             <div>
                 <Robot404 />
-                <div class = 'text-center'>
+                <div className = 'text-center'>
                     <h1>
                         ¡UPS!
                     </h1>
