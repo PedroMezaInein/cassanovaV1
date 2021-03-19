@@ -638,11 +638,8 @@ class Calendario extends Component {
     }
 
     renderEventContent = (eventInfo) => {
-        
-        {console.log(eventInfo.event._def.extendedProps.evento)}
         const { evento: event } = eventInfo.event._def.extendedProps
         let aux = ''
-
         if (event.red)
             if (event.red.nombre)
                 aux = event.red.nombre.toLowerCase()
@@ -652,7 +649,6 @@ class Calendario extends Component {
             if (auxHora.length === 3) auxHora = auxHora[0] + ':' + auxHora[1]
             else auxHora = ''
         }
-
         return (
             <div className = 'pb-2'>
                 <OverlayTrigger overlay={

@@ -1516,9 +1516,7 @@ class LeadInfo extends Component {
                                         <Card.Body className="py-0">
                                             <InformacionGeneral form = { form } onChange = { this.onChange }
                                                 onSubmit = { this.addLeadInfoAxios } user = { this.props.authUser.user }
-                                                lead = { lead } formeditado = { formeditado } options = { options } 
-                                                formeditado={formeditado}
-                                            />
+                                                lead = { lead } formeditado = { formeditado } options = { options }/>
                                         </Card.Body>
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="historial-contacto">

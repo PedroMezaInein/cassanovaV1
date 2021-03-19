@@ -44,7 +44,6 @@ class Empleados extends Component {
     }
 
     render() {
-        const { } = this.state
         return (
             <Layout active={'rh'} {...this.props}>
                 <Card className="card-custom gutter-b">
