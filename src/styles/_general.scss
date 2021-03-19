@@ -1600,6 +1600,13 @@ span.font-weight-bolder.text-hover-error:hover{
     background-color: #fff7e8;
     border-radius: 0;
 }
+
+.w-4-5{
+    width: 5.5%;
+}
+.w-4{
+    width: 4%;
+}
 .w-10{
     width: 10%;
 }
@@ -1847,4 +1854,66 @@ span.font-weight-bolder.text-hover-error:hover{
     width: max-content;
     margin-left: auto;
     margin-right: auto;
+}
+#checador{
+    th, td {
+        border: 1px solid #ecf0f3;
+    }
+    tr#fechas{
+        text-align: center;
+        & th.w-4-5{
+            color: #464E5F;
+            border-top: none;
+            border-bottom: none;
+        }
+        th:nth-last-child(3) {
+            border-right: 1px solid #E8F5E9;
+        }
+        
+        th:nth-last-child(3) {
+            border-right: 1px solid #E8F5E9;
+        }
+    }
+    tr#dias{
+        text-align: center;
+        background-color: #ECE5FB;
+        & th.w-4-5{
+            border:none;
+            color:#8e6fd0;
+        }
+        th:nth-last-child(1) {
+            border-right: 1px solid #E8F5E9;
+        }
+    }
+    
+    th:first-child, td:first-child{
+        border-left: none;
+        border-top: none;
+    }
+    th#he{
+        border:1px solid #E8F5E9;
+        background-color: #E8F5E9;
+        color: #388E3C!important;
+        font-weight: 600;
+    }
+    th#tl{
+        border:1px solid #E1F0FF;
+        background-color: #E1F0FF ;
+        color: #2171c1!important;
+        font-weight: 600; 
+    }
+    td#cantidad-he{
+        // border:1px solid #E8F5E9;
+        font-weight: 600;
+    }
+    td#cantidad-th{
+        // border:1px solid #E1F0FF;
+        font-weight: 600;
+    }
+    td:nth-last-child(3) {
+        border-right: 1px solid #E8F5E9;
+    }
+}
+.text-red{
+    color: #C62828;
 }
