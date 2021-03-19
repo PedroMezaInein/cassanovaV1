@@ -251,10 +251,10 @@ class Empleados extends Component {
                         </div> */}
 
                         <div id="checador" className="table-responsive">
-                            <table className="table table-striped table-vertical-center table-hover">
+                            <table className="table table-vertical-center">
                                 <thead>
                                     <tr id="fechas">
-                                        <th rowSpan="2">
+                                        <th rowSpan="2" class="quincena">
                                             <span className="font-size-h4">Quincena 2</span>
                                         </th>
                                         <th colSpan="2" className="w-4-5">15/03</th>
@@ -292,7 +292,7 @@ class Empleados extends Component {
                                 <tbody>
                                     <tr className="text-center">
                                         <td>
-                                            <span className="font-weight-bolder">
+                                            <span className="empleado">
                                                 Carina Jiménez García
                                             </span>
                                         </td>
@@ -353,7 +353,7 @@ class Empleados extends Component {
                                     </tr>
                                     <tr className="text-center">
                                         <td>
-                                            <span className="font-weight-bolder">
+                                            <span className="empleado">
                                                 MARIA FERNANDA SABANERO QUIROZ
                                             </span>
                                         </td>
@@ -364,6 +364,67 @@ class Empleados extends Component {
                                         <td colSpan="2">
                                             <div>09:30</div>
                                             <div>06:30</div>
+                                        </td>
+                                        <td colSpan="2">
+                                            <div>09:30</div>
+                                            <div>06:30</div>
+                                        </td>
+                                        <td colSpan="2">
+                                            <div>09:30</div>
+                                            <div>06:30</div>
+                                        </td>
+                                        <td colSpan="2">
+                                            <div>09:30</div>
+                                            <div>06:30</div>
+                                        </td>
+                                        <td colSpan="2">
+                                            <div>09:30</div>
+                                            <div>06:30</div>
+                                        </td>
+                                        <td colSpan="2">
+                                            <div>09:30</div>
+                                            <div>06:30</div>
+                                        </td>
+                                        <td colSpan="2">
+                                            <div>09:30</div>
+                                            <div>06:30</div>
+                                        </td>
+                                        <td colSpan="2">
+                                            <div>09:30</div>
+                                            <div>06:30</div>
+                                        </td>
+                                        <td colSpan="2">
+                                            <div>09:30</div>
+                                            <div>06:30</div>
+                                        </td>
+                                        <td colSpan="2">
+                                            <div>09:30</div>
+                                            <div>06:30</div>
+                                        </td>
+                                        <td colSpan="2">
+                                            <div>09:30</div>
+                                            <div>06:30</div>
+                                        </td>
+                                        <td colSpan="2">
+                                            <div>09:30</div>
+                                            <div>06:30</div>
+                                        </td>
+                                        <td id="cantidad-he">1</td>
+                                        <td id="cantidad-th">31</td>
+                                    </tr>
+                                    <tr className="text-center">
+                                        <td>
+                                            <span className="empleado">
+                                                Carina Jiménez García
+                                            </span>
+                                        </td>
+                                        <td colSpan="2">
+                                            <div>09:30</div>
+                                            <div>06:30</div>
+                                        </td>
+                                        <td colSpan="2">
+                                            <div className="text-red font-weight-bolder">10:30</div>
+                                            <div className="text-red font-weight-bolder">05:00</div>
                                         </td>
                                         <td colSpan="2">
                                             <div>09:30</div>
