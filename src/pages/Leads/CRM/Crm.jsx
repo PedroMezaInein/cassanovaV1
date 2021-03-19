@@ -1686,10 +1686,7 @@ class Crm extends Component {
 
     changePageContratar = lead => {
         const { history } = this.props
-        history.push({
-            pathname: '/leads/crm/contratar',
-            state: { lead: lead }
-        })
+        history.push({ pathname: '/leads/crm/contratar', state: { lead: lead } })
     }
 
     submitForm = e => {

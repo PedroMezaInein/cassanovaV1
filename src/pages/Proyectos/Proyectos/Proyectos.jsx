@@ -474,20 +474,14 @@ class Proyectos extends Component {
         })
         if (!proyectos)
             history.push('/')
-        
-        /* AWS.config.update({
-            accessKeyId: 'AKIARX3IEKM76VEW5MCV',
-            secretAccessKey: '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'
-        })
-        let myBucket = new AWS.S3({
-            params: { Bucket: 'admin-proyectos-bucket'},
-            region: 'us-east-2',
-        })
-        this.setState({
-            ...this.state,
-            myBucket: myBucket
-        }) */
-        // this.getProyectosAxios()
+        const { search: queryString } = this.props.history.location
+        if (queryString) {
+            let id = parseInt( new URLSearchParams(queryString).get("id") )
+            if(id){
+                this.setState({ ...this.state, modalSee: true })
+                this.getOneProyectoAxios(id)
+            }
+        }
     }
     updateActiveTabContainer = active => {
         this.setState({
@@ -1003,6 +997,22 @@ class Proyectos extends Component {
             </>
         )
     }
+
+    getOneProyectoAxios = async(id) => {
+        const { access_token } = this.props.authUser
+        waitAlert()
+        await axios.get(`${URL_DEV}v2/proyectos/proyectos/proyecto/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { proyecto } = response.data
+                this.setState({...this.state, proyecto: proyecto})
+                Swal.close()
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     async getProyectoAdjuntosZip(array) {
         const { access_token } = this.props.authUser
         const { proyecto } = this.state
