@@ -12,6 +12,7 @@ import message from './Message'
 import noFiles from './NoFiles'
 import files from './Files'
 import build from './Build'
+import robot404 from './Robot404'
 
 export const Sending = sending
 export const Done = done
@@ -27,3 +28,4 @@ export const Message = message
 export const NoFiles = noFiles
 export const Files = files
 export const Build = build
+export const Robot404 = robot404
