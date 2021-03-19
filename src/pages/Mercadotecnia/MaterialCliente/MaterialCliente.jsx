@@ -532,8 +532,6 @@ class MaterialCliente extends Component {
         })
     }
 
-
-
     /* ANCHOR DELETE FOLDER IN CASO EXITO */
     deleteFolderInCasoExitoAxios = async(id) => {
         const { access_token } = this.props.authUser
@@ -647,6 +645,7 @@ class MaterialCliente extends Component {
                     }
                     break;
                 }
+                break
             case 6:
                 questionAlert('ENVIAR ARCHIVO', '¿ESTÁS SEGURO QUE DESEAS ENVIARLO?', () => { waitAlert(); this.addAdjuntoInCasoExito() })
                 break;
@@ -909,6 +908,7 @@ class MaterialCliente extends Component {
                                 </div>
                             )
                         }
+                        break
                     case 2:
                         return(
                             <div>
