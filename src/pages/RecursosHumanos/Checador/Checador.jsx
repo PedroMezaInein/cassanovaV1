@@ -2,6 +2,9 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Layout from '../../../components/layout/layout'
 import { Card } from 'react-bootstrap'
+import axios from 'axios'
+import { URL_DEV } from '../../../constants'
+import { errorAlert, printResponseErrorAlert } from '../../../functions/alert'
 class Empleados extends Component {
     state = {
 
@@ -16,6 +19,28 @@ class Empleados extends Component {
         });
         if (!checador)
             history.push('/')
+        let fecha = new Date();
+        let quincena = ''
+        if(fecha.getDate() < 15){
+            quincena = 'A'
+        }else{
+            quincena = 'B'
+        }
+        let mes = fecha.getMonth()
+        let año = fecha.getFullYear()
+        this.getEmpleadosChecador(quincena, mes, año)
+    }
+
+    getEmpleadosChecador = async(quincena, mes, año) => {
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}v2/rh/checador/${quincena}/${mes + 1}/${año}`, { responseType: 'json', headers: { 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
     }
 
     render() {
@@ -111,7 +136,6 @@ class Empleados extends Component {
                                 </tbody>
                             </table>
                         </div> */}
-
 
                         {/* <div className="table-responsive">
                             <table className="table table-bordered table responsive">

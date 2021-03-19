@@ -1,11 +1,7 @@
-import { Sending } from '../components/Lottie/'
-import { Done } from '../components/Lottie/'
-import { Message } from '../components/Lottie/'
+import { Message, Done, Sending, Robot404 } from '../components/Lottie/'
 import React from 'react'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
-import Moment from 'react-moment'
-import { collapseTextChangeRangesAcrossMultipleVersions } from 'typescript'
 const MySwal = withReactContent(Swal)
 
 export async function waitAlert() {
@@ -93,6 +89,27 @@ export function errorAlert(text) {
         title: '¡UPS!',
         text: text,
         icon: 'error',
+        customClass: {
+            actions: 'd-none'
+        }
+    })
+}
+
+export function notFoundAlert(){
+    MySwal.fire({
+        title: '',
+        html:
+            <div>
+                <Robot404 />
+                <div class = 'text-center'>
+                    <h1>
+                        ¡UPS!
+                    </h1>
+                    <span>
+                        Error 404
+                    </span>
+                </div>
+            </div>,
         customClass: {
             actions: 'd-none'
         }
@@ -575,7 +592,16 @@ export const printResponseErrorAlert = (error) => {
     if(error.message === 'Network Error')
         errorAlert('Ocurrió un error en el servidor, vuelve a intentar en 5 minutos.')
     else{
-        if (error.response.status === 401) { forbiddenAccessAlert() } 
-        else { errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.') }
+        switch(error.response.status){
+            case 401:
+                forbiddenAccessAlert()
+                break
+            case 404:
+                notFoundAlert()
+                break
+            default:
+                errorAlert(error.response.data.message !== undefined ? error.response.data.message : 'Ocurrió un error desconocido, intenta de nuevo.')
+                break
+        }
     }
 }
