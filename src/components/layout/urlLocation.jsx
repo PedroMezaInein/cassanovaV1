@@ -173,11 +173,11 @@ class UrlLocation extends Component {
                                                 /> */}
                                                 <span onClick = { (e) => { e.preventDefault(); this.openModal() }} 
                                                     className="btn text-dark-50 btn-icon-primary btn-hover-icon-success font-weight-bolder btn-hover-bg-light mr-2">
-                                                    <i className="fas fa-file-excel">
+                                                    <i className="fas fa-file-excel text-info">
                                                     </i> Decargar leads
                                                 </span>
                                                 <span onClick={() => { this.changePageAdd('telefono') }} className="btn text-dark-50 btn-icon-primary btn-hover-icon-success font-weight-bolder btn-hover-bg-light">
-                                                    <i className="fas fa-user-plus">
+                                                    <i className="fas fa-user-plus text-pink">
                                                     </i> Nuevo lead
                                                 </span>
                                             </>
