@@ -156,7 +156,7 @@ class Empleados extends Component {
     updateAño = value => { this.setState({...this.state, año: value}) }
     render() {
         const { data, mes, año, quincena, dias} = this.state
-        console.log( data.users )
+        console.log()
         return (
             <Layout active={'rh'} {...this.props}>
                 <Card className="card-custom gutter-b">
