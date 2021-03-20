@@ -20,7 +20,7 @@ import RVAnualIm from '../../components/pdfs/ReporteVentasAnual/RVAnualIm'
 import RVMensualIm from '../../components/pdfs/ReporteVentasMensual/RVMensualIm'
 import RVMensualInein from '../../components/pdfs/ReporteVentasMensual/RVMensualInein'
 import { Modal } from '../../components/singles'
-import { dataSimpleBar, monthGroupBar, percentBar, percentBarReplaceAds, monthGroupBarBreak, monthGroupBarBreak2, monthGroupBarServicios } from '../../constantes/barOptions'
+import { dataSimpleBar, monthGroupBar, percentBar, percentBarReplaceAds, monthGroupBarBreak2, monthGroupBarServicios } from '../../constantes/barOptions'
 
 class ReporteVentas extends Component {
 
@@ -477,6 +477,7 @@ class ReporteVentas extends Component {
                     for(let i = 0; i < estilo.length; i++){
                         estilos.push(i + estilo.offset)
                     }
+                return ''
             })
             conclusiones.push({
                 estilos: estilos,
@@ -493,6 +494,7 @@ class ReporteVentas extends Component {
                     for(let i = 0; i < estilo.length; i++){
                         estilos.push(i + estilo.offset)
                     }
+                return ''
             })
             sugerencias.push({
                 estilos: estilos,
@@ -1164,7 +1166,6 @@ class ReporteVentas extends Component {
     render() {
         const { form, data, options: opciones, key, modal, empresas, empresaActive, tipo, empresa } = this.state
         let { table_observaciones, table_prospecto_anteriores } = this.state
-        let { } = this.state
         const mesesEspañol = ['', 'Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
         let valor = 0;
         return (
