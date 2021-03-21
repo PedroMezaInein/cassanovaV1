@@ -62,6 +62,7 @@ class LeadTelefono extends Component {
                     aux.push(servicio)
             }else
                 aux.push(servicio)
+            return ''
         })
         options['servicios'] = setOptions(aux, 'servicio', 'id')
         this.setState({

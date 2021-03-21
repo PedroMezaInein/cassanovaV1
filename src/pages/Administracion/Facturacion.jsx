@@ -14,7 +14,6 @@ import NewTableServerRender from '../../components/tables/NewTableServerRender'
 import { FacturacionCard } from '../../components/cards'
 import NumberFormat from 'react-number-format'
 import Swal from 'sweetalert2'
-import { element } from 'prop-types'
 const $ = require('jquery');
 class Facturacion extends Component {
 
@@ -433,6 +432,7 @@ class Facturacion extends Component {
                             url: URL.createObjectURL(element),
                         }
                         break;
+                    default: break;
                 }
             });    
             form.adjuntos.relacionados.files.push(arreglo)
@@ -651,7 +651,7 @@ class Facturacion extends Component {
     }
 
     handleCloseFacturaRelacionada = () => {
-        const { modalFacturaRelacionada, form } = this.state
+        const { modalFacturaRelacionada } = this.state
         this.setState({
             ...this.state,
             modalFacturaRelacionada: !modalFacturaRelacionada,
@@ -724,12 +724,11 @@ class Facturacion extends Component {
                             Subtotal = Subtotal.substring(0, auxiliar)
                             obj.subtotal = Subtotal
                         }
-                        aux = ''
                         if (obj.total === '') {
                             let Total = text.search('Total="')
                             if (Total)
                                 Total = text.substring(Total + 7)
-                            aux = Total.search('"')
+                            Total.search('"')
                             Total = Total.substring(0, aux)
                             obj.total = Total
                         }
