@@ -12,12 +12,15 @@ class Empleados extends Component {
     state = {
         mes: meses[new Date().getMonth()],
         año: new Date().getFullYear(),
-        // dias: this.diasEnUnMes(meses[new Date().getMonth()],new Date().getFullYear()),
-        quincena: 'B',
+        quincena: '1',
+        diasNumber:[],
+        days:[],
         data:{
             users: [],
             feriados: [],
         },
+        horasExtra:0,
+        totalHoras:0
     }
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
@@ -29,18 +32,21 @@ class Empleados extends Component {
         });
         if (!checador)
             history.push('/')
+            
+        const { quincena } = this.state
+        this.diasEnUnMes(quincena)
+
         let fecha = new Date();
-        let quincena = ''
+        let quincena2 = ''
         if(fecha.getDate() < 15){
-            quincena = 'A'
+            quincena2= 'A'
         }else{
-            quincena = 'B'
+            quincena2 = 'B'
         }
         let mes = fecha.getMonth()
         let año = fecha.getFullYear()
-        this.getEmpleadosChecador(quincena, mes, año)
+        this.getEmpleadosChecador(quincena2, mes, año)
     }
-
     getEmpleadosChecador = async(quincena, mes, año) => {
         const { access_token } = this.props.authUser
         await axios.get(`${URL_DEV}v2/rh/checador/${quincena}/${mes + 1}/${año}`, { responseType: 'json', headers: { 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
@@ -59,12 +65,52 @@ class Empleados extends Component {
             console.log(error, 'error')
         })
     }
-    getHours(dateTimeStart) {
-        var fechaStart = new Date(dateTimeStart)
-        var horaStart = this.setTimer(fechaStart.getHours()) + ":" + this.setTimer(fechaStart.getMinutes())
-        return horaStart
+    getHours(user, day) {
+        let stringHora='-'
+        user.checadores.forEach(element=>{
+            var fechaStart = new Date(element.fecha_inicio)
+            var fechaEnd = new Date(element.fecha_fin)
+            if(fechaStart.getDate() === day || fechaEnd.getDate() === day){
+                stringHora = this.setTimer(fechaStart.getHours()) + ":" + this.setTimer(fechaStart.getMinutes()) + '\n'+ this.setTimer(fechaEnd.getHours()) + ":" + this.setTimer(fechaEnd.getMinutes())
+            }
+        })
+        return stringHora
     }
-
+    getHT(user, diasNumber){
+        let minutosTotales = 0
+        user.checadores.forEach(element=>{
+            var fechaStart = new Date(element.fecha_inicio)
+            var fechaEnd = new Date(element.fecha_fin)
+            diasNumber.forEach(day=>{ 
+                if(fechaStart.getDate() === day || fechaEnd.getDate() === day){
+                    var fecha3 =fechaEnd-fechaStart
+                    minutosTotales += Math.floor((fecha3/1000)/60);
+                }
+            })
+        })
+        var mm = minutosTotales%60
+        var hh = (minutosTotales-mm)/60
+        return (this.setTimer(hh)+':'+this.setTimer(mm))
+    }
+    getHE(user, diasNumber){
+        let minutosTotales = 0
+        user.checadores.forEach(element=>{
+            var fechaStart = new Date(element.fecha_inicio)
+            var fechaEnd = new Date(element.fecha_fin)
+            diasNumber.forEach(day=>{ 
+                if(fechaStart.getDate() === day || fechaEnd.getDate() === day){
+                    var fecha3 =fechaEnd-fechaStart
+                    var minutosTrabajados = Math.floor((fecha3/1000)/60)
+                    if(minutosTrabajados>480){ 
+                        minutosTotales += minutosTrabajados -480
+                    }
+                }
+            })
+        })
+        var mm = minutosTotales%60
+        var hh = (minutosTotales-mm)/60
+        return (this.setTimer(hh)+':'+this.setTimer(mm))
+    }
     setTimer = (time) => {
         switch (time) {
             case 0:
@@ -91,72 +137,100 @@ class Empleados extends Component {
                 return time
         }
     }
-
-    diasEnUnMes(mes, año) {
-        let dias = new Date(año, meses.indexOf(mes) + 1, 0).getDate()
-        return ` ${dias} / ${mes}`;
+    diasEnUnMes(quincena) {
+        const { mes, año, data} = this.state
+        let { diasNumber, days} = this.state
+        let arregloFinal =[]
+        let arregloNombres =[]
+        days=[]
+        let arr = []
+        let total_dias = new Date(año, meses.indexOf(mes) + 1, 0).getDate();
+        for(let i = 0; i < total_dias; i++) {
+            arr.push(i+1);
+        }
+        if(parseInt(quincena) === 1){
+            diasNumber=arr.slice(0, 15);
+        }else{
+            diasNumber=arr.slice(15,arr.length);
+        }
+        let mes_number=0
+        switch (mes) {
+            case "Enero":
+                mes_number = 1;
+                break;
+            case "Febrero":
+                mes_number = 2;
+                break;
+            case "Marzo":
+                mes_number = 3;
+                break;
+            case "Abril":
+                mes_number = 4;
+                break;
+            case "Mayo":
+                mes_number = 5;
+                break;
+            case "Junio":
+                mes_number = 6;
+                break;
+            case "Julio":
+                mes_number = 7;
+                break;
+            case "Agosto":
+                mes_number = 8;
+                break;
+            case "Septiembre":
+                mes_number = 9;
+                break;
+            case "Octubre":
+                mes_number = 10;
+                break;
+            case "Noviembre":
+                mes_number = 11;
+                break;
+            case "Diciembre":
+                mes_number = 12;
+                break;
+            default: break;
+        }
+        let arregloDias=[]
+        let daysFeriados =''
+        data.feriados.map(element=>{
+            daysFeriados = new Date(element.fecha).getDate()+1;
+            arregloDias.push(daysFeriados)
+        })
+        let day =''
+        let daysArray = ["DOM","LUN","MAR","MIÉ","JUE","VIE","SAB"];
+        for (let i of diasNumber) {
+            day = new Date(`${año} ${mes_number} ${i}`);
+            if(day.getDay()!= 0 && day.getDay() !=6){
+                let esFestivo = false
+                for(let x of arregloDias) {
+                    if(x==i) esFestivo=true;
+                }
+                if(!esFestivo){
+                    arregloFinal.push(i)
+                    arregloNombres.push(daysArray[day.getDay()])
+                }
+            }
+        }
+        this.setState({
+            ...this.state,
+            diasNumber:arregloFinal, 
+            days:arregloNombres
+        })
     }
-    // isActiveBackButton = () => {
-    //     const { mes, año } = this.state
-    //     let actualMonth = meses.indexOf(mes)
-    //     if (actualMonth === 0) {
-    //         let _mes = new Date().getMonth()
-    //         let _año = new Date().getFullYear()
-    //         let minimoAño = _año
-    //         if (_mes > 9)
-    //             minimoAño = _año - 3;
-    //         else
-    //             minimoAño = _año - 4;
-    //         if (año.toString() === minimoAño.toString())
-    //             return false
-    //     }
-    //     return true
-    // }
-    // isActiveForwardButton = () => {
-    //     const { mes, año } = this.state
-    //     let actualMonth = meses.indexOf(mes)
-    //     if (actualMonth === 11) {
-    //         let _mes = new Date().getMonth()
-    //         let _año = new Date().getFullYear()
-    //         let maximoAño = _año
-    //         if (_mes > 9)
-    //             maximoAño = _año + 1;
-    //         else
-    //             maximoAño = _año;
-    //         if (año.toString() === maximoAño.toString())
-    //             return false
-    //     }
-    //     return true
-    // }
-    // changeMonth = (direction) => {
-    //     const { mes, año } = this.state
-    //     let actualMonth = meses.indexOf(mes)
-    //     let newMonth = meses[actualMonth]
-    //     let newYear = año
-    //     if (direction === 'back') {
-    //         if (actualMonth === 0) {
-    //             newMonth = meses[11]
-    //             newYear = (año - 1).toString() 
-    //         } else {
-    //             newMonth = meses[actualMonth - 1]
-    //         }
-    //     } else {
-    //         if (actualMonth === 11) {
-    //             newMonth = meses[0]
-    //             newYear = (parseInt(año) + 1).toString() 
-    //         } else {
-    //             newMonth = meses[actualMonth + 1]
-    //         }
-    //     }
-    // }
-    diasEnUnMes(mes, año) { return new Date(año, meses.indexOf(mes) + 1, 0).getDate(); }
-
-    updateMes = value => { this.setState({ ...this.state, mes: value }) }
-    
     updateAño = value => { this.setState({...this.state, año: value}) }
+    updateMes = value => { this.setState({ ...this.state, mes: value }) }
+    updateQuincena = value => {
+        this.setState({
+            ...this.state,
+            quincena: value
+        })
+        this.diasEnUnMes(value)
+    }
     render() {
-        const { data, mes, año, quincena, dias} = this.state
-        console.log()
+        const { data, mes, año, quincena, diasNumber, days} = this.state
         return (
             <Layout active={'rh'} {...this.props}>
                 <Card className="card-custom gutter-b">
@@ -169,7 +243,8 @@ class Empleados extends Component {
                         <div className="card-toolbar row mx-0 row-paddingless d-flex justify-content-end ">
                             <div className="col-md-3 mr-4">
                                 <SelectSearchGray
-                                    name='año' options={getAños()} customdiv='mb-0'
+                                    name='año' options={getAños()}
+                                    customdiv='mb-0'
                                     value = { año }
                                     onChange={this.updateAño}
                                     iconclass="fas fa-calendar-day"
@@ -191,7 +266,7 @@ class Empleados extends Component {
                                     options={getQuincena()} 
                                     value={quincena}
                                     customdiv='mb-0'
-                                    onChange={this.updateMes}
+                                    onChange={this.updateQuincena}
                                     iconclass="fas fa-calendar-day"
                                 />
                             </div>
@@ -205,66 +280,25 @@ class Empleados extends Component {
                                         <th rowSpan="2" className="quincena">
                                             <div className="empleado font-size-h4">{`${mes} ${año}`}</div>
                                             <div className="font-size-md">Quincena 2</div>
-                                            <div>
-                                                {/* <div className="btn-group">
-                                                    <span className={`btn btn-icon btn-xs btn-light-primary mr-2 my-1 ${this.isActiveBackButton() ? 'enabled' : 'disabled'}`}
-                                                        onClick={
-                                                            (e) => {
-                                                                e.preventDefault();
-                                                                if (this.isActiveBackButton())
-                                                                    this.changeMonth('back')
-                                                            }
-                                                        }>
-                                                        <i className="fa fa-chevron-left icon-xs" />
-                                                    </span>
-                                                    <span className={`btn btn-icon btn-xs btn-light-primary mr-2 my-1 ${this.isActiveForwardButton() ? 'enabled' : 'disabled'}`}
-                                                        onClick={
-                                                            (e) => {
-                                                                e.preventDefault();
-                                                                if (this.isActiveForwardButton())
-                                                                    this.changeMonth('forward')
-                                                            }
-                                                        }>
-                                                        <i className="fa fa-chevron-right icon-xs" />
-                                                    </span>
-                                                </div> */}
-                                            </div>
                                         </th>
                                         {
-                                            [...Array(this.diasEnUnMes(mes, año))].map((element, key) => {
-                                            return( <th key = {key}>{key + 1}</th> )
-                                        })
+                                            diasNumber.map((element, key) => {
+                                                return( 
+                                                    <th key={key}>{element}</th>
+                                                )
+                                            })
                                         }
-                                        {/* <th colSpan="2" className="w-4-5">15/03</th>
-                                        <th colSpan="2" className="w-4-5">16/03</th>
-                                        <th colSpan="2" className="w-4-5">17/03</th>
-                                        <th colSpan="2" className="w-4-5">18/03</th>
-                                        <th colSpan="2" className="w-4-5">19/03</th>
-                                        <th colSpan="2" className="w-4-5">22/03</th>
-                                        <th colSpan="2" className="w-4-5">23/03</th>
-                                        <th colSpan="2" className="w-4-5">24/03</th>
-                                        <th colSpan="2" className="w-4-5">25/03</th>
-                                        <th colSpan="2" className="w-4-5">26/03</th>
-                                        <th colSpan="2" className="w-4-5">29/03</th>
-                                        <th colSpan="2" className="w-4-5">30/03</th>
-                                        <th colSpan="2" className="w-4-5">31/03</th> */}
                                         <th rowSpan="2" id="he" className="w-4-5">HORAS EXTRA</th>
                                         <th rowSpan="2" id="tl" className="w-4-5">TOTAL HORAS</th>
                                     </tr>
                                     <tr id="dias" className="text-center">
-                                        <th colSpan="2" className="w-4-5">LUN</th>
-                                        <th colSpan="2" className="w-4-5">MAR</th>
-                                        <th colSpan="2" className="w-4-5">MIÉ</th>
-                                        <th colSpan="2" className="w-4-5">JUE</th>
-                                        <th colSpan="2" className="w-4-5">VIE</th>
-                                        <th colSpan="2" className="w-4-5">LUN</th>
-                                        <th colSpan="2" className="w-4-5">MAR</th>
-                                        <th colSpan="2" className="w-4-5">MIÉ</th>
-                                        <th colSpan="2" className="w-4-5">JUE</th>
-                                        <th colSpan="2" className="w-4-5">VIE</th>
-                                        <th colSpan="2" className="w-4-5">LUN</th>
-                                        <th colSpan="2" className="w-4-5">MAR</th>
-                                        <th colSpan="2" className="w-4-5">MIÉ</th>
+                                        {
+                                            days.map((element, key)=>{
+                                                return(
+                                                    <th className="w-4-5" key={key}>{element}</th>
+                                                )
+                                            })
+                                        }
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -279,77 +313,15 @@ class Empleados extends Component {
                                                             </span>
                                                         </td>
                                                         {
-                                                            user.checadores.map((checador, key) =>{
+                                                            diasNumber.map((element, key) => {
                                                                 return(
-                                                                    <td colSpan="2" key={key}>
-                                                                        <div>{this.getHours(checador.fecha_inicio)}</div>
-                                                                        <div>{this.getHours(checador.fecha_fin)}</div>
-                                                                    </td>
+                                                                    <td key={key}>{this.getHours(user, element)}</td>
                                                                 )
                                                             })
                                                         }
+                                                        <td id="cantidad-he">{this.getHE(user, diasNumber)}</td>
+                                                        <td id="cantidad-th">{this.getHT(user, diasNumber)}</td>
                                                     </tr>
-                                                    // <tr className="text-center" key={key}>
-                                                    //     <td>
-                                                    //         <span className="empleado">
-                                                    //             {user.name}
-                                                    //         </span>
-                                                    //     </td>
-                                                    //     <td colSpan="2">
-                                                    //         <div>09:30</div>
-                                                    //         <div>06:30</div>
-                                                    //     </td>
-                                                    //     <td colSpan="2">
-                                                    //         <div className="text-red font-weight-bolder">10:30</div>
-                                                    //         <div className="text-red font-weight-bolder">05:00</div>
-                                                    //     </td>
-                                                    //     <td colSpan="2">
-                                                    //         <div>09:30</div>
-                                                    //         <div>06:30</div>
-                                                    //     </td>
-                                                    //     <td colSpan="2">
-                                                    //         <div>09:30</div>
-                                                    //         <div>06:30</div>
-                                                    //     </td>
-                                                    //     <td colSpan="2">
-                                                    //         <div>09:30</div>
-                                                    //         <div>06:30</div>
-                                                    //     </td>
-                                                    //     <td colSpan="2">
-                                                    //         <div>09:30</div>
-                                                    //         <div>06:30</div>
-                                                    //     </td>
-                                                    //     <td colSpan="2">
-                                                    //         <div>09:30</div>
-                                                    //         <div>06:30</div>
-                                                    //     </td>
-                                                    //     <td colSpan="2">
-                                                    //         <div>09:30</div>
-                                                    //         <div>06:30</div>
-                                                    //     </td>
-                                                    //     <td colSpan="2">
-                                                    //         <div>09:30</div>
-                                                    //         <div>06:30</div>
-                                                    //     </td>
-                                                    //     <td colSpan="2">
-                                                    //         <div>09:30</div>
-                                                    //         <div>06:30</div>
-                                                    //     </td>
-                                                    //     <td colSpan="2">
-                                                    //         <div>09:30</div>
-                                                    //         <div>06:30</div>
-                                                    //     </td>
-                                                    //     <td colSpan="2">
-                                                    //         <div>09:30</div>
-                                                    //         <div>06:30</div>
-                                                    //     </td>
-                                                    //     <td colSpan="2">
-                                                    //         <div>09:30</div>
-                                                    //         <div>06:30</div>
-                                                    //     </td>
-                                                    //     <td id="cantidad-he">1</td>
-                                                    //     <td id="cantidad-th">31</td>
-                                                    // </tr>
                                                 )
                                             }
                                         })
