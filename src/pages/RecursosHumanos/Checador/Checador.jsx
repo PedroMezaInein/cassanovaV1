@@ -12,7 +12,7 @@ class Empleados extends Component {
     state = {
         mes: meses[new Date().getMonth()],
         año: new Date().getFullYear(),
-        quincena: '1',
+        quincena: new Date().getDate() < 15 ? '1' : '2',
         diasNumber:[],
         days:[],
         data:{
