@@ -2170,6 +2170,7 @@ class Crm extends Component {
                     </div>
                     <Tab.Container defaultActiveKey = 'info'>
                         {
+                            
                             lead.prospecto ?
                                 lead.prospecto.contactos ?
                                     lead.prospecto.contactos.length > 0 ?
