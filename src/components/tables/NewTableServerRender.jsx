@@ -2,9 +2,10 @@ import React, { Component } from 'react';
 import '../../styles/custom_datatable.css'
 import '../../styles/metronic/_datables.scss';
 import { errorAlert } from '../../functions/alert'
-import { Card, OverlayTrigger  } from 'react-bootstrap'
+import { Card, Dropdown, DropdownButton, OverlayTrigger  } from 'react-bootstrap'
 import { renderToString } from 'react-dom/server';
 import Tooltip from 'react-bootstrap/Tooltip'
+import ReactDOM from 'react-dom'
 const $ = require('jquery');
 const global_variable = {}
 $.DataTable = require('datatables.net');
@@ -41,6 +42,61 @@ function runAjax(settings, accessToken, request, setter, url) {
     });
     return deferred.promise();
 }
+
+class TableButton extends Component{
+    render(){
+        const { cellData, row, actions, elementos } = this.props
+        let valor = elementos[row]
+        if(cellData.length > 3)
+            return(
+                <div className="w-100 d-flex justify-content-center">
+                    <DropdownButton menualign = "right" title = { <i className="fas fa-chevron-down icon-nm p-0"></i> } id = 'dropdown-button-drop-left-danger' >
+                        {
+                            cellData.map((element) => {
+                                console.log('ELEMENT', element)
+                                if(actions[element.action]){
+                                    let funcion = actions[element.action].function
+                                    return(
+                                        <Dropdown.Item className = {`text-hover-${element.btnclass} dropdown-${element.btnclass}`}
+                                            onClick = { (e) => { e.preventDefault(); funcion(valor)}}>
+                                            <span className="navi-icon">
+                                                <i className = {`${element.iconclass} mr-2`} />
+                                                <span className="text-muted">
+                                                    {element.tooltip.text}
+                                                </span>
+                                            </span>
+                                        </Dropdown.Item>
+
+                                    )
+                                }
+                            })
+                        }
+                    </DropdownButton>
+                </div>
+                
+            )
+        else
+            return(
+                <div>
+                    {
+                        cellData.map((element) => {
+                            if(actions[element.action]){
+                                let funcion = actions[element.action].function
+                                return(
+                                    <button className = {`btn btn-icon btn-actions-table btn-xs ml-2 btn-text-${element.btnclass} btn-hover-${element.btnclass}`} 
+                                        onClick = { (e) => {e.preventDefault(); funcion(valor)}} >
+                                        <i className={`fas ${element.iconclass}`} />
+                                    </button>
+                                )
+                            }
+                        })
+                    }
+                    
+                </div>
+            )
+    }
+}
+
 class NewTableServerRender extends Component {
 
     state = {
@@ -338,7 +394,7 @@ class NewTableServerRender extends Component {
                 'data': null,
                 'searchable': mostrar_acciones ? false : true,
                 'orderable': false,
-                render: function (data, type, row, meta) {
+                /* render: function (data, type, row, meta) {
                     if (global_variable.mostrar_acciones === true) {
                         let aux = ''
                         data.map((element) => {
@@ -352,7 +408,17 @@ class NewTableServerRender extends Component {
                     else {
                         return (`<div>${data}</div>`)
                     }
+                }, */
+                createdCell: (td, cellData, rowData, row, col) => {
+                    if (global_variable.mostrar_acciones === true) {
+                        let elementos = _that.state.newElements
+                        ReactDOM.render( <TableButton cellData = { cellData} row = { row }  actions = {actions} elementos = { elementos} />, td)    
+                    }
+                    else {
+                        return (`<div>${td}</div>`)
+                    }
                 }
+
             },{
                 'targets': noOrdereableHeaders,
                 'orderable': false
@@ -370,7 +436,7 @@ class NewTableServerRender extends Component {
             }
         });
 
-        $(this.refs.main).on('click', '.btn-actions-table', function (e) {
+        /* $(this.refs.main).on('click', '.btn-actions-table', function (e) {
             e.preventDefault();
             var id = $(this).attr('id').toString()
             var name = $(this).attr('name').toString()
@@ -382,7 +448,7 @@ class NewTableServerRender extends Component {
                 return false
             });
             actions[name].function(aux)
-        });
+        }); */
 
     }
 
