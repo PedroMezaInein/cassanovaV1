@@ -619,9 +619,12 @@ class ProyectosForm extends Component {
         })
         await axios.post(`${URL_DEV}v2/proyectos/proyectos/${proyecto.id}`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue creado con éxito.')
+                const { proyecto } = response.data
                 const { history } = this.props
-                history.push({ pathname: '/proyectos/proyectos' });
+                createAlertSA2WithClose(
+                    '¡FELICIDADES CREASTE EL PROYECTO!', '¿DESEAS CREAR LA CAJA CHICA?',
+                    () => this.addCajaChicaAxios(proyecto), history, '/proyectos/proyectos'
+                )
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
