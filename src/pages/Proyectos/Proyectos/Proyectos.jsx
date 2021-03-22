@@ -524,16 +524,7 @@ class Proyectos extends Component {
             formeditado: 0,
         })
     }
-    openModalAdjuntos = proyecto => {
-        this.setState({
-            ...this.state,
-            modalAdjuntos: true,
-            adjuntos: this.setAdjuntosSlider(proyecto),
-            proyecto: proyecto,
-            form: this.clearForm(),
-            formeditado: 0,
-        })
-    }
+    
     openModalSee = proyecto => {
         this.setState({
             ...this.state,
@@ -926,11 +917,11 @@ class Proyectos extends Component {
                         : ''
                 }
                 {
-                    proyecto.adjuntos.length === 0 && !proyecto.imagen ?
+                    proyecto.adjuntos_count === 0 && !proyecto.imagen ?
                         <Small>
                             Sin adjuntos
                         </Small>
-                        : ''
+                    : ''
                 }
             </>
         )
@@ -1014,6 +1005,34 @@ class Proyectos extends Component {
         )
     }
 
+    openModalAdjuntos = async(proyecto) => {
+        const { access_token } = this.props.authUser
+        waitAlert()
+        await axios.get(`${URL_DEV}v2/proyectos/proyectos/proyecto/${proyecto.id}/adjuntos`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { proyecto } = response.data
+                this.setState({
+                    ...this.state,
+                    modalAdjuntos: true,
+                    proyecto: proyecto,
+                    form: this.clearForm()
+                })
+                Swal.close()
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+        /* this.setState({
+            ...this.state,
+            modalAdjuntos: true,
+            adjuntos: this.setAdjuntosSlider(proyecto),
+            proyecto: proyecto,
+            form: this.clearForm(),
+            formeditado: 0,
+        }) */
+    }
+
     openModalLead = async(proyecto) => {
         const { access_token } = this.props.authUser
         waitAlert()
@@ -1031,7 +1050,6 @@ class Proyectos extends Component {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
-        console.log(proyecto, 'PROYECTO')
     }
 
     getOneProyectoAxios = async(id) => {
