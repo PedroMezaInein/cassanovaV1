@@ -464,7 +464,12 @@ export function setContactoIcon(contacto){
             }
     return ''
 }
-
+export function getQuincena(){
+    return [
+        { name: '1', value: '1' },
+        { name: '2', value: '2' }
+    ]
+}
 export function getMeses(){
     return [
         { name: 'Enero', value: 'Enero' },
