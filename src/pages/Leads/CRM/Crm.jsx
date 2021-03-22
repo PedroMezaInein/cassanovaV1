@@ -2145,6 +2145,7 @@ class Crm extends Component {
                 {/* ANCHOR MODAL SINGLE ONE LEAD */}
                 <Modal size="xl" title='INFORMACIÓN DEL LEAD' 
                     show = { modal_one_lead } handleClose = { this.handleCloseModalOneLead } >
+                        
                     <div className = "row mx-0">
                         <div className = "col-md-12">
                             <div className = "d-flex justify-content-between mt-4">
@@ -2169,6 +2170,7 @@ class Crm extends Component {
                     </div>
                     <Tab.Container defaultActiveKey = 'info'>
                         {
+                            
                             lead.prospecto ?
                                 lead.prospecto.contactos ?
                                     lead.prospecto.contactos.length > 0 ?

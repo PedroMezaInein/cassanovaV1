@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
 import Layout from '../../../components/layout/layout'
 import { connect } from 'react-redux'
-import { Modal, ModalDelete } from '../../../components/singles'
+import { Modal, ModalDelete, SymbolIcon } from '../../../components/singles'
 import { AvanceForm } from '../../../components/forms'
 import axios from 'axios'
 import { URL_DEV, PROYECTOS_COLUMNS, URL_ASSETS } from '../../../constants'
@@ -16,6 +16,7 @@ import { Nav, Tab, Col, Row } from 'react-bootstrap'
 import { ProyectosCard } from '../../../components/cards'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+import { OneLead } from '../../../components/modal'
 const MySwal = withReactContent(Swal)
 const $ = require('jquery');
 class Proyectos extends Component {
@@ -29,6 +30,7 @@ class Proyectos extends Component {
         modalDelete: false,
         modalAdjuntos: false,
         modalAvances: false,
+        modalLead: false,
         adjuntos: [],
         primeravista: true,
         defaultactivekey: "",
@@ -522,16 +524,7 @@ class Proyectos extends Component {
             formeditado: 0,
         })
     }
-    openModalAdjuntos = proyecto => {
-        this.setState({
-            ...this.state,
-            modalAdjuntos: true,
-            adjuntos: this.setAdjuntosSlider(proyecto),
-            proyecto: proyecto,
-            form: this.clearForm(),
-            formeditado: 0,
-        })
-    }
+    
     openModalSee = proyecto => {
         this.setState({
             ...this.state,
@@ -543,6 +536,13 @@ class Proyectos extends Component {
         this.setState({
             ...this.state,
             modalSee: false,
+            proyecto: ''
+        })
+    }
+    handleCloseLead = () => {
+        this.setState({
+            ...this.state,
+            modalLead: false,
             proyecto: ''
         })
     }
@@ -917,11 +917,11 @@ class Proyectos extends Component {
                         : ''
                 }
                 {
-                    proyecto.adjuntos.length === 0 && !proyecto.imagen ?
+                    proyecto.adjuntos_count === 0 && !proyecto.imagen ?
                         <Small>
                             Sin adjuntos
                         </Small>
-                        : ''
+                    : ''
                 }
             </>
         )
@@ -973,6 +973,13 @@ class Proyectos extends Component {
                 iconclass: 'flaticon-tool',
                 action: 'proyecto',
             })
+        if(proyecto.prospecto)
+            aux.push({
+                text: 'Información&nbsp;del&nbsp;lead',
+                btnclass: 'info',
+                iconclass: 'flaticon2-website',
+                action: 'lead',
+            })
                 
         return aux
     }
@@ -996,6 +1003,53 @@ class Proyectos extends Component {
                 </Small>
             </>
         )
+    }
+
+    openModalAdjuntos = async(proyecto) => {
+        const { access_token } = this.props.authUser
+        waitAlert()
+        await axios.get(`${URL_DEV}v2/proyectos/proyectos/proyecto/${proyecto.id}/adjuntos`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { proyecto } = response.data
+                this.setState({
+                    ...this.state,
+                    modalAdjuntos: true,
+                    proyecto: proyecto,
+                    form: this.clearForm()
+                })
+                Swal.close()
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+        /* this.setState({
+            ...this.state,
+            modalAdjuntos: true,
+            adjuntos: this.setAdjuntosSlider(proyecto),
+            proyecto: proyecto,
+            form: this.clearForm(),
+            formeditado: 0,
+        }) */
+    }
+
+    openModalLead = async(proyecto) => {
+        const { access_token } = this.props.authUser
+        waitAlert()
+        await axios.get(`${URL_DEV}v2/proyectos/proyectos/proyecto/${proyecto.id}/lead`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { lead } = response.data
+                this.setState({
+                    ...this.state,
+                    modalLead: true,
+                    lead: lead
+                })
+                Swal.close()
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
     }
 
     getOneProyectoAxios = async(id) => {
@@ -1377,8 +1431,17 @@ class Proyectos extends Component {
         })
     }
 
+    hasLead = () => {
+        const { proyecto } = this.state
+        if(proyecto)
+            if(proyecto.prospecto)
+                if(proyecto.prospecto.lead)
+                    return true
+        return false
+    }
+
     render() {
-        const { modalDelete, modalAdjuntos, modalAvances, title, form, proyecto, formeditado, showadjuntos, primeravista, subActiveKey, defaultactivekey, modalSee, key } = this.state
+        const { modalDelete, modalAdjuntos, modalAvances, title, form, proyecto, formeditado, showadjuntos, primeravista, subActiveKey, defaultactivekey, modalSee, key, modalLead, lead } = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
                 <Tabs defaultActiveKey = 'all' activeKey = { key }
@@ -1400,7 +1463,8 @@ class Proyectos extends Component {
                                         'adjuntos': { function: this.openModalAdjuntos },
                                         'avances': { function: this.openModalAvances },
                                         'see': { function: this.openModalSee },
-                                        'proyecto': { function: this.changePageRelacionar }
+                                        'proyecto': { function: this.changePageRelacionar },
+                                        'lead': { function: this.openModalLead }
                                     }}
                                     accessToken={this.props.authUser.access_token}
                                     setter={this.setProyectos}
@@ -1430,7 +1494,9 @@ class Proyectos extends Component {
                                         'delete': { function: this.openModalDelete },
                                         'adjuntos': { function: this.openModalAdjuntos },
                                         'avances': { function: this.openModalAvances },
-                                        'see': { function: this.openModalSee }
+                                        'see': { function: this.openModalSee },
+                                        'proyecto': { function: this.changePageRelacionar },
+                                        'lead': { function: this.openModalLead }
                                     }}
                                     accessToken={this.props.authUser.access_token}
                                     setter={this.setProyectos}
@@ -1460,7 +1526,9 @@ class Proyectos extends Component {
                                         'delete': { function: this.openModalDelete },
                                         'adjuntos': { function: this.openModalAdjuntos },
                                         'avances': { function: this.openModalAvances },
-                                        'see': { function: this.openModalSee }
+                                        'see': { function: this.openModalSee },
+                                        'proyecto': { function: this.changePageRelacionar },
+                                        'lead': { function: this.openModalLead }
                                     }}
                                     accessToken={this.props.authUser.access_token}
                                     setter={this.setProyectos}
@@ -1490,7 +1558,8 @@ class Proyectos extends Component {
                                         'delete': { function: this.openModalDelete },
                                         'adjuntos': { function: this.openModalAdjuntos },
                                         'avances': { function: this.openModalAvances },
-                                        'see': { function: this.openModalSee }
+                                        'see': { function: this.openModalSee },
+                                        'lead': { function: this.openModalLead }
                                     }}
                                     accessToken={this.props.authUser.access_token}
                                     setter={this.setProyectos}
@@ -1625,22 +1694,18 @@ class Proyectos extends Component {
                     
                 </Modal>
                 <Modal size="lg" title="Proyecto" show={modalSee} handleClose={this.handleCloseSee} >
-                    <ProyectosCard
-                        proyecto={proyecto}
-                    />
+                    <ProyectosCard proyecto={proyecto} />
+                </Modal>
+                <Modal size = 'xl' title = 'Información del lead' show = { modalLead } handleClose = { this.handleCloseLead }>
+                    {
+                        lead ? <OneLead lead = { lead } />  : ''
+                    }
                 </Modal>
             </Layout>
         )
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        authUser: state.authUser
-    }
-}
-
-const mapDispatchToProps = dispatch => ({
-})
-
+const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapDispatchToProps = dispatch => ({ })
 export default connect(mapStateToProps, mapDispatchToProps)(Proyectos);

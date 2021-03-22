@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import '../../styles/custom_datatable.css'
 import '../../styles/metronic/_datables.scss';
 import { errorAlert } from '../../functions/alert'
-import { Card } from 'react-bootstrap'
+import { Card, OverlayTrigger  } from 'react-bootstrap'
 import { renderToString } from 'react-dom/server';
-import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import Tooltip from 'react-bootstrap/Tooltip'
 const $ = require('jquery');
+const global_variable = {}
 $.DataTable = require('datatables.net');
 require("datatables.net-responsive-bs4");
 require("datatables.net-select");
@@ -14,7 +14,6 @@ require("datatables.net-searchpanes");
 require("datatables.net-colreorder");
 require("datatables.net-buttons");
 require("datatables.net-fixedheader");
-const global_variable = {}
 
 function runAjax(settings, accessToken, request, setter, url) {
     var deferred = new $.Deferred();
