@@ -35,13 +35,13 @@ class Empleados extends Component {
             
         const { quincena } = this.state
         this.diasEnUnMes(quincena)
-
+        
         let fecha = new Date();
         let quincena2 = ''
         if(fecha.getDate() < 15){
-            quincena2= 'A'
+            quincena2= '1'
         }else{
-            quincena2 = 'B'
+            quincena2 = '2'
         }
         let mes = fecha.getMonth()
         let año = fecha.getFullYear()
@@ -66,23 +66,50 @@ class Empleados extends Component {
         })
     }
     getHours(user, day) {
-        let stringHora='-'
+        let timeFechaStart=''
+        let timeFechaEnd=''
+        let noCumplioHorario = false
         user.checadores.forEach(element=>{
             var fechaStart = new Date(element.fecha_inicio)
             var fechaEnd = new Date(element.fecha_fin)
-            if(fechaStart.getDate() === day || fechaEnd.getDate() === day){
-                stringHora = this.setTimer(fechaStart.getHours()) + ":" + this.setTimer(fechaStart.getMinutes()) + '\n'+ this.setTimer(fechaEnd.getHours()) + ":" + this.setTimer(fechaEnd.getMinutes())
+            if(fechaStart.getDate() === day){
+                timeFechaStart = this.setTimer(fechaStart.getHours()) + ":" + this.setTimer(fechaStart.getMinutes())
+                if(element.fecha_fin=== null){
+                    timeFechaEnd=''
+                }else{
+                    timeFechaEnd = this.setTimer(fechaEnd.getHours()) + ":" + this.setTimer(fechaEnd.getMinutes())
+                }
+                var fecha3 =fechaEnd-fechaStart
+                var minutosTrabajados = Math.floor((fecha3/1000)/60)
+                if(minutosTrabajados<480){
+                    noCumplioHorario = true
+                }
             }
         })
-        return stringHora
+        return(
+            <div>
+                <div className={timeFechaStart >= '10:00'?'text-red font-weight-boldest':''}>{timeFechaStart}</div>
+                <div className={noCumplioHorario===true?'text-red font-weight-boldest':''}>{timeFechaEnd}</div>
+            </div>
+        )
     }
     getHT(user, diasNumber){
         let minutosTotales = 0
+        let fechaStart = ''
+        let fechaEnd = ''
+        let totalHorasQ = ''
+        let totalHoras = ''
         user.checadores.forEach(element=>{
-            var fechaStart = new Date(element.fecha_inicio)
-            var fechaEnd = new Date(element.fecha_fin)
+            if(element.fecha_fin=== null){
+                fechaStart = new Date(element.fecha_inicio)
+                fechaEnd = new Date(element.fecha_inicio)
+            }else{
+                fechaStart = new Date(element.fecha_inicio)
+                fechaEnd = new Date(element.fecha_fin)
+            }
+            totalHorasQ = diasNumber.length*8 +':00'
             diasNumber.forEach(day=>{ 
-                if(fechaStart.getDate() === day || fechaEnd.getDate() === day){
+                if(fechaStart.getDate() === day){
                     var fecha3 =fechaEnd-fechaStart
                     minutosTotales += Math.floor((fecha3/1000)/60);
                 }
@@ -90,15 +117,27 @@ class Empleados extends Component {
         })
         var mm = minutosTotales%60
         var hh = (minutosTotales-mm)/60
-        return (this.setTimer(hh)+':'+this.setTimer(mm))
+        totalHoras = (this.setTimer(hh)+':'+this.setTimer(mm))
+        return (
+            <div className={totalHoras<totalHorasQ?'text-red font-weight-boldest':''}>
+                {totalHoras}
+            </div>
+        )
     }
     getHE(user, diasNumber){
         let minutosTotales = 0
+        let fechaStart = ''
+        let fechaEnd = ''
         user.checadores.forEach(element=>{
-            var fechaStart = new Date(element.fecha_inicio)
-            var fechaEnd = new Date(element.fecha_fin)
-            diasNumber.forEach(day=>{ 
-                if(fechaStart.getDate() === day || fechaEnd.getDate() === day){
+            if(element.fecha_fin=== null){
+                fechaStart = new Date(element.fecha_inicio)
+                fechaEnd = new Date(element.fecha_inicio)
+            }else{
+                fechaStart = new Date(element.fecha_inicio)
+                fechaEnd = new Date(element.fecha_fin)
+            }
+            diasNumber.forEach(day=>{
+                if(fechaStart.getDate() === day){
                     var fecha3 =fechaEnd-fechaStart
                     var minutosTrabajados = Math.floor((fecha3/1000)/60)
                     if(minutosTrabajados>480){ 
@@ -137,22 +176,7 @@ class Empleados extends Component {
                 return time
         }
     }
-    diasEnUnMes(quincena) {
-        const { mes, año, data} = this.state
-        let { diasNumber, days} = this.state
-        let arregloFinal =[]
-        let arregloNombres =[]
-        days=[]
-        let arr = []
-        let total_dias = new Date(año, meses.indexOf(mes) + 1, 0).getDate();
-        for(let i = 0; i < total_dias; i++) {
-            arr.push(i+1);
-        }
-        if(parseInt(quincena) === 1){
-            diasNumber=arr.slice(0, 15);
-        }else{
-            diasNumber=arr.slice(15,arr.length);
-        }
+    mesNumber(mes){
         let mes_number=0
         switch (mes) {
             case "Enero":
@@ -193,6 +217,24 @@ class Empleados extends Component {
                 break;
             default: break;
         }
+        return mes_number
+    }
+    diasEnUnMes(quincena) {
+        const { mes, año, data} = this.state
+        let { diasNumber, days} = this.state
+        let arregloFinal =[]
+        let arregloNombres =[]
+        days=[]
+        let arr = []
+        let total_dias = new Date(año, meses.indexOf(mes) + 1, 0).getDate();
+        for(let i = 0; i < total_dias; i++) {
+            arr.push(i+1);
+        }
+        if(parseInt(quincena) === 1){
+            diasNumber=arr.slice(0, 15);
+        }else{
+            diasNumber=arr.slice(15,arr.length);
+        }
         let arregloDias=[]
         let daysFeriados =''
         data.feriados.map(element=>{
@@ -202,11 +244,11 @@ class Empleados extends Component {
         let day =''
         let daysArray = ["DOM","LUN","MAR","MIÉ","JUE","VIE","SAB"];
         for (let i of diasNumber) {
-            day = new Date(`${año} ${mes_number} ${i}`);
-            if(day.getDay()!= 0 && day.getDay() !=6){
+            day = new Date(`${año} ${this.mesNumber(mes)} ${i}`);
+            if(day.getDay()!== 0 && day.getDay() !==6){
                 let esFestivo = false
                 for(let x of arregloDias) {
-                    if(x==i) esFestivo=true;
+                    if(x===i) esFestivo=true;
                 }
                 if(!esFestivo){
                     arregloFinal.push(i)
@@ -304,26 +346,24 @@ class Empleados extends Component {
                                 <tbody>
                                     {
                                         data.users.map((user,key)=>{
-                                            if(user.checadores.length){
-                                                return(
-                                                    <tr className="text-center" key={key}>
-                                                        <td>
-                                                            <span className="empleado">
-                                                                {user.name}
-                                                            </span>
-                                                        </td>
-                                                        {
-                                                            diasNumber.map((element, key) => {
-                                                                return(
-                                                                    <td key={key}>{this.getHours(user, element)}</td>
-                                                                )
-                                                            })
-                                                        }
-                                                        <td id="cantidad-he">{this.getHE(user, diasNumber)}</td>
-                                                        <td id="cantidad-th">{this.getHT(user, diasNumber)}</td>
-                                                    </tr>
-                                                )
-                                            }
+                                            return(
+                                                <tr className="text-center" key={key}>
+                                                    <td>
+                                                        <span className="empleado">
+                                                            {user.name}
+                                                        </span>
+                                                    </td>
+                                                    {
+                                                        diasNumber.map((element, key) => {
+                                                            return(
+                                                                <td key={key}>{this.getHours(user, element)}</td>
+                                                            )
+                                                        })
+                                                    }
+                                                    <td id="cantidad-he">{this.getHE(user, diasNumber)}</td>
+                                                    <td id="cantidad-th">{this.getHT(user, diasNumber)}</td>
+                                                </tr>
+                                            )
                                         })
                                     }
                                 </tbody>
