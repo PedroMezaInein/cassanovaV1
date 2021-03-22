@@ -262,14 +262,24 @@ class Empleados extends Component {
             days:arregloNombres
         })
     }
-    updateAño = value => { this.setState({...this.state, año: value}) }
-    updateMes = value => { this.setState({ ...this.state, mes: value }) }
+    updateAño = value => { 
+        const { mes, quincena } = this.state
+        this.setState({...this.state, año: value}) 
+        this.getEmpleadosChecador(quincena, mes, value)
+    }
+    updateMes = value => { 
+        const { año, quincena } = this.state
+        this.setState({ ...this.state, mes: value }) 
+        this.getEmpleadosChecador(quincena, value, año)
+    }
     updateQuincena = value => {
+        const { mes, año } = this.state
         this.setState({
             ...this.state,
             quincena: value
         })
         this.diasEnUnMes(value)
+        this.getEmpleadosChecador(value, mes, año)
     }
     render() {
         const { data, mes, año, quincena, diasNumber, days} = this.state
