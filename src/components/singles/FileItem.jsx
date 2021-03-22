@@ -82,7 +82,7 @@ class FileItem extends Component {
                 </td>
                 {
                     anotherDate &&
-                        <td className="text-center border-bottom">
+                        <td className="text-center">
                             <span className="text-muted font-weight-bold">
                                 <Moment format="DD/MM/YYYY">
                                     {anotherDate}
