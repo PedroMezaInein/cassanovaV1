@@ -62,7 +62,11 @@ class TableButton extends Component{
                                             <span className="navi-icon">
                                                 <i className = {`${element.iconclass} mr-2`} />
                                                 <span className="text-muted">
-                                                    {element.tooltip.text}
+                                                    {
+                                                        element.tooltip ? 
+                                                            element.tooltip.text.replace(new RegExp('&nbsp;', 'g'), ' ') 
+                                                        : element.text.replace(new RegExp('&nbsp;', 'g'), ' ')
+                                                    }
                                                 </span>
                                             </span>
                                         </Dropdown.Item>
