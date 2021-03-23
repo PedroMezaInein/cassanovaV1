@@ -693,7 +693,7 @@ class PlanTrabajo extends Component {
                                 </div>
                             </div>
                         </div>
-                        <div className="table-responsive-xl">
+                        <div className="table-responsive-xl mt-5">
                             <table id="parrilla" className="table table-responsive table-bordered table-vertical-center border-0">
                                 <thead className="text-center">
                                     <tr>
