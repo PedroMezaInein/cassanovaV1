@@ -20,7 +20,9 @@ class Empleados extends Component {
             feriados: [],
         },
         horasExtra:0,
-        totalHoras:0
+        totalHoras:0,
+        mes_number:0,
+        arregloDiasFeriados:[]
     }
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
@@ -32,32 +34,62 @@ class Empleados extends Component {
         });
         if (!checador)
             history.push('/')
-            
-        const { quincena } = this.state
-        this.diasEnUnMes(quincena)
-        
-        let fecha = new Date();
-        let quincena2 = ''
-        if(fecha.getDate() < 15){
-            quincena2= '1'
-        }else{
-            quincena2 = '2'
-        }
-        let mes = fecha.getMonth()
-        let año = fecha.getFullYear()
-        this.getEmpleadosChecador(quincena2, mes, año)
+        const { quincena, mes, año } = this.state
+        let { mes_number } = this.state
+
+        mes_number=this.mesNumber(mes)
+        this.getEmpleadosChecador(quincena, mes_number, año)
     }
     getEmpleadosChecador = async(quincena, mes, año) => {
         const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}v2/rh/checador/${quincena}/${mes + 1}/${año}`, { responseType: 'json', headers: { 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(`${URL_DEV}v2/rh/checador/${quincena}/${mes}/${año}`, { responseType: 'json', headers: { 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { users, feriados} = response.data
-                let { data } = this.state
+                let { data, arregloDiasFeriados, diasNumber, days } = this.state
+
                 data.users=users
                 data.feriados = feriados
+                arregloDiasFeriados=[]
+
+                days=[]
+                let arregloFinal =[]
+                let arregloNombres =[]
+                let arr = []
+
+                let total_dias = new Date(año, meses.indexOf(mes) + 1, 0).getDate();
+                for(let i = 0; i < total_dias; i++) {
+                    arr.push(i+1);
+                }
+                if(parseInt(quincena) === 1){
+                    diasNumber=arr.slice(0, 15);
+                }else{
+                    diasNumber=arr.slice(15,arr.length);
+                }
+                let day =''
+                let daysFeriados =''
+                data.feriados.map(element=>{
+                    daysFeriados = new Date(element.fecha.replace(/-/g, '\/').replace(/T.+/, '')).getDate();
+                    arregloDiasFeriados.push(daysFeriados)
+                })
+                let daysArray = ["DOM","LUN","MAR","MIÉ","JUE","VIE","SAB"];
+                for (let i of diasNumber) {
+                    day = new Date(`${año} ${mes} ${i}`);
+                    if(day.getDay()!== 0 && day.getDay() !==6){
+                        let esFestivo = false
+                        for(let x of arregloDiasFeriados) {
+                            if(x===i) esFestivo=true;
+                        }
+                        if(!esFestivo){
+                            arregloFinal.push(i)
+                            arregloNombres.push(daysArray[day.getDay()])
+                        }
+                    }
+                }
                 this.setState({
                     ...this.state,
-                    data
+                    data,
+                    diasNumber:arregloFinal, 
+                    days:arregloNombres
                 })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -219,57 +251,67 @@ class Empleados extends Component {
         }
         return mes_number
     }
-    diasEnUnMes(quincena) {
-        const { mes, año, data} = this.state
-        let { diasNumber, days} = this.state
-        let arregloFinal =[]
-        let arregloNombres =[]
-        days=[]
-        let arr = []
-        let total_dias = new Date(año, meses.indexOf(mes) + 1, 0).getDate();
-        for(let i = 0; i < total_dias; i++) {
-            arr.push(i+1);
-        }
-        if(parseInt(quincena) === 1){
-            diasNumber=arr.slice(0, 15);
-        }else{
-            diasNumber=arr.slice(15,arr.length);
-        }
-        let arregloDias=[]
-        let daysFeriados =''
-        data.feriados.map(element=>{
-            daysFeriados = new Date(element.fecha).getDate()+1;
-            arregloDias.push(daysFeriados)
-        })
-        let day =''
-        let daysArray = ["DOM","LUN","MAR","MIÉ","JUE","VIE","SAB"];
-        for (let i of diasNumber) {
-            day = new Date(`${año} ${this.mesNumber(mes)} ${i}`);
-            if(day.getDay()!== 0 && day.getDay() !==6){
-                let esFestivo = false
-                for(let x of arregloDias) {
-                    if(x===i) esFestivo=true;
-                }
-                if(!esFestivo){
-                    arregloFinal.push(i)
-                    arregloNombres.push(daysArray[day.getDay()])
-                }
-            }
-        }
-        this.setState({
-            ...this.state,
-            diasNumber:arregloFinal, 
-            days:arregloNombres
-        })
+    // diasEnUnMes(quincena) {
+    //     const { mes, año, arregloDiasFeriados} = this.state
+    //     let { diasNumber, days, mes_number} = this.state
+    //     mes_number=this.mesNumber(mes)
+    //     this.getEmpleadosChecador(quincena, mes_number, año)
+
+    //     let arregloFinal =[]
+    //     let arregloNombres =[]
+    //     days=[]
+    //     let arr = []
+    //     let total_dias = new Date(año, meses.indexOf(mes) + 1, 0).getDate();
+    //     for(let i = 0; i < total_dias; i++) {
+    //         arr.push(i+1);
+    //     }
+    //     if(parseInt(quincena) === 1){
+    //         diasNumber=arr.slice(0, 15);
+    //     }else{
+    //         diasNumber=arr.slice(15,arr.length);
+    //     }
+    //     let day =''
+    //     let daysArray = ["DOM","LUN","MAR","MIÉ","JUE","VIE","SAB"];
+    //     for (let i of diasNumber) {
+    //         day = new Date(`${año} ${this.mesNumber(mes)} ${i}`);
+    //         if(day.getDay()!== 0 && day.getDay() !==6){
+    //             let esFestivo = false
+    //             for(let x of arregloDiasFeriados) {
+    //                 if(x===i) esFestivo=true;
+    //             }
+    //             if(!esFestivo){
+    //                 arregloFinal.push(i)
+    //                 arregloNombres.push(daysArray[day.getDay()])
+    //             }
+    //         }
+    //     }
+    //     this.setState({
+    //         ...this.state,
+    //         diasNumber:arregloFinal, 
+    //         days:arregloNombres
+    //     })
+    // }
+    updateAño = value => { 
+        let { mes, quincena, mes_number} = this.state
+        mes_number=this.mesNumber(mes)
+        this.setState({...this.state, año: value})
+        this.getEmpleadosChecador(quincena, mes_number, value)
     }
-    updateAño = value => { this.setState({...this.state, año: value}) }
-    updateMes = value => { this.setState({ ...this.state, mes: value }) }
+    updateMes = value => {
+        let { año, quincena, mes_number} = this.state
+        mes_number=this.mesNumber(value)
+        this.setState({ ...this.state, mes: value })
+        this.getEmpleadosChecador(quincena, mes_number, año)
+    }
     updateQuincena = value => {
+        let { mes, año, mes_number } = this.state
+        mes_number=this.mesNumber(mes)
         this.setState({
             ...this.state,
             quincena: value
         })
-        this.diasEnUnMes(value)
+        // this.diasEnUnMes(value)
+        this.getEmpleadosChecador(value, mes_number, año)
     }
     render() {
         const { data, mes, año, quincena, diasNumber, days} = this.state
