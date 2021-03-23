@@ -1,0 +1,231 @@
+
+#dropdown-button-newtable {
+    color: #2171c1;
+    background-color: transparent;
+    border-color: transparent;
+    height: 30px;
+    width: 30px;
+    justify-content: center;
+    display: inline-flex;
+    align-items: center;
+    &:hover {
+        background-color: #2171c1;
+        border-color: #2171c1;
+        color: #ffffff !important;
+    }
+    &:active {
+        background-color: #2171c1;
+        border-color: #2171c1;
+        color: #ffffff !important;
+    }
+    i {
+        display: inline-flex;
+        -webkit-box-align: center;
+        align-items: center;
+        -webkit-box-pack: center;
+        justify-content: center;
+        color: #2171c1;
+        &:hover { color: #fff; }
+        &:active { color: #fff; }
+    }
+    &:hover i {
+        color: #ffffff !important; 
+    }
+}
+
+
+
+
+.dropdown-danger {
+    font-weight: 500;
+    color: #7f7f7f;
+    padding: 6px 15px;
+    &:hover {
+        color: #F64E60;
+        text-decoration: none;
+        background-color: #FFE2E5;
+    }
+    &:active {
+        color: #F64E60 ;
+        text-decoration: none;
+        background-color: #FFE2E5;
+    }
+    span.navi-text{
+        padding-left: 5px;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        font-size: 13px;
+    }
+    i{
+        color:#B5B5C3
+    }
+}
+
+.dropdown-danger.dropdown-item.active{
+    color: #F64E60;
+    text-decoration: none;
+    background-color: #FFE2E5;
+    i { color: #F64E60;}
+}
+
+
+.dropdown-success {
+    font-weight: 500;
+    color: #7f7f7f;
+    padding: 6px 15px;
+    &:hover {
+        color: #388E3C;
+        text-decoration: none;
+        background-color: #E8F5E9;
+    }
+    &:active {
+        color: #388E3C ;
+        text-decoration: none;
+        background-color: #E8F5E9;
+    }
+    span.navi-text{
+        padding-left: 5px;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        font-size: 13px;
+    }
+    i{
+        color:#B5B5C3
+    }
+}
+
+.dropdown-success.dropdown-item.active{
+    color: #388E3C;
+    text-decoration: none;
+    background-color: #E8F5E9;
+    i { color: #388E3C;}
+}
+
+
+.dropdown-primary {
+    font-weight: 500;
+    color: #7f7f7f;
+    padding: 6px 15px;
+    &:hover {
+        color: #2171c1;
+        text-decoration: none;
+        background-color: #E1F0FF;
+    }
+    &:active {
+        color: #2171c1 ;
+        text-decoration: none;
+        background-color: #E1F0FF;
+    }
+    span.navi-text{
+        padding-left: 5px;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        font-size: 13px;
+    }
+    i{
+        color:#B5B5C3
+    }
+}
+
+.dropdown-primary.dropdown-item.active{
+    color: #2171c1;
+    text-decoration: none;
+    background-color: #E1F0FF;
+    i { color: #2171c1;}
+}
+
+.dropdown-info {
+    font-weight: 500;
+    color: #7f7f7f;
+    padding: 6px 15px;
+    &:hover {
+        color: #8950FC;
+        text-decoration: none;
+        background-color: #eee5ff;
+    }
+    &:active {
+        color: #8950FC ;
+        text-decoration: none;
+        background-color: #eee5ff;
+    }
+    span.navi-text{
+        padding-left: 5px;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        font-size: 13px;
+    }
+    i{
+        color:#B5B5C3
+    }
+}
+
+.dropdown-info.dropdown-item.active{
+    color: #8950FC;
+    text-decoration: none;
+    background-color: #eee5ff;
+    i { color: #8950FC;}
+}
+
+.dropdown-dark {
+    font-weight: 500;
+    color: #7f7f7f;
+    padding: 6px 15px;
+    &:hover {
+        color: #212121;
+        text-decoration: none;
+        background-color: #f3f6f9;
+    }
+    &:active {
+        color: #212121;
+        text-decoration: none;
+        background-color: #f3f6f9;
+    }
+    span.navi-text{
+        padding-left: 5px;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        font-size: 13px;
+    }
+    i{
+        color:#B5B5C3
+    }
+}
+
+.dropdown-dark.dropdown-item.active{
+    color: #212121;
+    text-decoration: none;
+    background-color: #f3f6f9;
+    i { color: #212121;}
+}
+
+.dropdown-warning {
+    font-weight: 500;
+    color: #7f7f7f;
+    padding: 6px 15px;
+    &:hover {
+        color: #ffa800;
+        text-decoration: none;
+        background-color: #fff4de;
+    }
+    &:active {
+        color: #ffa800 ;
+        text-decoration: none;
+        background-color: #fff4de;
+    }
+    span.navi-text{
+        padding-left: 5px;
+        font-weight: 500;
+        letter-spacing: 0.5px;
+        font-size: 13px;
+    }
+    i{
+        color:#B5B5C3
+    }
+}
+
+.dropdown-warning.dropdown-item.active{
+    color: #ffa800;
+    text-decoration: none;
+    background-color: #fff4de;
+    i { color: #ffa800;}
+}
