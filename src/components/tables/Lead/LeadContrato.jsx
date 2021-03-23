@@ -20,6 +20,15 @@ class LeadContrato extends Component {
         }
         return false;
     }
+
+    hasProyecto = lead => {
+        if(lead)
+            if(lead.prospecto)
+                if(lead.prospecto.proyecto)
+                    return true
+        return false
+    }
+
     render() {
         const { leads, onClickPrev, onClickNext, changePageDetails } = this.props
         return (
@@ -61,13 +70,23 @@ class LeadContrato extends Component {
                                                         </div>
                                                         <div>
                                                             <a href={`mailto:+${lead.email}`} className="text-dark-75 font-weight-bolder text-hover-success mb-1 font-size-lg">{lead.nombre}</a>
-                                                            <span className="text-muted font-weight-bold d-block">
-                                                                {
-                                                                    lead.prospecto.tipo_proyecto ?
-                                                                        lead.prospecto.tipo_proyecto.tipo
-                                                                        : ''
-                                                                }
-                                                            </span>
+                                                            {
+                                                                this.hasProyecto(lead) ?
+                                                                    <a href = {`/proyectos/proyectos?id=${lead.prospecto.proyecto.id}`}>
+                                                                        <span className="text-muted font-weight-bolder text-hover-primary d-block">
+                                                                            { lead.prospecto.proyecto.nombre }
+                                                                        </span>
+                                                                    </a>
+                                                                :
+                                                                    <span className="text-muted font-weight-bold d-block">
+                                                                        {
+                                                                            lead.prospecto.tipo_proyecto ?
+                                                                                lead.prospecto.tipo_proyecto.tipo
+                                                                            : ''
+                                                                        }
+                                                                    </span>
+                                                            }
+                                                            
                                                         </div>
                                                     </div>
                                                 </td>
