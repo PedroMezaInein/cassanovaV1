@@ -117,6 +117,8 @@ const RemisionForm = Loader(() => import('./pages/Proyectos/Remision/RemisionFor
 const Herramienta = Loader(() => import('./pages/Proyectos/Herramienta/Herramienta') )
 const HerramientaForm = Loader(() => import('./pages/Proyectos/Herramienta/HerramientaForm') )
 
+const CalendarioProyectos = Loader(() => import('./pages/Proyectos/Calendario/CalendarioProyectos') )
+
 const Areas = Loader( () => import('./pages/Catalogos/Areas') )
 const Partidas = Loader( () => import('./pages/Catalogos/Partidas') )
 const Unidades = Loader( () => import('./pages/Catalogos/Unidades') )
@@ -332,6 +334,8 @@ class App extends Component{
 
                     <Route path = "/proyectos/herramientas" exact component ={ Herramienta } />
                     <Route path = "/proyectos/herramientas/:action" exact component ={ HerramientaForm } />
+
+                    <Route path = "/proyectos/calendario-proyectos" exact component = { CalendarioProyectos } />
 
                     {/*  ANCHOR Routes for administracion */}
 
