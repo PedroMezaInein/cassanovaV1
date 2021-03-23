@@ -128,13 +128,26 @@ class Empleados extends Component {
     }
     getDifHours = (user, day) => {
         let diference = 0
+        let auxFin = null
+        let auxInicio = null
         user.checadores.forEach(element=>{
             var fechaStart = new Date(element.fecha_inicio)
             var fechaEnd = new Date(element.fecha_fin)
             if(fechaStart.getDate() === day){
+                auxInicio = element.fecha_inicio
+                auxFin = element.fecha_fin
                 diference = Math.floor(((fechaEnd - fechaStart)/1000)/60);
             }
+            
         })
+        if(auxInicio === null || auxFin === null){
+            return(
+                <div className="text-danger font-weight-boldest">
+                    { auxInicio === null ? 'No checó entrada' : ''}
+                    { auxFin === null ? 'No checó salida' : ''}
+                </div>
+            )
+        }
         return(
             <div className = { 
                 diference < (horasPorTrabajar * 60) ? "text-red font-weight-boldest"
@@ -153,6 +166,9 @@ class Empleados extends Component {
         let fechaEnd = ''
         let totalHorasQ = ''
         let totalHoras = ''
+        let contadorDias = 0
+        let end = new Date();
+        end.setHours(0,0,0,0);
         user.checadores.forEach(element=>{
             if(element.fecha_fin=== null){
                 fechaStart = new Date(element.fecha_inicio)
@@ -161,14 +177,16 @@ class Empleados extends Component {
                 fechaStart = new Date(element.fecha_inicio)
                 fechaEnd = new Date(element.fecha_fin)
             }
-            totalHorasQ = diasNumber.length*8 +':00'
             diasNumber.forEach(day=>{ 
                 if(fechaStart.getDate() === day){
+                    if( end - fechaStart > 0)
+                        contadorDias++
                     var fecha3 =fechaEnd-fechaStart
                     minutosTotales += Math.floor((fecha3/1000)/60);
                 }
             })
         })
+        totalHorasQ = contadorDias*8 +':00'
         var mm = minutosTotales%60
         var hh = (minutosTotales-mm)/60
         totalHoras = (this.setTimer(hh)+':'+this.setTimer(mm))
@@ -182,6 +200,8 @@ class Empleados extends Component {
         let minutosTotales = 0
         let fechaStart = ''
         let fechaEnd = ''
+        let start = new Date();
+        start.setHours(0,0,0,0);
         user.checadores.forEach(element=>{
             if(element.fecha_fin=== null){
                 fechaStart = new Date(element.fecha_inicio)
@@ -192,9 +212,11 @@ class Empleados extends Component {
             }
             diasNumber.forEach(day=>{
                 if(fechaStart.getDate() === day){
-                    var fecha3 =fechaEnd-fechaStart
-                    var minutosTrabajados = Math.floor((fecha3/1000)/60)
-                    minutosTotales += minutosTrabajados - (horasPorTrabajar * 60)
+                    if( start - fechaStart > 0){
+                        var fecha3 =fechaEnd-fechaStart
+                        var minutosTrabajados = Math.floor((fecha3/1000)/60)
+                        minutosTotales += minutosTrabajados - (horasPorTrabajar * 60)
+                    }
                 }
             })
         })

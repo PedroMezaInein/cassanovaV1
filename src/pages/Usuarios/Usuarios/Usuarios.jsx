@@ -393,7 +393,7 @@ class Usuarios extends Component {
                 {
                     text: 'Inhabilitar&nbsp;usuario',
                     btnclass: 'dark',
-                    iconclass: 'fa-user-lock',
+                    iconclass: 'fas fa-user-lock',
                     action: 'inhabilitar',
                     tooltip: { id: 'inhabilitar', text: 'Inhabilitar usuario', type: 'info' },
                 }
