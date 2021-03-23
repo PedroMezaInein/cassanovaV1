@@ -1,13 +1,14 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Layout from '../../../components/layout/layout'
-import { Card } from 'react-bootstrap'
+import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import axios from 'axios'
 import { URL_DEV } from '../../../constants'
 import { getMeses, getAños, getQuincena } from '../../../functions/setters'
 import { errorAlert, printResponseErrorAlert } from '../../../functions/alert'
 import { SelectSearchGray } from '../../../components/form-components'
 const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+const horasPorTrabajar = 8
 class Empleados extends Component {
     state = {
         mes: meses[new Date().getMonth()],
@@ -113,7 +114,7 @@ class Empleados extends Component {
                 }
                 var fecha3 =fechaEnd-fechaStart
                 var minutosTrabajados = Math.floor((fecha3/1000)/60)
-                if(minutosTrabajados<480){
+                if(minutosTrabajados<(horasPorTrabajar * 60)){
                     noCumplioHorario = true
                 }
             }
@@ -125,12 +126,49 @@ class Empleados extends Component {
             </div>
         )
     }
+    getDifHours = (user, day) => {
+        let diference = 0
+        let auxFin = null
+        let auxInicio = null
+        user.checadores.forEach(element=>{
+            var fechaStart = new Date(element.fecha_inicio)
+            var fechaEnd = new Date(element.fecha_fin)
+            if(fechaStart.getDate() === day){
+                auxInicio = element.fecha_inicio
+                auxFin = element.fecha_fin
+                diference = Math.floor(((fechaEnd - fechaStart)/1000)/60);
+            }
+            
+        })
+        if(auxInicio === null || auxFin === null){
+            return(
+                <div className="text-danger font-weight-boldest">
+                    { auxInicio === null ? 'No checó entrada' : ''}
+                    { auxFin === null ? 'No checó salida' : ''}
+                </div>
+            )
+        }
+        return(
+            <div className = { 
+                diference < (horasPorTrabajar * 60) ? "text-red font-weight-boldest"
+                : diference === diference < (horasPorTrabajar * 60) ? "text-info font-weight-boldest"
+                    : "text-success font-weight-boldest"
+            }>
+                { this.setTimer((diference - (diference % 60))/60) }
+                :
+                { this.setTimer(diference % 60) }
+            </div>
+        )
+    }
     getHT(user, diasNumber){
         let minutosTotales = 0
         let fechaStart = ''
         let fechaEnd = ''
         let totalHorasQ = ''
         let totalHoras = ''
+        let contadorDias = 0
+        let end = new Date();
+        end.setHours(0,0,0,0);
         user.checadores.forEach(element=>{
             if(element.fecha_fin=== null){
                 fechaStart = new Date(element.fecha_inicio)
@@ -139,14 +177,16 @@ class Empleados extends Component {
                 fechaStart = new Date(element.fecha_inicio)
                 fechaEnd = new Date(element.fecha_fin)
             }
-            totalHorasQ = diasNumber.length*8 +':00'
             diasNumber.forEach(day=>{ 
                 if(fechaStart.getDate() === day){
+                    if( end - fechaStart > 0)
+                        contadorDias++
                     var fecha3 =fechaEnd-fechaStart
                     minutosTotales += Math.floor((fecha3/1000)/60);
                 }
             })
         })
+        totalHorasQ = contadorDias*8 +':00'
         var mm = minutosTotales%60
         var hh = (minutosTotales-mm)/60
         totalHoras = (this.setTimer(hh)+':'+this.setTimer(mm))
@@ -160,6 +200,8 @@ class Empleados extends Component {
         let minutosTotales = 0
         let fechaStart = ''
         let fechaEnd = ''
+        let start = new Date();
+        start.setHours(0,0,0,0);
         user.checadores.forEach(element=>{
             if(element.fecha_fin=== null){
                 fechaStart = new Date(element.fecha_inicio)
@@ -170,86 +212,61 @@ class Empleados extends Component {
             }
             diasNumber.forEach(day=>{
                 if(fechaStart.getDate() === day){
-                    var fecha3 =fechaEnd-fechaStart
-                    var minutosTrabajados = Math.floor((fecha3/1000)/60)
-                    if(minutosTrabajados>480){ 
-                        minutosTotales += minutosTrabajados -480
+                    if( start - fechaStart > 0){
+                        var fecha3 =fechaEnd-fechaStart
+                        var minutosTrabajados = Math.floor((fecha3/1000)/60)
+                        minutosTotales += minutosTrabajados - (horasPorTrabajar * 60)
                     }
                 }
             })
         })
+        let sign = ''
+        if(minutosTotales < 0){
+            sign = '-'
+            minutosTotales = minutosTotales * -1
+        }
         var mm = minutosTotales%60
         var hh = (minutosTotales-mm)/60
-        return (this.setTimer(hh)+':'+this.setTimer(mm))
+        return(
+            <div className={sign === '' ?'text-success font-weight-boldest':''}>
+                {sign + this.setTimer(hh)+':'+this.setTimer(mm)}
+            </div>
+        )
     }
     setTimer = (time) => {
-        switch (time) {
-            case 0:
-                return '00'
-            case 1:
-                return '01'
-            case 2:
-                return '02'
-            case 3:
-                return '03'
-            case 4:
-                return '04'
-            case 5:
-                return '05'
-            case 6:
-                return '06'
-            case 7:
-                return '07'
-            case 8:
-                return '08'
-            case 9:
-                return '09'
-            default:
-                return time
-        }
+        if(time < 10)
+            return '0'+time
+        return time
+        
     }
     mesNumber(mes){
-        let mes_number=0
         switch (mes) {
             case "Enero":
-                mes_number = 1;
-                break;
+                return 1;
             case "Febrero":
-                mes_number = 2;
-                break;
+                return 2;
             case "Marzo":
-                mes_number = 3;
-                break;
+                return 3;
             case "Abril":
-                mes_number = 4;
-                break;
+                return 4;
             case "Mayo":
-                mes_number = 5;
-                break;
+                return 5;
             case "Junio":
-                mes_number = 6;
-                break;
+                return 6;
             case "Julio":
-                mes_number = 7;
-                break;
+                return 7;
             case "Agosto":
-                mes_number = 8;
-                break;
+                return 8;
             case "Septiembre":
-                mes_number = 9;
-                break;
+                return 9;
             case "Octubre":
-                mes_number = 10;
-                break;
+                return 10;
             case "Noviembre":
-                mes_number = 11;
-                break;
+                return 11;
             case "Diciembre":
-                mes_number = 12;
-                break;
+                return 12;
             default: break;
         }
-        return mes_number
     }
     // diasEnUnMes(quincena) {
     //     const { mes, año, arregloDiasFeriados} = this.state
@@ -398,7 +415,15 @@ class Empleados extends Component {
                                                     {
                                                         diasNumber.map((element, key) => {
                                                             return(
-                                                                <td key={key}>{this.getHours(user, element)}</td>
+                                                                <td key={key}>
+                                                                    <OverlayTrigger overlay = { <Tooltip>
+                                                                        {
+                                                                            this.getDifHours(user, element)
+                                                                        }
+                                                                    </Tooltip> } >
+                                                                        {this.getHours(user, element)}
+                                                                    </OverlayTrigger>
+                                                                </td>
                                                             )
                                                         })
                                                     }

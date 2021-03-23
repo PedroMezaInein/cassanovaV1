@@ -942,7 +942,8 @@ export const PROYECTOS_COLUMNS = [
     },
     {
         Header: 'Estatus',
-        accessor: 'status'
+        accessor: 'status',
+        customRender: true
     },
     {
         Header: 'Nombre',

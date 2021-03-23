@@ -31,6 +31,7 @@ class Proyectos extends Component {
         modalAdjuntos: false,
         modalAvances: false,
         modalLead: false,
+        modalComentarios: false,
         adjuntos: [],
         primeravista: true,
         defaultactivekey: "",
@@ -543,6 +544,13 @@ class Proyectos extends Component {
         this.setState({
             ...this.state,
             modalLead: false,
+            lead: ''
+        })
+    }
+    handleCloseComentarios = () => {
+        this.setState({
+            ...this.state,
+            modalComentarios: false,
             proyecto: ''
         })
     }
@@ -870,7 +878,7 @@ class Proyectos extends Component {
         proyectos.map((proyecto) => {
             aux.push({
                 actions: this.setActions(proyecto),
-                status: renderToString(proyecto ? setLabelTable(proyecto.estatus) : ''),
+                status: proyecto ? setLabelTable(proyecto.estatus) : '',
                 nombre: renderToString(setTextTable(proyecto.nombre)),
                 cliente: renderToString(setListTable(proyecto.clientes, 'empresa')),
                 direccion: renderToString(this.setDireccionTable(proyecto)),
@@ -972,6 +980,7 @@ class Proyectos extends Component {
                 btnclass: 'warning',
                 iconclass: 'flaticon-tool',
                 action: 'proyecto',
+                tooltip: { id: 'fases', text: 'Contratar&nbsp;fases' }
             })
         if(proyecto.prospecto)
             aux.push({
@@ -979,7 +988,15 @@ class Proyectos extends Component {
                 btnclass: 'primary',
                 iconclass: 'flaticon2-website',
                 action: 'lead',
+                tooltip: { id: 'lead', text: 'Información&nbsp;del&nbsp;lead' }
             })
+        aux.push({
+            text: 'Comentarios',
+            btnclass: 'info',
+            iconclass: 'flaticon2-talk',
+            action: 'comment',
+            tooltip: { id: 'comment', text: 'Comentarios' }
+        })
                 
         return aux
     }
@@ -1023,14 +1040,6 @@ class Proyectos extends Component {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
-        /* this.setState({
-            ...this.state,
-            modalAdjuntos: true,
-            adjuntos: this.setAdjuntosSlider(proyecto),
-            proyecto: proyecto,
-            form: this.clearForm(),
-            formeditado: 0,
-        }) */
     }
 
     openModalLead = async(proyecto) => {
@@ -1045,6 +1054,25 @@ class Proyectos extends Component {
                     lead: lead
                 })
                 Swal.close()
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    openModalComment = async(proyecto) => {
+        const { access_token } = this.props.authUser
+        waitAlert()
+        await axios.get(`${URL_DEV}v2/proyectos/proyectos/proyecto/${proyecto.id}/comentarios`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { proyecto } = response.data
+                Swal.close()
+                this.setState({
+                    ...this.state,
+                    proyecto: proyecto,
+                    modalComentarios: true
+                })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -1441,7 +1469,7 @@ class Proyectos extends Component {
     }
 
     render() {
-        const { modalDelete, modalAdjuntos, modalAvances, title, form, proyecto, formeditado, showadjuntos, primeravista, subActiveKey, defaultactivekey, modalSee, key, modalLead, lead } = this.state
+        const { modalDelete, modalAdjuntos, modalAvances, title, form, proyecto, formeditado, showadjuntos, primeravista, subActiveKey, defaultactivekey, modalSee, key, modalLead, lead, modalComentarios } = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
                 <Tabs defaultActiveKey = 'all' activeKey = { key }
@@ -1464,7 +1492,8 @@ class Proyectos extends Component {
                                         'avances': { function: this.openModalAvances },
                                         'see': { function: this.openModalSee },
                                         'proyecto': { function: this.changePageRelacionar },
-                                        'lead': { function: this.openModalLead }
+                                        'lead': { function: this.openModalLead },
+                                        'comment': { function: this.openModalComment }
                                     }}
                                     accessToken={this.props.authUser.access_token}
                                     setter={this.setProyectos}
@@ -1700,6 +1729,9 @@ class Proyectos extends Component {
                     {
                         lead ? <OneLead lead = { lead } />  : ''
                     }
+                </Modal>
+                <Modal size = 'lg' title = 'Comentarios' show = { modalComentarios } handleClose = { this.handleCloseComentarios }>
+
                 </Modal>
             </Layout>
         )
