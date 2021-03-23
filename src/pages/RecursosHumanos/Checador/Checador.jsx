@@ -1,13 +1,14 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import Layout from '../../../components/layout/layout'
-import { Card } from 'react-bootstrap'
+import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import axios from 'axios'
 import { URL_DEV } from '../../../constants'
 import { getMeses, getAños, getQuincena } from '../../../functions/setters'
 import { errorAlert, printResponseErrorAlert } from '../../../functions/alert'
 import { SelectSearchGray } from '../../../components/form-components'
 const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+const horasPorTrabajar = 8
 class Empleados extends Component {
     state = {
         mes: meses[new Date().getMonth()],
@@ -113,7 +114,7 @@ class Empleados extends Component {
                 }
                 var fecha3 =fechaEnd-fechaStart
                 var minutosTrabajados = Math.floor((fecha3/1000)/60)
-                if(minutosTrabajados<480){
+                if(minutosTrabajados<(horasPorTrabajar * 60)){
                     noCumplioHorario = true
                 }
             }
@@ -122,6 +123,31 @@ class Empleados extends Component {
             <div>
                 <div className={timeFechaStart >= '10:00'?'text-red font-weight-boldest':''}>{timeFechaStart}</div>
                 <div className={noCumplioHorario===true?'text-red font-weight-boldest':''}>{timeFechaEnd}</div>
+            </div>
+        )
+    }
+    getDifHours = (user, day) => {
+        let diference = 0
+        user.checadores.forEach(element=>{
+            var fechaStart = new Date(element.fecha_inicio)
+            var fechaEnd = new Date(element.fecha_fin)
+            if(fechaStart.getDate() === day){
+                diference = Math.floor(((fechaEnd - fechaStart)/1000)/60);
+            }
+        })
+        return(
+            <div className = { 
+                diference < (horasPorTrabajar * 60) ? "text-red font-weight-boldest"
+                : diference === diference < (horasPorTrabajar * 60) ? "text-info font-weight-boldest"
+                    : "text-success font-weight-boldest"
+            }>
+                {
+                    this.setTimer((diference - (diference % 60))/60)
+                }
+                :
+                {
+                    this.setTimer(diference % 60)
+                }
             </div>
         )
     }
@@ -172,15 +198,22 @@ class Empleados extends Component {
                 if(fechaStart.getDate() === day){
                     var fecha3 =fechaEnd-fechaStart
                     var minutosTrabajados = Math.floor((fecha3/1000)/60)
-                    if(minutosTrabajados>480){ 
-                        minutosTotales += minutosTrabajados -480
-                    }
+                    minutosTotales += minutosTrabajados - (horasPorTrabajar * 60)
                 }
             })
         })
+        let sign = ''
+        if(minutosTotales < 0){
+            sign = '-'
+            minutosTotales = minutosTotales * -1
+        }
         var mm = minutosTotales%60
         var hh = (minutosTotales-mm)/60
-        return (this.setTimer(hh)+':'+this.setTimer(mm))
+        return(
+            <div className={sign === '' ?'text-success font-weight-boldest':''}>
+                {sign + this.setTimer(hh)+':'+this.setTimer(mm)}
+            </div>
+        )
     }
     setTimer = (time) => {
         switch (time) {
@@ -398,7 +431,15 @@ class Empleados extends Component {
                                                     {
                                                         diasNumber.map((element, key) => {
                                                             return(
-                                                                <td key={key}>{this.getHours(user, element)}</td>
+                                                                <td key={key}>
+                                                                    <OverlayTrigger overlay = { <Tooltip>
+                                                                        {
+                                                                            this.getDifHours(user, element)
+                                                                        }
+                                                                    </Tooltip> } >
+                                                                        {this.getHours(user, element)}
+                                                                    </OverlayTrigger>
+                                                                </td>
                                                             )
                                                         })
                                                     }
