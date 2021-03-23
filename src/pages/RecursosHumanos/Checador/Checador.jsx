@@ -141,13 +141,9 @@ class Empleados extends Component {
                 : diference === diference < (horasPorTrabajar * 60) ? "text-info font-weight-boldest"
                     : "text-success font-weight-boldest"
             }>
-                {
-                    this.setTimer((diference - (diference % 60))/60)
-                }
+                { this.setTimer((diference - (diference % 60))/60) }
                 :
-                {
-                    this.setTimer(diference % 60)
-                }
+                { this.setTimer(diference % 60) }
             </div>
         )
     }
@@ -216,73 +212,39 @@ class Empleados extends Component {
         )
     }
     setTimer = (time) => {
-        switch (time) {
-            case 0:
-                return '00'
-            case 1:
-                return '01'
-            case 2:
-                return '02'
-            case 3:
-                return '03'
-            case 4:
-                return '04'
-            case 5:
-                return '05'
-            case 6:
-                return '06'
-            case 7:
-                return '07'
-            case 8:
-                return '08'
-            case 9:
-                return '09'
-            default:
-                return time
-        }
+        if(time < 10)
+            return '0'+time
+        return time
+        
     }
     mesNumber(mes){
-        let mes_number=0
         switch (mes) {
             case "Enero":
-                mes_number = 1;
-                break;
+                return 1;
             case "Febrero":
-                mes_number = 2;
-                break;
+                return 2;
             case "Marzo":
-                mes_number = 3;
-                break;
+                return 3;
             case "Abril":
-                mes_number = 4;
-                break;
+                return 4;
             case "Mayo":
-                mes_number = 5;
-                break;
+                return 5;
             case "Junio":
-                mes_number = 6;
-                break;
+                return 6;
             case "Julio":
-                mes_number = 7;
-                break;
+                return 7;
             case "Agosto":
-                mes_number = 8;
-                break;
+                return 8;
             case "Septiembre":
-                mes_number = 9;
-                break;
+                return 9;
             case "Octubre":
-                mes_number = 10;
-                break;
+                return 10;
             case "Noviembre":
-                mes_number = 11;
-                break;
+                return 11;
             case "Diciembre":
-                mes_number = 12;
-                break;
+                return 12;
             default: break;
         }
-        return mes_number
     }
     // diasEnUnMes(quincena) {
     //     const { mes, año, arregloDiasFeriados} = this.state
