@@ -50,18 +50,17 @@ class TableButton extends Component{
         if(cellData.length > 3)
             return(
                 <div className="w-100 d-flex justify-content-center">
-                    <DropdownButton menualign = "right" title = { <i className="fas fa-chevron-down icon-nm p-0"></i> } id = 'dropdown-button-drop-left-danger' >
+                    <DropdownButton menualign = "right" title = { <i className="fas fa-chevron-circle-down icon-md p-0 "></i> } id = 'dropdown-button-newtable' >
                         {
-                            cellData.map((element) => {
-                                console.log('ELEMENT', element)
+                            cellData.map((element, key) => {
                                 if(actions[element.action]){
                                     let funcion = actions[element.action].function
                                     return(
                                         <Dropdown.Item className = {`text-hover-${element.btnclass} dropdown-${element.btnclass}`}
-                                            onClick = { (e) => { e.preventDefault(); funcion(valor)}}>
+                                            onClick = { (e) => { e.preventDefault(); funcion(valor)}} key={key}>
                                             <span className="navi-icon">
-                                                <i className = {`${element.iconclass} mr-2`} />
-                                                <span className="text-muted">
+                                                <i className = {`fas ${element.iconclass} mr-2`} />
+                                                <span className="navi-text">
                                                     {
                                                         element.tooltip ? 
                                                             element.tooltip.text.replace(new RegExp('&nbsp;', 'g'), ' ') 
@@ -70,7 +69,6 @@ class TableButton extends Component{
                                                 </span>
                                             </span>
                                         </Dropdown.Item>
-
                                     )
                                 }
                             })
@@ -81,7 +79,7 @@ class TableButton extends Component{
             )
         else
             return(
-                <div>
+                <div className="w-100 d-flex justify-content-center">
                     {
                         cellData.map((element) => {
                             if(actions[element.action]){
