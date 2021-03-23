@@ -1088,32 +1088,25 @@ class Proyectos extends Component {
             console.log(error, 'error')
         })
     }
-    openModalComment = proyecto => {
-        this.setState({
-            ...this.state,
-            modalComentarios: true,
-            proyecto: proyecto,
-            form: this.clearForm(),
+    openModalComment = async(proyecto) => {
+        const { access_token } = this.props.authUser
+        waitAlert()
+        await axios.get(`${URL_DEV}v2/proyectos/proyectos/proyecto/${proyecto.id}/comentarios`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { proyecto } = response.data
+                Swal.close()
+                this.setState({
+                    ...this.state,
+                    proyecto: proyecto,
+                    modalComentarios: true,
+                    form: this.clearForm(),
+                })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
-    // openModalComment = async(proyecto) => {
-    //     const { access_token } = this.props.authUser
-    //     waitAlert()
-    //     await axios.get(`${URL_DEV}v2/proyectos/proyectos/proyecto/${proyecto.id}/comentarios`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-    //         (response) => {
-    //             const { proyecto } = response.data
-    //             Swal.close()
-    //             this.setState({
-    //                 ...this.state,
-    //                 proyecto: proyecto,
-    //                 modalComentarios: true
-    //             })
-    //         }, (error) => { printResponseErrorAlert(error) }
-    //     ).catch((error) => {
-    //         errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-    //         console.log(error, 'error')
-    //     })
-    // }
 
     getOneProyectoAxios = async(id) => {
         const { access_token } = this.props.authUser
@@ -1516,7 +1509,7 @@ class Proyectos extends Component {
         })
 
         data.append(`comentario`, form.comentario)
-        await axios.post(URL_DEV + 'v2/proyectos/proyectos/proyecto/comentario/' + proyecto.id, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(URL_DEV + 'v2/proyectos/proyectos/proyecto/comentario/' + proyecto.id, data, { headers: {'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert('Comentario agregado con éxito');
                 const { form } = this.state
