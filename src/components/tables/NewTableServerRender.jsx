@@ -52,21 +52,23 @@ class TableButton extends Component{
                 <div className="w-100 d-flex justify-content-center">
                     <DropdownButton menualign = "right" title = { <i className="fas fa-chevron-down icon-nm p-0"></i> } id = 'dropdown-button-drop-left-danger' >
                         {
-                            cellData.map((element) => {
-                                console.log('ELEMENT', element)
+                            cellData.map((element, key) => {
                                 if(actions[element.action]){
                                     let funcion = actions[element.action].function
                                     return(
                                         <Dropdown.Item className = {`text-hover-${element.btnclass} dropdown-${element.btnclass}`}
-                                            onClick = { (e) => { e.preventDefault(); funcion(valor)}}>
+                                            onClick = { (e) => { e.preventDefault(); funcion(valor)}} key = {key}>
                                             <span className="navi-icon">
                                                 <i className = {`${element.iconclass} mr-2`} />
                                                 <span className="text-muted">
-                                                    {element.tooltip.text}
+                                                    {
+                                                        element.tooltip ? 
+                                                            element.tooltip.text.replace(new RegExp('&nbsp;', 'g'), ' ') 
+                                                        : element.text.replace(new RegExp('&nbsp;', 'g'), ' ')
+                                                    }
                                                 </span>
                                             </span>
                                         </Dropdown.Item>
-
                                     )
                                 }
                             })
@@ -223,6 +225,7 @@ class NewTableServerRender extends Component {
         let aux = [];
 
         let _that = this
+        let renderedHeader = []
         for (i = 0; i < header.length; i++) {
             var titulo = {}
             titulo["title"] = header[i].Header;
@@ -230,6 +233,8 @@ class NewTableServerRender extends Component {
             columns[i] = titulo;
             if (aux > 0)
                 aux.push(i)
+            if(header[i].customRender === true)
+                renderedHeader.push(i)
         }
         var table = $(this.refs.main);
         table.DataTable({
@@ -384,9 +389,9 @@ class NewTableServerRender extends Component {
             },
 
             columnDefs: [{
-                "targets": aux,
-                render: function (data, type, row, meta) {
-                    return (`<div>${data}</div>`)
+                targets: renderedHeader,
+                createdCell: (td, cellData, rowData, row, col) => {
+                    ReactDOM.render( cellData, td)
                 }
             },
             {
