@@ -179,7 +179,7 @@ class Facturacion extends Component {
             },
             {
                 text: 'Factura&nbsp;relacionada',
-                btnclass: 'turquesa',
+                btnclass: 'warning',
                 iconclass: 'flaticon-interface-10',
                 action: 'facturaRelacionada',
                 tooltip: { id: 'facturaRelacionada', text: 'Factura extranjera'},

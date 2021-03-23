@@ -529,28 +529,6 @@ a#cancelados-rechazados.text-hover-primary.dropdown-item.active,  a#rh-proveedor
     }
 }
 
-.dropdown-danger {
-    font-weight: 500;
-    color: #7f7f7f;
-    &:hover {
-        color: #F64E60;
-        text-decoration: none;
-        background-color: #FFE2E5;
-    }
-    &:active {
-        color: #F64E60 ;
-        text-decoration: none;
-        background-color: #FFE2E5;
-    }
-}
-
-.dropdown-danger.dropdown-item.active{
-    color: #F64E60;
-    text-decoration: none;
-    background-color: #FFE2E5;
-    font-weight: 500;
-    i { color: #F64E60;}
-}
 
 // .btn.btn-primary:hover:not(.btn-text), .btn.btn-primary:focus:not(.btn-text), .btn.btn-primary.focus:not(.btn-text) {
 //     color: #FFFFFF!important;
