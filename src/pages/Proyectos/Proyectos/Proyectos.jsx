@@ -977,7 +977,7 @@ class Proyectos extends Component {
         if(proyecto.fase3 !== 1)
             aux.push({
                 text: 'Contratar&nbsp;fases',
-                btnclass: 'info',
+                btnclass: 'warning',
                 iconclass: 'flaticon-tool',
                 action: 'proyecto',
                 tooltip: { id: 'fases', text: 'Contratar&nbsp;fases' }
@@ -985,7 +985,7 @@ class Proyectos extends Component {
         if(proyecto.prospecto)
             aux.push({
                 text: 'Información&nbsp;del&nbsp;lead',
-                btnclass: 'info',
+                btnclass: 'primary',
                 iconclass: 'flaticon2-website',
                 action: 'lead',
                 tooltip: { id: 'lead', text: 'Información&nbsp;del&nbsp;lead' }
@@ -1474,7 +1474,7 @@ class Proyectos extends Component {
             <Layout active={'proyectos'}  {...this.props}>
                 <Tabs defaultActiveKey = 'all' activeKey = { key }
                     onSelect={(value) => { this.controlledTab(value) }}>
-                    <Tab eventKey = 'all' title = "Todas las fases">
+                    <Tab eventKey = 'all' title = "Fases">
                         {
                             key === 'all' ?
                                 <NewTableServerRender

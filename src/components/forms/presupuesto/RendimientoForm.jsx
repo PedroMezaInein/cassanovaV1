@@ -93,7 +93,7 @@ class RendimientoForm extends Component {
                     </div>
                     <div className="col-md-8">
                         <Input
-                            requirevalidation={0}
+                            requirevalidation={1}
                             formeditado={formeditado}
                             as="textarea"
                             placeholder="DESCRIPCIÓN"
