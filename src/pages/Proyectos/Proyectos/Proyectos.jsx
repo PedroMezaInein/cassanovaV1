@@ -17,6 +17,7 @@ import { ProyectosCard } from '../../../components/cards'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import { OneLead } from '../../../components/modal'
+import Comentarios from '../../../components/forms/Comentarios'
 const MySwal = withReactContent(Swal)
 const $ = require('jquery');
 class Proyectos extends Component {
@@ -125,6 +126,7 @@ class Proyectos extends Component {
             descripcion: '',
             correos: [],
             correo: '',
+            comentario: '',
             adjuntos_grupo: [
                 {
                     text: 'Inicio y planeación',
@@ -425,7 +427,13 @@ class Proyectos extends Component {
                     value: '',
                     placeholder: 'Avance',
                     files: []
+                },
+                adjunto_comentario: {
+                    value: '',
+                    placeholder: 'Adjunto',
+                    files: []
                 }
+                
             },
             avances: [
                 {
@@ -437,7 +445,8 @@ class Proyectos extends Component {
                         files: []
                     }
                 }
-            ]
+            ],
+            
         },
         options: {
             clientes: [],
@@ -614,7 +623,6 @@ class Proyectos extends Component {
             ...this.state,
             form
         })
-
     }
     onChangeAdjuntoAvance = (e, key, name) => {
         const { form } = this.state
@@ -859,6 +867,26 @@ class Proyectos extends Component {
             }
         })
     }
+    handleChangeComentario = (files, item) => {
+        const { form } = this.state
+        let aux = []
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        form['adjuntos'][item].value = files
+        form['adjuntos'][item].files = aux
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
     onSubmitAvance = e => {
         e.preventDefault()
         waitAlert();
@@ -1060,25 +1088,32 @@ class Proyectos extends Component {
             console.log(error, 'error')
         })
     }
-
-    openModalComment = async(proyecto) => {
-        const { access_token } = this.props.authUser
-        waitAlert()
-        await axios.get(`${URL_DEV}v2/proyectos/proyectos/proyecto/${proyecto.id}/comentarios`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { proyecto } = response.data
-                Swal.close()
-                this.setState({
-                    ...this.state,
-                    proyecto: proyecto,
-                    modalComentarios: true
-                })
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
+    openModalComment = proyecto => {
+        this.setState({
+            ...this.state,
+            modalComentarios: true,
+            proyecto: proyecto,
+            form: this.clearForm(),
         })
     }
+    // openModalComment = async(proyecto) => {
+    //     const { access_token } = this.props.authUser
+    //     waitAlert()
+    //     await axios.get(`${URL_DEV}v2/proyectos/proyectos/proyecto/${proyecto.id}/comentarios`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+    //         (response) => {
+    //             const { proyecto } = response.data
+    //             Swal.close()
+    //             this.setState({
+    //                 ...this.state,
+    //                 proyecto: proyecto,
+    //                 modalComentarios: true
+    //             })
+    //         }, (error) => { printResponseErrorAlert(error) }
+    //     ).catch((error) => {
+    //         errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+    //         console.log(error, 'error')
+    //     })
+    // }
 
     getOneProyectoAxios = async(id) => {
         const { access_token } = this.props.authUser
@@ -1468,8 +1503,45 @@ class Proyectos extends Component {
         return false
     }
 
+    addComentarioAxios = async () => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { form, proyecto } = this.state
+        const data = new FormData();
+
+        form.adjuntos.adjunto_comentario.files.map(( adjunto) => {
+            data.append(`files_name_adjunto[]`, adjunto.name)
+            data.append(`files_adjunto[]`, adjunto.file)
+            return ''
+        })
+
+        data.append(`comentario`, form.comentario)
+        await axios.post(URL_DEV + 'v2/proyectos/proyectos/proyecto/comentario/' + proyecto.id, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert('Comentario agregado con éxito');
+                const { form } = this.state
+                form.comentario = ''
+                form.adjuntos.adjunto_comentario = {
+                    value: '',
+                    placeholder: 'Adjunto',
+                    files: []
+                }
+                this.setState({
+                    ...this.state,
+                    form
+                })
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     render() {
-        const { modalDelete, modalAdjuntos, modalAvances, title, form, proyecto, formeditado, showadjuntos, primeravista, subActiveKey, defaultactivekey, modalSee, key, modalLead, lead, modalComentarios } = this.state
+        const { modalDelete, modalAdjuntos, modalAvances, title, form, proyecto, formeditado, showadjuntos, primeravista, subActiveKey, defaultactivekey, modalSee, key, modalLead, lead, modalComentarios} = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
                 <Tabs defaultActiveKey = 'all' activeKey = { key }
@@ -1525,7 +1597,8 @@ class Proyectos extends Component {
                                         'avances': { function: this.openModalAvances },
                                         'see': { function: this.openModalSee },
                                         'proyecto': { function: this.changePageRelacionar },
-                                        'lead': { function: this.openModalLead }
+                                        'lead': { function: this.openModalLead },
+                                        'comment': { function: this.openModalComment }
                                     }}
                                     accessToken={this.props.authUser.access_token}
                                     setter={this.setProyectos}
@@ -1557,7 +1630,8 @@ class Proyectos extends Component {
                                         'avances': { function: this.openModalAvances },
                                         'see': { function: this.openModalSee },
                                         'proyecto': { function: this.changePageRelacionar },
-                                        'lead': { function: this.openModalLead }
+                                        'lead': { function: this.openModalLead },
+                                        'comment': { function: this.openModalComment }
                                     }}
                                     accessToken={this.props.authUser.access_token}
                                     setter={this.setProyectos}
@@ -1588,7 +1662,8 @@ class Proyectos extends Component {
                                         'adjuntos': { function: this.openModalAdjuntos },
                                         'avances': { function: this.openModalAvances },
                                         'see': { function: this.openModalSee },
-                                        'lead': { function: this.openModalLead }
+                                        'lead': { function: this.openModalLead },
+                                        'comentarios': { function: this.openModalComment },
                                     }}
                                     accessToken={this.props.authUser.access_token}
                                     setter={this.setProyectos}
@@ -1731,7 +1806,13 @@ class Proyectos extends Component {
                     }
                 </Modal>
                 <Modal size = 'lg' title = 'Comentarios' show = { modalComentarios } handleClose = { this.handleCloseComentarios }>
-
+                    <Comentarios
+                        addComentario={this.addComentarioAxios}
+                        form={form}
+                        onChange={this.onChange}
+                        handleChange={this.handleChangeComentario}
+                        proyecto={proyecto}
+                    />
                 </Modal>
             </Layout>
         )
