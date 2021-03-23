@@ -151,7 +151,7 @@ class Empleados extends Component {
         return(
             <div className = { 
                 diference < (horasPorTrabajar * 60) ? "text-red font-weight-boldest"
-                : diference === diference < (horasPorTrabajar * 60) ? "text-info font-weight-boldest"
+                : diference === (horasPorTrabajar * 60) ? "text-info font-weight-boldest"
                     : "text-success font-weight-boldest"
             }>
                 { this.setTimer((diference - (diference % 60))/60) }
