@@ -4746,6 +4746,7 @@ input[type="button"].btn-block {
 
 .dropdown-menu.show {
   display: block;
+  z-index: 1;
 }
 
 .dropdown-header {
@@ -52418,7 +52419,7 @@ code {
 
 @media (max-width: 600px) {
   .dropdown-menu {
-    width: 75vw;
+    width: auto;
   }
 }
 

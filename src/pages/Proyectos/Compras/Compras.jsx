@@ -511,7 +511,7 @@ class Compras extends Component {
             },
             {
                 text: 'Factura&nbsp;extranjera',
-                btnclass: 'turquesa',
+                btnclass: 'warning',
                 iconclass: 'flaticon-interface-10',
                 action: 'facturaExtranjera',
                 tooltip: { id: 'facturaExtranjera', text: 'Factura extranjera'},

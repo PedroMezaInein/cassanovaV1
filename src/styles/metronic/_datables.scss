@@ -552,7 +552,7 @@ table.dataTable {
   
   table.dataTable.dtr-inline.collapsed > tbody > tr.parent > td:first-child:before, table.dataTable.dtr-inline.collapsed > tbody > tr.parent > th:first-child:before {
     content: '-';
-    background-color: #d33333; }
+    background-color: #d33333; display: none; }
   
   table.dataTable.dtr-inline.collapsed.compact > tbody > tr > td:first-child, table.dataTable.dtr-inline.collapsed.compact > tbody > tr > th:first-child {
     padding-left: 27px; }

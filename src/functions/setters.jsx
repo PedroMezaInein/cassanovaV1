@@ -104,7 +104,7 @@ export function setColor(text) {
 }
 export function setLabelTable(text) {
     return (
-        <>
+        <div className="text-center">
             <div className="d-none">
                 {text.estatus}
             </div>
@@ -118,7 +118,7 @@ export function setLabelTable(text) {
             }} >
                 {text.estatus}
             </span>
-        </>
+        </div>
     )
 }
 export function setLabelVentas(text) {
@@ -219,23 +219,17 @@ export function setPercentTable(value) {
 
 export function setListTable(arreglo, nombre) {
     return (
-        <ul>
+        <>
             {
                 arreglo.map((element,  key ) => {
                     return (
-                        <div  key={key}>
-                            <li key={key}>
-                                <Small >
-                                    {
-                                        element[nombre]
-                                    }
-                                </Small>
-                            </li>
-                        </div>
+                        <Small key={key}  key={key}>
+                            &#8226; {element[nombre]} <br/>
+                        </Small>
                     )
                 })
             }
-        </ul>
+        </>
     )
 }
 
