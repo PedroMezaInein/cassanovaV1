@@ -389,8 +389,8 @@ class Empleados extends Component {
                                                 )
                                             })
                                         }
-                                        <th rowSpan="2" id="he" className="w-4-5">HORAS EXTRA</th>
-                                        <th rowSpan="2" id="tl" className="w-4-5">TOTAL HORAS</th>
+                                        {/* <th rowSpan="2" id="he" className="w-4-5">HORAS EXTRA</th>
+                                        <th rowSpan="2" id="tl" className="w-4-5">TOTAL HORAS</th> */}
                                     </tr>
                                     <tr id="dias" className="text-center">
                                         {
@@ -427,8 +427,8 @@ class Empleados extends Component {
                                                             )
                                                         })
                                                     }
-                                                    <td id="cantidad-he">{this.getHE(user, diasNumber)}</td>
-                                                    <td id="cantidad-th">{this.getHT(user, diasNumber)}</td>
+                                                    {/* <td id="cantidad-he">{this.getHE(user, diasNumber)}</td>
+                                                    <td id="cantidad-th">{this.getHT(user, diasNumber)}</td> */}
                                                 </tr>
                                             )
                                         })

@@ -65,6 +65,16 @@ export default class ProyectosCard extends Component {
                                                     </div>
                                                 </div>
                                                 <div className="row pb-1">
+                                                    <label className="col-4 font-weight-bolder text-primary">TIPO DEL PROYECTO:</label>
+                                                    <div className="col-8">
+                                                        {
+                                                            proyecto.tipo_proyecto ?
+                                                                <span>{proyecto.tipo_proyecto.tipo}</span>
+                                                                : <span>-</span>
+                                                        }
+                                                    </div>
+                                                </div>
+                                                <div className="row pb-1">
                                                     <label className="col-4 font-weight-bolder text-primary">NOMBRE DE CONTACTO:</label>
                                                     <div className="col-8">
                                                         {
