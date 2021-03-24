@@ -797,6 +797,24 @@ class Proyectos extends Component {
                     }]
                     break;
                 case 'adjuntos':
+                    form[element] = {
+                        image: {
+                            value: '',
+                            placeholder: 'Imagen',
+                            files: []
+                        },
+                        avance: {
+                            value: '',
+                            placeholder: 'Avance',
+                            files: []
+                        },
+                        adjunto_comentario: {
+                            value: '',
+                            placeholder: 'Adjunto',
+                            files: []
+                        },
+                    }
+                    break;
                 case 'adjuntos_grupo':
                     break;
                 case 'correos':
