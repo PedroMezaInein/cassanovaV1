@@ -63,7 +63,7 @@ class LeadNegociacion extends Component {
                                 </th>
                             </tr>
                             <tr className="text-uppercase bg-light-brown text-brown">
-                                <th style={{ minWidth: "100px" }} className="pl-7">
+                                <th style={{ minWidth: "100px" }}>
                                     <span>Nombre del cliente y proyecto</span>
                                 </th>
                                 <th style={{ minWidth: "120px" }}>Fecha</th>

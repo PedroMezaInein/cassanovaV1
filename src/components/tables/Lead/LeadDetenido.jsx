@@ -33,7 +33,7 @@ class LeadDetenido extends Component {
                                 </th>
                             </tr>
                             <tr className="text-uppercase bg-light-gray text-gray">
-                                <th style={{ minWidth: "100px" }} className="pl-7">
+                                <th style={{ minWidth: "100px" }}>
                                     <span>Nombre del cliente y proyecto</span>
                                 </th>
                                 <th style={{ minWidth: "120px" }}>Fecha</th>

@@ -93,7 +93,7 @@ class LeadNoContratado extends Component {
                                 </th>
                             </tr>
                             <tr className="text-uppercase bg-danger-o-30 text-danger">
-                                <th style={{ minWidth: "100px" }} className="pl-7">
+                                <th style={{ minWidth: "100px" }}>
                                     <span>Nombre del cliente</span>
                                 </th>
                                 <th style={{ minWidth: "140px" }}>Fecha</th>
