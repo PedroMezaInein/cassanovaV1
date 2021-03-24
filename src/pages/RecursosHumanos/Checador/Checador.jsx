@@ -142,9 +142,9 @@ class Empleados extends Component {
         })
         if(auxInicio === null || auxFin === null){
             return(
-                <div className="text-danger font-weight-boldest">
-                    { auxInicio === null ? 'No checó entrada' : ''}
-                    { auxFin === null ? 'No checó salida' : ''}
+                <div className="text-red font-weight-boldest">
+                    { auxInicio === null ? 'NO CHECÓ ENTRADA' : ''}
+                    { auxFin === null ? 'NO CHECÓ SALIDA' : ''}
                 </div>
             )
         }
