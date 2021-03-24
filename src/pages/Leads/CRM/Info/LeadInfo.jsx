@@ -711,7 +711,7 @@ class LeadInfo extends Component {
         const { access_token } = this.props.authUser
         const { formDiseño, lead } = this.state
         formDiseño.pdf = pdf
-        await axios.post(URL_DEV + 'crm/add/presupuesto-diseño/' + lead.id, formDiseño, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}v2/leads/crm/add/presupuesto-diseño/${lead.id}`, formDiseño, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 if (formDiseño.pdf) {
                     const { presupuesto } = response.data

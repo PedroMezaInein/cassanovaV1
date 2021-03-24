@@ -89,6 +89,7 @@ import pagosForm from './mercadotecnia/PagosForm'
 import agendarReunionGoogle from './leads/AgendarReunionGoogle'
 import formProveedoresRRHH from './leads/FormProveedoresRRHH'
 import facturaExtranjera from './FacturaExtranjera'
+import comentarios from './Comentarios'
 
 export const RegisterUserForm = registerUserForm
 export const EmpresaForm = empresaForm
@@ -181,3 +182,4 @@ export const PagosForm = pagosForm
 export const AgendarReunionGoogle = agendarReunionGoogle
 export const FormProveedoresRRHH = formProveedoresRRHH
 export const FacturaExtranjera = facturaExtranjera
+export const Comentarios = comentarios
