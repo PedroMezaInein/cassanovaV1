@@ -1982,6 +1982,7 @@ class Crm extends Component {
                                             options = { options }
                                             changeOrigen = { this.changeOrigen }
                                             openModalEditarRRHHP = { this.openModalEditarRRHHP}
+                                            clickOneLead = { this.getOneLeadInfoAxios }
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="web">
@@ -1990,7 +1991,7 @@ class Crm extends Component {
                                             openModalWithInput = { this.openModalWithInput } changePageLlamadaSalida = { this.changePageLlamadaSalida }
                                             options = { options } changeOrigen = { this.changeOrigen } deleteDuplicado = { this.deleteDuplicadoAxios }
                                             openModalEditar = { this.openModalEditar } openModalHistorial = { this.openModalHistorial } 
-                                            moveToRelacionesPublicas = { this.moveToRelacionesPublicasAxios } />
+                                            moveToRelacionesPublicas = { this.moveToRelacionesPublicasAxios } clickOneLead = { this.getOneLeadInfoAxios }/>
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="contacto">
                                         <LeadContacto
@@ -2002,6 +2003,7 @@ class Crm extends Component {
                                             changePageDetails={this.changePageDetailsContacto}
                                             options={options}
                                             changeOrigen={this.changeOrigen}
+                                            clickOneLead = { this.getOneLeadInfoAxios }
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="negociacion">
@@ -2016,6 +2018,7 @@ class Crm extends Component {
                                             changePageContratar={this.changePageContratar}
                                             changePageCierreVenta={this.changePageCierreVenta}
                                             options={options}
+                                            clickOneLead = { this.getOneLeadInfoAxios }
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="contratados">
@@ -2024,6 +2027,7 @@ class Crm extends Component {
                                             onClickNext={this.nextPageLeadContratados}
                                             onClickPrev={this.prevPageLeadContratados}
                                             changePageDetails={this.changePageDetailsContratado}
+                                            clickOneLead = { this.getOneLeadInfoAxios }
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="detenidos">
@@ -2034,17 +2038,20 @@ class Crm extends Component {
                                             changeEstatus={this.changeEstatus}
                                             openModalWithInput={this.openModalWithInput}
                                             changePageDetails={this.changePageDetailsDetenido}
+                                            clickOneLead = { this.getOneLeadInfoAxios }
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="cancelados">
                                         <LeadNoContratado leads = { leads_cancelados } onClickNext = { this.nextPageLeadCancelados }
                                             onClickPrev = { this.prevPageLeadCancelados } changePageDetails = { this.changePageDetailsCR }
-                                            changeEstatus = { this.changeEstatusAxios } openModalHistorial = { this.openModalHistorial }  />
+                                            changeEstatus = { this.changeEstatusAxios } openModalHistorial = { this.openModalHistorial }
+                                            clickOneLead = { this.getOneLeadInfoAxios }  />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="rp">
                                         <LeadRP leads = { leads_rp } onClickNext = { this.nextPageLeadRP }
                                             onClickPrev = { this.prevPageLeadRP } openModalHistorial = { this.openModalHistorial } 
-                                            openModalEditar = { this.openModalEditar } />
+                                            openModalEditar = { this.openModalEditar } 
+                                            clickOneLead = { this.getOneLeadInfoAxios }/>
                                     </Tab.Pane>
                                 </Tab.Content>
                             </div>

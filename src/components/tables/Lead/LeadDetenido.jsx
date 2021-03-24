@@ -21,7 +21,7 @@ class LeadDetenido extends Component {
         return false;
     }
     render() {
-        const { leads, onClickNext, onClickPrev, openModalWithInput, changeEstatus, changePageDetails } = this.props
+        const { leads, onClickNext, onClickPrev, openModalWithInput, changeEstatus, changePageDetails, clickOneLead } = this.props
         return (
             <div className="tab-content">
                 <div className="table-responsive-lg">
@@ -62,7 +62,7 @@ class LeadDetenido extends Component {
                                                             </span>
                                                         </div>
                                                         <div>
-                                                            <a href={`mailto:+${lead.email}`} className="text-dark-75 font-weight-bolder text-hover-gray mb-1 font-size-lg">
+                                                            <a onClick = { ( e ) => { e.preventDefault(); clickOneLead(lead.id) } } className="text-dark-75 font-weight-bolder text-hover-gray mb-1 font-size-lg">
                                                                 {lead.nombre}
                                                             </a>
                                                             <span className="text-muted font-weight-bold d-block">

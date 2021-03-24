@@ -51,7 +51,7 @@ class LeadNegociacion extends Component {
     }
 
     render() {
-        const { leads, onClickNext, onClickPrev, openModalWithInput, changeEstatus, changePageDetails, changePageCierreVenta, changePageContratar, sendEmail } = this.props
+        const { leads, onClickNext, onClickPrev, openModalWithInput, changeEstatus, changePageDetails, changePageCierreVenta, changePageContratar, sendEmail, clickOneLead } = this.props
         return (
             <div className="tab-content">
                 <div className="table-responsive-lg">
@@ -92,7 +92,7 @@ class LeadNegociacion extends Component {
                                                             </span>
                                                         </div>
                                                         <div>
-                                                            <a href={`mailto:+${lead.email}`} className="text-dark-75 font-weight-bolder text-hover-brown mb-1 font-size-lg">
+                                                            <a onClick = { ( e ) => { e.preventDefault(); clickOneLead(lead.id) } } className="text-dark-75 font-weight-bolder text-hover-brown mb-1 font-size-lg">
                                                                 {lead.nombre}
                                                             </a>
                                                             <span className="text-muted font-weight-bold d-block">

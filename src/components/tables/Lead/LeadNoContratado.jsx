@@ -80,7 +80,7 @@ class LeadNoContratado extends Component {
     }
 
     render() {
-        const { leads, onClickNext, onClickPrev, changePageDetails, changeEstatus, openModalHistorial } = this.props
+        const { leads, onClickNext, onClickPrev, changePageDetails, changeEstatus, openModalHistorial, clickOneLead } = this.props
         const { modal, lead } = this.state
         return (
             <div className="tab-content">
@@ -122,7 +122,7 @@ class LeadNoContratado extends Component {
                                                             </span>
                                                         </div>
                                                         <div>
-                                                            <a href={`mailto:+${lead.email}`} className="text-dark-75 font-weight-bolder text-hover-danger mb-1 font-size-lg">
+                                                            <a onClick = { ( e ) => { e.preventDefault(); clickOneLead(lead.id) } } className="text-dark-75 font-weight-bolder text-hover-danger mb-1 font-size-lg">
                                                                 {lead.nombre}
                                                             </a>
                                                             {
