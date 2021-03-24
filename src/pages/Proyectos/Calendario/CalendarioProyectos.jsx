@@ -196,13 +196,13 @@ class CalendarioProyectos extends Component {
                                 </span>
                             </h3>
                         </div>
-                        <div className="card-toolbar align-items-center">
-                            <div className='mr-3 d-flex'>
+                        <div className="card-toolbar row mx-0 row-paddingless d-flex justify-content-end ">
+                            <div className="col-md-4 mr-4">
                                 <SelectSearchGray name='mes' options={getMeses()} value={mes} customdiv='mb-0'
                                     onChange={this.updateMes} iconclass="fas fa-calendar-day"
                                     messageinc="Incorrecto. Selecciona el mes." requirevalidation={1} />
                             </div>
-                            <div className='mr-3 d-flex'>
+                            <div className="col-md-3">
                                 <SelectSearchGray name='año' options={getAños()} customdiv='mb-0'
                                     value={año} onChange={this.updateAño}
                                     iconclass="fas fa-calendar-day" />

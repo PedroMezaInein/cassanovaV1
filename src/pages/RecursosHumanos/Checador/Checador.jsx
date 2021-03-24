@@ -363,7 +363,7 @@ class Empleados extends Component {
                             </div>
                             <div className="col-md-2 mr-4">
                                 <SelectSearchGray
-                                    name='mes'
+                                    name='quincena'
                                     options={getQuincena()} 
                                     value={quincena}
                                     customdiv='mb-0'
