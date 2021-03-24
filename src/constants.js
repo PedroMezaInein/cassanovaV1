@@ -954,6 +954,10 @@ export const PROYECTOS_COLUMNS = [
         accessor: 'cliente'
     },
     {
+        Header: 'Tipo de proyecto',
+        accessor: 'tipo_proyecto'
+    },
+    {
         Header: 'Dirección',
         accessor: 'direccion'
     },

@@ -927,6 +927,7 @@ class Proyectos extends Component {
                 status: proyecto ? setLabelTable(proyecto.estatus) : '',
                 nombre: renderToString(setTextTable(proyecto.nombre)),
                 cliente: renderToString(setListTable(proyecto.clientes, 'empresa')),
+                tipo_proyecto:renderToString(setTextTable(proyecto.tipo_proyecto?proyecto.tipo_proyecto.tipo:'Sin tipo de proyecto')),
                 direccion: renderToString(this.setDireccionTable(proyecto)),
                 contacto: renderToString(setArrayTable(
                     [
