@@ -797,6 +797,24 @@ class Proyectos extends Component {
                     }]
                     break;
                 case 'adjuntos':
+                    form[element] = {
+                        image: {
+                            value: '',
+                            placeholder: 'Imagen',
+                            files: []
+                        },
+                        avance: {
+                            value: '',
+                            placeholder: 'Avance',
+                            files: []
+                        },
+                        adjunto_comentario: {
+                            value: '',
+                            placeholder: 'Adjunto',
+                            files: []
+                        },
+                    }
+                    break;
                 case 'adjuntos_grupo':
                     break;
                 case 'correos':
@@ -909,6 +927,7 @@ class Proyectos extends Component {
                 status: proyecto ? setLabelTable(proyecto.estatus) : '',
                 nombre: renderToString(setTextTable(proyecto.nombre)),
                 cliente: renderToString(setListTable(proyecto.clientes, 'empresa')),
+                tipo_proyecto:renderToString(setTextTable(proyecto.tipo_proyecto?proyecto.tipo_proyecto.tipo:'Sin tipo de proyecto')),
                 direccion: renderToString(this.setDireccionTable(proyecto)),
                 contacto: renderToString(setArrayTable(
                     [

@@ -187,13 +187,13 @@ class LeadContacto extends Component {
                                                                             </span>
                                                                         </span>
                                                                     </Dropdown.Item>
-                                                                    <Dropdown.Item className="p-0" onClick={(e) => { e.preventDefault(); changeEstatus('En negociación', lead.id) }} >
+                                                                    {/* <Dropdown.Item className="p-0" onClick={(e) => { e.preventDefault(); changeEstatus('En negociación', lead.id) }} >
                                                                         <span className="navi-link w-100">
                                                                             <span className="navi-text">
                                                                                 <span className="label label-xl label-inline bg-light-info text-info rounded-0 w-100">En negociación</span>
                                                                             </span>
                                                                         </span>
-                                                                    </Dropdown.Item>
+                                                                    </Dropdown.Item> */}
                                                                     <Dropdown.Item className="p-0" onClick={(e) => { e.preventDefault(); openModalWithInput('Cancelado', lead.id) }} >
                                                                         <span className="navi-link w-100">
                                                                             <span className="navi-text">
