@@ -347,7 +347,7 @@ class LeadTelefono extends Component {
                                 <div className="col-md-3">
                                     <InputPhoneGray placeholder = "TELÉFONO DE CONTACTO" withicon = { 1 }
                                         iconclass = "fas fa-mobile-alt" name = "telefono" value = { form.telefono }
-                                        requirevalidation = { 0 } onChange = { this.onChange } patterns = { TEL }
+                                        requirevalidation = { 1 } onChange = { this.onChange } patterns = { TEL }
                                         thousandseparator = { false } prefix = '' 
                                         messageinc = "Incorrecto. Ingresa el teléfono de contacto." />
                                 </div>
@@ -426,9 +426,9 @@ class LeadTelefono extends Component {
                                     (form.diseño || form.obra !== '') &&
                                         <div className="col-md-4">
                                             <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 1 }
-                                                withformgroup = { 1 } placeholder = "CORREO ELECTRÓNICO DE CONTACTO"
+                                                withformgroup = { 1 } requirevalidation = { 1 } placeholder = "CORREO ELECTRÓNICO DE CONTACTO"
                                                 iconclass = "fas fa-envelope" type = "email" name = "email" value = { form.email }
-                                                onChange = { this.onChange } patterns = { EMAIL } letterCase = { false } />
+                                                onChange = { this.onChange } patterns = { EMAIL } letterCase = { false } messageinc = "Incorrecto. Ingresa el correo." />
                                         </div>
                                 }
                             </div>
