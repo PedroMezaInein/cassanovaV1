@@ -954,7 +954,7 @@ export const PROYECTOS_COLUMNS = [
         accessor: 'cliente'
     },
     {
-        Header: 'Tipo de proyecto',
+        Header: 'T.Proyecto',
         accessor: 'tipo_proyecto'
     },
     {
@@ -974,11 +974,11 @@ export const PROYECTOS_COLUMNS = [
         accessor: 'porcentaje'
     },*/
     {
-        Header: 'Fecha inicio',
+        Header: 'F.Inicio',
         accessor: 'fechaInicio'
     },
     {
-        Header: 'Fecha fin',
+        Header: 'F.Fin',
         accessor: 'fechaFin'
     },
     {
