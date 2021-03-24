@@ -10,32 +10,33 @@ import { diffCommentDate } from '../../functions/functions'
 class Comentarios extends Component {
     render() {
         const { addComentario, form, onChange, handleChange, diffCommentDate, proyecto} = this.props
-        console.log(proyecto)
         return (
             <Tab.Container defaultActiveKey="1">
                 <Nav className="nav-tabs nav-bold nav-tabs-line nav-tabs-line-3x border-0 nav-tabs-line-info mt-3 d-flex justify-content-end" id="nav-tareas">
-                    <Nav.Item>
-                        <Nav.Link eventKey="1">
-                            <span className="nav-icon">
-                                <i className="flaticon2-plus"></i>
-                            </span>
-                            <span className="nav-text">AGREGAR COMENTARIO</span>
-                        </Nav.Link>
-                    </Nav.Item>
-                    {/* {
+                    {
                         proyecto ?
-                            proyecto.comentarios.length > 0 ? */}
-                                <Nav.Item>
-                                    <Nav.Link eventKey="2">
-                                        <span className="nav-icon">
-                                            <i className="flaticon2-chat-1"></i>
-                                        </span>
-                                        <span className="nav-text">MOSTRAR COMENTARIOS</span>
-                                    </Nav.Link>
-                                </Nav.Item>
-                                {/* : ''
+                            proyecto.comentarios.length > 0 ?
+                                <>
+                                    <Nav.Item>
+                                        <Nav.Link eventKey="1">
+                                            <span className="nav-icon">
+                                                <i className="flaticon2-plus"></i>
+                                            </span>
+                                            <span className="nav-text">AGREGAR COMENTARIO</span>
+                                        </Nav.Link>
+                                    </Nav.Item>
+                                    <Nav.Item>
+                                        <Nav.Link eventKey="2">
+                                            <span className="nav-icon">
+                                                <i className="flaticon2-chat-1"></i>
+                                            </span>
+                                            <span className="nav-text">MOSTRAR COMENTARIOS</span>
+                                        </Nav.Link>
+                                    </Nav.Item>
+                                </>
                             : ''
-                    } */}
+                        : ''
+                    }
                 </Nav>
                 <Tab.Content>
                     <Tab.Pane eventKey="1">
@@ -64,7 +65,7 @@ class Comentarios extends Component {
                                 </div>
                                 <div className="form-group row form-group-marginless mt-3 d-flex justify-content-center">
                                     <div className="col-md-12 d-flex justify-content-center align-self-center mt-4">
-                                        <div>
+                                        <div className = 'w-100'>
                                             <div className="text-center font-weight-bolder mb-2">
                                                 {form.adjuntos.adjunto_comentario.placeholder}
                                             </div>
@@ -93,52 +94,52 @@ class Comentarios extends Component {
                             </Form>
                         </div>
                     </Tab.Pane>
-                    <Tab.Pane eventKey="3">
-                        {/* {
+                    <Tab.Pane eventKey="2">
+                        {
                             proyecto &&
-                            <div className="col-md-12 row d-flex justify-content-center">
-                                <div className="col-md-7 mt-5">
-                                    {
-                                        proyecto.comentarios.length > 0 &&
-                                        proyecto.comentarios.map((comentario, key) => {
-                                            return (
-                                                <div key={key} className="form-group row form-group-marginless px-3">
-                                                    <div className="col-md-12">
-                                                        <div className="timeline timeline-3">
-                                                            <div className="timeline-items">
-                                                                <div className="timeline-item">
-                                                                    <div className="timeline-media border-0">
-                                                                        <img alt="Pic" src={comentario.user.avatar ? comentario.user.avatar : "/default.jpg"} />
-                                                                    </div>
-                                                                    <div className="timeline-content">
-                                                                        <span className="text-info font-weight-bolder">{comentario.user.name}</span>
-                                                                        <span className="text-muted ml-2 font-weight-bold">
-                                                                            {diffCommentDate(comentario)}
-                                                                        </span>
-                                                                        <p className={comentario.adjunto === null ? "p-0 font-weight-light mb-0" : "p-0 font-weight-light"}>{comentario.comentario}</p>
-                                                                        {
-                                                                            comentario.adjunto ?
-                                                                                <div className="d-flex justify-content-end">
-                                                                                    <a href={comentario.adjunto.url} target='_blank' rel="noopener noreferrer" className="text-muted text-hover-info font-weight-bold">
-                                                                                        <span className="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
-                                                                                            <SVG src={toAbsoluteUrl('/images/svg/Attachment1.svg')} />
-                                                                                        </span>VER ADJUNTO
-                                                                                                    </a>
-                                                                                </div>
-                                                                                : ''
-                                                                        }
+                                <div className="col-md-12 row d-flex justify-content-center">
+                                    <div className="col-md-7 mt-5">
+                                        {
+                                            proyecto.comentarios.length > 0 &&
+                                                proyecto.comentarios.map((comentario, key) => {
+                                                    return (
+                                                        <div key={key} className="form-group row form-group-marginless px-3">
+                                                            <div className="col-md-12">
+                                                                <div className="timeline timeline-3">
+                                                                    <div className="timeline-items">
+                                                                        <div className="timeline-item">
+                                                                            <div className="timeline-media border-0">
+                                                                                <img alt="Pic" src={comentario.user.avatar ? comentario.user.avatar : "/default.jpg"} />
+                                                                            </div>
+                                                                            <div className="timeline-content">
+                                                                                <span className="text-info font-weight-bolder">{comentario.user.name}</span>
+                                                                                <span className="text-muted ml-2 font-weight-bold">
+                                                                                    {diffCommentDate(comentario)}
+                                                                                </span>
+                                                                                <p className={comentario.adjunto === null ? "p-0 font-weight-light mb-0" : "p-0 font-weight-light"}>{comentario.comentario}</p>
+                                                                                {
+                                                                                    comentario.adjunto ?
+                                                                                        <div className="d-flex justify-content-end">
+                                                                                            <a href={comentario.adjunto.url} target='_blank' rel="noopener noreferrer" className="text-muted text-hover-info font-weight-bold">
+                                                                                                <span className="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
+                                                                                                    <SVG src={toAbsoluteUrl('/images/svg/Attachment1.svg')} />
+                                                                                                </span>VER ADJUNTO
+                                                                                            </a>
+                                                                                        </div>
+                                                                                    : ''
+                                                                                }
+                                                                            </div>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
-                                                    </div>
-                                                </div>
-                                            )
-                                        })
+                                                    )
+                                                })
                                     }
                                 </div>
                             </div>
-                        } */}
+                        }
                     </Tab.Pane>
                 </Tab.Content>
             </Tab.Container>

@@ -1509,9 +1509,10 @@ class Proyectos extends Component {
         })
 
         data.append(`comentario`, form.comentario)
-        await axios.post(URL_DEV + 'v2/proyectos/proyectos/proyecto/comentario/' + proyecto.id, data, { headers: {'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}v2/proyectos/proyectos/proyecto/${proyecto.id}/comentarios`, data, { headers: {'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert('Comentario agregado con éxito');
+                const { proyecto } = response.data
                 const { form } = this.state
                 form.comentario = ''
                 form.adjuntos.adjunto_comentario = {
@@ -1519,14 +1520,8 @@ class Proyectos extends Component {
                     placeholder: 'Adjunto',
                     files: []
                 }
-                this.setState({
-                    ...this.state,
-                    form
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                this.setState({ ...this.state, form, proyecto: proyecto })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -1672,8 +1667,8 @@ class Proyectos extends Component {
                     </Tab>
                 </Tabs>
                 
-                <ModalDelete title={"¿Estás seguro que deseas eliminar el proyecto?"} show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { this.safeDelete(e)() }}>
-                </ModalDelete>
+                <ModalDelete title = "¿Estás seguro que deseas eliminar el proyecto?" show = { modalDelete } 
+                    handleClose = { this.handleCloseDelete } onClick={(e) => { this.safeDelete(e)() }} />
 
                 <Modal size="xl" title="Adjuntos del proyecto" show={modalAdjuntos} handleClose={this.handleCloseAdjuntos} >
                     <div className="p-2">
@@ -1799,13 +1794,8 @@ class Proyectos extends Component {
                     }
                 </Modal>
                 <Modal size = 'lg' title = 'Comentarios' show = { modalComentarios } handleClose = { this.handleCloseComentarios }>
-                    <Comentarios
-                        addComentario={this.addComentarioAxios}
-                        form={form}
-                        onChange={this.onChange}
-                        handleChange={this.handleChangeComentario}
-                        proyecto={proyecto}
-                    />
+                    <Comentarios addComentario = { this.addComentarioAxios } form = { form } onChange = { this.onChange }
+                        handleChange = { this.handleChangeComentario } proyecto = { proyecto } />
                 </Modal>
             </Layout>
         )
