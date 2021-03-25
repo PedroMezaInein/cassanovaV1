@@ -575,6 +575,7 @@ class Compras extends Component {
         this.setState({
             ...this.state,
             modalAdjuntos: false,
+            modalFacturaExtranjera: false,
             form: this.clearForm(),
             adjuntos: [],
             data
@@ -607,6 +608,8 @@ class Compras extends Component {
                 const { form } = this.state
                 const { compra } = response.data
                 form.adjuntos.facturas_pdf.files = compra.facturas_pdf
+                console.log('FORM', form)
+                console.log('Compra', compra)
                 Swal.close()
                 this.setState({ ...this.state, form, modalFacturaExtranjera: true, compra })
             }, (error) => { printResponseErrorAlert(error) }
