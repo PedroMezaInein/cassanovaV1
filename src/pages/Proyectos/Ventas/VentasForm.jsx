@@ -318,6 +318,7 @@ class Ventas extends Component {
             const { modulo: { url } } = element
             return pathname === url + '/' + action
         });
+        this.getOptionsAxios()
         switch (action) {
             case 'add':
                 this.setState({
@@ -328,57 +329,8 @@ class Ventas extends Component {
                 break;
             case 'edit':
                 if (state) {
-                    if (state.venta) {
-                        const { venta } = state
-                        const { form, options } = this.state
-                        form.factura = venta.factura ? 'Con factura' : 'Sin factura'
-                        if (venta.cliente) {
-                            form.cliente = venta.cliente.id.toString()
-                            options['proyectos'] = setOptions(venta.cliente.proyectos, 'nombre', 'id')
-                            if (venta.proyecto)
-                                form.proyecto = venta.proyecto.id.toString()
-                            form.rfc = venta.cliente.rfc
-                            options['contratos'] = setOptions(venta.cliente.contratos, 'nombre', 'id')
-                            if (venta.contrato) {
-                                form.contrato = venta.contrato.id.toString()
-                            }
-                        }
-                        if (venta.empresa) {
-                            form.empresa = venta.empresa.id.toString()
-                            options['cuentas'] = setOptions(venta.empresa.cuentas, 'nombre', 'id')
-                            if (venta.cuenta)
-                                form.cuenta = venta.cuenta.id.toString()
-                        }
-                        if (venta.subarea) {
-                            form.area = venta.subarea.area.id.toString()
-                            options['subareas'] = setOptions(venta.subarea.area.subareas, 'nombre', 'id')
-                            form.subarea = venta.subarea.id.toString()
-                        }
-                        form.tipoPago = venta.tipo_pago ? venta.tipo_pago.id : 0
-                        form.tipoImpuesto = venta.tipo_impuesto ? venta.tipo_impuesto.id : 0
-                        form.estatusCompra = venta.estatus_compra ? venta.estatus_compra.id : 0
-                        form.total = venta.monto
-                        form.fecha = new Date(venta.created_at)
-                        form.descripcion = venta.descripcion
-                        if (venta.pago) {
-                            form.adjuntos.pago.files = [{
-                                name: venta.pago.name, url: venta.pago.url
-                            }]
-                        }
-                        if (venta.presupuesto) {
-                            form.adjuntos.presupuesto.files = [{
-                                name: venta.presupuesto.name, url: venta.presupuesto.url
-                            }]
-                        }
-                        this.setState({
-                            ...this.state,
-                            title: 'Editar venta',
-                            form,
-                            options,
-                            venta: venta,
-                            formeditado: 1
-                        })
-                    }
+                    if (state.venta) 
+                        this.getVenta(state.venta)
                     else
                         history.push('/proyectos/ventas')
                 } else
@@ -400,7 +352,6 @@ class Ventas extends Component {
         }
         if (!ventas)
             history.push('/')
-        this.getOptionsAxios()
     }
     setOptions = (name, array) => {
         const { options } = this.state
@@ -410,6 +361,68 @@ class Ventas extends Component {
             options
         })
     }
+
+    getVenta = async(venta) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}v2/proyectos/ventas/${venta.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { venta } = response.data
+                const { form, options } = this.state
+                form.factura = venta.factura ? 'Con factura' : 'Sin factura'
+                if (venta.cliente) {
+                    form.cliente = venta.cliente.id.toString()
+                    options['proyectos'] = setOptions(venta.cliente.proyectos, 'nombre', 'id')
+                    if (venta.proyecto)
+                        form.proyecto = venta.proyecto.id.toString()
+                    form.rfc = venta.cliente.rfc
+                    options['contratos'] = setOptions(venta.cliente.contratos, 'nombre', 'id')
+                    if (venta.contrato) {
+                        form.contrato = venta.contrato.id.toString()
+                    }
+                }
+                if (venta.empresa) {
+                    form.empresa = venta.empresa.id.toString()
+                    options['cuentas'] = setOptions(venta.empresa.cuentas, 'nombre', 'id')
+                    if (venta.cuenta)
+                        form.cuenta = venta.cuenta.id.toString()
+                }
+                if (venta.subarea) {
+                    form.area = venta.subarea.area.id.toString()
+                    options['subareas'] = setOptions(venta.subarea.area.subareas, 'nombre', 'id')
+                    form.subarea = venta.subarea.id.toString()
+                }
+                form.tipoPago = venta.tipo_pago ? venta.tipo_pago.id : 0
+                form.tipoImpuesto = venta.tipo_impuesto ? venta.tipo_impuesto.id : 0
+                form.estatusCompra = venta.estatus_compra ? venta.estatus_compra.id : 0
+                form.total = venta.monto
+                form.fecha = new Date(venta.created_at)
+                form.descripcion = venta.descripcion
+                if (venta.pago) {
+                    form.adjuntos.pago.files = [{
+                        name: venta.pago.name, url: venta.pago.url
+                    }]
+                }
+                if (venta.presupuesto) {
+                    form.adjuntos.presupuesto.files = [{
+                        name: venta.presupuesto.name, url: venta.presupuesto.url
+                    }]
+                }
+                this.setState({
+                    ...this.state,
+                    title: 'Editar venta',
+                    form,
+                    options,
+                    venta: venta,
+                    formeditado: 1
+                })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     async getOptionsAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -658,18 +671,10 @@ class Ventas extends Component {
                         </div>
                     </Card.Header>
                     <Card.Body className="pt-0">
-                        <VentasFormulario
-                            options={options}
-                            form={form}
-                            setOptions={this.setOptions}
-                            onChange={this.onChange}
-                            onChangeAdjunto={this.onChangeAdjunto}
-                            clearFiles={this.clearFiles}
-                            onSubmit={this.onSubmit}
-                            formeditado={formeditado}
-                            data={data}
-                            className="px-3"
-                        />
+                        <VentasFormulario options = { options } form = { form } setOptions = { this.setOptions }
+                            onChange = { this.onChange } onChangeAdjunto = { this.onChangeAdjunto } data = { data }
+                            clearFiles = { this.clearFiles } onSubmit = { this.onSubmit } formeditado = { formeditado }
+                            className = "px-3" title = { title }/>
                     </Card.Body>
                 </Card>
             </Layout>

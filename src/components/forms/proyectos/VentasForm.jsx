@@ -25,7 +25,6 @@ class VentasForm extends Component {
             return false
         })
 
-
         data.clientes.find(function (element, index) {
             if (value.toString() === element.id.toString()) {
                 if (element.rfc !== '') {
@@ -447,33 +446,39 @@ class VentasForm extends Component {
                                         />
                                     </div>
                                 </div>
-                                <div className="separator separator-dashed mt-1 mb-2"></div>
-                                <div className="form-group row form-group-marginless">
-                                    <div className="col-md-4">
-                                        <FileInput
-                                            requirevalidation={0}
-                                            formeditado={formeditado}
-                                            onChangeAdjunto={onChangeAdjunto}
-                                            placeholder={form['adjuntos']['presupuesto']['placeholder']}
-                                            value={form['adjuntos']['presupuesto']['value']}
-                                            name={'presupuesto'} id={'presupuesto'}
-                                            files={form['adjuntos']['presupuesto']['files']}
-                                            deleteAdjunto={clearFiles} multiple
-                                        />
-                                    </div>
-                                    <div className="col-md-4">
-                                        <FileInput
-                                            requirevalidation={0}
-                                            formeditado={formeditado}
-                                            onChangeAdjunto={onChangeAdjunto}
-                                            placeholder={form['adjuntos']['pago']['placeholder']}
-                                            value={form['adjuntos']['pago']['value']}
-                                            name={'pago'} id={'pago'}
-                                            files={form['adjuntos']['pago']['files']}
-                                            deleteAdjunto={clearFiles} multiple
-                                        />
-                                    </div>
-                                </div>
+                                {
+                                    title !== 'Editar venta' ?
+                                        <>
+                                            <div className="separator separator-dashed mt-1 mb-2"></div>
+                                            <div className="form-group row form-group-marginless">
+                                                <div className="col-md-4">
+                                                    <FileInput
+                                                        requirevalidation={0}
+                                                        formeditado={formeditado}
+                                                        onChangeAdjunto={onChangeAdjunto}
+                                                        placeholder={form['adjuntos']['presupuesto']['placeholder']}
+                                                        value={form['adjuntos']['presupuesto']['value']}
+                                                        name={'presupuesto'} id={'presupuesto'}
+                                                        files={form['adjuntos']['presupuesto']['files']}
+                                                        deleteAdjunto={clearFiles} multiple
+                                                    />
+                                                </div>
+                                                <div className="col-md-4">
+                                                    <FileInput
+                                                        requirevalidation={0}
+                                                        formeditado={formeditado}
+                                                        onChangeAdjunto={onChangeAdjunto}
+                                                        placeholder={form['adjuntos']['pago']['placeholder']}
+                                                        value={form['adjuntos']['pago']['value']}
+                                                        name={'pago'} id={'pago'}
+                                                        files={form['adjuntos']['pago']['files']}
+                                                        deleteAdjunto={clearFiles} multiple
+                                                    />
+                                                </div>
+                                            </div>
+                                        </>
+                                    : ''
+                                }
                                 <div className="d-flex justify-content-between border-top mt-3 pt-3">
                                     <div className="mr-2">
                                         <button type="button" className="btn btn-light-primary font-weight-bold text-uppercase" onClick={() => { openWizard2() }} data-wizard-type="action-prev">Anterior</button>
