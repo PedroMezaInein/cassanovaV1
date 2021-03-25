@@ -330,6 +330,7 @@ class ComprasForm extends Component {
             const { modulo: { url } } = element
             return pathname === url + '/' + action
         });
+        this.getOptionsAxios()
         switch (action) {
             case 'add':
                 this.setState({
@@ -341,7 +342,8 @@ class ComprasForm extends Component {
             case 'edit':
                 if (state) {
                     if (state.compra) {
-                        const { compra } = state
+                        this.getCompra(state.compra)
+                        /* const { compra } = state
                         const { form, options } = this.state
                         form.factura = compra.factura ? 'Con factura' : 'Sin factura'
                         if (compra.proyecto) {
@@ -392,7 +394,7 @@ class ComprasForm extends Component {
                             options,
                             compra: compra,
                             formeditado: 1
-                        })
+                        }) */
                     }
                     else
                         history.push('/proyectos/compras')
@@ -415,7 +417,6 @@ class ComprasForm extends Component {
         }
         if (!egresos)
             history.push('/')
-        this.getOptionsAxios()
     }
     setOptions = (name, array) => {
         const { options } = this.state
@@ -425,6 +426,70 @@ class ComprasForm extends Component {
             options
         })
     }
+
+    getCompra = async(compra) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}v2/proyectos/compras/${compra.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { compra } = response.data
+                Swal.close()
+                const { form, options } = this.state
+                form.factura = compra.factura ? 'Con factura' : 'Sin factura'
+                if (compra.proyecto) 
+                    if (compra.proyecto.clientes) 
+                        form.proyecto = compra.proyecto.id.toString()
+                if (compra.empresa) {
+                    form.empresa = compra.empresa.id.toString()
+                    options['cuentas'] = setOptions(compra.empresa.cuentas, 'nombre', 'id')
+                    if (compra.cuenta)
+                        form.cuenta = compra.cuenta.id.toString()
+                }
+                if (compra.subarea) {
+                    form.area = compra.subarea.area.id.toString()
+                    options['subareas'] = setOptions(compra.subarea.area.subareas, 'nombre', 'id')
+                    form.subarea = compra.subarea.id.toString()
+                }
+                form.tipoPago = compra.tipo_pago ? compra.tipo_pago.id : 0
+                form.tipoImpuesto = compra.tipo_impuesto ? compra.tipo_impuesto.id : 0
+                form.estatusCompra = compra.estatus_compra ? compra.estatus_compra.id : 0
+                form.total = compra.monto
+                form.fecha = new Date(compra.created_at)
+                form.descripcion = compra.descripcion
+                form.comision = compra.comision
+                if (compra.proveedor) {
+                    options['contratos'] = setOptions(compra.proveedor.contratos, 'nombre', 'id')
+                    form.proveedor = compra.proveedor.id.toString()
+                    form.rfc = compra.proveedor.rfc
+                    if (compra.contrato) {
+                        form.contrato = compra.contrato.id.toString()
+                    }
+                }
+                if (compra.pago) {
+                    form.adjuntos.pago.files = [{
+                        name: compra.pago.name, url: compra.pago.url
+                    }]
+                }
+                if (compra.presupuesto) {
+                    form.adjuntos.presupuesto.files = [{
+                        name: compra.presupuesto.name, url: compra.presupuesto.url
+                    }]
+                }
+                this.setState({
+                    ...this.state,
+                    title: 'Editar compra',
+                    form,
+                    options,
+                    compra: compra,
+                    formeditado: 1
+                })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     async getOptionsAxios() {
         const { access_token } = this.props.authUser
         waitAlert()
