@@ -39,7 +39,7 @@ class LeadRhProveedor extends Component {
         return true
     }
     render() {
-        const { leads, onClickPrev, onClickNext, openModalFormRRHHP, options, changeOrigen,openModalEditarRRHHP} = this.props
+        const { leads, onClickPrev, onClickNext, openModalFormRRHHP, options, changeOrigen,openModalEditarRRHHP, clickOneLead} = this.props
         return (
             <>
                 <div className="d-flex justify-content-end">
@@ -57,7 +57,7 @@ class LeadRhProveedor extends Component {
                                     </th>
                                 </tr>
                                 <tr className="text-uppercase bg-light-pink text-pink">
-                                    <th style={{ minWidth: "100px" }} className="pl-7">
+                                    <th style={{ minWidth: "100px" }}>
                                         <span>Nombre</span>
                                     </th>
                                     <th style={{ minWidth: "151px" }}>Fecha</th>
@@ -84,7 +84,7 @@ class LeadRhProveedor extends Component {
                                                                 <span className="symbol-label font-size-h5 bg-light-pink text-pink">{lead.nombre.charAt(0)}</span>
                                                             </div>
                                                             <div>
-                                                                <a href={`mailto:+${lead.email}`} className="text-dark-75 font-weight-bolder text-hover-pink mb-1 font-size-lg">{lead.nombre}</a>
+                                                                <a onClick = { ( e ) => { e.preventDefault(); clickOneLead(lead.id) } } className="text-dark-75 font-weight-bolder text-hover-pink mb-1 font-size-lg">{lead.nombre}</a>
                                                             </div>
                                                         </div>
                                                     </td>

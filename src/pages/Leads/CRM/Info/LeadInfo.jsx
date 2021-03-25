@@ -13,6 +13,8 @@ import Swal from 'sweetalert2'
 import { HistorialContactoForm, AgendarCitaForm, PresupuestoDiseñoCRMForm, PresupuestoGenerado,InformacionGeneral} from '../../../../components/forms'
 import { Modal } from '../../../../components/singles'
 import Pagination from "react-js-pagination"
+import Scrollbar from 'perfect-scrollbar-react';
+import 'perfect-scrollbar-react/dist/style.min.css';
 const $ = require('jquery');
 class LeadInfo extends Component {
     state = {
@@ -1230,37 +1232,41 @@ class LeadInfo extends Component {
     openModalWithInput = (estatus, id) => {
         const { options } = this.state
         questionAlert2('ESCRIBE EL MOTIVO DE CANCELACIÓN', '', () => this.changeEstatusCanceladoRechazadoAxios({ id: id, estatus: estatus }),
-            <form id = 'canceladoForm' name = 'canceladoForm' className="mx-auto w-80">
-                {
-                    options.motivosCancelacion.map((option,key)=>{
-                        return(
-                            <Form.Check key = { key } id = { `motivo-cancelado-${option.id}` } 
-                                type="radio" label = { option.motivo } name = 'motivoCancelado'
-                                className="text-justify mb-3" value = { option.motivo } 
-                                onChange = { this.onChangeMotivoCancelado }
+            <div style={{ display: 'flex', maxHeight: '250px'}} >
+                <Scrollbar>
+                    <form id = 'canceladoForm' name = 'canceladoForm' className="mx-auto w-80">
+                        {
+                            options.motivosCancelacion.map((option,key)=>{
+                                return(
+                                    <Form.Check key = { key } id = { `motivo-cancelado-${option.id}` } 
+                                        type="radio" label = { option.motivo } name = 'motivoCancelado'
+                                        className="text-justify mb-3" value = { option.motivo } 
+                                        onChange = { this.onChangeMotivoCancelado }
+                                    />
+                                )
+                            })
+                        }
+                        <Form.Check
+                            id="motivo-cancelado-7"
+                            name = 'motivoCancelado'
+                            type="radio"
+                            label="Otro"
+                            className="text-justify mb-3"
+                            value="Otro"
+                            onChange={this.onChangeMotivoCancelado}
+                        />
+                        <div id = 'customInputCancelado' className = 'd-none'>
+                            <Form.Control
+                                placeholder='MOTIVO DE CANCELACIÓN'
+                                className="form-control form-control-solid h-auto py-7 px-6 text-uppercase"
+                                id='otro-motivo-cancelado'
+                                as="textarea"
+                                rows="3"
                             />
-                        )
-                    })
-                }
-                <Form.Check
-                    id="motivo-cancelado-7"
-                    name = 'motivoCancelado'
-                    type="radio"
-                    label="Otro"
-                    className="text-justify mb-3"
-                    value="Otro"
-                    onChange={this.onChangeMotivoCancelado}
-                />
-                <div id = 'customInputCancelado' className = 'd-none'>
-                    <Form.Control
-                        placeholder='MOTIVO DE CANCELACIÓN'
-                        className="form-control form-control-solid h-auto py-7 px-6 text-uppercase"
-                        id='otro-motivo-cancelado'
-                        as="textarea"
-                        rows="3"
-                    />
-                </div>
-            </form>
+                        </div>
+                    </form>
+                </Scrollbar>
+            </div>
         )
     }
 

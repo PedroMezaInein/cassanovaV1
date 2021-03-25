@@ -21,7 +21,7 @@ class LeadRP extends Component {
         return false;
     }
     render() {
-        const { leads, onClickNext, onClickPrev, openModalHistorial, openModalEditar } = this.props
+        const { leads, onClickNext, onClickPrev, openModalHistorial, openModalEditar, clickOneLead} = this.props
         return (
             <div className="tab-content">
                 <div className="table-responsive-lg">
@@ -33,7 +33,7 @@ class LeadRP extends Component {
                                 </th>
                             </tr>
                             <tr className="text-uppercase bg-light-orange text-orange">
-                                <th style={{ minWidth: "100px" }} className="pl-7">
+                                <th style={{ minWidth: "100px" }}>
                                     <span>Nombre del cliente</span>
                                 </th>
                                 <th style={{ minWidth: "140px" }}>Fecha</th>
@@ -62,7 +62,7 @@ class LeadRP extends Component {
                                                             </span>
                                                         </div>
                                                         <div>
-                                                            <a href={`mailto:+${lead.email}`} className="text-dark-75 font-weight-bolder text-hover-orange mb-1 font-size-lg">
+                                                            <a onClick = { ( e ) => { e.preventDefault(); clickOneLead(lead.id) } } className="text-dark-75 font-weight-bolder text-hover-orange mb-1 font-size-lg">
                                                                 {lead.nombre}
                                                             </a>
                                                             {

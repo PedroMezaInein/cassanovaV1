@@ -15,6 +15,7 @@ class CalendarioProyectos extends Component {
     state = {
         mes: meses[new Date().getMonth()],
         año: new Date().getFullYear(),
+        proyectos: [],
         data: {
             empresas: []
         },
@@ -36,67 +37,17 @@ class CalendarioProyectos extends Component {
     getContentCalendarAxios = async () => {
         const { access_token } = this.props.authUser
         const { mes, año } = this.state
-        await axios.get(`${URL_DEV}mercadotecnia/plan-trabajo?mes=${mes}&anio=${año}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(`${URL_DEV}v2/proyectos/calendario-proyectos?mes=${mes}&anio=${año}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { empresas } = response.data
-                const { data } = this.state
-                data.empresas = empresas
-                data.empresas.map((empresa) => {
-                    if (empresa.name === 'INEIN') {
-                        empresa.datos = [
-                            {
-                                fechaInicio: '2021-01-13',
-                                fechaFin: '2021-01-13',
-                                duration: 1,
-                                nombre: 'PROYECTO 1',
-                                color: '#20ACE9'
-                            },
-                            {
-                                fechaInicio: '2021-01-06',
-                                fechaFin: '2021-01-09',
-                                duration: 4,
-                                nombre: 'PROYECTO 2',
-                                color: '#EE4C9E'
-                            },
-                            {
-                                fechaInicio: '2021-01-06',
-                                fechaFin: '2021-01-08',
-                                duration: 3,
-                                nombre: 'PROYECTO 3',
-                                color: '#62D270'
-                            }
-                        ]
-                    } else if (empresa.name === 'INFRAESTRUCTURA MÉDICA') {
-                        empresa.datos = [
-                            {
-                                fechaInicio: '2021-01-1',
-                                fechaFin: '2021-01-1',
-                                duration: 1,
-                                nombre: 'PROYECTO 4',
-                                color: '#e4c127'
-                            },
-                            {
-                                fechaInicio: '2021-01-11',
-                                fechaFin: '2021-01-11',
-                                duration: 1,
-                                nombre: 'PROYECTO 5',
-                                color: '#A962E2'
-                            },
-                            {
-                                fechaInicio: '2021-01-04',
-                                fechaFin: '2021-01-06',
-                                duration: 3,
-                                nombre: 'PROYECTO 6',
-                                color: '#E63850'
-                            }
-                        ]
-                    }
-                    else {
-                        empresa.datos = []
-                    }
-                    return ''
+                const { proyectos } = response.data
+                let dias = this.diasEnUnMes(mes, año)
+                this.setState({
+                    ...this.state,
+                    mes: mes,
+                    año: año,
+                    dias: dias,
+                    proyectos: proyectos
                 })
-                this.setState({ ...this.state, data })
             },
             (error) => {
                 console.log(error, 'error')
@@ -109,9 +60,7 @@ class CalendarioProyectos extends Component {
         })
     }
 
-    diasEnUnMes(mes, año) {
-        return new Date(año, meses.indexOf(mes) + 1, 0).getDate();
-    }
+    diasEnUnMes(mes, año) { return new Date(año, meses.indexOf(mes) + 1, 0).getDate(); }
 
     updateMes = value => { this.setState({ ...this.state, mes: value }) }
 
@@ -183,8 +132,31 @@ class CalendarioProyectos extends Component {
         }
     }
 
+    printTd = (proyecto, conteo, diaActual, fechaInicio, fechaFin) => {
+        /* const { mes, año } = this.state
+        let fechaIin = new moment([año, meses.indexOf(mes), diaActual + 1])
+        console.log(`========== ${diaActual + 1} ==========`)
+        let diff1 = fechaInicio.diff(fecha, 'minutes')
+        let diff2 = fecha.diff(fechaFin, 'minutes')
+        console.log(fechaInicio, fechaFin)
+        console.log(diff1, diff2)
+        if(diff1 >= 0 || diff2 < 0){
+            return(
+                <td>
+                    SI
+                </td>
+            )
+        }else{
+            return(
+                <td>
+                    -
+                </td>
+            )
+        } */
+    }
+
     render() {
-        const { mes, año, data } = this.state
+        const { mes, año, proyectos, dias } = this.state
         return (
             <Layout active='proyectos' {... this.props}>
                 <Card className='card-custom'>
@@ -253,6 +225,27 @@ class CalendarioProyectos extends Component {
                                 </thead>
                                 <tbody>
                                     {
+                                        proyectos.map((proyecto, index) => {
+                                            let fechaInicio = moment(proyecto.fecha_inicio);
+                                            let fechaFin = moment(proyecto.fecha_fin);
+                                            let duracion = fechaFin.diff(fechaInicio, 'days') + 1;
+                                            let diaInicio = fechaInicio.date()
+                                            let diaFin = fechaFin.date()
+                                            return(
+                                                <tr key = { index } className = 'h-30px'>
+                                                    <td className="text-center font-weight-bolder">
+                                                        {proyecto.nombre}
+                                                    </td>
+                                                    {
+                                                        [...Array(dias)].map((element, diaActual) => {
+                                                            return(<>{this.printTd(proyecto, index, diaActual, fechaInicio, fechaFin)}</>)
+                                                        })
+                                                    }
+                                                </tr>
+                                            )
+                                        })
+                                    }
+                                    {/* {
                                         data.empresas.map((empresa, index) => {
                                             return (
                                                 empresa.datos.map((dato, index1) => {
@@ -308,7 +301,7 @@ class CalendarioProyectos extends Component {
                                                 })
                                             )
                                         })
-                                    }
+                                    } */}
                                 </tbody>
                             </table>
                         </div>

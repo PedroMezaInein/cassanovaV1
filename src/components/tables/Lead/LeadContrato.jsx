@@ -30,7 +30,7 @@ class LeadContrato extends Component {
     }
 
     render() {
-        const { leads, onClickPrev, onClickNext, changePageDetails } = this.props
+        const { leads, onClickPrev, onClickNext, changePageDetails, clickOneLead } = this.props
         return (
             <div className="tab-content">
                 <div className="table-responsive-lg">
@@ -42,7 +42,7 @@ class LeadContrato extends Component {
                                 </th>
                             </tr>
                             <tr className="text-uppercase bg-light-green text-green">
-                                <th style={{ minWidth: "100px" }} className="pl-7">
+                                <th style={{ minWidth: "100px" }}>
                                     <span>Nombre del cliente y proyecto</span>
                                 </th>
                                 <th style={{ minWidth: "120px" }}>Fecha</th>
@@ -69,7 +69,7 @@ class LeadContrato extends Component {
                                                             <span className="symbol-label font-size-h5">{lead.nombre.charAt(0)}</span>
                                                         </div>
                                                         <div>
-                                                            <a href={`mailto:+${lead.email}`} className="text-dark-75 font-weight-bolder text-hover-success mb-1 font-size-lg">{lead.nombre}</a>
+                                                            <a onClick = { ( e ) => { e.preventDefault(); clickOneLead(lead.id) } } className="text-dark-75 font-weight-bolder text-hover-success mb-1 font-size-lg">{lead.nombre}</a>
                                                             {
                                                                 this.hasProyecto(lead) ?
                                                                     <a href = {`/proyectos/proyectos?id=${lead.prospecto.proyecto.id}`}>

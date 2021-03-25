@@ -26,6 +26,8 @@ import Pagination from "react-js-pagination"
 import SymbolIcon from '../../../components/singles/SymbolIcon'
 import Moment from 'react-moment'
 import FileItem from '../../../components/singles/FileItem'
+import Scrollbar from 'perfect-scrollbar-react';
+import 'perfect-scrollbar-react/dist/style.min.css';
 const $ = require('jquery');
 class Crm extends Component {
 
@@ -1548,74 +1550,75 @@ class Crm extends Component {
                     'ESCRIBE EL MOTIVO DE RECHAZO',
                 '',
                 () => this.changeEstatusCanceladoRechazadoAxios({ id: id, estatus: estatus }),
-                <div>
-                    {
-                        estatus === 'Cancelado' ?
-                            <form id = 'canceladoForm' name = 'canceladoForm' className="mx-auto w-80">
-                                {
-                                    options.motivosCancelacion.map((option,key)=>{
-                                        return(
-                                            <Form.Check key = { key } id = { `motivo-cancelado-${option.id}` } 
-                                                type="radio" label = { option.motivo } name = 'motivoCancelado'
-                                                className="text-justify mb-3" value = { option.motivo } 
-                                                onChange = { this.onChangeMotivoCancelado }
-                                                />
-                                        )
-                                    })
-                                }
-                                <Form.Check 
-                                    id="motivo-cancelado-7"
-                                    type="radio"
-                                    label="Otro"
-                                    name = 'motivoCancelado'
-                                    className="text-justify mb-3"
-                                    value="Otro"
-                                    onChange = { this.onChangeMotivoCancelado }
-                                />
-                                <div id = 'customInputCancelado' className = 'd-none'>
-                                    <Form.Control
-                                        placeholder='MOTIVO DE CANCELACIÓN'
-                                        className="form-control form-control-solid h-auto py-7 px-6 text-uppercase"
-                                        id='otro-motivo-cancelado'
-                                        as="textarea"
-                                        rows="3"
+                <div style={{ display: 'flex', maxHeight: '250px'}} >
+                    <Scrollbar>
+                        {
+                            estatus === 'Cancelado' ?
+                                <form id = 'canceladoForm' name = 'canceladoForm' className="mx-auto w-80">
+                                    {
+                                        options.motivosCancelacion.map((option,key)=>{
+                                            return(
+                                                <Form.Check key = { key } id = { `motivo-cancelado-${option.id}` } 
+                                                    type="radio" label = { option.motivo } name = 'motivoCancelado'
+                                                    className="text-justify mb-3" value = { option.motivo } 
+                                                    onChange = { this.onChangeMotivoCancelado }
+                                                    />
+                                            )
+                                        })
+                                    }
+                                    <Form.Check 
+                                        id="motivo-cancelado-7"
+                                        type="radio"
+                                        label="Otro"
+                                        name = 'motivoCancelado'
+                                        className="text-justify mb-3"
+                                        value="Otro"
+                                        onChange = { this.onChangeMotivoCancelado }
                                     />
-                                </div>
-                            </form>
-                        :
-                            <form id = 'rechazoForm' name = 'rechazoForm' className="mx-auto w-90">
-                                {
-                                    options.motivosRechazo.map((option, key) => {
-                                        return (
-                                            <Form.Check key = { key } id = { `motivo-rechazo-${option.id}` } 
-                                                type="radio" label = { option.motivo } name = 'motivoRechazo'
-                                                className="text-justify mb-3" value = { option.motivo } 
-                                                onChange = { this.onChangeMotivoRechazo }
-                                                />
-                                        )
-                                    })
-                                }
-                                <Form.Check 
-                                    id="motivo-rechazo-14"
-                                    type="radio"
-                                    label="Otro"
-                                    name = 'motivoRechazo'
-                                    className="text-justify mb-3"
-                                    value="Otro"
-                                    onChange = { this.onChangeMotivoRechazo }
-                                />
-                                <div id = 'customInputRechazo' className = 'd-none'>
-                                    <Form.Control
-                                        placeholder='MOTIVO DE RECHAZO'
-                                        className="form-control form-control-solid h-auto py-7 px-6 text-uppercase"
-                                        id='otro-motivo-rechazo'
-                                        as="textarea"
-                                        rows="3"
+                                    <div id = 'customInputCancelado' className = 'd-none'>
+                                        <Form.Control
+                                            placeholder='MOTIVO DE CANCELACIÓN'
+                                            className="form-control form-control-solid h-auto py-7 px-6 text-uppercase"
+                                            id='otro-motivo-cancelado'
+                                            as="textarea"
+                                            rows="3"
+                                        />
+                                    </div>
+                                </form>
+                            :
+                                <form id = 'rechazoForm' name = 'rechazoForm' className="mx-auto w-90">
+                                    {
+                                        options.motivosRechazo.map((option, key) => {
+                                            return (
+                                                <Form.Check key = { key } id = { `motivo-rechazo-${option.id}` } 
+                                                    type="radio" label = { option.motivo } name = 'motivoRechazo'
+                                                    className="text-justify mb-3" value = { option.motivo } 
+                                                    onChange = { this.onChangeMotivoRechazo }
+                                                    />
+                                            )
+                                        })
+                                    }
+                                    <Form.Check 
+                                        id="motivo-rechazo-14"
+                                        type="radio"
+                                        label="Otro"
+                                        name = 'motivoRechazo'
+                                        className="text-justify mb-3"
+                                        value="Otro"
+                                        onChange = { this.onChangeMotivoRechazo }
                                     />
-                                </div>
-                            </form>
-                        
-                    }
+                                    <div id = 'customInputRechazo' className = 'd-none'>
+                                        <Form.Control
+                                            placeholder='MOTIVO DE RECHAZO'
+                                            className="form-control form-control-solid h-auto py-7 px-6 text-uppercase"
+                                            id='otro-motivo-rechazo'
+                                            as="textarea"
+                                            rows="3"
+                                        />
+                                    </div>
+                                </form>
+                        }
+                    </Scrollbar>
                 </div>
             )
         }
@@ -1982,6 +1985,7 @@ class Crm extends Component {
                                             options = { options }
                                             changeOrigen = { this.changeOrigen }
                                             openModalEditarRRHHP = { this.openModalEditarRRHHP}
+                                            clickOneLead = { this.getOneLeadInfoAxios }
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="web">
@@ -1990,7 +1994,7 @@ class Crm extends Component {
                                             openModalWithInput = { this.openModalWithInput } changePageLlamadaSalida = { this.changePageLlamadaSalida }
                                             options = { options } changeOrigen = { this.changeOrigen } deleteDuplicado = { this.deleteDuplicadoAxios }
                                             openModalEditar = { this.openModalEditar } openModalHistorial = { this.openModalHistorial } 
-                                            moveToRelacionesPublicas = { this.moveToRelacionesPublicasAxios } />
+                                            moveToRelacionesPublicas = { this.moveToRelacionesPublicasAxios } clickOneLead = { this.getOneLeadInfoAxios }/>
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="contacto">
                                         <LeadContacto
@@ -2002,6 +2006,7 @@ class Crm extends Component {
                                             changePageDetails={this.changePageDetailsContacto}
                                             options={options}
                                             changeOrigen={this.changeOrigen}
+                                            clickOneLead = { this.getOneLeadInfoAxios }
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="negociacion">
@@ -2016,6 +2021,7 @@ class Crm extends Component {
                                             changePageContratar={this.changePageContratar}
                                             changePageCierreVenta={this.changePageCierreVenta}
                                             options={options}
+                                            clickOneLead = { this.getOneLeadInfoAxios }
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="contratados">
@@ -2024,6 +2030,7 @@ class Crm extends Component {
                                             onClickNext={this.nextPageLeadContratados}
                                             onClickPrev={this.prevPageLeadContratados}
                                             changePageDetails={this.changePageDetailsContratado}
+                                            clickOneLead = { this.getOneLeadInfoAxios }
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="detenidos">
@@ -2034,17 +2041,20 @@ class Crm extends Component {
                                             changeEstatus={this.changeEstatus}
                                             openModalWithInput={this.openModalWithInput}
                                             changePageDetails={this.changePageDetailsDetenido}
+                                            clickOneLead = { this.getOneLeadInfoAxios }
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="cancelados">
                                         <LeadNoContratado leads = { leads_cancelados } onClickNext = { this.nextPageLeadCancelados }
                                             onClickPrev = { this.prevPageLeadCancelados } changePageDetails = { this.changePageDetailsCR }
-                                            changeEstatus = { this.changeEstatusAxios } openModalHistorial = { this.openModalHistorial }  />
+                                            changeEstatus = { this.changeEstatusAxios } openModalHistorial = { this.openModalHistorial }
+                                            clickOneLead = { this.getOneLeadInfoAxios }  />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="rp">
                                         <LeadRP leads = { leads_rp } onClickNext = { this.nextPageLeadRP }
                                             onClickPrev = { this.prevPageLeadRP } openModalHistorial = { this.openModalHistorial } 
-                                            openModalEditar = { this.openModalEditar } />
+                                            openModalEditar = { this.openModalEditar } 
+                                            clickOneLead = { this.getOneLeadInfoAxios }/>
                                     </Tab.Pane>
                                 </Tab.Content>
                             </div>
