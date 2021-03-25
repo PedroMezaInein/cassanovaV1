@@ -720,7 +720,7 @@ class Compras extends Component {
 
     getCompraAxios = async (id) => {
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'compras/single/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(`${URL_DEV}v2/proyectos/compras/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { compra } = response.data
                 this.setState({ ...this.state, compra: compra })
@@ -797,15 +797,16 @@ class Compras extends Component {
     deleteFacturaAxios = async(id) => {
         const { access_token } = this.props.authUser
         const { compra } = this.state
-        await axios.delete(URL_DEV + 'compras/' + compra.id + '/facturas/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.delete(`${URL_DEV}v2/proyectos/compras/${compra.id}/facturas/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                this.getComprasAxios()
+                let { form } = this.state
                 const { compra } = response.data
-                let { porcentaje } = this.state
-                porcentaje = compra.total_facturas * 100 / (compra.total - compra.comision)
-                porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
-                this.setState({ ...this.state, form: this.clearForm(), compra: compra, facturas: compra.facturas, porcentaje })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
+                form = this.clearForm()
+                if(compra)
+                    if(compra.estatus_compra)
+                        form.estatusCompra = compra.estatus_compra.id
+                Swal.close()
+                this.setState({ ...this.state, form, compra, facturas: compra.facturas })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
