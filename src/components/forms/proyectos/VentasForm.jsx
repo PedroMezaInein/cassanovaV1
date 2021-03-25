@@ -117,7 +117,7 @@ class VentasForm extends Component {
     }
 
     render() {
-        const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, sendFactura, onSubmit, formeditado, ...props } = this.props
+        const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, sendFactura, onSubmit, formeditado, onChangeCalendar, ...props } = this.props
         return (
             <div className="wizard wizard-3" id="wizardP" data-wizard-state="step-first">
                 <div className="wizard-nav">
@@ -147,37 +147,17 @@ class VentasForm extends Component {
                 </div>
                 <div className="row justify-content-center">
                     <div className="col-md-12">
-                        <Form
-                            onSubmit={
-                                (e) => {
-                                    e.preventDefault();
-                                    validateAlert(onSubmit, e, 'wizard-3-content')
-                                }
-                            }
-                            {...props}
-                        >
+                        <Form onSubmit={ (e) => { e.preventDefault(); validateAlert(onSubmit, e, 'wizard-3-content') } } {...props} >
                             <div id="wizard-1-content" className="pb-3 px-2" data-wizard-type="step-content" data-wizard-state="current">
                                 <h5 className="mb-4 font-weight-bold text-dark">Ingresa los datos de la factura</h5>
                                 <div className="form-group row form-group-marginless mb-0">
                                     <div className="col-md-4">
-                                        <RadioGroup
-                                            name='factura'
-                                            onChange={this.updateFactura}
-                                            options={
-                                                [
-                                                    {
-                                                        label: 'Si',
-                                                        value: 'Con factura'
-                                                    },
-                                                    {
-                                                        label: 'No',
-                                                        value: 'Sin factura'
-                                                    }
-                                                ]
-                                            }
-                                            placeholder={' Lleva factura '}
-                                            value={form.factura}
-                                        />
+                                        <RadioGroup name = 'factura' onChange = { this.updateFactura }
+                                            options = { [
+                                                    { label: 'Si', value: 'Con factura' },
+                                                    { label: 'No', value: 'Sin factura' }
+                                                ] }
+                                            placeholder = 'Lleva factura' value = { form.factura } />
                                     </div>
                                     {
                                         form.factura === 'Con factura' && title !== 'Editar venta' ?
