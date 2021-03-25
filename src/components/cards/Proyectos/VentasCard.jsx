@@ -4,6 +4,7 @@ import Moment from 'react-moment'
 import { Card, Tab, Row, Col, Nav } from 'react-bootstrap'
 import { ItemSlider } from '../../../components/singles'
 export default class VentasCard extends Component {
+
     setAdjuntosFacturas = facturas => {
         let aux = [];
         facturas.map((factura) => {
@@ -23,6 +24,55 @@ export default class VentasCard extends Component {
         })
         return aux
     }
+
+    hasAdjunto = (tipo) => {
+        const { venta } = this.props
+        if(venta !== '' && venta){
+            if(venta[tipo])
+                if(venta[tipo].length)
+                    return true
+        }
+        return false
+    }
+
+    hasAdjuntos = () => {
+        const { venta } = this.props
+        if(venta !== '' && venta){
+            if(venta.presupuestos)
+                if(venta.presupuestos.length)
+                    return true
+            if(venta.pagos)
+                if(venta.pagos.length)
+                    return true
+            if(venta.facturas)
+                if(venta.facturas.length)
+                    return true
+            if(venta.facturas_pdf)
+                if(venta.facturas_pdf.length)
+                    return true
+        }
+        return false
+    }
+
+    setTabAdjunto = () => {
+        const { venta } = this.props
+        if(venta !== '' && venta){
+            if(venta.presupuestos)
+                if(venta.presupuestos.length)
+                    return 'first'
+            if(venta.pagos)
+                if(venta.pagos.length)
+                    return 'second'
+            if(venta.facturas)
+                if(venta.facturas.length)
+                    return 'third'
+            if(venta.facturas_pdf)
+                if(venta.facturas_pdf.length)
+                    return 'fourth'
+        }
+        return ''
+    }
+
     render() {
         const { venta } = this.props
         return (
@@ -45,7 +95,7 @@ export default class VentasCard extends Component {
                                 </Nav.Item>
                                 {
                                     venta !== '' ?
-                                        venta.presupuestos.length > 0 || venta.pagos.length > 0 || venta.facturas.length > 0 ?
+                                        this.hasAdjuntos() ?
                                             <Nav.Item className="navi-item">
                                                 <Nav.Link className="navi-link px-3" eventKey="third" >
                                                     <span className="navi-icon"><i className="flaticon2-checking"></i></span>
@@ -226,7 +276,7 @@ export default class VentasCard extends Component {
                                                     <div className="col-9">
                                                         {
                                                             venta.contrato ?
-                                                                <span>{venta.contrato}</span>
+                                                                <span>{venta.contrato.nombre}</span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
@@ -236,40 +286,46 @@ export default class VentasCard extends Component {
                                     </Card>
                                 </Tab.Pane>
                                 <Tab.Pane eventKey="third">
-                                    <Tab.Container defaultActiveKey={venta.presupuestos !== 0 ? "first" : venta.pagos !==0 ? "second" : venta.facturas !== 0 ? "third" : ''}>
+                                    <Tab.Container defaultActiveKey = {this.setTabAdjunto()}>
                                         <Nav className="nav nav-tabs nav-tabs-space-lg nav-tabs-line nav-tabs-bold nav-tabs-line-2x border-0">
                                             {
-                                                venta.presupuestos !== 0 ?
+                                                this.hasAdjunto('presupuestos') ?
                                                     <Nav.Item>
-                                                        <Nav.Link className="pt-0" eventKey="first"
-                                                        >
+                                                        <Nav.Link className="pt-0" eventKey="first">
                                                             <span className="nav-text font-weight-bold">PRESUPUESTO</span>
                                                         </Nav.Link>
                                                     </Nav.Item>
-                                                    : ''
+                                                : ''
                                             }
                                             {
-                                                venta.pagos !== 0 ?
+                                                this.hasAdjunto('pagos') ?
                                                     <Nav.Item>
-                                                        <Nav.Link className="pt-0" eventKey="second"
-                                                        >
+                                                        <Nav.Link className="pt-0" eventKey="second">
                                                             <span className="nav-text font-weight-bold">PAGO</span>
                                                         </Nav.Link>
                                                     </Nav.Item>
-                                                    : ''
+                                                : ''
                                             }
                                             {
-                                                venta.facturas !== 0 ?
+                                                this.hasAdjunto('facturas') ?
                                                     <Nav.Item>
-                                                        <Nav.Link className="pt-0" eventKey="third"
-                                                        >
+                                                        <Nav.Link className="pt-0" eventKey="third">
                                                             <span className="nav-text font-weight-bold">FACTURAS</span>
                                                         </Nav.Link>
                                                     </Nav.Item>
-                                                    : ''
+                                                : ''
+                                            }
+                                            {
+                                                this.hasAdjunto('facturas_pdf') ?
+                                                    <Nav.Item>
+                                                        <Nav.Link className="pt-0" eventKey="fourth">
+                                                            <span className="nav-text font-weight-bold">FACTURAS EXTRANJERAS</span>
+                                                        </Nav.Link>
+                                                    </Nav.Item>
+                                                : ''
                                             }
                                         </Nav>
-                                        <Tab.Content>
+                                        <Tab.Content className = 'mt-4'>
                                             <Tab.Pane eventKey="first">
                                                 {
                                                     venta.presupuestos ?
@@ -288,6 +344,13 @@ export default class VentasCard extends Component {
                                                 {
                                                     venta.facturas ?
                                                         <ItemSlider items={this.setAdjuntosFacturas(venta.facturas)} item='' />
+                                                        : ''
+                                                }
+                                            </Tab.Pane>
+                                            <Tab.Pane eventKey="fourth">
+                                                {
+                                                    venta.facturas_pdf ?
+                                                        <ItemSlider items={venta.facturas_pdf} item='' />
                                                         : ''
                                                 }
                                             </Tab.Pane>
