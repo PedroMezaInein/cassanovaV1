@@ -23,6 +23,55 @@ export default class ComprasCard extends Component {
         })
         return aux
     }
+
+    hasAdjunto = (tipo) => {
+        const { compra } = this.props
+        if(compra !== '' && compra){
+            if(compra[tipo])
+                if(compra[tipo].length)
+                    return true
+        }
+        return false
+    }
+
+    hasAdjuntos = () => {
+        const { compra } = this.props
+        if(compra !== '' && compra){
+            if(compra.presupuestos)
+                if(compra.presupuestos.length)
+                    return true
+            if(compra.pagos)
+                if(compra.pagos.length)
+                    return true
+            if(compra.facturas)
+                if(compra.facturas.length)
+                    return true
+            if(compra.facturas_pdf)
+                if(compra.facturas_pdf.length)
+                    return true
+        }
+        return false
+    }
+
+    setTabAdjunto = () => {
+        const { compra } = this.props
+        if(compra !== '' && compra){
+            if(compra.presupuestos)
+                if(compra.presupuestos.length)
+                    return 'first'
+            if(compra.pagos)
+                if(compra.pagos.length)
+                    return 'second'
+            if(compra.facturas)
+                if(compra.facturas.length)
+                    return 'third'
+            if(compra.facturas_pdf)
+                if(compra.facturas_pdf.length)
+                    return 'fourth'
+        }
+        return ''
+    }
+    
     render() {
         const { compra } = this.props
         return (
@@ -45,7 +94,7 @@ export default class ComprasCard extends Component {
                                 </Nav.Item>
                                 {
                                     compra !== '' ?
-                                        compra.presupuestos.length > 0 || compra.pagos.length > 0 || compra.facturas.length > 0 ?
+                                        this.hasAdjuntos() ?
                                             <Nav.Item className="navi-item">
                                                 <Nav.Link className="navi-link px-3" eventKey="third" >
                                                     <span className="navi-icon"><i className="flaticon2-checking"></i></span>
@@ -272,40 +321,46 @@ export default class ComprasCard extends Component {
                                     </Card>
                                 </Tab.Pane>
                                 <Tab.Pane eventKey="third">
-                                    <Tab.Container defaultActiveKey={compra.presupuestos !== 0 ? "first" : compra.pagos !== 0 ? "second" : compra.facturas !== 0 ? "third" : ''}>
+                                    <Tab.Container defaultActiveKey = {this.setTabAdjunto()}>
                                         <Nav className="nav nav-tabs nav-tabs-space-lg nav-tabs-line nav-tabs-bold nav-tabs-line-2x border-0">
                                             {
-                                                compra.presupuestos !== 0 ?
+                                                this.hasAdjunto('presupuestos') ?
                                                     <Nav.Item>
-                                                        <Nav.Link className="pt-0" eventKey="first"
-                                                        >
+                                                        <Nav.Link className="pt-0" eventKey="first">
                                                             <span className="nav-text font-weight-bold">PRESUPUESTO</span>
                                                         </Nav.Link>
                                                     </Nav.Item>
-                                                    : ''
+                                                : ''
                                             }
                                             {
-                                                compra.pagos !== 0 ?
+                                                this.hasAdjunto('pagos') ?
                                                     <Nav.Item>
-                                                        <Nav.Link className="pt-0" eventKey="second"
-                                                        >
+                                                        <Nav.Link className="pt-0" eventKey="second">
                                                             <span className="nav-text font-weight-bold">PAGO</span>
                                                         </Nav.Link>
                                                     </Nav.Item>
-                                                    : ''
+                                                : ''
                                             }
                                             {
-                                                compra.facturas !== 0 ?
+                                                this.hasAdjunto('facturas') ?
                                                     <Nav.Item>
-                                                        <Nav.Link className="pt-0" eventKey="third"
-                                                        >
+                                                        <Nav.Link className="pt-0" eventKey="third">
                                                             <span className="nav-text font-weight-bold">FACTURAS</span>
                                                         </Nav.Link>
                                                     </Nav.Item>
-                                                    : ''
+                                                : ''
+                                            }
+                                            {
+                                                this.hasAdjunto('facturas_pdf') ?
+                                                    <Nav.Item>
+                                                        <Nav.Link className="pt-0" eventKey="fourth">
+                                                            <span className="nav-text font-weight-bold">FACTURAS EXTRANJERAS</span>
+                                                        </Nav.Link>
+                                                    </Nav.Item>
+                                                : ''
                                             }
                                         </Nav>
-                                        <Tab.Content>
+                                        <Tab.Content className ='mt-4'>
                                             <Tab.Pane eventKey="first">
                                                 {
                                                     compra.presupuestos ?
