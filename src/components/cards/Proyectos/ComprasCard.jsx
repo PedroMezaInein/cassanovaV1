@@ -382,6 +382,13 @@ export default class ComprasCard extends Component {
                                                         : ''
                                                 }
                                             </Tab.Pane>
+                                            <Tab.Pane eventKey="fourth">
+                                                {
+                                                    compra.facturas_pdf ?
+                                                        <ItemSlider items={compra.facturas_pdf} item='' />
+                                                        : ''
+                                                }
+                                            </Tab.Pane>
                                         </Tab.Content>
                                     </Tab.Container>
                                 </Tab.Pane>
