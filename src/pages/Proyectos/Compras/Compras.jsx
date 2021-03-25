@@ -557,28 +557,7 @@ class Compras extends Component {
             compra: compra
         })
     }
-    openModalFacturas = compra => {
-        let { porcentaje, form } = this.state
-        form = this.clearForm()
-        form.estatusCompra = compra.estatus_compra.id
-        porcentaje = compra.total_facturas * 100 / (compra.total - compra.comision)
-        porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
-        this.setState({
-            ...this.state,
-            modalFacturas: true,
-            compra: compra,
-            facturas: compra.facturas,
-            porcentaje,
-            form,
-            formeditado: 0
-        })
-    }
-    openModalAdjuntos = compra => {
-        const { form } = this.state
-        form.adjuntos.presupuesto.files = compra.presupuestos
-        form.adjuntos.pago.files = compra.pagos
-        this.setState({ ...this.state, modalAdjuntos: true, compra: compra, form })
-    }
+
     openModalDeleteAdjuntos = adjunto => {
         deleteAlert('¿SEGURO DESEAS BORRAR EL ADJUNTO?', adjunto.name, () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
     }
@@ -649,7 +628,46 @@ class Compras extends Component {
         waitAlert()
         this.deleteFacturaAxios(id)
     }
-    async addProveedorAxios(obj) {
+
+    openModalAdjuntos = async(compra) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}v2/proyectos/compras/adjuntos/${compra.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { form } = this.state
+                const { compra } = response.data
+                form.adjuntos.presupuesto.files = compra.presupuestos
+                form.adjuntos.pago.files = compra.pagos
+                Swal.close()
+                this.setState({ ...this.state, form, modalAdjuntos: true, compra })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    
+    openModalFacturas = async(compra) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}v2/proyectos/compras/facturas/${compra.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                let { form } = this.state
+                const { compra } = response.data
+                form = this.clearForm()
+                if(compra)
+                    if(compra.estatus_compra)
+                        form.estatusCompra = compra.estatus_compra.id
+                Swal.close()
+                this.setState({ ...this.state, form, modalFacturas: true, compra, facturas: compra.facturas })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    addProveedorAxios = async (obj) => {
         const { access_token } = this.props.authUser
         const data = new FormData();
         let cadena = obj.nombre_emisor.replace(' S. C.', ' SC').toUpperCase()
@@ -670,26 +688,18 @@ class Compras extends Component {
                         form.proveedor = proveedor.id.toString()
                     return false
                 })
-                this.setState({
-                    ...this.state,
-                    form,
-                    data,
-                    options
-                })
+                this.setState({ ...this.state, form, data, options })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
-    async getComprasAxios() {
-        $('#kt_datatable2_compras').DataTable().ajax.reload();
-    }
-    async getOptionsAxios() {
+
+    getComprasAxios = async() => { $('#compras').DataTable().ajax.reload(); }
+    
+    getOptionsAxios = async() => {
         const { access_token } = this.props.authUser
         waitAlert()
         await axios.get(URL_DEV + 'compras/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -710,60 +720,43 @@ class Compras extends Component {
                 options['metodosPago'] = setOptions(metodosPago, 'nombre', 'id')
                 data.proveedores = proveedores
                 data.empresas = empresas
-                this.setState({
-                    ...this.state,
-                    options,
-                    data
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                this.setState({ ...this.state, options, data })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
-    async getCompraAxios(id){
+
+    getCompraAxios = async (id) => {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'compras/single/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { compra } = response.data
-                this.setState({
-                    ...this.state,
-                    compra: compra
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                this.setState({ ...this.state, compra: compra })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
-    async deleteCompraAxios() {
+
+    deleteCompraAxios = async() => {
         const { access_token } = this.props.authUser
         const { compra } = this.state
         await axios.delete(URL_DEV + 'compras/' + compra.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 this.getComprasAxios()
-                this.setState({
-                    ...this.state,
-                    form: this.clearForm(),
-                    modalDelete: false,
-                })
+                this.setState({ ...this.state, form: this.clearForm(), modalDelete: false, })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue eliminado con éxito.')
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
-    async sendFacturaAxios() {
+
+    sendFacturaAxios = async() => {
         const { access_token } = this.props.authUser
         const { form, compra } = this.state
         const data = new FormData();
@@ -793,33 +786,25 @@ class Compras extends Component {
             return false
         })
         data.append('id', compra.id)
-        await axios.post(URL_DEV + 'compras/factura', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}v2/proyectos/compras/${compra.id}/factura`, data, { headers: {'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                this.getComprasAxios()
+                let { form } = this.state
                 const { compra } = response.data
-                let { porcentaje, form } = this.state
                 form = this.clearForm()
-                form.estatusCompra = compra.estatus_compra.id
-                porcentaje = compra.total_facturas * 100 / (compra.total - compra.comision)
-                porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
-                this.setState({
-                    ...this.state,
-                    form,
-                    compra: compra,
-                    facturas: compra.facturas,
-                    porcentaje
-                })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                if(compra)
+                    if(compra.estatus_compra)
+                        form.estatusCompra = compra.estatus_compra.id
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Las facturas fueron actualizadas con éxito.')
+                this.setState({ ...this.state, form, modalFacturas: true, compra, facturas: compra.facturas })
+                this.getComprasAxios()
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
-    async deleteFacturaAxios(id) {
+    
+    deleteFacturaAxios = async(id) => {
         const { access_token } = this.props.authUser
         const { compra } = this.state
         await axios.delete(URL_DEV + 'compras/' + compra.id + '/facturas/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -829,24 +814,16 @@ class Compras extends Component {
                 let { porcentaje } = this.state
                 porcentaje = compra.total_facturas * 100 / (compra.total - compra.comision)
                 porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
-                this.setState({
-                    ...this.state,
-                    form: this.clearForm(),
-                    compra: compra,
-                    facturas: compra.facturas,
-                    porcentaje
-                })
+                this.setState({ ...this.state, form: this.clearForm(), compra: compra, facturas: compra.facturas, porcentaje })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
-    async exportComprasAxios() {
+
+    exportComprasAxios = async() =>{
         let headers = []
         let documento = ''
         COMPRAS_COLUMNS.map((columna, key) => {
@@ -874,15 +851,13 @@ class Compras extends Component {
                 document.body.appendChild(link);
                 link.click();
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
+
     addAdjuntoCompraAxios = async(files, item)=>{
         waitAlert()
         const { access_token } = this.props.authUser
@@ -895,7 +870,7 @@ class Compras extends Component {
         })
         data.append('tipo', item)
         data.append('id', compra.id)
-        await axios.post(`${URL_DEV}compras/adjuntos`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}v2/proyectos/compras/${compra.id}/adjuntos`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { compra } = response.data
                 const { form } = this.state
@@ -904,15 +879,13 @@ class Compras extends Component {
                 this.getComprasAxios()
                 this.setState({ ...this.state, form })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Archivo adjuntado con éxito.')
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
+
     deleteAdjuntoAxios = async (id) => {
         const { access_token } = this.props.authUser
         const { compra } = this.state
@@ -927,15 +900,13 @@ class Compras extends Component {
                 this.setState({...this.state, form })
                 this.getComprasAxios()
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste el adjunto con éxito.')
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
+
     handleChangeFacturaExtranjera = (files, item)  => {
         const { formFacturaExtranjera } = this.state
         let aux = formFacturaExtranjera.adjuntos[item].files
@@ -959,6 +930,7 @@ class Compras extends Component {
             () => this.cleanAdjuntosExtranjero(item)
         )
     }
+
     addFacturaExtranjera= async(files, item)=>{
         waitAlert()
         const { access_token } = this.props.authUser
@@ -973,9 +945,7 @@ class Compras extends Component {
                 this.setState({ ...this.state })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Archivo adjuntado con éxito.')
             },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')

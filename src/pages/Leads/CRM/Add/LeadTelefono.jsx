@@ -8,6 +8,8 @@ import { doneAlert, errorAlert, printResponseErrorAlert, validateAlert, waitAler
 import Swal from 'sweetalert2'
 import { getEstados, setOptions } from '../../../../functions/setters'
 import { TEL, URL_DEV, EMAIL } from '../../../../constants'
+import Scrollbar from 'perfect-scrollbar-react';
+import 'perfect-scrollbar-react/dist/style.min.css';
 class LeadTelefono extends Component {
     state = {
         messages: [],
@@ -216,7 +218,8 @@ class LeadTelefono extends Component {
     openModalWithInput = (estatus) => {
         const { options } = this.state
         questionAlert2( 'ESCRIBE EL MOTIVO DE RECHAZO', '', () => this.changeEstatusRechazadoAxios({ estatus: estatus }),
-                <div>
+            <div style={{ display: 'flex', maxHeight: '250px'}} >
+                <Scrollbar>
                     <form id = 'rechazoForm' name = 'rechazoForm' className="mx-auto w-90">
                         {
                             options.motivosRechazo.map((option, key) => {
@@ -248,7 +251,8 @@ class LeadTelefono extends Component {
                             />
                         </div>
                     </form>
-                </div>
+                </Scrollbar>
+            </div>
         )
     }
 
@@ -347,7 +351,7 @@ class LeadTelefono extends Component {
                                 <div className="col-md-3">
                                     <InputPhoneGray placeholder = "TELÉFONO DE CONTACTO" withicon = { 1 }
                                         iconclass = "fas fa-mobile-alt" name = "telefono" value = { form.telefono }
-                                        requirevalidation = { 0 } onChange = { this.onChange } patterns = { TEL }
+                                        requirevalidation = { 1 } onChange = { this.onChange } patterns = { TEL }
                                         thousandseparator = { false } prefix = '' 
                                         messageinc = "Incorrecto. Ingresa el teléfono de contacto." />
                                 </div>
@@ -426,9 +430,9 @@ class LeadTelefono extends Component {
                                     (form.diseño || form.obra !== '') &&
                                         <div className="col-md-4">
                                             <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 1 }
-                                                withformgroup = { 1 } placeholder = "CORREO ELECTRÓNICO DE CONTACTO"
+                                                withformgroup = { 1 } requirevalidation = { 1 } placeholder = "CORREO ELECTRÓNICO DE CONTACTO"
                                                 iconclass = "fas fa-envelope" type = "email" name = "email" value = { form.email }
-                                                onChange = { this.onChange } patterns = { EMAIL } letterCase = { false } />
+                                                onChange = { this.onChange } patterns = { EMAIL } letterCase = { false } messageinc = "Incorrecto. Ingresa el correo." />
                                         </div>
                                 }
                             </div>
