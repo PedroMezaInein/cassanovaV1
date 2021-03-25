@@ -1051,11 +1051,11 @@ export const VENTAS_COLUMNS = [
     {
         Header: 'Estatus',
         accessor: 'estatusCompra'
-    },
-    {
+    }
+    /* {
         Header: 'Adjuntos',
         accessor: 'adjuntos',
-    }
+    } */
 ]
 
 export const COMPRAS_COLUMNS = [
