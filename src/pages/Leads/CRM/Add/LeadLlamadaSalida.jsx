@@ -10,6 +10,8 @@ import { URL_DEV } from '../../../../constants'
 import FormLlamada from '../../../../components/forms/leads/FormLlamada'
 import FormWhatsapp from '../../../../components/forms/leads/FormWhatsapp'
 import MensajePrincipal from '../../../../components/forms/leads/MensajePrincipal'
+import Scrollbar from 'perfect-scrollbar-react';
+import 'perfect-scrollbar-react/dist/style.min.css';
 
 class LeadLlamadaSalida extends Component {
 
@@ -587,7 +589,8 @@ class LeadLlamadaSalida extends Component {
     openModalWithInput = (estatus) => {
         const { lead, options } = this.state
         questionAlert2( 'ESCRIBE EL MOTIVO DE RECHAZO', '', () => this.changeEstatusRechazadoAxios({ id: lead.id, estatus: estatus }),
-                <div>
+            <div style={{ display: 'flex', maxHeight: '250px'}} >
+                <Scrollbar>
                     <form id = 'rechazoForm' name = 'rechazoForm' className="mx-auto w-90">
                         {
                             options.motivosRechazo.map((option, key) => {
@@ -619,7 +622,8 @@ class LeadLlamadaSalida extends Component {
                             />
                         </div>
                     </form>
-                </div>
+                </Scrollbar>
+            </div>
         )
     }
     changeEstatusRechazadoAxios = async (data) => {

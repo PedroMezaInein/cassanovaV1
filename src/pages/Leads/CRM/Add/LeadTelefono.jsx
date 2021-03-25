@@ -8,6 +8,8 @@ import { doneAlert, errorAlert, printResponseErrorAlert, validateAlert, waitAler
 import Swal from 'sweetalert2'
 import { getEstados, setOptions } from '../../../../functions/setters'
 import { TEL, URL_DEV, EMAIL } from '../../../../constants'
+import Scrollbar from 'perfect-scrollbar-react';
+import 'perfect-scrollbar-react/dist/style.min.css';
 class LeadTelefono extends Component {
     state = {
         messages: [],
@@ -216,7 +218,8 @@ class LeadTelefono extends Component {
     openModalWithInput = (estatus) => {
         const { options } = this.state
         questionAlert2( 'ESCRIBE EL MOTIVO DE RECHAZO', '', () => this.changeEstatusRechazadoAxios({ estatus: estatus }),
-                <div>
+            <div style={{ display: 'flex', maxHeight: '250px'}} >
+                <Scrollbar>
                     <form id = 'rechazoForm' name = 'rechazoForm' className="mx-auto w-90">
                         {
                             options.motivosRechazo.map((option, key) => {
@@ -248,7 +251,8 @@ class LeadTelefono extends Component {
                             />
                         </div>
                     </form>
-                </div>
+                </Scrollbar>
+            </div>
         )
     }
 
