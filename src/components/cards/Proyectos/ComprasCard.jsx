@@ -311,7 +311,7 @@ export default class ComprasCard extends Component {
                                                     <div className="col-9">
                                                         {
                                                             compra.contrato ?
-                                                                <span>{compra.contrato}</span>
+                                                                <span>{compra.contrato.nombre}</span>
                                                                 : <span>-</span>
                                                         }
                                                     </div>
