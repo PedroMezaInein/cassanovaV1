@@ -44,7 +44,7 @@ class LeadNuevo extends Component {
 
     render() {
         const { leads, onClickPrev, onClickNext, sendEmail, openModalWithInput, openModalEditar, changePageLlamadaSalida, options, changeOrigen, openModalHistorial,
-            deleteDuplicado, moveToRelacionesPublicas, openModal} = this.props
+            deleteDuplicado, moveToRelacionesPublicas, openModal, clickOneLead} = this.props
         return (
             <>
                 <div className="tab-content">
@@ -57,7 +57,7 @@ class LeadNuevo extends Component {
                                     </th>
                                 </tr>
                                 <tr className="text-uppercase bg-info-o-30 text-info">
-                                    <th style={{ minWidth: "100px" }} className="pl-7">
+                                    <th style={{ minWidth: "100px" }}>
                                         <span>Nombre del cliente</span>
                                     </th>
                                     <th style={{ minWidth: "140px" }}>Fecha</th>
@@ -85,7 +85,7 @@ class LeadNuevo extends Component {
                                                                     <span className="symbol-label font-size-h5 bg-info-o-20 text-info">{lead.nombre.charAt(0)}</span>
                                                                 </div>
                                                                 <div>
-                                                                    <a href={`mailto:+${lead.email}`} className="text-dark-75 font-weight-bolder text-hover-info mb-1 font-size-lg">{lead.nombre}</a>
+                                                                    <a onClick = { ( e ) => { e.preventDefault(); clickOneLead(lead.id) } } className="text-dark-75 font-weight-bolder text-hover-info mb-1 font-size-lg">{lead.nombre}</a>
                                                                 </div>
                                                             </div>
                                                         </td>
