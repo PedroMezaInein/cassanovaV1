@@ -720,7 +720,7 @@ class Compras extends Component {
 
     getCompraAxios = async (id) => {
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'compras/single/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(`${URL_DEV}v2/proyectos/compras/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { compra } = response.data
                 this.setState({ ...this.state, compra: compra })
