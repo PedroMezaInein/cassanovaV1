@@ -3,7 +3,9 @@ import NumberFormat from 'react-number-format'
 import Moment from 'react-moment'
 import { Card, Tab, Row, Col, Nav } from 'react-bootstrap'
 import { ItemSlider } from '../../../components/singles'
+
 export default class EgresosCard extends Component {
+
     setAdjuntosFacturas = facturas => {
         let aux = [];
         facturas.map((factura) => {
@@ -23,6 +25,55 @@ export default class EgresosCard extends Component {
         })
         return aux
     }
+
+    hasAdjunto = (tipo) => {
+        const { egreso } = this.props
+        if(egreso !== '' && egreso){
+            if(egreso[tipo])
+                if(egreso[tipo].length)
+                    return true
+        }
+        return false
+    }
+
+    hasAdjuntos = () => {
+        const { egreso } = this.props
+        if(egreso !== '' && egreso){
+            if(egreso.presupuestos)
+                if(egreso.presupuestos.length)
+                    return true
+            if(egreso.pagos)
+                if(egreso.pagos.length)
+                    return true
+            if(egreso.facturas)
+                if(egreso.facturas.length)
+                    return true
+            if(egreso.facturas_pdf)
+                if(egreso.facturas_pdf.length)
+                    return true
+        }
+        return false
+    }
+
+    setTabAdjunto = () => {
+        const { egreso } = this.props
+        if(egreso !== '' && egreso){
+            if(egreso.presupuestos)
+                if(egreso.presupuestos.length)
+                    return 'first'
+            if(egreso.pagos)
+                if(egreso.pagos.length)
+                    return 'second'
+            if(egreso.facturas)
+                if(egreso.facturas.length)
+                    return 'third'
+            if(egreso.facturas_pdf)
+                if(egreso.facturas_pdf.length)
+                    return 'fourth'
+        }
+        return ''
+    }
+    
     render() {
         const { egreso } = this.props
         return (
@@ -45,7 +96,7 @@ export default class EgresosCard extends Component {
                                 </Nav.Item>
                                 {
                                     egreso !== '' ?
-                                        egreso.presupuestos.length > 0 || egreso.pagos.length > 0 || egreso.facturas.length > 0 ?
+                                        this.hasAdjuntos() ?
                                             <Nav.Item className="navi-item">
                                                 <Nav.Link className="navi-link px-3" eventKey="third" >
                                                     <span className="navi-icon"><i className="flaticon2-checking"></i></span>
@@ -255,7 +306,7 @@ export default class EgresosCard extends Component {
                                     <Tab.Container defaultActiveKey={egreso.presupuestos !== 0 ? "first" : egreso.pagos !== 0 ? "second" : egreso.facturas !== 0 ? "third" : ''}>
                                         <Nav className="nav nav-tabs nav-tabs-space-lg nav-tabs-line nav-tabs-bold nav-tabs-line-2x border-0">
                                             {
-                                                egreso.presupuestos !== 0 ?
+                                                this.hasAdjunto('presupuestos') ?
                                                     <Nav.Item>
                                                         <Nav.Link className="pt-0" eventKey="first"
                                                         >
@@ -265,7 +316,7 @@ export default class EgresosCard extends Component {
                                                     : ''
                                             }
                                             {
-                                                egreso.pagos !== 0 ?
+                                                this.hasAdjunto('pagos') ?
                                                     <Nav.Item>
                                                         <Nav.Link className="pt-0" eventKey="second"
                                                         >
@@ -275,7 +326,7 @@ export default class EgresosCard extends Component {
                                                     : ''
                                             }
                                             {
-                                                egreso.facturas !== 0 ?
+                                                this.hasAdjunto('facturas') ?
                                                     <Nav.Item>
                                                         <Nav.Link className="pt-0" eventKey="third"
                                                         >
@@ -284,8 +335,17 @@ export default class EgresosCard extends Component {
                                                     </Nav.Item>
                                                     : ''
                                             }
+                                            {
+                                                this.hasAdjunto('facturas_pdf') ?
+                                                    <Nav.Item>
+                                                        <Nav.Link className="pt-0" eventKey="fourth">
+                                                            <span className="nav-text font-weight-bold">FACTURAS EXTRANJERAS</span>
+                                                        </Nav.Link>
+                                                    </Nav.Item>
+                                                : ''
+                                            }
                                         </Nav>
-                                        <Tab.Content>
+                                        <Tab.Content className = 'mt-4'>
                                             <Tab.Pane eventKey="first">
                                                 {
                                                     egreso.presupuestos ?
@@ -304,6 +364,13 @@ export default class EgresosCard extends Component {
                                                 {
                                                     egreso.facturas ?
                                                         <ItemSlider items={this.setAdjuntosFacturas(egreso.facturas)} item='' />
+                                                        : ''
+                                                }
+                                            </Tab.Pane>
+                                            <Tab.Pane eventKey="fourth">
+                                                {
+                                                    egreso.facturas_pdf ?
+                                                        <ItemSlider items={egreso.facturas_pdf} item='' />
                                                         : ''
                                                 }
                                             </Tab.Pane>
