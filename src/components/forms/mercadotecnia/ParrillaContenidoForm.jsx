@@ -74,13 +74,11 @@ class ParrillaContenidoForm extends Component {
     }
 
     isActivePostingButton = evento => {
-        return true
         if (evento)
             if (evento.red)
                 if (evento.red.nombre === 'FACEBOOK')
                     if (evento.uploaded !== 1)
-                        if (evento.post_id)
-                            return true
+                        return true
         return false
     }
 
@@ -276,8 +274,8 @@ class ParrillaContenidoForm extends Component {
                                                 <div className="text-center font-weight-bolder mb-2">
                                                     {form.adjuntos.image.placeholder}
                                                 </div>
-                                                <ItemSlider multiple={true} items={form.adjuntos.image.files}
-                                                    item='image' handleChange={handleChange} accept = 'image/*'/>
+                                                <ItemSlider multiple={true} items={form.adjuntos.image.files} item='image' 
+                                                    handleChange={ title === 'Editar contenido' ?  null : handleChange} accept = 'image/*'/>
                                             </div>
                                         </div>
                                     </div>

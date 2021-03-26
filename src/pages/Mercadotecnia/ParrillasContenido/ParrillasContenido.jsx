@@ -142,14 +142,11 @@ class ParrillasContenido extends Component {
                     }
                 }
 
-                if (parrilla.imagen_file) {
-                    form.adjuntos.image.files = [
-                        {
-                            id: parrilla.id,
-                            name: this.getNameFromUrl(parrilla.imagen_file),
-                            url: parrilla.imagen_file
-                        }
-                    ]
+                if (parrilla.imagenes) {
+                    form.adjuntos.image.files = [];
+                    parrilla.imagenes.forEach(element => {
+                        form.adjuntos.image.files.push(element)
+                    });
                 }
 
                 this.setState({
