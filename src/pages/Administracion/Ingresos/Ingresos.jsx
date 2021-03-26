@@ -65,6 +65,10 @@ class Ingresos extends Component {
                     value: '',
                     placeholder: 'Presupuesto',
                     files: []
+                },facturas_pdf: {
+                    value: '',
+                    placeholder: 'Factura extranjera',
+                    files: []
                 }
             }
         },
@@ -139,6 +143,10 @@ class Ingresos extends Component {
                             value: '',
                             placeholder: 'Presupuesto',
                             files: []
+                        },facturas_pdf: {
+                            value: '',
+                            placeholder: 'Factura extranjera',
+                            files: []
                         }
                     }
                     break;
@@ -179,7 +187,7 @@ class Ingresos extends Component {
         createAlertSA2WithActionOnClose(
             '¿DESEAS AGREGAR EL ARCHIVO?',
             '',
-            () => this.addAdjuntoEgresoAxios(files, item),
+            () => this.addAdjuntoIngresoAxios(files, item),
             () => this.cleanAdjuntos(item)
         )
     }
@@ -425,7 +433,7 @@ class Ingresos extends Component {
                     subarea: renderToString(setTextTable(ingreso.subarea ? ingreso.subarea.nombre : '')),
                     estatusCompra: renderToString(setTextTable(ingreso.estatus_compra ? ingreso.estatus_compra.estatus : '')),
                     total: renderToString(setMoneyTable(ingreso.total)),
-                    adjuntos: renderToString(setArrayTable(_aux)),
+                    /* adjuntos: renderToString(setArrayTable(_aux)), */
                     fecha: renderToString(setDateTable(ingreso.created_at)),
                     id: ingreso.id,
                     objeto: ingreso
@@ -537,30 +545,6 @@ class Ingresos extends Component {
             ingreso: ''
         })
     }
-    openModalFacturas = (ingreso) => {
-        let { porcentaje, form } = this.state
-        form.empresa = ingreso.empresa.id.toString()
-        form.cliente = ingreso.cliente.id.toString()
-        form.rfc = ingreso.cliente.rfc
-        // form = this.clearForm()
-        form.estatusCompra = ingreso.estatus_compra.id
-        porcentaje = 0
-        ingreso.facturas.map((factura) => {
-            porcentaje = porcentaje + factura.total
-            return false
-        })
-        porcentaje = porcentaje * 100 / (ingreso.total)
-        porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
-        this.setState({
-            ...this.state,
-            modalFacturas: true,
-            ingreso: ingreso,
-            facturas: ingreso.facturas,
-            porcentaje,
-            form,
-            formeditado: 1
-        })
-    }
     handleCloseFacturas = () => {
         this.setState({
             ...this.state,
@@ -592,26 +576,9 @@ class Ingresos extends Component {
     //         form: this.clearForm()
     //     })
     // }
-    openModalAdjuntos = ingreso => {
-        const { form } = this.state
-        form.adjuntos.presupuesto.files = ingreso.presupuestos
-        form.adjuntos.pago.files = ingreso.pagos
-        this.setState({ ...this.state, modalAdjuntos: true, ingreso: ingreso, form })
-    }
 
     openModalDeleteAdjuntos = adjunto => {
         deleteAlert('¿SEGURO DESEAS BORRAR EL ADJUNTO?', adjunto.name, () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
-    }
-
-    openFacturaExtranjera = ingreso => {
-        const { formFacturaExtranjera } = this.state
-        formFacturaExtranjera.adjuntos.factura.files = ingreso.facturas_pdf
-        this.setState({
-            ...this.state,
-            modalFacturaExtranjera: true,
-            ingreso: ingreso,
-            formFacturaExtranjera
-        })
     }
 
     handleCloseFacturaExtranjera = () => {
@@ -622,13 +589,7 @@ class Ingresos extends Component {
             ingreso: ''
         })
     }
-    openModalSee = ingreso => {
-        this.setState({
-            ...this.state,
-            modalSee: true,
-            ingreso: ingreso
-        })
-    }
+
     handleCloseSee = () => {
         this.setState({
             ...this.state,
@@ -642,6 +603,7 @@ class Ingresos extends Component {
         this.setState({
             ...this.state,
             modalAdjuntos: false,
+            modalFacturaExtranjera: false,
             form: this.clearForm(),
             adjuntos: [],
             data,
@@ -652,9 +614,98 @@ class Ingresos extends Component {
         waitAlert()
         this.deleteFacturaAxios(id)
     }
-    async getIngresosAxios() {
-        $('#ingresostable').DataTable().ajax.reload();
+
+    fillAdjuntos = ingreso => {
+        const { form } = this.state
+        form.adjuntos.pago.value = null
+        form.adjuntos.presupuesto.value = null
+        form.adjuntos.facturas_pdf.value = null
+        form.adjuntos.pago.files = []
+        form.adjuntos.presupuesto.files = []
+        form.adjuntos.facturas_pdf.files = []
+        ingreso.pagos.forEach(element => {
+            form.adjuntos.pago.files.push(element);
+        });
+        ingreso.presupuestos.forEach(element => {
+            form.adjuntos.presupuesto.files.push(element);
+        });
+        ingreso.facturas_pdf.forEach(element => {
+            form.adjuntos.facturas_pdf.files.push(element);
+        });
+        return form
     }
+
+    openModalFacturas = async(ingreso) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}v2/administracion/ingresos/facturas/${ingreso.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                let { form } = this.state
+                const { ingreso } = response.data
+                form = this.clearForm()
+                if(ingreso)
+                    if(ingreso.estatus_compra)
+                        form.estatusCompra = ingreso.estatus_compra.id
+                Swal.close()
+                this.setState({ ...this.state, form, modalFacturas: true, ingreso, facturas: ingreso.facturas })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    openFacturaExtranjera = async(ingreso) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}v2/administracion/ingresos/adjuntos/${ingreso.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                let { form } = this.state
+                const { ingreso } = response.data
+                form = this.fillAdjuntos(ingreso)
+                Swal.close()
+                this.setState({ ...this.state, form, modalFacturaExtranjera: true, ingreso })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    openModalSee = async(ingreso) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}v2/administracion/ingresos/${ingreso.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { ingreso } = response.data
+                Swal.close()
+                this.setState({ ...this.state, modalSee: true, ingreso })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    openModalAdjuntos = async(ingreso) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}v2/administracion/ingresos/adjuntos/${ingreso.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                let { form } = this.state
+                const { ingreso } = response.data
+                form = this.fillAdjuntos(ingreso)
+                Swal.close()
+                this.setState({ ...this.state, form, modalAdjuntos: true, ingreso })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async getIngresosAxios() { $('#ingresostable').DataTable().ajax.reload(); }
+
     async getIngresoAxios(id){
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'ingresos/single/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -672,6 +723,7 @@ class Ingresos extends Component {
             console.log(error, 'error')
         })
     }
+
     async getOptionsAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -701,6 +753,7 @@ class Ingresos extends Component {
             console.log(error, 'error')
         })
     }
+
     async deleteIngresoAxios() {
         const { access_token } = this.props.authUser
         const { ingreso } = this.state
@@ -721,7 +774,8 @@ class Ingresos extends Component {
             console.log(error, 'error')
         })
     }
-    async sendFacturaAxios() {
+
+    sendFacturaAxios = async() => {
         const { access_token } = this.props.authUser
         const { form, ingreso } = this.state
         const data = new FormData();
@@ -751,67 +805,44 @@ class Ingresos extends Component {
             return false
         })
         data.append('id', ingreso.id)
-        await axios.post(URL_DEV + 'ingresos/factura', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}v2/administracion/ingresos/${ingreso.id}/factura`, data, { headers: {'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                let { form } = this.state
                 const { ingreso } = response.data
-                let { porcentaje, form } = this.state
                 form = this.clearForm()
-                form.estatusCompra = ingreso.estatus_compra.id
-                porcentaje = 0
-                ingreso.facturas.map((factura) => {
-                    porcentaje = porcentaje + factura.total
-                    return false
-                })
-                porcentaje = porcentaje * 100 / (ingreso.total)
-                porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
+                if(ingreso)
+                    if(ingreso.estatus_compra)
+                        form.estatusCompra = ingreso.estatus_compra.id
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Las facturas fueron actualizadas con éxito.')
+                this.setState({ ...this.state, form, modalFacturas: true, ingreso, facturas: ingreso.facturas })
                 this.getIngresosAxios()
-                this.setState({
-                    ...this.state,
-                    form,
-                    ingreso: ingreso,
-                    facturas: ingreso.facturas,
-                    porcentaje
-                })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-            }, (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
-    async deleteFacturaAxios(id) {
+
+    deleteFacturaAxios = async(id) => {
         const { access_token } = this.props.authUser
         const { ingreso } = this.state
-        await axios.delete(URL_DEV + 'ingresos/' + ingreso.id + '/facturas/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.delete(`${URL_DEV}v2/administracion/ingresos/${ingreso.id}/facturas/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                let { form } = this.state
                 const { ingreso } = response.data
-                let { porcentaje } = this.state
-                porcentaje = 0
-                ingreso.facturas.map((factura) => {
-                    porcentaje = porcentaje + factura.total
-                    return false
-                })
-                porcentaje = porcentaje * 100 / (ingreso.total)
-                porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
-                this.getIngresosAxios()
-                this.setState({
-                    ...this.state,
-                    form: this.clearForm(),
-                    ingreso: ingreso,
-                    facturas: ingreso.facturas,
-                    porcentaje
-                })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-            }, (error) => {
-                printResponseErrorAlert(error)
-            }
+                form = this.clearForm()
+                if(ingreso)
+                    if(ingreso.estatus_compra)
+                        form.estatusCompra = ingreso.estatus_compra.id
+                Swal.close()
+                this.setState({ ...this.state, form, ingreso, facturas: ingreso.facturas })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
+
     async askFacturaAxios() {
         const { access_token } = this.props.authUser
         const { form } = this.state
@@ -870,6 +901,7 @@ class Ingresos extends Component {
             console.log(error, 'error')
         })
     }
+
     async exportIngresosAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -890,7 +922,8 @@ class Ingresos extends Component {
             console.log(error, 'error')
         })
     }
-    addAdjuntoEgresoAxios = async(files, item) => {
+
+    addAdjuntoIngresoAxios = async(files, item) => {
         waitAlert()
         const { access_token } = this.props.authUser
         const { ingreso } = this.state
@@ -902,40 +935,33 @@ class Ingresos extends Component {
         })
         data.append('tipo', item)
         data.append('id', ingreso.id)
-        await axios.post(`${URL_DEV}ingresos/adjuntos`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}v2/administracion/ingresos/${ingreso.id}/adjuntos`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                let { form } = this.state
                 const { ingreso } = response.data
-                const { form } = this.state
-                form.adjuntos.pago.files = ingreso.pagos
-                form.adjuntos.presupuesto.files = ingreso.presupuestos
+                form = this.fillAdjuntos(ingreso)
                 this.getIngresosAxios()
                 this.setState({ ...this.state, form })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Archivo adjuntado con éxito.')
-            }, (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
+
     deleteAdjuntoAxios = async (id) => {
         const { access_token } = this.props.authUser
         const { ingreso } = this.state
-        await axios.delete(`${URL_DEV}ingresos/${ingreso.id}/adjuntos/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.delete(`${URL_DEV}v2/administracion/ingresos/${ingreso.id}/adjuntos/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                let { form } = this.state
                 const { ingreso } = response.data
-                const { form } = this.state
-                if(ingreso.presupuestos)
-                    form.adjuntos.presupuesto.files = ingreso.presupuestos
-                if(ingreso.pagos)
-                    form.adjuntos.pago.files = ingreso.pagos
-                this.setState({...this.state, form })
+                form = this.fillAdjuntos(ingreso)
                 this.getIngresosAxios()
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste el adjunto con éxito.')
-            }, (error) => {
-                printResponseErrorAlert(error)
-            }
+                this.setState({ ...this.state, form })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Archivo adjuntado con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -970,7 +996,7 @@ class Ingresos extends Component {
         createAlertSA2WithActionOnClose( 
             '¿DESEAS AGREGAR EL ARCHIVO?',
             '',
-            () => this.addAdjuntoEgresoAxios(files, 'facturas_pdf'),
+            () => this.addAdjuntoIngresoAxios(files, 'facturas_pdf'),
             () => this.cleanAdjuntosExtranjero(item)
         )
     }
@@ -1096,27 +1122,21 @@ class Ingresos extends Component {
                     </Tabs>
                 </Modal>
 
-                <Modal size="xl" title={"Adjuntos"} show={modalAdjuntos} handleClose={this.handleCloseAdjuntos}>
+                <Modal size = "xl" title = "Adjuntos" show = { modalAdjuntos } handleClose = { this.handleCloseAdjuntos } >
                     <AdjuntosForm  form = { form } onChangeAdjunto = { this.handleChange } deleteFile = { this.openModalDeleteAdjuntos } />
                 </Modal>
                 <Modal size="lg" title="Ingreso" show={modalSee} handleClose={this.handleCloseSee} >
                     <IngresosCard ingreso={ingreso} />
                 </Modal>
-                <Modal size="lg" title="Factura extranjera" show={modalFacturaExtranjera} handleClose={this.handleCloseFacturaExtranjera} >
-                    <FacturaExtranjera form={formFacturaExtranjera} onChangeAdjunto = { this.handleChangeFacturaExtranjera } deleteFile = { this.openModalDeleteAdjuntos }/>
+                <Modal size="lg" title="Factura extranjera" show={modalFacturaExtranjera} handleClose={this.handleCloseAdjuntos} >
+                    <FacturaExtranjera form={form} onChangeAdjunto = { this.handleChange } deleteFile = { this.openModalDeleteAdjuntos }/>
                 </Modal>
             </Layout>
         )
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        authUser: state.authUser
-    }
-}
-
-const mapDispatchToProps = dispatch => ({
-})
+const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapDispatchToProps = dispatch => ({ })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Ingresos);

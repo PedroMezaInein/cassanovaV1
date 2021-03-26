@@ -17,7 +17,7 @@ import ParrillaContenidoForm from '../../../components/forms/mercadotecnia/Parri
 import { setOptions } from '../../../functions/setters'
 import Swal from 'sweetalert2'
 
-class Calendario extends Component {
+class ParrillasContenido extends Component {
     state = {
         content: [],
         formeditado: 0,
@@ -90,12 +90,12 @@ class Calendario extends Component {
         if (queryString) {
             let params = new URLSearchParams(queryString)
             let id = params.get("id")
-            if(id)
+            if (id)
                 this.getParrillaAxios(id)
         }
     }
 
-    getParrillaAxios = async(id) => {
+    getParrillaAxios = async (id) => {
         waitAlert()
         const { access_token } = this.props.authUser
         await axios.get(`${URL_DEV}mercadotecnia/parrilla-contenido/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -110,7 +110,7 @@ class Calendario extends Component {
                 form.cta = parrilla.cta
                 form.comments = parrilla.imagen
                 form.typeContent = parrilla.tipo_contenido
-                if(parrilla.red){
+                if (parrilla.red) {
                     form.socialNetwork = parrilla.subarea_id.toString()
                     form.socialNetworks = [
                         {
@@ -129,18 +129,18 @@ class Calendario extends Component {
                     form.hora = aux[0].toString();
                     form.minuto = aux[1].toString();
                 }
-                
+
                 form.fecha = new Date(moment(parrilla.fecha))
-                
-                if(parrilla.post_id){
+
+                if (parrilla.post_id) {
                     let aux = parrilla.post_id.split("_");
-                    if(aux.length > 1){
-                        if(aux[1].length)
+                    if (aux.length > 1) {
+                        if (aux[1].length)
                             form.post = aux[1];
                     }
                 }
 
-                if(parrilla.imagen_file){
+                if (parrilla.imagen_file) {
                     form.adjuntos.image.files = [
                         {
                             id: parrilla.id,
@@ -250,7 +250,7 @@ class Calendario extends Component {
                 case 'adjuntos':
                     break;
                 case 'socialNetworks':
-                    form.socialNetworks.map((dato)=>{
+                    form.socialNetworks.map((dato) => {
                         data.append(`socialNetworks[]`, dato.value)
                         return ''
                     })
@@ -265,7 +265,7 @@ class Calendario extends Component {
             return false
         })
         if (form.adjuntos.image.value !== '') {
-            form.adjuntos.image.files.map( ( file, index ) => {
+            form.adjuntos.image.files.map((file, index) => {
                 data.append(`files_name_image[]`, file.name)
                 data.append(`files_image[]`, file.file)
                 return ''
@@ -288,14 +288,14 @@ class Calendario extends Component {
         })
     }
 
-    updateParrillaAxios = async() => {
+    updateParrillaAxios = async () => {
         waitAlert()
         const { access_token } = this.props.authUser
         const { form, evento } = this.state
         await axios.put(URL_DEV + 'mercadotecnia/parrilla-contenido/' + evento.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert('Parrilla editada con éxito');
-                const { modal} = this.state
+                const { modal } = this.state
                 modal.form = false
                 this.setState({
                     ...this.state,
@@ -318,14 +318,14 @@ class Calendario extends Component {
         const { form, evento } = this.state
         const data = new FormData();
 
-        form.adjuntos.adjunto_comentario.files.map(( adjunto) => {
+        form.adjuntos.adjunto_comentario.files.map((adjunto) => {
             data.append(`files_name_adjunto[]`, adjunto.name)
             data.append(`files_adjunto[]`, adjunto.file)
             return ''
         })
 
         data.append(`comentario`, form.comentario)
-        
+
         await axios.post(URL_DEV + 'mercadotecnia/parrilla-contenido/comentario/' + evento.id, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert('Comentario agregado con éxito');
@@ -351,7 +351,7 @@ class Calendario extends Component {
         })
     }
 
-    sendAdjuntoAxios = async(files, item) => {
+    sendAdjuntoAxios = async (files, item) => {
         waitAlert()
         const { access_token } = this.props.authUser
         const { evento } = this.state
@@ -367,10 +367,10 @@ class Calendario extends Component {
                 doneAlert('Adjunto agregado con éxito');
                 const { form } = this.state
                 form.adjuntos.adjunto = {
-                        value: '',
-                        placeholder: 'Adjunto',
-                        files: []
-                    }
+                    value: '',
+                    placeholder: 'Adjunto',
+                    files: []
+                }
 
                 this.setState({
                     ...this.state,
@@ -411,7 +411,7 @@ class Calendario extends Component {
         })
     }
 
-    postInFacebookAxios = async() => {
+    postInFacebookAxios = async () => {
         waitAlert()
         const { evento } = this.state
         const { access_token } = this.props.authUser
@@ -419,7 +419,7 @@ class Calendario extends Component {
             (response) => {
                 const { evento } = response.data
                 doneAlert('Contenido publicado con éxito.')
-                this.setState({...this.state,evento:evento})
+                this.setState({ ...this.state, evento: evento })
                 this.getContentAxios();
             },
             (error) => {
@@ -433,7 +433,7 @@ class Calendario extends Component {
 
     onSumitParrilla = () => {
         const { title } = this.state
-        if( title === 'Editar contenido' )
+        if (title === 'Editar contenido')
             this.updateParrillaAxios()
         else
             this.sendParrillaAxios()
@@ -456,7 +456,7 @@ class Calendario extends Component {
         createAlertSA2(
             '¿Estás seguro?',
             `Postearás ${evento.titulo} en la página de ${evento.empresa.name}`,
-            () =>  { this.postInFacebookAxios() }
+            () => { this.postInFacebookAxios() }
         )
     }
 
@@ -491,7 +491,7 @@ class Calendario extends Component {
         options[arreglo].find(function (_aux) {
             if (_aux.value.toString() === value.toString())
                 auxArray.push(_aux)
-            else 
+            else
                 aux.push(_aux)
             return false
         })
@@ -562,11 +562,11 @@ class Calendario extends Component {
 
         item.parrillas.map((parrilla) => {
             aux.push({
-                    title: parrilla.titulo,
-                    start: parrilla.fecha,
-                    end: parrilla.fecha,
-                    evento: parrilla
-                } )
+                title: parrilla.titulo,
+                start: parrilla.fecha,
+                end: parrilla.fecha,
+                evento: parrilla
+            })
             return ''
         })
 
@@ -579,7 +579,7 @@ class Calendario extends Component {
 
     getNameFromUrl = url => {
         let aux = url.split('/');
-        if(aux.length){
+        if (aux.length) {
             return aux[aux.length - 1];
         }
         return 'imagen.jpg'
@@ -606,10 +606,10 @@ class Calendario extends Component {
             form.hora = aux[0].toString();
             form.minuto = aux[1].toString();
         }
-        
+
         form.fecha = new Date(moment(event.fecha))
 
-        if(event.imagen_file){
+        if (event.imagen_file) {
             form.adjuntos.image.files = [
                 {
                     id: event.id,
@@ -650,7 +650,7 @@ class Calendario extends Component {
             else auxHora = ''
         }
         return (
-            <div className = 'pb-2'>
+            <div className='pb-2'>
                 <OverlayTrigger overlay={
                     <Tooltip>
                         <span>
@@ -664,18 +664,18 @@ class Calendario extends Component {
                             </div>
                         </span>
                     </Tooltip>}>
-                    <div className="d-flex justify-content-center align-items-center position-relative" 
+                    <div className="d-flex justify-content-center align-items-center position-relative"
                         onClick={(e) => { e.preventDefault(); this.getParrillaAxios(eventInfo.event._def.extendedProps.evento.id) }}>
                         <span className={'btn btn-icon btn-sm ml-2 btn-light-' + aux}>
                             <i className={'line-height-0 socicon-' + aux}></i>
                         </span>
                         {
                             eventInfo.event._def.extendedProps.evento.uploaded === 1 ?
-                                <div className = 'circle-notificacion bg-success position-absolute'></div>
-                            :
+                                <div className='circle-notificacion bg-success position-absolute'></div>
+                                :
                                 eventInfo.event._def.extendedProps.evento.uploaded === 0 ?
-                                    <div className = 'circle-notificacion bg-danger position-absolute'></div>
-                                : ''
+                                    <div className='circle-notificacion bg-danger position-absolute'></div>
+                                    : ''
                         }
                     </div>
                 </OverlayTrigger>
@@ -707,14 +707,14 @@ class Calendario extends Component {
                     })
                 },
                 (error) => {
-                printResponseErrorAlert(error)
-            }
+                    printResponseErrorAlert(error)
+                }
             ).catch((error) => {
                 errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
                 console.log(error, 'error')
             })
     }
-    
+
     handleChange = (files, item) => {
         const { form } = this.state
         let aux = []
@@ -739,7 +739,7 @@ class Calendario extends Component {
     deleteContenido = (id) => {
         this.deleteContenidoAxios(id)
     }
-    
+
     render() {
 
         const { modal, title, form, formeditado, options, content, data, empresa, activeKeyModal, evento, post } = this.state
@@ -786,17 +786,16 @@ class Calendario extends Component {
                             <FullCalendar locale={esLocale} plugins={[dayGridPlugin, interactionPlugin, bootstrapPlugin]} eventContent={this.renderEventContent}
                                 initialView="dayGridMonth" firstDay={1} themeSystem='bootstrap' events={content} />
                         </div>
-
                     </Card.Body>
                 </Card>
                 <Modal size="xl" title={title} show={modal.form} handleClose={this.handleCloseForm}>
-                    <ParrillaContenidoForm form={form} formeditado={formeditado} title = { title }
+                    <ParrillaContenidoForm form={form} formeditado={formeditado} title={title}
                         options={options} onChange={this.onChange} onSubmit={this.onSumitParrilla}
                         onChangeModalTab={this.onChangeModalTab} activeKey={activeKeyModal}
-                        addComentario={this.addComentarioAxios} evento={evento} handleChange={this.handleChange} 
-                        deleteContenido={this.deleteContenido} handleChangeSubmit = {this.handleChangeSubmit} onClickDelete={this.onClickDelete} 
-                        onClickFacebookPost = { this.openModalFacebookPost } post = { post }
-                        onChangeOptions = { this.onChangeOptions } deleteOption = { this.deleteOption } />
+                        addComentario={this.addComentarioAxios} evento={evento} handleChange={this.handleChange}
+                        deleteContenido={this.deleteContenido} handleChangeSubmit={this.handleChangeSubmit} onClickDelete={this.onClickDelete}
+                        onClickFacebookPost={this.openModalFacebookPost} post={post}
+                        onChangeOptions={this.onChangeOptions} deleteOption={this.deleteOption} />
                 </Modal>
             </Layout>
         );
@@ -805,4 +804,4 @@ class Calendario extends Component {
 
 const mapStateToProps = state => { return { authUser: state.authUser } }
 const mapDispatchToProps = dispatch => ({})
-export default connect(mapStateToProps, mapDispatchToProps)(Calendario)
+export default connect(mapStateToProps, mapDispatchToProps)(ParrillasContenido)
