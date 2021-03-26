@@ -202,7 +202,7 @@ class Facturacion extends Component {
                     btnclass: 'danger',
                     iconclass: "flaticon-circle",
                     action: 'cancelarFactura',
-                    tooltip: { id: 'delete-Adjunto', text: 'Eliminar', type: 'error' },
+                    tooltip: { id: 'delete-Adjunto', text: 'Cancelar', type: 'error' },
                 })
         }
         if (factura.cancelada) {
