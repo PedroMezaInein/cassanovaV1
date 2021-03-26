@@ -74,6 +74,7 @@ class ParrillaContenidoForm extends Component {
     }
 
     isActivePostingButton = evento => {
+        return true
         if (evento)
             if (evento.red)
                 if (evento.red.nombre === 'FACEBOOK')
@@ -276,7 +277,7 @@ class ParrillaContenidoForm extends Component {
                                                     {form.adjuntos.image.placeholder}
                                                 </div>
                                                 <ItemSlider multiple={true} items={form.adjuntos.image.files}
-                                                    item='image' handleChange={handleChange} />
+                                                    item='image' handleChange={handleChange} accept = 'image/*'/>
                                             </div>
                                         </div>
                                     </div>
