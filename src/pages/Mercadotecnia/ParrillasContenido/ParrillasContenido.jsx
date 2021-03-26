@@ -104,6 +104,8 @@ class ParrillasContenido extends Component {
                 const { parrilla, post } = response.data
                 const { form, modal } = this.state
 
+                console.log(parrilla, 'PARRILLA')
+
                 modal.form = true
 
                 form.copy = parrilla.copy
@@ -140,14 +142,11 @@ class ParrillasContenido extends Component {
                     }
                 }
 
-                if (parrilla.imagen_file) {
-                    form.adjuntos.image.files = [
-                        {
-                            id: parrilla.id,
-                            name: this.getNameFromUrl(parrilla.imagen_file),
-                            url: parrilla.imagen_file
-                        }
-                    ]
+                if (parrilla.imagenes) {
+                    form.adjuntos.image.files = [];
+                    parrilla.imagenes.forEach(element => {
+                        form.adjuntos.image.files.push(element)
+                    });
                 }
 
                 this.setState({
@@ -265,23 +264,18 @@ class ParrillasContenido extends Component {
             return false
         })
         if (form.adjuntos.image.value !== '') {
-            form.adjuntos.image.files.map((file, index) => {
-                data.append(`files_name_image[]`, file.name)
-                data.append(`files_image[]`, file.file)
-                return ''
-            })
+            form.adjuntos.image.files.forEach(element => {
+                data.append(`files_image[]`, element.file)
+            });
         }
-        await axios.post(URL_DEV + 'mercadotecnia/parrilla-contenido', data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}v2/mercadotecnia/parrilla-contenido`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert('Parrilla guardado con éxito');
                 const { modal } = this.state
                 modal.form = false
                 this.setState({ ...this.state, modal })
                 this.getContentAxios()
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -415,7 +409,7 @@ class ParrillasContenido extends Component {
         waitAlert()
         const { evento } = this.state
         const { access_token } = this.props.authUser
-        await axios.put(`${URL_DEV}mercadotecnia/parrilla-contenido/${evento.id}/facebook`, {}, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
+        await axios.put(`${URL_DEV}v2/mercadotecnia/parrilla-contenido/${evento.id}/facebook`, {}, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
                 const { evento } = response.data
                 doneAlert('Contenido publicado con éxito.')
