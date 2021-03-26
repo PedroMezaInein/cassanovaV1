@@ -558,11 +558,11 @@ export const INGRESOS_COLUMNS = [
     {
         Header: 'Estatus',
         accessor: 'estatusCompra'
-    },
+    }/* ,
     {
         Header: 'Adjuntos',
         accessor: 'adjuntos',
-    }
+    } */
 ]
 
 export const EGRESOS_COLUMNS = [

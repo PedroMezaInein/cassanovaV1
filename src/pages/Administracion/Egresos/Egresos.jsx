@@ -517,16 +517,6 @@ class egresos extends Component {
         deleteAlert('¿SEGURO DESEAS BORRAR EL ADJUNTO?', adjunto.name, () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
     }
 
-    openFacturaExtranjera = egreso => {
-        const { formFacturaExtranjera } = this.state
-        formFacturaExtranjera.adjuntos.factura.files = egreso.facturas_pdf
-        this.setState({
-            ...this.state,
-            modalFacturaExtranjera: true,
-            egreso: egreso,
-            formFacturaExtranjera
-        })
-    }
     handleCloseFacturaExtranjera = () => {
         const { modalFacturaExtranjera } = this.state
         this.setState({
@@ -580,7 +570,6 @@ class egresos extends Component {
     }
 
     revertForm = (egreso) => {
-        console.log('EGRESO', egreso)
         const { form } = this.state
         form.adjuntos.pago.value = null
         form.adjuntos.presupuesto.value = null
@@ -598,6 +587,23 @@ class egresos extends Component {
             form.adjuntos.facturas_pdf.files.push(element);
         });
         return form
+    }
+
+    openFacturaExtranjera = async(egreso) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}v2/administracion/egresos/adjuntos/${egreso.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                let { form } = this.state
+                const { egreso } = response.data
+                form = this.revertForm()
+                Swal.close()
+                this.setState({ ...this.state, form, modalFacturaExtranjera: true, egreso })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
     }
 
     openModalSee = async(egreso) => {
