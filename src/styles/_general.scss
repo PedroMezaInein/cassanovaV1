@@ -1933,18 +1933,10 @@ span.font-weight-bolder.text-hover-error:hover{
         background-color: #f3f6f9f5;
     }
     tr:last-child{
-        td:not(:first-child):not(:nth-last-child(-n+2)){
+        td:not(:first-child){
             border-bottom: 2px solid #00cccc;
         }
     }
-    tr:last-child{
-        td:not(:first-child):not(:nth-last-child(-n+2)){
-            border-bottom: 2px solid #00cccc;
-        }
-    }
-    // td:nth-child(-n+4):nth-child(n+2) {
-    //     border-bottom: 2px solid #00cccc;
-    // }
 }
 .text-red{
     color: #C62828;

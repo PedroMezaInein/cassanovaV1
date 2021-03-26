@@ -55,6 +55,11 @@ class egresos extends Component {
                     value: '',
                     placeholder: 'Presupuesto',
                     files: []
+                },
+                facturas_pdf: {
+                    value: '',
+                    placeholder: 'Factura extranjera',
+                    files: []
                 }
             }
         },
@@ -119,6 +124,11 @@ class egresos extends Component {
                             value: '',
                             placeholder: 'Presupuesto',
                             files: []
+                        },
+                        facturas_pdf: {
+                            value: '',
+                            placeholder: 'Factura extranjera',
+                            files: []
                         }
                     }
                     break;
@@ -156,8 +166,8 @@ class egresos extends Component {
                 }
             )
         }
-        form['adjuntos'][item].value = files
-        form['adjuntos'][item].files = aux
+        form.adjuntos[item].value = files
+        form.adjuntos[item].files = aux
         this.setState({...this.state,form})
         createAlertSA2WithActionOnClose(
             '¿DESEAS AGREGAR EL ARCHIVO?',
@@ -502,33 +512,6 @@ class egresos extends Component {
             egreso: egreso
         })
     }
-    openModalFacturas = egreso => {
-        let { porcentaje, form } = this.state
-        form = this.clearForm()
-        form.estatusCompra = egreso.estatus_compra.id
-        porcentaje = 0
-        egreso.facturas.map((factura) => {
-            porcentaje = porcentaje + factura.total
-            return false
-        })
-        porcentaje = porcentaje * 100 / (egreso.total - egreso.comision)
-        porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
-        this.setState({
-            ...this.state,
-            modalFacturas: true,
-            egreso: egreso,
-            facturas: egreso.facturas,
-            porcentaje,
-            form
-        })
-    }
-
-    openModalAdjuntos = egreso => {
-        const { form } = this.state
-        form.adjuntos.presupuesto.files = egreso.presupuestos
-        form.adjuntos.pago.files = egreso.pagos
-        this.setState({ ...this.state, modalAdjuntos: true, egreso: egreso, form })
-    }
 
     openModalDeleteAdjuntos = adjunto => {
         deleteAlert('¿SEGURO DESEAS BORRAR EL ADJUNTO?', adjunto.name, () => { waitAlert(); this.deleteAdjuntoAxios(adjunto.id) })
@@ -553,13 +536,6 @@ class egresos extends Component {
         })
     }
 
-    openModalSee = egreso => {
-        this.setState({
-            ...this.state,
-            modalSee: true,
-            egreso: egreso
-        })
-    }
     handleCloseSee = () => {
         this.setState({
             ...this.state,
@@ -591,6 +567,7 @@ class egresos extends Component {
         this.setState({
             ...this.state,
             modalAdjuntos: false,
+            modalFacturaExtranjera: false,
             form: this.clearForm(),
             adjuntos: [],
             data,
@@ -601,6 +578,80 @@ class egresos extends Component {
         waitAlert()
         this.deleteFacturaAxios(id)
     }
+
+    revertForm = (egreso) => {
+        console.log('EGRESO', egreso)
+        const { form } = this.state
+        form.adjuntos.pago.value = null
+        form.adjuntos.presupuesto.value = null
+        form.adjuntos.facturas_pdf.value = null
+        form.adjuntos.pago.files = []
+        form.adjuntos.presupuesto.files = []
+        form.adjuntos.facturas_pdf.files = []
+        egreso.pagos.forEach(element => {
+            form.adjuntos.pago.files.push(element);
+        });
+        egreso.presupuestos.forEach(element => {
+            form.adjuntos.presupuesto.files.push(element);
+        });
+        egreso.facturas_pdf.forEach(element => {
+            form.adjuntos.facturas_pdf.files.push(element);
+        });
+        return form
+    }
+
+    openModalSee = async(egreso) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}v2/administracion/egresos/${egreso.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { egreso } = response.data
+                Swal.close()
+                this.setState({ ...this.state, modalSee: true, egreso })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    openModalAdjuntos = async(egreso) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}v2/administracion/egresos/adjuntos/${egreso.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                let { form } = this.state
+                const { egreso } = response.data
+                form = this.revertForm(egreso)
+                Swal.close()
+                this.setState({ ...this.state, form, modalAdjuntos: true, egreso })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    openModalFacturas = async(egreso) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}v2/administracion/egresos/facturas/${egreso.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                let { form } = this.state
+                const { egreso } = response.data
+                form = this.clearForm()
+                if(egreso)
+                    if(egreso.estatus_compra)
+                        form.estatusCompra = egreso.estatus_compra.id
+                Swal.close()
+                this.setState({ ...this.state, form, modalFacturas: true, egreso, facturas: egreso.facturas })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     async addProveedorAxios(obj) {
         const { access_token } = this.props.authUser
         const data = new FormData();
@@ -684,7 +735,8 @@ class egresos extends Component {
             console.log(error, 'error')
         })
     }
-    async sendFacturaAxios() {
+
+    sendFacturaAxios = async() => {
         const { access_token } = this.props.authUser
         const { form, egreso } = this.state
         const data = new FormData();
@@ -714,69 +766,44 @@ class egresos extends Component {
             return false
         })
         data.append('id', egreso.id)
-        await axios.post(URL_DEV + 'egresos/factura', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}v2/administracion/egresos/${egreso.id}/factura`, data, { headers: {'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                let { form } = this.state
                 const { egreso } = response.data
-                let { porcentaje, data, form } = this.state
                 form = this.clearForm()
-                form.estatusCompra = egreso.estatus_compra.id
-                porcentaje = 0
-                egreso.facturas.map((factura) => {
-                    porcentaje = porcentaje + factura.total
-                    return false
-                })
-                porcentaje = porcentaje * 100 / (egreso.total - egreso.comision)
-                porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
+                if(egreso)
+                    if(egreso.estatus_compra)
+                        form.estatusCompra = egreso.estatus_compra.id
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Las facturas fueron actualizadas con éxito.')
+                this.setState({ ...this.state, form, modalFacturas: true, egreso, facturas: egreso.facturas })
                 this.getEgresosAxios()
-                this.setState({
-                    ...this.state,
-                    form,
-                    egreso: egreso,
-                    facturas: egreso.facturas,
-                    porcentaje,
-                    data
-                })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-            }, (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
-    async deleteFacturaAxios(id) {
+
+    deleteFacturaAxios = async(id) => {
         const { access_token } = this.props.authUser
         const { egreso } = this.state
-        await axios.delete(URL_DEV + 'egresos/' + egreso.id + '/facturas/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.delete(`${URL_DEV}v2/administracion/egresos/${egreso.id}/facturas/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                let { form } = this.state
                 const { egreso } = response.data
-                let { porcentaje, data } = this.state
-                porcentaje = 0
-                egreso.facturas.map((factura) => {
-                    porcentaje = porcentaje + factura.total
-                    return false
-                })
-                porcentaje = porcentaje * 100 / (egreso.total - egreso.comision)
-                porcentaje = parseFloat(Math.round(porcentaje * 100) / 100).toFixed(2);
-                this.getEgresosAxios()
-                this.setState({
-                    ...this.state,
-                    form: this.clearForm(),
-                    egreso: egreso,
-                    facturas: egreso.facturas,
-                    data,
-                    porcentaje
-                })
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-            }, (error) => {
-                printResponseErrorAlert(error)
-            }
+                form = this.clearForm()
+                if(egreso)
+                    if(egreso.estatus_compra)
+                        form.estatusCompra = egreso.estatus_compra.id
+                Swal.close()
+                this.setState({ ...this.state, form, egreso, facturas: egreso.facturas })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
+
     async exportEgresosAxios() {
         let headers = []
         let documento = ''
@@ -826,38 +853,38 @@ class egresos extends Component {
         })
         data.append('tipo', item)
         data.append('id', egreso.id)
-        await axios.post(`${URL_DEV}egresos/adjuntos`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}v2/administracion/egresos/${egreso.id}/adjuntos`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                let { form } = this.state
                 const { egreso } = response.data
-                const { form } = this.state
-                form.adjuntos.pago.files = egreso.pagos
-                form.adjuntos.presupuesto.files = egreso.presupuestos
+                form = this.revertForm(egreso)
                 this.getEgresosAxios()
                 this.setState({ ...this.state, form })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Archivo adjuntado con éxito.')
-            }, (error) => {
-                printResponseErrorAlert(error)
+            }, (error) => { 
+                let { form } = this.state
+                form = this.revertForm(egreso); 
+                this.setState({...this.state,form})
+                printResponseErrorAlert(error) 
             }
         ).catch((error) => {
+            this.revertForm();
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
 
-    async deleteAdjuntoAxios(id) {
+    deleteAdjuntoAxios = async(id) => {
         const { access_token } = this.props.authUser
         const { egreso } = this.state
-        await axios.delete(URL_DEV + 'egresos/' + egreso.id + '/adjuntos/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.delete(`${URL_DEV}v2/administracion/egresos/${egreso.id}/adjuntos/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                let { form } = this.state
                 const { egreso } = response.data
-                const { form } = this.state
-                if(egreso.presupuestos)
-                    form.adjuntos.presupuesto.files = egreso.presupuestos
-                if(egreso.pagos)
-                    form.adjuntos.pago.files = egreso.pagos
-                this.setState({...this.state, form })
+                form = this.revertForm(egreso)
                 this.getEgresosAxios()
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste el adjunto con éxito.')
+                this.setState({ ...this.state, form })
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Archivo adjuntado con éxito.')
             }, (error) => {
                 printResponseErrorAlert(error)
             }
@@ -1014,21 +1041,15 @@ class egresos extends Component {
                 <Modal size="lg" title="Egreso" show={modalSee} handleClose={this.handleCloseSee} >
                     <EgresosCard egreso={egreso} />
                 </Modal>
-                <Modal size="lg" title="Factura extranjera" show={modalFacturaExtranjera} handleClose={this.handleCloseFacturaExtranjera} >
-                    <FacturaExtranjera form={formFacturaExtranjera} onChangeAdjunto = { this.handleChangeFacturaExtranjera } deleteFile = { this.openModalDeleteAdjuntos }/>
+                <Modal size="lg" title="Factura extranjera" show={modalFacturaExtranjera} handleClose={this.handleCloseAdjuntos} >
+                    <FacturaExtranjera form={form} onChangeAdjunto = { this.handleChange } deleteFile = { this.openModalDeleteAdjuntos }/>
                 </Modal>
             </Layout>
         )
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        authUser: state.authUser
-    }
-}
-
-const mapDispatchToProps = dispatch => ({
-})
+const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapDispatchToProps = dispatch => ({ })
 
 export default connect(mapStateToProps, mapDispatchToProps)(egresos);

@@ -322,48 +322,7 @@ class EgresosForm extends Component {
             case 'edit':
                 if (state) {
                     if (state.egreso) {
-                        const { egreso } = state
-                        const { form, options } = this.state
-                        if (egreso.empresa) {
-                            form.empresa = egreso.empresa.id.toString()
-                            options['cuentas'] = setOptions(egreso.empresa.cuentas, 'nombre', 'id')
-                            form.cuenta = egreso.cuenta.id.toString()
-                        }
-                        if (egreso.subarea) {
-                            form.area = egreso.subarea.area.id.toString()
-                            options['subareas'] = setOptions(egreso.subarea.area.subareas, 'nombre', 'id')
-                            form.subarea = egreso.subarea.id.toString()
-                        }
-                        form.tipoPago = egreso.tipo_pago ? egreso.tipo_pago.id : 0
-                        form.tipoImpuesto = egreso.tipo_impuesto ? egreso.tipo_impuesto.id : 0
-                        form.estatusCompra = egreso.estatus_compra ? egreso.estatus_compra.id : 0
-                        form.total = egreso.monto
-                        form.fecha = new Date(egreso.created_at)
-                        form.descripcion = egreso.descripcion
-                        form.comision = egreso.comision
-                        form.factura = egreso.factura ? 'Con factura' : 'Sin factura'
-                        if (egreso.proveedor) {
-                            form.proveedor = egreso.proveedor.id.toString()
-                            form.rfc = egreso.proveedor.rfc
-                        }
-                        if (egreso.pago) {
-                            form.adjuntos.pago.files = [{
-                                name: egreso.pago.name, url: egreso.pago.url
-                            }]
-                        }
-                        if (egreso.presupuesto) {
-                            form.adjuntos.presupuesto.files = [{
-                                name: egreso.presupuesto.name, url: egreso.presupuesto.url
-                            }]
-                        }
-                        this.setState({
-                            ...this.state,
-                            title: 'Editar egreso',
-                            form,
-                            options,
-                            egreso: egreso,
-                            formeditado: 1
-                        })
+                        this.getEgreso(state.egreso)
                     }
                     else
                         history.push('/administracion/egresos')
@@ -413,6 +372,48 @@ class EgresosForm extends Component {
             ...this.state,
             options
         })
+    }
+
+    getEgreso = async( egreso ) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}v2/administracion/egresos/${egreso.id}`, { headers: { Authorization: `Bearer ${access_token}`} }).then(
+            (response) => {
+                const { egreso } = response.data
+                Swal.close()
+                const { form, options } = this.state
+                if (egreso.empresa) {
+                    form.empresa = egreso.empresa.id.toString()
+                    options['cuentas'] = setOptions(egreso.empresa.cuentas, 'nombre', 'id')
+                    form.cuenta = egreso.cuenta.id.toString()
+                }
+                if (egreso.subarea) {
+                    form.area = egreso.subarea.area.id.toString()
+                    options['subareas'] = setOptions(egreso.subarea.area.subareas, 'nombre', 'id')
+                    form.subarea = egreso.subarea.id.toString()
+                }
+                form.tipoPago = egreso.tipo_pago ? egreso.tipo_pago.id : 0
+                form.tipoImpuesto = egreso.tipo_impuesto ? egreso.tipo_impuesto.id : 0
+                form.estatusCompra = egreso.estatus_compra ? egreso.estatus_compra.id : 0
+                form.total = egreso.monto
+                form.fecha = new Date(egreso.created_at)
+                form.descripcion = egreso.descripcion
+                form.comision = egreso.comision
+                form.factura = egreso.factura ? 'Con factura' : 'Sin factura'
+                if (egreso.proveedor) {
+                    form.proveedor = egreso.proveedor.id.toString()
+                    form.rfc = egreso.proveedor.rfc
+                }
+                this.setState({
+                    ...this.state,
+                    title: 'Editar egreso',
+                    form,
+                    options,
+                    egreso: egreso,
+                    formeditado: 1
+                })
+            }
+        )
     }
 
     async getEgresosAxios() {
