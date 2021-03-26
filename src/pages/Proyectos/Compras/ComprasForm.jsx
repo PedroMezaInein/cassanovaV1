@@ -465,16 +465,6 @@ class ComprasForm extends Component {
                         form.contrato = compra.contrato.id.toString()
                     }
                 }
-                if (compra.pago) {
-                    form.adjuntos.pago.files = [{
-                        name: compra.pago.name, url: compra.pago.url
-                    }]
-                }
-                if (compra.presupuesto) {
-                    form.adjuntos.presupuesto.files = [{
-                        name: compra.presupuesto.name, url: compra.presupuesto.url
-                    }]
-                }
                 this.setState({
                     ...this.state,
                     title: 'Editar compra',
