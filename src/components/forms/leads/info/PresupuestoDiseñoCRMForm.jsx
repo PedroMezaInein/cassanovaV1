@@ -69,6 +69,14 @@ class PresupuestoDiseñoCRMForm extends Component {
         });
         onChangeCheckboxes(aux, 'planos')
     }
+
+    updateTotal = e => {
+        const { name, value } = e.target
+        const { onChange } = this.props
+        let re = new RegExp(",", "g");
+        let aux = value.toString().replace(re, '')
+        onChange({ target: { value: aux, name: 'total' } })
+    }
     render() {
         const { options, formDiseño, onChange, onSubmit, submitPDF, onChangeCheckboxes, checkButtonSemanas, formeditado, onChangeConceptos, onClickTab, activeKey, defaultKey, onChangePartidas, ...props } = this.props
         const { date } = this.state
@@ -197,7 +205,7 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                     value={formDiseño.total}
                                                     iconclass={"fas fa-dollar-sign"}
                                                     thousandseparator={true}
-                                                    disabled={true}
+                                                    onChange={this.updateTotal}
                                                     name="total"
                                                 />
                                             </div>
