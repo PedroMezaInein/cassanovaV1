@@ -41,6 +41,7 @@ class CalendarioProyectos extends Component {
         await axios.get(`${URL_DEV}v2/proyectos/calendario-proyectos?mes=${mes}&anio=${año}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { proyectos } = response.data
+            
                 let dias = this.diasEnUnMes(mes, año)
                 this.setState({
                     ...this.state,
@@ -139,55 +140,78 @@ class CalendarioProyectos extends Component {
     }
 
     printTd = (proyecto, index, diaActual, fechaInicio, fechaFin) => {
-        let duracion = fechaFin.diff(fechaInicio, 'days') + 1;
-        let diaInicio = fechaInicio.date()
-        let diaFin = fechaFin.date()
-
-        // return (
-        //     (diaActual + 1 >= diaInicio && diaActual + 1 <= diaFin) ?
-        //         (diaActual + 1 === diaInicio) ?
-        //             <td key={diaActual} colSpan={duracion} className="text-center position-relative p-0">
-        //                 {
-        //                     <OverlayTrigger key={diaActual} overlay={
-        //                         <Tooltip>
-        //                             <span>
-        //                                 <span className="mt-3 font-weight-bolder">
-        //                                     {proyecto.nombre}
-        //                                 </span>
-        //                             </span>
-        //                         </Tooltip>}>
-        //                         <div className="text-truncate w-100 position-absolute text-white px-1 top-20" style={{ backgroundColor: '#20ACE9'}}>
-        //                             <span className="font-weight-bold">
-        //                                 {proyecto.nombre}
-        //                             </span>
-        //                         </div>
-        //                     </OverlayTrigger>
-        //                 }
-        //             </td>
-        //             : ""
-        //         :
-        //         <td></td>
-        // )
         const { mes, año } = this.state
+        fechaInicio.startOf('day')
+        fechaFin.startOf('day') 
         let fecha = new moment([año, meses.indexOf(mes), diaActual + 1])
-        let diff1 = fechaInicio.diff(fecha, 'minutes')
-        let diff2 = fecha.diff(fechaFin, 'minutes')
-        // console.log(fechaInicio, fechaFin)
-        console.log(diff1, diff2)
-        
-        if(diff1 >= 0 || diff2 < 0){
-            return(
-                <td>
-                    SI
-                </td>
-            )
+        let duracion = fechaFin.diff(fechaInicio, 'days') + 1;
+        let esDiaActualInicioFecha =  (diaActual+1) === parseInt(fechaInicio.format('D'))
+        let esMesActualInicioFecha =  fechaInicio.format('M') == fecha.format('M') 
+        let esAnioActualInicioFecha =  fechaInicio.format('Y') == fecha.format('Y')
+
+        if((diaActual+1)===1 ||  (esDiaActualInicioFecha && esMesActualInicioFecha && esAnioActualInicioFecha) )
+        {
+            
+            
+            let diasMesActual = fecha.daysInMonth()
+            if((diaActual+1)===1 ){
+                let esDia1DentroFechas = fecha.toDate() >= fechaInicio.toDate() && fecha.toDate() <= fechaFin.toDate()
+                if(esDia1DentroFechas)
+                {
+                    
+                    let duracionDia1HastaFechaFin = fechaFin.diff(fecha, 'days') + 1 
+                    if(duracionDia1HastaFechaFin<diasMesActual){
+                        return( 
+                        <td colSpan={duracionDia1HastaFechaFin}  style={{backgroundColor:'#20ACE9', borderColor:"#20ACE9"}}>
+                        </td>
+                        )
+                    }
+                    else{
+                        return(  
+                        <td colSpan={diasMesActual} style={{backgroundColor:'#20ACE9', borderColor:"#20ACE9"}}>
+                        </td>
+                        )
+                    }
+                }
+                else
+                {
+                    <td>  
+                    </td>
+                } 
+            }
+            else {
+                let duracionDiaInicioHastaFechaFin = fechaFin.diff(fechaInicio, 'days') + 1
+                let diasHastaFinMes = diasMesActual- diaActual +1
+                if(diasHastaFinMes>duracionDiaInicioHastaFechaFin)
+                {
+                    return(  
+                        <td colSpan={duracionDiaInicioHastaFechaFin} style={{backgroundColor:'#20ACE9', borderColor:"#20ACE9"}}>
+                        </td>
+                        )
+                }
+                else
+                {
+                    return(  
+                    <td colSpan={diasHastaFinMes} style={{backgroundColor:'#20ACE9', borderColor:"#20ACE9"}}>
+                    </td>
+                    )
+                }
+            }
         }else{
-            return(
-                <td>
-                    -
-                </td>
-            )
+            if(fecha.toDate() >= fechaInicio.toDate() && fecha.toDate() <= fechaFin.toDate()){
+                return(<></>)
+            }else{
+                return(
+                    <td>  
+                    </td>
+                )
+            }
         }
+        return(
+            <td>  
+            </td>
+        )
+        
     }
 
     render() {
@@ -247,7 +271,7 @@ class CalendarioProyectos extends Component {
                             </div>
                         </div>
                         <div className="table-responsive-xl mt-5">
-                            <table id="parrilla" className="table table-responsive table-bordered table-vertical-center mb-0 border-0">
+                            <table id="parrilla" className="table table-responsive table-bordered table-vertical-center border-0">
                                 <thead className="text-center">
                                     <tr>
                                         <th className="font-weight-bolder border-0" style={{minWidth:'200px'}}>PROYECTO</th>
@@ -268,7 +292,7 @@ class CalendarioProyectos extends Component {
                                             </tr>
                                         :
                                             proyectos.map((proyecto, index) => {
-                                                console.log(proyecto)
+                                               // console.log(proyecto)
                                                 let fechaInicio = moment(proyecto.fecha_inicio);
                                                 let fechaFin = moment(proyecto.fecha_fin);
                                                 return(
@@ -300,3 +324,11 @@ const mapStateToProps = (state) => { return { authUser: state.authUser } }
 const mapDispatchToProps = (dispatch) => ({})
 
 export default connect(mapStateToProps, mapDispatchToProps)(CalendarioProyectos)
+
+
+                // <td className='text-center position-relative p-0 text-hover'>
+                //     <div className="text-truncate w-100 position-absolute text-white px-1 top-20" style={{backgroundColor:'#20ACE9', borderColor:'#20ACE9', borderRadius: '4px'}}>
+                //         <span className="font-weight-bold letter-spacing-0-4">s
+                //         </span>
+                //     </div>
+                // </td>
