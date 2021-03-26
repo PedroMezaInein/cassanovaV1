@@ -31,15 +31,17 @@ class CalendarioProyectos extends Component {
             const { modulo: { url } } = element
             return pathname === url
         });
-        this.getContentCalendarAxios()
+        
+        const { mes, año } = this.state
+        this.getContentCalendarAxios(mes, año)
     }
 
-    getContentCalendarAxios = async () => {
+    getContentCalendarAxios = async (mes, año) => {
         const { access_token } = this.props.authUser
-        const { mes, año } = this.state
         await axios.get(`${URL_DEV}v2/proyectos/calendario-proyectos?mes=${mes}&anio=${año}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { proyectos } = response.data
+            
                 let dias = this.diasEnUnMes(mes, año)
                 this.setState({
                     ...this.state,
@@ -60,11 +62,25 @@ class CalendarioProyectos extends Component {
         })
     }
 
-    diasEnUnMes(mes, año) { return new Date(año, meses.indexOf(mes) + 1, 0).getDate(); }
+    diasEnUnMes(mes, año) { return new Date(año, meses.indexOf(mes) + 1, 0).getDate();  }
 
-    updateMes = value => { this.setState({ ...this.state, mes: value }) }
+    updateMes = value => {
+        const { año } = this.state
+        this.setState({
+            ...this.state,
+            mes: value
+        })
+        this.getContentCalendarAxios(value, año)
+    }
 
-    updateAño = value => { this.setState({ ...this.state, año: value }) }
+    updateAño = value => {
+        const { mes } = this.state
+        this.setState({
+            ...this.state,
+            año: value
+        })
+        this.getContentCalendarAxios(mes, value)
+    }
 
     isActiveBackButton = () => {
         const { mes, año } = this.state
@@ -103,56 +119,99 @@ class CalendarioProyectos extends Component {
     changeMonth = (direction) => {
         const { mes, año } = this.state
         let actualMonth = meses.indexOf(mes)
+        let newMonth = meses[actualMonth]
+        let newYear = año
         if (direction === 'back') {
             if (actualMonth === 0) {
-                this.setState({
-                    ...this.state,
-                    mes: meses[11],
-                    año: (año - 1).toString()
-                })
+                newMonth = meses[11]
+                newYear = (año - 1).toString() 
             } else {
-                this.setState({
-                    ...this.state,
-                    mes: meses[actualMonth - 1],
-                })
+                newMonth = meses[actualMonth - 1]
             }
         } else {
             if (actualMonth === 11) {
-                this.setState({
-                    ...this.state,
-                    mes: meses[0],
-                    año: (año + 1).toString()
-                })
+                newMonth = meses[0]
+                newYear = (parseInt(año) + 1).toString() 
             } else {
-                this.setState({
-                    ...this.state,
-                    mes: meses[actualMonth + 1],
-                })
+                newMonth = meses[actualMonth + 1]
             }
         }
+        this.getContentCalendarAxios(newMonth, newYear)
     }
 
-    printTd = (proyecto, conteo, diaActual, fechaInicio, fechaFin) => {
-        /* const { mes, año } = this.state
-        let fechaIin = new moment([año, meses.indexOf(mes), diaActual + 1])
-        console.log(`========== ${diaActual + 1} ==========`)
-        let diff1 = fechaInicio.diff(fecha, 'minutes')
-        let diff2 = fecha.diff(fechaFin, 'minutes')
-        console.log(fechaInicio, fechaFin)
-        console.log(diff1, diff2)
-        if(diff1 >= 0 || diff2 < 0){
-            return(
-                <td>
-                    SI
-                </td>
-            )
+    printTd = (proyecto, index, diaActual, fechaInicio, fechaFin) => {
+        const { mes, año } = this.state
+        fechaInicio.startOf('day')
+        fechaFin.startOf('day') 
+        let fecha = new moment([año, meses.indexOf(mes), diaActual + 1])
+        let duracion = fechaFin.diff(fechaInicio, 'days') + 1;
+        let esDiaActualInicioFecha =  (diaActual+1) === parseInt(fechaInicio.format('D'))
+        let esMesActualInicioFecha =  fechaInicio.format('M') == fecha.format('M') 
+        let esAnioActualInicioFecha =  fechaInicio.format('Y') == fecha.format('Y')
+
+        if((diaActual+1)===1 ||  (esDiaActualInicioFecha && esMesActualInicioFecha && esAnioActualInicioFecha) )
+        {
+            
+            
+            let diasMesActual = fecha.daysInMonth()
+            if((diaActual+1)===1 ){
+                let esDia1DentroFechas = fecha.toDate() >= fechaInicio.toDate() && fecha.toDate() <= fechaFin.toDate()
+                if(esDia1DentroFechas)
+                {
+                    
+                    let duracionDia1HastaFechaFin = fechaFin.diff(fecha, 'days') + 1 
+                    if(duracionDia1HastaFechaFin<diasMesActual){
+                        return( 
+                        <td colSpan={duracionDia1HastaFechaFin}  style={{backgroundColor:'#20ACE9', borderColor:"#20ACE9"}}>
+                        </td>
+                        )
+                    }
+                    else{
+                        return(  
+                        <td colSpan={diasMesActual} style={{backgroundColor:'#20ACE9', borderColor:"#20ACE9"}}>
+                        </td>
+                        )
+                    }
+                }
+                else
+                {
+                    <td>  
+                    </td>
+                } 
+            }
+            else {
+                let duracionDiaInicioHastaFechaFin = fechaFin.diff(fechaInicio, 'days') + 1
+                let diasHastaFinMes = diasMesActual- diaActual +1
+                if(diasHastaFinMes>duracionDiaInicioHastaFechaFin)
+                {
+                    return(  
+                        <td colSpan={duracionDiaInicioHastaFechaFin} style={{backgroundColor:'#20ACE9', borderColor:"#20ACE9"}}>
+                        </td>
+                        )
+                }
+                else
+                {
+                    return(  
+                    <td colSpan={diasHastaFinMes} style={{backgroundColor:'#20ACE9', borderColor:"#20ACE9"}}>
+                    </td>
+                    )
+                }
+            }
         }else{
-            return(
-                <td>
-                    -
-                </td>
-            )
-        } */
+            if(fecha.toDate() >= fechaInicio.toDate() && fecha.toDate() <= fechaFin.toDate()){
+                return(<></>)
+            }else{
+                return(
+                    <td>  
+                    </td>
+                )
+            }
+        }
+        return(
+            <td>  
+            </td>
+        )
+        
     }
 
     render() {
@@ -198,7 +257,7 @@ class CalendarioProyectos extends Component {
                                         }>
                                         <i className="fa fa-chevron-left icon-xs" />
                                     </span>
-                                    <span className={`btn btn-icon btn-xs btn-light-primary mr-2 my-1 ${this.isActiveForwardButton() ? 'enabled' : 'disabled'}`}
+                                    <span className={`btn btn-icon btn-xs btn-light-primary my-1 ${this.isActiveForwardButton() ? 'enabled' : 'disabled'}`}
                                         onClick={
                                             (e) => {
                                                 e.preventDefault();
@@ -212,10 +271,10 @@ class CalendarioProyectos extends Component {
                             </div>
                         </div>
                         <div className="table-responsive-xl mt-5">
-                            <table id="parrilla" className="table table-responsive table-bordered table-vertical-center  border-0">
+                            <table id="parrilla" className="table table-responsive table-bordered table-vertical-center border-0">
                                 <thead className="text-center">
                                     <tr>
-                                        <th className="font-weight-bolder border-0">PROYECTO</th>
+                                        <th className="font-weight-bolder border-0" style={{minWidth:'200px'}}>PROYECTO</th>
                                         {
                                             [...Array(this.diasEnUnMes(mes, año))].map((element, key) => {
                                                 return (<th className="border-top-0" key={key}>{key <= 8 ? "0" + (key + 1) : key + 1}</th>)
@@ -225,83 +284,31 @@ class CalendarioProyectos extends Component {
                                 </thead>
                                 <tbody>
                                     {
-                                        proyectos.map((proyecto, index) => {
-                                            let fechaInicio = moment(proyecto.fecha_inicio);
-                                            let fechaFin = moment(proyecto.fecha_fin);
-                                            let duracion = fechaFin.diff(fechaInicio, 'days') + 1;
-                                            let diaInicio = fechaInicio.date()
-                                            let diaFin = fechaFin.date()
-                                            return(
-                                                <tr key = { index } className = 'h-30px'>
-                                                    <td className="text-center font-weight-bolder">
-                                                        {proyecto.nombre}
-                                                    </td>
-                                                    {
-                                                        [...Array(dias)].map((element, diaActual) => {
-                                                            return(<>{this.printTd(proyecto, index, diaActual, fechaInicio, fechaFin)}</>)
-                                                        })
-                                                    }
-                                                </tr>
-                                            )
-                                        })
+                                        proyectos.length===0?
+                                            <tr>
+                                                <td colSpan={this.diasEnUnMes(mes, año)+1} className="text-center font-weight-bolder font-size-h6 py-6">
+                                                    NO HAY PROYECTOS
+                                                </td>
+                                            </tr>
+                                        :
+                                            proyectos.map((proyecto, index) => {
+                                               // console.log(proyecto)
+                                                let fechaInicio = moment(proyecto.fecha_inicio);
+                                                let fechaFin = moment(proyecto.fecha_fin);
+                                                return(
+                                                    <tr key = { index } className = 'h-30px'>
+                                                        <td className="text-center font-weight-bolder">
+                                                            {proyecto.nombre}
+                                                        </td>
+                                                        {
+                                                            [...Array(dias)].map((element, diaActual) => {
+                                                                return(<>{this.printTd(proyecto, index, diaActual, fechaInicio, fechaFin)}</>)
+                                                            })
+                                                        }
+                                                    </tr>
+                                                )
+                                            })
                                     }
-                                    {/* {
-                                        data.empresas.map((empresa, index) => {
-                                            return (
-                                                empresa.datos.map((dato, index1) => {
-                                                    let fechaInicio = moment(dato.fechaInicio);
-                                                    let fechaFin = moment(dato.fechaFin);
-                                                    let duracion = fechaFin.diff(fechaInicio, 'days') + 1;
-                                                    let diaInicio = fechaInicio.date()
-                                                    let diaFin = fechaFin.date()
-                                                    return (
-                                                        <tr key={index} className="h-30px">
-                                                            {
-                                                                (index1 == 0) ?
-                                                                    <td className="text-center font-weight-bolder" rowSpan={empresa.datos.length}>
-                                                                        {empresa.name}
-                                                                    </td> : ""
-                                                            }
-                                                            {
-                                                                [...Array(this.diasEnUnMes(mes, año))].map((element, diaActual) => {
-                                                                    return (
-                                                                        (diaActual + 1 >= diaInicio && diaActual + 1 <= diaFin) ?
-                                                                            (diaActual + 1 === diaInicio) ?
-                                                                                <td key={diaActual} colSpan={duracion} className="text-center position-relative p-0"  >
-                                                                                    {
-                                                                                        <OverlayTrigger key={diaActual} overlay={
-                                                                                            <Tooltip>
-                                                                                                <span>
-                                                                                                    <span className="mt-3 font-weight-bolder">
-                                                                                                        {dato.nombre}
-                                                                                                    </span>
-                                                                                                    <div>
-                                                                                                        <div>
-                                                                                                            {dato.position}
-                                                                                                        </div>
-                                                                                                    </div>
-                                                                                                </span>
-                                                                                            </Tooltip>}>
-                                                                                            <div className="text-truncate w-100 position-absolute text-white px-1 top-20" style={{ backgroundColor: dato.color, color: dato.textColor }}>
-                                                                                                <span className="font-weight-bold">
-                                                                                                    {dato.nombre}
-                                                                                                </span>
-                                                                                            </div>
-                                                                                        </OverlayTrigger>
-                                                                                    }
-                                                                                </td>
-                                                                                : ""
-                                                                            :
-                                                                            <td></td>
-                                                                    )
-                                                                })
-                                                            }
-                                                        </tr>
-                                                    )
-                                                })
-                                            )
-                                        })
-                                    } */}
                                 </tbody>
                             </table>
                         </div>
@@ -317,3 +324,11 @@ const mapStateToProps = (state) => { return { authUser: state.authUser } }
 const mapDispatchToProps = (dispatch) => ({})
 
 export default connect(mapStateToProps, mapDispatchToProps)(CalendarioProyectos)
+
+
+                // <td className='text-center position-relative p-0 text-hover'>
+                //     <div className="text-truncate w-100 position-absolute text-white px-1 top-20" style={{backgroundColor:'#20ACE9', borderColor:'#20ACE9', borderRadius: '4px'}}>
+                //         <span className="font-weight-bold letter-spacing-0-4">s
+                //         </span>
+                //     </div>
+                // </td>
