@@ -8,16 +8,19 @@ import { Button, RangeCalendar } from '../form-components'
 import { doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../functions/alert'
 import axios from 'axios'
 import { URL_DEV } from '../../constants'
+import BuscarLead from '../../components/forms/leads/BuscarLead' 
 class UrlLocation extends Component {
 
     state = {
         paths: [],
         url: [],
         modal: false,
+        modal_buscar:false,
         form: {
             fechaInicio: new Date(),
-            fechaFin: new Date()
-        }
+            fechaFin: new Date(), 
+            name:''
+        },
     }
 
     componentDidMount() {
@@ -46,8 +49,23 @@ class UrlLocation extends Component {
         this.setState({ ...this.state, form })
     }
 
+    onChangeBuscar = e => {
+        const { name, value } = e.target
+        const { form } = this.state
+        form[name] = value
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
+
     openModal = () => { this.setState({...this.state,modal:true}) }
     handleClose = () => { this.setState({...this.state, modal: false}) }
+
+
+    openModalBuscar = () => { this.setState({...this.state,modal_buscar:true}) }
+    handleCloseBuscar = () => { this.setState({...this.state, modal_buscar: false}) }
+
 
     onSubmit = async(e) => {
         const { access_token } = this.props.authUser
@@ -72,7 +90,7 @@ class UrlLocation extends Component {
     }
     
     render() {
-        const { paths, url, modal, form } = this.state
+        const { paths, url, modal, form, modal_buscar } = this.state
         const modulos = this.props.authUser.modulos
         const active = this.props.active;
         let icon;
@@ -123,6 +141,13 @@ class UrlLocation extends Component {
                         </div>
                     </Form>
                 </Modal>
+                <Modal show = { modal_buscar } size ="lg" title = 'Buscar lead' handleClose = { this.handleCloseBuscar } >
+                    <BuscarLead
+                        form={form}
+                        onSubmit={this.onSubmit}
+                        onChange = { this.onChangeBuscar }
+                    />
+                </Modal>
                 {
                     paths.length > 0 ?
                         <div className="subheader py-2 py-lg-4 subheader-solid" id="kt_subheader">
@@ -171,13 +196,17 @@ class UrlLocation extends Component {
                                                     only_icon="fas fa-phone pr-0"
                                                     tooltip={{ text: 'TELÉFONO' }}
                                                 /> */}
+                                                <span onClick = { (e) => { e.preventDefault(); this.openModalBuscar() }} 
+                                                    className="btn text-dark-50 btn-icon-primary btn-hover-icon-success font-weight-bolder btn-hover-bg-light mr-2">
+                                                    <i className="fas fa-search text-cyan"></i> Buscar Lead
+                                                </span>
                                                 <span onClick = { (e) => { e.preventDefault(); this.openModal() }} 
                                                     className="btn text-dark-50 btn-icon-primary btn-hover-icon-success font-weight-bolder btn-hover-bg-light mr-2">
-                                                    <i className="fas fa-file-excel text-info">
+                                                    <i className="fas fa-file-excel text-morado">
                                                     </i> Decargar leads
                                                 </span>
                                                 <span onClick={() => { this.changePageAdd('telefono') }} className="btn text-dark-50 btn-icon-primary btn-hover-icon-success font-weight-bolder btn-hover-bg-light">
-                                                    <i className="fas fa-user-plus text-pink">
+                                                    <i className="fas fa-user-plus text-naranja">
                                                     </i> Nuevo lead
                                                 </span>
                                             </>
