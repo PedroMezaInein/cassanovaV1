@@ -25,6 +25,46 @@ export const COLORES_GRAFICAS = [
     '#28A745'
 ]
 
+export const COLORES_CALENDARIO_PROYECTOS = [
+    '#9e6e36',
+    '#9e6e36',
+    '#10c7a6',
+    '#5b7533',
+    '#b0b1ca',
+    '#beac49',
+    '#ac5684',
+    '#34c1e7',
+    '#308fa8',
+    '#6dc14f',
+    '#21b3af',
+    '#c7608a',
+    '#f05c34',
+    '#27d60',
+    '#6462cc',
+    '#39a5f1',
+    '#cf60a5',
+    '#a16792',
+    '#9bac45',
+    '#a2a5da',
+    '#94c7ac',
+    '#e28ac7',
+    '#68c979',
+    '#e88f6b',
+    '#65b1a0',
+    '#64c6ce',
+    '#10b27a',
+    '#14a4e3',
+    '#128897',
+    '#90c793',
+    '#5da48e',
+    '#9eb6a1',
+    '#37899b',
+    '#b696b0',
+    '#d05b7f',
+    '#8690c6',
+    '#7ca0cd'
+]
+
 export const COLORES_GRAFICAS_2 = [
     '#002D41',
     '#15B1D7',

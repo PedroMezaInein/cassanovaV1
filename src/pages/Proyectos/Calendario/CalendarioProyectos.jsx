@@ -3,13 +3,14 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import Layout from '../../../components/layout/layout'
 import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { URL_DEV } from '../../../constants'
+import { URL_DEV, COLORES_CALENDARIO_PROYECTOS} from '../../../constants'
 import { SelectSearchGray } from '../../../components/form-components'
 import { getMeses, getAños } from '../../../functions/setters'
 import { errorAlert, forbiddenAccessAlert } from '../../../functions/alert'
 import moment from 'moment'
 import { Modal } from '../../../components/singles'
 const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+
 class CalendarioProyectos extends Component {
 
     state = {
@@ -24,6 +25,7 @@ class CalendarioProyectos extends Component {
         },
         modal: false,
         proyecto:'',
+        colorProyecto:[]
     }
 
     componentDidMount() {
@@ -39,32 +41,41 @@ class CalendarioProyectos extends Component {
     }
 
     getContentCalendarAxios = async (mes, año) => {
-
         const { access_token } = this.props.authUser
         await axios.get(`${URL_DEV}v2/proyectos/calendario-proyectos?mes=${mes}&anio=${año}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { proyectos } = response.data
-                proyectos.map((proyecto) => {
-                    Object.assign(proyecto, { color: `#${Math.floor(Math.random() * 16777215).toString(16)}` });
-                })
-                let actualMonth = meses[new Date().getMonth()]
-                let arrayNuevo = []
-                let arrayActual = []
+                let { colorProyecto } = this.state
 
-                if (mes === actualMonth) {
-                    arrayActual = proyectos
-                }
-                else {
-                    arrayNuevo = proyectos
-                }
-                console.log(arrayActual, arrayNuevo)
+                proyectos.forEach((proyecto) => {
+                    let esigual = false
+                    let colorexistente = ''
+                    Object.assign(proyecto, { color: COLORES_CALENDARIO_PROYECTOS[Math.floor(Math.random() * COLORES_CALENDARIO_PROYECTOS.length)]});
+                    colorProyecto.forEach(color => {
+                        if (color.id === proyecto.id ) {
+                            esigual=true
+                            colorexistente=color.color
+                        }
+                    });
+                    if(!esigual){
+                        Object.assign(proyecto, { color: COLORES_CALENDARIO_PROYECTOS[Math.floor(Math.random() * COLORES_CALENDARIO_PROYECTOS.length)]});
+                        colorProyecto.push({
+                            id: proyecto.id,
+                            color: proyecto.color
+                        })
+                    }else{
+                        Object.assign(proyecto, { color: colorexistente });
+                    }
+                })
+                
                 let dias = this.diasEnUnMes(mes, año)
                 this.setState({
                     ...this.state,
                     mes: mes,
                     año: año,
                     dias: dias,
-                    proyectos: proyectos
+                    proyectos: proyectos,
+                    colorProyecto
                 })
             },
             (error) => {
@@ -174,7 +185,7 @@ class CalendarioProyectos extends Component {
                     
                 </Tooltip>
             }>
-                <td class="text-center position-relative p-0 text-hover" colSpan={colspan} onClick = { (e) => { e.preventDefault(); this.openModal(proyecto) }}>
+                <td className="text-center position-relative p-0 text-hover" colSpan={colspan} onClick = { (e) => { e.preventDefault(); this.openModal(proyecto) }}>
                     <div className={`text-truncate w-100 position-absolute text-white px-1 top-26 ${border}`} style={{ backgroundColor: proyecto.color, borderColor: proyecto.color }}>
                         {proyecto.nombre}
                     </div>
@@ -379,7 +390,7 @@ class CalendarioProyectos extends Component {
                     </Card.Body>
                 </Card>
                 <Modal show = { modal } size="lg" title = 'Información del proyecto' handleClose = { this.handleClose } >
-                    {console.log(proyecto)}
+                    {/* {console.log(proyecto)} */}
                 </Modal>
             </Layout>
             
