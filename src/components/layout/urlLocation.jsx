@@ -9,6 +9,7 @@ import { doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../..
 import axios from 'axios'
 import { URL_DEV } from '../../constants'
 import BuscarLead from '../../components/forms/leads/BuscarLead' 
+import Swal from 'sweetalert2'
 class UrlLocation extends Component {
 
     state = {
@@ -21,6 +22,7 @@ class UrlLocation extends Component {
             fechaFin: new Date(), 
             name:''
         },
+        leads: []
     }
 
     componentDidMount() {
@@ -53,19 +55,18 @@ class UrlLocation extends Component {
         const { name, value } = e.target
         const { form } = this.state
         form[name] = value
-        this.setState({
-            ...this.state,
-            form
-        })
+        this.setState({ ...this.state, form })
     }
 
     openModal = () => { this.setState({...this.state,modal:true}) }
     handleClose = () => { this.setState({...this.state, modal: false}) }
 
-
     openModalBuscar = () => { this.setState({...this.state,modal_buscar:true}) }
-    handleCloseBuscar = () => { this.setState({...this.state, modal_buscar: false}) }
-
+    handleCloseBuscar = () => { 
+        const { form } = this.state
+        form.name = ''
+        this.setState({...this.state, modal_buscar: false, leads: [], form}) 
+    }
 
     onSubmit = async(e) => {
         const { access_token } = this.props.authUser
@@ -88,11 +89,28 @@ class UrlLocation extends Component {
             console.log(error, 'error')
         })
     }
+
+    onSubmitSearch = async(e) => {
+        e.preventDefault()
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        waitAlert()
+        await axios.get(`${URL_DEV}v2/leads/crm/search/${form.name}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { leads }= response.data
+                Swal.close()
+                this.setState({...this.state, leads})
+            },
+            (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     
     render() {
-        const { paths, url, modal, form, modal_buscar } = this.state
-        const modulos = this.props.authUser.modulos
-        const active = this.props.active;
+        const { paths, url, modal, form, modal_buscar, leads } = this.state
+        const { authUser: { modulos }, active } = this.props
         let icon;
         let modulo_name;
         let submodulo_name;
@@ -142,11 +160,7 @@ class UrlLocation extends Component {
                     </Form>
                 </Modal>
                 <Modal show = { modal_buscar } size ="lg" title = 'Buscar lead' handleClose = { this.handleCloseBuscar } >
-                    <BuscarLead
-                        form={form}
-                        onSubmit={this.onSubmit}
-                        onChange = { this.onChangeBuscar }
-                    />
+                    <BuscarLead form = { form } onSubmit = { this.onSubmitSearch } onChange = { this.onChangeBuscar } leads = { leads } />
                 </Modal>
                 {
                     paths.length > 0 ?
