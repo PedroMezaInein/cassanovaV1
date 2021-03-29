@@ -156,38 +156,69 @@ class PresupuestoDiseñoForm extends Component {
                                         <div className="separator separator-dashed mt-1 mb-2"></div>
                                         <div className="form-group row form-group-marginless">
                                             <div className="col-md-4">
-                                                <InputNumber requirevalidation = { 1 } formeditado = { formeditado } placeholder = "m²"
-                                                    value = { form.m2 } name = "m2" onChange = { onChange } iconclass = "fas fa-ruler-combined"
-                                                    messageinc = "Ingresa los m²."/>
-                                            </div>
-                                            <div className="col-md-4">
                                                 <SelectSearch formeditado = { formeditado } options = { options.esquemas } placeholder = "ESQUEMA"
                                                     name = "esquema" value = { form.esquema } onChange = { this.updateEsquema } iconclass = "flaticon2-sheet"
                                                     messageinc = "Selecciona el esquema" />
                                             </div>
                                             <div className="col-md-4">
-                                                <InputMoney requirevalidation = { 0 } type = "text" placeholder = "DESCUENTO" value = { form.descuento }
-                                                    iconclass = "fas fa-percentage" thousandseparator = { true } onChange = { onChange } prefix = '%'
-                                                    messageinc = "Ingresa el porcentaje." formeditado = { formeditado }  name = "descuento"/>
-                                            </div>
-                                        </div>
-                                        <div className="separator separator-dashed mt-1 mb-2"></div>
-                                        <div className="form-group row form-group-marginless">
-                                            <div className="col-md-4">
-                                                <InputNumber requirevalidation = { 1 } formeditado = { formeditado } placeholder = "DÍAS DE EJECUCIÓN"
-                                                    value = { form.tiempo_ejecucion_diseno } name = "tiempo_ejecucion_diseno" onChange = { onChange }
-                                                    iconclass = "flaticon-calendar-with-a-clock-time-tools" messageinc = "Ingresa los días de ejecución." />
+                                                <InputNumber requirevalidation = { 1 } formeditado = { formeditado } placeholder = "m²"
+                                                    value = { form.m2 } name = "m2" onChange = { onChange } iconclass = "fas fa-ruler-combined"
+                                                    messageinc = "Ingresa los m²."/>
                                             </div>
                                             <div className="col-md-4">
                                                 <InputNumber formeditado = { formeditado } requirevalidation = { 0 } placeholder = "TOTAL"
                                                     value = { form.total } iconclass = "fas fa-dollar-sign" thousandseparator = { true }
                                                     disabled = { true } name = "total" />
                                             </div>
-                                            <div className="col-md-4">
-                                                <InputNumber formeditado = { formeditado } requirevalidation = { 1 } placeholder = "NÚMERO DE RENDERS"
-                                                    value = { form.renders } iconclass = "fas fa-photo-video" thousandseparator = { true }
-                                                    onChange = { onChange } name = "renders" messageinc = "Ingresa los números de renders."/>
+                                        </div>
+                                        <div className="separator separator-dashed mt-1 mb-2"></div>
+                                        <div className="form-group row form-group-marginless">
+                                            <div className={form.si_renders?"col-md-3":"col-md-4"}>
+                                                <InputMoney requirevalidation = { 0 } type = "text" placeholder = "DESCUENTO" value = { form.descuento }
+                                                    iconclass = "fas fa-percentage" thousandseparator = { true } onChange = { onChange } prefix = '%'
+                                                    messageinc = "Ingresa el porcentaje." formeditado = { formeditado }  name = "descuento"/>
                                             </div>
+                                            <div className={form.si_renders?"col-md-3":"col-md-4"}>
+                                                <InputNumber requirevalidation = { 1 } formeditado = { formeditado } placeholder = "DÍAS DE EJECUCIÓN"
+                                                    value = { form.tiempo_ejecucion_diseno } name = "tiempo_ejecucion_diseno" onChange = { onChange }
+                                                    iconclass = "flaticon-calendar-with-a-clock-time-tools" messageinc = "Ingresa los días de ejecución." />
+                                            </div>
+                                            <div className={`${(form.si_renders?'col-md-3 d-flex justify-content-center ':'col-md-4 d-flex justify-content-start')}`}>
+                                                <div class="form-group">
+                                                    <label className="col-form-label font-size-lg">¿Se incluyen renders?</label>
+                                                    <div class="radio-inline">
+                                                        <label class="radio">
+                                                            <input
+                                                                type="radio"
+                                                                name='si_renders'
+                                                                value={form.si_renders}
+                                                                onChange={onChange}
+                                                                checked={form.si_renders}
+                                                            />Si
+															<span></span>
+                                                        </label>
+                                                        <label class="radio">
+                                                            <input 
+                                                                type="radio"
+                                                                name='no_renders'
+                                                                value={form.no_renders}
+                                                                onChange={onChange}
+                                                                checked={form.no_renders}
+                                                            />No
+															<span></span>
+                                                        </label>
+													</div>
+												</div>
+                                            </div>
+                                            {
+                                                form.si_renders?
+                                                    <div className="col-md-3">
+                                                        <InputNumber formeditado = { formeditado } requirevalidation = { 1 } placeholder = "NÚMERO DE RENDERS"
+                                                            value = { form.renders } iconclass = "fas fa-photo-video" thousandseparator = { true }
+                                                            onChange = { onChange } name = "renders" messageinc = "Ingresa los números de renders."/>
+                                                    </div>
+                                                :''
+                                            }
                                         </div>
                                     </Col>
                                 </Row>
@@ -367,7 +398,40 @@ class PresupuestoDiseñoForm extends Component {
                                     defaultActiveKey={defaultKey?defaultKey:form.acabados?"acabados":form.mobiliario?"mobiliario": form.obra?"obra":"vacio"}
                                     activeKey={ activeKey?activeKey:form.acabados?"acabados":form.mobiliario?"mobiliario": form.obra?"obra":"vacio" }
                                     >
-                                    <h5 className="mb-4 font-weight-bold text-dark">INGRESA LOS PRECIOS PARAMÉTRICOS Y EL TIEMPO DE EJECUCIÓN</h5>
+                                    <div className="form-group row form-group-marginless d-flex justify-content-between">
+                                        <div className="col-md-7">
+                                            <h5 className="mb-0 font-weight-bold text-dark">INGRESA LOS PRECIOS PARAMÉTRICOS Y EL TIEMPO DE EJECUCIÓN</h5>
+                                        </div>
+                                        <div className="col-md-5 d-flex justify-content-end">
+                                            <div className="row py-0 mx-0">
+                                                <label className="w-auto mr-4 py-0 col-form-label text-dark-75 font-weight-bold font-size-lg">¿Llevará desglose de información?</label>
+                                                <div className="w-auto px-3">
+                                                    <div className="radio-inline mt-0 ">
+                                                        <label className="radio radio-outline radio-brand text-dark-75 font-weight-bold">
+                                                            <input
+                                                                type="radio"
+                                                                name='si_desglose'
+                                                                value={form.si_desglose}
+                                                                onChange={onChange}
+                                                                checked={form.si_desglose}
+                                                            />Si
+																<span></span>
+                                                            </label>
+                                                        <label className="radio radio-outline radio-brand text-dark-75 font-weight-bold">
+                                                            <input 
+                                                                type="radio"
+                                                                name='no_desglose'
+                                                                value={form.no_desglose}
+                                                                onChange={onChange}
+                                                                checked={form.no_desglose}
+                                                            />No
+															<span></span>
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
                                     <div className={form.acabados || form.mobiliario || form.obra ?"form-group row form-group-marginless":"row form-group-marginless"}>
                                         <div className="col-md-3">
                                             <Input requirevalidation = { 1 } formeditado = { formeditado } placeholder = "TIEMPO DE EJECUCIÓN (SEMANAS)"
