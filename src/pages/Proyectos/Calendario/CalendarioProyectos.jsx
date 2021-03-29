@@ -467,7 +467,7 @@ class CalendarioProyectos extends Component {
                                     {
                                         proyectos.length === 0 ?
                                             <tr>
-                                                <td colSpan={this.diasEnUnMes(mes, año) + 1} className="text-center font-weight-bolder font-size-h6 py-6">
+                                                <td colSpan={this.diasEnUnMes(mes, año) + 1} className="text-center font-weight-bolder font-size-h6 py-6 border-0">
                                                     NO HAY PROYECTOS
                                                 </td>
                                             </tr>
