@@ -1977,3 +1977,12 @@ span.font-weight-bolder.text-hover-error:hover{
 .text-naranja{
     color:#FF7400!important;
 }
+#tcalendar_p_info tr:nth-child(2n+0){
+    background-color: #f3f6f9f5;
+}
+.border-top-2px{
+    border-top: 2px solid #e3e6e8
+}
+#calendario-proyectos td:first-child{
+    border-left: none;
+}

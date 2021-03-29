@@ -6,9 +6,11 @@ import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { URL_DEV, COLORES_CALENDARIO_PROYECTOS} from '../../../constants'
 import { SelectSearchGray } from '../../../components/form-components'
 import { getMeses, getAños } from '../../../functions/setters'
-import { errorAlert, forbiddenAccessAlert } from '../../../functions/alert'
+import { errorAlert, forbiddenAccessAlert, waitAlert, printResponseErrorAlert, doneAlert } from '../../../functions/alert'
 import moment from 'moment'
 import { Modal } from '../../../components/singles'
+import InformacionProyecto from '../../../components/cards/Proyectos/InformacionProyecto'
+import Swal from 'sweetalert2'
 const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
 
 class CalendarioProyectos extends Component {
@@ -25,7 +27,17 @@ class CalendarioProyectos extends Component {
         },
         modal: false,
         proyecto:'',
-        colorProyecto:[]
+        colorProyecto:[],
+        form: {
+            adjuntos: {
+                adjunto_comentario: {
+                    value: '',
+                    placeholder: 'Adjunto',
+                    files: []
+                }
+            },
+            comentario: ''
+        }
     }
 
     componentDidMount() {
@@ -194,13 +206,6 @@ class CalendarioProyectos extends Component {
         )
     }
 
-    openModal = proyecto => {
-        this.setState({
-            ...this.state,
-            modal: true,
-            proyecto: proyecto
-        })
-    }
     handleClose = () => { this.setState({...this.state, modal: false}) }
 
     printDates = dato => {
@@ -289,8 +294,109 @@ class CalendarioProyectos extends Component {
         )
     }
 
+    openModal = async(proyecto) => {
+        const { access_token } = this.props.authUser
+        waitAlert()
+        await axios.get(`${URL_DEV}v2/proyectos/proyectos/proyecto/${proyecto.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { proyecto } = response.data
+                this.setState({
+                    ...this.state,
+                    modal: true,
+                    proyecto: proyecto,
+                    form: this.clearForm(),
+                })
+                Swal.close()
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    onChange = e => {
+        const { name, value } = e.target
+        const { form } = this.state
+        form[name] = value
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
+    handleChangeComentario = (files, item) => {
+        const { form } = this.state
+        let aux = []
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        form['adjuntos'][item].value = files
+        form['adjuntos'][item].files = aux
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
+    addComentarioAxios = async () => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { form, proyecto } = this.state
+        const data = new FormData();
+
+        form.adjuntos.adjunto_comentario.files.map(( adjunto) => {
+            data.append(`files_name_adjunto[]`, adjunto.name)
+            data.append(`files_adjunto[]`, adjunto.file)
+            return ''
+        })
+
+        data.append(`comentario`, form.comentario)
+        await axios.post(`${URL_DEV}v2/proyectos/calendario-proyectos/proyecto/${proyecto.id}/comentarios`, data, { headers: {'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert('Comentario agregado con éxito');
+                const { proyecto } = response.data
+                const { form } = this.state
+                form.comentario = ''
+                form.adjuntos.adjunto_comentario = {
+                    value: '',
+                    placeholder: 'Adjunto',
+                    files: []
+                }
+                this.setState({ ...this.state, form, proyecto: proyecto })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    clearForm = () => {
+        const { form } = this.state
+        let aux = Object.keys(form)
+        aux.map((element) => {
+            switch (element) {
+                case 'adjuntos':
+                    form[element] = {
+                        adjunto_comentario: {
+                            value: '',
+                            placeholder: 'Adjunto',
+                            files: []
+                        },
+                    }
+                    break;
+                default:
+                    form[element] = ''
+                    break;
+            }
+            return false
+        })
+        return form
+    }
     render() {
-        const { mes, año, proyectos, dias, modal, proyecto} = this.state
+        const { mes, año, proyectos, dias, modal, proyecto, form} = this.state
         return (
             <Layout active='proyectos' {... this.props}>
                 <Card className='card-custom'>
@@ -346,7 +452,7 @@ class CalendarioProyectos extends Component {
                             </div>
                         </div>
                         <div className="table-responsive-xl mt-5">
-                            <table className="table table-responsive table-bordered table-vertical-center border-0">
+                            <table className="table table-responsive table-bordered table-vertical-center border-0" id="calendario-proyectos">
                                 <thead className="text-center">
                                     <tr>
                                         <th className="font-weight-bolder border-0">PROYECTO</th>
@@ -389,8 +495,8 @@ class CalendarioProyectos extends Component {
                         </div>
                     </Card.Body>
                 </Card>
-                <Modal show = { modal } size="lg" title = 'Información del proyecto' handleClose = { this.handleClose } >
-                    {/* {console.log(proyecto)} */}
+                <Modal show = { modal } size="lg" title = {proyecto?proyecto.nombre:'Información del proyecto'} handleClose = { this.handleClose } >
+                    <InformacionProyecto proyecto={proyecto} printDates={this.printDates} addComentario = { this.addComentarioAxios } form = { form } onChange = { this.onChange } handleChange = { this.handleChangeComentario }/>
                 </Modal>
             </Layout>
             
