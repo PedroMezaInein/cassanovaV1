@@ -194,6 +194,11 @@ class ProyectosForm extends Component {
                                             </div>
                                         </div>
                                     </div>
+                                    <div className="col-md-4">
+                                        <Input requirevalidation = { 1 } formeditado = { formeditado } name = "nombre" value = { form.nombre }
+                                            onChange = { onChange } type = "text" placeholder = "NOMBRE DEL PROYECTO" iconclass = "far fa-folder-open"
+                                            messageinc="Ingresa el nombre del proyecto." />
+                                    </div>
                                     <div className="col-md-3">
                                         <Input requirevalidation = { 1 } formeditado = { formeditado } name = "contacto" value = { form.contacto } 
                                             onChange = { onChange } type = "text" placeholder="NOMBRE DEL CONTACTO" iconclass = "far fa-user-circle"
@@ -204,11 +209,6 @@ class ProyectosForm extends Component {
                                             value = { form.numeroContacto } onChange = { onChange } placeholder = "NÚMERO DE CONTACTO"
                                             iconclass = "fas fa-mobile-alt" messageinc = "Ingresa el número de contacto."
                                             patterns = { TEL } />
-                                    </div>
-                                    <div className="col-md-4">
-                                        <Input requirevalidation = { 1 } formeditado = { formeditado } name = "nombre" value = { form.nombre }
-                                            onChange = { onChange } type = "text" placeholder = "NOMBRE DEL PROYECTO" iconclass = "far fa-folder-open"
-                                            messageinc="Ingresa el nombre del proyecto." />
                                     </div>
                                 </div>
                                 <div className="separator separator-dashed mt-1 mb-2"></div>
