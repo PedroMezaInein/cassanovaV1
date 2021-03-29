@@ -104,8 +104,6 @@ class ParrillasContenido extends Component {
                 const { parrilla, post } = response.data
                 const { form, modal } = this.state
 
-                console.log(parrilla, 'PARRILLA')
-
                 modal.form = true
 
                 form.copy = parrilla.copy
@@ -160,9 +158,7 @@ class ParrillasContenido extends Component {
                     post: post
                 })
             },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -229,9 +225,7 @@ class ParrillasContenido extends Component {
                     evento
                 })
             },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
