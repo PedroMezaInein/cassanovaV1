@@ -3,13 +3,14 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import Layout from '../../../components/layout/layout'
 import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
-import { URL_DEV } from '../../../constants'
+import { URL_DEV, COLORES_CALENDARIO_PROYECTOS} from '../../../constants'
 import { SelectSearchGray } from '../../../components/form-components'
 import { getMeses, getAños } from '../../../functions/setters'
 import { errorAlert, forbiddenAccessAlert } from '../../../functions/alert'
 import moment from 'moment'
-
+import { Modal } from '../../../components/singles'
 const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
+
 class CalendarioProyectos extends Component {
 
     state = {
@@ -20,8 +21,11 @@ class CalendarioProyectos extends Component {
             empresas: []
         },
         options: {
-            empresas:[],
-        }
+            empresas: [],
+        },
+        modal: false,
+        proyecto:'',
+        colorProyecto:[]
     }
 
     componentDidMount() {
@@ -31,7 +35,7 @@ class CalendarioProyectos extends Component {
             const { modulo: { url } } = element
             return pathname === url
         });
-        
+
         const { mes, año } = this.state
         this.getContentCalendarAxios(mes, año)
     }
@@ -41,14 +45,37 @@ class CalendarioProyectos extends Component {
         await axios.get(`${URL_DEV}v2/proyectos/calendario-proyectos?mes=${mes}&anio=${año}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { proyectos } = response.data
-            
+                let { colorProyecto } = this.state
+
+                proyectos.forEach((proyecto) => {
+                    let esigual = false
+                    let colorexistente = ''
+                    Object.assign(proyecto, { color: COLORES_CALENDARIO_PROYECTOS[Math.floor(Math.random() * COLORES_CALENDARIO_PROYECTOS.length)]});
+                    colorProyecto.forEach(color => {
+                        if (color.id === proyecto.id ) {
+                            esigual=true
+                            colorexistente=color.color
+                        }
+                    });
+                    if(!esigual){
+                        Object.assign(proyecto, { color: COLORES_CALENDARIO_PROYECTOS[Math.floor(Math.random() * COLORES_CALENDARIO_PROYECTOS.length)]});
+                        colorProyecto.push({
+                            id: proyecto.id,
+                            color: proyecto.color
+                        })
+                    }else{
+                        Object.assign(proyecto, { color: colorexistente });
+                    }
+                })
+                
                 let dias = this.diasEnUnMes(mes, año)
                 this.setState({
                     ...this.state,
                     mes: mes,
                     año: año,
                     dias: dias,
-                    proyectos: proyectos
+                    proyectos: proyectos,
+                    colorProyecto
                 })
             },
             (error) => {
@@ -62,7 +89,7 @@ class CalendarioProyectos extends Component {
         })
     }
 
-    diasEnUnMes(mes, año) { return new Date(año, meses.indexOf(mes) + 1, 0).getDate();  }
+    diasEnUnMes(mes, año) { return new Date(año, meses.indexOf(mes) + 1, 0).getDate(); }
 
     updateMes = value => {
         const { año } = this.state
@@ -124,98 +151,146 @@ class CalendarioProyectos extends Component {
         if (direction === 'back') {
             if (actualMonth === 0) {
                 newMonth = meses[11]
-                newYear = (año - 1).toString() 
+                newYear = (año - 1).toString()
             } else {
                 newMonth = meses[actualMonth - 1]
             }
         } else {
             if (actualMonth === 11) {
                 newMonth = meses[0]
-                newYear = (parseInt(año) + 1).toString() 
+                newYear = (parseInt(año) + 1).toString()
             } else {
                 newMonth = meses[actualMonth + 1]
             }
         }
         this.getContentCalendarAxios(newMonth, newYear)
     }
+    showtd(proyecto, colspan, border) {
+        return (
+            <OverlayTrigger overlay={
+                <Tooltip className="tool-calendar">
+                    <div className="tool-titulo text-white font-weight-bolder letter-spacing-0-4" style={{ backgroundColor: proyecto.color }}>
+                        {proyecto.nombre}
+                    </div>
+                    <div className="tool-horario py-3 text-center">
+                        {this.printDates(proyecto)}
+                    </div>
+                    {
+                        proyecto.descripcion!=="null" && proyecto.descripcion !==null?
+                            <div className="text-justify px-5 pb-3">
+                                {proyecto.descripcion}
+                            </div>
+                        :''
+                    }
+                    
+                </Tooltip>
+            }>
+                <td className="text-center position-relative p-0 text-hover" colSpan={colspan} onClick = { (e) => { e.preventDefault(); this.openModal(proyecto) }}>
+                    <div className={`text-truncate w-100 position-absolute text-white px-1 top-26 ${border}`} style={{ backgroundColor: proyecto.color, borderColor: proyecto.color }}>
+                        {proyecto.nombre}
+                    </div>
+                </td>
+            </OverlayTrigger>
+        )
+    }
+
+    openModal = proyecto => {
+        this.setState({
+            ...this.state,
+            modal: true,
+            proyecto: proyecto
+        })
+    }
+    handleClose = () => { this.setState({...this.state, modal: false}) }
+
+    printDates = dato => {
+        let fechaInicio = moment(dato.fecha_inicio)
+        let fechaFin = moment(dato.fecha_fin)
+        let diffFechas = fechaFin.diff(fechaInicio, 'days')
+        
+        if(diffFechas === 0){
+            return(
+                <span>
+                    {fechaInicio.format('D')}/{fechaInicio.format('MM')}/{fechaInicio.format('YYYY')}
+                </span>
+            )
+        }else
+            return(
+                <span>
+                    {fechaInicio.format('D')}/{fechaInicio.format('MM')}/{fechaInicio.format('YYYY')}  - {fechaFin.format('D')}/{fechaFin.format('MM')}/{fechaFin.format('YYYY')}
+                </span>
+            )
+    }
 
     printTd = (proyecto, index, diaActual, fechaInicio, fechaFin) => {
         const { mes, año } = this.state
         fechaInicio.startOf('day')
-        fechaFin.startOf('day') 
+        fechaFin.startOf('day')
         let fecha = new moment([año, meses.indexOf(mes), diaActual + 1])
-        let duracion = fechaFin.diff(fechaInicio, 'days') + 1;
-        let esDiaActualInicioFecha =  (diaActual+1) === parseInt(fechaInicio.format('D'))
-        let esMesActualInicioFecha =  fechaInicio.format('M') == fecha.format('M') 
-        let esAnioActualInicioFecha =  fechaInicio.format('Y') == fecha.format('Y')
+        // let duracion = fechaFin.diff(fechaInicio, 'days') + 1;
+        let esDiaActualInicioFecha = (diaActual + 1) === parseInt(fechaInicio.format('D'))
+        let esMesActualInicioFecha = fechaInicio.format('M') == fecha.format('M')
+        let esAnioActualInicioFecha = fechaInicio.format('Y') == fecha.format('Y')
 
-        if((diaActual+1)===1 ||  (esDiaActualInicioFecha && esMesActualInicioFecha && esAnioActualInicioFecha) )
-        {
-            
-            
+        if ((diaActual + 1) === 1 || (esDiaActualInicioFecha && esMesActualInicioFecha && esAnioActualInicioFecha)) {
+
+
             let diasMesActual = fecha.daysInMonth()
-            if((diaActual+1)===1 ){
+            if ((diaActual + 1) === 1) {
                 let esDia1DentroFechas = fecha.toDate() >= fechaInicio.toDate() && fecha.toDate() <= fechaFin.toDate()
-                if(esDia1DentroFechas)
-                {
-                    
-                    let duracionDia1HastaFechaFin = fechaFin.diff(fecha, 'days') + 1 
-                    if(duracionDia1HastaFechaFin<diasMesActual){
-                        return( 
-                        <td colSpan={duracionDia1HastaFechaFin}  style={{backgroundColor:'#20ACE9', borderColor:"#20ACE9"}}>
-                        </td>
+                if (esDia1DentroFechas) {
+
+                    let duracionDia1HastaFechaFin = fechaFin.diff(fecha, 'days') + 1
+                    if (duracionDia1HastaFechaFin < diasMesActual) {
+                        this.showtd(proyecto, duracionDia1HastaFechaFin)
+                        return (
+                            this.showtd(proyecto, duracionDia1HastaFechaFin, 'border-radius-right')
                         )
                     }
-                    else{
-                        return(  
-                        <td colSpan={diasMesActual} style={{backgroundColor:'#20ACE9', borderColor:"#20ACE9"}}>
-                        </td>
+                    else {
+                        return (
+                            this.showtd(proyecto, diasMesActual)
                         )
                     }
                 }
-                else
-                {
-                    <td>  
+                else {
+                    <td>
                     </td>
-                } 
+                }
             }
             else {
                 let duracionDiaInicioHastaFechaFin = fechaFin.diff(fechaInicio, 'days') + 1
-                let diasHastaFinMes = diasMesActual- diaActual +1
-                if(diasHastaFinMes>duracionDiaInicioHastaFechaFin)
-                {
-                    return(  
-                        <td colSpan={duracionDiaInicioHastaFechaFin} style={{backgroundColor:'#20ACE9', borderColor:"#20ACE9"}}>
-                        </td>
-                        )
+                let diasHastaFinMes = diasMesActual - diaActual + 1
+                if (diasHastaFinMes > duracionDiaInicioHastaFechaFin) {
+
+                    return (
+                        this.showtd(proyecto, duracionDiaInicioHastaFechaFin, 'border-radius-4px')
+                    )
                 }
-                else
-                {
-                    return(  
-                    <td colSpan={diasHastaFinMes} style={{backgroundColor:'#20ACE9', borderColor:"#20ACE9"}}>
-                    </td>
+                else {
+                    return (
+                        this.showtd(proyecto, diasHastaFinMes, 'border-radius-left')
                     )
                 }
             }
-        }else{
-            if(fecha.toDate() >= fechaInicio.toDate() && fecha.toDate() <= fechaFin.toDate()){
-                return(<></>)
-            }else{
-                return(
-                    <td>  
+        } else {
+            if (fecha.toDate() >= fechaInicio.toDate() && fecha.toDate() <= fechaFin.toDate()) {
+                return (<></>)
+            } else {
+                return (
+                    <td>
                     </td>
                 )
             }
         }
-        return(
-            <td>  
+        return (
+            <td>
             </td>
         )
-        
     }
 
     render() {
-        const { mes, año, proyectos, dias } = this.state
+        const { mes, año, proyectos, dias, modal, proyecto} = this.state
         return (
             <Layout active='proyectos' {... this.props}>
                 <Card className='card-custom'>
@@ -271,10 +346,10 @@ class CalendarioProyectos extends Component {
                             </div>
                         </div>
                         <div className="table-responsive-xl mt-5">
-                            <table id="parrilla" className="table table-responsive table-bordered table-vertical-center border-0">
+                            <table className="table table-responsive table-bordered table-vertical-center border-0">
                                 <thead className="text-center">
                                     <tr>
-                                        <th className="font-weight-bolder border-0" style={{minWidth:'200px'}}>PROYECTO</th>
+                                        <th className="font-weight-bolder border-0">PROYECTO</th>
                                         {
                                             [...Array(this.diasEnUnMes(mes, año))].map((element, key) => {
                                                 return (<th className="border-top-0" key={key}>{key <= 8 ? "0" + (key + 1) : key + 1}</th>)
@@ -284,25 +359,25 @@ class CalendarioProyectos extends Component {
                                 </thead>
                                 <tbody>
                                     {
-                                        proyectos.length===0?
+                                        proyectos.length === 0 ?
                                             <tr>
-                                                <td colSpan={this.diasEnUnMes(mes, año)+1} className="text-center font-weight-bolder font-size-h6 py-6">
+                                                <td colSpan={this.diasEnUnMes(mes, año) + 1} className="text-center font-weight-bolder font-size-h6 py-6">
                                                     NO HAY PROYECTOS
                                                 </td>
                                             </tr>
-                                        :
+                                            :
                                             proyectos.map((proyecto, index) => {
-                                               // console.log(proyecto)
+                                                // console.log(proyecto)
                                                 let fechaInicio = moment(proyecto.fecha_inicio);
                                                 let fechaFin = moment(proyecto.fecha_fin);
-                                                return(
-                                                    <tr key = { index } className = 'h-30px'>
-                                                        <td className="text-center font-weight-bolder">
+                                                return (
+                                                    <tr key={index} className='h-30px'>
+                                                        <td className="text-center font-weight-bolder white-space-nowrap">
                                                             {proyecto.nombre}
                                                         </td>
                                                         {
                                                             [...Array(dias)].map((element, diaActual) => {
-                                                                return(<>{this.printTd(proyecto, index, diaActual, fechaInicio, fechaFin)}</>)
+                                                                return (<>{this.printTd(proyecto, index, diaActual, fechaInicio, fechaFin)}</>)
                                                             })
                                                         }
                                                     </tr>
@@ -314,7 +389,11 @@ class CalendarioProyectos extends Component {
                         </div>
                     </Card.Body>
                 </Card>
+                <Modal show = { modal } size="lg" title = 'Información del proyecto' handleClose = { this.handleClose } >
+                    {/* {console.log(proyecto)} */}
+                </Modal>
             </Layout>
+            
         )
     }
 
@@ -324,11 +403,3 @@ const mapStateToProps = (state) => { return { authUser: state.authUser } }
 const mapDispatchToProps = (dispatch) => ({})
 
 export default connect(mapStateToProps, mapDispatchToProps)(CalendarioProyectos)
-
-
-                // <td className='text-center position-relative p-0 text-hover'>
-                //     <div className="text-truncate w-100 position-absolute text-white px-1 top-20" style={{backgroundColor:'#20ACE9', borderColor:'#20ACE9', borderRadius: '4px'}}>
-                //         <span className="font-weight-bold letter-spacing-0-4">s
-                //         </span>
-                //     </div>
-                // </td>
