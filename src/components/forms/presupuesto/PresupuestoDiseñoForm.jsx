@@ -187,23 +187,13 @@ class PresupuestoDiseñoForm extends Component {
                                                     <label className="col-form-label font-size-lg">¿Se incluyen renders?</label>
                                                     <div class="radio-inline">
                                                         <label class="radio">
-                                                            <input
-                                                                type="radio"
-                                                                name='si_renders'
-                                                                value={form.si_renders}
-                                                                onChange={onChange}
-                                                                checked={form.si_renders}
-                                                            />Si
+                                                            <input type = "radio" name = 'si_renders' value = { true } onChange = { onChange }
+                                                                checked = { form.si_renders } />Si
 															<span></span>
                                                         </label>
                                                         <label class="radio">
-                                                            <input 
-                                                                type="radio"
-                                                                name='no_renders'
-                                                                value={form.no_renders}
-                                                                onChange={onChange}
-                                                                checked={form.no_renders}
-                                                            />No
+                                                            <input type = "radio" name = 'si_renders' value = { false } onChange = { onChange }
+                                                                checked = { !form.si_renders } />No
 															<span></span>
                                                         </label>
 													</div>
@@ -407,23 +397,13 @@ class PresupuestoDiseñoForm extends Component {
                                                 <div className="w-auto px-3">
                                                     <div className="radio-inline mt-0 ">
                                                         <label className="radio radio-outline radio-brand text-dark-75 font-weight-bold">
-                                                            <input
-                                                                type="radio"
-                                                                name='si_desglose'
-                                                                value={form.si_desglose}
-                                                                onChange={onChange}
-                                                                checked={form.si_desglose}
-                                                            />Si
-																<span></span>
-                                                            </label>
+                                                            <input type = "radio" name = 'si_desglose' value = { true } onChange = { onChange }
+                                                                checked = { form.si_desglose } />Si
+															<span></span>
+                                                        </label>
                                                         <label className="radio radio-outline radio-brand text-dark-75 font-weight-bold">
-                                                            <input 
-                                                                type="radio"
-                                                                name='no_desglose'
-                                                                value={form.no_desglose}
-                                                                onChange={onChange}
-                                                                checked={form.no_desglose}
-                                                            />No
+                                                            <input type = "radio" name = 'si_desglose' value = { false } onChange = { onChange }
+                                                                checked = { !form.si_desglose } />No
 															<span></span>
                                                         </label>
                                                     </div>
