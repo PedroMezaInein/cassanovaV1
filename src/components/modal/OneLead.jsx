@@ -98,10 +98,10 @@ class OneLead extends Component{
         const { lead } = this.props
         const { activePage, itemsPerPage } = this.state
         return(
-            <div className="">
-                <div className="d-flex justify-content-between mt-4">
-                    <p className="font-size-h5 text-muted font-size-lg mt-0">
-                        Nombre:&nbsp; <strong className="font-size-h6">
+            <div>
+                <div className="d-flex justify-content-between mt-4 py-3">
+                    <p className="font-size-h4 text-muted font-size-lg m-0 align-self-center">
+                        Nombre:&nbsp; <strong className="font-size-h5">
                         {lead.nombre}
                         </strong>
                     </p>
@@ -118,14 +118,14 @@ class OneLead extends Component{
                         : ''
                     }
                 </div>
-                <div className="separator separator-solid mb-3" />
+                <div className="separator separator-solid my-4" />
                 <Tab.Container defaultActiveKey = 'info'>
                     
                     <Nav className = {
                         this.hasContactos() || this.hasPresupuesto() ?
-                            "nav-tabs nav-bold nav-tabs-line nav-tabs-line-3x border-0 mb-8 justify-content-end"
-                        : 'd-none' }>
-                    
+                            "nav-tabs nav-bold nav-tabs-line nav-tabs-line-3x border-0 mb-9 justify-content-end nav"
+                        : 'd-none' 
+                    }>
                         <Nav.Item className="nav-item">
                             <Nav.Link eventKey="info">
                                 <span className="nav-text font-weight-bold">INFORMACIÓN GENERAL</span>
@@ -155,26 +155,14 @@ class OneLead extends Component{
                             <div className="table-responsive mt-4">
                                 <table className="table table-vertical-center">
                                     <thead className="thead-light">
-                                        <tr className="text-left text-dark-75">
-                                            <th className="pl-2" style={{ minWidth: "150px" }}>Adjunto</th>
+                                        <tr className="text-dark-75">
+                                            <th className="pl-2 text-align-last-left" style={{ minWidth: "150px" }}>Adjunto</th>
                                             <th style={{ minWidth: "80px" }} className="text-center">Fecha</th>
                                             <th style={{ minWidth: "80px" }} className="text-center">Fecha de envio</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {
-                                            this.hasPresupuesto() ?
-                                                lead.presupuesto_diseño.pdfs.map((pdf, key) => {
-                                                    return(
-                                                        <FileItem item = { pdf } key = { key }
-                                                            anotherDate = { pdf ? pdf.pivot ? pdf.pivot.fecha_envio ? pdf.pivot.fecha_envio : '' : '' : '' } />
-                                                    )
-                                                })
-                                            :
-                                                <tr className="text-center text-dark-75">
-                                                    <th className="pl-2" colSpan = "3" >NO HAY ADJUNTOS</th>
-                                                </tr>
-                                        }
+                                        {this.hasPresupuesto()?lead.presupuesto_diseño.pdfs.map((pdf, key) => {return(<FileItem item = { pdf } key = { key } anotherDate = { pdf ? pdf.pivot ? pdf.pivot.fecha_envio ? pdf.pivot.fecha_envio : '' : '' : '' }/>)}):<tr className="text-center text-dark-75"><th className="pl-2" colSpan = "3" >NO HAY ADJUNTOS</th></tr>}
                                     </tbody>
                                 </table>
                             </div>
@@ -183,7 +171,7 @@ class OneLead extends Component{
                             <div className = "row mx-0 px-lg-2">
                                 {
                                     lead.empresa ? 
-                                        <div className="col-md-3 text-truncate">
+                                        <div className="col-md-3 text-truncate form-group">
                                             <div className="d-flex justify-content-start">
                                                 <SymbolIcon tipo = 'info' urlIcon = '/images/svg/Building.svg' />
                                                 <div>
@@ -194,7 +182,7 @@ class OneLead extends Component{
                                         </div>
                                     : ''
                                 }
-                                <div className="col-md-3 text-truncate">
+                                <div className="col-md-3 text-truncate form-group">
                                     <div className="d-flex justify-content-start mr-2">
                                         <SymbolIcon tipo = 'primary' urlIcon = '/images/svg/iPhone-X.svg' />
                                         <div>
@@ -206,7 +194,7 @@ class OneLead extends Component{
                                         </div>
                                     </div>
                                 </div>
-                                <div className="col-md-3 text-truncate">
+                                <div className="col-md-3 text-truncate form-group">
                                     <div className="d-flex justify-content-start mr-2">
                                         <SymbolIcon tipo = 'info' urlIcon = '/images/svg/Box1.svg' />
                                         <div>
@@ -215,7 +203,7 @@ class OneLead extends Component{
                                         </div>
                                     </div>
                                 </div>
-                                <div className="col-md-3 text-truncate">
+                                <div className="col-md-3 text-truncate form-group">
                                     <div className="d-flex justify-content-start mr-2">
                                         <SymbolIcon tipo = 'primary' urlIcon = '/images/svg/Mail.svg' />
                                         <div>
@@ -229,7 +217,7 @@ class OneLead extends Component{
                                 </div>
                                 {
                                     lead.origen ? 
-                                        <div className="col-md-3 mt-4 text-truncate">
+                                        <div className="col-md-3 mt-4 text-truncate form-group">
                                             <div className="d-flex justify-content-start mr-2">
                                                 <SymbolIcon tipo = 'primary' urlIcon = '/images/svg/Folder-cloud.svg' />
                                                 <div>
@@ -240,29 +228,37 @@ class OneLead extends Component{
                                         </div>
                                     : ''
                                 }
-                                <div className="col-md-9 mt-4 text-truncate">
-                                    <div className="d-flex justify-content-start mr-2">
-                                        <SymbolIcon tipo = 'info' urlIcon = '/images/svg/Tools.svg' />
-                                        <div>
-                                            <ul className="list-inline mb-0 font-size-h6 text-dark-75 font-weight-bolder">
-                                                {
-                                                    lead.servicios ? 
-                                                        lead.servicios.map((servicio, key) => {
-                                                            return ( <li className="list-inline-item" key={key}>&#8226; {servicio.servicio}</li> )
-                                                        })
-                                                    :
-                                                        <li className="list-inline-item">No hay servicios registrados</li>
-                                                }
-                                            </ul>
-                                            <div className="font-size-sm text-muted font-weight-bold mt-1">Servicios</div>
+                                {
+                                    lead.servicios ?
+                                        lead.servicios.length>0?
+                                            <div className="col-md-9 mt-4 text-truncate form-group">
+                                                <div className="d-flex justify-content-start mr-2">
+                                                    <SymbolIcon tipo = 'info' urlIcon = '/images/svg/Tools.svg' />
+                                                    <div>
+                                                        <ul className="list-inline mb-0 font-size-h6 text-dark-75 font-weight-bolder">
+                                                            {
+                                                                lead.servicios.map((servicio, key) => {
+                                                                    return ( <li className="list-inline-item" key={key}>&#8226; {servicio.servicio}</li> )
+                                                                })
+                                                            }
+                                                        </ul>
+                                                        <div className="font-size-sm text-muted font-weight-bold mt-1">Servicios</div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        :''
+                                    :''
+                                }
+                                {
+                                    lead.comentario?
+                                        <div className = 'col-md-12 mt-4'>
+                                            <div className="bg-gray-100 p-3 font-size-lg font-weight-light text-justify" >
+                                                <strong >Comentario: </strong>{lead.comentario}
+                                            </div>
                                         </div>
-                                    </div>
-                                </div>
-                                <div className = 'col-md-12 mt-4'>
-                                    <div className="bg-gray-100 p-3 font-size-lg font-weight-light text-justify" >
-                                        <strong >Comentario: </strong>{lead.comentario}
-                                    </div>
-                                </div>
+                                    :''
+                                }
+                                
                             </div>
                         </Tab.Pane>
                         <Tab.Pane eventKey = 'contactos'>
