@@ -209,8 +209,15 @@ class CalendarioProyectos extends Component {
     handleClose = () => { this.setState({...this.state, modal: false}) }
 
     printDates = dato => {
-        let fechaInicio = moment(dato.fecha_inicio)
-        let fechaFin = moment(dato.fecha_fin)
+        let fechaInicio = ''
+        let fechaFin = ''
+        if(dato.fecha_fin === null){
+            fechaInicio = moment(dato.fecha_inicio);
+            fechaFin = moment(dato.fecha_inicio);
+        }else{
+            fechaInicio = moment(dato.fecha_inicio);
+            fechaFin = moment(dato.fecha_fin);
+        }
         let diffFechas = fechaFin.diff(fechaInicio, 'days')
         
         if(diffFechas === 0){
@@ -473,9 +480,16 @@ class CalendarioProyectos extends Component {
                                             </tr>
                                             :
                                             proyectos.map((proyecto, index) => {
-                                                // console.log(proyecto)
-                                                let fechaInicio = moment(proyecto.fecha_inicio);
-                                                let fechaFin = moment(proyecto.fecha_fin);
+                                                console.log(proyecto)
+                                                let fechaInicio = ''
+                                                let fechaFin = ''
+                                                if(proyecto.fecha_fin === null){
+                                                    fechaInicio = moment(proyecto.fecha_inicio);
+                                                    fechaFin = moment(proyecto.fecha_inicio);
+                                                }else{
+                                                    fechaInicio = moment(proyecto.fecha_inicio);
+                                                    fechaFin = moment(proyecto.fecha_fin);
+                                                }
                                                 return (
                                                     <tr key={index} className='h-30px'>
                                                         <td className="text-center font-weight-bolder white-space-nowrap">
