@@ -103,9 +103,7 @@ class PresupuestoDiseñoForm extends Component {
             mobiliario: true,
             acabados: true,
             si_desglose: true,
-            no_desglose: false,
             si_renders: true,
-            no_renders: false,
         },
         activeKey: '',
         defaultKey: '',
@@ -260,21 +258,9 @@ class PresupuestoDiseñoForm extends Component {
                 form.acabados = presupuesto.acabados_e_instalaciones;
                 form.mobiliario = presupuesto.mobiliario;
                 form.obra_civil = presupuesto.obra_civil;
-                // console.log(presupuesto)
-                if(presupuesto.desglose){
-                    form.no_desglose = false;
-                    form.si_desglose = true;
-                }else{
-                    form.si_desglose = false;
-                    form.no_desglose = true;
-                }
-                if(presupuesto.con_renders){
-                    form.no_renders = false;
-                    form.si_renders = true;
-                }else{
-                    form.si_renders = false;
-                    form.no_renders = true;
-                }
+                
+                form.si_renders = presupuesto.con_renders === 1 ? true : false;
+                form.si_desglose = presupuesto.desglose === 1 ? true : false;
 
                 let aux = ''
 
@@ -461,7 +447,6 @@ class PresupuestoDiseñoForm extends Component {
                         else{
                             const link = document.createElement('a');
                             link.href = presupuesto.pdfs[0].url;
-                            /* link.setAttribute('target', '_blank'); */
                             document.body.appendChild(link);
                             link.click();
                             document.body.removeChild(link);
@@ -469,14 +454,7 @@ class PresupuestoDiseñoForm extends Component {
                     }
                 }
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La presupuesto fue eliminada con éxito.',)
-                /* history.push({
-                    pathname: '/presupuesto/presupuesto-diseño'
-                }); */
-                this.setState({
-                    ...this.state,
-                    presupuesto: presupuesto,
-                    form
-                })
+                this.setState({ ...this.state, presupuesto: presupuesto, form })
             },
             (error) => {
                 printResponseErrorAlert(error)
@@ -774,29 +752,13 @@ class PresupuestoDiseñoForm extends Component {
         if (form.subtotal > 0)
             form.total = form.subtotal * (1 - (form.descuento / 100))
 
-        if (type === 'radio') {
-            if (name === "si_desglose") {
-                form.no_desglose = false
-            }
-            else if (name === "no_desglose") {
-                form.si_desglose = false
-            }
-            form[name] = checked
-        }
-        if (type === 'radio') {
-            if (name === "si_renders") {
-                form.no_renders = false
-            }
-            else if (name === "no_renders") {
-                form.si_renders = false
-            }
-            form[name] = checked
+        if(type === 'radio'){
+            if(name === 'si_desglose' || name === 'si_renders')
+                form[name] = value === "true" ? true : false
         }
 
         if (type === 'checkbox')
             form[name] = checked
-        else
-            form[name] = value
             
         switch (name) {
             case 'construccion_interiores_inf':
