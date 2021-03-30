@@ -1,5 +1,6 @@
 import { Small, B } from '../components/texts'
 import React from 'react';
+import ReactDOM from 'react-dom'
 import Moment from 'react-moment'
 import NumberFormat from 'react-number-format';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -94,6 +95,12 @@ export function setTextTable(text) {
         <Small>
             {text}
         </Small>
+    )
+}
+
+export function setTextTableReactDom(text, doubleClick, data){
+    return(
+        <div onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data)} } > <Small> {text} </Small> </div>
     )
 }
 

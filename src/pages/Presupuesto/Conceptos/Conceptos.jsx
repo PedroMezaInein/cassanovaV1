@@ -3,12 +3,16 @@ import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV, CONCEPTOS_COLUMNS } from '../../../constants'
-import { setTextTable, setMoneyTable } from '../../../functions/setters'
+import { setTextTable, setMoneyTable, setTextTableReactDom } from '../../../functions/setters'
 import Layout from '../../../components/layout/layout'
 import { ModalDelete, Modal } from '../../../components/singles'
-import { printResponseErrorAlert, errorAlert, doneAlert, waitAlert } from '../../../functions/alert'
+import { printResponseErrorAlert, errorAlert, doneAlert, waitAlert, questionAlert2, customInputAlert } from '../../../functions/alert'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { ConceptoCard } from '../../../components/cards'
+import { InputGray } from '../../../components/form-components'
+import { Sending, Update } from '../../../components/Lottie'
+import { Small } from '../../../components/texts'
+import Swal from 'sweetalert2'
 
 const $ = require('jquery');
 
@@ -20,8 +24,17 @@ class Conceptos extends Component {
         title: 'Nuevo concepto',
         formeditado: 0,
         conceptos: [],
-        concepto: ''
+        concepto: '',
+        editable: {
+            value: '',
+            descripcion: false
+        },
+        form: {
+            descripcion: ''
+        },
+        flag: false
     }
+
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
@@ -75,14 +88,47 @@ class Conceptos extends Component {
         })
     }
 
+    doubleClick = (data) => {
+        const { form } = this.state
+        form.descripcion = data.descripcion
+        this.setState({...this.state, form})
+        customInputAlert(
+            <div>
+                <h2 className = 'swal2-title mb-4 mt-2'>
+                    EDITAR LA DESCRIPCIÓN
+                </h2>
+                <InputGray name = 'descripcion' withicon = { 0 } value = { form.descripcion } onChange = { this.onChange } as = 'textarea' rows ='6' />
+            </div>,
+            <Update />,
+            () => { console.log('QUESTION ALERT 2') },
+            () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); console.log('HOLA') },
+        )
+    }
+
+    clearForm = () => {
+        const { form } = this.state
+        let aux = Object.keys(form)
+        aux.forEach((element) => {
+            switch(element){
+                default:
+                    form[element] = ''
+                break;
+            }
+        })
+        return form
+    }
+
     setConceptos = conceptos => {
+        const { editable } = this.state
         let aux = []
         conceptos.map((concepto) => {
             aux.push(
                 {
                     actions: this.setActions(concepto),
                     clave: renderToString(setTextTable(concepto.clave)),
-                    descripcion: renderToString(setTextTable(concepto.descripcion)),
+                    descripcion: editable.value === concepto.id && editable.descripcion === true  ? 
+                        this.renderInput(concepto)
+                        : setTextTableReactDom(concepto.descripcion, this.doubleClick, concepto),
                     unidad: concepto.unidad ? renderToString(setTextTable(concepto.unidad.nombre)) : '',
                     costo: renderToString(setMoneyTable(concepto.costo)),
                     partida: concepto.subpartida ? concepto.subpartida.partida ? renderToString(setTextTable(concepto.subpartida.partida.nombre)) : '' : '',
@@ -94,6 +140,13 @@ class Conceptos extends Component {
             return false
         })
         return aux
+    }
+
+    onChange = e => {
+        const { value, name } = e.target
+        const { form, flag } = this.state
+        form[name] = value
+        this.setState({...this.state, form, flag: !flag})
     }
 
     setActions = () => {
@@ -177,34 +230,15 @@ class Conceptos extends Component {
     }
 
     render() {
-        const { modalDelete, conceptos, modalSee, concepto } = this.state
+        const { modalDelete, modalSee, concepto, flag } = this.state
         return (
             <Layout active={'presupuesto'}  {...this.props}>
-                <NewTableServerRender
-                    columns={CONCEPTOS_COLUMNS}
-                    data={conceptos}
-                    title='Conceptos'
-                    subtitle='Listado de conceptos'
-                    mostrar_boton={true}
-                    abrir_modal={false}
-                    url='/presupuesto/conceptos/add'
-                    mostrar_acciones={true}
-                    actions={{
-                        'edit': { function: this.changePageEdit },
-                        'delete': { function: this.openModalDelete },
-                        'see': { function: this.openModalSee }
-                    }}
-                    exportar_boton={true}
-                    onClickExport={() => this.exportConceptosAxios()}
-                    accessToken={this.props.authUser.access_token}
-                    setter={this.setConceptos}
-                    urlRender= { `${URL_DEV}v2/presupuesto/conceptos` }
-                    idTable='kt_datatable_conceptos'
-                    cardTable='cardTable'
-                    cardTableHeader='cardTableHeader'
-                    cardBody='cardBody'
-                    checkbox={true} />
-
+                <NewTableServerRender columns = { CONCEPTOS_COLUMNS } title = 'Conceptos' subtitle = 'Listado de conceptos'
+                    mostrar_boton = { true } abrir_modal = { false } url = '/presupuesto/conceptos/add' mostrar_acciones = { true }
+                    actions = { { 'edit': { function: this.changePageEdit }, 'delete': { function: this.openModalDelete }, 'see': { function: this.openModalSee } } }
+                    exportar_boton = { true } onClickExport = { () => this.exportConceptosAxios() } accessToken = { this.props.authUser.access_token }
+                    setter = { this.setConceptos } urlRender= { `${URL_DEV}v2/presupuesto/conceptos` } idTable = 'kt_datatable_conceptos' cardTable = 'cardTable'
+                    cardTableHeader = 'cardTableHeader' cardBody = 'cardBody' checkbox = { true } flag = { flag } />
                 <ModalDelete
                     title="¿Estás seguro que deseas eliminar el concepto?"
                     show={modalDelete}
