@@ -101,11 +101,14 @@ class TableButton extends Component{
 
 class NewTableServerRender extends Component {
 
-    state = {
-        newElements: []
-    }
+    state = { newElements: [] }
 
-    componentDidUpdate() {
+    componentDidUpdate(prevProps) {
+        if(prevProps.flag !== this.props.flag){
+            console.log(prevProps.flag, this.props.flag)
+            var table = $(this.refs.main)
+            table.DataTable().clear().draw();
+        }
         const { cardTable, cardTableHeader, cardBody, isTab, isNav} = this.props
         $("body").addClass("card-sticky-on")
 
@@ -268,7 +271,45 @@ class NewTableServerRender extends Component {
             },
 
             colReorder: true,
-            responsive: true,
+            responsive: {
+                details: {
+                    renderer: function(api, rowIdx, columns){
+                        let arregloRendered = []
+                        var data = $.map( columns, function ( col, i ) {
+                            
+                            if(col.hidden){
+                                if(renderedHeader.includes(i) && false){
+                                    arregloRendered.push(col)
+                                    return '<tr data-dt-row="'+col.rowIndex+'" data-dt-column="'+col.columnIndex+'">'+
+                                        '<td>'+col.title+':'+'</td> '+
+                                        '<td id="row-'+col.rowIndex+'-column-'+i+'">'+renderToString(col.data)+'</td>'+
+                                    '</tr>'
+                                }else{
+                                    return '<tr data-dt-row="'+col.rowIndex+'" data-dt-column="'+col.columnIndex+'">'+
+                                        '<td>'+col.title+':'+'</td> '+
+                                        '<td>'+col.data+'</td>'+
+                                    '</tr>'
+                                }
+                            }
+                        } ).join('');
+
+                        let valor = $('<table/>').append( data )
+                        arregloRendered.forEach((col, index) => {
+                            /* console.log('column-'+col.rowIndex) */
+                            console.log(`row-${col.rowIndex}-column-${col.columnIndex}`)
+                            let columna = document.getElementById(`row-${col.rowIndex}-column-${col.columnIndex}`)
+                            console.log(columna, 'columna')
+                            if(columna)
+                                ReactDOM.render( col.data, columna)
+                            /* ReactDOM.render( col.data, document.getElementById('column-'+col.rowIndex)) */
+                        })
+     
+                        return data ?
+                            valor :
+                            false;
+                    }
+                }
+            },
             processing: true,
             serverSide: true,
             ajax: function (request, drawCallback, settings) {
@@ -391,6 +432,7 @@ class NewTableServerRender extends Component {
             columnDefs: [{
                 targets: renderedHeader,
                 createdCell: (td, cellData, rowData, row, col) => {
+                    console.log(td, 'TD')
                     ReactDOM.render( cellData, td)
                 }
             },
@@ -399,21 +441,6 @@ class NewTableServerRender extends Component {
                 'data': null,
                 'searchable': mostrar_acciones ? false : true,
                 'orderable': false,
-                /* render: function (data, type, row, meta) {
-                    if (global_variable.mostrar_acciones === true) {
-                        let aux = ''
-                        data.map((element) => {
-                            aux = aux + `<button name=${element.action}  id = ${row.id} class="btn btn-icon btn-actions-table btn-xs ml-2 btn-text-${element.btnclass} btn-hover-${element.btnclass}" title=${element.text}><i class="fas ${element.iconclass}"></i></button>`
-                            return false
-                        })
-                        return (
-                            '<div>' + aux + '</div>'
-                        )
-                    }
-                    else {
-                        return (`<div>${data}</div>`)
-                    }
-                }, */
                 createdCell: (td, cellData, rowData, row, col) => {
                     if (global_variable.mostrar_acciones === true) {
                         let elementos = _that.state.newElements
@@ -429,7 +456,7 @@ class NewTableServerRender extends Component {
                 'orderable': false
             }
             ],
-            lengthMenu: [[20, 30, 40, 50], [20, 30, 40, 50]],
+            lengthMenu: [[20], [20]],
             pageLength: 20,
             select: checkbox ? { style: 'multi' } : false
 

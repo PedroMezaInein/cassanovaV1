@@ -457,6 +457,29 @@ export function questionAlert2(title, text, action, html) {
     })
 }
 
+export function customInputAlert(html, iconHtml, success, cancel){
+    MySwal.fire({
+        title: '',
+        iconHtml: iconHtml,
+        html: html,
+        showCancelButton: true,
+        confirmButtonText: "ENVIAR",
+        cancelButtonText: "CANCELAR",
+        reverseButtons: true,
+        customClass: { 
+            cancelButton: 'bg-transparent bg-hover-danger text-danger text-hover-white px-3 py-1', 
+            confirmButton: 'bg-transparent bg-hover-primary text-primary text-hover-white px-3 py-1',
+            actions: 'd-flex justify-content-between px-0'
+        }
+    }).then((result) => {
+        if(result.dismiss)
+            cancel()
+        else
+            if(result.value)
+                success()
+    })
+}
+
 export function steps(action) {
     const steps = ['1', '2']
     const textQuestion = ['¿EL FORMULARIO SE LLENÓ POR MEDIO DE UNA LLAMADA?', '¿DESEAS ENVIAR EL CUESTIONARIO DE PROYECTO?']

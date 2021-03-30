@@ -1308,7 +1308,8 @@ export const CONCEPTOS_COLUMNS = [
     {
         Header: 'Descripción',
         accessor: 'descripcion',
-        class: 'desc-big'
+        class: 'desc-big',
+        customRender: true
     },
     {
         Header: 'Unidad',
