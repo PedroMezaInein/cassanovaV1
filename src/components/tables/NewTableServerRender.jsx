@@ -47,7 +47,7 @@ class TableButton extends Component{
     render(){
         const { cellData, row, actions, elementos } = this.props
         let valor = elementos[row]
-        if(cellData.length > 3)
+        if(cellData.length > 2)
             return(
                 <div className="w-100 d-flex justify-content-center">
                     <DropdownButton menualign = "right" title = { <i className="fas fa-chevron-circle-down icon-md p-0 "></i> } id = 'dropdown-button-newtable' >
