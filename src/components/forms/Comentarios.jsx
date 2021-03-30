@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Input, InputGray} from '../form-components'
+import { InputGray} from '../form-components'
 import { ItemSlider } from '../../components/singles'
 import { Nav, Tab, Form} from 'react-bootstrap'
 import { validateAlert } from '../../functions/alert'

@@ -1023,7 +1023,7 @@ class Ingresos extends Component {
         })
     }
     render() {
-        const { ingresos, form, options, modalDelete, modalFacturas, modalAdjuntos, facturas, data, formeditado, modalSee, ingreso, active, modalFacturaExtranjera, formFacturaExtranjera } = this.state
+        const { ingresos, form, options, modalDelete, modalFacturas, modalAdjuntos, facturas, data, formeditado, modalSee, ingreso, active, modalFacturaExtranjera } = this.state
         return (
             <Layout active={'administracion'}  {...this.props}>
                 <NewTableServerRender columns={INGRESOS_COLUMNS} data={ingresos}
