@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
 import { Input, Button } from '../../form-components'
 import { faPlus } from '@fortawesome/free-solid-svg-icons' 
-import { validateAlert } from '../../../functions/alert'
+import { validateAlert, questionAlert } from '../../../functions/alert'
 
 class AreaForm extends Component {
     handleChange = function(e, element){
@@ -57,7 +57,9 @@ class AreaForm extends Component {
                                     <div className="tagify form-control p-2 d-flex justify-content-center align-items-center w-auto" tabIndex="-1" style={{ borderWidth: "0px" }} key={key}>
                                         <div className=" image-upload d-flex px-3 align-items-center tagify__tag tagify__tag--success tagify--noAnim"  >
                                             <div title="Borrar archivo" className="tagify__tag__removeBtn" role="button"
-                                                aria-label="remove tag" onClick={(e) => { e.preventDefault(); deleteSubarea(element) }} >
+                                                aria-label="remove tag"
+                                                onClick={(e) => { questionAlert('¿ESTÁS SEGURO?', 'DESEAS ELIMINAR EL SUBÁREA', () => deleteSubarea(element)) }} 
+                                                >
                                             </div>
                                             <div>
                                                 <span className="tagify__tag-text p-1 white-space" contentEditable = { true } 
@@ -82,7 +84,7 @@ class AreaForm extends Component {
                                             className="tagify__tag__removeBtn"
                                             role="button"
                                             aria-label="remove tag"
-                                            onClick={(e) => { e.preventDefault(); deleteSubarea(element) }}
+                                            onClick={(e) => { questionAlert('¿ESTÁS SEGURO?', 'DESEAS ELIMINAR EL SUBÁREA', () => deleteSubarea(element)) }} 
                                         >
                                         </div>
                                         <div>
@@ -110,7 +112,6 @@ class AreaForm extends Component {
                         </div>
                         : ''
                 }
-
             </Form>
         )
     }

@@ -18,7 +18,8 @@ class Partidas extends Component {
         form: {
             partida: '',
             subpartida: '',
-            subpartidas: []
+            subpartidas: [],
+            subpartidasEditable: []
         },
         formeditado:0,
         modal:{
@@ -64,18 +65,22 @@ class Partidas extends Component {
     }
 
     deleteSubpartida = value => {
-        const { form } = this.state
-        let aux = []
-        form.subpartidas.find(function (element, index) {
-            if (element.toString() !== value.toString())
-                aux.push(element)
-            return false
-        });
-        form.subpartidas = aux
-        this.setState({
-            ...this.state,
-            form
-        })
+        if(value.id){
+            this.deleteSubpartidaAxios(value.id)
+        }else{
+            const { form } = this.state
+            let aux = []
+            form.subpartidas.find(function (element, index) {
+                if (element.toString() !== value.toString())
+                    aux.push(element)
+                return false
+            });
+            form.subpartidas = aux
+            this.setState({
+                ...this.state,
+                form
+            })
+        }
     }
 
     onChange = e => {
@@ -86,6 +91,23 @@ class Partidas extends Component {
             ...this.state,
             form
         })
+    }
+
+    editSubpartida = (value, subpartida) => {
+        const { form } = this.state
+        let bandera = true
+        form.subpartidasEditable.forEach((element) => {
+            if(element.id === subpartida.id){
+                bandera = false
+                element.nombre = value
+            }
+        });
+        if(bandera)
+            form.subpartidasEditable.push({
+                id: subpartida.id,
+                nombre: value
+            })
+        this.setState({...this.state,form})
     }
 
     setPartidas = partidas => {
@@ -150,6 +172,7 @@ class Partidas extends Component {
         aux.map((element) => {
             switch (element) {
                 case 'subpartidas':
+                case 'subpartidasEditable':
                     form[element] = []
                     break;
                 default:
@@ -205,13 +228,10 @@ class Partidas extends Component {
         const { form, modal } = this.state
         modal.form = true
         form.partida = partida.nombre
-        let aux = []
-        partida.subpartidas.map((element) => {
-            aux.push(element.nombre)
-            return false
-        })
-        form.subpartidas = aux
+        form.subpartidas = []
+        form.subpartidasEditable = []
         this.setState({
+            ...this.state,
             modal,
             title: 'Editar partida',
             partida: partida,
@@ -253,6 +273,23 @@ class Partidas extends Component {
         this.deletePartidaAxios()
     }
 
+    deleteSubpartidaAxios = async(id) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { partida } = this.state
+        await axios.delete(`${URL_DEV}v2/catalogos/partidas/${partida.id}/subpartida/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { partida } = response.data
+                this.getPartidaAxios()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Subpartida eliminado con éxito.')
+                this.setState({ ...this.state,  partida: partida })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     async getPartidaAxios() {
         $('#kt_datatable_partidas').DataTable().ajax.reload();
     }
@@ -289,7 +326,7 @@ class Partidas extends Component {
     async updatePartidaAxios() {
         const { access_token } = this.props.authUser
         const { form, partida } = this.state
-        await axios.put(URL_DEV + 'partidas/' + partida.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.put(`${URL_DEV}v2/catalogos/partidas/${partida.id}`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { modal } = this.state
                 modal.form = false
@@ -373,8 +410,8 @@ class Partidas extends Component {
                 />
 
                 <Modal size="xl" show={modal.form} title = {title} handleClose={this.handleClose}>
-                    <PartidaForm form = { form } onChange = { this.onChange }
-                        addSubpartida = { this.addSubpartida } deleteSubpartida = { this.deleteSubpartida }
+                    <PartidaForm partida={partida} form = { form } onChange = { this.onChange }
+                        addSubpartida = { this.addSubpartida } editSubpartida = { this.editSubpartida }  deleteSubpartida = { this.deleteSubpartida }
                         title = { title } onSubmit = { this.onSubmit } formeditado={formeditado}/>
                 </Modal>
                 <ModalDelete title={"¿Estás seguro que deseas eliminar la partida?"} show = { modal.delete } handleClose = { this.handleCloseDelete } onClick={(e) => { e.preventDefault(); waitAlert(); this.deletePartidaAxios() }}>
@@ -386,7 +423,6 @@ class Partidas extends Component {
         )
     }
 }
-
 
 const mapStateToProps = state => {
     return {
