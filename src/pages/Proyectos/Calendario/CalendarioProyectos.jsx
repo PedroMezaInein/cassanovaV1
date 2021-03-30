@@ -480,7 +480,6 @@ class CalendarioProyectos extends Component {
                                             </tr>
                                             :
                                             proyectos.map((proyecto, index) => {
-                                                console.log(proyecto)
                                                 let fechaInicio = ''
                                                 let fechaFin = ''
                                                 if(proyecto.fecha_fin === null){
