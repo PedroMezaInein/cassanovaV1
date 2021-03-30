@@ -277,11 +277,10 @@ class Partidas extends Component {
         waitAlert()
         const { access_token } = this.props.authUser
         const { partida } = this.state
-        await axios.delete(`${URL_DEV}v2/catalogos/partidas/${partida.id}/partida/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.delete(`${URL_DEV}v2/catalogos/partidas/${partida.id}/subpartida/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { key } = this.state
                 const { partida } = response.data
-                this.controlledTab(key)
+                this.getPartidaAxios()
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Subpartida eliminado con éxito.')
                 this.setState({ ...this.state,  partida: partida })
             }, (error) => { printResponseErrorAlert(error) }
@@ -327,7 +326,7 @@ class Partidas extends Component {
     async updatePartidaAxios() {
         const { access_token } = this.props.authUser
         const { form, partida } = this.state
-        await axios.put(URL_DEV + 'partidas/' + partida.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.put(`${URL_DEV}v2/catalogos/partidas/${partida.id}`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { modal } = this.state
                 modal.form = false
@@ -424,7 +423,6 @@ class Partidas extends Component {
         )
     }
 }
-
 
 const mapStateToProps = state => {
     return {
