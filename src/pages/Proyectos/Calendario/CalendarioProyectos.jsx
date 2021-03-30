@@ -495,7 +495,23 @@ class CalendarioProyectos extends Component {
                         </div>
                     </Card.Body>
                 </Card>
-                <Modal show = { modal } size="lg" title = {proyecto?proyecto.nombre:'Información del proyecto'} handleClose = { this.handleClose } >
+                <Modal show = { modal } size="lg" title = {
+                    proyecto?
+                        proyecto.estatus ?
+                            <>
+                                {proyecto.nombre}
+                                <span className="label label-lg label-inline font-weight-bold py-1 px-2" style={{
+                                    color: `${proyecto.estatus.letra}`,
+                                    backgroundColor: `${proyecto.estatus.fondo}`,
+                                    fontSize: "75%",
+                                    marginLeft:'10px'
+                                    }} >
+                                    {proyecto.estatus.estatus}
+                                </span>
+                            </>
+                        : <span>-</span>
+                    :''
+                } handleClose = { this.handleClose } >
                     <InformacionProyecto proyecto={proyecto} printDates={this.printDates} addComentario = { this.addComentarioAxios } form = { form } onChange = { this.onChange } handleChange = { this.handleChangeComentario }/>
                 </Modal>
             </Layout>
