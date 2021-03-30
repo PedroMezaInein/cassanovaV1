@@ -66,7 +66,6 @@ class PresupuestoDiseñoForm extends Component {
         });
         onChangeCheckboxes(aux, 'partidasMobiliario')
     }
-
     handleChangeCheckboxPartidasObra = e => {
         const { name, checked } = e.target
         const { form, onChangeCheckboxes } = this.props
