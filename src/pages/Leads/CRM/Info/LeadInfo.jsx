@@ -483,20 +483,8 @@ class LeadInfo extends Component {
                     formDiseño.acabados = lead.presupuesto_diseño.acabados_e_instalaciones
                     formDiseño.mobiliario = lead.presupuesto_diseño.mobiliario
                     formDiseño.obra_civil = lead.presupuesto_diseño.obra_civil
-                    if(lead.presupuesto_diseño.desglose){
-                        formDiseño.no_desglose = false;
-                        formDiseño.si_desglose = true;
-                    }else{
-                        formDiseño.si_desglose = false;
-                        formDiseño.no_desglose = true;
-                    }
-                    if(lead.presupuesto_diseño.con_renders){
-                        formDiseño.no_renders = false;
-                        formDiseño.si_renders = true;
-                    }else{
-                        formDiseño.si_renders = false;
-                        formDiseño.no_renders = true;
-                    }
+                    formDiseño.si_desglose = lead.presupuesto_diseño.desglose === 1 ? true : false
+                    formDiseño.si_renders = lead.presupuesto_diseño.con_renders  === 1 ? true : false
                     let aux = JSON.parse(lead.presupuesto_diseño.actividades)
                     if (aux) {
                         aux = aux.actividades
@@ -953,28 +941,13 @@ class LeadInfo extends Component {
         if (formDiseño.subtotal > 0) {
             formDiseño.total = formDiseño.subtotal * (1 - (formDiseño.descuento / 100))
         }
-        if (type === 'radio') {
-            if (name === "si_desglose") {
-                formDiseño.no_desglose = false
-            }
-            else if (name === "no_desglose") {
-                formDiseño.si_desglose = false
-            }
-            formDiseño[name] = checked
-        }
-        if (type === 'radio') {
-            if (name === "si_renders") {
-                formDiseño.no_renders = false
-            }
-            else if (name === "no_renders") {
-                formDiseño.si_renders = false
-            }
-            formDiseño[name] = checked
-        }
         if (type === 'checkbox')
             formDiseño[name] = checked
-        else
-            formDiseño[name] = value
+        
+        if(type === 'radio'){
+            if(name === 'si_desglose' || name === 'si_renders')
+                formDiseño[name] = value === "true" ? true : false
+        }
 
         switch (name) {
             case 'construccion_interiores_inf':
@@ -988,6 +961,7 @@ class LeadInfo extends Component {
             default:
                 break;
         }
+        console.log(formDiseño, 'FORMDISEÑO')
         this.setState({ ...this.state, formDiseño })
     }
 
