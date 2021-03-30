@@ -234,8 +234,8 @@ class CalendarioProyectos extends Component {
         let fecha = new moment([año, meses.indexOf(mes), diaActual + 1])
         // let duracion = fechaFin.diff(fechaInicio, 'days') + 1;
         let esDiaActualInicioFecha = (diaActual + 1) === parseInt(fechaInicio.format('D'))
-        let esMesActualInicioFecha = fechaInicio.format('M') == fecha.format('M')
-        let esAnioActualInicioFecha = fechaInicio.format('Y') == fecha.format('Y')
+        let esMesActualInicioFecha = fechaInicio.format('M') === fecha.format('M')
+        let esAnioActualInicioFecha = fechaInicio.format('Y') === fecha.format('Y')
 
         if ((diaActual + 1) === 1 || (esDiaActualInicioFecha && esMesActualInicioFecha && esAnioActualInicioFecha)) {
 

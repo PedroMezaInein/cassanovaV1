@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { InputGray, Button } from '../../form-components'
 import { Form } from 'react-bootstrap'
-import { validateAlert } from '../../../functions/alert';
 import Moment from 'react-moment'
 import Pagination from 'react-js-pagination';
 
