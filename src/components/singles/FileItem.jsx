@@ -61,43 +61,36 @@ class FileItem extends Component {
 
     render() {
         const { item, onClickDelete, anotherDate } = this.props
-        return (
-            <tr>
-                <td className="pl-1">
-                    <a href={item.url} target='_blank' rel="noopener noreferrer">
-                        <div className="row mx-0 row-paddingless">
-                            <div className="col-auto svg-icon svg-icon-3x mr-3">
-                                {this.getIcon()}
-                            </div>
-                            <div className="col text-dark-75 font-weight-bolder text-hover-primary font-size-lg text-truncate align-self-center">{item.name}</div>
+        return(<tr>
+            <td className="pl-1">
+                <a href={item.url} target='_blank' rel="noopener noreferrer">
+                    <div className="row mx-0 row-paddingless">
+                        <div className="col-auto svg-icon svg-icon-3x mr-3">
+                            {this.getIcon()}
                         </div>
-                    </a>
-                </td>
-                <td className="text-center">
-                    <span className="text-muted font-weight-bold">
-                        <Moment format="DD/MM/YYYY">
-                            {item.created_at}
-                        </Moment>
-                    </span>
-                </td>
-                {
-                    anotherDate &&
-                        <td className="text-center">
-                            <span className="text-muted font-weight-bold">
-                                <Moment format="DD/MM/YYYY">
-                                    {anotherDate}
-                                </Moment>
-                            </span>
-                        </td>
-                }
-                {
-                    onClickDelete &&
-                        <td className="pr-0 text-right">
-                            <span className='btn btn-icon btn-s text-danger text-hover-danger my-2' onClick={(e) => { e.preventDefault(); onClickDelete(item) }} >
-                                <i className="fas fa-trash icon-md text-muted text-hover-danger"></i>
-                            </span>
-                        </td>
-                }
+                        <div className="col text-dark-75 font-weight-bolder text-hover-primary font-size-lg text-truncate align-self-center">{item.name}</div>
+                    </div>
+                </a>
+            </td>
+            <td className="text-center">
+                <span className="text-muted font-weight-bold">
+                    <Moment format="DD/MM/YYYY">
+                        {item.created_at}
+                    </Moment>
+                </span>
+            </td>
+            {anotherDate?<td className="text-center">
+                <span className="text-muted font-weight-bold">
+                    <Moment format="DD/MM/YYYY">
+                        {anotherDate}
+                    </Moment>
+                </span>
+            </td>:<td></td>}
+            {onClickDelete &&(<td className="pr-0 text-right">
+                <span className='btn btn-icon btn-s text-danger text-hover-danger my-2' onClick={(e) => { e.preventDefault(); onClickDelete(item) }} >
+                    <i className="fas fa-trash icon-md text-muted text-hover-danger"></i>
+                </span>
+            </td>)}
             </tr>
         )
     }

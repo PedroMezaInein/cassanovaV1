@@ -20,7 +20,8 @@ class Areas extends Component {
         form: {
             nombre: '',
             subarea: '',
-            subareas: []
+            subareas: [],
+            subareasEditable: []
         },
         formeditado:0,
         modal: false,
@@ -65,18 +66,20 @@ class Areas extends Component {
     }
 
     deleteSubarea = value => {
-        const { form } = this.state
-        let aux = []
-        form.subareas.find(function (element, index) {
-            if (element.toString() !== value.toString())
-                aux.push(element)
-            return false
-        });
-        form.subareas = aux
-        this.setState({
-            ...this.state,
-            form
-        })
+        if(value.id){
+            this.deleteSubareaAxios(value.id)
+        }else{
+            const { form } = this.state
+            let aux = []
+            form.subareas.find(function (element, index) {
+                if (element.toString() !== value.toString())
+                    aux.push(element)
+                return false
+            });
+            form.subareas = aux
+            this.setState({ ...this.state, form })
+        }
+        
     }
 
     onChange = e => {
@@ -87,6 +90,23 @@ class Areas extends Component {
             ...this.state,
             form
         })
+    }
+
+    editSubarea = (value, subarea) => {
+        const { form } = this.state
+        let bandera = true
+        form.subareasEditable.forEach((element) => {
+            if(element.id === subarea.id){
+                bandera = false
+                element.nombre = value
+            }
+        });
+        if(bandera)
+            form.subareasEditable.push({
+                id: subarea.id,
+                nombre: value
+            })
+        this.setState({...this.state,form})
     }
 
     setAreas = areas => {
@@ -137,6 +157,7 @@ class Areas extends Component {
         aux.map((element) => {
             switch (element) {
                 case 'subareas':
+                case 'subareasEditable':
                     form[element] = []
                     break;
                 default:
@@ -214,20 +235,9 @@ class Areas extends Component {
         let { tipo } = this.state
         tipo = 'compras'
         form.nombre = area.nombre
-        let aux = []
-        area.subareas.map((element) => {
-            aux.push(element.nombre)
-            return false
-        })
-        form.subareas = aux
-        this.setState({
-            modal: true,
-            title: 'Editar área',
-            area: area,
-            form,
-            tipo,
-            formeditado:1
-        })
+        form.subareas = []
+        form.subareasEditable = []
+        this.setState({ ...this.state, modal: true, title: 'Editar área', area: area, form, tipo, formeditado:1 })
     }
 
     openModalEditVentas = area => {
@@ -235,20 +245,9 @@ class Areas extends Component {
         let { tipo } = this.state
         tipo = 'ventas'
         form.nombre = area.nombre
-        let aux = []
-        area.subareas.map((element) => {
-            aux.push(element.nombre)
-            return false
-        })
-        form.subareas = aux
-        this.setState({
-            modal: true,
-            title: 'Editar área',
-            area: area,
-            form,
-            tipo,
-            formeditado:1
-        })
+        form.subareas = []
+        form.subareasEditable = []
+        this.setState({ ...this.state, modal: true, title: 'Editar área', area: area, form, tipo, formeditado:1 })
     }
 
     openModalEditEgresos = area => {
@@ -256,20 +255,9 @@ class Areas extends Component {
         let { tipo } = this.state
         tipo = 'egresos'
         form.nombre = area.nombre
-        let aux = []
-        area.subareas.map((element) => {
-            aux.push(element.nombre)
-            return false
-        })
-        form.subareas = aux
-        this.setState({
-            modal: true,
-            title: 'Editar área',
-            area: area,
-            form,
-            tipo,
-            formeditado:1
-        })
+        form.subareas = []
+        form.subareasEditable = []
+        this.setState({ ...this.state, modal: true, title: 'Editar área', area: area, form, tipo, formeditado:1 })
     }
 
     openModalSee = area => {
@@ -299,6 +287,24 @@ class Areas extends Component {
 
     safeDelete = e => () => {
         this.deleteAreaAxios()
+    }
+
+    deleteSubareaAxios = async(id) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { area } = this.state
+        await axios.delete(`${URL_DEV}v2/catalogos/areas/${area.id}/subarea/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { key } = this.state
+                const { area } = response.data
+                this.controlledTab(key)
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Subarea eliminado con éxito.')
+                this.setState({ ...this.state,  area: area })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
     }
 
     async addAreaAxios() {
@@ -335,25 +341,13 @@ class Areas extends Component {
     async updateAreaAxios() {
         const { access_token } = this.props.authUser
         const { form, area } = this.state
-        await axios.put(URL_DEV + 'areas/' + area.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.put(`${URL_DEV}v2/catalogos/areas/${area.id}`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-
                 const { key } = this.state
                 this.controlledTab(key)
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito el área.')
-                
-                this.setState({
-                    ...this.state,
-                    modal: false,
-                    form: this.clearForm(),
-                    area: ''
-                })
-
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                this.setState({ ...this.state, modal: false, form: this.clearForm(), area: '' })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -518,15 +512,8 @@ class Areas extends Component {
                 </Tabs>
 
                 <Modal size="xl" title={title} show={modal} handleClose={this.handleClose}>
-                    <AreasForm 
-                        form={form} 
-                        onChange={this.onChange}
-                        addSubarea={this.addSubarea} 
-                        deleteSubarea={this.deleteSubarea}
-                        title={title} 
-                        onSubmit={this.onSubmit} 
-                        formeditado={formeditado}
-                    />
+                    <AreasForm area = {area} form = { form } onChange = { this.onChange } addSubarea = { this.addSubarea } editSubarea = { this.editSubarea } 
+                        deleteSubarea = { this.deleteSubarea } title = { title } onSubmit = { this.onSubmit } formeditado = { formeditado } />
                 </Modal>
                 
                 <ModalDelete title={"¿Estás seguro que deseas eliminar el área?"} show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); waitAlert(); this.safeDelete(e)() }}>
@@ -539,7 +526,6 @@ class Areas extends Component {
         )
     }
 }
-
 
 const mapStateToProps = state => {
     return {

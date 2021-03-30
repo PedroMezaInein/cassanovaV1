@@ -155,6 +155,8 @@ class LeadInfo extends Component {
             obra_civil: true,
             si_desglose: true,
             no_desglose: false,
+            si_renders: true,
+            no_renders: false,
         },
         activeKey: '',
         defaultKey: '',
@@ -487,6 +489,13 @@ class LeadInfo extends Component {
                     }else{
                         formDiseño.si_desglose = false;
                         formDiseño.no_desglose = true;
+                    }
+                    if(lead.presupuesto_diseño.con_renders){
+                        formDiseño.no_renders = false;
+                        formDiseño.si_renders = true;
+                    }else{
+                        formDiseño.si_renders = false;
+                        formDiseño.no_renders = true;
                     }
                     let aux = JSON.parse(lead.presupuesto_diseño.actividades)
                     if (aux) {
@@ -950,6 +959,15 @@ class LeadInfo extends Component {
             }
             else if (name === "no_desglose") {
                 formDiseño.si_desglose = false
+            }
+            formDiseño[name] = checked
+        }
+        if (type === 'radio') {
+            if (name === "si_renders") {
+                formDiseño.no_renders = false
+            }
+            else if (name === "no_renders") {
+                formDiseño.si_renders = false
             }
             formDiseño[name] = checked
         }

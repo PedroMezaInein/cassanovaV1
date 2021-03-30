@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import { InputGray, Button } from '../../form-components'
 import { Form } from 'react-bootstrap'
-import { validateAlert } from '../../../functions/alert';
 import Moment from 'react-moment'
 import Pagination from 'react-js-pagination';
 
@@ -43,9 +42,9 @@ class BuscarLead extends Component {
                                     <th style={{ minWidth: "100px" }}>
                                         <span className="text-dark-75 font-size-lgsm">Nombre y fecha</span>
                                     </th>
-                                    <th className="text-center">Origen</th>
-                                    <th className="text-center">Estatus</th>
-                                    <th className="text-center">Empresa</th>
+                                    <th className="text-center" style={{ minWidth: "174px" }}>Origen</th>
+                                    <th className="text-center" style={{minWidth:"120px"}}>Estatus</th>
+                                    <th className="text-center" style={{minWidth:"92px"}}>Empresa</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -53,7 +52,7 @@ class BuscarLead extends Component {
                                     leads.length === 0 ?
                                         <tr>
                                             <td colSpan = '4' className = 'text-center'>
-                                                <span className="text-muted font-weight-bold d-block font-size-sm mt-1">
+                                                <span className="text-muted font-weight-bold d-block font-size-lg mt-1">
                                                     Sin datos
                                                 </span>
                                             </td>
@@ -80,7 +79,7 @@ class BuscarLead extends Component {
                                                                     <span className="text-dark-75 font-weight-bolder">
                                                                         Ingreso: 
                                                                     </span>
-                                                                    <span>
+                                                                    <span>&nbsp;
                                                                         <Moment format="YYYY/MM/DD">
                                                                             {lead.created_at}
                                                                         </Moment>
@@ -89,16 +88,16 @@ class BuscarLead extends Component {
                                                                         lead.prospecto ?
                                                                             lead.prospecto.contactos ?
                                                                                 lead.prospecto.contactos.length ?
-                                                                                    <>
+                                                                                    <div>
                                                                                         <span className="text-dark-75 font-weight-bolder">
                                                                                             U.Contacto: 
                                                                                         </span>
-                                                                                        <span>
+                                                                                        <span>&nbsp;
                                                                                             <Moment format="YYYY/MM/DD">
                                                                                                 {lead.prospecto.contactos[0].created_at}
                                                                                             </Moment>
                                                                                         </span>
-                                                                                    </>
+                                                                                    </div>
                                                                                 : ''
                                                                             : ''
                                                                         : ''
@@ -131,11 +130,7 @@ class BuscarLead extends Component {
                                                             lead.empresa ?
                                                                 lead.empresa.logo_principal ?
                                                                     lead.empresa.logo_principal.length ?
-                                                                        <div className = 'row mx-0 justify-content-center'>
-                                                                            <div className="col-md-9 col-lg-7">
-                                                                                <img alt = 'LOGO EMPREAS' src = { lead.empresa.logo_principal[0].url} className = 'img-fluid'/>
-                                                                            </div>
-                                                                        </div>
+                                                                        <img alt = 'LOGO EMPREAS' src = { lead.empresa.logo_principal[0].url} style={{maxWidth:'75%', height:'auto'}}/>
                                                                     : lead.empresa.name
                                                                 : lead.empresa.name
                                                             : '-'
