@@ -104,7 +104,7 @@ export function setColor(text) {
 }
 export function setLabelTable(text) {
     return (
-        <div className="text-center">
+        <div className="text-center white-space-nowrap">
             <div className="d-none">
                 {text.estatus}
             </div>

@@ -210,19 +210,52 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                 />
                                             </div>
                                             <div className="col-md-4">
-                                                <InputNumberGray
-                                                    formeditado={formeditado}
-                                                    requirevalidation={1}
-                                                    placeholder="NÚMERO DE RENDERS"
-                                                    value={formDiseño.renders}
-                                                    iconclass={"fas fa-photo-video"}
-                                                    thousandseparator={true}
-                                                    onChange={onChange}
-                                                    name="renders"
-                                                    messageinc="Ingresa los números de renders."
-                                                />
+                                                <div class="form-group">
+                                                    <label className="col-form-label text-dark-75 font-weight-bold font-size-lg">¿Se incluyen renders?</label>
+                                                    <div class="radio-inline">
+                                                        <label class="radio">
+                                                            <input
+                                                                type="radio"
+                                                                name='si_renders'
+                                                                value={formDiseño.si_renders}
+                                                                onChange={onChange}
+                                                                checked={formDiseño.si_renders}
+                                                            />Si
+															<span></span>
+                                                        </label>
+                                                        <label class="radio">
+                                                            <input 
+                                                                type="radio"
+                                                                name='no_renders'
+                                                                value={formDiseño.no_renders}
+                                                                onChange={onChange}
+                                                                checked={formDiseño.no_renders}
+                                                            />No
+															<span></span>
+                                                        </label>
+													</div>
+												</div>
                                             </div>
                                         </div>
+                                        {
+                                            formDiseño.si_renders?
+                                                <div className="form-group row form-group-marginless">
+                                                    <div className="col-md-4">
+                                                        <InputNumberGray
+                                                            formeditado={formeditado}
+                                                            requirevalidation={1}
+                                                            placeholder="NÚMERO DE RENDERS"
+                                                            value={formDiseño.renders}
+                                                            iconclass={"fas fa-photo-video"}
+                                                            thousandseparator={true}
+                                                            onChange={onChange}
+                                                            name="renders"
+                                                            messageinc="Ingresa los números de renders."
+                                                        />
+                                                    </div>
+                                                </div>
+                                            :''
+                                        }
                                     </Col>
                                 </Row>
                                 <div className="form-group row form-group-marginless">
