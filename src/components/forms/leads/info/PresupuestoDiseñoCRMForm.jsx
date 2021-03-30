@@ -210,15 +210,15 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                 />
                                             </div>
                                             <div className="col-md-4">
-                                                <div class="form-group">
+                                                <div className="form-group">
                                                     <label className="col-form-label text-dark-75 font-weight-bold font-size-lg">¿Se incluyen renders?</label>
-                                                    <div class="radio-inline">
-                                                        <label class="radio">
+                                                    <div className="radio-inline">
+                                                        <label className="radio">
                                                             <input type = "radio" name = 'si_renders' value = { true } onChange = { onChange } 
                                                                 checked = { formDiseño.si_renders === true ? true : false } />Si
 															<span></span>
                                                         </label>
-                                                        <label class="radio">
+                                                        <label className="radio">
                                                             <input type = "radio" name = 'si_renders' value = { false } onChange = { onChange }
                                                                 checked = { formDiseño.si_renders === false ? true : false } />No
 															<span></span>
