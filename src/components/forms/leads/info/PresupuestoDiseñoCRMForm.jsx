@@ -71,7 +71,7 @@ class PresupuestoDiseñoCRMForm extends Component {
     }
 
     updateTotal = e => {
-        const { name, value } = e.target
+        const { value } = e.target
         const { onChange } = this.props
         let re = new RegExp(",", "g");
         let aux = value.toString().replace(re, '')
