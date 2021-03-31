@@ -575,6 +575,7 @@ class Tareas extends Component {
     async reordeingTasksAxios(source, destination, task) {
         const { access_token } = this.props.authUser
         const { subActiveKey } = this.state
+        waitAlert()
         await axios.put(URL_DEV + 'user/tareas/order', { source, destination, task }, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
                 if(source.grupo !== destination.grupo){
@@ -589,6 +590,7 @@ class Tareas extends Component {
                         auxTareas = tablero.tareas
                     return false
                 })
+                Swal.close()
                 this.setState({
                     ...this.state,
                     modal: false,
