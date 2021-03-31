@@ -157,6 +157,7 @@ class LeadInfo extends Component {
             no_desglose: false,
             si_renders: true,
             no_renders: false,
+            proyecto:''
         },
         activeKey: '',
         defaultKey: '',
@@ -210,7 +211,7 @@ class LeadInfo extends Component {
                 form.proyecto = lead.prospecto?lead.prospecto.nombre_proyecto:''
                 form.estado = lead.estado !== null ? lead.estado.toString() : ''
                 form.fecha = new Date(lead.created_at)
-                
+                formDiseño.proyecto = lead.prospecto?lead.prospecto.nombre_proyecto:''
                 if(formDiseño.esquema === 'esquema_1'){
                     formDiseño.tiempo_ejecucion_diseno = 7
                     formDiseño.semanas = this.calculateSemanas(formDiseño.tiempo_ejecucion_diseno)
@@ -477,6 +478,7 @@ class LeadInfo extends Component {
                 }
                 form.fecha = new Date(lead.created_at)
                 if (lead.presupuesto_diseño) {
+                    formDiseño.proyecto = lead.prospecto?lead.prospecto.nombre_proyecto:''
                     formDiseño.fase1 = lead.presupuesto_diseño.fase1
                     formDiseño.fase2 = lead.presupuesto_diseño.fase2
                     formDiseño.renders = lead.presupuesto_diseño.renders

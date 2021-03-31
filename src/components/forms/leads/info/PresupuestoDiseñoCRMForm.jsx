@@ -143,6 +143,23 @@ class PresupuestoDiseñoCRMForm extends Component {
                                     <Col md={8} className="align-self-center">
                                         <div className="form-group row form-group-marginless">
                                             <div className="col-md-4">
+                                                <InputGray 
+                                                    withtaglabel={1}
+                                                    withtextlabel={1}
+                                                    withplaceholder={1}
+                                                    withicon={1}
+                                                    requirevalidation={1}
+                                                    withformgroup={1}
+                                                    formeditado={formeditado}
+                                                    placeholder='NOMBRE DEL PROYECTO'
+                                                    iconclass="far fa-folder-open"
+                                                    name='proyecto'
+                                                    value={formDiseño.proyecto}
+                                                    onChange={onChange}
+                                                    messageinc="Ingresa el nombre del proyecto."
+                                                />
+                                            </div>
+                                            <div className="col-md-4">
                                                 <InputNumberGray
                                                     requirevalidation={1}
                                                     formeditado={formeditado}
@@ -167,20 +184,6 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                     messageinc="Ingresa selecciona el esquema."
                                                     withtaglabel={1}
                                                     withtextlabel={1}
-                                                />
-                                            </div>
-                                            <div className="col-md-4">
-                                                <InputMoneyGray
-                                                    requirevalidation={0}
-                                                    type="text"
-                                                    placeholder="DESCUENTO"
-                                                    value={formDiseño.descuento}
-                                                    iconclass={"fas fa-percentage"}
-                                                    thousandseparator={true}
-                                                    onChange={onChange}
-                                                    prefix={'%'}
-                                                    formeditado={formeditado}
-                                                    name="descuento"
                                                 />
                                             </div>
                                         </div>
@@ -210,26 +213,38 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                 />
                                             </div>
                                             <div className="col-md-4">
+                                                <InputMoneyGray
+                                                    requirevalidation={0}
+                                                    type="text"
+                                                    placeholder="DESCUENTO"
+                                                    value={formDiseño.descuento}
+                                                    iconclass={"fas fa-percentage"}
+                                                    thousandseparator={true}
+                                                    onChange={onChange}
+                                                    prefix={'%'}
+                                                    formeditado={formeditado}
+                                                    name="descuento"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="form-group row form-group-marginless">
+                                            <div className="col-md-4">
                                                 <div className="form-group">
                                                     <label className="col-form-label text-dark-75 font-weight-bold font-size-lg">¿Se incluyen renders?</label>
                                                     <div className="radio-inline">
                                                         <label className="radio">
-                                                            <input type = "radio" name = 'si_renders' value = { true } onChange = { onChange } 
-                                                                checked = { formDiseño.si_renders === true ? true : false } />Si
-															<span></span>
+                                                            <input type = "radio" name = 'si_renders' value = { true } onChange = { onChange } checked = { formDiseño.si_renders === true ? true : false } />Si
+                                                            <span></span>
                                                         </label>
                                                         <label className="radio">
-                                                            <input type = "radio" name = 'si_renders' value = { false } onChange = { onChange }
-                                                                checked = { formDiseño.si_renders === false ? true : false } />No
-															<span></span>
+                                                            <input type = "radio" name = 'si_renders' value = { false } onChange = { onChange } checked = { formDiseño.si_renders === false ? true : false } />No
+                                                            <span></span>
                                                         </label>
-													</div>
-												</div>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                        {
-                                            formDiseño.si_renders?
-                                                <div className="form-group row form-group-marginless">
+                                            {
+                                                formDiseño.si_renders?
                                                     <div className="col-md-4">
                                                         <InputNumberGray
                                                             formeditado={formeditado}
@@ -243,9 +258,9 @@ class PresupuestoDiseñoCRMForm extends Component {
                                                             messageinc="Ingresa los números de renders."
                                                         />
                                                     </div>
-                                                </div>
-                                            :''
-                                        }
+                                                :''
+                                            }
+                                        </div>
                                     </Col>
                                 </Row>
                                 <div className="form-group row form-group-marginless">
