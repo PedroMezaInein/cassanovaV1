@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileAlt } from '@fortawesome/free-regular-svg-icons';
 import { faPhone, faEnvelope } from '@fortawesome/free-solid-svg-icons';
 import { GOLD } from '../constants';
+import { isMobile } from 'react-device-detect';
 
 function compare( a, b ) {
     if ( a.name < b.name ){
@@ -99,7 +100,15 @@ export function setTextTable(text) {
 
 export function setTextTableReactDom(text, doubleClick, data){
     return(
-        <div onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data)} } > <Small> {text} </Small> </div>
+        <div onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data)} }
+            onClick = { (e) => { 
+                e.preventDefault(); 
+                if(isMobile){
+                    doubleClick(data)
+                }
+            } } > 
+            <Small> {text} </Small> 
+        </div>
     )
 }
 
