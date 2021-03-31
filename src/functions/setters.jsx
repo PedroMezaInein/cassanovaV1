@@ -98,16 +98,31 @@ export function setTextTable(text) {
     )
 }
 
-export function setTextTableReactDom(text, doubleClick, data){
+export function setTextTableReactDom(text, doubleClick, data, tipo){
     return(
-        <div onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data)} }
+        <div className = { text === '' ? 'm-5 p-5' : 'm-2'} onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data, tipo)} }
             onClick = { (e) => { 
                 e.preventDefault(); 
                 if(isMobile){
-                    doubleClick(data)
+                    doubleClick(data, tipo)
                 }
             } } > 
             <Small> {text} </Small> 
+        </div>
+    )
+}
+
+export function setMoneyTableReactDom(text, doubleClick, data, tipo){
+    return(
+        <div className = { text === '' ? 'm-5 p-5' : 'm-2'} onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data, tipo)} }
+            onClick = { (e) => { 
+                e.preventDefault(); 
+                if(isMobile){
+                    doubleClick(data, tipo)
+                }
+            } } > 
+            <NumberFormat value={text} displayType='text' thousandSeparator={true} prefix='$'
+                renderText={text => <Small> {text} </Small>} />
         </div>
     )
 }

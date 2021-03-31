@@ -3,13 +3,13 @@ import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV, CONCEPTOS_COLUMNS } from '../../../constants'
-import { setTextTable, setMoneyTable, setTextTableReactDom } from '../../../functions/setters'
+import { setTextTable, setMoneyTableReactDom, setTextTableReactDom } from '../../../functions/setters'
 import Layout from '../../../components/layout/layout'
 import { ModalDelete, Modal } from '../../../components/singles'
 import { printResponseErrorAlert, errorAlert, doneAlert, waitAlert, customInputAlert } from '../../../functions/alert'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { ConceptoCard } from '../../../components/cards'
-import { InputGray } from '../../../components/form-components'
+import { InputGray, InputMoneyGray } from '../../../components/form-components'
 import { Update } from '../../../components/Lottie'
 import Swal from 'sweetalert2'
 
@@ -24,14 +24,9 @@ class Conceptos extends Component {
         formeditado: 0,
         conceptos: [],
         concepto: '',
-        editable: {
-            value: '',
-            descripcion: false
-        },
         form: {
             descripcion: ''
         },
-        flag: false
     }
 
     componentDidMount() {
@@ -87,20 +82,37 @@ class Conceptos extends Component {
         })
     }
 
-    doubleClick = (data) => {
+    doubleClick = (data, tipo) => {
+        $('.input')
         const { form } = this.state
-        form.descripcion = data.descripcion
-        this.setState({...this.state, form})
+        form[tipo] = data[tipo]
+        this.setState({form})
         customInputAlert(
             <div>
-                <h2 className = 'swal2-title mb-4 mt-2'>
-                    EDITAR LA DESCRIPCIÓN
-                </h2>
-                <InputGray name = 'descripcion' withicon = { 0 } value = { form.descripcion } onChange = { this.onChange } as = 'textarea' rows ='6' />
+                <h2 className = 'swal2-title mb-4 mt-2'> EDITAR LA DESCRIPCIÓN </h2>
+                {
+                    tipo === 'descripcion' &&
+                        <div className="input-group input-group-solid rounded-0">
+                            <textarea name="descripcion" rows="6" id='descripcion-form' defaultValue = { data.descripcion }
+                                className="form-control text-dark-50 font-weight-bold undefined form-control text-uppercase">
+                            </textarea>
+                        </div>
+                }
+                {
+                    tipo === 'costo' &&
+                        <div className="row mx-0 justify-content-center">
+                            <div className="col-12 col-md-8">
+                                <div className="input-group input-group-solid rounded-0">
+                                    <input className="form-control text-dark-50 font-weight-bold text-uppercase" 
+                                    type="text" inputmode="numeric" id = 'costo-form' defaultValue = {data.costo} />
+                                </div>
+                            </div>
+                        </div>
+                }
             </div>,
             <Update />,
-            () => { console.log('QUESTION ALERT 2') },
-            () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); console.log('HOLA') },
+            () => { this.patchConcepto(data, tipo) },
+            () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
         )
     }
 
@@ -118,18 +130,15 @@ class Conceptos extends Component {
     }
 
     setConceptos = conceptos => {
-        const { editable } = this.state
         let aux = []
         conceptos.map((concepto) => {
             aux.push(
                 {
                     actions: this.setActions(concepto),
                     clave: renderToString(setTextTable(concepto.clave)),
-                    descripcion: editable.value === concepto.id && editable.descripcion === true  ? 
-                        this.renderInput(concepto)
-                        : setTextTableReactDom(concepto.descripcion, this.doubleClick, concepto),
+                    descripcion: setTextTableReactDom(concepto.descripcion, this.doubleClick, concepto, 'descripcion'),
                     unidad: concepto.unidad ? renderToString(setTextTable(concepto.unidad.nombre)) : '',
-                    costo: renderToString(setMoneyTable(concepto.costo)),
+                    costo: setMoneyTableReactDom(concepto.costo, this.doubleClick, concepto, 'costo'),
                     partida: concepto.subpartida ? concepto.subpartida.partida ? renderToString(setTextTable(concepto.subpartida.partida.nombre)) : '' : '',
                     subpartida: concepto.subpartida ? renderToString(setTextTable(concepto.subpartida.nombre)) : '',
                     proveedor: renderToString(setTextTable(concepto.proveedor ? concepto.proveedor.razon_social : '')),
@@ -143,9 +152,10 @@ class Conceptos extends Component {
 
     onChange = e => {
         const { value, name } = e.target
-        const { form, flag } = this.state
+        console.log(value, name)
+        const { form } = this.state
         form[name] = value
-        this.setState({...this.state, form, flag: !flag})
+        this.setState({form})
     }
 
     setActions = () => {
@@ -174,6 +184,23 @@ class Conceptos extends Component {
             }
         )
         return aux
+    }
+
+    patchConcepto = async( data,tipo ) => {
+        const { access_token } = this.props.authUser
+        let value = document.getElementById(`${tipo}-form`).value
+        waitAlert()
+        await axios.put(`${URL_DEV}v2/presupuesto/conceptos/${tipo}/${data.id}`, 
+            { value: value }, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.getConceptosTable()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El concepto fue editado con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
     }
 
     async deleteConceptoAxios() {
@@ -229,7 +256,7 @@ class Conceptos extends Component {
     }
 
     render() {
-        const { modalDelete, modalSee, concepto, flag } = this.state
+        const { modalDelete, modalSee, concepto } = this.state
         return (
             <Layout active={'presupuesto'}  {...this.props}>
                 <NewTableServerRender columns = { CONCEPTOS_COLUMNS } title = 'Conceptos' subtitle = 'Listado de conceptos'
@@ -237,7 +264,7 @@ class Conceptos extends Component {
                     actions = { { 'edit': { function: this.changePageEdit }, 'delete': { function: this.openModalDelete }, 'see': { function: this.openModalSee } } }
                     exportar_boton = { true } onClickExport = { () => this.exportConceptosAxios() } accessToken = { this.props.authUser.access_token }
                     setter = { this.setConceptos } urlRender= { `${URL_DEV}v2/presupuesto/conceptos` } idTable = 'kt_datatable_conceptos' cardTable = 'cardTable'
-                    cardTableHeader = 'cardTableHeader' cardBody = 'cardBody' checkbox = { true } flag = { flag } />
+                    cardTableHeader = 'cardTableHeader' cardBody = 'cardBody' checkbox = { true }  />
                 <ModalDelete
                     title="¿Estás seguro que deseas eliminar el concepto?"
                     show={modalDelete}
