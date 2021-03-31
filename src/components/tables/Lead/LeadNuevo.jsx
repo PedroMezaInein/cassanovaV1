@@ -85,7 +85,7 @@ class LeadNuevo extends Component {
                                                                     <span className="symbol-label font-size-h5 bg-info-o-20 text-info">{lead.nombre.charAt(0)}</span>
                                                                 </div>
                                                                 <div>
-                                                                    <a onClick = { ( e ) => { e.preventDefault(); clickOneLead(lead.id) } } className="text-dark-75 font-weight-bolder text-hover-info mb-1 font-size-lg">{lead.nombre}</a>
+                                                                    <span onClick = { ( e ) => { e.preventDefault(); clickOneLead(lead.id) } } className="text-dark-75 font-weight-bolder text-hover-info mb-1 font-size-lg">{lead.nombre}</span>
                                                                 </div>
                                                             </div>
                                                         </td>

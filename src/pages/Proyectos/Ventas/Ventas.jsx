@@ -1040,7 +1040,7 @@ class Ventas extends Component {
         })
     }
     render() {
-        const { modalDelete, modalFacturas, modalAdjuntos, options, form, ventas, venta, facturas, data, formeditado, modalSee, active, modalFacturaExtranjera, formFacturaExtranjera } = this.state
+        const { modalDelete, modalFacturas, modalAdjuntos, options, form, ventas, venta, facturas, data, formeditado, modalSee, active, modalFacturaExtranjera } = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
                 <NewTableServerRender columns={VENTAS_COLUMNS} data={ventas}

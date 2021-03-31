@@ -46,13 +46,11 @@ class Empleados extends Component {
         await axios.get(`${URL_DEV}v2/rh/checador/${quincena}/${mes}/${año}`, { responseType: 'json', headers: { 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { users, feriados} = response.data
-                let { data, arregloDiasFeriados, diasNumber, days } = this.state
+                let { data, arregloDiasFeriados, diasNumber } = this.state
 
                 data.users=users
                 data.feriados = feriados
                 arregloDiasFeriados=[]
-
-                days=[]
                 let arregloFinal =[]
                 let arregloNombres =[]
                 let arr = []
