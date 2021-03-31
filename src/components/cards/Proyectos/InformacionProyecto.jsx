@@ -17,10 +17,10 @@ export default class InformacionProyecto extends Component {
         return ''
     }
     render() {
-        const { proyecto, printDates, form, addComentario, onChange, handleChange} = this.props
+        const { proyecto, printDates, form, addComentario, onChange, handleChange, tipo} = this.props
         return (
             <div className="col-md-12 mt-4">
-                <Tab.Container defaultActiveKey="tab_informacion_general">
+                <Tab.Container defaultActiveKey={ tipo === '' ? "tab_informacion_general" : proyecto.comentarios.length ? "tab_mostrar_comentarios" : "tab_informacion_general"}>
                     <Nav className="nav nav-light-primary nav-pills d-flex justify-content-end">
                         <Nav.Item className="nav-item">
                             <Nav.Link className="nav-link px-3" eventKey="tab_informacion_general">

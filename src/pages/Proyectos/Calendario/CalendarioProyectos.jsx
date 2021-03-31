@@ -37,7 +37,8 @@ class CalendarioProyectos extends Component {
                 }
             },
             comentario: ''
-        }
+        },
+        tipo: ''
     }
 
     componentDidMount() {
@@ -47,9 +48,15 @@ class CalendarioProyectos extends Component {
             const { modulo: { url } } = element
             return pathname === url
         });
-
         const { mes, año } = this.state
         this.getContentCalendarAxios(mes, año)
+        const { search: queryString } = this.props.history.location
+        if (queryString) {
+            let id = parseInt( new URLSearchParams(queryString).get("id") )
+            if(id){
+                this.openModal({id: id, tab: 'comentario'})
+            }
+        }
     }
 
     getContentCalendarAxios = async (mes, año) => {
@@ -206,7 +213,7 @@ class CalendarioProyectos extends Component {
         )
     }
 
-    handleClose = () => { this.setState({...this.state, modal: false}) }
+    handleClose = () => { this.setState({...this.state, modal: false, tipo: ''}) }
 
     printDates = dato => {
         let fechaInicio = ''
@@ -245,7 +252,6 @@ class CalendarioProyectos extends Component {
         let esAnioActualInicioFecha = fechaInicio.format('Y') === fecha.format('Y')
 
         if ((diaActual + 1) === 1 || (esDiaActualInicioFecha && esMesActualInicioFecha && esAnioActualInicioFecha)) {
-
 
             let diasMesActual = fecha.daysInMonth()
             if ((diaActual + 1) === 1) {
@@ -301,16 +307,17 @@ class CalendarioProyectos extends Component {
         )
     }
 
-    openModal = async(proyecto) => {
+    openModal = async(proy) => {
         const { access_token } = this.props.authUser
         waitAlert()
-        await axios.get(`${URL_DEV}v2/proyectos/proyectos/proyecto/${proyecto.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(`${URL_DEV}v2/proyectos/proyectos/proyecto/${proy.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { proyecto } = response.data
                 this.setState({
                     ...this.state,
                     modal: true,
                     proyecto: proyecto,
+                    tipo: proy.tab ? proy.tab : '',
                     form: this.clearForm(),
                 })
                 Swal.close()
@@ -403,7 +410,7 @@ class CalendarioProyectos extends Component {
         return form
     }
     render() {
-        const { mes, año, proyectos, dias, modal, proyecto, form} = this.state
+        const { mes, año, proyectos, dias, modal, proyecto, form, tipo } = this.state
         return (
             <Layout active='proyectos' {... this.props}>
                 <Card className='card-custom'>
@@ -525,7 +532,7 @@ class CalendarioProyectos extends Component {
                         : <span>-</span>
                     :''
                 } handleClose = { this.handleClose } >
-                    <InformacionProyecto proyecto={proyecto} printDates={this.printDates} addComentario = { this.addComentarioAxios } form = { form } onChange = { this.onChange } handleChange = { this.handleChangeComentario }/>
+                    <InformacionProyecto proyecto={proyecto} printDates={this.printDates} addComentario = { this.addComentarioAxios } form = { form } onChange = { this.onChange } handleChange = { this.handleChangeComentario } tipo = { tipo } />
                 </Modal>
             </Layout>
             
