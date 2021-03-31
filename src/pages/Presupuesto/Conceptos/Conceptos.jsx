@@ -141,6 +141,7 @@ class Conceptos extends Component {
                     tipo === 'descripcion' &&
                         <div className="input-group input-group-solid rounded-0">
                             <textarea name="descripcion" rows="6" id='descripcion-form' defaultValue = { data.descripcion }
+                                onChange = { (e) => { this.onChange(e.target.value, tipo)} }
                                 className="form-control text-dark-50 font-weight-bold undefined form-control text-uppercase">
                             </textarea>
                         </div>
@@ -268,18 +269,7 @@ class Conceptos extends Component {
     patchConcepto = async( data,tipo ) => {
         const { access_token } = this.props.authUser
         const { form } = this.state
-        let value = ''
-        switch(tipo){
-            case 'proveedor':
-            case 'costo':
-            case 'subpartida':
-            case 'unidad':
-                value = form[tipo]
-                break
-            default:
-                value = document.getElementById(`${tipo}-form`).value
-                break
-        }
+        let value = form[tipo]
         waitAlert()
         await axios.put(`${URL_DEV}v2/presupuesto/conceptos/${tipo}/${data.id}`, 
             { value: value }, 
