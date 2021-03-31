@@ -467,8 +467,8 @@ export function customInputAlert(html, iconHtml, success, cancel){
         cancelButtonText: "CANCELAR",
         reverseButtons: true,
         customClass: { 
-            cancelButton: 'bg-transparent bg-hover-danger text-danger text-hover-white px-3 py-1', 
-            confirmButton: 'bg-transparent bg-hover-primary text-primary text-hover-white px-3 py-1',
+            cancelButton: 'bg-transparent bg-hover-danger text-danger text-hover-white', 
+            confirmButton: 'bg-transparent bg-hover-primary text-primary text-hover-white',
             actions: 'd-flex justify-content-between px-0'
         }
     }).then((result) => {

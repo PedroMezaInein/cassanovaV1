@@ -1317,7 +1317,8 @@ export const CONCEPTOS_COLUMNS = [
     },
     {
         Header: 'Costo',
-        accessor: 'costo'
+        accessor: 'costo',
+        customRender: true
     },
     {
         Header: 'Proveedor',
