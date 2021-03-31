@@ -1,6 +1,5 @@
 import { Small, B } from '../components/texts'
 import React from 'react';
-import ReactDOM from 'react-dom'
 import Moment from 'react-moment'
 import NumberFormat from 'react-number-format';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -230,7 +229,7 @@ export function setListTable(arreglo, nombre) {
             {
                 arreglo.map((element,  key ) => {
                     return (
-                        <Small key={key}  key={key}>
+                        <Small key = { key }>
                             &#8226; {element[nombre]} <br/>
                         </Small>
                     )
