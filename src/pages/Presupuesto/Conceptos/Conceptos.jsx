@@ -3,15 +3,16 @@ import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV, CONCEPTOS_COLUMNS } from '../../../constants'
-import { setTextTable, setMoneyTableReactDom, setTextTableReactDom } from '../../../functions/setters'
+import { setTextTable, setMoneyTableReactDom, setTextTableReactDom, setOptions } from '../../../functions/setters'
 import Layout from '../../../components/layout/layout'
 import { ModalDelete, Modal } from '../../../components/singles'
 import { printResponseErrorAlert, errorAlert, doneAlert, waitAlert, customInputAlert } from '../../../functions/alert'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { ConceptoCard } from '../../../components/cards'
-import { InputGray, InputMoneyGray } from '../../../components/form-components'
+import { InputGray, InputMoney, InputMoneyGray, SelectSearchGray } from '../../../components/form-components'
 import { Update } from '../../../components/Lottie'
 import Swal from 'sweetalert2'
+import NumberFormat from 'react-number-format'
 
 const $ = require('jquery');
 
@@ -25,8 +26,16 @@ class Conceptos extends Component {
         conceptos: [],
         concepto: '',
         form: {
-            descripcion: ''
-        },
+            descripcion: '',
+            costo: 0,
+            proveedor: ''
+        },options:{
+            partidas: [],
+            subpartidas: [],
+            unidades: [],
+            proveedores: []
+        }
+        
     }
 
     componentDidMount() {
@@ -37,6 +46,7 @@ class Conceptos extends Component {
             const { modulo: { url } } = element
             return pathname === url
         });
+        this.getOptionsAxios()
         if (!conceptos)
             history.push('/')
     }
@@ -82,14 +92,51 @@ class Conceptos extends Component {
         })
     }
 
+    setSwalHeader = (tipo) => {
+        switch(tipo){
+            case 'descripcion':
+                return `Editar la ${tipo}`
+            case 'costo':
+            case 'proveedor':
+                return `Editar el ${tipo}`
+            default:
+                return ''
+        }
+    }
+
+    setOptions = (data, tipo) => {
+        const { options } = this.state
+        console.log(data)
+        switch(tipo){
+            case 'proveedor':
+                return options.proveedores
+            case 'unidad':
+                return options.unidades
+            case 'subpartida':
+                if(data.subpartida)
+                    if(data.subpartida.partida)
+                        if(data.subpartida.partida.subpartidas)
+                            return setOptions(data.subpartida.partida.subpartidas, 'nombre', 'id')
+                return []
+        }
+    }
+
     doubleClick = (data, tipo) => {
-        $('.input')
-        const { form } = this.state
-        form[tipo] = data[tipo]
-        this.setState({form})
+        const { form, options } = this.state
+        switch(tipo){
+            case 'proveedor':
+            case 'unidad':
+            case 'subpartida':
+                if(data[tipo])
+                    form[tipo] = data[tipo].id.toString()
+                break
+            default:
+                form[tipo] = data[tipo]
+                break
+        }
         customInputAlert(
             <div>
-                <h2 className = 'swal2-title mb-4 mt-2'> EDITAR LA DESCRIPCIÓN </h2>
+                <h2 className = 'swal2-title mb-4 mt-2'> { this.setSwalHeader(tipo) } </h2>
                 {
                     tipo === 'descripcion' &&
                         <div className="input-group input-group-solid rounded-0">
@@ -103,17 +150,31 @@ class Conceptos extends Component {
                         <div className="row mx-0 justify-content-center">
                             <div className="col-12 col-md-8">
                                 <div className="input-group input-group-solid rounded-0">
-                                    <input className="form-control text-dark-50 font-weight-bold text-uppercase" 
-                                    type="text" inputmode="numeric" id = 'costo-form' defaultValue = {data.costo} />
+                                    <NumberFormat value = { form[tipo] } displayType = 'input' thousandSeparator = { true }
+                                        prefix = '$' className = 'form-control text-dark-50 font-weight-bold text-uppercase'
+                                        renderText = { form => <div> form[tipo] </div>} defaultValue = { data[tipo] }
+                                        onValueChange = { (values) => this.onChange(values.value, tipo)}/>
                                 </div>
                             </div>
                         </div>
+                }
+                {
+                    tipo !== 'descripcion' && tipo !== 'costo' &&
+                        <SelectSearchGray options = { this.setOptions(data, tipo) }
+                            onChange = { (value) => { this.updateSelectSearch(value, tipo)} } name = { tipo }
+                            value = { form[tipo] } />
                 }
             </div>,
             <Update />,
             () => { this.patchConcepto(data, tipo) },
             () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
         )
+    }
+
+    updateSelectSearch = (value, tipo) => {
+        const { form } = this.state
+        form[tipo] = value
+        this.setState({...this.state, form})
     }
 
     clearForm = () => {
@@ -137,11 +198,11 @@ class Conceptos extends Component {
                     actions: this.setActions(concepto),
                     clave: renderToString(setTextTable(concepto.clave)),
                     descripcion: setTextTableReactDom(concepto.descripcion, this.doubleClick, concepto, 'descripcion'),
-                    unidad: concepto.unidad ? renderToString(setTextTable(concepto.unidad.nombre)) : '',
+                    unidad: concepto.unidad ? setTextTableReactDom(concepto.unidad.nombre, this.doubleClick, concepto, 'unidad') : '',
                     costo: setMoneyTableReactDom(concepto.costo, this.doubleClick, concepto, 'costo'),
                     partida: concepto.subpartida ? concepto.subpartida.partida ? renderToString(setTextTable(concepto.subpartida.partida.nombre)) : '' : '',
-                    subpartida: concepto.subpartida ? renderToString(setTextTable(concepto.subpartida.nombre)) : '',
-                    proveedor: renderToString(setTextTable(concepto.proveedor ? concepto.proveedor.razon_social : '')),
+                    subpartida: concepto.subpartida ? setTextTableReactDom(concepto.subpartida.nombre, this.doubleClick, concepto, 'subpartida') : '',
+                    proveedor: setTextTableReactDom(concepto.proveedor ? concepto.proveedor.razon_social : '', this.doubleClick, concepto, 'proveedor'),
                     id: concepto.id
                 }
             )
@@ -150,12 +211,10 @@ class Conceptos extends Component {
         return aux
     }
 
-    onChange = e => {
-        const { value, name } = e.target
-        console.log(value, name)
+    onChange = (value, tipo) => {
         const { form } = this.state
-        form[name] = value
-        this.setState({form})
+        form[tipo] = value
+        this.setState({...this.state,form})
     }
 
     setActions = () => {
@@ -186,9 +245,41 @@ class Conceptos extends Component {
         return aux
     }
 
+    getOptionsAxios = async() => {
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}conceptos/options`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { unidades, partidas, proveedores } = response.data
+                const { options } = this.state
+                options['unidades'] = setOptions(unidades, 'nombre', 'id')
+                options['partidas'] = setOptions(partidas, 'nombre', 'id')
+                options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
+                this.setState({ ...this.state, options })
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     patchConcepto = async( data,tipo ) => {
         const { access_token } = this.props.authUser
-        let value = document.getElementById(`${tipo}-form`).value
+        const { form } = this.state
+        let value = ''
+        switch(tipo){
+            case 'proveedor':
+            case 'costo':
+            case 'subpartida':
+            case 'unidad':
+                value = form[tipo]
+                break
+            default:
+                value = document.getElementById(`${tipo}-form`).value
+                break
+        }
         waitAlert()
         await axios.put(`${URL_DEV}v2/presupuesto/conceptos/${tipo}/${data.id}`, 
             { value: value }, 
