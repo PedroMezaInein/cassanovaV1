@@ -106,7 +106,6 @@ class NewTableServerRender extends Component {
 
     componentDidUpdate(prevProps) {
         if(prevProps.flag !== this.props.flag){
-            console.log(prevProps.flag, this.props.flag)
             var table = $(this.refs.main)
             table.DataTable().clear().draw();
         }
@@ -300,8 +299,6 @@ class NewTableServerRender extends Component {
                         arregloRendered.forEach((col, index) => {
                             let numero = columns.length - hiddenCount;
                             let td = valor[0]['children'][numero]['children'][1]
-                            console.log(td, 'td')
-                            console.log(col.data, 'col.data')
                             if(td)
                                 ReactDOM.render( col.data, td)
                         })
