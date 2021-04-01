@@ -5,7 +5,7 @@ import Layout from '../../../components/layout/layout'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { PAGOS_COLUMNS, URL_DEV } from '../../../constants'
 import { renderToString } from 'react-dom/server'
-import { setArrayTable, setDateTable, setMoneyTable, setTextTable, setOptions, setSelectOptions} from '../../../functions/setters'
+import { setArrayTable, setDateTable, setMoneyTable, setOptions, setSelectOptions, setTextTableCenter } from '../../../functions/setters'
 import { Modal, ModalDelete } from '../../../components/singles'
 import { errorAlert, waitAlert, printResponseErrorAlert, createAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis, createAlertSA2WithActionOnClose } from '../../../functions/alert'
 import AdjuntosForm from '../../../components/forms/AdjuntosForm'
@@ -106,11 +106,11 @@ class Pagos extends Component {
             aux.push(
                 {
                     actions: this.setActions(pago),
-                    identificador: renderToString(setTextTable(pago.id)),
+                    identificador: renderToString(setTextTableCenter(pago.id)),
                     fecha: renderToString(setDateTable(pago.created_at)),
-                    proveedor: renderToString(pago.proveedor ? setTextTable(pago.proveedor.razon_social) : ''),
-                    factura: renderToString(setTextTable(pago.factura ? 'Con factura' : 'Sin factura')),
-                    subarea: renderToString(setTextTable(pago.subarea ? pago.subarea.nombre : '')),
+                    proveedor: renderToString(pago.proveedor ? setTextTableCenter(pago.proveedor.razon_social) : ''),
+                    factura: renderToString(setTextTableCenter(pago.factura ? 'Con factura' : 'Sin factura')),
+                    subarea: renderToString(setTextTableCenter(pago.subarea ? pago.subarea.nombre : '')),
                     monto: renderToString(setMoneyTable(pago.monto)),
                     comision: renderToString(setMoneyTable(pago.comision ? pago.comision : 0.0)),
                     total: renderToString(setMoneyTable(pago.total)),
@@ -119,11 +119,11 @@ class Pagos extends Component {
                             { name: 'Empresa', text: pago.empresa ? pago.empresa.name : '' },
                             { name: 'Cuenta', text: pago.cuenta ? pago.cuenta.nombre : '' },
                             { name: 'No. de cuenta', text: pago.cuenta ? pago.cuenta.numero : '' }
-                        ]
+                        ],'190px'
                     )),
-                    pago: renderToString(setTextTable(pago.tipo_pago ? pago.tipo_pago.tipo : '')),
-                    impuesto: renderToString(setTextTable(pago.tipo_impuesto ? pago.tipo_impuesto.tipo : 'Sin definir')),
-                    estatus: renderToString(setTextTable(pago.estatus_compra ? pago.estatus_compra.estatus : '')),
+                    pago: renderToString(setTextTableCenter(pago.tipo_pago ? pago.tipo_pago.tipo : '')),
+                    impuesto: renderToString(setTextTableCenter(pago.tipo_impuesto ? pago.tipo_impuesto.tipo : 'Sin definir')),
+                    estatus: renderToString(setTextTableCenter(pago.estatus_compra ? pago.estatus_compra.estatus : '')),
                     id: pago.id
                 }
             )

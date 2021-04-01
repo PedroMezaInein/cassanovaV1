@@ -4,7 +4,7 @@ import axios from 'axios'
 import Layout from '../../../components/layout/layout'
 import { ModalDelete, Modal } from '../../../components/singles'
 import { PRESUPUESTO_DISEÑO_COLUMNS, URL_DEV, ADJUNTOS_PRESUPUESTOS_COLUMNS } from '../../../constants'
-import { setDateTable, setTextTable, setMoneyTable, setAdjuntosList, setListTable } from '../../../functions/setters'
+import { setDateTable, setTextTable, setMoneyTable, setAdjuntosList, setListTable, setTextTableCenter } from '../../../functions/setters'
 import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert } from '../../../functions/alert'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { renderToString } from 'react-dom/server'
@@ -159,10 +159,10 @@ class PresupuestoDiseño extends Component {
                 aux.push(
                     {
                         actions: this.setActions(presupuesto),
-                        empresa: renderToString(setTextTable(presupuesto.empresa ? presupuesto.empresa.name : '')),
+                        empresa: renderToString(setTextTableCenter(presupuesto.empresa ? presupuesto.empresa.name : '')),
                         fecha: renderToString(setDateTable(presupuesto.fecha)),
-                        m2: renderToString(setTextTable(presupuesto.m2)),
-                        esquema: renderToString(setTextTable(presupuesto.esquema ? presupuesto.esquema.replace('_', ' ') : '')),
+                        m2: renderToString(setTextTableCenter(presupuesto.m2)),
+                        esquema: renderToString(setTextTableCenter(presupuesto.esquema ? presupuesto.esquema.replace('_', ' ') : '')),
                         total: renderToString(setMoneyTable(presupuesto.total)),
                         cotizacion: renderToString(this.setCotizacion(presupuesto.pdfs)),
                         id: presupuesto.id,
@@ -175,9 +175,9 @@ class PresupuestoDiseño extends Component {
 
     setCotizacion = cotizaciones => {
         if(cotizaciones === undefined)
-            return setTextTable('Sin pdfs generados')
+            return setTextTableCenter('Sin pdfs generados')
         if(cotizaciones.length === 0)
-            return setTextTable('Sin pdfs generados')
+            return setTextTableCenter('Sin pdfs generados')
         let aux = []
         cotizaciones.map((cotizacion) => {
             aux.push({ numero: cotizacion.pivot.identificador })

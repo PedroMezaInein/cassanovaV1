@@ -3,7 +3,7 @@ import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV, ROLES_COLUMNS } from '../../constants'
-import { setTextTable, setColor } from '../../functions/setters'
+import { setTextTableCenter, setColor } from '../../functions/setters'
 import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert } from '../../functions/alert'
 import Layout from '../../components/layout/layout'
 import { Modal, ModalDelete } from '../../components/singles'
@@ -53,7 +53,7 @@ class RolesMercadotecnia extends Component {
         roles.map((rol) => {
             aux.push({
                 actions: this.setActions(rol),
-                rol: renderToString(setTextTable(rol.nombre)),
+                rol: renderToString(setTextTableCenter(rol.nombre)),
                 color: renderToString(setColor(rol.color)),
                 id: rol.id
             })

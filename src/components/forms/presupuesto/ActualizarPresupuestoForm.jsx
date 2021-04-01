@@ -202,7 +202,7 @@ class ActualizarPresupuestoForm extends Component {
                             </div>
                             <div className="card-toolbar" >
                                 <button className="btn btn-sm btn-light-primary font-weight-bold" onClick={openModal}>
-                                    Agregar concepto
+                                    AGREGAR CONCEPTO
                                 </button>
                             </div>                    
                         </Card.Header>

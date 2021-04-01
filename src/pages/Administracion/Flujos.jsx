@@ -3,7 +3,7 @@ import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV, FLUJOS_COLUMNS } from '../../constants'
-import { setOptions, setTextTable, setMoneyTable } from '../../functions/setters'
+import { setOptions, setTextTable, setMoneyTable, setTextTableCenter } from '../../functions/setters'
 import { waitAlert, errorAlert, printResponseErrorAlert } from '../../functions/alert'
 import Layout from '../../components/layout/layout'
 import { Card } from 'react-bootstrap'
@@ -140,7 +140,7 @@ class Flujos extends Component {
                         flujo.traspasos_destino_count - flujo.traspasos_origen_count
                     )
                 ),
-                cuenta: renderToString(setTextTable(flujo.nombre)),
+                cuenta: renderToString(setTextTableCenter(flujo.nombre)),
                 id: flujo.id
             })
             return false

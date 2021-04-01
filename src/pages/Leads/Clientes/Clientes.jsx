@@ -4,10 +4,9 @@ import Layout from '../../../components/layout/layout'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV, CLIENTES_COLUMNS} from '../../../constants'
-import { Small } from '../../../components/texts'
 import { Modal, ModalDelete } from '../../../components/singles'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
-import { setTextTable, setDateTable, setListTableLinkProyecto } from '../../../functions/setters'
+import { setDateTable, setListTableLinkProyecto, setTextTableCenter, setDireccion } from '../../../functions/setters'
 import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert } from '../../../functions/alert'
 import { ClienteCard } from '../../../components/cards'
 const $ = require('jquery');
@@ -41,14 +40,13 @@ class Leads extends Component {
         clientes.map((cliente) => {
             aux.push({
                 actions: this.setActions(cliente),
-                empresa: renderToString(setTextTable(cliente.empresa)),
-                nombre: renderToString(setTextTable(cliente.nombre)),
-                contacto: renderToString(setTextTable(cliente.contacto)),
-                proyecto: renderToString(cliente.proyectos.length === 0 ? setTextTable("Sin definir") : setListTableLinkProyecto(cliente.proyectos, "nombre")),
-                direccion: renderToString(this.setDireccion(cliente)),
-                perfil: renderToString(setTextTable(cliente.perfil)),
-                puesto: renderToString(setTextTable(cliente.puesto)),
-                rfc: renderToString(setTextTable(cliente.rfc)),
+                empresa: renderToString(setTextTableCenter(cliente.empresa)),
+                nombre: renderToString(setTextTableCenter(cliente.nombre)),
+                proyecto: renderToString(cliente.proyectos.length === 0 ? setTextTableCenter("Sin definir") : setListTableLinkProyecto(cliente.proyectos, "nombre")),
+                direccion: renderToString(setDireccion(cliente)),
+                perfil: renderToString(setTextTableCenter(cliente.perfil)),
+                puesto: renderToString(setTextTableCenter(cliente.puesto)),
+                rfc: renderToString(setTextTableCenter(cliente.rfc)),
                 fecha: renderToString(setDateTable(cliente.created_at)),
                 id: cliente.id
             })
@@ -57,28 +55,6 @@ class Leads extends Component {
         return aux
     }
 
-    
-    setDireccion = cliente => {
-        return (
-            <>
-                <Small className="mr-1">
-                    {cliente.calle}, colonia
-                </Small>
-                <Small className="mr-1">
-                    {cliente.colonia},
-                </Small>
-                <Small className="mr-1">
-                    {cliente.municipio},
-                </Small>
-                <Small className="mr-1">
-                    {cliente.estado}. CP:
-                </Small>
-                <Small className="mr-1">
-                    {cliente.cp}
-                </Small>
-            </>
-        )
-    }
     setActions = () => {
         let aux = []
         aux.push(

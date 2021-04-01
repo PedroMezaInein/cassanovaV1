@@ -5,7 +5,7 @@ import { Button } from '../../../components/form-components'
 import ClienteForm from '../../../components/forms/ClienteForm'
 import Layout from '../../../components/layout/layout'
 import { Modal } from '../../../components/singles'
-import { CP_URL, URL_DEV } from '../../../constants'
+import { CP_URL, URL_DEV, TOKEN_CP } from '../../../constants'
 import axios from 'axios'
 import { createAlertSA2WithClose, doneAlert, errorAlert, printResponseErrorAlert, questionAlert2, waitAlert } from '../../../functions/alert'
 import ProyectosFormGray from '../../../components/forms/proyectos/ProyectosFormGray'
@@ -341,7 +341,7 @@ class Contratar extends Component {
     }
 
     async cpAxios(value) {
-        await axios.get(CP_URL + value + '?type=simplified').then(
+        await axios.get(`${CP_URL}${value}?token=${TOKEN_CP}&type=simplified`).then(
             (response) => {
                 const { municipio, estado, asentamiento } = response.data.response
                 const { form } = this.state
@@ -365,7 +365,7 @@ class Contratar extends Component {
     }
 
     async cpProyectosAxios(value) {
-        await axios.get(CP_URL + value + '?type=simplified').then(
+        await axios.get(`${CP_URL}${value}?token=${TOKEN_CP}&type=simplified`).then(
             (response) => {
                 const { error } = response.data
                 const { formProyecto, options } = this.state

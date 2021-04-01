@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import { URL_DEV, UTILIDADES_COLUMNS} from '../../constants'
-import { setTextTable, setMoneyTable, setPercentTable} from '../../functions/setters'
+import { setTextTable, setMoneyTable, setPercentTable, setTextTableCenter} from '../../functions/setters'
 import Layout from '../../components/layout/layout'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
 const $ = require('jquery');
@@ -24,7 +24,7 @@ class Utilidad extends Component {
         let aux = []
         utilidades.map((utilidad) => {
             aux.push({
-                proyecto: renderToString(setTextTable(utilidad.nombre)),
+                proyecto: renderToString(setTextTableCenter(utilidad.nombre)),
                 ventas: renderToString(setMoneyTable(utilidad.ventas_count ? utilidad.ventas_count : 0)),
                 compras: renderToString(setMoneyTable(utilidad.compras_count ? utilidad.compras_count : 0)),
                 utilidad: renderToString(setMoneyTable(utilidad.ventas_count-utilidad.compras_count)),

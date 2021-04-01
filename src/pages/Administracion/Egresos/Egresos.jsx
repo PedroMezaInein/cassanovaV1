@@ -3,7 +3,7 @@ import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV, EGRESOS_COLUMNS } from '../../../constants'
-import { setOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setAdjuntosList, setSelectOptions } from '../../../functions/setters'
+import { setOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setAdjuntosList, setSelectOptions, setTextTableCenter } from '../../../functions/setters'
 import { errorAlert, waitAlert, createAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis, createAlertSA2WithActionOnClose, printResponseErrorAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { Button, FileInput } from '../../../components/form-components'
@@ -385,25 +385,25 @@ class egresos extends Component {
                 aux.push(
                     {
                         actions: this.setActions(egreso),
-                        identificador: renderToString(setTextTable(egreso.id)),
+                        identificador: renderToString(setTextTableCenter(egreso.id)),
                         cuenta: renderToString(setArrayTable(
                             [
                                 { name: 'Empresa', text: egreso.empresa ? egreso.empresa.name : '' },
                                 { name: 'Cuenta', text: egreso.cuenta ? egreso.cuenta.nombre : '' },
                                 { name: 'No. de cuenta', text: egreso.cuenta ? egreso.cuenta.numero : '' }
-                            ]
+                            ], '250px'
                         )),
                         proveedor: renderToString(setTextTable(egreso.proveedor ? egreso.proveedor.razon_social : '')),
-                        factura: renderToString(setTextTable(egreso.factura ? 'Con factura' : 'Sin factura')),
+                        factura: renderToString(setTextTableCenter(egreso.factura ? 'Con factura' : 'Sin factura')),
                         monto: renderToString(setMoneyTable(egreso.monto)),
                         comision: renderToString(setMoneyTable(egreso.comision ? egreso.comision : 0.0)),
                         total: renderToString(setMoneyTable(egreso.total)),
-                        impuesto: renderToString(setTextTable(egreso.tipo_impuesto ? egreso.tipo_impuesto.tipo : 'Sin definir')),
-                        tipoPago: renderToString(setTextTable(egreso.tipo_pago ? egreso.tipo_pago.tipo : '')),
+                        impuesto: renderToString(setTextTableCenter(egreso.tipo_impuesto ? egreso.tipo_impuesto.tipo : 'Sin definir')),
+                        tipoPago: renderToString(setTextTableCenter(egreso.tipo_pago ? egreso.tipo_pago.tipo : '')),
                         descripcion: renderToString(setTextTable(egreso.descripcion)),
-                        area: renderToString(setTextTable(egreso.subarea ? egreso.subarea.area.nombre : '')),
-                        subarea: renderToString(setTextTable(egreso.subarea ? egreso.subarea.nombre : '')),
-                        estatusCompra: renderToString(setTextTable(egreso.estatus_compra ? egreso.estatus_compra.estatus : '')),
+                        area: renderToString(setTextTableCenter(egreso.subarea ? egreso.subarea.area.nombre : '')),
+                        subarea: renderToString(setTextTableCenter(egreso.subarea ? egreso.subarea.nombre : '')),
+                        estatusCompra: renderToString(setTextTableCenter(egreso.estatus_compra ? egreso.estatus_compra.estatus : '')),
                         adjuntos: renderToString(setArrayTable(_aux)),
                         fecha: renderToString(setDateTable(egreso.created_at)),
                         id: egreso.id,

@@ -47,7 +47,7 @@ class Input extends Component {
     }
 
     render() {
-        const { error, onChange, placeholder, iconclass, messageinc, letterCase,customlabel,spellcheck, customicon, formgroup, ...props } = this.props 
+        const { error, onChange, placeholder, iconclass, messageinc, letterCase,customlabel,spellcheck, customicon, formgroup, value, ...props } = this.props 
         const { inputValido } =  this.state  
         
         const toInputUppercase = e => {
@@ -73,6 +73,7 @@ class Input extends Component {
                             className={ inputValido ? " form-control is-valid sin_icono" : " form-control is-invalid sin_icono" }
                             onChange={(e) => { e.preventDefault(); this.validarInput(e); onChange(toInputUppercase(e)) }}  
                             // onInput={toInputUppercase}
+                            value = { value === null || value === undefined ? '' : value }
                             {...props}
                             spellCheck={spellcheck}
                         /> 

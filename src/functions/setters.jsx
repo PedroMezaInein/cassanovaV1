@@ -1,11 +1,6 @@
-import { Small, B } from '../components/texts'
 import React from 'react';
 import Moment from 'react-moment'
 import NumberFormat from 'react-number-format';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFileAlt } from '@fortawesome/free-regular-svg-icons';
-import { faPhone, faEnvelope } from '@fortawesome/free-solid-svg-icons';
-import { GOLD } from '../constants';
 import { isMobile } from 'react-device-detect';
 
 function compare( a, b ) {
@@ -90,31 +85,51 @@ export function setSelectOptions(arreglo, name) {
     return aux
 }
 
-export function setTextTable(text) {
+export function setDireccion (cliente) {
     return (
-        <Small>
-            {text}
-        </Small>
+        <div className="font-size-11px text-justify">
+            {cliente.calle ? cliente.calle + ', colonia ': ''}
+            {cliente.colonia ? cliente.colonia + ', ' : ''}
+            {cliente.municipio ? cliente.municipio + ', ' : ''}
+            {cliente.estado ? cliente.estado : '' }
+            {cliente.cp ?  ', CP: ' + cliente.cp:''}
+        </div>
     )
 }
 
-export function setTextTableReactDom(text, doubleClick, data, tipo){
+export function setTextTable(text, minwidth) {
+    return (
+        <div className="font-size-11px" style={{minWidth:minwidth}}>
+            {text}
+        </div>
+    )
+}
+
+export function setTextTableCenter(text, minwidth) {
+    return (
+        <div className="font-size-11px text-center" style={{minWidth:minwidth}}>
+            {text}
+        </div>
+    )
+}
+
+export function setTextTableReactDom(text, doubleClick, data, tipo, style){
     return(
-        <div className = { text === '' ? 'm-5 p-5' : 'm-2'} onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data, tipo)} }
+        <div className = {`${style} ${(text === '' ? 'm-5 p-5' : 'm-2')}`} onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data, tipo)} }
             onClick = { (e) => { 
                 e.preventDefault(); 
                 if(isMobile){
                     doubleClick(data, tipo)
                 }
             } } > 
-            <Small> {text} </Small> 
+            <span className="font-size-11px line-height-xl"> {text} </span> 
         </div>
     )
 }
 
 export function setMoneyTableReactDom(text, doubleClick, data, tipo){
     return(
-        <div className = { text === '' ? 'm-5 p-5' : 'm-2'} onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data, tipo)} }
+        <div className = {`text-center ${(text === '' ? 'm-5 p-5' : 'm-2')}`} onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data, tipo)} }
             onClick = { (e) => { 
                 e.preventDefault(); 
                 if(isMobile){
@@ -122,14 +137,14 @@ export function setMoneyTableReactDom(text, doubleClick, data, tipo){
                 }
             } } > 
             <NumberFormat value={text} displayType='text' thousandSeparator={true} prefix='$'
-                renderText={text => <Small> {text} </Small>} />
+                renderText={text => <span className="font-size-11px "> {text} </span>} />
         </div>
     )
 }
 
 export function setColor(text) {
     return (
-        <div className="dot" style={{backgroundColor: `${text}`}} ></div>
+        <div className="dot mx-auto" style={{backgroundColor: `${text}`}} ></div>
     )
 }
 export function setLabelTable(text) {
@@ -170,7 +185,7 @@ export function setDateTable(date) {
     let seconds = new Date(date);
     seconds = seconds.getTime() / 1000;
     return (
-        <Small>
+        <div className="font-size-11px text-center">
             <span className="d-none">
                 {
                     seconds
@@ -181,11 +196,30 @@ export function setDateTable(date) {
                     {date}
                 </Moment>
             </span>
-
             <Moment format="DD/MM/YYYY">
                 {date}
             </Moment>
-        </Small>
+        </div>
+    )
+}
+export function setAdjuntoDocumento (adjunto){
+    return (
+        <div className="text-center">
+            {
+                adjunto.adjuntos.map((element) => {
+                    return (
+                        <>
+                            <a href={element.url} target="_blank" rel="noopener noreferrer">
+                                <span className="font-size-11px">
+                                    Adjunto
+                                </span>
+                            </a>
+                            <br/>
+                        </>
+                    )
+                })
+            }
+        </div>
     )
 }
 export function setDateTableLG(date) {
@@ -216,7 +250,7 @@ export function setMoneyTable(value) {
     cantidad = parseFloat(value).toFixed(2)
     return (
         <NumberFormat value={cantidad} displayType={'text'} thousandSeparator={true} prefix={'$'}
-            renderText={cantidad => <Small> {cantidad} </Small>} />
+            renderText={cantidad => <div className="font-size-11px text-center"> {cantidad} </div>} />
     )
 }
 
@@ -243,19 +277,50 @@ export function setPercentTable(value) {
     cantidad = parseFloat(value).toFixed(2)
     return (
         <NumberFormat value={cantidad} displayType={'text'} thousandSeparator={false} prefix={''}
-            renderText={cantidad => <Small> {cantidad} %</Small>} />
+            renderText={cantidad => <div className="font-size-11px text-center"> {cantidad} %</div>} />
     )
 }
 
-export function setListTable(arreglo, nombre) {
+export function setListTable(arreglo, nombre, minwidth) {
     return (
-        <>
+        <div className="setListTable" style={{minWidth:minwidth}}>
             {
                 arreglo.map((element,  key ) => {
                     return (
-                        <Small key = { key }>
-                            &#8226; {element[nombre]} <br/>
-                        </Small>
+                        <>
+                            <span key = { key }>&#8226; {element[nombre]}</span><br/>
+                        </>
+                    )
+                })
+            }
+        </div>
+    )
+}
+
+export function setListTableLinkProyecto(arreglo, nombre) {
+    return (
+        <>
+            {
+                arreglo.map((element,  key ) => { 
+                    return (
+                        <>
+                            <div key={key} className="font-size-11px text-center font-weight-bold white-space-nowrap">
+                                &#8226;&nbsp;
+                                <a href={'/mi-proyecto?id='+element.id} className="text-primary">
+                                        { element[nombre] }
+                                    </a>
+                                    {
+                                        element.estatus ?
+                                            <>
+                                                &nbsp;-&nbsp;<span style={{ color: `${element.estatus.letra}` }}>
+                                                    {element.estatus.estatus}
+                                                </span>
+                                            </>
+                                        :''
+                                    }
+                            </div>
+                            <br/>
+                        </>
                     )
                 })
             }
@@ -263,99 +328,60 @@ export function setListTable(arreglo, nombre) {
     )
 }
 
-export function setListTableLinkProyecto(arreglo, nombre) {
+export function setArrayTable(arreglo, minwidth) {
     return (
-        <ul className="text-dark-50">
+        <div style={{minWidth:minwidth}}>
             {
-                arreglo.map((element,  key ) => { 
+                arreglo.map((element) => {
                     return (
-                        <div key={key}>
-                            <li key={key} className="py-2">
-                                <a href={'/mi-proyecto?id='+element.id} className="mr-2" >
-                                    <Small >
+                        <div className={`mb-2 ${minwidth?'':'center-td'}`}>
+                            {
+                                element.name ?
+                                    <span className="mr-1 font-size-12px" >
+                                        <span className="font-weight-bold">
+                                            {
+                                                element.lista ?
+                                                    element.name + '.'
+                                                : element.name + ':'
+                                            }
+                                        </span>
+                                    </span>
+                                    : ''
+                            }
+                            {
+                                element.url ?
+                                    <a href={element.url} target="_blank" rel="noopener noreferrer">
+                                        <span className="font-size-11px">
+                                            {
+                                                element.text
+                                            }
+                                        </span>
+                                    </a>
+                                    :
+                                    <span className="font-size-11px">
                                         {
-                                            element[nombre]
+                                            element.text
                                         }
-                                    </Small>
-                                    
-                                </a>
-                                {
-                                    element.estatus ?
-                                        <>
-                                            <span className="label label-lg bg- label-inline font-weight-bold p-2" 
-                                                style={{
-                                                    color: `${element.estatus.letra}`,
-                                                    backgroundColor: `${element.estatus.fondo}`,
-                                                    fontSize: "75%"
-                                                }} >
-                                                {element.estatus.estatus}
-                                            </span>
-                                        </>
-                                    :''
-                                }
-                            </li>
+                                    </span>
+                            }
                         </div>
                     )
                 })
             }
-        </ul>
-    )
-}
-
-export function setArrayTable(arreglo) {
-    return (
-        arreglo.map((element) => {
-            return (
-                <>
-                    {
-                        element.name ?
-                            <Small className="mr-1" >
-                                <B color="gold">
-                                    {
-                                        element.lista ?
-                                            element.name + '.'
-                                        : element.name + ':'
-                                    }
-                                </B>
-                            </Small>
-                            : ''
-                    }
-                    {
-                        element.url ?
-                            <a href={element.url} target="_blank" rel="noopener noreferrer">
-                                <Small>
-                                    {
-                                        element.text
-                                    }
-                                </Small>
-                            </a>
-                            :
-                            <Small>
-                                {
-                                    element.text
-                                }
-                            </Small>
-                    }
-                    <br />
-                </>
-            )
-        })
+        </div>
     )
 }
 
 export function setFacturaTable(data) {
     if (data.factura) {
         return (
-            <Small>
+            <span className="font-size-11px">
                 {
                     data.facturas ?
                         data.facturas.xml
                         && <a href={data.facturas.xml.url} target="_blank" rel="noopener noreferrer">
-                            <Small>
-                                <FontAwesomeIcon color={GOLD} icon={faFileAlt} className="mr-2" />
                                 Factura.xml
-                                <br />
-                            </Small>
+                            <br />
                         </a>
                         : ''
                 }
@@ -363,58 +389,56 @@ export function setFacturaTable(data) {
                     data.facturas ?
                         data.facturas.pdf
                         && <a href={data.facturas.pdf.url} target="_blank" rel="noopener noreferrer">
-                            <Small>
-                                <FontAwesomeIcon color={GOLD} icon={faFileAlt} className="mr-2" />
                                 Factura.pdf
-                            </Small>
                             <br />
                         </a>
                         : ''
                 }
-            </Small>
+            </span>
         )
     }
     else {
         return (
-            <Small>
+            <span className="font-size-11px">
                 Sin factura
-            </Small>
+            </span>
         )
     }
 }
 
 export function setAdjuntoTable(adjunto) {
     return (
-        <a href = { adjunto.url } target = "_blank" rel = "noopener noreferrer">
-            <Small> { adjunto.name } </Small>
-        </a>
+        <div className="text-center">
+            <a href = { adjunto.url } target = "_blank" rel = "noopener noreferrer">
+                <span className="font-size-11px">{ adjunto.name } </span>
+            </a>
+        </div>
     )
 }
 
 export function setAdjuntosList(list) {
     let aux = true
     return (
-
         list.map((element, key) => {
             if (element !== '') {
                 aux = false
                 return (
                     <li>
                         <a href={element.url} target="_blank" rel="noopener noreferrer">
-                            <Small>
+                            <span className="font-size-11px">
                                 {
                                     element.name
                                 }
-                            </Small>
+                            </span>
                         </a>
                     </li>
                 )
             }
             if (element === '' && key === list.length - 1 && aux) {
                 return (
-                    <Small color="gold">
+                    <span className="font-size-11px">
                         Sin adjuntos
-                    </Small>
+                    </span>
                 )
             }
             return false
@@ -424,25 +448,23 @@ export function setAdjuntosList(list) {
 
 export function setContactoTable(contacto) {
     return (
-        <div>
+        <div className="font-size-11px">
             {
                 contacto.nombre ?
-                    <Small>
-                        {
-                            contacto.nombre
-                        }
-                    </Small>
+                    <span className="text-dark-75 text-hover-primary">
+                        <i className="las la-user-alt icon-md mr-2"></i>
+                        { contacto.nombre }
+                    </span>
                     : ''
             }
             {
                 contacto.telefono &&
                 <div className="my-2">
                     <a target="_blank" href={`tel:+${contacto.telefono}`} rel="noopener noreferrer">
-                        <Small>
-                            <FontAwesomeIcon className="mx-3" icon={faPhone} />
+                        <span className="text-dark-75 text-hover-primary">
+                            <i className="las la-phone icon-md mr-2"></i>
                             {contacto.telefono}
-                        </Small>
-
+                        </span>
                     </a>
                 </div>
             }
@@ -450,10 +472,10 @@ export function setContactoTable(contacto) {
                 contacto.email &&
                 <div className="my-2">
                     <a target="_blank" href={`mailto:+${contacto.email}`} rel="noopener noreferrer">
-                        <Small>
-                            <FontAwesomeIcon className="mx-3" icon={faEnvelope} />
+                        <span className="text-dark-75 text-hover-primary">
+                            <i className="las la-envelope icon-md mr-2"></i>
                             {contacto.email}
-                        </Small>
+                        </span>
                     </a>
                 </div>
             }

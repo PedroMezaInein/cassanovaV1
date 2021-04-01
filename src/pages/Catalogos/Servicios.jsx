@@ -5,7 +5,7 @@ import Layout from '../../components/layout/layout'
 import { Modal, ModalDelete } from '../../components/singles'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
 import { SERVICIOS_COLUMNS, URL_DEV } from '../../constants'
-import { setOptions, setTextTable } from '../../functions/setters'
+import { setOptions, setTextTableCenter } from '../../functions/setters'
 import { ServicioForm } from '../../components/forms'
 import axios from 'axios'
 import { doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../functions/alert'
@@ -139,8 +139,8 @@ class Servicios extends Component{
         servicios.map((servicio) => {
             aux.push({
                 actions: this.setActions(servicio),
-                servicio: renderToString(setTextTable(servicio.servicio)),
-                empresa: renderToString(setTextTable(servicio.empresa ? servicio.empresa.name : '')),
+                servicio: renderToString(setTextTableCenter(servicio.servicio)),
+                empresa: renderToString(setTextTableCenter(servicio.empresa ? servicio.empresa.name : '')),
                 id: servicio.id
             })
             return false

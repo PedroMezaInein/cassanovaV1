@@ -3,7 +3,7 @@ import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV, BANCOS_COLUMNS,} from '../../constants'
-import { setTextTable} from '../../functions/setters'
+import { setTextTableCenter } from '../../functions/setters'
 import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert } from '../../functions/alert'
 import Layout from '../../components/layout/layout'
 import { Modal, ModalDelete } from '../../components/singles'
@@ -53,7 +53,7 @@ class Bancos extends Component {
         bancos.map((banco) => {
             aux.push({
                 actions: this.setActions(banco),
-                banco: renderToString(setTextTable(banco.nombre)),
+                banco: renderToString(setTextTableCenter(banco.nombre)),
                 id: banco.id
             })
             return false

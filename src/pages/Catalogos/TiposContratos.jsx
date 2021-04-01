@@ -3,7 +3,7 @@ import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV, TIPOS_COLUMNS} from '../../constants'
-import { setTextTable} from '../../functions/setters'
+import { setTextTableCenter} from '../../functions/setters'
 import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert } from '../../functions/alert'
 import Layout from '../../components/layout/layout'
 import { Modal, ModalDelete } from '../../components/singles'
@@ -54,7 +54,7 @@ class TiposContratos extends Component {
         tipos.map((tipo) => {
             aux.push({
                 actions: this.setActions(tipo),
-                tipo: renderToString(setTextTable(tipo.tipo)),
+                tipo: renderToString(setTextTableCenter(tipo.tipo)),
                 id: tipo.id
             })
             return false

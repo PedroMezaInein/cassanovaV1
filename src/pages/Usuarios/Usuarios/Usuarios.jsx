@@ -2,17 +2,16 @@ import React, { Component } from 'react'
 import Layout from '../../../components/layout/layout'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import { URL_DEV } from '../../../constants'
+import { URL_DEV, USUARIOS, CLIENTES } from '../../../constants'
 import { Modal, ModalDelete } from '../../../components/singles'
 import { RegisterUserForm, PermisosForm } from '../../../components/forms'
 import Swal from 'sweetalert2'
 import { setOptions, setSelectOptions } from '../../../functions/setters'
 import { printResponseErrorAlert, errorAlert, waitAlert, doneAlert, questionAlertY } from '../../../functions/alert'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
-import { USUARIOS, CLIENTES } from '../../../constants'
 import { save, deleteForm } from '../../../redux/reducers/formulario'
 import FloatButtons from '../../../components/singles/FloatButtons'
-import { setTextTable,setListTable } from '../../../functions/setters'
+import { setListTable, setTextTableCenter } from '../../../functions/setters'
 import { renderToString } from 'react-dom/server'
 import { Tabs, Tab } from 'react-bootstrap' 
 import { UsuarioCard } from '../../../components/cards'
@@ -336,9 +335,9 @@ class Usuarios extends Component {
                     aux.push(
                         {
                             actions: this.setActions(user),
-                            name: renderToString(setTextTable(user.name)),
-                            email: renderToString(setTextTable(user.email)),
-                            departamento: renderToString(user.departamentos.length === 0 ? setTextTable("Sin definir"): setListTable(user.departamentos, "nombre")),
+                            name: renderToString(setTextTableCenter(user.name)),
+                            email: renderToString(setTextTableCenter(user.email)),
+                            departamento: renderToString(user.departamentos.length === 0 ? setTextTableCenter("Sin definir"): setListTable(user.departamentos, "nombre")),
                             id: user.id
                         }
                     )
@@ -347,9 +346,9 @@ class Usuarios extends Component {
                     aux.push(
                         {
                             actions: this.setActions(user),
-                            name: renderToString(setTextTable(user.name)),
-                            email: renderToString(setTextTable(user.email)),
-                            proyecto: renderToString(user.proyectos.length === 0 ? setTextTable("Sin definir") : setListTable(user.proyectos, "nombre")),                            
+                            name: renderToString(setTextTableCenter(user.name)),
+                            email: renderToString(setTextTableCenter(user.email)),
+                            proyecto: renderToString(user.proyectos.length === 0 ? setTextTableCenter("Sin definir") : setListTable(user.proyectos, "nombre")),                            
                             id: user.id
                         }
                     )

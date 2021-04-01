@@ -8,7 +8,7 @@ import { Modal, ModalDelete} from '../../../components/singles'
 import { NOMINA_OBRA_COLUMNS, URL_DEV, ADJUNTOS_COLUMNS} from '../../../constants'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender' 
 import { AdjuntosForm} from '../../../components/forms'
-import { setOptions, setDateTable, setMoneyTable, setTextTable, setAdjuntosList} from '../../../functions/setters'
+import { setOptions, setDateTable, setMoneyTable, setTextTable, setAdjuntosList, setTextTableCenter} from '../../../functions/setters'
 import { errorAlert, waitAlert, printResponseErrorAlert, deleteAlert, doneAlert} from '../../../functions/alert'
 import TableForModals from '../../../components/tables/TableForModals'
 
@@ -534,7 +534,7 @@ class NominaObra extends Component {
             aux.push(
                 {
                     actions: this.setActions(nomina),
-                    periodo: renderToString(setTextTable(nomina.periodo)),
+                    periodo: renderToString(setTextTableCenter(nomina.periodo)),
                     fechaInicio: renderToString(setDateTable(nomina.fecha_inicio)),
                     fechaFin: renderToString(setDateTable(nomina.fecha_fin)),
                     totalPagoNomina: renderToString(setMoneyTable(nomina.totalNominaImss)),

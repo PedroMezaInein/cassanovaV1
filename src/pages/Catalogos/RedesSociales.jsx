@@ -7,7 +7,7 @@ import { ModalDelete, Modal } from '../../components/singles'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
 import { URL_DEV, RED_SOCIAL_COLUMNS } from '../../constants'
 import { doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../functions/alert'
-import { setTextTable } from '../../functions/setters'
+import { setTextTableCenter } from '../../functions/setters'
 import axios from 'axios'
 const $ = require('jquery');
 
@@ -47,7 +47,7 @@ class RedesSociales extends Component {
         redesSociales.map((redSocial) => {
             aux.push({
                 actions: this.setActions(redSocial),
-                redSocial: renderToString(setTextTable(redSocial.nombre)),
+                redSocial: renderToString(setTextTableCenter(redSocial.nombre)),
                 id: redSocial.id
             })
             return false

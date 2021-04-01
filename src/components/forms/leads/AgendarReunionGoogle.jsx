@@ -32,16 +32,16 @@ class AgendarReunionGoogle extends Component {
                         </div>
                     </Col>
                     <Col md="6" className="align-self-center">
-                        <div class="w-80 mt-5 mx-auto card card-custom bg-diagonal shadow-sm gutter-b">
-                            <div class="card-body p-2">
-                                <div class="p-4">
-                                    <div class="d-flex flex-column text-center">
-                                        <div class="font-size-h6 font-weight-bolder text-primary mb-3">Correos de los asistentes</div>
+                        <div className="w-80 mt-5 mx-auto card card-custom bg-diagonal shadow-sm gutter-b">
+                            <div className="card-body p-2">
+                                <div className="p-4">
+                                    <div className="d-flex flex-column text-center">
+                                        <div className="font-size-h6 font-weight-bolder text-primary mb-3">Correos de los asistentes</div>
                                             {
                                                 evento.googleEvent?
                                                     evento.googleEvent.attendees.map((email, key) => {
                                                         return (
-                                                            <div class="text-dark-50 font-weight-light text-lowercase" key={key}>{email.email}</div>
+                                                            <div className="text-dark-50 font-weight-light text-lowercase" key={key}>{email.email}</div>
                                                         )
                                                     })
                                                 :""
