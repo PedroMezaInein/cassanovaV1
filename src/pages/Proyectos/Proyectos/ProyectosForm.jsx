@@ -6,13 +6,14 @@ import Swal from 'sweetalert2'
 import { faEye } from '@fortawesome/free-solid-svg-icons'
 import Layout from '../../../components/layout/layout'
 import { ProyectosForm as ProyectoFormulario } from '../../../components/forms'
-import { URL_DEV, CP_URL } from '../../../constants'
+import { URL_DEV, CP_URL, TOKEN_CP } from '../../../constants'
 import { Button } from '../../../components/form-components'
 import { ProyectoCard, ProyectosCard } from '../../../components/cards'
 import { waitAlert, printResponseErrorAlert, errorAlert, doneAlert, questionAlert, createAlertSA2WithClose } from '../../../functions/alert'
 import { setOptions } from '../../../functions/setters'
 class ProyectosForm extends Component {
     state = {
+        prevPath: '',
         action: '',
         title: 'Nuevo proyecto',
         prospecto: '',
@@ -88,57 +89,10 @@ class ProyectosForm extends Component {
             case 'edit':
                 if (state) {
                     if (state.proyecto) {
-                        const { proyecto } = state
-                        const { form } = this.state
-                        form.cp = proyecto.cp;
-                        this.cpAxios(proyecto.cp)
-                        form.calle = proyecto.calle
-                        form.nombre = proyecto.nombre
-                        form.contacto = proyecto.contacto
-                        form.numeroContacto = proyecto.numero_contacto
-                        form.fechaInicio = new Date(proyecto.fecha_inicio)
-                        form.fechaFin = new Date(proyecto.fecha_fin)
-                        form.porcentaje = proyecto.porcentaje
-                        form.descripcion = proyecto.descripcion
-                        form.m2 = proyecto.m2
-                        let aux = []
-                        if (proyecto.clientes) {
-                            proyecto.clientes.forEach(cliente => {
-                                aux.push(
-                                    {
-                                        value: cliente.id.toString(),
-                                        name: cliente.empresa
-                                    }
-                                )
-                            });
-                            form.clientes = aux
-                        }
-                        if (proyecto.imagen)
-                            form.adjuntos.image.files = [{ name: proyecto.imagen.name, file: '', url: proyecto.imagen.url, key: 0 }]
-                        if (proyecto.estatus) 
-                            form.estatus = proyecto.estatus.id.toString();
-                        form.fase1 = proyecto.fase1 === 0 ? false : true
-                        form.fase2 = proyecto.fase2 === 0 ? false : true
-                        form.fase3 = proyecto.fase3 === 0 ? false : true
-                        if (proyecto.empresa)
-                            form.empresa = proyecto.empresa.id.toString()
-                        form.colonia = proyecto.colonia
-                        aux = []
-                        if (proyecto.contactos) {
-                            proyecto.contactos.map((contacto) => {
-                                aux.push(contacto.correo)
-                                return false
-                            })
-                            form.correos = aux
-                        }
-                        if(proyecto.empresa.tipos){
-                            options.tipos = setOptions(proyecto.empresa.tipos, 'tipo', 'id')
-                            if(proyecto.tipo_proyecto)
-                                form.tipoProyecto = proyecto.tipo_proyecto.id.toString()
-                        }
-                        this.setState({ ...this.state, proyecto: proyecto, form, formeditado: 1, title: 'Editar proyecto',
-                            action: 'edit', options
-                        })
+                        const { proyecto, prevPath } = state
+                        if(prevPath)
+                            this.setState({prevPath: prevPath})
+                        this.getOneProyectoAxios(proyecto)
                     }
                     else
                         history.push('/proyectos/proyectos')
@@ -427,6 +381,68 @@ class ProyectosForm extends Component {
             questionAlert('¿ESTÁS SEGURO?', 'EL PROYECTO ESTARÁ EN PROCESO ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios(estatus))
     }
 
+    getOneProyectoAxios = async(proyecto) => {
+        const { access_token } = this.props.authUser
+        waitAlert()
+        await axios.get(`${URL_DEV}v2/proyectos/proyectos/proyecto/${proyecto.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { form, options } = this.state
+                const { proyecto } = response.data
+                form.cp = proyecto.cp;
+                this.cpAxios(proyecto.cp)
+                form.calle = proyecto.calle
+                form.nombre = proyecto.nombre
+                form.contacto = proyecto.contacto
+                form.numeroContacto = proyecto.numero_contacto
+                form.fechaInicio = new Date(proyecto.fecha_inicio)
+                form.fechaFin = new Date(proyecto.fecha_fin)
+                form.porcentaje = proyecto.porcentaje
+                form.descripcion = proyecto.descripcion
+                form.m2 = proyecto.m2
+                let aux = []
+                if (proyecto.clientes) {
+                    proyecto.clientes.forEach(cliente => {
+                        aux.push( {
+                            value: cliente.id.toString(),
+                            name: cliente.empresa
+                        } )
+                    });
+                    form.clientes = aux
+                }
+                if (proyecto.imagen)
+                    form.adjuntos.image.files = [{ name: proyecto.imagen.name, file: '', url: proyecto.imagen.url, key: 0 }]
+                if (proyecto.estatus) 
+                    form.estatus = proyecto.estatus.id.toString();
+                form.fase1 = proyecto.fase1 === 0 ? false : true
+                form.fase2 = proyecto.fase2 === 0 ? false : true
+                form.fase3 = proyecto.fase3 === 0 ? false : true
+                if (proyecto.empresa)
+                    form.empresa = proyecto.empresa.id.toString()
+                form.colonia = proyecto.colonia
+                aux = []
+                if (proyecto.contactos) {
+                    proyecto.contactos.map((contacto) => {
+                        aux.push(contacto.correo)
+                        return false
+                    })
+                    form.correos = aux
+                }
+                if(proyecto.empresa.tipos){
+                    options.tipos = setOptions(proyecto.empresa.tipos, 'tipo', 'id')
+                    if(proyecto.tipo_proyecto)
+                        form.tipoProyecto = proyecto.tipo_proyecto.id.toString()
+                }
+                this.setState({ ...this.state, proyecto: proyecto, form, formeditado: 1, title: 'Editar proyecto',
+                    action: 'edit', options
+                })
+                Swal.close()
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     async getNameProyectoAxios(name){
         const { access_token } = this.props.authUser
         await axios.get(`${URL_DEV}proyectos/nombre/${name}`, { responseType: 'json', headers: { Accept: '*/*',  Authorization: `Bearer ${access_token}` } }).then(
@@ -557,9 +573,14 @@ class ProyectosForm extends Component {
         const { form, proyecto } = this.state
         await axios.put(`${URL_DEV}v2/proyectos/proyectos/${proyecto.id}`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                const { prevPath } = this.state
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue editado con éxito.')
                 const { history } = this.props
-                history.push({ pathname: '/proyectos/proyectos' });
+                if(prevPath === 'crm')
+                    history.push({ pathname: '/leads/crm' });
+                else
+                    history.push({ pathname: '/proyectos/proyectos' });
+                
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -669,7 +690,7 @@ class ProyectosForm extends Component {
         })
     }
     async cpAxios(value) {
-        await axios.get(CP_URL + value + '?type=simplified').then(
+        await axios.get(`${CP_URL}${value}?token=${TOKEN_CP}&type=simplified`).then(
             (response) => {
                 const { error } = response.data
                 const { form, options } = this.state
@@ -721,10 +742,7 @@ class ProyectosForm extends Component {
         const { form } = this.state
         form.fechaInicio = startDate
         form.fechaFin = endDate
-        this.setState({
-            ...this.state,
-            form
-        })
+        this.setState({ ...this.state, form })
     }
     
     tagInputChange = (nuevosCorreos) => {

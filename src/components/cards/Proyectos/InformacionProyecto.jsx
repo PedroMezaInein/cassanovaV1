@@ -7,6 +7,7 @@ import { Button } from '../../../components/form-components'
 import { diffCommentDate } from '../../../functions/functions'
 import SVG from "react-inlinesvg"
 import { toAbsoluteUrl } from "../../../functions/routers"
+import { printDates } from '../../../functions/printers'
 export default class InformacionProyecto extends Component {
     setEmpresaLogo = proyecto => {
         if (proyecto)
@@ -16,22 +17,35 @@ export default class InformacionProyecto extends Component {
                         return proyecto.empresa.logo_principal[0].url
         return ''
     }
+
+    hasComentarios = (proyecto) => {
+        if(proyecto)
+            if(proyecto.comentarios)
+                if(proyecto.comentarios.length)
+                    return true
+        return false
+    }
+
     render() {
-        const { proyecto, printDates, form, addComentario, onChange, handleChange, tipo, showform} = this.props
+        const { proyecto, form, addComentario, onChange, handleChange, tipo, showform} = this.props
         return (
             <div className="col-md-12 mt-4">
                 {
                     proyecto &&
                     <Tab.Container defaultActiveKey={ tipo === '' ? "tab_informacion_general" : proyecto.comentarios.length ? "tab_mostrar_comentarios" : "tab_informacion_general" }>
                         <Nav className="nav nav-light-primary nav-pills d-flex justify-content-end">
-                            <Nav.Item className="nav-item">
-                                <Nav.Link className="nav-link px-3" eventKey="tab_informacion_general">
-                                    <span className="nav-icon"><i className="flaticon2-file"></i></span>
-                                    <span className="nav-text font-size-lg font-weight-bolder">Información general</span>
-                                </Nav.Link>
-                            </Nav.Item>
                             {
-                                showform?
+                                form && this.hasComentarios(proyecto) ?
+                                    <Nav.Item className="nav-item">
+                                        <Nav.Link className="nav-link px-3" eventKey="tab_informacion_general">
+                                            <span className="nav-icon"><i className="flaticon2-file"></i></span>
+                                            <span className="nav-text font-size-lg font-weight-bolder">Información general</span>
+                                        </Nav.Link>
+                                    </Nav.Item>
+                                : ''
+                            }
+                            {
+                                form ?
                                     <Nav.Item className="nav-item">
                                         <Nav.Link className="nav-link px-3" eventKey="tab_comentarios">
                                             <span className="nav-icon"><i className="flaticon2-plus"></i></span>
@@ -41,15 +55,13 @@ export default class InformacionProyecto extends Component {
                                 :''
                             }
                             {
-                                proyecto ?
-                                    proyecto.comentarios.length > 0 ?
-                                        <Nav.Item className="nav-item">
-                                            <Nav.Link className="nav-link px-3" eventKey="tab_mostrar_comentarios" >
-                                                <span className="nav-icon"><i className="flaticon2-chat-1"></i></span>
-                                                <span className="nav-text font-size-lg font-weight-bolder">Mostrar comentarios</span>
-                                            </Nav.Link>
-                                        </Nav.Item>
-                                    :''
+                                this.hasComentarios(proyecto) ?
+                                    <Nav.Item className="nav-item">
+                                        <Nav.Link className="nav-link px-3" eventKey="tab_mostrar_comentarios" >
+                                            <span className="nav-icon"><i className="flaticon2-chat-1"></i></span>
+                                            <span className="nav-text font-size-lg font-weight-bolder">Mostrar comentarios</span>
+                                        </Nav.Link>
+                                    </Nav.Item>
                                 :''
                             }
                         </Nav>
@@ -149,7 +161,7 @@ export default class InformacionProyecto extends Component {
                                                         </td>
                                                         <td className="font-weight-bolder text-dark-50">PERIODO DEL PROYECTO</td>
                                                         <td className="font-weight-light">
-                                                            {printDates(proyecto)}
+                                                            {printDates(proyecto.fecha_inicio, proyecto.fecha_fin)}
                                                         </td>
                                                     </tr>
                                             }
@@ -279,7 +291,7 @@ export default class InformacionProyecto extends Component {
                                 </div>
                             </Tab.Pane>
                             {
-                                showform?
+                                form ?
                                     <Tab.Pane eventKey='tab_comentarios'>
                                         <div>
                                             <Form id="form-comentario"

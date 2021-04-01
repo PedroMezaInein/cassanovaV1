@@ -132,6 +132,7 @@ export const URL_ASSETS = process.env.NODE_ENV === 'production' ? 'https://proye
 export const URL_ASSETS = 'https://demo.proyectosadmin.com'; */
 
 export const CP_URL = 'https://api-sepomex.hckdrk.mx/query/info_cp/'
+export const TOKEN_CP = '83a1950f-71a7-4f10-8243-213c904e2949	'
 //Icons
 
 export const ICONS_MODULES = { 

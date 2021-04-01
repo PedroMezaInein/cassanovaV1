@@ -4,7 +4,7 @@ import axios from 'axios';
 import { Card } from 'react-bootstrap';
 import { ClienteForm } from '../../../components/forms'
 import Layout from '../../../components/layout/layout';
-import { URL_DEV, CP_URL } from '../../../constants'
+import { URL_DEV, CP_URL, TOKEN_CP } from '../../../constants'
 import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert } from '../../../functions/alert'
 class ClientesForm extends Component {
     state = {
@@ -157,7 +157,7 @@ class ClientesForm extends Component {
             this.cpAxios(value)
     }
     async cpAxios(value) {
-        await axios.get(CP_URL + value + '?type=simplified').then(
+        await axios.get(`${CP_URL}${value}?token=${TOKEN_CP}&type=simplified`).then(
             (response) => {
                 const { municipio, estado, asentamiento } = response.data.response
                 const { cliente, form } = this.state
