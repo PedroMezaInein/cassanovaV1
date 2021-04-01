@@ -6,7 +6,7 @@ import axios from 'axios'
 import { URL_DEV, CLIENTES_COLUMNS} from '../../../constants'
 import { Modal, ModalDelete } from '../../../components/singles'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
-import { setDateTable, setListTableLinkProyecto, setTextTableCenter } from '../../../functions/setters'
+import { setDateTable, setListTableLinkProyecto, setTextTableCenter, setDireccion } from '../../../functions/setters'
 import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert } from '../../../functions/alert'
 import { ClienteCard } from '../../../components/cards'
 const $ = require('jquery');
@@ -43,7 +43,7 @@ class Leads extends Component {
                 empresa: renderToString(setTextTableCenter(cliente.empresa)),
                 nombre: renderToString(setTextTableCenter(cliente.nombre)),
                 proyecto: renderToString(cliente.proyectos.length === 0 ? setTextTableCenter("Sin definir") : setListTableLinkProyecto(cliente.proyectos, "nombre")),
-                direccion: renderToString(this.setDireccion(cliente)),
+                direccion: renderToString(setDireccion(cliente)),
                 perfil: renderToString(setTextTableCenter(cliente.perfil)),
                 puesto: renderToString(setTextTableCenter(cliente.puesto)),
                 rfc: renderToString(setTextTableCenter(cliente.rfc)),
@@ -55,18 +55,6 @@ class Leads extends Component {
         return aux
     }
 
-    
-    setDireccion = cliente => {
-        return (
-            <div className="font-size-11px text-justify">
-                {cliente.calle ? cliente.calle + ', colonia ': ''}
-                {cliente.colonia ? cliente.colonia + ', ' : ''}
-                {cliente.municipio ? cliente.municipio + ', ' : ''}
-                {cliente.estado ? cliente.estado : '' }
-                {cliente.cp ?  ', CP: ' + cliente.cp:''}
-            </div>
-        )
-    }
     setActions = () => {
         let aux = []
         aux.push(

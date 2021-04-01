@@ -85,6 +85,18 @@ export function setSelectOptions(arreglo, name) {
     return aux
 }
 
+export function setDireccion (cliente) {
+    return (
+        <div className="font-size-11px text-justify">
+            {cliente.calle ? cliente.calle + ', colonia ': ''}
+            {cliente.colonia ? cliente.colonia + ', ' : ''}
+            {cliente.municipio ? cliente.municipio + ', ' : ''}
+            {cliente.estado ? cliente.estado : '' }
+            {cliente.cp ?  ', CP: ' + cliente.cp:''}
+        </div>
+    )
+}
+
 export function setTextTable(text, minwidth) {
     return (
         <div className="font-size-11px" style={{minWidth:minwidth}}>

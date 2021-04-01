@@ -11,7 +11,7 @@ import { Form } from 'react-bootstrap'
 import { ClienteForm } from '../../components/forms'
 import { Modal } from '../../components/singles'
 import NewTable from '../../components/tables/NewTable'
-import { setTextTable, setDateTable } from '../../functions/setters'
+import { setTextTable, setDateTable, setDireccion } from '../../functions/setters'
 import { validateAlert, doneAlert, errorAlert, printResponseErrorAlert } from '../../functions/alert'
 import { ClienteCard} from '../../components/cards'
 
@@ -212,7 +212,7 @@ class Leads extends Component {
                     actions: this.setActions(cliente),
                     empresa: renderToString(setTextTable(cliente.empresa)),
                     nombre: renderToString(setTextTable(cliente.nombre)),
-                    direccion: renderToString(this.setDireccion(cliente)),
+                    direccion: renderToString(setDireccion(cliente)),
                     perfil: renderToString(setTextTable(cliente.perfil)),
                     puesto: renderToString(setTextTable(cliente.puesto)),
                     rfc: renderToString(setTextTable(cliente.rfc)),
@@ -266,28 +266,6 @@ class Leads extends Component {
             <Small>
                 {text}
             </Small>
-        )
-    }
-
-    setDireccion = cliente => {
-        return (
-            <>
-                <Small className="mr-1">
-                    {cliente.calle}, colonia
-                </Small>
-                <Small className="mr-1">
-                    {cliente.colonia},
-                </Small>
-                <Small className="mr-1">
-                    {cliente.municipio},
-                </Small>
-                <Small className="mr-1">
-                    {cliente.estado}. CP:
-                </Small>
-                <Small className="mr-1">
-                    {cliente.cp}
-                </Small>
-            </>
         )
     }
 
