@@ -8,16 +8,17 @@ import axios from 'axios'
 import { URL_DEV, PROYECTOS_COLUMNS, URL_ASSETS } from '../../../constants'
 import { Small } from '../../../components/texts'
 import { Card, Tabs } from 'react-bootstrap'
-import { setTextTable, setDateTable, setArrayTable, setListTable, setLabelTable, setTextTableCenter } from '../../../functions/setters'
+import { setTextTable, setDateTable, setArrayTable, setListTable, setLabelTable, setTextTableCenter, setDireccion } from '../../../functions/setters'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert } from '../../../functions/alert'
 import ItemSlider from '../../../components/singles/ItemSlider'
 import { Nav, Tab, Col, Row } from 'react-bootstrap'
-import { ProyectosCard } from '../../../components/cards'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import { OneLead } from '../../../components/modal'
 import Comentarios from '../../../components/forms/Comentarios'
+import InformacionProyecto from '../../../components/cards/Proyectos/InformacionProyecto'
+import moment from 'moment'
 const MySwal = withReactContent(Swal)
 const $ = require('jquery');
 class Proyectos extends Component {
@@ -453,7 +454,8 @@ class Proyectos extends Component {
             empresas: [],
             colonias: []
         },
-        myBucket: ''
+        myBucket: '',
+        tipo: ''
     }
 
     myBucket = ''
@@ -536,11 +538,7 @@ class Proyectos extends Component {
     }
     
     openModalSee = proyecto => {
-        this.setState({
-            ...this.state,
-            modalSee: true,
-            proyecto: proyecto
-        })
+        this.getOneProyectoAxios(proyecto.id)
     }
     handleCloseSee = () => {
         this.setState({
@@ -928,7 +926,7 @@ class Proyectos extends Component {
                 nombre: renderToString(setTextTableCenter(proyecto.nombre)),
                 cliente: renderToString(setListTable(proyecto.clientes, 'empresa', '140px')),
                 tipo_proyecto:renderToString(setTextTableCenter(proyecto.tipo_proyecto?proyecto.tipo_proyecto.tipo:'Sin tipo de proyecto')),
-                direccion: renderToString(this.setDireccionTable(proyecto)),
+                direccion: renderToString(setDireccion(proyecto)),
                 contacto: renderToString(setArrayTable(
                     [
                         { name: 'Nombre', text: proyecto.contacto },
@@ -1047,27 +1045,6 @@ class Proyectos extends Component {
                 
         return aux
     }
-    setDireccionTable = proyecto => {
-        return (
-            <>
-                <Small className="mr-1">
-                    {proyecto.calle}, colonia
-                </Small>
-                <Small className="mr-1">
-                    {proyecto.colonia},
-                </Small>
-                <Small className="mr-1">
-                    {proyecto.municipio},
-                </Small>
-                <Small className="mr-1">
-                    {proyecto.estado}. CP:
-                </Small>
-                <Small className="mr-1">
-                    {proyecto.cp}
-                </Small>
-            </>
-        )
-    }
 
     openModalAdjuntos = async(proyecto) => {
         const { access_token } = this.props.authUser
@@ -1133,7 +1110,7 @@ class Proyectos extends Component {
         await axios.get(`${URL_DEV}v2/proyectos/proyectos/proyecto/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { proyecto } = response.data
-                this.setState({...this.state, proyecto: proyecto})
+                this.setState({...this.state, proyecto: proyecto, modalSee: true,})
                 Swal.close()
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -1547,8 +1524,34 @@ class Proyectos extends Component {
         })
     }
 
+    printDates = dato => {
+        let fechaInicio = ''
+        let fechaFin = ''
+        if(dato.fecha_fin === null){
+            fechaInicio = moment(dato.fecha_inicio);
+            fechaFin = moment(dato.fecha_inicio);
+        }else{
+            fechaInicio = moment(dato.fecha_inicio);
+            fechaFin = moment(dato.fecha_fin);
+        }
+        let diffFechas = fechaFin.diff(fechaInicio, 'days')
+        
+        if(diffFechas === 0){
+            return(
+                <span>
+                    {fechaInicio.format('D')}/{fechaInicio.format('MM')}/{fechaInicio.format('YYYY')}
+                </span>
+            )
+        }else
+            return(
+                <span>
+                    {fechaInicio.format('D')}/{fechaInicio.format('MM')}/{fechaInicio.format('YYYY')}  - {fechaFin.format('D')}/{fechaFin.format('MM')}/{fechaFin.format('YYYY')}
+                </span>
+            )
+    }
+    
     render() {
-        const { modalDelete, modalAdjuntos, modalAvances, title, form, proyecto, formeditado, showadjuntos, primeravista, subActiveKey, defaultactivekey, modalSee, key, modalLead, lead, modalComentarios} = this.state
+        const { modalDelete, modalAdjuntos, modalAvances, title, form, proyecto, formeditado, showadjuntos, primeravista, subActiveKey, defaultactivekey, modalSee, key, modalLead, lead, modalComentarios, tipo} = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
                 <Tabs defaultActiveKey = 'all' activeKey = { key }
@@ -1805,7 +1808,7 @@ class Proyectos extends Component {
                     
                 </Modal>
                 <Modal size="lg" title="Proyecto" show={modalSee} handleClose={this.handleCloseSee} >
-                    <ProyectosCard proyecto={proyecto} />
+                    <InformacionProyecto proyecto={proyecto} printDates={this.printDates} showform={false} tipo={tipo}/>
                 </Modal>
                 <Modal size = 'xl' title = 'Información del lead' show = { modalLead } handleClose = { this.handleCloseLead }>
                     {
