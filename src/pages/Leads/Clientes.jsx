@@ -4,7 +4,7 @@ import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
 import { Button } from '../../components/form-components'
 import axios from 'axios'
-import { URL_DEV, CLIENTES_COLUMNS, EMPTY_CLIENTE, CP_URL } from '../../constants'
+import { URL_DEV, CLIENTES_COLUMNS, EMPTY_CLIENTE, CP_URL, TOKEN_CP } from '../../constants'
 import Moment from 'react-moment'
 import { Small } from '../../components/texts'
 import { Form } from 'react-bootstrap'
@@ -410,7 +410,7 @@ class Leads extends Component {
     }
 
     async cpAxios(value) {
-        await axios.get(CP_URL + value + '?type=simplified').then(
+        await axios.get(`${CP_URL}${value}?token=${TOKEN_CP}&type=simplified`).then(
             (response) => {
                 const { municipio, estado, asentamiento } = response.data.response
                 const { cliente } = this.state
@@ -528,7 +528,6 @@ class Leads extends Component {
         )
     }
 }
-
 
 const mapStateToProps = state => {
     return {
