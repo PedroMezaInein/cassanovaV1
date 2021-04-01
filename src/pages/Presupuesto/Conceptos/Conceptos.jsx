@@ -3,15 +3,16 @@ import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV, CONCEPTOS_COLUMNS } from '../../../constants'
-import { setTextTable, setMoneyTable, setTextTableReactDom, setTextTableCenter } from '../../../functions/setters'
+import { setMoneyTableReactDom, setTextTableReactDom, setOptions, setTextTableCenter } from '../../../functions/setters'
 import Layout from '../../../components/layout/layout'
 import { ModalDelete, Modal } from '../../../components/singles'
 import { printResponseErrorAlert, errorAlert, doneAlert, waitAlert, customInputAlert } from '../../../functions/alert'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { ConceptoCard } from '../../../components/cards'
-import { InputGray } from '../../../components/form-components'
+import { SelectSearchGray } from '../../../components/form-components'
 import { Update } from '../../../components/Lottie'
 import Swal from 'sweetalert2'
+import NumberFormat from 'react-number-format'
 
 const $ = require('jquery');
 
@@ -24,14 +25,18 @@ class Conceptos extends Component {
         formeditado: 0,
         conceptos: [],
         concepto: '',
-        editable: {
-            value: '',
-            descripcion: false
-        },
         form: {
-            descripcion: ''
-        },
-        flag: false
+            descripcion: '',
+            costo: 0,
+            proveedor: '',
+            subpartida: '',
+            unidad: ''
+        },options:{
+            subpartidas: [],
+            unidades: [],
+            proveedores: [],
+        }
+        
     }
 
     componentDidMount() {
@@ -42,6 +47,7 @@ class Conceptos extends Component {
             const { modulo: { url } } = element
             return pathname === url
         });
+        this.getOptionsAxios()
         if (!conceptos)
             history.push('/')
     }
@@ -87,21 +93,96 @@ class Conceptos extends Component {
         })
     }
 
-    doubleClick = (data) => {
+    setSwalHeader = (tipo) => {
+        switch(tipo){
+            case 'descripcion':
+                return 'EDITAR LA DESCRIPCIÓN'
+            case 'subpartida':
+                return 'EDITAR LA SUBPARTIDA'
+            case 'unidad':
+                return 'EDITAR LA UNIDAD'
+            case 'costo':
+                return 'EDITAR EL COSTO'
+            case 'proveedor':
+                    return 'EDITAR EL PROVEEDOR'
+            default:
+                return ''
+        }
+    }
+
+    setOptions = (data, tipo) => {
+        const { options, form } = this.state
+        switch(tipo){
+            case 'proveedor':
+                return options.proveedores
+            case 'unidad':
+                return options.unidades
+            case 'subpartida':
+                if(data.subpartida)
+                    if(data.subpartida.partida)
+                        if(data.subpartida.partida.subpartidas)
+                            return setOptions(data.subpartida.partida.subpartidas, 'nombre', 'id')
+                return []
+            default: return []
+        }
+    }
+
+    doubleClick = (data, tipo) => {
         const { form } = this.state
-        form.descripcion = data.descripcion
-        this.setState({...this.state, form})
+        switch(tipo){
+            case 'proveedor':
+            case 'unidad':
+            case 'subpartida':
+                if(data[tipo])
+                    form[tipo] = data[tipo].id.toString()
+                break
+            default:
+                form[tipo] = data[tipo]
+                break
+        }
+        this.setState({form})
         customInputAlert(
             <div>
-                <h2 className = 'swal2-title mb-4 mt-2'>
-                    EDITAR LA DESCRIPCIÓN
-                </h2>
-                <InputGray name = 'descripcion' withicon = { 0 } value = { form.descripcion } onChange = { this.onChange } as = 'textarea' rows ='6' />
+                <h2 className = 'swal2-title mb-4 mt-2'> { this.setSwalHeader(tipo) } </h2>
+                {
+                    tipo === 'descripcion' &&
+                        <div className="input-group input-group-solid rounded-0">
+                            <textarea name="descripcion" rows="6" id='descripcion-form' defaultValue = { data.descripcion }
+                                onChange = { (e) => { this.onChange(e.target.value, tipo)} }
+                                className="form-control text-dark-50 font-weight-bold undefined form-control text-uppercase">
+                            </textarea>
+                        </div>
+                }
+                {
+                    tipo === 'costo' &&
+                        <div className="row mx-0 justify-content-center">
+                            <div className="col-12 col-md-8">
+                                <div className="input-group input-group-solid rounded-0">
+                                    <NumberFormat value = { form[tipo] } displayType = 'input' thousandSeparator = { true }
+                                        prefix = '$' className = 'form-control text-dark-50 font-weight-bold text-uppercase'
+                                        renderText = { form => <div> form[tipo] </div>} defaultValue = { data[tipo] }
+                                        onValueChange = { (values) => this.onChange(values.value, tipo)}/>
+                                </div>
+                            </div>
+                        </div>
+                }
+                {
+                    tipo !== 'descripcion' && tipo !== 'costo' &&
+                        <SelectSearchGray options = { this.setOptions(data, tipo) }
+                            onChange = { (value) => { this.updateSelectSearch(value, tipo)} } name = { tipo }
+                            value = { form[tipo] } />
+                }
             </div>,
             <Update />,
-            () => { console.log('QUESTION ALERT 2') },
-            () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); console.log('HOLA') },
+            () => { this.patchConcepto(data, tipo) },
+            () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
         )
+    }
+
+    updateSelectSearch = (value, tipo) => {
+        const { form } = this.state
+        form[tipo] = value
+        this.setState({...this.state, form})
     }
 
     clearForm = () => {
@@ -118,21 +199,18 @@ class Conceptos extends Component {
     }
 
     setConceptos = conceptos => {
-        const { editable } = this.state
         let aux = []
         conceptos.map((concepto) => {
             aux.push(
                 {
                     actions: this.setActions(concepto),
-                    partida: concepto.subpartida ? concepto.subpartida.partida ? renderToString(setTextTableCenter(concepto.subpartida.partida.nombre)) : '' : '',
-                    subpartida: concepto.subpartida ? renderToString(setTextTableCenter(concepto.subpartida.nombre)) : '',
                     clave: renderToString(setTextTableCenter(concepto.clave)),
-                    unidad: concepto.unidad ? renderToString(setTextTableCenter(concepto.unidad.nombre)) : '',
-                    costo: renderToString(setMoneyTable(concepto.costo)),
-                    descripcion: editable.value === concepto.id && editable.descripcion === true  ? 
-                        this.renderInput(concepto)
-                        : setTextTableReactDom(concepto.descripcion, this.doubleClick, concepto),
-                    proveedor: renderToString(setTextTable(concepto.proveedor ? concepto.proveedor.razon_social : '')),
+                    descripcion: setTextTableReactDom(concepto.descripcion, this.doubleClick, concepto, 'descripcion', 'text-justify'),
+                    unidad: concepto.unidad ? setTextTableReactDom(concepto.unidad.nombre, this.doubleClick, concepto, 'unidad', 'text-center') : '',
+                    costo: setMoneyTableReactDom(concepto.costo, this.doubleClick, concepto, 'costo'),
+                    partida: concepto.subpartida ? concepto.subpartida.partida ? renderToString(setTextTableReactDom(concepto.subpartida.partida.nombre, this.doubleClick, concepto, 'partida', 'text-center')) : '' : '',
+                    subpartida: concepto.subpartida ? setTextTableReactDom(concepto.subpartida.nombre, this.doubleClick, concepto, 'subpartida', 'text-center') : '',
+                    proveedor: setTextTableReactDom(concepto.proveedor ? concepto.proveedor.razon_social : '', this.doubleClick, concepto, 'proveedor', 'text-center'),
                     id: concepto.id
                 }
             )
@@ -141,11 +219,10 @@ class Conceptos extends Component {
         return aux
     }
 
-    onChange = e => {
-        const { value, name } = e.target
-        const { form, flag } = this.state
-        form[name] = value
-        this.setState({...this.state, form, flag: !flag})
+    onChange = (value, tipo) => {
+        const { form } = this.state
+        form[tipo] = value
+        this.setState({...this.state,form})
     }
 
     setActions = () => {
@@ -174,6 +251,44 @@ class Conceptos extends Component {
             }
         )
         return aux
+    }
+
+    getOptionsAxios = async() => {
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}conceptos/options`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { unidades, partidas, proveedores } = response.data
+                const { options } = this.state
+                options['unidades'] = setOptions(unidades, 'nombre', 'id')
+                options['partidas'] = setOptions(partidas, 'nombre', 'id')
+                options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
+                this.setState({ ...this.state, options })
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    patchConcepto = async( data,tipo ) => {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        let value = form[tipo]
+        waitAlert()
+        await axios.put(`${URL_DEV}v2/presupuesto/conceptos/${tipo}/${data.id}`, 
+            { value: value }, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.getConceptosTable()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El concepto fue editado con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
     }
 
     async deleteConceptoAxios() {
@@ -229,7 +344,7 @@ class Conceptos extends Component {
     }
 
     render() {
-        const { modalDelete, modalSee, concepto, flag } = this.state
+        const { modalDelete, modalSee, concepto } = this.state
         return (
             <Layout active={'presupuesto'}  {...this.props}>
                 <NewTableServerRender columns = { CONCEPTOS_COLUMNS } title = 'Conceptos' subtitle = 'Listado de conceptos'
@@ -237,7 +352,7 @@ class Conceptos extends Component {
                     actions = { { 'edit': { function: this.changePageEdit }, 'delete': { function: this.openModalDelete }, 'see': { function: this.openModalSee } } }
                     exportar_boton = { true } onClickExport = { () => this.exportConceptosAxios() } accessToken = { this.props.authUser.access_token }
                     setter = { this.setConceptos } urlRender= { `${URL_DEV}v2/presupuesto/conceptos` } idTable = 'kt_datatable_conceptos' cardTable = 'cardTable'
-                    cardTableHeader = 'cardTableHeader' cardBody = 'cardBody' checkbox = { true } flag = { flag } />
+                    cardTableHeader = 'cardTableHeader' cardBody = 'cardBody' checkbox = { true }  />
                 <ModalDelete
                     title="¿Estás seguro que deseas eliminar el concepto?"
                     show={modalDelete}

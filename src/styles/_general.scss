@@ -529,7 +529,6 @@ a#cancelados-rechazados.text-hover-primary.dropdown-item.active,  a#rh-proveedor
     }
 }
 
-
 // .btn.btn-primary:hover:not(.btn-text), .btn.btn-primary:focus:not(.btn-text), .btn.btn-primary.focus:not(.btn-text) {
 //     color: #FFFFFF!important;
 //     background-color: #2171c1!important;
@@ -2003,5 +2002,18 @@ span.font-weight-bolder.text-hover-error:hover{
 .center-td{
     display: table;
     margin: 0 auto;
-    
+}
+
+.select-search{
+    &.has-focus{
+        .select-search{
+            &__select{
+                height: 150px;
+                max-height: 150px;
+            }
+            &__value{
+                height: 200px;
+            }
+        }
+    }
 }

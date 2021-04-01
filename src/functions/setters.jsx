@@ -1,6 +1,7 @@
 import React from 'react';
 import Moment from 'react-moment'
 import NumberFormat from 'react-number-format';
+import { isMobile } from 'react-device-detect';
 
 function compare( a, b ) {
     if ( a.name < b.name ){
@@ -100,9 +101,32 @@ export function setTextTableCenter(text, minwidth) {
     )
 }
 
-export function setTextTableReactDom(text, doubleClick, data){
+export function setTextTableReactDom(text, doubleClick, data, tipo, style){
     return(
-        <div className="font-size-11px line-height-xl" onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data)} } > {text} </div>
+        <div className = {`${style} ${(text === '' ? 'm-5 p-5' : 'm-2')}`} onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data, tipo)} }
+            onClick = { (e) => { 
+                e.preventDefault(); 
+                if(isMobile){
+                    doubleClick(data, tipo)
+                }
+            } } > 
+            <span className="font-size-11px line-height-xl"> {text} </span> 
+        </div>
+    )
+}
+
+export function setMoneyTableReactDom(text, doubleClick, data, tipo){
+    return(
+        <div className = {`text-center ${(text === '' ? 'm-5 p-5' : 'm-2')}`} onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data, tipo)} }
+            onClick = { (e) => { 
+                e.preventDefault(); 
+                if(isMobile){
+                    doubleClick(data, tipo)
+                }
+            } } > 
+            <NumberFormat value={text} displayType='text' thousandSeparator={true} prefix='$'
+                renderText={text => <span className="font-size-11px "> {text} </span>} />
+        </div>
     )
 }
 

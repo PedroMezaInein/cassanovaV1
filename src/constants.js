@@ -1295,7 +1295,8 @@ export const CONCEPTOS_COLUMNS = [
     },
     {
         Header: 'Subpartida',
-        accessor: 'subpartida'
+        accessor: 'subpartida',
+        customRender: true
     },
     {
         Header: 'Clave',
@@ -1303,11 +1304,13 @@ export const CONCEPTOS_COLUMNS = [
     },
     {
         Header: 'Unidad',
-        accessor: 'unidad'
+        accessor: 'unidad',
+        customRender: true
     },
     {
         Header: 'Costo',
-        accessor: 'costo'
+        accessor: 'costo',
+        customRender: true
     },
     {
         Header: 'Descripción',
@@ -1317,7 +1320,8 @@ export const CONCEPTOS_COLUMNS = [
     },
     {
         Header: 'Proveedor',
-        accessor: 'proveedor'
+        accessor: 'proveedor',
+        customRender: true
     }
 ]
 

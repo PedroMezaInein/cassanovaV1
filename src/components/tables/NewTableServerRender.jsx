@@ -3,9 +3,10 @@ import '../../styles/custom_datatable.css'
 import '../../styles/metronic/_datables.scss';
 import { errorAlert } from '../../functions/alert'
 import { Card, Dropdown, DropdownButton, OverlayTrigger  } from 'react-bootstrap'
-import { renderToString } from 'react-dom/server';
+import { renderToNodeStream, renderToString } from 'react-dom/server';
 import Tooltip from 'react-bootstrap/Tooltip'
-import ReactDOM from 'react-dom'
+import ReactDOM, { hydrate } from 'react-dom'
+import { Children } from 'react';
 const $ = require('jquery');
 const global_variable = {}
 $.DataTable = require('datatables.net');
@@ -105,7 +106,6 @@ class NewTableServerRender extends Component {
 
     componentDidUpdate(prevProps) {
         if(prevProps.flag !== this.props.flag){
-            console.log(prevProps.flag, this.props.flag)
             var table = $(this.refs.main)
             table.DataTable().clear().draw();
         }
@@ -275,14 +275,16 @@ class NewTableServerRender extends Component {
                 details: {
                     renderer: function(api, rowIdx, columns){
                         let arregloRendered = []
+                        let hiddenCount = 0
                         var data = $.map( columns, function ( col, i ) {
                             
                             if(col.hidden){
-                                if(renderedHeader.includes(i) && false){
+                                hiddenCount++;
+                                if(renderedHeader.includes(i)){
                                     arregloRendered.push(col)
                                     return '<tr data-dt-row="'+col.rowIndex+'" data-dt-column="'+col.columnIndex+'">'+
                                         '<td>'+col.title+':'+'</td> '+
-                                        '<td id="row-'+col.rowIndex+'-column-'+i+'">'+renderToString(col.data)+'</td>'+
+                                        '<td></td>'+
                                     '</tr>'
                                 }else{
                                     return '<tr data-dt-row="'+col.rowIndex+'" data-dt-column="'+col.columnIndex+'">'+
@@ -295,13 +297,10 @@ class NewTableServerRender extends Component {
 
                         let valor = $('<table/>').append( data )
                         arregloRendered.forEach((col, index) => {
-                            /* console.log('column-'+col.rowIndex) */
-                            console.log(`row-${col.rowIndex}-column-${col.columnIndex}`)
-                            let columna = document.getElementById(`row-${col.rowIndex}-column-${col.columnIndex}`)
-                            console.log(columna, 'columna')
-                            if(columna)
-                                ReactDOM.render( col.data, columna)
-                            /* ReactDOM.render( col.data, document.getElementById('column-'+col.rowIndex)) */
+                            let numero = columns.length - hiddenCount;
+                            let td = valor[0]['children'][numero]['children'][1]
+                            if(td)
+                                ReactDOM.render( col.data, td)
                         })
      
                         return data ?
@@ -432,7 +431,6 @@ class NewTableServerRender extends Component {
             columnDefs: [{
                 targets: renderedHeader,
                 createdCell: (td, cellData, rowData, row, col) => {
-                    console.log(td, 'TD')
                     ReactDOM.render( cellData, td)
                 }
             },
@@ -573,7 +571,7 @@ class NewTableServerRender extends Component {
                     </Card.Header>
 
                     <Card.Body id={cardBody} className="pt-0">
-                        <table ref={'main'} className="table table-responsive-md table-separate table-head-custom table-checkable display table-hover text-justify" id={this.props.idTable ? this.props.idTable : "kt_datatable2"} />
+                        <table ref={'main'} className="table table-responsive-md table-separate table-head-custom table-checkable display table-hover text-justify datatables-net" id={this.props.idTable ? this.props.idTable : "kt_datatable2"} />
                     </Card.Body>
                 </Card>
             </>
