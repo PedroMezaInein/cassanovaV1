@@ -1530,6 +1530,12 @@ span.font-weight-bolder.text-hover-error:hover{
 .font-size-13px{
     font-size: 13px;
 }
+.font-size-12px{
+    font-size: 12px;
+}
+.font-size-11px{
+    font-size: 11px;
+}
 
 .input-folder{
     background-color: #ffffff!important;
@@ -1587,7 +1593,6 @@ span.font-weight-bolder.text-hover-error:hover{
     height: 25px;
     width: 25px;
     border-radius: 50%;
-    display: inline-block;
 }
 
 .navi .navi-item .navi-link.active .text-hover-warning{
@@ -1988,4 +1993,15 @@ span.font-weight-bolder.text-hover-error:hover{
 }
 .text-align-last-left{
     text-align-last: left;
+}
+.setListTable{
+    display: table;
+    margin: 0 auto;
+    line-height: 18px;
+    font-size: 11px;
+}
+.center-td{
+    display: table;
+    margin: 0 auto;
+    
 }
