@@ -28,12 +28,13 @@ class Conceptos extends Component {
         form: {
             descripcion: '',
             costo: 0,
-            proveedor: ''
+            proveedor: '',
+            subpartida: '',
+            unidad: ''
         },options:{
-            partidas: [],
             subpartidas: [],
             unidades: [],
-            proveedores: []
+            proveedores: [],
         }
         
     }
@@ -95,18 +96,16 @@ class Conceptos extends Component {
     setSwalHeader = (tipo) => {
         switch(tipo){
             case 'descripcion':
+            case 'subpartida':
+            case 'unidad':
                 return `Editar la ${tipo}`
-            case 'costo':
-            case 'proveedor':
-                return `Editar el ${tipo}`
             default:
-                return ''
+                return `Editar el ${tipo}`
         }
     }
 
     setOptions = (data, tipo) => {
-        const { options } = this.state
-        console.log(data)
+        const { options, form } = this.state
         switch(tipo){
             case 'proveedor':
                 return options.proveedores
@@ -118,11 +117,12 @@ class Conceptos extends Component {
                         if(data.subpartida.partida.subpartidas)
                             return setOptions(data.subpartida.partida.subpartidas, 'nombre', 'id')
                 return []
+            default: return []
         }
     }
 
     doubleClick = (data, tipo) => {
-        const { form, options } = this.state
+        const { form } = this.state
         switch(tipo){
             case 'proveedor':
             case 'unidad':
@@ -134,6 +134,7 @@ class Conceptos extends Component {
                 form[tipo] = data[tipo]
                 break
         }
+        this.setState({form})
         customInputAlert(
             <div>
                 <h2 className = 'swal2-title mb-4 mt-2'> { this.setSwalHeader(tipo) } </h2>
@@ -201,7 +202,7 @@ class Conceptos extends Component {
                     descripcion: setTextTableReactDom(concepto.descripcion, this.doubleClick, concepto, 'descripcion'),
                     unidad: concepto.unidad ? setTextTableReactDom(concepto.unidad.nombre, this.doubleClick, concepto, 'unidad') : '',
                     costo: setMoneyTableReactDom(concepto.costo, this.doubleClick, concepto, 'costo'),
-                    partida: concepto.subpartida ? concepto.subpartida.partida ? renderToString(setTextTable(concepto.subpartida.partida.nombre)) : '' : '',
+                    partida: concepto.subpartida ? concepto.subpartida.partida ? renderToString(setTextTable(concepto.subpartida.partida.nombre, this.doubleClick, concepto, 'partida')) : '' : '',
                     subpartida: concepto.subpartida ? setTextTableReactDom(concepto.subpartida.nombre, this.doubleClick, concepto, 'subpartida') : '',
                     proveedor: setTextTableReactDom(concepto.proveedor ? concepto.proveedor.razon_social : '', this.doubleClick, concepto, 'proveedor'),
                     id: concepto.id
