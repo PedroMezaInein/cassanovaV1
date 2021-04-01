@@ -5,7 +5,7 @@ import Layout from '../../../components/layout/layout'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender';
 import { URL_DEV, IMSS_COLUMNS } from '../../../constants';
 import { deleteAlert, doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../../functions/alert';
-import { setDateTable, setTextTable } from '../../../functions/setters';
+import { setDateTable, setTextTable, setAdjuntoDocumento} from '../../../functions/setters';
 import axios from 'axios'
 import { ModalDelete, Modal, ItemSlider } from '../../../components/singles';
 import { Button } from '../../../components/form-components'
@@ -34,6 +34,7 @@ class Imss extends Component {
                 actions: this.setActions(imss),
                 empresa: renderToString(setTextTable(imss.empresa ? imss.empresa.name : 'Sin definir')),
                 fecha: renderToString(setDateTable(imss.fecha)),
+                adjunto: renderToString(setAdjuntoDocumento(imss)),
                 id: imss.id
             })
             return false

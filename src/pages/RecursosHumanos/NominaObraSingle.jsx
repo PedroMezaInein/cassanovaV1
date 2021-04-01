@@ -4,7 +4,7 @@ import Layout from '../../components/layout/layout'
 import NewTable from '../../components/tables/NewTable';
 import { NOMINA_OBRA_SINGLE_COLUMNS } from '../../constants';
 import { renderToString } from 'react-dom/server';
-import { setTextTable, setMoneyTable, setMoneyTableForNominas} from '../../functions/setters'
+import { setTextTable, setMoneyTable, setMoneyTableForNominas, setTextTableCenter} from '../../functions/setters'
 
 class NominaObraSingle extends Component {
     state = {  
@@ -50,9 +50,9 @@ class NominaObraSingle extends Component {
         nominas.map( (nomina) => {
             aux.push(
                 {
-                    idEmpleado: renderToString(setTextTable(nomina.empleado ? nomina.empleado.id : '')),
-                    empleado: renderToString(setTextTable(nomina.empleado ? nomina.empleado.nombre : '')),
-                    proyecto: renderToString(setTextTable(nomina.proyecto ? nomina.proyecto.nombre : '')),
+                    idEmpleado: renderToString(setTextTableCenter(nomina.empleado ? nomina.empleado.id : '')),
+                    empleado: renderToString(setTextTableCenter(nomina.empleado ? nomina.empleado.nombre : '')),
+                    proyecto: renderToString(setTextTableCenter(nomina.proyecto ? nomina.proyecto.nombre : '')),
                     salario_hr: renderToString(setMoneyTable(nomina.salario_hr ? nomina.salario_hr : 0.0)),
                     hr_trabajadas: renderToString(setMoneyTable(nomina.hr_trabajadas ? nomina.hr_trabajadas : 0.0)),
                     salario_hr_extras: renderToString(setMoneyTable(nomina.salario_hr_extras ? nomina.salario_hr_extras : 0.0)),

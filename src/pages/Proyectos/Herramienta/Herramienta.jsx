@@ -6,7 +6,7 @@ import { ModalDelete, Modal, ItemSlider } from '../../../components/singles'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { URL_DEV, HERRAMIENTAS_COLUMNS, UBICACIONES_HERRAMIENTAS_COLUMNS } from '../../../constants'
 import { deleteAlert, doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../../functions/alert'
-import { setDateTable, setTextTable } from '../../../functions/setters'
+import { setDateTable, setTextTable, setTextTableCenter } from '../../../functions/setters'
 import axios from 'axios'
 import { Button } from '../../../components/form-components'
 import UbicacionHerramientaForm from '../../../components/forms/proyectos/UbicacionHerramientaForm'
@@ -47,13 +47,13 @@ class Herramienta extends Component {
         herramientas.map((herramienta) => {
             aux.push({
                 actions: this.setActions(herramienta),
-                empresa: renderToString(setTextTable(herramienta.empresa ? herramienta.empresa.name : 'Sin definir')),
-                proyecto: renderToString(setTextTable(herramienta.proyecto ? herramienta.proyecto.nombre : 'Sin definir')),
-                nombre: renderToString(setTextTable(herramienta.nombre)),
-                modelo: renderToString(setTextTable(herramienta.modelo)),
-                serie: renderToString(setTextTable(herramienta.serie)),
-                descripcion: renderToString(setTextTable(herramienta.descripcion)),
+                empresa: renderToString(setTextTableCenter(herramienta.empresa ? herramienta.empresa.name : 'Sin definir')),
+                proyecto: renderToString(setTextTableCenter(herramienta.proyecto ? herramienta.proyecto.nombre : 'Sin definir')),
+                nombre: renderToString(setTextTableCenter(herramienta.nombre)),
+                modelo: renderToString(setTextTableCenter(herramienta.modelo)),
+                serie: renderToString(setTextTableCenter(herramienta.serie)),
                 fecha: renderToString(setDateTable(herramienta.created_at)),
+                descripcion: renderToString(setTextTable(herramienta.descripcion)),
                 id: herramienta.id
             })
             return false

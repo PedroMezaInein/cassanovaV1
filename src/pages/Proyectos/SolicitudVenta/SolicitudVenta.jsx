@@ -3,7 +3,7 @@ import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV, SOLICITUD_VENTA_COLUMNS } from '../../../constants'
-import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable } from '../../../functions/setters'
+import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setTextTableCenter } from '../../../functions/setters'
 import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { Button } from '../../../components/form-components'
@@ -149,13 +149,13 @@ class SolicitudVenta extends Component {
                 {
                     actions: this.setActions(solicitud),
                     proyecto: renderToString(setTextTable(solicitud.proyecto ? solicitud.proyecto.nombre : '')),
-                    empresa: renderToString(setTextTable(solicitud.empresa ? solicitud.empresa.name : '')),
-                    factura: renderToString(setTextTable(solicitud.factura ? 'Con factura' : 'Sin factura')),
+                    empresa: renderToString(setTextTableCenter(solicitud.empresa ? solicitud.empresa.name : '')),
+                    factura: renderToString(setTextTableCenter(solicitud.factura ? 'Con factura' : 'Sin factura')),
                     monto: renderToString(setMoneyTable(solicitud.monto)),
-                    tipoPago: renderToString(setTextTable(solicitud.tipo_pago ? solicitud.tipo_pago.tipo : '')),
+                    tipoPago: renderToString(setTextTableCenter(solicitud.tipo_pago ? solicitud.tipo_pago.tipo : '')),
                     descripcion: renderToString(setTextTable(solicitud.descripcion)),
-                    area: renderToString(setTextTable(solicitud.subarea ? solicitud.subarea.area ? solicitud.subarea.area.nombre : '' : '')),
-                    subarea: renderToString(setTextTable(solicitud.subarea ? solicitud.subarea.nombre : '')),
+                    area: renderToString(setTextTableCenter(solicitud.subarea ? solicitud.subarea.area ? solicitud.subarea.area.nombre : '' : '')),
+                    subarea: renderToString(setTextTableCenter(solicitud.subarea ? solicitud.subarea.nombre : '')),
                     fecha: renderToString(setDateTable(solicitud.created_at)),
                     adjunto: solicitud.adjunto ? renderToString(setArrayTable([{ text: 'Adjunto', url: solicitud.adjunto.url }])) : renderToString(setTextTable('Sin adjuntos')),
                     id: solicitud.id

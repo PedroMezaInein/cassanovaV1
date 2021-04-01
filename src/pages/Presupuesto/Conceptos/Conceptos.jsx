@@ -3,7 +3,7 @@ import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV, CONCEPTOS_COLUMNS } from '../../../constants'
-import { setTextTable, setMoneyTable, setTextTableReactDom } from '../../../functions/setters'
+import { setTextTable, setMoneyTable, setTextTableReactDom, setTextTableCenter } from '../../../functions/setters'
 import Layout from '../../../components/layout/layout'
 import { ModalDelete, Modal } from '../../../components/singles'
 import { printResponseErrorAlert, errorAlert, doneAlert, waitAlert, customInputAlert } from '../../../functions/alert'
@@ -124,14 +124,14 @@ class Conceptos extends Component {
             aux.push(
                 {
                     actions: this.setActions(concepto),
-                    clave: renderToString(setTextTable(concepto.clave)),
+                    partida: concepto.subpartida ? concepto.subpartida.partida ? renderToString(setTextTableCenter(concepto.subpartida.partida.nombre)) : '' : '',
+                    subpartida: concepto.subpartida ? renderToString(setTextTableCenter(concepto.subpartida.nombre)) : '',
+                    clave: renderToString(setTextTableCenter(concepto.clave)),
+                    unidad: concepto.unidad ? renderToString(setTextTableCenter(concepto.unidad.nombre)) : '',
+                    costo: renderToString(setMoneyTable(concepto.costo)),
                     descripcion: editable.value === concepto.id && editable.descripcion === true  ? 
                         this.renderInput(concepto)
                         : setTextTableReactDom(concepto.descripcion, this.doubleClick, concepto),
-                    unidad: concepto.unidad ? renderToString(setTextTable(concepto.unidad.nombre)) : '',
-                    costo: renderToString(setMoneyTable(concepto.costo)),
-                    partida: concepto.subpartida ? concepto.subpartida.partida ? renderToString(setTextTable(concepto.subpartida.partida.nombre)) : '' : '',
-                    subpartida: concepto.subpartida ? renderToString(setTextTable(concepto.subpartida.nombre)) : '',
                     proveedor: renderToString(setTextTable(concepto.proveedor ? concepto.proveedor.razon_social : '')),
                     id: concepto.id
                 }

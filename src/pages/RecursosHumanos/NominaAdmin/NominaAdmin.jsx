@@ -6,7 +6,7 @@ import Layout from '../../../components/layout/layout'
 import { Modal, ModalDelete} from '../../../components/singles' 
 import { NOMINA_ADMIN_COLUMNS, URL_DEV, ADJUNTOS_COLUMNS} from '../../../constants'
 import { AdjuntosForm} from '../../../components/forms'
-import { setOptions, setDateTable, setMoneyTable, setTextTable, setAdjuntosList } from '../../../functions/setters'
+import { setOptions, setDateTable, setMoneyTable, setTextTableCenter, setAdjuntosList, setTextTable } from '../../../functions/setters'
 import { errorAlert, waitAlert, printResponseErrorAlert, deleteAlert, doneAlert} from '../../../functions/alert'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { renderToString } from 'react-dom/server'
@@ -357,7 +357,7 @@ class NominaAdmin extends Component {
             aux.push(
                 {
                     actions: this.setActions(nomina),
-                    periodo: renderToString(setTextTable(nomina.periodo)),
+                    periodo: renderToString(setTextTableCenter(nomina.periodo)),
                     fechaInicio: renderToString(setDateTable(nomina.fecha_inicio)),
                     fechaFin: renderToString(setDateTable(nomina.fecha_fin)),
                     totalNominaIMSS: renderToString(setMoneyTable(nomina.totalNominaImss)),

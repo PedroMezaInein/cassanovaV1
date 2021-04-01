@@ -5,7 +5,7 @@ import Layout from '../../../components/layout/layout'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { TRASPASOS_COLUMNS, URL_DEV } from '../../../constants'
 import { doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../../functions/alert'
-import { setArrayTable, setDateTable, setMoneyTable, setTextTable } from '../../../functions/setters'
+import { setArrayTable, setDateTable, setMoneyTable, setTextTableCenter } from '../../../functions/setters'
 import axios from 'axios'
 import { ModalDelete, Modal } from '../../../components/singles'
 import { TraspasoCard } from '../../../components/cards'
@@ -46,28 +46,16 @@ class Traspasos extends Component {
     setTraspasos = traspasos => {
         let aux = []
         traspasos.map((traspaso) => {
+            let transpaso_destino = traspaso.destino ? [{ name: 'Nombre', text: traspaso.destino.nombre },{ name: '# cuenta', text: traspaso.destino.numero }] : []
+            let transpaso_origen = traspaso.origen ? [{ name: 'Nombre', text: traspaso.origen.nombre },{ name: '# cuenta', text: traspaso.origen.numero }]: []
             aux.push({
                 actions: this.setActions(traspaso),
-                identificador: renderToString(setTextTable(traspaso.id)),
-                origen: renderToString(setArrayTable(
-                    traspaso.origen ?
-                        [
-                            { name: 'Nombre', text: traspaso.origen.nombre },
-                            { name: '# cuenta', text: traspaso.origen.numero }
-                        ]
-                        : []
-                )),
-                destino: renderToString(setArrayTable(
-                    traspaso.destino ?
-                        [
-                            { name: 'Nombre', text: traspaso.destino.nombre },
-                            { name: '# cuenta', text: traspaso.destino.numero }
-                        ]
-                        : []
-                )),
+                identificador: renderToString(setTextTableCenter(traspaso.id)),
+                origen: renderToString(setArrayTable(transpaso_origen,'250px')),
+                destino: renderToString(setArrayTable(transpaso_destino,'250px')),
                 monto: renderToString(setMoneyTable(traspaso.cantidad)),
-                comentario: renderToString(setTextTable(traspaso.comentario)),
-                usuario: renderToString(setTextTable(traspaso.user.name)),
+                comentario: renderToString(setTextTableCenter(traspaso.comentario)),
+                usuario: renderToString(setTextTableCenter(traspaso.user.name)),
                 fecha: renderToString(setDateTable(traspaso.created_at)),
                 id: traspaso.id
             })

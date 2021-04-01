@@ -3,7 +3,7 @@ import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV, UNIDADES_COLUMNS, } from '../../constants'
-import { setTextTable } from '../../functions/setters'
+import { setTextTableCenter } from '../../functions/setters'
 import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert } from '../../functions/alert'
 import Layout from '../../components/layout/layout'
 import { Modal, ModalDelete } from '../../components/singles'
@@ -56,7 +56,7 @@ class Unidades extends Component {
         unidades.map((unidad) => {
             aux.push({
                 actions: this.setActions(unidad),
-                unidad: renderToString(setTextTable(unidad.nombre)),
+                unidad: renderToString(setTextTableCenter(unidad.nombre)),
                 id: unidad.id
             })
             return false

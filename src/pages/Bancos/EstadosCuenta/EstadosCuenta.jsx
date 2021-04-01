@@ -7,7 +7,7 @@ import { URL_DEV, EDOS_CUENTAS_COLUMNS_2 } from '../../../constants'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { renderToString } from 'react-dom/server'
 import { waitAlert, doneAlert, errorAlert, printResponseErrorAlert } from '../../../functions/alert'
-import { setTextTable, setDateTable, setArrayTable } from '../../../functions/setters'
+import { setTextTable, setDateTable, setArrayTable, setTextTableCenter } from '../../../functions/setters'
 import { EstadoCuentaCard } from '../../../components/cards'
 const $ = require('jquery');
 class EstadosCuenta extends Component {
@@ -39,13 +39,13 @@ class EstadosCuenta extends Component {
         estados.map((estado, key) => {
             aux.push({
                 actions: this.setActions(estado),
-                identificador: renderToString(setTextTable(estado.id)),
+                identificador: renderToString(setTextTableCenter(estado.id)),
                 cuenta: estado.cuenta ?
                     renderToString(setArrayTable(
                         [
                             { 'name': 'Cuenta', 'text': estado.cuenta.nombre ? estado.cuenta.nombre : 'Sin definir' },
                             { 'name': 'No. Cuenta', 'text': estado.cuenta.numero ? estado.cuenta.numero : 'Sin definir' },
-                        ]
+                        ],'129px'
                     ))
                     : '',
                 estado: renderToString(setArrayTable([{ url: estado.adjunto.url, text: estado.adjunto.name }])),

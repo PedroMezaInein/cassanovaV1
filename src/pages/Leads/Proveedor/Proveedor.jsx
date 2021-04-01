@@ -3,7 +3,7 @@ import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV, PROVEEDORES_COLUMNS } from '../../../constants'
-import { setTextTable, setDateTable, setMoneyTable, setArrayTable } from '../../../functions/setters'
+import { setDateTable, setMoneyTable, setArrayTable, setTextTableCenter } from '../../../functions/setters'
 import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { ModalDelete, Modal } from '../../../components/singles'
@@ -38,24 +38,24 @@ class Proveedor extends Component {
             aux.push(
                 {
                     actions: this.setActions(proveedor),
-                    nombre: renderToString(setTextTable(proveedor.nombre)),
-                    razonSocial: renderToString(setTextTable(proveedor.razon_social)),
-                    rfc: renderToString(setTextTable(proveedor.rfc)),
+                    nombre: renderToString(setTextTableCenter(proveedor.nombre)),
+                    razonSocial: renderToString(setTextTableCenter(proveedor.razon_social)),
+                    rfc: renderToString(setTextTableCenter(proveedor.rfc)),
                     contacto: renderToString(setArrayTable(
                         [
                             { 'url': `tel:+${proveedor.telefono}`, 'text': proveedor.telefono },
                             { 'url': `mailto:${proveedor.email}`, 'text': proveedor.email }
-                        ]
+                        ],'120px'
                     )),
                     cuenta: renderToString(setArrayTable(
                         [
                             { 'name': 'No. Cuenta', 'text': proveedor.numero_cuenta ? proveedor.numero_cuenta : 'Sin definir' },
                             { 'name': 'Banco', 'text': proveedor.banco ? proveedor.banco.nombre : 'Sin definir' },
                             { 'name': 'Tipo Cuenta', 'text': proveedor.tipo_cuenta ? proveedor.tipo_cuenta.tipo : 'Sin definir' },
-                        ]
+                        ],'120px'
                     )),
-                    area: renderToString(setTextTable(proveedor.subarea ? proveedor.subarea.area.nombre : 'Sin definir')),
-                    subarea: renderToString(setTextTable(proveedor.subarea ? proveedor.subarea.nombre : 'Sin definir')),
+                    area: renderToString(setTextTableCenter(proveedor.subarea ? proveedor.subarea.area.nombre : 'Sin definir')),
+                    subarea: renderToString(setTextTableCenter(proveedor.subarea ? proveedor.subarea.nombre : 'Sin definir')),
                     total: renderToString(setMoneyTable(proveedor.sumatoria_compras + proveedor.sumatoria_egresos)),
                     fecha: renderToString(setDateTable(proveedor.created_at)),
                     id: proveedor.id

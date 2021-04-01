@@ -11,7 +11,7 @@ import NewTableServerRender from '../../../components/tables/NewTableServerRende
 import TableForModals from '../../../components/tables/TableForModals'
 import { CUENTAS_COLUMNS, EDOS_CUENTAS_COLUMNS, URL_DEV } from '../../../constants'
 import { deleteAlert, doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../../functions/alert'
-import { setArrayTable, setDateTable, setListTable, setMoneyTable, setTextTable, setLabelTable } from '../../../functions/setters'
+import { setArrayTable, setDateTable, setListTable, setMoneyTable, setTextTable, setLabelTable, setTextTableCenter } from '../../../functions/setters'
 import axios from 'axios'
 const $ = require('jquery');
 class Cuenta extends Component {
@@ -79,15 +79,15 @@ class Cuenta extends Component {
         cuentas.map((cuenta, key) => {
             aux.push({
                 actions: this.setActions(cuenta),
-                nombre: renderToString(setTextTable(cuenta.nombre)),
+                nombre: renderToString(setTextTableCenter(cuenta.nombre, '180px')),
                 numero: renderToString(setTextTable(cuenta.numero)),
                 balance: renderToString(setMoneyTable(cuenta.balance)),
                 descripcion: renderToString(setTextTable(cuenta.descripcion)),
-                banco: renderToString(setTextTable(cuenta.banco ? cuenta.banco.nombre : '')),
-                tipo: renderToString(setTextTable(cuenta.tipo ? cuenta.tipo.tipo : '')),
+                banco: renderToString(setTextTableCenter(cuenta.banco ? cuenta.banco.nombre : '')),
+                tipo: renderToString(setTextTableCenter(cuenta.tipo ? cuenta.tipo.tipo : '')),
                 estatus: cuenta.estatus ? renderToString(this.setLabel(cuenta.estatus.estatus)) : '',
-                empresa: renderToString(setListTable(cuenta.empresa, 'name')),
-                principal: renderToString(setTextTable(cuenta ? cuenta.empresa_principal ? cuenta.empresa_principal.name : '' : '')),
+                empresa: renderToString(setListTable(cuenta.empresa, 'name', '151px')),
+                principal: renderToString(setTextTableCenter(cuenta ? cuenta.empresa_principal ? cuenta.empresa_principal.name : '' : '', '153px')),
                 fecha: renderToString(setDateTable(cuenta.created_at)),
                 id: cuenta.id
             })

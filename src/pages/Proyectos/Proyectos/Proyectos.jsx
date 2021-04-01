@@ -8,7 +8,7 @@ import axios from 'axios'
 import { URL_DEV, PROYECTOS_COLUMNS, URL_ASSETS } from '../../../constants'
 import { Small } from '../../../components/texts'
 import { Card, Tabs } from 'react-bootstrap'
-import { setTextTable, setDateTable, setArrayTable, setListTable, setLabelTable } from '../../../functions/setters'
+import { setTextTable, setDateTable, setArrayTable, setListTable, setLabelTable, setTextTableCenter } from '../../../functions/setters'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert } from '../../../functions/alert'
 import ItemSlider from '../../../components/singles/ItemSlider'
@@ -925,16 +925,16 @@ class Proyectos extends Component {
             aux.push({
                 actions: this.setActions(proyecto),
                 status: proyecto ? setLabelTable(proyecto.estatus) : '',
-                nombre: renderToString(setTextTable(proyecto.nombre)),
-                cliente: renderToString(setListTable(proyecto.clientes, 'empresa')),
-                tipo_proyecto:renderToString(setTextTable(proyecto.tipo_proyecto?proyecto.tipo_proyecto.tipo:'Sin tipo de proyecto')),
+                nombre: renderToString(setTextTableCenter(proyecto.nombre)),
+                cliente: renderToString(setListTable(proyecto.clientes, 'empresa', '140px')),
+                tipo_proyecto:renderToString(setTextTableCenter(proyecto.tipo_proyecto?proyecto.tipo_proyecto.tipo:'Sin tipo de proyecto')),
                 direccion: renderToString(this.setDireccionTable(proyecto)),
                 contacto: renderToString(setArrayTable(
                     [
                         { name: 'Nombre', text: proyecto.contacto },
                         { name: 'Teléfono', text: proyecto.numero_contacto, url: `tel:+${proyecto.numero_contacto}` }
-                    ])),
-                empresa: renderToString(setTextTable(proyecto.empresa ? proyecto.empresa.name : '')),
+                    ],'190px')),
+                empresa: renderToString(setTextTableCenter(proyecto.empresa ? proyecto.empresa.name : '')),
                 porcentaje: renderToString(setTextTable(proyecto.porcentaje + '%')),
                 fechaInicio: renderToString(setDateTable(proyecto.fecha_inicio)),
                 descripcion: renderToString(setTextTable(proyecto.descripcion)),

@@ -7,7 +7,7 @@ import { ModalDelete, Modal } from '../../components/singles'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
 import { URL_DEV, ORIGENES_COLUMNS } from '../../constants'
 import { doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../functions/alert'
-import { setTextTable } from '../../functions/setters'
+import { setTextTableCenter } from '../../functions/setters'
 import axios from 'axios'
 const $ = require('jquery');
 
@@ -47,7 +47,7 @@ class OrigenesLeads extends Component {
         origenes.map((origen) => {
             aux.push({
                 actions: this.setActions(origen),
-                origen: renderToString(setTextTable(origen.origen)),
+                origen: renderToString(setTextTableCenter(origen.origen)),
                 id: origen.id
             })
             return false

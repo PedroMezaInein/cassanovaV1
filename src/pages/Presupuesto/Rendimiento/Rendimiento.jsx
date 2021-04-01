@@ -3,7 +3,7 @@ import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV, RENDIMIENTOS_COLUMNS } from '../../../constants'
-import { setTextTable, setMoneyTable} from '../../../functions/setters'
+import { setTextTable, setMoneyTable, setTextTableCenter} from '../../../functions/setters'
 import Layout from '../../../components/layout/layout'
 import { ModalDelete, Modal } from '../../../components/singles'
 import { doneAlert, printResponseErrorAlert, errorAlert, waitAlert } from '../../../functions/alert'
@@ -71,11 +71,11 @@ class Rendimientos extends Component {
             aux.push(
                 {
                     actions: this.setActions(rendimiento),
-                    materiales: renderToString(setTextTable(rendimiento.materiales)),
-                    unidad: renderToString(setTextTable(rendimiento.unidad ? rendimiento.unidad.nombre : '')),
+                    materiales: renderToString(setTextTableCenter(rendimiento.materiales)),
+                    unidad: renderToString(setTextTableCenter(rendimiento.unidad ? rendimiento.unidad.nombre : '')),
                     costo: renderToString(setMoneyTable(rendimiento.costo)),
-                    proveedor: renderToString(setTextTable(rendimiento.proveedor ? rendimiento.proveedor.razon_social : '')),
-                    rendimiento: renderToString(setTextTable(rendimiento.rendimiento)),
+                    proveedor: renderToString(setTextTableCenter(rendimiento.proveedor ? rendimiento.proveedor.razon_social : '')),
+                    rendimiento: renderToString(setTextTableCenter(rendimiento.rendimiento)),
                     descripcion: renderToString(setTextTable(rendimiento.descripcion)),
                     id: rendimiento.id
                 }

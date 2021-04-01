@@ -3,7 +3,7 @@ import { renderToString } from 'react-dom/server'
 import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
 import { URL_DEV, PROYECTOS_TICKETS } from '../../constants'
-import { setTextTable, setDateTable, setLabelTable } from '../../functions/setters'
+import { setTextTable, setDateTable, setLabelTable, setTextTableCenter } from '../../functions/setters'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
 const $ = require('jquery');
 class Calidad extends Component {
@@ -36,12 +36,12 @@ class Calidad extends Component {
                 {
                     actions: this.setActions(calidad),
                     estatus: renderToString(setLabelTable(calidad.estatus_ticket)),
-                    proyectos: renderToString(setTextTable(calidad.proyecto ? calidad.proyecto.nombre : '')),
-                    cliente: renderToString(setTextTable(calidad.usuario ? calidad.usuario.name : '')),
-                    tipo_trabajo: renderToString(setTextTable(calidad.tipo_trabajo ? calidad.tipo_trabajo.tipo : '')),
+                    proyectos: renderToString(setTextTableCenter(calidad.proyecto ? calidad.proyecto.nombre : '', '190px')),
+                    cliente: renderToString(setTextTableCenter(calidad.usuario ? calidad.usuario.name : '')),
+                    tipo_trabajo: renderToString(setTextTableCenter(calidad.tipo_trabajo ? calidad.tipo_trabajo.tipo : '')),
                     fecha: renderToString(setDateTable(calidad.created_at)),
                     descripcion: renderToString(setTextTable(calidad.descripcion)),
-                    motivo: renderToString(setTextTable(calidad.motivo_cancelacion)),
+                    motivo: renderToString(setTextTableCenter(calidad.motivo_cancelacion)),
                     id: calidad.id
                 }
             )
