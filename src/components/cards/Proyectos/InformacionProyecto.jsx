@@ -7,6 +7,7 @@ import { Button } from '../../../components/form-components'
 import { diffCommentDate } from '../../../functions/functions'
 import SVG from "react-inlinesvg"
 import { toAbsoluteUrl } from "../../../functions/routers"
+import { printDates } from '../../../functions/printers'
 export default class InformacionProyecto extends Component {
     setEmpresaLogo = proyecto => {
         if (proyecto)
@@ -16,34 +17,49 @@ export default class InformacionProyecto extends Component {
                         return proyecto.empresa.logo_principal[0].url
         return ''
     }
+
+    hasComentarios = (proyecto) => {
+        if(proyecto)
+            if(proyecto.comentarios)
+                if(proyecto.comentarios.length)
+                    return true
+        return false
+    }
+
     render() {
-        const { proyecto, printDates, form, addComentario, onChange, handleChange, tipo} = this.props
+        const { proyecto, form, addComentario, onChange, handleChange, tipo} = this.props
         return (
             <div className="col-md-12 mt-4">
                 <Tab.Container defaultActiveKey={ tipo === '' ? "tab_informacion_general" : proyecto.comentarios.length ? "tab_mostrar_comentarios" : "tab_informacion_general"}>
                     <Nav className="nav nav-light-primary nav-pills d-flex justify-content-end">
-                        <Nav.Item className="nav-item">
-                            <Nav.Link className="nav-link px-3" eventKey="tab_informacion_general">
-                                <span className="nav-icon"><i className="flaticon2-file"></i></span>
-                                <span className="nav-text font-size-lg font-weight-bolder">Información general</span>
-                            </Nav.Link>
-                        </Nav.Item>
-                        <Nav.Item className="nav-item">
-                            <Nav.Link className="nav-link px-3" eventKey="tab_comentarios">
-                                <span className="nav-icon"><i className="flaticon2-plus"></i></span>
-                                <span className="nav-text font-size-lg font-weight-bolder">Agregar comentario</span>
-                            </Nav.Link>
-                        </Nav.Item>
                         {
-                            proyecto ?
-                                proyecto.comentarios.length > 0 ?
-                                    <Nav.Item className="nav-item">
-                                        <Nav.Link className="nav-link px-3" eventKey="tab_mostrar_comentarios" >
-                                            <span className="nav-icon"><i className="flaticon2-chat-1"></i></span>
-                                            <span className="nav-text font-size-lg font-weight-bolder">Mostrar comentarios</span>
-                                        </Nav.Link>
-                                    </Nav.Item>
-                                :''
+                            form && this.hasComentarios(proyecto) ?
+                                <Nav.Item className="nav-item">
+                                    <Nav.Link className="nav-link px-3" eventKey="tab_informacion_general">
+                                        <span className="nav-icon"><i className="flaticon2-file"></i></span>
+                                        <span className="nav-text font-size-lg font-weight-bolder">Información general</span>
+                                    </Nav.Link>
+                                </Nav.Item>
+                            : ''
+                        }
+                        {
+                            form ? 
+                                <Nav.Item className="nav-item">
+                                    <Nav.Link className="nav-link px-3" eventKey="tab_comentarios">
+                                        <span className="nav-icon"><i className="flaticon2-plus"></i></span>
+                                        <span className="nav-text font-size-lg font-weight-bolder">Agregar comentario</span>
+                                    </Nav.Link>
+                                </Nav.Item>
+                            : ''
+                        }
+                        {
+                            this.hasComentarios(proyecto) ?
+                                <Nav.Item className="nav-item">
+                                    <Nav.Link className="nav-link px-3" eventKey="tab_mostrar_comentarios" >
+                                        <span className="nav-icon"><i className="flaticon2-chat-1"></i></span>
+                                        <span className="nav-text font-size-lg font-weight-bolder">Mostrar comentarios</span>
+                                    </Nav.Link>
+                                </Nav.Item>
                             :''
                         }
                     </Nav>
@@ -103,14 +119,14 @@ export default class InformacionProyecto extends Component {
                                                 : ''
                                         }
                                         {
-                                            proyecto.calle ?
+                                            proyecto ?
                                                 <tr>
                                                     <td className="text-center">
                                                         <i className="las la-calendar icon-2x text-dark-50"></i>
                                                     </td>
                                                     <td className="font-weight-bolder text-dark-50">PERIODO DEL PROYECTO</td>
                                                     <td className="font-weight-light">
-                                                        {printDates(proyecto)}
+                                                        { printDates( proyecto.fecha_inicio, proyecto.fecha_fin) }
                                                     </td>
                                                 </tr>
                                                 :
@@ -296,63 +312,67 @@ export default class InformacionProyecto extends Component {
                                 </table>
                             </div>
                         </Tab.Pane>
-                        <Tab.Pane eventKey='tab_comentarios'>
-                            <div>
-                                <Form id="form-comentario"
-                                    onSubmit={
-                                        (e) => {
-                                            e.preventDefault();
-                                            validateAlert(addComentario, e, 'form-comentario')
-                                        }
-                                    }>
-                                    <div className="form-group row form-group-marginless mt-3 d-flex justify-content-center">
-                                        <div className="col-md-11 align-self-center">
-                                            <InputGray 
-                                                withtaglabel={1}
-                                                withtextlabel={1}
-                                                withplaceholder={1}
-                                                withicon={0}
-                                                requirevalidation={0}
-                                                placeholder='COMENTARIO'
-                                                value={form.comentario}
-                                                name='comentario'
-                                                onChange={onChange}
-                                                as="textarea"
-                                                rows="3"
-                                            />
-                                        </div>
-                                    </div>
-                                    <div className="form-group row form-group-marginless mt-3 d-flex justify-content-center">
-                                        <div className="col-md-12 d-flex justify-content-center align-self-center mt-4">
-                                            <div className = 'w-100'>
-                                                <div className="text-center font-weight-bolder mb-2">
-                                                    {form.adjuntos.adjunto_comentario.placeholder}
+                        {
+                            form ? 
+                                <Tab.Pane eventKey='tab_comentarios'>
+                                    <div>
+                                        <Form id="form-comentario"
+                                            onSubmit={
+                                                (e) => {
+                                                    e.preventDefault();
+                                                    validateAlert(addComentario, e, 'form-comentario')
+                                                }
+                                            }>
+                                            <div className="form-group row form-group-marginless mt-3 d-flex justify-content-center">
+                                                <div className="col-md-11 align-self-center">
+                                                    <InputGray 
+                                                        withtaglabel={1}
+                                                        withtextlabel={1}
+                                                        withplaceholder={1}
+                                                        withicon={0}
+                                                        requirevalidation={0}
+                                                        placeholder='COMENTARIO'
+                                                        value={form.comentario}
+                                                        name='comentario'
+                                                        onChange={onChange}
+                                                        as="textarea"
+                                                        rows="3"
+                                                    />
                                                 </div>
-                                                <ItemSlider
-                                                    multiple={true}
-                                                    items={form.adjuntos.adjunto_comentario.files}
-                                                    item='adjunto_comentario'
-                                                    handleChange={handleChange}
-                                                />
                                             </div>
-                                        </div>
-                                    </div>
-                                    <div className="card-footer py-3 pr-1">
-                                        <div className="row mx-0">
-                                            <div className="col-lg-12 text-right pr-0 pb-0">
-                                                <Button icon='' className="btn btn-light-primary font-weight-bold"
-                                                    onClick={
-                                                        (e) => {
-                                                            e.preventDefault();
-                                                            validateAlert(addComentario, e, 'form-comentario')
-                                                        }
-                                                    } text="ENVIAR" />
+                                            <div className="form-group row form-group-marginless mt-3 d-flex justify-content-center">
+                                                <div className="col-md-12 d-flex justify-content-center align-self-center mt-4">
+                                                    <div className = 'w-100'>
+                                                        <div className="text-center font-weight-bolder mb-2">
+                                                            {form.adjuntos.adjunto_comentario.placeholder}
+                                                        </div>
+                                                        <ItemSlider
+                                                            multiple={true}
+                                                            items={form.adjuntos.adjunto_comentario.files}
+                                                            item='adjunto_comentario'
+                                                            handleChange={handleChange}
+                                                        />
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
+                                            <div className="card-footer py-3 pr-1">
+                                                <div className="row mx-0">
+                                                    <div className="col-lg-12 text-right pr-0 pb-0">
+                                                        <Button icon='' className="btn btn-light-primary font-weight-bold"
+                                                            onClick={
+                                                                (e) => {
+                                                                    e.preventDefault();
+                                                                    validateAlert(addComentario, e, 'form-comentario')
+                                                                }
+                                                            } text="ENVIAR" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </Form>
                                     </div>
-                                </Form>
-                            </div>
-                        </Tab.Pane>
+                                </Tab.Pane>
+                            :''
+                        }
                         <Tab.Pane eventKey='tab_mostrar_comentarios'>
                             {
                                 proyecto &&

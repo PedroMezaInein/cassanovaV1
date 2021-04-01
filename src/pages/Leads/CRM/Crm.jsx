@@ -28,6 +28,7 @@ import Moment from 'react-moment'
 import FileItem from '../../../components/singles/FileItem'
 import Scrollbar from 'perfect-scrollbar-react';
 import 'perfect-scrollbar-react/dist/style.min.css';
+import InformacionProyecto from '../../../components/cards/Proyectos/InformacionProyecto'
 const $ = require('jquery');
 class Crm extends Component {
 
@@ -182,6 +183,7 @@ class Crm extends Component {
         modal_historial: false,
         modal_one_lead: false,
         modal_formRRHHP:false,
+        modal_info_proyecto: false,
         showForm: false,
         itemsPerPage: 5,
         activePage: 1,
@@ -461,6 +463,14 @@ class Crm extends Component {
             })
             this.getLeadsRhProveedores()
         }
+    }
+
+    changePageEditProyecto = proyecto => {
+        const { history } = this.props
+        history.push({
+            pathname: '/proyectos/proyectos/edit',
+            state: { proyecto: proyecto, prevPath: 'crm' }
+        });
     }
 
     /* ---------------------- ANCHOR CRM ELIMINAR CONTACTO ---------------------- */
@@ -1184,6 +1194,31 @@ class Crm extends Component {
         })
     }
 
+    /* -------------------------------------------------------------------------- */
+    /*                           ANCHOR Axios Proyectos                           */
+    /* -------------------------------------------------------------------------- */
+
+    /* ------------------------ ANCHOR GET ONE PROYECTOS ------------------------ */
+
+    getOneProyecto = async(proyecto) => {
+        const { access_token } = this.props.authUser
+        waitAlert()
+        await axios.get(`${URL_DEV}v2/proyectos/proyectos/proyecto/${proyecto.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { proyecto } = response.data
+                this.setState({
+                    ...this.state,
+                    modal_info_proyecto: true,
+                    proyecto: proyecto,
+                })
+                Swal.close()
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     refreshActualTable = (activeTable) => {
         switch (activeTable) {
             case 'rh-proveedores':
@@ -1417,6 +1452,10 @@ class Crm extends Component {
             modal_one_lead: false,
             lead: ''
         })
+    }
+
+    handleCloseModalInfoProyecto = () => {
+        this.setState({...this.state,proyecto: '', modal_info_proyecto: false})
     }
 
     openModalEditar = lead => {
@@ -1783,7 +1822,7 @@ class Crm extends Component {
     render() {
         const { ultimos_contactados, prospectos_sin_contactar, ultimos_ingresados, lead_web, activeTable, leads_en_contacto, leads_en_negociacion, modal_one_lead,
             leads_contratados, leads_cancelados, leads_detenidos, modal_agendar, form, lead, lead_rh_proveedores, options, modal_editar, formEditar, modal_historial,
-            formHistorial, itemsPerPage, activePage, leads_rp, modal_formRRHHP, formRRHHP, title, formeditado} = this.state
+            formHistorial, itemsPerPage, activePage, leads_rp, modal_formRRHHP, formRRHHP, title, formeditado,modal_info_proyecto, proyecto} = this.state
         return (
             <Layout active='leads' {...this.props} >
                 <Row>
@@ -2025,13 +2064,10 @@ class Crm extends Component {
                                         />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="contratados">
-                                        <LeadContrato
-                                            leads={leads_contratados}
-                                            onClickNext={this.nextPageLeadContratados}
-                                            onClickPrev={this.prevPageLeadContratados}
-                                            changePageDetails={this.changePageDetailsContratado}
-                                            clickOneLead = { this.getOneLeadInfoAxios }
-                                        />
+                                        <LeadContrato leads = { leads_contratados } onClickNext = { this.nextPageLeadContratados }
+                                            onClickPrev = { this.prevPageLeadContratados } changePageDetails = { this.changePageDetailsContratado }
+                                            clickOneLead = { this.getOneLeadInfoAxios } openModalSee = { this.getOneProyecto } 
+                                            changePageEditProyecto = { this.changePageEditProyecto } />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="detenidos">
                                         <LeadDetenido
@@ -2387,6 +2423,29 @@ class Crm extends Component {
                         options={options}
                         formeditado={formeditado}
                     /> 
+                </Modal>
+                <Modal show = { modal_info_proyecto } size="lg" title = {
+                    proyecto?
+                        proyecto.estatus ?
+                            <>
+                                {proyecto.nombre}
+                                <span className="label label-lg label-inline font-weight-bold py-1 px-2" style={{
+                                    color: `${proyecto.estatus.letra}`,
+                                    backgroundColor: `${proyecto.estatus.fondo}`,
+                                    fontSize: "75%",
+                                    marginLeft:'10px'
+                                    }} >
+                                    {proyecto.estatus.estatus}
+                                </span>
+                            </>
+                        : <span>-</span>
+                    :''
+                } handleClose = { this.handleCloseModalInfoProyecto } >
+                    {
+                        proyecto ?
+                            <InformacionProyecto proyecto = { proyecto}  />
+                        : ''
+                    }
                 </Modal>
             </Layout>
         );

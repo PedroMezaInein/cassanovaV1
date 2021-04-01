@@ -221,59 +221,58 @@ class LeadNuevo extends Component {
                                                             }
                                                         </td>
                                                         <td className="pr-0 text-center">
-                                                            <DropdownButton
-                                                                    menualign="right"
-                                                                    title={<i className="fas fa-chevron-down icon-nm p-0"></i>}
-                                                                    id={`dropdown-button-drop-left-nuevo`} 
-                                                                >
-                                                                <Dropdown.Item className="text-hover-info dropdown-pagina-web" onClick={(e) => { openModalEditar(lead) }} >
-                                                                    <span className="navi-icon">
-                                                                        <i className="fas fa-edit pr-3 text"></i>
-                                                                    </span>
-                                                                    <span className="navi-text align-self-center">EDITAR INFORMACIÓN GENERAL</span>
-                                                                </Dropdown.Item>
-                                                                {
-                                                                    this.canSendFirstEmail(lead) ?
-                                                                        <Dropdown.Item className="text-hover-info dropdown-pagina-web"
-                                                                            onClick={(e) => { questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => sendEmail(lead)) }}>
-                                                                            <span className="navi-icon">
-                                                                                <i className="fas fa-envelope-open pr-3 text"></i>
-                                                                            </span>
-                                                                            <span className="navi-text align-self-center">ENVIAR CORREO</span>
-                                                                        </Dropdown.Item>
-                                                                        : ''
-                                                                }
-                                                                <Dropdown.Item className="text-hover-info dropdown-pagina-web" onClick={(e) => { openModal(lead) }} >
-                                                                    <span className="navi-icon">
-                                                                        <i className="fas fa-phone pr-3 text"></i>
-                                                                    </span>
-                                                                    <span className="navi-text align-self-center">AGENDAR LLAMADA</span>
-                                                                </Dropdown.Item>
-                                                                <Dropdown.Item className="text-hover-info dropdown-pagina-web" onClick={(e) => { changePageLlamadaSalida(lead) }} >
-                                                                    <span className="navi-icon">
-                                                                        <i className="far fa-file-alt pr-3 text"></i>
-                                                                    </span>
-                                                                    <span className="navi-text align-self-center">SEGUIMIENTO</span>
-                                                                </Dropdown.Item>
-                                                                <Dropdown.Item className="text-hover-info dropdown-pagina-web" onClick={(e) => { openModalHistorial(lead) }} >
-                                                                    <span className="navi-icon">
-                                                                        <i className="far fa-list-alt pr-3 text"></i>
-                                                                    </span>
-                                                                    <span className="navi-text align-self-center">HISTORIAL DE CONTACTO</span>
-                                                                </Dropdown.Item>
-                                                                <Dropdown.Item className="text-hover-info dropdown-pagina-web" onClick={(e) => { questionAlert('¿ESTÁS SEGURO?', 'ESTE LEAD SERÁ MARCADO COMO DUPLICADO', () => deleteDuplicado(lead)) }}>
-                                                                    <span className="navi-icon">
-                                                                        <i className="fas fa-minus-circle pr-3 text"></i>
-                                                                    </span>
-                                                                    <span className="navi-text align-self-center">ELIMINAR LEAD DUPLICADO</span>
-                                                                </Dropdown.Item>
-                                                                <Dropdown.Item className="text-hover-info dropdown-pagina-web" onClick={(e) => { questionAlert('¿ESTÁS SEGURO?', 'MOVERÁS ESTE LEAD A RELACIONES PÚBLICAS', () => moveToRelacionesPublicas(lead)) }}>
-                                                                    <span className="navi-icon">
-                                                                        <i className="far fa-handshake pr-3 text"></i>
-                                                                    </span>
-                                                                    <span className="navi-text align-self-center">Relaciones públicas</span>
-                                                                </Dropdown.Item>
-                                                            </DropdownButton>
+                                                            <div className="dropdown-container dropdown-container__info">
+                                                                <DropdownButton menualign="right"
+                                                                        title={<i className="fas fa-chevron-down icon-nm p-0"></i>} >
+                                                                    <Dropdown.Item className="text-hover-info dropdown-pagina-web" onClick={(e) => { openModalEditar(lead) }} >
+                                                                        <span className="navi-icon">
+                                                                            <i className="fas fa-edit pr-3 text"></i>
+                                                                        </span>
+                                                                        <span className="navi-text align-self-center">EDITAR INFORMACIÓN GENERAL</span>
+                                                                    </Dropdown.Item>
+                                                                    {
+                                                                        this.canSendFirstEmail(lead) ?
+                                                                            <Dropdown.Item className="text-hover-info dropdown-pagina-web"
+                                                                                onClick={(e) => { questionAlert('¿ESTÁS SEGURO?', '¡NO PODRÁS REVERTIR ESTO!', () => sendEmail(lead)) }}>
+                                                                                <span className="navi-icon">
+                                                                                    <i className="fas fa-envelope-open pr-3 text"></i>
+                                                                                </span>
+                                                                                <span className="navi-text align-self-center">ENVIAR CORREO</span>
+                                                                            </Dropdown.Item>
+                                                                            : ''
+                                                                    }
+                                                                    <Dropdown.Item className="text-hover-info dropdown-pagina-web" onClick={(e) => { openModal(lead) }} >
+                                                                        <span className="navi-icon">
+                                                                            <i className="fas fa-phone pr-3 text"></i>
+                                                                        </span>
+                                                                        <span className="navi-text align-self-center">AGENDAR LLAMADA</span>
+                                                                    </Dropdown.Item>
+                                                                    <Dropdown.Item className="text-hover-info dropdown-pagina-web" onClick={(e) => { changePageLlamadaSalida(lead) }} >
+                                                                        <span className="navi-icon">
+                                                                            <i className="far fa-file-alt pr-3 text"></i>
+                                                                        </span>
+                                                                        <span className="navi-text align-self-center">SEGUIMIENTO</span>
+                                                                    </Dropdown.Item>
+                                                                    <Dropdown.Item className="text-hover-info dropdown-pagina-web" onClick={(e) => { openModalHistorial(lead) }} >
+                                                                        <span className="navi-icon">
+                                                                            <i className="far fa-list-alt pr-3 text"></i>
+                                                                        </span>
+                                                                        <span className="navi-text align-self-center">HISTORIAL DE CONTACTO</span>
+                                                                    </Dropdown.Item>
+                                                                    <Dropdown.Item className="text-hover-info dropdown-pagina-web" onClick={(e) => { questionAlert('¿ESTÁS SEGURO?', 'ESTE LEAD SERÁ MARCADO COMO DUPLICADO', () => deleteDuplicado(lead)) }}>
+                                                                        <span className="navi-icon">
+                                                                            <i className="fas fa-minus-circle pr-3 text"></i>
+                                                                        </span>
+                                                                        <span className="navi-text align-self-center">ELIMINAR LEAD DUPLICADO</span>
+                                                                    </Dropdown.Item>
+                                                                    <Dropdown.Item className="text-hover-info dropdown-pagina-web" onClick={(e) => { questionAlert('¿ESTÁS SEGURO?', 'MOVERÁS ESTE LEAD A RELACIONES PÚBLICAS', () => moveToRelacionesPublicas(lead)) }}>
+                                                                        <span className="navi-icon">
+                                                                            <i className="far fa-handshake pr-3 text"></i>
+                                                                        </span>
+                                                                        <span className="navi-text align-self-center">Relaciones públicas</span>
+                                                                    </Dropdown.Item>
+                                                                </DropdownButton>
+                                                            </div>
                                                         </td>
                                                     </tr>
                                                 )
