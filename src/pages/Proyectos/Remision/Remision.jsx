@@ -3,7 +3,7 @@ import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV, REMISION_COLUMNS } from '../../../constants'
-import { setTextTable, setDateTable, setArrayTable } from '../../../functions/setters'
+import { setTextTable, setDateTable, setArrayTable, setTextTableCenter } from '../../../functions/setters'
 import { errorAlert, printResponseErrorAlert, doneAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { Modal, ModalDelete } from '../../../components/singles'
@@ -76,10 +76,10 @@ class Remisiones extends Component {
                     actions: this.setActions(remision),
                     fecha: renderToString(setDateTable(remision.created_at)),
                     proyecto: renderToString(setTextTable(remision.proyecto ? remision.proyecto.nombre : '')),
-                    area: renderToString(setTextTable(remision.subarea ? remision.subarea.area ? remision.subarea.area.nombre : '' : '')),
-                    subarea: renderToString(setTextTable(remision.subarea ? remision.subarea.nombre : '')),
+                    area: renderToString(setTextTableCenter(remision.subarea ? remision.subarea.area ? remision.subarea.area.nombre : '' : '')),
+                    subarea: renderToString(setTextTableCenter(remision.subarea ? remision.subarea.nombre : '')),
                     descripcion: renderToString(setTextTable(remision.descripcion)),
-                    adjunto: remision.adjunto ? renderToString(setArrayTable([{ text: remision.adjunto.name, url: remision.adjunto.url }])) : renderToString(setTextTable('Sin adjuntos')),
+                    adjunto: remision.adjunto ? renderToString(setArrayTable([{ text: remision.adjunto.name, url: remision.adjunto.url }])) : renderToString(setTextTableCenter('Sin adjuntos')),
                     id: remision.id
                 }
             )

@@ -9,7 +9,7 @@ import axios from 'axios'
 import { AreaCard } from '../../components/cards'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
 import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert } from '../../functions/alert'
-import { setTextTable, setListTable} from '../../functions/setters'
+import { setListTable, setTextTableCenter} from '../../functions/setters'
 import { Tabs, Tab } from 'react-bootstrap'
 
 const $ = require('jquery');
@@ -114,7 +114,7 @@ class Areas extends Component {
         areas.map((area) => {
             aux.push({
                 actions: this.setActions(area),
-                area: renderToString(setTextTable(area.nombre)),
+                area: renderToString(setTextTableCenter(area.nombre)),
                 subareas: renderToString(setListTable(area.subareas, 'nombre')),
                 id: area.id
             })

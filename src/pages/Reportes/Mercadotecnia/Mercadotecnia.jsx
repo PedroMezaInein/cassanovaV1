@@ -3,7 +3,7 @@ import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV, REPORTE_MERCA_COLUMNS} from '../../../constants'
-import { setTextTable, setOptions, setAdjuntoTable } from '../../../functions/setters'
+import { setOptions, setAdjuntoTable, setTextTableCenter } from '../../../functions/setters'
 import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { Modal, ModalDelete } from '../../../components/singles'
@@ -168,8 +168,8 @@ class Mercadotecnia extends Component {
             aux.push(
                 {
                     actions: this.setActions(reporte),
-                    empresa: renderToString(setTextTable(reporte.empresa ? reporte.empresa.name : '')),
-                    fecha: renderToString(setTextTable(reporte.mes + ' - ' + reporte.año)),
+                    empresa: renderToString(setTextTableCenter(reporte.empresa ? reporte.empresa.name : '')),
+                    fecha: renderToString(setTextTableCenter(reporte.mes + ' - ' + reporte.año)),
                     reporte: renderToString(setAdjuntoTable(reporte)),
                     id: reporte.id
                 }

@@ -385,10 +385,6 @@ export const CLIENTES_COLUMNS = [
         accessor: 'nombre',
     },
     {
-        Header: 'Contacto',
-        accessor: 'contacto',
-    },
-    {
         Header: 'Proyecto',
         accessor: 'proyecto',
     },
@@ -991,12 +987,12 @@ export const PROYECTOS_COLUMNS = [
         accessor: 'nombre'
     },
     {
-        Header: 'Cliente',
-        accessor: 'cliente'
-    },
-    {
         Header: 'T.Proyecto',
         accessor: 'tipo_proyecto'
+    },
+    {
+        Header: 'Cliente',
+        accessor: 'cliente'
     },
     {
         Header: 'Dirección',
@@ -1086,13 +1082,13 @@ export const VENTAS_COLUMNS = [
         accessor: 'tipoPago'
     },
     {
+        Header: 'Estatus',
+        accessor: 'estatusCompra'
+    },
+    {
         Header: 'Descripción',
         accessor: 'descripcion'
     },
-    {
-        Header: 'Estatus',
-        accessor: 'estatusCompra'
-    }
     /* {
         Header: 'Adjuntos',
         accessor: 'adjuntos',
@@ -1282,11 +1278,11 @@ export const SOLICITUD_VENTA_COLUMNS = [
     { Header: 'Monto', accessor: 'monto' },
     { Header: 'Factura', accessor: 'factura' },
     { Header: 'Pago', accessor: 'tipoPago' },
-    { Header: 'Descripción', accessor: 'descripcion' },
     { Header: 'Área', accessor: 'area' },
     { Header: 'Sub-Área', accessor: 'subarea' },
     { Header: 'Adjunto', accessor: 'adjunto' },
-    { Header: 'Fecha', accessor: 'fecha' }
+    { Header: 'Fecha', accessor: 'fecha' },
+    { Header: 'Descripción', accessor: 'descripcion' }
 ]
 
 export const CONCEPTOS_COLUMNS = [
@@ -1308,12 +1304,6 @@ export const CONCEPTOS_COLUMNS = [
         accessor: 'clave'
     },
     {
-        Header: 'Descripción',
-        accessor: 'descripcion',
-        class: 'desc-big',
-        customRender: true
-    },
-    {
         Header: 'Unidad',
         accessor: 'unidad',
         customRender: true
@@ -1321,6 +1311,12 @@ export const CONCEPTOS_COLUMNS = [
     {
         Header: 'Costo',
         accessor: 'costo',
+        customRender: true
+    },
+    {
+        Header: 'Descripción',
+        accessor: 'descripcion',
+        class: 'desc-big',
         customRender: true
     },
     {
@@ -1356,12 +1352,12 @@ export const HERRAMIENTAS_COLUMNS = [
         accessor: 'serie',
     },
     {
-        Header: 'Descripción',
-        accessor: 'descripcion',
-    },
-    {
         Header: 'Fecha de compra',
         accessor: 'fecha',
+    },
+    {
+        Header: 'Descripción',
+        accessor: 'descripcion',
     }
 ]
 
@@ -1381,6 +1377,10 @@ export const DOCUMENTOS_COLUMNS = [
     {
         Header: 'Fecha',
         accessor: 'fecha',
+    },
+    {
+        Header: 'Documento',
+        accessor:'documento'
     }
 ]
 
@@ -1396,6 +1396,10 @@ export const IMSS_COLUMNS = [
     {
         Header: 'Fecha',
         accessor: 'fecha',
+    },
+    {
+        Header: 'Adjunto',
+        accessor:'adjunto'
     }
 ]
 
@@ -1523,6 +1527,12 @@ export const EMPRESA_COLUMNS = [
         orderable: false
     },
     {
+        Header: 'Logo',
+        accessor: 'logo',
+        searchable: false,
+        orderable: false
+    },
+    {
         Header: 'Nombre',
         accessor: 'name',
     },
@@ -1533,12 +1543,6 @@ export const EMPRESA_COLUMNS = [
     {
         Header: 'RFC',
         accessor: 'rfc',
-    },
-    {
-        Header: 'Logo',
-        accessor: 'logo',
-        searchable: false,
-        orderable: false
     },
 ]
 
@@ -1696,7 +1700,7 @@ export const NOMINA_OBRA_COLUMNS = [
         accessor: 'actions',
     },
     {
-        Header: 'Periodo de Nómina de Obra',
+        Header: 'Nómina de Obra',
         accessor: 'periodo',
     },
     {
@@ -1808,7 +1812,7 @@ export const NOMINA_ADMIN_COLUMNS = [
         accessor: 'actions',
     },
     {
-        Header: 'Periodo de Nómina Adminsitrativa',
+        Header: 'Periodo de Nómina',
         accessor: 'periodo',
     },
     {
@@ -1902,7 +1906,7 @@ export const EMPLEADOS_COLUMNS = [
         accessor: 'estatus'
     },
     {
-        Header: 'Fecha de Inicio',
+        Header: 'F.Inicio',
         accessor: 'fechaInicio'
     },
     {
@@ -1980,12 +1984,12 @@ export const PRESUPUESTO_COLUMNS = [
         accessor: 'actions',
     },
     {
-        Header: 'Proyecto',
-        accessor: 'proyecto'
-    },
-    {
         Header: 'Empresa',
         accessor: 'empresa',
+    },
+    {
+        Header: 'Proyecto',
+        accessor: 'proyecto'
     },
     {
         Header: 'Área',

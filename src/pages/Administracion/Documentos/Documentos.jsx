@@ -5,7 +5,7 @@ import Layout from '../../../components/layout/layout'
 import { ModalDelete, Modal, ItemSlider } from '../../../components/singles'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { URL_DEV, DOCUMENTOS_COLUMNS } from '../../../constants'
-import { setDateTable, setTextTable } from '../../../functions/setters'
+import { setDateTable, setAdjuntoDocumento, setTextTableCenter } from '../../../functions/setters'
 import { waitAlert, errorAlert, doneAlert, deleteAlert, printResponseErrorAlert } from '../../../functions/alert'
 import axios from 'axios'
 import { Button } from '../../../components/form-components'
@@ -32,9 +32,10 @@ class Documentos extends Component {
         documentos.map((documento) => {
             aux.push({
                 actions: this.setActions(documento),
-                empresa: renderToString(setTextTable(documento.empresa ? documento.empresa.name : 'Sin definir')),
-                nombre: renderToString(setTextTable(documento.nombre)),
+                empresa: renderToString(setTextTableCenter(documento.empresa ? documento.empresa.name : 'Sin definir')),
+                nombre: renderToString(setTextTableCenter(documento.nombre)),
                 fecha: renderToString(setDateTable(documento.created_at)),
+                documento: renderToString(setAdjuntoDocumento(documento)),
                 id: documento.id
             })
             return false

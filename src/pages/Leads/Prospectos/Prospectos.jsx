@@ -8,7 +8,7 @@ import { ContactoLeadForm } from '../../../components/forms'
 import axios from 'axios'
 import { URL_DEV, PROSPECTOS_COLUMNS, CONTACTO_COLUMNS } from '../../../constants'
 import { Form } from 'react-bootstrap'
-import { setOptions, setTextTable, setDateTable, setArrayTable, setContactoTable, setLabelTable } from '../../../functions/setters'
+import { setOptions, setTextTable, setDateTable, setArrayTable, setContactoTable, setLabelTable, setTextTableCenter } from '../../../functions/setters'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import TableForModals from '../../../components/tables/TableForModals'
 import { doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../../functions/alert'
@@ -231,7 +231,7 @@ class Leads extends Component {
             aux.push({
                 actions: this.setActions(prospecto),
                 lead: prospecto.lead ? renderToString(setContactoTable(prospecto.lead)) : '',
-                empresa: prospecto.lead ? prospecto.lead.empresa ? renderToString(setTextTable(prospecto.lead.empresa.name)) : '' : '',
+                empresa: prospecto.lead ? prospecto.lead.empresa ? renderToString(setTextTableCenter(prospecto.lead.empresa.name)) : '' : '',
                 cliente: prospecto.cliente ?
                     renderToString(setArrayTable([
                         { name: 'Nombre', text: prospecto.cliente.nombre },
@@ -239,10 +239,10 @@ class Leads extends Component {
                         { name: 'Empresa', text: prospecto.cliente.empresa },
                     ]))
                     : '',
-                tipoProyecto: prospecto.tipo_proyecto ? renderToString(setTextTable(prospecto.tipo_proyecto.tipo)) : '',
+                tipoProyecto: prospecto.tipo_proyecto ? renderToString(setTextTableCenter(prospecto.tipo_proyecto.tipo)) : '',
                 descripcion: renderToString(setTextTable(prospecto.descripcion)),
                 vendedor: prospecto.vendedor ? renderToString(setTextTable(prospecto.vendedor.name)) : '',
-                preferencia: renderToString(setTextTable(prospecto.preferencia)),
+                preferencia: renderToString(setTextTableCenter(prospecto.preferencia)),
                 estatusProspecto: prospecto.estatus_prospecto ? renderToString(this.setLabel(prospecto.estatus_prospecto)) : '',
                 motivo: renderToString(setTextTable(prospecto.motivo)),
                 fechaConversion: renderToString(setDateTable(prospecto.created_at)),

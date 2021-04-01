@@ -162,12 +162,12 @@ class LeadRhProveedor extends Component {
                                                                 }
                                                             </div>
                                                         </td>
-                                                    <td class="text-justify">
-                                                        <span class="text-muted font-weight-bold font-size-sm">
+                                                    <td className="text-justify">
+                                                        <span className="text-muted font-weight-bold font-size-sm">
                                                             {lead.comentario}
                                                         </span>
                                                     </td>
-                                                    <td class="text-center">
+                                                    <td className="text-center">
                                                     <OverlayTrigger overlay={<Tooltip>EDITAR INFORMACIÓN GENERAL</Tooltip>}>
                                                         <span onClick={(e) => { openModalEditarRRHHP(lead) }}className="btn btn-default btn-icon btn-sm">
                                                             <i className="fas fa-edit icon-md"></i>

@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import { URL_DEV, VENTAS_COLUMNS } from '../../../constants'
-import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setAdjuntosList } from '../../../functions/setters'
+import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setAdjuntosList, setTextTableCenter } from '../../../functions/setters'
 import { waitAlert, errorAlert, createAlert, printResponseErrorAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis, createAlertSA2WithActionOnClose } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { Button, FileInput } from '../../../components/form-components'
@@ -435,24 +435,24 @@ class Ventas extends Component {
             aux.push(
                 {
                     actions: this.setActions(venta),
-                    identificador: renderToString(setTextTable(venta.id)),
+                    identificador: renderToString(setTextTableCenter(venta.id)),
                     cuenta: renderToString(setArrayTable(
                         [
                             { name: 'Empresa', text: venta.empresa ? venta.empresa.name : '' },
                             { name: 'Cuenta', text: venta.cuenta ? venta.cuenta.nombre : '' },
                             { name: '# de cuenta', text: venta.cuenta ? venta.cuenta.numero : '' }
-                        ]
+                        ],'235px'
                     )),
-                    proyecto: renderToString(setTextTable(venta.proyecto ? venta.proyecto.nombre : '')),
-                    cliente: renderToString(setTextTable(venta.cliente ? venta.cliente.empresa : '')),
-                    factura: renderToString(setTextTable(venta.factura ? 'Con factura' : 'Sin factura')),
+                    proyecto: renderToString(setTextTableCenter(venta.proyecto ? venta.proyecto.nombre : '')),
+                    cliente: renderToString(setTextTableCenter(venta.cliente ? venta.cliente.empresa : '')),
+                    factura: renderToString(setTextTableCenter(venta.factura ? 'Con factura' : 'Sin factura')),
                     monto: renderToString(setMoneyTable(venta.monto)),
-                    impuesto: renderToString(setTextTable(venta.tipo_impuesto ? venta.tipo_impuesto.tipo : 'Sin definir')),
-                    tipoPago: renderToString(setTextTable(venta.tipo_pago ? venta.tipo_pago.tipo : '')),
+                    impuesto: renderToString(setTextTableCenter(venta.tipo_impuesto ? venta.tipo_impuesto.tipo : 'Sin definir')),
+                    tipoPago: renderToString(setTextTableCenter(venta.tipo_pago ? venta.tipo_pago.tipo : '')),
                     descripcion: renderToString(setTextTable(venta.descripcion)),
-                    area: renderToString(setTextTable(venta.subarea ? venta.subarea.area ? venta.subarea.area.nombre : '' : '')),
-                    subarea: renderToString(setTextTable(venta.subarea ? venta.subarea.nombre : '')),
-                    estatusCompra: renderToString(setTextTable(venta.estatus_compra ? venta.estatus_compra.estatus : '')),
+                    area: renderToString(setTextTableCenter(venta.subarea ? venta.subarea.area ? venta.subarea.area.nombre : '' : '')),
+                    subarea: renderToString(setTextTableCenter(venta.subarea ? venta.subarea.nombre : '')),
+                    estatusCompra: renderToString(setTextTableCenter(venta.estatus_compra ? venta.estatus_compra.estatus : '')),
                     total: renderToString(setMoneyTable(venta.total)),
                     fecha: renderToString(setDateTable(venta.created_at)),
                     id: venta.id,

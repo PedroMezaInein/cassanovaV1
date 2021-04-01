@@ -183,15 +183,15 @@ class PresupuestoDiseñoForm extends Component {
                                                     iconclass = "flaticon-calendar-with-a-clock-time-tools" messageinc = "Ingresa los días de ejecución." />
                                             </div>
                                             <div className={`${(form.si_renders?'col-md-3 d-flex justify-content-center ':'col-md-4 d-flex justify-content-start')}`}>
-                                                <div class="form-group">
+                                                <div className="form-group">
                                                     <label className="col-form-label font-size-lg">¿Se incluyen renders?</label>
-                                                    <div class="radio-inline">
-                                                        <label class="radio">
+                                                    <div className="radio-inline">
+                                                        <label className="radio">
                                                             <input type = "radio" name = 'si_renders' value = { true } onChange = { onChange }
                                                                 checked = { form.si_renders } />Si
 															<span></span>
                                                         </label>
-                                                        <label class="radio">
+                                                        <label className="radio">
                                                             <input type = "radio" name = 'si_renders' value = { false } onChange = { onChange }
                                                                 checked = { !form.si_renders } />No
 															<span></span>

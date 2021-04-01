@@ -35,7 +35,7 @@ class LeadContacto extends Component {
                                 </th>
                             </tr>
                             <tr className="text-uppercase bg-primary-o-20 text-primary">
-                                <th style={{ minWidth: "100px" }}>
+                                <th style={{ minWidth: "172px" }}>
                                     <span>Nombre del cliente y proyecto</span>
                                 </th>
                                 <th style={{ minWidth: "120px" }}>Fecha</th>

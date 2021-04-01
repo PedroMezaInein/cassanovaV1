@@ -10,7 +10,7 @@ import NewTableServerRender from '../../../components/tables/NewTableServerRende
 import { Modal } from '../../../components/singles'
 import { RangeCalendar, Button } from '../../../components/form-components'
 import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert, createAlertSA2, questionAlert2} from '../../../functions/alert'
-import { setTextTable, setContactoTable, setListTable, setDateTable, setLabelTable } from '../../../functions/setters'
+import { setTextTable, setContactoTable, setListTable, setDateTable, setLabelTable, setTextTableCenter } from '../../../functions/setters'
 import { LeadCard } from '../../../components/cards';
 import { Form } from 'react-bootstrap';
 
@@ -217,14 +217,14 @@ class Leads extends Component {
         leads.map((lead)=>{
             aux.push({
                 actions: this.setActions(lead),
-                nombre: renderToString(setTextTable(lead.nombre +' - '+lead.id)),
+                nombre: renderToString(setTextTableCenter(lead.nombre +' - '+lead.id)),
                 contacto: renderToString(setContactoTable(lead)),
                 comentario: renderToString(setTextTable(lead.comentario)),
                 servicios: renderToString(setListTable(lead.servicios, 'servicio')),
-                empresa: renderToString(setTextTable(lead.empresa ? lead.empresa.name : '')),
-                origen: renderToString(setTextTable(lead.origen ? lead.origen.origen : '')),
+                empresa: renderToString(setTextTableCenter(lead.empresa ? lead.empresa.name : '')),
+                origen: renderToString(setTextTableCenter(lead.origen ? lead.origen.origen : '')),
                 fecha: renderToString(setDateTable(lead.created_at)),
-                tipo_lead: renderToString(setTextTable(lead.tipo_lead ? lead.tipo_lead : 'Sin definir')),
+                tipo_lead: renderToString(setTextTableCenter(lead.tipo_lead ? lead.tipo_lead : 'Sin definir')),
                 convertido: renderToString(this.setLabel(lead)),
                 id: lead.id
             })

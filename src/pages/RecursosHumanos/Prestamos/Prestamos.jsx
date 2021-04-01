@@ -5,7 +5,7 @@ import Layout from '../../../components/layout/layout'
 import { ModalDelete, Modal, ItemSlider } from '../../../components/singles'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { PRESTAMOS_COLUMNS, URL_DEV } from '../../../constants'
-import { setDateTable, setMoneyTable, setMoneyTableSinSmall, setTextTable } from '../../../functions/setters'
+import { setDateTable, setMoneyTable, setMoneyTableSinSmall, setTextTable, setTextTableCenter } from '../../../functions/setters'
 import axios from 'axios'
 import { deleteAlert, doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../../functions/alert'
 import { Button } from '../../../components/form-components'
@@ -40,7 +40,7 @@ class Prestamos extends Component {
         prestamos.map((prestamo) => {
             aux.push({
                 actions: this.setActions(prestamo),
-                empleado: renderToString(setTextTable(prestamo.empleado ? prestamo.empleado.nombre : 'Sin definir')),
+                empleado: renderToString(setTextTableCenter(prestamo.empleado ? prestamo.empleado.nombre : 'Sin definir')),
                 fecha: renderToString(setDateTable(prestamo.fecha)),
                 monto: renderToString(setMoneyTable(prestamo.monto)),
                 descripcion: renderToString(setTextTable(prestamo.descripcion)),

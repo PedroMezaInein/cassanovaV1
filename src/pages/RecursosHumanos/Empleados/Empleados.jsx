@@ -8,7 +8,7 @@ import { Modal, ModalDelete } from '../../../components/singles'
 import { EMPLEADOS_COLUMNS, URL_DEV, ADJUNTOS_COLUMNS } from '../../../constants'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { AdjuntosForm } from '../../../components/forms'
-import { setOptions, setTextTable, setArrayTable, setAdjuntosList, setDateTable,setLabelTable } from '../../../functions/setters'
+import { setOptions, setTextTable, setArrayTable, setAdjuntosList, setDateTable,setLabelTable, setTextTableCenter } from '../../../functions/setters'
 import { errorAlert, waitAlert, printResponseErrorAlert, deleteAlert, doneAlert } from '../../../functions/alert'
 import { Tabs, Tab } from 'react-bootstrap'
 import TableForModals from '../../../components/tables/TableForModals'
@@ -267,12 +267,12 @@ class Empleados extends Component {
                 aux.push(
                     {
                         actions: this.setActions(empleado),
-                        nombre: renderToString(setTextTable(empleado.nombre)),
-                        empresa: renderToString(setTextTable(empleado.empresa ? empleado.empresa.name : '')),
-                        puesto: renderToString(setTextTable(empleado.puesto)),
-                        rfc: renderToString(setTextTable(empleado.rfc)),
-                        nss: renderToString(setTextTable(empleado.nss)),
-                        curp: renderToString(setTextTable(empleado.curp)),
+                        nombre: renderToString(setTextTableCenter(empleado.nombre)),
+                        empresa: renderToString(setTextTableCenter(empleado.empresa ? empleado.empresa.name : '')),
+                        puesto: renderToString(setTextTableCenter(empleado.puesto)),
+                        rfc: renderToString(setTextTableCenter(empleado.rfc)),
+                        nss: renderToString(setTextTableCenter(empleado.nss)),
+                        curp: renderToString(setTextTableCenter(empleado.curp)),
                         estatus: renderToString(this.setLabel(empleado.estatus_empleado)),
                         fechaInicio: renderToString(setDateTable(empleado.fecha_inicio)),
                         cuenta: renderToString(setArrayTable(
@@ -280,15 +280,15 @@ class Empleados extends Component {
                                 { 'name': 'Banco', 'text': empleado.banco ? empleado.banco : 'Sin definir' },
                                 { 'name': 'No. Cuenta', 'text': empleado.cuenta ? empleado.cuenta : 'Sin definir' },
                                 { 'name': 'Clabe', 'text': empleado.clabe ? empleado.clabe : 'Sin definir' },
-                            ]
+                            ], '180px'
                         )),
                         nombre_emergencia: renderToString(setArrayTable(
                             [
                                 { 'name': 'Nombre', 'text': empleado.nombre_emergencia ? empleado.nombre_emergencia : 'Sin definir' },
                                 { 'name': 'Teléfono', 'text': empleado.telefono_emergencia ? empleado.telefono_emergencia : 'Sin definir' }
-                            ]
+                            ],'120px'
                         )),
-                        vacaciones_tomadas: renderToString(setTextTable(empleado.vacaciones_tomadas)),
+                        vacaciones_tomadas: renderToString(setTextTableCenter(empleado.vacaciones_tomadas)),
                         id: empleado.id
                     }
                 )

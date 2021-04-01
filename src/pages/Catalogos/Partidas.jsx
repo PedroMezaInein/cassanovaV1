@@ -3,7 +3,7 @@ import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV, PARTIDAS_COLUMNS} from '../../constants'
-import { setTextTable, setArrayTable } from '../../functions/setters'
+import { setArrayTable, setTextTableCenter } from '../../functions/setters'
 import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert } from '../../functions/alert'
 import Layout from '../../components/layout/layout'
 import { Modal, ModalDelete } from '../../components/singles'
@@ -115,9 +115,9 @@ class Partidas extends Component {
         partidas.map((partida) => {
             aux.push({
                 actions: this.setActions(partida),
-                clave: renderToString(setTextTable(partida.id)),
-                partida: renderToString(setTextTable(partida.nombre)),
-                subpartidas: renderToString(setArrayTable(this.setArrayTable(partida.subpartidas))),
+                clave: renderToString(setTextTableCenter(partida.id)),
+                partida: renderToString(setTextTableCenter(partida.nombre)),
+                subpartidas: renderToString(setArrayTable(this.setArrayTable(partida.subpartidas),'100px')),
                 id: partida.id
             })
             return false
