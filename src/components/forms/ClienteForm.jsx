@@ -81,20 +81,6 @@ class ClienteForm extends Component {
                         />
                     </div>
                     <div className="col-md-4">
-                        <Input
-                            requirevalidation={0}
-                            formeditado={formeditado}
-                            rows="1"
-                            as="textarea"
-                            placeholder="PERFIL"
-                            name="perfil"
-                            value={form.perfil}
-                            onChange={onChange}
-                            iconclass={"fas fa-user-tag"}
-                            messageinc="Incorrecto. Ingresa el perfil."
-                        />
-                    </div>
-                    <div className="col-md-4">
                         <InputPhone
                             requirevalidation={0}
                             thousandseparator={false}
@@ -109,9 +95,6 @@ class ClienteForm extends Component {
                             formeditado={formeditado}
                         />
                     </div>
-                </div>
-                <div className="separator separator-dashed mt-1 mb-2"></div>
-                <div className="form-group row form-group-marginless">
                     <div className="col-md-4">
                         <InputNumber
                             requirevalidation={1}
@@ -126,6 +109,9 @@ class ClienteForm extends Component {
                             messageinc="Incorrecto. Ingresa el código postal."
                         />
                     </div>
+                </div>
+                <div className="separator separator-dashed mt-1 mb-2"></div>
+                <div className="form-group row form-group-marginless">
                     <div className="col-md-4" hidden={form.colonias.length <= 0 ? true : false}>
                         <Input
                             requirevalidation={0}
@@ -152,10 +138,7 @@ class ClienteForm extends Component {
                             disabled
                         />
                     </div>
-                </div>
-                <div className="separator separator-dashed mt-1 mb-2" hidden={form.colonias.length <= 0 ? true : false}></div>
-                <div className="form-group row form-group-marginless">
-                    <div className="col-md-5" hidden={form.colonias.length <= 0 ? true : false}>
+                    <div className="col-md-4" hidden={form.colonias.length <= 0 ? true : false}>
                         {
                             form.colonias.length > 0 &&
                             <SelectSearch
@@ -184,7 +167,10 @@ class ClienteForm extends Component {
                             />
                         }
                     </div>
-                    <div className="col-md-7" hidden={form.colonias.length <= 0 ? true : false}>
+                </div>
+                <div className="separator separator-dashed mt-1 mb-2" hidden={form.colonias.length <= 0 ? true : false}></div>
+                <div className="form-group row form-group-marginless">
+                    <div className="col-md-12" hidden={form.colonias.length <= 0 ? true : false}>
                         <Input
                             requirevalidation={1}
                             formeditado={formeditado}
