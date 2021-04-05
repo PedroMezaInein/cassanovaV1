@@ -65,7 +65,6 @@ class Utilidad extends Component {
     }
 }
 
-
 const mapStateToProps = state => {
     return {
         authUser: state.authUser
