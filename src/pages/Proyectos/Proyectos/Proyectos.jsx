@@ -1808,7 +1808,7 @@ class Proyectos extends Component {
                     
                 </Modal>
                 <Modal size="lg" title="Proyecto" show={modalSee} handleClose={this.handleCloseSee} >
-                    <InformacionProyecto proyecto={proyecto} printDates={this.printDates} showform={false} tipo={tipo}/>
+                    <InformacionProyecto proyecto={proyecto} printDates={this.printDates} tipo={tipo}/>
                 </Modal>
                 <Modal size = 'xl' title = 'Información del lead' show = { modalLead } handleClose = { this.handleCloseLead }>
                     {
