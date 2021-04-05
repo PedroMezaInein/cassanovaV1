@@ -53,7 +53,7 @@ class ClienteForm extends Component {
                     </div>
                     <div className="col-md-4">
                         <Input
-                            requirevalidation={0}
+                            requirevalidation={1}
                             formeditado={formeditado}
                             name="nombre"
                             value={form.nombre}

@@ -7,7 +7,7 @@ import Layout from '../../../components/layout/layout'
 import { Modal } from '../../../components/singles'
 import { CP_URL, URL_DEV, TOKEN_CP } from '../../../constants'
 import axios from 'axios'
-import { createAlertSA2WithClose, doneAlert, errorAlert, printResponseErrorAlert, questionAlert2, waitAlert } from '../../../functions/alert'
+import { createAlertSA2WithClose, doneAlert, errorAlert, printResponseErrorAlert, questionAlert2, waitAlert, createAlertSA2WithCloseAndHtml } from '../../../functions/alert'
 import ProyectosFormGray from '../../../components/forms/proyectos/ProyectosFormGray'
 import { setOptions } from '../../../functions/setters'
 import Swal from 'sweetalert2'
@@ -16,6 +16,9 @@ import { ProyectoCard } from '../../../components/cards'
 class Contratar extends Component {
     state = {
         modal: false,
+        formModal: {
+            caja: true
+        },
         form: {
             colonias: [],
             empresa: '',
@@ -210,9 +213,19 @@ class Contratar extends Component {
             '¿DESEAS ENVIAR CORREO Y GENERAR NUEVO USUARIO?', 
             '', 
             () => this.convertLeadAxios(),
-            <form id = 'sendCorreoForm' name = 'sendCorreoForm' className="mx-auto w-80">
-                <Form.Check type="radio" label="SI" name="sendCorreo" className="px-0 mb-2" value = 'si'/>
-                <Form.Check type="radio" label="NO" name="sendCorreo" className="px-0 mb-2" value = 'no'/>
+            <form id = 'sendCorreoForm' name = 'sendCorreoForm'>
+                <div className="form-group">
+                    <div className="radio-inline">
+                        <label className="radio">
+                            <input type = "radio" name = 'sendCorreo' value = 'si'/>SI
+                            <span></span>
+                        </label>
+                        <label className="radio">
+                            <input type = "radio" name = 'sendCorreo' value = 'no' />NO
+                            <span></span>
+                        </label>
+                    </div>
+                </div>
             </form>
         )
     }
@@ -276,17 +289,37 @@ class Contratar extends Component {
             await axios.post( `${URL_DEV}v2/leads/crm/convert/${lead.id}`, formProyecto, { headers: { Authorization: `Bearer ${access_token}` } }).then(
                 (response) => {
                     const { proyecto } = response.data
-                    const { history } = this.props
-                    createAlertSA2WithClose(
-                        '¡FELICIDADES CREASTE EL PROYECTO!',
-                        '¿DESEAS CREAR LA CAJA CHICA?',
-                        () => this.addCajaChicaAxios(proyecto),
-                        history, '/leads/crm'
+                    const { history } = this.props;
+                    const { formModal } = this.state
+                    createAlertSA2WithCloseAndHtml(
+                        <div>
+                            <h2 className = 'swal2-title mb-4 mt-2'>
+                                <span className="text-primary">¡FELICIDADES!</span> CREASTE EL PROYECTO <span className="text-success">{proyecto.nombre}</span>
+                            </h2>
+                            <span className = 'mb-2'>
+                                ¿DESEAS CREAR LA CAJA CHICA?
+                            </span>
+                            <form id = 'formulario_swal' name = 'formulario_swal'>
+                                <div className="form-group">
+                                    <div className="radio-inline">
+                                        <label className="radio">
+                                            <input type = "radio" name = 'caja' value = { true } />Si
+                                            <span></span>
+                                        </label>
+                                        <label className="radio">
+                                            <input type = "radio" name = 'caja' value = { false } />No
+                                            <span></span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>,
+                        () => { 
+                            if(document.formulario_swal.caja.value){ this.addCajaChicaAxios(proyecto)}
+                            else{ history.push({pathname: '/leads/crm'}) }
+                        }, () => { history.push({pathname: '/leads/crm'}) }
                     )
-                },
-                (error) => {
-                    printResponseErrorAlert(error)
-                }
+                }, (error) => { printResponseErrorAlert(error) }
             ).catch((error) => {
                 errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
                 console.log(error, 'error')
