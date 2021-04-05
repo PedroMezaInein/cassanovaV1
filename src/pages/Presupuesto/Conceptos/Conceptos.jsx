@@ -149,14 +149,14 @@ class Conceptos extends Component {
                         <div className="input-group input-group-solid rounded-0">
                             <textarea name="descripcion" rows="6" id='descripcion-form' defaultValue = { data.descripcion }
                                 onChange = { (e) => { this.onChange(e.target.value, tipo)} }
-                                className="form-control text-dark-50 font-weight-bold undefined form-control text-uppercase">
+                                className="form-control text-dark-50 font-weight-bold undefined form-control text-uppercase text-justify">
                             </textarea>
                         </div>
                 }
                 {
                     tipo === 'costo' &&
                         <div className="row mx-0 justify-content-center">
-                            <div className="col-12 col-md-8">
+                            <div className="col-12 col-md-6">
                                 <div className="input-group input-group-solid rounded-0">
                                     <NumberFormat value = { form[tipo] } displayType = 'input' thousandSeparator = { true }
                                         prefix = '$' className = 'form-control text-dark-50 font-weight-bold text-uppercase'
