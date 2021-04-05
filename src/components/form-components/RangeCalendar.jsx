@@ -5,7 +5,6 @@ import 'react-date-range/dist/theme/default.css'; // theme css file
 // import { addDays } from 'date-fns';
 import es from "date-fns/locale/es";
 import moment from 'moment'
-import { printDates } from '../../functions/printers';
 
 class RangeCalendar extends Component {
 

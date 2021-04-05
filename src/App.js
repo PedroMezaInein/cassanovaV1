@@ -313,7 +313,6 @@ class App extends Component{
 
                     {/* <Route path = "/proyectos/ventas" exact component ={ Ventas } /> */}
                     {/* <Route path = "/proyectos/compras" exact component ={ Compras } /> */}
-                    <Route path = "/proyectos/utilidad" exact component ={ Utilidad } />
 
                     <Route path = "/proyectos/remision" exact component ={ Remision } />
                     <Route path = "/proyectos/remision/:action" exact component ={ RemisionForm } />
@@ -357,6 +356,8 @@ class App extends Component{
 
                     <Route path = "/administracion/documentos" exact component ={ Documentos } />
                     <Route path = "/administracion/documentos/:action" exact component ={ DocumentosForm } />
+                    
+                    <Route path = "/administracion/utilidad" exact component ={ Utilidad } />
 
                     {/*  ANCHOR Routes for bancos */}
 

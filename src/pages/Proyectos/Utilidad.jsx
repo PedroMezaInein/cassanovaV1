@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import { URL_DEV, UTILIDADES_COLUMNS} from '../../constants'
-import { setTextTable, setMoneyTable, setPercentTable, setTextTableCenter} from '../../functions/setters'
+import { setMoneyTable, setPercentTable, setTextTableCenter} from '../../functions/setters'
 import Layout from '../../components/layout/layout'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
 const $ = require('jquery');
@@ -64,7 +64,6 @@ class Utilidad extends Component {
         )
     }
 }
-
 
 const mapStateToProps = state => {
     return {

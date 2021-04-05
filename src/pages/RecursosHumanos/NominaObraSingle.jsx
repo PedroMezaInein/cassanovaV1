@@ -4,7 +4,7 @@ import Layout from '../../components/layout/layout'
 import NewTable from '../../components/tables/NewTable';
 import { NOMINA_OBRA_SINGLE_COLUMNS } from '../../constants';
 import { renderToString } from 'react-dom/server';
-import { setTextTable, setMoneyTable, setMoneyTableForNominas, setTextTableCenter} from '../../functions/setters'
+import { setMoneyTable, setMoneyTableForNominas, setTextTableCenter} from '../../functions/setters'
 
 class NominaObraSingle extends Component {
     state = {  

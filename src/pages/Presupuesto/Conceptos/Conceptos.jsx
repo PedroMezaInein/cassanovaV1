@@ -111,7 +111,7 @@ class Conceptos extends Component {
     }
 
     setOptions = (data, tipo) => {
-        const { options, form } = this.state
+        const { options } = this.state
         switch(tipo){
             case 'proveedor':
                 return options.proveedores
