@@ -392,10 +392,10 @@ export const CLIENTES_COLUMNS = [
         Header: 'Dirección',
         accessor: 'direccion',
     },
-    {
-        Header: 'Perfil',
-        accessor: 'perfil',
-    },
+    // {
+    //     Header: 'Perfil',
+    //     accessor: 'perfil',
+    // },
     
     {
         Header: 'Puesto',
