@@ -1464,27 +1464,33 @@ export const RENDIMIENTOS_COLUMNS = [
     },
     {
         Header: 'Materiales',
-        accessor: 'materiales'
+        accessor: 'materiales',
+        customRender: true
     },
     {
         Header: 'Unidad',
-        accessor: 'unidad'
+        accessor: 'unidad',
+        customRender: true
     },
     {
         Header: 'Costo',
-        accessor: 'costo'
+        accessor: 'costo',
+        customRender: true
     },
     {
         Header: 'Proveedor',
-        accessor: 'proveedor'
+        accessor: 'proveedor',
+        customRender: true
     },
     {
         Header: 'Rendimiento',
-        accessor: 'rendimiento'
+        accessor: 'rendimiento',
+        customRender: true
     },
     {
         Header: 'Descripción',
-        accessor: 'descripcion'
+        accessor: 'descripcion',
+        customRender: true
     },
 ]
 
