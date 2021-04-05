@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import { URL_DEV, COMPRAS_COLUMNS } from '../../../constants'
-import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setAdjuntosList } from '../../../functions/setters'
+import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setAdjuntosList, setTextTableCenter } from '../../../functions/setters'
 import { errorAlert, waitAlert, createAlert, printResponseErrorAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis, createAlertSA2WithActionOnClose } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { Button, FileInput } from '../../../components/form-components'
@@ -421,25 +421,25 @@ class Compras extends Component {
             aux.push(
                 {
                     actions: this.setActions(compra),
-                    identificador: renderToString(setTextTable(compra.id)),
+                    identificador: renderToString(setTextTableCenter(compra.id)),
                     cuenta: renderToString(setArrayTable(
                         [
                             { name: 'Empresa', text: compra.empresa ? compra.empresa.name : '' },
                             { name: 'Cuenta', text: compra.cuenta ? compra.cuenta.nombre : '' },
                             { name: '# de cuenta', text: compra.cuenta ? compra.cuenta.numero : '' }
-                        ]
+                        ],'153px'
                     )),
                     proyecto: renderToString(setTextTable(compra.proyecto ? compra.proyecto.nombre : '')),
                     proveedor: renderToString(setTextTable(compra.proveedor ? compra.proveedor.razon_social : '')),
-                    factura: renderToString(setTextTable(compra.factura ? 'Con factura' : 'Sin factura')),
+                    factura: renderToString(setTextTableCenter(compra.factura ? 'Con factura' : 'Sin factura')),
                     monto: renderToString(setMoneyTable(compra.monto)),
                     comision: renderToString(setMoneyTable(compra.comision ? compra.comision : 0.0)),
-                    impuesto: renderToString(setTextTable(compra.tipo_impuesto ? compra.tipo_impuesto.tipo : 'Sin definir')),
-                    tipoPago: renderToString(setTextTable(compra.tipo_pago.tipo)),
+                    impuesto: renderToString(setTextTableCenter(compra.tipo_impuesto ? compra.tipo_impuesto.tipo : 'Sin definir')),
+                    tipoPago: renderToString(setTextTableCenter(compra.tipo_pago.tipo)),
                     descripcion: renderToString(setTextTable(compra.descripcion)),
-                    area: renderToString(setTextTable(compra.subarea ? compra.subarea.area ? compra.subarea.area.nombre : '' : '')),
-                    subarea: renderToString(setTextTable(compra.subarea ? compra.subarea.nombre : '')),
-                    estatusCompra: renderToString(setTextTable(compra.estatus_compra ? compra.estatus_compra.estatus : '')),
+                    area: renderToString(setTextTableCenter(compra.subarea ? compra.subarea.area ? compra.subarea.area.nombre : '' : '')),
+                    subarea: renderToString(setTextTableCenter(compra.subarea ? compra.subarea.nombre : '')),
+                    estatusCompra: renderToString(setTextTableCenter(compra.estatus_compra ? compra.estatus_compra.estatus : '')),
                     total: renderToString(setMoneyTable(compra.total)),
                     adjuntos: renderToString(setArrayTable(_aux)),
                     fecha: renderToString(setDateTable(compra.created_at)),

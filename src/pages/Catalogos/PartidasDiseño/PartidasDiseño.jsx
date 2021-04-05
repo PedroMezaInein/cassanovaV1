@@ -8,7 +8,7 @@ import { printResponseErrorAlert, errorAlert, waitAlert, doneAlert } from '../..
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { PARTIDAS_DISEÑO_COLUMNS } from '../../../constants'
 import { save, deleteForm } from '../../../redux/reducers/formulario'
-import { setTextTable } from '../../../functions/setters'
+import { setTextTableCenter } from '../../../functions/setters'
 import { renderToString } from 'react-dom/server'
 import { Tab, Card, Nav } from 'react-bootstrap' 
 
@@ -57,8 +57,8 @@ class PartidasDiseño extends Component {
         partidas.map((partida) => {
             aux.push({
                 actions: this.setActions(partida),
-                partida: renderToString(setTextTable(partida.nombre)),
-                tipo: renderToString(setTextTable(partida.tipo)),
+                partida: renderToString(setTextTableCenter(partida.nombre)),
+                tipo: renderToString(setTextTableCenter(partida.tipo)),
                 id: partida.id
             })
             return false

@@ -4,7 +4,7 @@ import Layout from '../../../components/layout/layout'
 import NewTable from '../../../components/tables/NewTable';
 import { NOMINA_ADMIN_SINGLE_COLUMNS } from '../../../constants';
 import { renderToString } from 'react-dom/server';
-import { setTextTable, setMoneyTable,setMoneyTableForNominas } from '../../../functions/setters'
+import { setTextTableCenter, setMoneyTable,setMoneyTableForNominas } from '../../../functions/setters'
 
 class NominaAdminSingle extends Component {
     state = {  
@@ -50,8 +50,8 @@ class NominaAdminSingle extends Component {
         nominas.map( (nomina) => {
             aux.push(
                 {
-                    idEmpleado: renderToString(setTextTable(nomina.empleado ? nomina.empleado.id : '')),
-                    empleado: renderToString(setTextTable(nomina.empleado ? nomina.empleado.nombre : '')),
+                    idEmpleado: renderToString(setTextTableCenter(nomina.empleado ? nomina.empleado.id : '')),
+                    empleado: renderToString(setTextTableCenter(nomina.empleado ? nomina.empleado.nombre : '')),
                     nominaIMSS: renderToString(setMoneyTable(nomina.nomina_imss ? nomina.nomina_imss: 0.0)),
                     extras: renderToString(setMoneyTable(nomina.restante_nomina ? nomina.restante_nomina : 0.0)),
                     viaticos: renderToString(setMoneyTable(nomina.extras ? nomina.extras : 0.0)),

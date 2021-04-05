@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import { URL_DEV, INGRESOS_COLUMNS } from '../../../constants'
-import { setOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setAdjuntosList, setSelectOptions } from '../../../functions/setters'
+import { setOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setAdjuntosList, setSelectOptions, setTextTableCenter } from '../../../functions/setters'
 import { errorAlert, waitAlert, createAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis, createAlertSA2WithActionOnClose, printResponseErrorAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { Modal, ModalDelete } from '../../../components/singles'
@@ -415,23 +415,23 @@ class Ingresos extends Component {
             aux.push(
                 {
                     actions: this.setActions(ingreso),
-                    identificador: renderToString(setTextTable(ingreso.id)),
+                    identificador: renderToString(setTextTableCenter(ingreso.id)),
                     cuenta: renderToString(setArrayTable(
                         [
                             { name: 'Empresa', text: ingreso.empresa ? ingreso.empresa.name : '' },
                             { name: 'Cuenta', text: ingreso.cuenta ? ingreso.cuenta.nombre : '' },
                             { name: '# de cuenta', text: ingreso.cuenta ? ingreso.cuenta.numero : '' }
-                        ]
+                        ],'200px'
                     )),
-                    cliente: renderToString(setTextTable(ingreso.cliente ? ingreso.cliente.empresa : '')),
-                    factura: renderToString(setTextTable(ingreso.factura ? 'Con factura' : 'Sin factura')),
+                    cliente: renderToString(setTextTableCenter(ingreso.cliente ? ingreso.cliente.empresa : '')),
+                    factura: renderToString(setTextTableCenter(ingreso.factura ? 'Con factura' : 'Sin factura')),
                     monto: renderToString(setMoneyTable(ingreso.monto)),
-                    impuesto: renderToString(setTextTable(ingreso.tipo_impuesto ? ingreso.tipo_impuesto.tipo : 'Sin definir')),
-                    tipoPago: renderToString(setTextTable(ingreso.tipo_pago ? ingreso.tipo_pago.tipo : '')),
+                    impuesto: renderToString(setTextTableCenter(ingreso.tipo_impuesto ? ingreso.tipo_impuesto.tipo : 'Sin definir')),
+                    tipoPago: renderToString(setTextTableCenter(ingreso.tipo_pago ? ingreso.tipo_pago.tipo : '')),
                     descripcion: renderToString(setTextTable(ingreso.descripcion)),
-                    area: renderToString(setTextTable(ingreso.subarea ? ingreso.subarea.area.nombre : '')),
-                    subarea: renderToString(setTextTable(ingreso.subarea ? ingreso.subarea.nombre : '')),
-                    estatusCompra: renderToString(setTextTable(ingreso.estatus_compra ? ingreso.estatus_compra.estatus : '')),
+                    area: renderToString(setTextTableCenter(ingreso.subarea ? ingreso.subarea.area.nombre : '')),
+                    subarea: renderToString(setTextTableCenter(ingreso.subarea ? ingreso.subarea.nombre : '')),
+                    estatusCompra: renderToString(setTextTableCenter(ingreso.estatus_compra ? ingreso.estatus_compra.estatus : '')),
                     total: renderToString(setMoneyTable(ingreso.total)),
                     /* adjuntos: renderToString(setArrayTable(_aux)), */
                     fecha: renderToString(setDateTable(ingreso.created_at)),

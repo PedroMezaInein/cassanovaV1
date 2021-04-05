@@ -3,10 +3,9 @@ import { renderToString } from 'react-dom/server'
 import Layout from '../../../components/layout/layout'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import { URL_DEV } from '../../../constants'
+import { URL_DEV, EMPRESA_COLUMNS} from '../../../constants'
 import { Modal, ModalDelete } from '../../../components/singles'
-import { EMPRESA_COLUMNS } from '../../../constants'
-import { setTextTable } from '../../../functions/setters'
+import { setTextTableCenter } from '../../../functions/setters'
 import ItemSlider from '../../../components/singles/ItemSlider'
 import { Nav, Tab, Col, Row, Card } from 'react-bootstrap'
 import { waitAlert, printResponseErrorAlert, errorAlert, doneAlert, questionAlertY } from '../../../functions/alert'
@@ -110,12 +109,12 @@ class Empresas extends Component {
         empresas.map((empresa) => {
             aux.push({
                 actions: this.setActions(empresa),
-                name: renderToString(setTextTable(empresa.name)),
-                razonSocial: renderToString(setTextTable(empresa.razon_social)),
-                rfc: renderToString(setTextTable(empresa.rfc)),
                 logo: renderToString(empresa.logo_principal.length !== 0 ? 
-                        <img className="img-empresa" src={empresa.logo_principal[empresa.logo_principal.length - 1].url} alt={empresa.name} /> 
-                    : 'No hay logo'),
+                    <div className="text-center"><img className="img-empresa" src={empresa.logo_principal[empresa.logo_principal.length - 1].url} alt={empresa.name} /> </div>
+                : <div className="text-center font-size-12px">-</div>),
+                name: renderToString(setTextTableCenter(empresa.name)),
+                razonSocial: renderToString(setTextTableCenter(empresa.razon_social)),
+                rfc: renderToString(setTextTableCenter(empresa.rfc)),
                 id: empresa.id
             })
             return false

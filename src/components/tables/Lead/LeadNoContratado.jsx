@@ -189,51 +189,53 @@ class LeadNoContratado extends Component {
                                                 </td>
                                                 <td className="pr-0 text-center">
                                                     {/* Icon */}
-                                                    <DropdownButton menualign = "right" title = { <i className="fas fa-chevron-down icon-nm p-0"></i> }
-                                                        id = 'dropdown-button-drop-left-danger' >
-                                                        <Dropdown.Item className = "text-hover-danger dropdown-danger" onClick={(e) => { changePageDetails(lead) }} >
-                                                            <span className="navi-icon">
-                                                                <i className="flaticon2-plus pr-3 text"></i>
-                                                            </span>
-                                                            <span className="navi-text align-self-center">VER MÁS</span>
-                                                        </Dropdown.Item>
-                                                        <Dropdown.Item className = "text-hover-danger dropdown-danger" 
-                                                            onClick={(e) => { 
-                                                                questionAlert(
-                                                                    '¿ESTÁS SEGURO?', 
-                                                                    `MOVERÁS AL LEAD ${lead.nombre} AL ESTATUS ${this.getMoveStatus(lead)}`,
-                                                                    () => changeEstatus({
-                                                                        id: lead.id,
-                                                                        estatus: this.getMoveStatus(lead)
-                                                                    })
-                                                                ) 
-                                                            }}>
-                                                            <span className="navi-icon">
-                                                                <i className="far fa-play-circle pr-3 text"></i>
-                                                            </span>
-                                                            <span className="navi-text align-self-center">REACTIVAR</span>
-                                                        </Dropdown.Item>
-                                                        {
-                                                            this.hasContactos(lead) &&
-                                                                <Dropdown.Item className = "text-hover-danger dropdown-danger" 
-                                                                    onClick={(e) => { openModalHistorial(lead) }}>
-                                                                    <span className="navi-icon">
-                                                                        <i className="far fa-list-alt pr-3 text"></i>
-                                                                    </span>
-                                                                    <span className="navi-text align-self-center">Historial de contacto</span>
-                                                                </Dropdown.Item>
-                                                        }
-                                                        {
-                                                            this.hasPresupuesto(lead) &&
-                                                                <Dropdown.Item className = "text-hover-danger dropdown-danger" 
-                                                                    onClick={(e) => { this.openModalPresupuesto(lead) }}>
-                                                                    <span className="navi-icon">
-                                                                        <i className="fas fa-file-invoice-dollar pr-3 text"></i>
-                                                                    </span>
-                                                                    <span className="navi-text align-self-center">Presupuesto de diseño</span>
-                                                                </Dropdown.Item>
-                                                        }
-                                                    </DropdownButton>
+                                                    <div className="dropdown-container dropdown-container__danger">
+                                                        <DropdownButton menualign = "right" title = { <i className="fas fa-chevron-down icon-nm p-0"></i> }
+                                                            /* id = 'dropdown-button-drop-left-danger' */ >
+                                                            <Dropdown.Item className = "text-hover-danger dropdown-danger" onClick={(e) => { changePageDetails(lead) }} >
+                                                                <span className="navi-icon">
+                                                                    <i className="flaticon2-plus pr-3 text"></i>
+                                                                </span>
+                                                                <span className="navi-text align-self-center">VER MÁS</span>
+                                                            </Dropdown.Item>
+                                                            <Dropdown.Item className = "text-hover-danger dropdown-danger" 
+                                                                onClick={(e) => { 
+                                                                    questionAlert(
+                                                                        '¿ESTÁS SEGURO?', 
+                                                                        `MOVERÁS AL LEAD ${lead.nombre} AL ESTATUS ${this.getMoveStatus(lead)}`,
+                                                                        () => changeEstatus({
+                                                                            id: lead.id,
+                                                                            estatus: this.getMoveStatus(lead)
+                                                                        })
+                                                                    ) 
+                                                                }}>
+                                                                <span className="navi-icon">
+                                                                    <i className="far fa-play-circle pr-3 text"></i>
+                                                                </span>
+                                                                <span className="navi-text align-self-center">REACTIVAR</span>
+                                                            </Dropdown.Item>
+                                                            {
+                                                                this.hasContactos(lead) &&
+                                                                    <Dropdown.Item className = "text-hover-danger dropdown-danger" 
+                                                                        onClick={(e) => { openModalHistorial(lead) }}>
+                                                                        <span className="navi-icon">
+                                                                            <i className="far fa-list-alt pr-3 text"></i>
+                                                                        </span>
+                                                                        <span className="navi-text align-self-center">Historial de contacto</span>
+                                                                    </Dropdown.Item>
+                                                            }
+                                                            {
+                                                                this.hasPresupuesto(lead) &&
+                                                                    <Dropdown.Item className = "text-hover-danger dropdown-danger" 
+                                                                        onClick={(e) => { this.openModalPresupuesto(lead) }}>
+                                                                        <span className="navi-icon">
+                                                                            <i className="fas fa-file-invoice-dollar pr-3 text"></i>
+                                                                        </span>
+                                                                        <span className="navi-text align-self-center">Presupuesto de diseño</span>
+                                                                    </Dropdown.Item>
+                                                            }
+                                                        </DropdownButton>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         )

@@ -5,43 +5,13 @@ import 'react-date-range/dist/theme/default.css'; // theme css file
 // import { addDays } from 'date-fns';
 import es from "date-fns/locale/es";
 import moment from 'moment'
+import { printDates } from '../../functions/printers';
 
 class RangeCalendar extends Component {
 
-    state = {
-        range:[{
-            startDate: new Date(),
-            endDate: new Date(),
-            key: 'selection',
-            autoFocus: true
-        }]
-    }
-
-    componentDidMount(){
-        const { start, end } = this.props
-        const { range } = this.state
-        range[0] = {
-            startDate: new Date(start),
-            endDate: new Date(end),
-            key: 'selection'
-        }
-        this.setState({
-            ...this.state,
-            range
-        })
-    }
-
     updateRange = item => {
-
-        const { range } = this.state
         const { onChange } = this.props
-        range[0] = item.selection
-        this.setState({
-            ...this.state,
-            range
-        })
-        onChange(range[0])
-
+        onChange(item.selection)
     }
 
     getThisWeek = () => {
@@ -90,13 +60,9 @@ class RangeCalendar extends Component {
     }
 
     render() {
-
-        const { range } = this.state
+        const { start, end } = this.props
         const { disabledDates } = this.props
-        const rangeHoy = {
-            startDate: new Date(),
-            endDate: new Date()
-        }
+        const rangeHoy = { startDate: new Date(), endDate: new Date() }
         const rangeEstaSema = this.getThisWeek()
         const rangeEsteMes = this.getThisMonth()
         const rangeMesAnterior = this.getLastMonth()
@@ -105,83 +71,112 @@ class RangeCalendar extends Component {
         
         return (
             <DateRange 
-                disabledDates = { disabledDates }
-                onChange={ (item) => { this.updateRange(item)} }
-                showSelectionPreview = { true }
-                // moveRangeOnFirstSelection = { true }
-                editableDateInputs = { true }
-                ranges = { range }
-                rangeColors = {["#357ec7"]}
-                direction = "horizontal"
                 locale = { es }
+                // className
+                // months
+                showSelectionPreview = { true }
+                // showMonthAndYearPickers
+                rangeColors = {["#357ec7"]}
+                /* shownDate = { end } */
+                // minDate
+                // maxDate
+                direction = "horizontal"
+                disabledDates = { disabledDates }
+                // disabledDay
+                // scroll
+                // showMonthArrow
+                // navigatorRenderer
+                // ranges = { range }
+                ranges = { [
+                    {
+                        startDate: start,
+                        endDate: end,
+                        autoFocus: true,
+                        key: 'selection'
+                    }
+                ] }
+                // moveRangeOnFirstSelection = { false }
+                onChange={ (item) => { this.updateRange(item)} }
+                // color
+                // date
+                // showDateDisplay = { true }
+                // onShownDateChange
                 initialFocusedRange = { [0,0] }
+                // focusedRange = { [0,0] }
+                // onRangeFocusChange
+                // preview
+                showPreview = { true }
+                editableDateInputs = { false }
+                // dragSelectionEnabled
+                // onPreviewChange
+                dateDisplayFormat = 'dd-MMM-yyyy'
+                // dayDisplayFormat
+                // weekdayDisplayFormat
+                // monthDisplayFormat
+                weekStartsOn	 = { 1 }
                 startDatePlaceholder = "Fecha de inicio"
-                endDatePlaceholder="Fecha Final"
-                showDateDisplay={false}
+                endDatePlaceholder = "Fecha Final"
+                // fixedHeight
+                // renderStaticRangeLabel
                 staticRanges = {
                     [
                         {
-                            label: 'Hoy',
-                            range: () => (rangeHoy),
+                            label: 'Hoy', range: () => (rangeHoy),
                             isSelected (){ 
-                                if(moment(range[0].startDate).startOf('day').toString() === moment(rangeHoy.startDate).startOf('day').toString()
-                                    && moment(range[0].endDate).startOf('day').toString()  === moment(rangeHoy.endDate).startOf('day').toString() )
+                                if(moment(start).startOf('day').toString() === moment(rangeHoy.startDate).startOf('day').toString()
+                                    && moment(end).startOf('day').toString()  === moment(rangeHoy.endDate).startOf('day').toString() )
                                     return true
                                 return false
                             }
                         },
                         {
-                            label: 'Esta semana',
-                            range: () => ( rangeEstaSema ),
+                            label: 'Esta semana', range: () => ( rangeEstaSema ),
                             isSelected() {
-                                if(moment(range[0].startDate).startOf('day').toString() === moment(rangeEstaSema.startDate).startOf('day').toString() 
-                                    && moment(range[0].endDate).startOf('day').toString()  === moment(rangeEstaSema.endDate).startOf('day').toString() )
+                                if(moment(start).startOf('day').toString() === moment(rangeEstaSema.startDate).startOf('day').toString() 
+                                    && moment(end).startOf('day').toString()  === moment(rangeEstaSema.endDate).startOf('day').toString() )
                                     return true
                                 return false
                             }
                         },
                         {
-                            label: 'Este mes',
-                            range: () => ( rangeEsteMes ),
+                            label: 'Este mes', range: () => ( rangeEsteMes ),
                             isSelected() {
-                                if(moment(range[0].startDate).startOf('day').toString() === moment(rangeEsteMes.startDate).startOf('day').toString() 
-                                    && moment(range[0].endDate).startOf('day').toString()  === moment(rangeEsteMes.endDate).startOf('day').toString() )
+                                if(moment(start).startOf('day').toString() === moment(rangeEsteMes.startDate).startOf('day').toString() 
+                                    && moment(end).startOf('day').toString()  === moment(rangeEsteMes.endDate).startOf('day').toString() )
                                     return true
                                 return false
                             }
                         },
                         {
-                            label: 'Mes anterior',
-                            range: () => ( rangeMesAnterior ),
+                            label: 'Mes anterior', range: () => ( rangeMesAnterior ),
                             isSelected() {
-                                if(moment(range[0].startDate).startOf('day').toString() === moment(rangeMesAnterior.startDate).startOf('day').toString() 
-                                    && moment(range[0].endDate).startOf('day').toString()  === moment(rangeMesAnterior.endDate).startOf('day').toString() )
+                                if(moment(start).startOf('day').toString() === moment(rangeMesAnterior.startDate).startOf('day').toString() 
+                                    && moment(end).startOf('day').toString()  === moment(rangeMesAnterior.endDate).startOf('day').toString() )
                                     return true
                                 return false
                             }
                         },
                         {
-                            label: 'Este año',
-                            range: () => ( rangeEsteAño ),
+                            label: 'Este año', range: () => ( rangeEsteAño ),
                             isSelected() {
-                                if(moment(range[0].startDate).startOf('day').toString() === moment(rangeEsteAño.startDate).startOf('day').toString() 
-                                    && moment(range[0].endDate).startOf('day').toString()  === moment(rangeEsteAño.endDate).startOf('day').toString() )
+                                if(moment(start).startOf('day').toString() === moment(rangeEsteAño.startDate).startOf('day').toString() 
+                                    && moment(end).startOf('day').toString()  === moment(rangeEsteAño.endDate).startOf('day').toString() )
                                     return true
                                 return false
                             }
                         },
                         {
-                            label: 'Año pasado',
-                            range: () => ( rangeAñoPasado ),
+                            label: 'Año pasado', range: () => ( rangeAñoPasado ),
                             isSelected() {
-                                if(moment(range[0].startDate).startOf('day').toString() === moment(rangeAñoPasado.startDate).startOf('day').toString() 
-                                    && moment(range[0].endDate).startOf('day').toString()  === moment(rangeAñoPasado.endDate).startOf('day').toString() )
+                                if(moment(start).startOf('day').toString() === moment(rangeAñoPasado.startDate).startOf('day').toString() 
+                                    && moment(end).startOf('day').toString()  === moment(rangeAñoPasado.endDate).startOf('day').toString() )
                                     return true
                                 return false
                             }
                         }
                     ]
                 }
+                // inputRanges
             />
         );
     }

@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import { renderToString } from 'react-dom/server'
 import { waitAlert, errorAlert, validateAlert, doneAlert, printResponseErrorAlert } from '../../../functions/alert'
-import { setTextTable, setDateTable, setMoneyTable, setArrayTable } from '../../../functions/setters'
+import { setTextTable, setDateTable, setMoneyTable, setArrayTable, setTextTableCenter } from '../../../functions/setters'
 import Layout from '../../../components/layout/layout'
 import { Tabs, Tab, Form } from 'react-bootstrap'
 import { CONTRATOS_PROVEEDORES_COLUMNS, CONTRATOS_CLIENTES_COLUMNS, URL_DEV, ADJ_CONTRATOS_COLUMNS } from '../../../constants'
@@ -273,13 +273,13 @@ class Contratos extends Component {
                 actions: this.setActionsCliente(contrato),
                 nombre: renderToString(setTextTable(contrato.nombre)),
                 cliente: renderToString(setTextTable(contrato.cliente.empresa)),
-                empresa: contrato.empresa ? renderToString(setTextTable(contrato.empresa.name)) : '',
+                empresa: contrato.empresa ? renderToString(setTextTableCenter(contrato.empresa.name)) : '',
                 fechaInicio: renderToString(setDateTable(contrato.fecha_inicio)),
                 fechaFin: renderToString(setDateTable(contrato.fecha_fin)),
                 monto: renderToString(setMoneyTable(contrato.monto)),
                 acumulado: renderToString(setMoneyTable(contrato.sumatoria ? contrato.sumatoria : 0)),
                 pendiente: renderToString(setMoneyTable(contrato.sumatoria ? contrato.monto - contrato.sumatoria : contrato.monto)),
-                contrato: contrato.tipo_contrato ? renderToString((setTextTable(contrato.tipo_contrato.tipo))) : '',
+                contrato: contrato.tipo_contrato ? renderToString((setTextTableCenter(contrato.tipo_contrato.tipo))) : '',
                 descripcion: renderToString(setTextTable(contrato.descripcion)),
                 id: contrato.id
             })
@@ -293,14 +293,14 @@ class Contratos extends Component {
             aux.push({
                 actions: this.setActionsProveedor(contrato),
                 nombre: renderToString(setTextTable(contrato.nombre)),
-                empresa: contrato.empresa ? renderToString(setTextTable(contrato.empresa.name)) : '',
+                empresa: contrato.empresa ? renderToString(setTextTableCenter(contrato.empresa.name)) : '',
                 proveedor: renderToString(setTextTable(contrato.proveedor.razon_social)),
                 fechaInicio: renderToString(setDateTable(contrato.fecha_inicio)),
                 fechaFin: renderToString(setDateTable(contrato.fecha_fin)),
                 monto: renderToString(setMoneyTable(contrato.monto)),
                 acumulado: renderToString(setMoneyTable(contrato.sumatoria ? contrato.sumatoria : 0)),
                 pendiente: renderToString(setMoneyTable(contrato.sumatoria ? contrato.monto - contrato.sumatoria : contrato.monto)),
-                contrato: contrato.tipo_contrato ? renderToString((setTextTable(contrato.tipo_contrato.tipo))) : '',
+                contrato: contrato.tipo_contrato ? renderToString((setTextTableCenter(contrato.tipo_contrato.tipo))) : '',
                 descripcion: renderToString(setTextTable(contrato.descripcion)),
                 id: contrato.id
             })

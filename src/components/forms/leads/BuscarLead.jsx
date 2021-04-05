@@ -32,7 +32,7 @@ class BuscarLead extends Component {
                         </div>
                     </div>
                 </Form>
-                <div class="separator separator-solid"></div>
+                <div className="separator separator-solid"></div>
 
                 <div className="tab-content mt-9">
                     <div className="table-responsive-lg">

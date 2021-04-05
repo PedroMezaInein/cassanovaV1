@@ -5,7 +5,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV, FACTURAS_COLUMNS } from '../../constants'
 import { Small, B } from '../../components/texts'
-import { setTextTable, setMoneyTable, setDateTable, setOptions, setLabelTable } from '../../functions/setters'
+import { setTextTable, setMoneyTable, setDateTable, setOptions, setLabelTable, setTextTableCenter } from '../../functions/setters'
 import { errorAlert, doneAlert, waitAlert, createAlert, questionAlertY, printResponseErrorAlert, createAlertSA2WithActionOnClose, deleteAlert } from '../../functions/alert'
 import { Modal, ItemSlider, ItemDoubleSlider } from '../../components/singles'
 import { Button, FileInput } from '../../components/form-components'
@@ -128,10 +128,10 @@ class Facturacion extends Component {
             aux.push(
                 {
                     actions: this.setActions(factura),
-                    folio: renderToString(setTextTable(factura.folio)),
+                    folio: renderToString(setTextTableCenter(factura.folio)),
                     estatus: renderToString(this.setLabelTable(factura)),
                     fecha: renderToString(setDateTable(factura.fecha)),
-                    serie: renderToString(setTextTable(factura.serie)),
+                    serie: renderToString(setTextTableCenter(factura.serie)),
                     emisor: renderToString(this.setInfoTable(factura.rfc_emisor, factura.nombre_emisor)),
                     receptor: renderToString(this.setInfoTable(factura.rfc_receptor, factura.nombre_receptor)),
                     subtotal: renderToString(setMoneyTable(factura.subtotal)),
@@ -140,8 +140,8 @@ class Facturacion extends Component {
                     restante: renderToString(setMoneyTable(factura.total - factura.ventas_compras_count - factura.ingresos_egresos_count)),
                     adjuntos: renderToString(this.setAdjuntosTable(factura)),
                     descripcion: renderToString(setTextTable(factura.descripcion)),
-                    noCertificado: renderToString(setTextTable(factura.numero_certificado)),
-                    usoCFDI: renderToString(setTextTable(factura.uso_cfdi)),
+                    noCertificado: renderToString(setTextTableCenter(factura.numero_certificado)),
+                    usoCFDI: renderToString(setTextTableCenter(factura.uso_cfdi)),
                     id: factura.id,
                     objeto: factura
                 }
@@ -309,9 +309,9 @@ class Facturacion extends Component {
                 {
                     factura.xml ?
                         <a href={factura.xml.url} target="_blank" rel="noopener noreferrer">
-                            <Small>
+                            <span className="font-size-11px">
                                 factura.xml
-                            </Small>
+                            </span>
                         </a>
                         : ''
                 }
@@ -319,9 +319,9 @@ class Facturacion extends Component {
                 {
                     factura.pdf ?
                         <a href={factura.pdf.url} target="_blank" rel="noopener noreferrer">
-                            <Small>
+                            <span className="font-size-11px">
                                 factura.pdf
-                            </Small>
+                            </span>
                         </a>
                         : ''
                 }
@@ -331,24 +331,24 @@ class Facturacion extends Component {
 
     setInfoTable = (rfc, nombre) => {
         return (
-            <div>
-                <Small className="mr-1" >
-                    <B color="gold">
+            <div style={{minWidth:'160px'}}>
+                <span className="mr-1 font-size-12px" >
+                    <span className="font-weight-bold">
                         RFC:
-                    </B>
-                </Small>
-                <Small>
+                    </span>
+                </span>
+                <span className="font-size-11px">
                     {rfc}
-                </Small>
+                </span>
                 <br />
-                <Small className="mr-1" >
-                    <B color="gold">
+                <span className="mr-1 font-size-12px" >
+                    <span className="font-weight-bold">
                         Nombre:
-                    </B>
-                </Small>
-                <Small>
+                    </span>
+                </span>
+                <span className="font-size-11px">
                     {nombre}
-                </Small>
+                </span>
             </div>
         )
     }

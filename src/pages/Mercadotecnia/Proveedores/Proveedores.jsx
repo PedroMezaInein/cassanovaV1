@@ -6,7 +6,7 @@ import { ModalDelete, Modal } from '../../../components/singles'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { PROVEEDORES_MERCA_COLUMNS, URL_DEV } from '../../../constants'
 import { doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../../functions/alert'
-import { setArrayTable, setTextTable } from '../../../functions/setters'
+import { setArrayTable, setTextTable, setTextTableCenter } from '../../../functions/setters'
 import axios from 'axios'
 import { ProveedorCard } from '../../../components/cards'
 
@@ -26,8 +26,8 @@ class Proveedores extends Component{
                 {
                     actions: this.setActions(proveedor),
                     nombre: renderToString(setTextTable(proveedor.nombre)),
-                    razonSocial: renderToString(setTextTable(proveedor.razon_social)),
-                    rfc: renderToString(setTextTable(proveedor.rfc)),
+                    razonSocial: renderToString(setTextTableCenter(proveedor.razon_social)),
+                    rfc: renderToString(setTextTableCenter(proveedor.rfc)),
                     contacto: renderToString(setArrayTable(
                         [
                             { 'url': `tel:+${proveedor.telefono}`, 'text': proveedor.telefono },
@@ -41,7 +41,7 @@ class Proveedores extends Component{
                             { 'name': 'Tipo Cuenta', 'text': proveedor.tipo_cuenta ? proveedor.tipo_cuenta.tipo : 'Sin definir' },
                         ]
                     )),
-                    subarea: renderToString(setTextTable(proveedor.subarea ? proveedor.subarea.nombre : 'Sin definir')),
+                    subarea: renderToString(setTextTableCenter(proveedor.subarea ? proveedor.subarea.nombre : 'Sin definir')),
                     id: proveedor.id
                 }
             )

@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import { URL_DEV, PRESUPUESTO_COLUMNS, ADJUNTOS_PRESUPUESTOS_COLUMNS } from '../../constants'
-import { setOptions, setTextTable, setDateTable, setAdjuntosList } from '../../functions/setters'
+import { setOptions, setTextTable, setDateTable, setAdjuntosList, setTextTableCenter } from '../../functions/setters'
 import Layout from '../../components/layout/layout'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
 import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert } from '../../functions/alert'
@@ -202,11 +202,11 @@ class Presupuesto extends Component {
                 aux.push(
                     {
                         actions: this.setActions(presupuesto),
-                        proyecto: renderToString(setTextTable(presupuesto.proyecto ? presupuesto.proyecto.nombre : '')),
-                        empresa: renderToString(setTextTable(presupuesto.empresa ? presupuesto.empresa.name : '')),
-                        area: renderToString(setTextTable(presupuesto.area ? presupuesto.area.nombre : '')),
+                        empresa: renderToString(setTextTableCenter(presupuesto.empresa ? presupuesto.empresa.name : '')),
+                        proyecto: renderToString(setTextTableCenter(presupuesto.proyecto ? presupuesto.proyecto.nombre : '')),
+                        area: renderToString(setTextTableCenter(presupuesto.area ? presupuesto.area.nombre : '')),
                         fecha: renderToString(setDateTable(presupuesto.fecha)),
-                        tiempo_ejecucion: renderToString(setTextTable(presupuesto.tiempo_ejecucion)),
+                        tiempo_ejecucion: renderToString(setTextTableCenter(presupuesto.tiempo_ejecucion)),
                         id: presupuesto.id,
                         objeto: presupuesto
                     }

@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { Dropdown, DropdownButton, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { setDateTableLG } from '../../../functions/setters'
 
 class LeadContrato extends Component {
@@ -30,7 +30,7 @@ class LeadContrato extends Component {
     }
 
     render() {
-        const { leads, onClickPrev, onClickNext, changePageDetails, clickOneLead } = this.props
+        const { leads, onClickPrev, onClickNext, changePageDetails, clickOneLead, openModalSee, changePageEditProyecto } = this.props
         return (
             <div className="tab-content">
                 <div className="table-responsive-lg">
@@ -141,11 +141,38 @@ class LeadContrato extends Component {
                                                     <span className="label label-md label-light-success label-inline font-weight-bold" style={{fontSize: '10.7px'}}>CONTRATADO</span>
                                                 </td>
                                                 <td className="pr-0 text-center">
-                                                    <OverlayTrigger overlay={<Tooltip>VER MÁS</Tooltip>}>
-                                                        <span onClick={(e) => { changePageDetails(lead) }} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-text-success">
-                                                            <i className="flaticon2-plus icon-nm"></i>
-                                                        </span>
-                                                    </OverlayTrigger>
+                                                    <div className = 'dropdown-container dropdown-container__success'>
+                                                        <DropdownButton menualign="right" title={<i className="fas fa-chevron-down icon-nm p-0"></i>}
+                                                            id = 'dropdown-button-drop-left__success'>
+                                                            <Dropdown.Item className="text-hover-success dropdown-success" 
+                                                                onClick={(e) => { changePageDetails(lead) }}  >
+                                                                <span className="navi-icon">
+                                                                    <i className="flaticon2-plus pr-3 text"></i>
+                                                                </span>
+                                                                <span className="navi-text align-self-center">VER MÁS</span>
+                                                            </Dropdown.Item>
+                                                            {
+                                                                this.hasProyecto(lead) &&
+                                                                    <Dropdown.Item className="text-hover-success dropdown-success" 
+                                                                        onClick={(e) => { openModalSee(lead.prospecto.proyecto) }}  >
+                                                                        <span className="navi-icon">
+                                                                            <i className="far fa-eye pr-3 text"></i>
+                                                                        </span>
+                                                                        <span className="navi-text align-self-center">VER PROYECTO</span>
+                                                                    </Dropdown.Item>
+                                                            }
+                                                            {
+                                                                this.hasProyecto(lead) &&
+                                                                    <Dropdown.Item className = 'text-hover-success dropdown-success'
+                                                                        onClick = { (e) => { changePageEditProyecto(lead.prospecto.proyecto) } }>
+                                                                        <span className="navi-icon">
+                                                                            <i className="flaticon-edit-1 pr-3 text"></i>
+                                                                        </span>
+                                                                        <span className="navi-text align-self-center">EDITAR PROYECTO</span>
+                                                                    </Dropdown.Item>
+                                                            }
+                                                        </DropdownButton>
+                                                    </div>
                                                 </td>
                                             </tr>
                                         )

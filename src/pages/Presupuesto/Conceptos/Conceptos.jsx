@@ -3,13 +3,13 @@ import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV, CONCEPTOS_COLUMNS } from '../../../constants'
-import { setTextTable, setMoneyTableReactDom, setTextTableReactDom, setOptions } from '../../../functions/setters'
+import { setMoneyTableReactDom, setTextTableReactDom, setOptions, setTextTableCenter } from '../../../functions/setters'
 import Layout from '../../../components/layout/layout'
 import { ModalDelete, Modal } from '../../../components/singles'
 import { printResponseErrorAlert, errorAlert, doneAlert, waitAlert, customInputAlert } from '../../../functions/alert'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { ConceptoCard } from '../../../components/cards'
-import { InputGray, InputMoney, InputMoneyGray, SelectSearchGray } from '../../../components/form-components'
+import { SelectSearchGray } from '../../../components/form-components'
 import { Update } from '../../../components/Lottie'
 import Swal from 'sweetalert2'
 import NumberFormat from 'react-number-format'
@@ -96,11 +96,17 @@ class Conceptos extends Component {
     setSwalHeader = (tipo) => {
         switch(tipo){
             case 'descripcion':
+                return 'EDITAR LA DESCRIPCIÓN'
             case 'subpartida':
+                return 'EDITAR LA SUBPARTIDA'
             case 'unidad':
-                return `Editar la ${tipo}`
+                return 'EDITAR LA UNIDAD'
+            case 'costo':
+                return 'EDITAR EL COSTO'
+            case 'proveedor':
+                    return 'EDITAR EL PROVEEDOR'
             default:
-                return `Editar el ${tipo}`
+                return ''
         }
     }
 
@@ -143,14 +149,14 @@ class Conceptos extends Component {
                         <div className="input-group input-group-solid rounded-0">
                             <textarea name="descripcion" rows="6" id='descripcion-form' defaultValue = { data.descripcion }
                                 onChange = { (e) => { this.onChange(e.target.value, tipo)} }
-                                className="form-control text-dark-50 font-weight-bold undefined form-control text-uppercase">
+                                className="form-control text-dark-50 font-weight-bold undefined form-control text-uppercase text-justify">
                             </textarea>
                         </div>
                 }
                 {
                     tipo === 'costo' &&
                         <div className="row mx-0 justify-content-center">
-                            <div className="col-12 col-md-8">
+                            <div className="col-12 col-md-6">
                                 <div className="input-group input-group-solid rounded-0">
                                     <NumberFormat value = { form[tipo] } displayType = 'input' thousandSeparator = { true }
                                         prefix = '$' className = 'form-control text-dark-50 font-weight-bold text-uppercase'
@@ -198,13 +204,13 @@ class Conceptos extends Component {
             aux.push(
                 {
                     actions: this.setActions(concepto),
-                    clave: renderToString(setTextTable(concepto.clave)),
-                    descripcion: setTextTableReactDom(concepto.descripcion, this.doubleClick, concepto, 'descripcion'),
-                    unidad: concepto.unidad ? setTextTableReactDom(concepto.unidad.nombre, this.doubleClick, concepto, 'unidad') : '',
+                    clave: renderToString(setTextTableCenter(concepto.clave)),
+                    descripcion: setTextTableReactDom(concepto.descripcion, this.doubleClick, concepto, 'descripcion', 'text-justify'),
+                    unidad: concepto.unidad ? setTextTableReactDom(concepto.unidad.nombre, this.doubleClick, concepto, 'unidad', 'text-center') : '',
                     costo: setMoneyTableReactDom(concepto.costo, this.doubleClick, concepto, 'costo'),
-                    partida: concepto.subpartida ? concepto.subpartida.partida ? renderToString(setTextTable(concepto.subpartida.partida.nombre, this.doubleClick, concepto, 'partida')) : '' : '',
-                    subpartida: concepto.subpartida ? setTextTableReactDom(concepto.subpartida.nombre, this.doubleClick, concepto, 'subpartida') : '',
-                    proveedor: setTextTableReactDom(concepto.proveedor ? concepto.proveedor.razon_social : '', this.doubleClick, concepto, 'proveedor'),
+                    partida: concepto.subpartida ? concepto.subpartida.partida ? renderToString(setTextTableReactDom(concepto.subpartida.partida.nombre, this.doubleClick, concepto, 'partida', 'text-center')) : '' : '',
+                    subpartida: concepto.subpartida ? setTextTableReactDom(concepto.subpartida.nombre, this.doubleClick, concepto, 'subpartida', 'text-center') : '',
+                    proveedor: setTextTableReactDom(concepto.proveedor ? concepto.proveedor.razon_social : '', this.doubleClick, concepto, 'proveedor', 'text-center'),
                     id: concepto.id
                 }
             )
