@@ -44,7 +44,7 @@ class Leads extends Component {
                 nombre: renderToString(setTextTableCenter(cliente.nombre)),
                 proyecto: renderToString(cliente.proyectos.length === 0 ? setTextTableCenter("Sin definir") : setListTableLinkProyecto(cliente.proyectos, "nombre")),
                 direccion: renderToString(setDireccion(cliente)),
-                perfil: renderToString(setTextTableCenter(cliente.perfil)),
+                // perfil: renderToString(setTextTableCenter(cliente.perfil)),
                 puesto: renderToString(setTextTableCenter(cliente.puesto)),
                 rfc: renderToString(setTextTableCenter(cliente.rfc)),
                 fecha: renderToString(setDateTable(cliente.created_at)),
