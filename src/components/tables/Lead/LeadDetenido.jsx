@@ -62,9 +62,9 @@ class LeadDetenido extends Component {
                                                             </span>
                                                         </div>
                                                         <div>
-                                                            <a onClick = { ( e ) => { e.preventDefault(); clickOneLead(lead.id) } } className="text-dark-75 font-weight-bolder text-hover-gray mb-1 font-size-lg">
+                                                            <span onClick = { ( e ) => { e.preventDefault(); clickOneLead(lead.id) } } className="text-dark-75 font-weight-bolder text-hover-gray mb-1 font-size-lg">
                                                                 {lead.nombre}
-                                                            </a>
+                                                            </span>
                                                             <span className="text-muted font-weight-bold d-block">
                                                                 {
                                                                     lead.prospecto.tipo_proyecto ?
