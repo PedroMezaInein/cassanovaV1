@@ -7,7 +7,7 @@ import { URL_DEV, EDOS_CUENTAS_COLUMNS_2 } from '../../../constants'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { renderToString } from 'react-dom/server'
 import { waitAlert, doneAlert, errorAlert, printResponseErrorAlert } from '../../../functions/alert'
-import { setTextTable, setDateTable, setArrayTable, setTextTableCenter } from '../../../functions/setters'
+import { setDateTable, setArrayTable, setTextTableCenter } from '../../../functions/setters'
 import { EstadoCuentaCard } from '../../../components/cards'
 const $ = require('jquery');
 class EstadosCuenta extends Component {

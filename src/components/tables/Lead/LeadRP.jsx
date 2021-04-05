@@ -62,9 +62,9 @@ class LeadRP extends Component {
                                                             </span>
                                                         </div>
                                                         <div>
-                                                            <a onClick = { ( e ) => { e.preventDefault(); clickOneLead(lead.id) } } className="text-dark-75 font-weight-bolder text-hover-orange mb-1 font-size-lg">
+                                                            <span onClick = { ( e ) => { e.preventDefault(); clickOneLead(lead.id) } } className="text-dark-75 font-weight-bolder text-hover-orange mb-1 font-size-lg">
                                                                 {lead.nombre}
-                                                            </a>
+                                                            </span>
                                                             {
                                                                 lead.prospecto ?
                                                                     lead.prospecto.tipo_proyecto ?
