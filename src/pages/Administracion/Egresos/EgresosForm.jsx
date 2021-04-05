@@ -481,7 +481,7 @@ class EgresosForm extends Component {
         if(solicitud !== ''){
             data.append(`solicitud`, solicitud.id)
         }
-        await axios.post(URL_DEV + 'egresos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}v2/administracion/egresos`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 this.setState({
                     ...this.state,
