@@ -115,7 +115,7 @@ export function setTextTableCenter(text, minwidth) {
 
 export function setTextTableReactDom(text, doubleClick, data, tipo, style){
     return(
-        <div className = {`${style} ${(text === '' ? 'm-5 p-5' : 'm-2')}`} onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data, tipo)} }
+        <div className = {`${style} ${(text === '' ? 'm-5 p-5' : '')}`} onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data, tipo)} }
             onClick = { (e) => { 
                 e.preventDefault(); 
                 if(isMobile){
@@ -128,6 +128,8 @@ export function setTextTableReactDom(text, doubleClick, data, tipo, style){
 }
 
 export function setMoneyTableReactDom(text, doubleClick, data, tipo){
+    let cantidad = 0
+    cantidad = parseFloat(text).toFixed(2)
     return(
         <div className = {`text-center ${(text === '' ? 'm-5 p-5' : 'm-2')}`} onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data, tipo)} }
             onClick = { (e) => { 
@@ -136,8 +138,8 @@ export function setMoneyTableReactDom(text, doubleClick, data, tipo){
                     doubleClick(data, tipo)
                 }
             } } > 
-            <NumberFormat value={text} displayType='text' thousandSeparator={true} prefix='$'
-                renderText={text => <span className="font-size-11px "> {text} </span>} />
+            <NumberFormat value={cantidad} displayType='text' thousandSeparator={true} prefix='$'
+                renderText={cantidad => <span className="font-size-11px "> {cantidad} </span>} />
         </div>
     )
 }
