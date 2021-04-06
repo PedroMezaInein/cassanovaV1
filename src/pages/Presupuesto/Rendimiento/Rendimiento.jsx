@@ -146,16 +146,9 @@ class Rendimientos extends Component {
                 <h2 className = 'swal2-title mb-4 mt-2'> { this.setSwalHeader(tipo) } </h2>
                 {
                     tipo === 'material' || tipo === 'rendimiento' &&
-                    <InputGray
-                        withtaglabel={0}
-                        withtextlabel={0}
-                        withplaceholder={0}
-                        withicon={0}
-                        withformgroup={1}
-                        name = { tipo }
-                        value = { form[tipo] }
-                        onChange = { (e) => { this.onChange(e.target.value, tipo)} }
-                    />
+                        <InputGray withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 }
+                            withicon = { 0 } withformgroup = { 1 } name = { tipo } value = { form[tipo] }
+                            onChange = { (e) => { this.onChange(e.target.value, tipo)} } />
                 }
                 {
                     tipo === 'descripcion' &&
@@ -180,7 +173,7 @@ class Rendimientos extends Component {
                         </div>
                 }
                 {
-                        tipo !== 'descripcion' && tipo !== 'costo' && tipo !== 'material' &&  tipo !== 'rendimiento' &&
+                    tipo !== 'descripcion' && tipo !== 'costo' && tipo !== 'material' &&  tipo !== 'rendimiento' &&
                         <SelectSearchGray options = { this.setOptions(data, tipo) }
                             onChange = { (value) => { this.updateSelectSearch(value, tipo)} } name = { tipo }
                             value = { form[tipo] } />
@@ -218,7 +211,7 @@ class Rendimientos extends Component {
         const { form } = this.state
         let value = form[tipo]
         waitAlert()
-        await axios.put(`${URL_DEV}v2/presupuesto/rendimiento/${tipo}/${data.id}`, 
+        await axios.put(`${URL_DEV}v2/presupuesto/rendimientos/${tipo}/${data.id}`, 
             { value: value }, 
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -349,13 +342,7 @@ class Rendimientos extends Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        authUser: state.authUser
-    }
-}
-
-const mapDispatchToProps = dispatch => ({
-})
+const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapDispatchToProps = dispatch => ({ })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Rendimientos);
