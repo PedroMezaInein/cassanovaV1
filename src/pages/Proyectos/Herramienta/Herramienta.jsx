@@ -5,14 +5,17 @@ import Layout from '../../../components/layout/layout'
 import { ModalDelete, Modal, ItemSlider } from '../../../components/singles'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { URL_DEV, HERRAMIENTAS_COLUMNS, UBICACIONES_HERRAMIENTAS_COLUMNS } from '../../../constants'
-import { deleteAlert, doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../../functions/alert'
-import { setDateTable, setTextTable, setTextTableCenter } from '../../../functions/setters'
+import { deleteAlert, doneAlert, errorAlert, printResponseErrorAlert, waitAlert, customInputAlert } from '../../../functions/alert'
+import { setDateTable, setTextTable, setTextTableCenter, setTextTableReactDom, setDateTableReactDom, setOptions  } from '../../../functions/setters'
 import axios from 'axios'
-import { Button } from '../../../components/form-components'
+import { Button, CalendarDay } from '../../../components/form-components'
 import UbicacionHerramientaForm from '../../../components/forms/proyectos/UbicacionHerramientaForm'
 import { Tab, Tabs } from 'react-bootstrap'
 import TableForModals from '../../../components/tables/TableForModals'
 import { HerramientaCard } from '../../../components/cards'
+import { Update } from '../../../components/Lottie'
+import Swal from 'sweetalert2'
+import { SelectSearchGray } from '../../../components/form-components'
 const $ = require('jquery');
 class Herramienta extends Component {
     state = {
@@ -34,7 +37,18 @@ class Herramienta extends Component {
             fecha: new Date(),
             herramienta: '',
             ubicacion: '',
-            comentario: ''
+            comentario: '',
+            nombre: '',
+            serie: '',
+            modelo: '',
+            empresa: '',
+            proyecto: '',
+            descripcion: '',
+            // fechaCompra: new Date(),
+        },
+        options: {
+            empresas: [],
+            proyectos: []
         },
         data: {
             ubicaciones: []
@@ -42,23 +56,185 @@ class Herramienta extends Component {
         ubicaciones: [],
         ubicacion: ''
     }
+    componentDidMount() {
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
+        const { history } = this.props
+        const herramienta = permisos.find(function (element, index) {
+            const { modulo: { url } } = element
+            return pathname === url
+        });
+        this.getOptionsAxios()
+        if (!herramienta)
+            history.push('/')
+    }
+    async getOptionsAxios() {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'herramientas/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                Swal.close()
+                const { empresas, proyectos } = response.data
+                const { options, herramienta, form } = this.state
+                options.empresas = setOptions(empresas, 'name', 'id')
+                options.proyectos = setOptions(proyectos, 'nombre', 'id')
+                if (herramienta !== '') {
+                    if (herramienta.empresa_id)
+                        form.empresa = herramienta.empresa_id.toString()
+                    if (herramienta.proyecto_id)
+                        form.proyecto = herramienta.proyecto_id.toString()
+                }
+                this.setState({
+                    ...this.state,
+                    options,
+                    form
+                })
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     setHerramientas = herramientas => {
         let aux = []
         herramientas.map((herramienta) => {
             aux.push({
                 actions: this.setActions(herramienta),
-                empresa: renderToString(setTextTableCenter(herramienta.empresa ? herramienta.empresa.name : 'Sin definir')),
-                proyecto: renderToString(setTextTableCenter(herramienta.proyecto ? herramienta.proyecto.nombre : 'Sin definir')),
-                nombre: renderToString(setTextTableCenter(herramienta.nombre)),
-                modelo: renderToString(setTextTableCenter(herramienta.modelo)),
-                serie: renderToString(setTextTableCenter(herramienta.serie)),
-                fecha: renderToString(setDateTable(herramienta.created_at)),
-                descripcion: renderToString(setTextTable(herramienta.descripcion)),
+                empresa: herramienta.empresa ? setTextTableReactDom(herramienta.empresa.name, this.doubleClick, herramienta, 'empresa', 'text-center') : '',
+                proyecto: herramienta.proyecto ? setTextTableReactDom(herramienta.proyecto.nombre, this.doubleClick, herramienta, 'proyecto', 'text-center') : renderToString(setTextTableCenter('Sin definir')),
+                nombre: setTextTableReactDom(herramienta.nombre, this.doubleClick, herramienta, 'nombre', 'text-center'),
+                modelo: setTextTableReactDom(herramienta.modelo, this.doubleClick, herramienta, 'modelo', 'text-center'),
+                serie: setTextTableReactDom(herramienta.serie, this.doubleClick, herramienta, 'serie', 'text-center'),
+                fecha: setDateTableReactDom(herramienta.created_at, this.doubleClick, herramienta, 'fecha', 'text-center'),
+                descripcion: setTextTableReactDom(herramienta.descripcion, this.doubleClick, herramienta, 'descripcion', 'text-justify'),
                 id: herramienta.id
             })
             return false
         })
         return aux
+    }
+    
+    doubleClick = (data, tipo) => {
+        const { form } = this.state
+        if(tipo){
+            form[tipo] = data[tipo]
+        }
+        this.setState({form})
+        customInputAlert(
+            <div>
+                <h2 className = 'swal2-title mb-4 mt-2'> { this.setSwalHeader(tipo) } </h2>
+                {
+                    tipo === 'nombre' || tipo === 'modelo' || tipo === 'serie' ?
+                        <div className="input-group input-group-solid rounded-0 mb-2 mt-7">
+                            <input name={tipo} defaultValue = { data[tipo] } onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} }
+                                className="form-control text-dark-50 font-weight-bold form-control text-uppercase text-justify">
+                            </input>
+                        </div>
+                    :<></>
+                }
+                {
+                    tipo === 'descripcion' &&
+                        <div className="input-group input-group-solid rounded-0 mb-2 mt-7">
+                            <textarea name="descripcion" rows="6" id='descripcion-form' defaultValue = { data.descripcion }
+                                onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} }
+                                className="form-control text-dark-50 font-weight-bold form-control text-uppercase text-justify">
+                            </textarea>
+                        </div>
+                }
+                {
+                    tipo === 'fecha' &&
+                        <CalendarDay value = { form[tipo] } onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } name = { tipo } date = { form[tipo] } withformgroup={0} />
+                }
+                {
+                    tipo === 'empresa' ||  tipo === 'proyecto' ?
+                        <SelectSearchGray options = { this.setOptions(data, tipo) }
+                        onChange = { (value) => { this.onChangeSwal(value, tipo)} } name = { tipo }
+                        value = { form[tipo] } customdiv="mb-2 mt-7"/>
+                    :<></>
+                }
+            </div>,
+            <Update />,
+            () => { this.patchRendimiento(data, tipo) },
+            () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
+        )
+    }
+    onChangeSwal = (value, tipo) => {
+        console.log(value, 'value')
+        console.log(tipo, 'tipo')
+        const { form } = this.state
+        form[tipo] = value
+        this.setState({...this.state, form})
+    }
+    clearForm = () => {
+        const { form } = this.state
+        let aux = Object.keys(form)
+        aux.forEach((element) => {
+            switch(element){
+                case 'adjuntos':
+                    form[element] = {
+                        adjuntos: {
+                            value: '',
+                            placeholder: 'Adjuntos',
+                            files: []
+                        }
+                    }
+                    break;
+                default:
+                    form[element] = ''
+                break;
+            }
+        })
+        return form
+    }
+    patchRendimiento = async( data,tipo ) => {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        let value = form[tipo]
+        waitAlert()
+        await axios.put(`${URL_DEV}v2/proyectos/herramientas/${tipo}/${data.id}`, 
+            { value: value }, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.getHerramientasAxios()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El rendimiento fue editado con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    setSwalHeader = (tipo) => {
+        switch(tipo){
+            case 'empresa':
+                return 'EDITAR LA EMPRESA'
+            case 'proyecto':
+                return 'EDITAR EL PROYECTO'
+            case 'nombre':
+                return 'EDITAR EL NOMBRE'
+            case 'modelo':
+                return 'EDITAR EL MODELO'
+            case 'serie':
+                return 'EDITAR LA SERIE'
+            case 'fecha':
+                return 'EDITAR LA FECHA DE COMPRA'
+            case 'descripcion':
+                return 'EDITAR LA DESCRIPCIÓN'
+            default:
+                return ''
+        }
+    }
+    setOptions = (data, tipo) => {
+        const { options } = this.state
+        switch(tipo){
+            case 'proyecto':
+                return options.proyectos
+            case 'empresa':
+                return options.empresas
+            default: return []
+        }
     }
     setActions = () => {
         let aux = []
@@ -547,13 +723,7 @@ class Herramienta extends Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        authUser: state.authUser
-    }
-}
-
-const mapDispatchToProps = dispatch => ({
-})
+const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapDispatchToProps = dispatch => ({ })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Herramienta);
