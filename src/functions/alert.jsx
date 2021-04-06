@@ -487,7 +487,7 @@ export function customInputAlert(html, iconHtml, success, cancel){
         customClass: { 
             cancelButton: 'bg-transparent bg-hover-danger text-danger text-hover-white', 
             confirmButton: 'bg-transparent bg-hover-primary text-primary text-hover-white',
-            actions: 'd-flex justify-content-between px-0'
+            actions: 'd-flex justify-content-between px-0 mt-0'
         }
     }).then((result) => {
         if(result.dismiss)
