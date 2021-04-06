@@ -428,7 +428,9 @@ class Usuarios extends Component {
         })
         this.onChange({ target: { value: value, name: 'departamento' } })
     }
-    deleteOption = (element, array) => {
+    deleteOptionTag = (element, array) => {
+        // console.log(element, 'element')
+        // console.log(array,'array')
         let { form } = this.state
 
         let auxForm = []
@@ -481,7 +483,7 @@ class Usuarios extends Component {
         
     }
     onChangeAndAdd = (e, arreglo) => {
-        console.log(arreglo,'arreglo')
+        // console.log(arreglo,'arreglo')
         const { value } = e.target
         const { options, form } = this.state
         let auxArray = form[arreglo]
