@@ -17,7 +17,6 @@ class Rendimientos extends Component {
     state = {
         modalDelete: false,
         modalSee: false,
-        formeditado:0,
         rendimientos: [],
         rendimiento: '',
         form: {
@@ -145,14 +144,17 @@ class Rendimientos extends Component {
             <div>
                 <h2 className = 'swal2-title mb-4 mt-2'> { this.setSwalHeader(tipo) } </h2>
                 {
-                    tipo === 'material' || tipo === 'rendimiento' &&
-                        <InputGray withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 }
-                            withicon = { 0 } withformgroup = { 1 } name = { tipo } value = { form[tipo] }
-                            onChange = { (e) => { this.onChange(e.target.value, tipo)} } />
+                    tipo === 'materiales' || tipo === 'rendimiento' ?
+                        <div className="input-group input-group-solid rounded-0 mb-2 mt-7">
+                            <input name={tipo} defaultValue = { data[tipo] } onChange = { (e) => { this.onChange(e.target.value, tipo)} }
+                                className="form-control text-dark-50 font-weight-bold form-control text-uppercase text-justify">
+                            </input>
+                        </div>
+                    :<></>
                 }
                 {
                     tipo === 'descripcion' &&
-                        <div className="input-group input-group-solid rounded-0">
+                        <div className="input-group input-group-solid rounded-0 mb-2 mt-7">
                             <textarea name="descripcion" rows="6" id='descripcion-form' defaultValue = { data.descripcion }
                                 onChange = { (e) => { this.onChange(e.target.value, tipo)} }
                                 className="form-control text-dark-50 font-weight-bold form-control text-uppercase text-justify">
@@ -163,7 +165,7 @@ class Rendimientos extends Component {
                     tipo === 'costo' &&
                         <div className="row mx-0 justify-content-center">
                             <div className="col-12 col-md-6">
-                                <div className="input-group input-group-solid rounded-0">
+                                <div className="input-group input-group-solid rounded-0 mb-2 mt-7">
                                     <NumberFormat value = { form[tipo] } displayType = 'input' thousandSeparator = { true }
                                         prefix = '$' className = 'form-control text-dark-50 font-weight-bold text-uppercase'
                                         renderText = { form => <div> form[tipo] </div>} defaultValue = { data[tipo] }
@@ -173,10 +175,10 @@ class Rendimientos extends Component {
                         </div>
                 }
                 {
-                    tipo !== 'descripcion' && tipo !== 'costo' && tipo !== 'material' &&  tipo !== 'rendimiento' &&
+                        tipo !== 'descripcion' && tipo !== 'costo' && tipo !== 'materiales' &&  tipo !== 'rendimiento' &&
                         <SelectSearchGray options = { this.setOptions(data, tipo) }
-                            onChange = { (value) => { this.updateSelectSearch(value, tipo)} } name = { tipo }
-                            value = { form[tipo] } />
+                            onChange = { (value) => { this.onChange(value, tipo)} } name = { tipo }
+                            value = { form[tipo] } customdiv="mb-2 mt-7"/>
                 }
             </div>,
             <Update />,
@@ -185,11 +187,6 @@ class Rendimientos extends Component {
         )
     }
     onChange = (value, tipo) => {
-        const { form } = this.state
-        form[tipo] = value
-        this.setState({...this.state, form})
-    }
-    updateSelectSearch = (value, tipo) => {
         const { form } = this.state
         form[tipo] = value
         this.setState({...this.state, form})

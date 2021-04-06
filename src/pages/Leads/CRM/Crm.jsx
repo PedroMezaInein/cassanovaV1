@@ -473,6 +473,20 @@ class Crm extends Component {
         });
     }
 
+    /* ------------------ ANCHOR CRM UPDATE CAMBIAR CONTINUIDAD ----------------- */
+    changeContinuidadLead = async(lead) => {
+        const { access_token } = this.props.authUser
+        await axios.put(`${URL_DEV}v2/leads/crm/prospecto/${lead.id}/continuidad`, {}, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert('Registro eliminado con éxito.');
+                this.getLeadsContratados()
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     /* ---------------------- ANCHOR CRM ELIMINAR CONTACTO ---------------------- */
     eliminarContacto = async (contacto) => {
         const { access_token } = this.props.authUser
@@ -1315,6 +1329,7 @@ class Crm extends Component {
             form.origen = 0
             form.empresa = 0
             form.estatus = 0
+            form.continuidad = 'recontratacion'
         }
         switch (key) {
             case 'rh-proveedores':
@@ -1911,6 +1926,18 @@ class Crm extends Component {
                             <div className="card-body">
                                 <div className="mb-0">
                                     <div className="form-group row form-group-marginless d-flex justify-content-center mb-0">
+                                        {
+                                            activeTable === 'contratados' &&
+                                                <div className="col-md-2">
+                                                    <Form.Control className = "form-control text-uppercase form-control-solid"
+                                                        value = { form.continuidad } onChange = { this.onChange }
+                                                        name = 'continuidad' as = "select">
+                                                        <option value = { 0 } >Selecciona la continuidad</option>
+                                                        <option value = 'terminado' className="bg-white" >Terminado</option>
+                                                        <option value = 'recontratacion' className="bg-white" >Posible recontratación</option>
+                                                    </Form.Control>
+                                                </div>
+                                        }
                                         <div className="col-md-2">
                                             <InputGray
                                                 letterCase={true}
@@ -2067,7 +2094,7 @@ class Crm extends Component {
                                         <LeadContrato leads = { leads_contratados } onClickNext = { this.nextPageLeadContratados }
                                             onClickPrev = { this.prevPageLeadContratados } changePageDetails = { this.changePageDetailsContratado }
                                             clickOneLead = { this.getOneLeadInfoAxios } openModalSee = { this.getOneProyecto } 
-                                            changePageEditProyecto = { this.changePageEditProyecto } />
+                                            changePageEditProyecto = { this.changePageEditProyecto } changeContinuidadLead = { this.changeContinuidadLead } />
                                     </Tab.Pane>
                                     <Tab.Pane eventKey="detenidos">
                                         <LeadDetenido

@@ -146,7 +146,7 @@ class Conceptos extends Component {
                 <h2 className = 'swal2-title mb-4 mt-2'> { this.setSwalHeader(tipo) } </h2>
                 {
                     tipo === 'descripcion' &&
-                        <div className="input-group input-group-solid rounded-0">
+                        <div className="input-group input-group-solid rounded-0 mb-2 mt-7">
                             <textarea name="descripcion" rows="6" id='descripcion-form' defaultValue = { data.descripcion }
                                 onChange = { (e) => { this.onChange(e.target.value, tipo)} }
                                 className="form-control text-dark-50 font-weight-bold undefined form-control text-uppercase text-justify">
@@ -157,7 +157,7 @@ class Conceptos extends Component {
                     tipo === 'costo' &&
                         <div className="row mx-0 justify-content-center">
                             <div className="col-12 col-md-6">
-                                <div className="input-group input-group-solid rounded-0">
+                                <div className="input-group input-group-solid rounded-0 mb-2 mt-7">
                                     <NumberFormat value = { form[tipo] } displayType = 'input' thousandSeparator = { true }
                                         prefix = '$' className = 'form-control text-dark-50 font-weight-bold text-uppercase'
                                         renderText = { form => <div> form[tipo] </div>} defaultValue = { data[tipo] }
@@ -170,7 +170,7 @@ class Conceptos extends Component {
                     tipo !== 'descripcion' && tipo !== 'costo' &&
                         <SelectSearchGray options = { this.setOptions(data, tipo) }
                             onChange = { (value) => { this.updateSelectSearch(value, tipo)} } name = { tipo }
-                            value = { form[tipo] } />
+                            value = { form[tipo] } customdiv="mb-2 mt-7"/>
                 }
             </div>,
             <Update />,
