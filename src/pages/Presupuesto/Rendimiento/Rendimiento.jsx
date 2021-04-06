@@ -145,7 +145,7 @@ class Rendimientos extends Component {
                 <h2 className = 'swal2-title mb-4 mt-2'> { this.setSwalHeader(tipo) } </h2>
                 {
                     tipo === 'materiales' || tipo === 'rendimiento' ?
-                        <div className="input-group input-group-solid rounded-0">
+                        <div className="input-group input-group-solid rounded-0 mb-2 mt-7">
                             <input name={tipo} defaultValue = { data[tipo] } onChange = { (e) => { this.onChange(e.target.value, tipo)} }
                                 className="form-control text-dark-50 font-weight-bold form-control text-uppercase text-justify">
                             </input>
@@ -213,7 +213,7 @@ class Rendimientos extends Component {
         const { form } = this.state
         let value = form[tipo]
         waitAlert()
-        await axios.put(`${URL_DEV}v2/presupuesto/rendimiento/${tipo}/${data.id}`, 
+        await axios.put(`${URL_DEV}v2/presupuesto/rendimientos/${tipo}/${data.id}`, 
             { value: value }, 
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -344,13 +344,7 @@ class Rendimientos extends Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        authUser: state.authUser
-    }
-}
-
-const mapDispatchToProps = dispatch => ({
-})
+const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapDispatchToProps = dispatch => ({ })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Rendimientos);
