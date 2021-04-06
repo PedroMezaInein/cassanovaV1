@@ -17,7 +17,6 @@ class Rendimientos extends Component {
     state = {
         modalDelete: false,
         modalSee: false,
-        formeditado:0,
         rendimientos: [],
         rendimiento: '',
         form: {
@@ -145,17 +144,13 @@ class Rendimientos extends Component {
             <div>
                 <h2 className = 'swal2-title mb-4 mt-2'> { this.setSwalHeader(tipo) } </h2>
                 {
-                    tipo === 'material' || tipo === 'rendimiento' &&
-                    <InputGray
-                        withtaglabel={0}
-                        withtextlabel={0}
-                        withplaceholder={0}
-                        withicon={0}
-                        withformgroup={1}
-                        name = { tipo }
-                        value = { form[tipo] }
-                        onChange = { (e) => { this.onChange(e.target.value, tipo)} }
-                    />
+                    tipo === 'materiales' || tipo === 'rendimiento' ?
+                        <div className="input-group input-group-solid rounded-0">
+                            <input name={tipo} defaultValue = { data[tipo] } onChange = { (e) => { this.onChange(e.target.value, tipo)} }
+                                className="form-control text-dark-50 font-weight-bold form-control text-uppercase text-justify">
+                            </input>
+                        </div>
+                    :<></>
                 }
                 {
                     tipo === 'descripcion' &&
@@ -180,7 +175,7 @@ class Rendimientos extends Component {
                         </div>
                 }
                 {
-                        tipo !== 'descripcion' && tipo !== 'costo' && tipo !== 'material' &&  tipo !== 'rendimiento' &&
+                        tipo !== 'descripcion' && tipo !== 'costo' && tipo !== 'materiales' &&  tipo !== 'rendimiento' &&
                         <SelectSearchGray options = { this.setOptions(data, tipo) }
                             onChange = { (value) => { this.updateSelectSearch(value, tipo)} } name = { tipo }
                             value = { form[tipo] } />
