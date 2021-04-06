@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Dropdown, DropdownButton, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import { setDateTableLG } from '../../../functions/setters'
+import { questionAlert } from '../../../functions/alert'
 
 class LeadContrato extends Component {
     isActiveButton(direction) {
@@ -30,7 +31,7 @@ class LeadContrato extends Component {
     }
 
     render() {
-        const { leads, onClickPrev, onClickNext, changePageDetails, clickOneLead, openModalSee, changePageEditProyecto } = this.props
+        const { leads, onClickPrev, onClickNext, changePageDetails, clickOneLead, openModalSee, changePageEditProyecto, changeContinuidadLead } = this.props
         return (
             <div className="tab-content">
                 <div className="table-responsive-lg">
@@ -50,6 +51,7 @@ class LeadContrato extends Component {
                                 <th style={{ minWidth: "120px" }} className="text-center">Empresa</th>
                                 <th style={{ minWidth: "100px" }} className="text-center">Vendedor</th>
                                 <th style={{ minWidth: "100px" }} className="text-center">Estatus</th>
+                                <th style={{ minWidth: "70px" }} className="text-center">Continuidad</th>
                                 <th style={{ minWidth: "70px" }}></th>
                             </tr>
                         </thead>
@@ -139,6 +141,15 @@ class LeadContrato extends Component {
                                                 </td>
                                                 <td className="text-center">
                                                     <span className="label label-md label-light-success label-inline font-weight-bold" style={{fontSize: '10.7px'}}>CONTRATADO</span>
+                                                </td>
+                                                <td className="text-center">
+                                                    <span className = { `text-hover label label-md label-inline font-weight-bold ${lead.prospecto.continuidad === 0 ? 'label-light-danger' : 'label-light-info'}` } 
+                                                        style={{fontSize: '10.7px'}}
+                                                        onClick={(e) => { questionAlert('¿ESTÁS SEGURO?', 'CAMBIARÁS LA CONTINUIDAD DEL LEAD', () => changeContinuidadLead(lead)) }} >
+                                                        {
+                                                            lead.prospecto.continuidad ? 'Posible recontratación' : 'Terminado'
+                                                        }
+                                                    </span>
                                                 </td>
                                                 <td className="pr-0 text-center">
                                                     <div className = 'dropdown-container dropdown-container__success'>
