@@ -1107,6 +1107,7 @@ export const COMPRAS_COLUMNS = [
     {
         Header: 'Fecha',
         accessor: 'fecha',
+        customRender: true
     },    
     {
         Header: 'Proveedor',
@@ -1114,11 +1115,13 @@ export const COMPRAS_COLUMNS = [
     },
     {
         Header: 'Proyecto',
-        accessor: 'proyecto'
+        accessor: 'proyecto',
+        customRender: true
     },
     {
         Header: 'Factura',
-        accessor: 'factura'
+        accessor: 'factura',
+        customRender: true
     },
     {
         Header: 'Área',
@@ -1146,19 +1149,23 @@ export const COMPRAS_COLUMNS = [
     },
     {
         Header: 'Impuesto',
-        accessor: 'impuesto'
+        accessor: 'impuesto',
+        customRender: true
     },
     {
         Header: 'Pago',
-        accessor: 'tipoPago'
+        accessor: 'tipoPago',
+        customRender: true
     },    
     {
         Header: 'Estatus',
-        accessor: 'estatusCompra'
+        accessor: 'estatusCompra',
+        customRender: true
     },
     {
         Header: 'Descripción',
-        accessor: 'descripcion'
+        accessor: 'descripcion',
+        customRender: true
     },
 ]
 
