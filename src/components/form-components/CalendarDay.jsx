@@ -5,19 +5,19 @@ import 'react-date-range/dist/theme/default.css'; // theme css file
 import es from "date-fns/locale/es";
 export default class CalendarDay extends Component {
 
-    state = {
+    /* state = {
         date: new Date(),
         currentDate:new Date()
     }
 
     componentDidMount(){
-        const { date, value } = this.props
-        
+        const { date } = this.props
+        console.log(date, 'DATE DID MOUNT')
         let newDate = new Date(date)
         let aux = Date.parse(newDate)
         this.setState({
             ...this.state,
-            currentDate:newDate,
+            currentDate: newDate,
             date: isNaN(aux) ? null : newDate
         })
     }
@@ -25,35 +25,29 @@ export default class CalendarDay extends Component {
     componentDidUpdate(nextProps){
         if (nextProps.date !== this.props.date){
             const { date } = this.props
+            console.log(date, 'DATE DID UPDATE')
             this.setState({
                 ...this.state,
-                date: new Date(date)
+                date: new Date(date),
+                currentDate: new Date(date)
             })
         }
-    }
+    } */
 
     updateDate = item => {
         const { onChange, name } = this.props 
-        this.setState({
-            ...this.state,
-            date: item,
-            currentDate : item
-        })
+        /* this.setState({ ...this.state, date: item, currentDate : item }) */
         onChange({ target: { name: name, value: item } })
-
     }
+
     render() {
         const { date, withformgroup, disabledWeekends, className } = this.props
-        let {currentDate}=this.state
+        /* let { currentDate } = this.state */
         return (
             <>
-                <div className={withformgroup?'form-group':''}>
-                    <Calendar
-                        className = { className }
-                        onChange={ (item) => {  this.updateDate(item)} }
-                        locale = { es }
-                        date = { currentDate }
-                        color = {"#2171c1"}
+                <div className = { withformgroup ? 'form-group' : '' } >
+                    <Calendar className = { className } onChange={ (item) => {  this.updateDate(item)} }
+                        locale = { es } date = { date && date !== '' ? date : null } color = "#2171c1"
                         disabledDay = {
                             (date) => {
                                 if(disabledWeekends){
@@ -64,8 +58,7 @@ export default class CalendarDay extends Component {
                                     return false
                                 } return false
                             }
-                        }
-                    />
+                        } />
                     <span className={ date ? "form-text text-danger hidden" : "form-text text-danger is-invalid" }>Incorrecto. Selecciona la fecha.</span>
                 </div>
             </>
