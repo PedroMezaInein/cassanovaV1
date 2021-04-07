@@ -71,7 +71,7 @@ class Herramienta extends Component {
     async getOptionsAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'herramientas/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(URL_DEV + 'herramientas/options', { responseType: 'json', headers: { 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 Swal.close()
                 const { empresas, proyectos } = response.data
@@ -116,6 +116,41 @@ class Herramienta extends Component {
         })
         return aux
     }
+
+    renderInputSwal = ( data, tipo, form ) => {
+        switch(tipo){
+            case 'empresa':
+            case 'proyecto':
+                return(
+                    <SelectSearchGray options = { this.setOptions(data, tipo) }
+                        onChange = { (value) => { this.onChangeSwal(value, tipo)} } name = { tipo }
+                        value = { form[tipo] } customdiv="mb-2 mt-7" requirevalidation={1} 
+                        placeholder={`SELECCIONA ${tipo==='proyecto' ? 'el proyecto' : 'la ' + tipo }`}/>
+                )
+            case 'fecha':
+                return(
+                    <CalendarDaySwal value = { form[tipo] } onChange = { (e) => {  this.onChangeSwal(e.target.value, tipo)} } 
+                        name = { tipo } date = { form[tipo] } withformgroup={0} />
+                )
+            case  'descripcion':
+                return(
+                    <div className="input-group input-group-solid rounded-0 mb-2 mt-7">
+                        <textarea name="descripcion" rows="6" id='descripcion-form' defaultValue = { data[tipo] }
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} }
+                            className="form-control text-dark-50 font-weight-bold form-control text-uppercase text-justify">
+                        </textarea>
+                    </div>
+                )
+            default:
+                return (
+                    <div className="input-group input-group-solid rounded-0 mb-2 mt-7">
+                        <input name={tipo} defaultValue = { data[tipo] } onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} }
+                            className="form-control text-dark-50 font-weight-bold form-control text-uppercase text-justify">
+                        </input>
+                    </div>
+                )
+        }
+    }
     
     doubleClick = (data, tipo) => {
         const { form } = this.state
@@ -137,36 +172,7 @@ class Herramienta extends Component {
         customInputAlert(
             <div>
                 <h2 className = 'swal2-title mb-4 mt-2'> { this.setSwalHeader(tipo) } </h2>
-                {
-                    (tipo === 'nombre') || (tipo === 'modelo') || (tipo === 'serie') ?
-                        <div className="input-group input-group-solid rounded-0 mb-2 mt-7">
-                            <input name={tipo} defaultValue = { data[tipo] } onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} }
-                                className="form-control text-dark-50 font-weight-bold form-control text-uppercase text-justify">
-                            </input>
-                        </div>
-                    :<></>
-                }
-                {
-                    tipo === 'descripcion' &&
-                        <div className="input-group input-group-solid rounded-0 mb-2 mt-7">
-                            <textarea name="descripcion" rows="6" id='descripcion-form' defaultValue = { data.descripcion }
-                                onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} }
-                                className="form-control text-dark-50 font-weight-bold form-control text-uppercase text-justify">
-                            </textarea>
-                        </div>
-                }
-                {
-                    tipo === 'fecha' &&
-                        <CalendarDaySwal value = { form[tipo] } onChange = { (e) => {  this.onChangeSwal(e.target.value, tipo)} } name = { tipo } date = { form[tipo] } withformgroup={0} />
-                }
-                {
-                    (tipo === 'empresa') || (tipo === 'proyecto') ?
-                        <SelectSearchGray options = { this.setOptions(data, tipo) }
-                        onChange = { (value) => { this.onChangeSwal(value, tipo)} } name = { tipo }
-                        value = { form[tipo] } customdiv="mb-2 mt-7" requirevalidation={1} 
-                        placeholder={`SELECCIONA ${tipo==='proyecto' ? 'el proyecto' : 'la ' + tipo }`}/>
-                    :<></>
-                }
+                { this.renderInputSwal(data, tipo, form) }
             </div>,
             <Update />,
             () => { this.patchRendimiento(data, tipo) },
