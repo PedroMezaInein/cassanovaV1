@@ -8,7 +8,7 @@ import Layout from '../../../components/layout/layout'
 import { Tabs, Tab, Form } from 'react-bootstrap'
 import { CONTRATOS_PROVEEDORES_COLUMNS, CONTRATOS_CLIENTES_COLUMNS, URL_DEV, ADJ_CONTRATOS_COLUMNS } from '../../../constants'
 import { Modal, ModalDelete } from '../../../components/singles'
-import { Button, CalendarDay, SelectSearchGray } from '../../../components/form-components'
+import { Button, CalendarDay, SelectSearchGray, InputGray } from '../../../components/form-components'
 import FileInput from '../../../components/form-components/FileInput'
 import TableForModals from '../../../components/tables/TableForModals'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
@@ -336,11 +336,22 @@ class Contratos extends Component {
                 <h2 className = 'swal2-title mb-4 mt-2'> { this.setSwalHeader(tipo) } </h2>
                 {
                     tipo === 'nombre' ?
-                        <div className="input-group input-group-solid rounded-0 mb-2 mt-7">
-                            <input name={tipo} defaultValue = { data[tipo] } onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} }
-                                className="form-control text-dark-50 font-weight-bold form-control text-uppercase text-justify">
-                            </input>
-                        </div>
+                        // <div className="input-group input-group-solid rounded-0 mb-2 mt-7">
+                        //     <input name={tipo} defaultValue = { data[tipo] } onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} }
+                        //         className="form-control text-dark-50 font-weight-bold form-control text-uppercase text-justify">
+                        //     </input>
+                        // </div>
+                        <InputGray 
+                            withtaglabel={0}
+                            withtextlabel={0}
+                            withplaceholder={0}
+                            withicon={0}
+                            requirevalidation={0}
+                            // placeholder='COMENTARIO'
+                            value={form[tipo]}
+                            name={tipo}
+                            onChange = { (e) => { e.preventDefault();  this.onChangeSwal(e.target.value, tipo)} }
+                        />
                     :<></>
                 }
                 {

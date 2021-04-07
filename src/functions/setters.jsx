@@ -119,6 +119,7 @@ export function setTextTableReactDom(text, doubleClick, data, tipo, style){
             onClick = { (e) => { 
                 e.preventDefault(); 
                 if(isMobile){
+                    console.log(" isMobile ")
                     doubleClick(data, tipo)
                 }
             } } > 

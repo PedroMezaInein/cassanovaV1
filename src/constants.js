@@ -1301,7 +1301,7 @@ export const CONCEPTOS_COLUMNS = [
     },
     {
         Header: 'Clave',
-        accessor: 'clave'
+        accessor: 'clave',
     },
     {
         Header: 'Unidad',

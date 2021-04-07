@@ -119,8 +119,13 @@ class Herramienta extends Component {
     
     doubleClick = (data, tipo) => {
         const { form } = this.state
-        if(tipo){
-            form[tipo] = data[tipo]
+        switch(tipo){
+            case 'fecha':
+                form.fecha = new Date(data.created_at)
+                break
+            default:
+                form[tipo] = data[tipo]
+                break
         }
         this.setState({form})
         customInputAlert(
@@ -146,7 +151,7 @@ class Herramienta extends Component {
                 }
                 {
                     tipo === 'fecha' &&
-                        <CalendarDay value = { form[tipo] } onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } name = { tipo } date = { form[tipo] } withformgroup={0} />
+                        <CalendarDay value = { form[tipo] } onChange = { (e) => {  this.onChangeSwal(e.target.value, tipo)} } name = { tipo } date = { form[tipo] } withformgroup={0} />
                 }
                 {
                     tipo === 'empresa' ||  tipo === 'proyecto' ?
