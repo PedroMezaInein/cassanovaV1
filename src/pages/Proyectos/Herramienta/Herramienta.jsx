@@ -8,7 +8,7 @@ import { URL_DEV, HERRAMIENTAS_COLUMNS, UBICACIONES_HERRAMIENTAS_COLUMNS } from 
 import { deleteAlert, doneAlert, errorAlert, printResponseErrorAlert, waitAlert, customInputAlert } from '../../../functions/alert'
 import { setDateTable, setTextTable, setTextTableCenter, setTextTableReactDom, setDateTableReactDom, setOptions  } from '../../../functions/setters'
 import axios from 'axios'
-import { Button, CalendarDay } from '../../../components/form-components'
+import { Button, CalendarDaySwal } from '../../../components/form-components'
 import UbicacionHerramientaForm from '../../../components/forms/proyectos/UbicacionHerramientaForm'
 import { Tab, Tabs } from 'react-bootstrap'
 import TableForModals from '../../../components/tables/TableForModals'
@@ -103,13 +103,13 @@ class Herramienta extends Component {
         herramientas.map((herramienta) => {
             aux.push({
                 actions: this.setActions(herramienta),
-                empresa: herramienta.empresa ? setTextTableReactDom(herramienta.empresa.name, this.doubleClick, herramienta, 'empresa', 'text-center') : '',
-                proyecto: herramienta.proyecto ? setTextTableReactDom(herramienta.proyecto.nombre, this.doubleClick, herramienta, 'proyecto', 'text-center') : renderToString(setTextTableCenter('Sin definir')),
+                empresa: setTextTableReactDom(herramienta.empresa ? herramienta.empresa.name:'', this.doubleClick, herramienta, 'empresa', 'text-center'),
+                proyecto: setTextTableReactDom(herramienta.proyecto ? herramienta.proyecto.nombre :'', this.doubleClick, herramienta, 'proyecto', 'text-center'),
                 nombre: setTextTableReactDom(herramienta.nombre, this.doubleClick, herramienta, 'nombre', 'text-center'),
-                modelo: setTextTableReactDom(herramienta.modelo, this.doubleClick, herramienta, 'modelo', 'text-center'),
-                serie: setTextTableReactDom(herramienta.serie, this.doubleClick, herramienta, 'serie', 'text-center'),
+                modelo: setTextTableReactDom(herramienta.modelo !== null ? herramienta.modelo :'', this.doubleClick, herramienta, 'modelo', 'text-center'),
+                serie: setTextTableReactDom(herramienta.serie !== null ? herramienta.serie :'', this.doubleClick, herramienta, 'serie', 'text-center'),
                 fecha: setDateTableReactDom(herramienta.created_at, this.doubleClick, herramienta, 'fecha', 'text-center'),
-                descripcion: setTextTableReactDom(herramienta.descripcion, this.doubleClick, herramienta, 'descripcion', 'text-justify'),
+                descripcion: setTextTableReactDom(herramienta.descripcion !== null ? herramienta.descripcion :'', this.doubleClick, herramienta, 'descripcion', 'text-justify'),
                 id: herramienta.id
             })
             return false
@@ -120,6 +120,12 @@ class Herramienta extends Component {
     doubleClick = (data, tipo) => {
         const { form } = this.state
         switch(tipo){
+            case 'empresa':
+            case 'proyecto':
+                if(data[tipo])
+                    form[tipo] = data[tipo].id.toString()
+                break
+                case 'fecha':
             case 'fecha':
                 form.fecha = new Date(data.created_at)
                 break
@@ -132,7 +138,7 @@ class Herramienta extends Component {
             <div>
                 <h2 className = 'swal2-title mb-4 mt-2'> { this.setSwalHeader(tipo) } </h2>
                 {
-                    tipo === 'nombre' || tipo === 'modelo' || tipo === 'serie' ?
+                    (tipo === 'nombre') || (tipo === 'modelo') || (tipo === 'serie') ?
                         <div className="input-group input-group-solid rounded-0 mb-2 mt-7">
                             <input name={tipo} defaultValue = { data[tipo] } onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} }
                                 className="form-control text-dark-50 font-weight-bold form-control text-uppercase text-justify">
@@ -151,13 +157,14 @@ class Herramienta extends Component {
                 }
                 {
                     tipo === 'fecha' &&
-                        <CalendarDay value = { form[tipo] } onChange = { (e) => {  this.onChangeSwal(e.target.value, tipo)} } name = { tipo } date = { form[tipo] } withformgroup={0} />
+                        <CalendarDaySwal value = { form[tipo] } onChange = { (e) => {  this.onChangeSwal(e.target.value, tipo)} } name = { tipo } date = { form[tipo] } withformgroup={0} />
                 }
                 {
-                    tipo === 'empresa' ||  tipo === 'proyecto' ?
+                    (tipo === 'empresa') || (tipo === 'proyecto') ?
                         <SelectSearchGray options = { this.setOptions(data, tipo) }
                         onChange = { (value) => { this.onChangeSwal(value, tipo)} } name = { tipo }
-                        value = { form[tipo] } customdiv="mb-2 mt-7"/>
+                        value = { form[tipo] } customdiv="mb-2 mt-7" requirevalidation={1} 
+                        placeholder={`SELECCIONA ${tipo==='proyecto' ? 'el proyecto' : 'la ' + tipo }`}/>
                     :<></>
                 }
             </div>,
@@ -167,8 +174,6 @@ class Herramienta extends Component {
         )
     }
     onChangeSwal = (value, tipo) => {
-        console.log(value, 'value')
-        console.log(tipo, 'tipo')
         const { form } = this.state
         form[tipo] = value
         this.setState({...this.state, form})
