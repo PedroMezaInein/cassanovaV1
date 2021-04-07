@@ -6,16 +6,16 @@ import { URL_DEV, USUARIOS, CLIENTES } from '../../../constants'
 import { Modal, ModalDelete } from '../../../components/singles'
 import { RegisterUserForm, PermisosForm } from '../../../components/forms'
 import Swal from 'sweetalert2'
-import { setOptions, setSelectOptions } from '../../../functions/setters'
-import { printResponseErrorAlert, errorAlert, waitAlert, doneAlert, questionAlertY } from '../../../functions/alert'
+import { setOptions, setSelectOptions, setTextTableReactDom, setListTableReactDom } from '../../../functions/setters'
+import { printResponseErrorAlert, errorAlert, waitAlert, doneAlert, questionAlertY, customInputAlert} from '../../../functions/alert'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { save, deleteForm } from '../../../redux/reducers/formulario'
 import FloatButtons from '../../../components/singles/FloatButtons'
-import { setListTable, setTextTableCenter } from '../../../functions/setters'
-import { renderToString } from 'react-dom/server'
+import { setTextTableCenter } from '../../../functions/setters'
 import { Tabs, Tab } from 'react-bootstrap' 
 import { UsuarioCard } from '../../../components/cards'
-
+import { Update } from '../../../components/Lottie'
+import { TagSelectSearchGray } from '../../../components/form-components'
 const $ = require('jquery');
 
 class Usuarios extends Component {
@@ -51,7 +51,9 @@ class Usuarios extends Component {
             departamentos: [],
             users:[],
         },
-        detenidos: []
+        detenidos: [],
+        departamentos_disponibles:[],
+        proyectos_disponibles:[],
     }
 
     componentDidMount() {
@@ -112,15 +114,6 @@ class Usuarios extends Component {
             ...this.state,
             modal,
             user: ''
-        })
-    }
-
-    setOptions = (name, array) => {
-        const { options } = this.state
-        options[name] = setOptions(array, 'nombre', 'id')
-        this.setState({
-            ...this.state,
-            options
         })
     }
 
@@ -335,9 +328,9 @@ class Usuarios extends Component {
                     aux.push(
                         {
                             actions: this.setActions(user),
-                            name: renderToString(setTextTableCenter(user.name)),
-                            email: renderToString(setTextTableCenter(user.email)),
-                            departamento: renderToString(user.departamentos.length === 0 ? setTextTableCenter("Sin definir"): setListTable(user.departamentos, "nombre")),
+                            name: setTextTableReactDom(user.name, this.doubleClick, user, 'name', 'text-center'),
+                            email: setTextTableReactDom(user.email, this.doubleClick, user, 'email', 'text-center'),
+                            departamento: user.departamentos.length === 0 ?  setTextTableCenter("Sin definir") : setListTableReactDom(user.departamentos, "nombre", '', this.doubleClick, user, 'departamentos', ''),
                             id: user.id
                         }
                     )
@@ -346,9 +339,9 @@ class Usuarios extends Component {
                     aux.push(
                         {
                             actions: this.setActions(user),
-                            name: renderToString(setTextTableCenter(user.name)),
-                            email: renderToString(setTextTableCenter(user.email)),
-                            proyecto: renderToString(user.proyectos.length === 0 ? setTextTableCenter("Sin definir") : setListTable(user.proyectos, "nombre")),                            
+                            name: setTextTableReactDom(user.name, this.doubleClick, user, 'name', 'text-center'),
+                            email: setTextTableReactDom(user.email, this.doubleClick, user, 'email', 'text-center'),
+                            proyecto: user.proyectos.length === 0 ?  setTextTableCenter("Sin definir") : setListTableReactDom(user.proyectos, "nombre", '', this.doubleClick, user, 'proyectos', ''),       
                             id: user.id
                         }
                     )
@@ -357,7 +350,229 @@ class Usuarios extends Component {
             })
         return aux
     }
+    doubleClick = (data, tipo) => {
+        const { form } = this.state
+        console.log(form)
+        if(tipo){
+            form[tipo] = data[tipo]
+        }
+        this.setState({form})
+        this.setState({form})
+        customInputAlert(
+            <div>
+                <h2 className = 'swal2-title mb-4 mt-2'> { this.setSwalHeader(tipo) } </h2>
+                {
+                    tipo === 'name' || tipo === 'email' ?
+                        <div className="input-group input-group-solid rounded-0 mb-2 mt-7">
+                            <input name={tipo} defaultValue = { data[tipo] } onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} }
+                                className="form-control text-dark-50 font-weight-bold form-control text-uppercase text-justify">
+                            </input>
+                        </div>
+                    :<></>
+                }
+                {
+                    tipo === 'departamentos' || tipo === 'proyectos' ?
+                    <TagSelectSearchGray
+                        // placeholder="SELECCIONA EL(LOS) DEPARTAMENTO(S)"
+                        options={this.transformarOptions(this.setOptions(data, tipo))}
+                        defaultvalue={this.transformarOptions(form[tipo])}
+                        onChange= { (value) => this.nuevoUpdateTagSelect(value, tipo)}
+                        iconclass={"fas fa-layer-group"}
+                        requirevalidation={1}
+                        messageinc={`Incorrecto. Selecciona el(los) ${tipo}`}
+                    />
+                    :<></>
+                }
+            </div>,
+            <Update />,
+            () => { this.patchUsuario(data, tipo) },
+            () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
+        )
+    }
+    transformarOptions = options => {  
+        options = options?options:[]
+        options.map((value)=>{
+            value.label = value.name 
+            return ''
+        } );
+        return options
+    }
+    nuevoUpdateTagSelect = (seleccionados, tipo) =>{
+        const { form } = this.state
+        seleccionados = seleccionados?seleccionados:[];
+        if(seleccionados.length>form[tipo].length){
+            let diferencia = $(seleccionados).not(form[tipo]).get();
+            let val_diferencia = diferencia[0].value
+            this.updateTagSelect(val_diferencia, tipo)
+        }
+        else {
+            let diferencia = $(form[tipo]).not(seleccionados).get(); 
+            diferencia.forEach(borrar=>{
+                this.deleteOptionTag(borrar,tipo)
+            })
+        }
+    }
+    updateTagSelect = (value, tipo) => {
+        const { options } = this.state
+        let tipoSingular = ''
+        if(tipo==='departamentos'){
+            tipoSingular = 'departamento'
+        }else{
+            tipoSingular = 'proyecto'
+        }
+        options.departamentos.map((tipo_option) => {
+            // console.log(tipo_option,'tipo_option')
+            if (tipo_option.value === value)
+                this.onChangeAndAdd({ target: { value: tipo_option.value, name: tipoSingular } }, tipo)
+            return false
+        })
+        this.onChange({ target: { value: value, name: 'departamento' } })
+    }
+    deleteOptionTag = (element, array) => {
+        // console.log(element, 'element')
+        // console.log(array,'array')
+        let { form } = this.state
 
+        let auxForm = []
+        form[array].map( ( elemento, key ) => {
+            if(element !== elemento)
+                auxForm.push(elemento)
+            return false
+        })
+        form[array] = auxForm
+        this.setState({
+            ...this.state,
+            form
+        });
+        if(array==="departamentos"){this.showDepartamentos();}
+        if(array==="proyectos"){  this.showProyectos();}
+    }
+    showDepartamentos = () => {
+        const {  options, form } = this.state 
+        let departamentos_disponibles=[]
+        options.departamentos.forEach((departamento) => {
+            let existe =false
+            form.departamentos.forEach((departamentoForm) => {
+                if (departamento.value ===departamentoForm.value) {
+                    existe = true
+                } 
+            })  
+            if(!existe){
+                departamentos_disponibles.push(departamento)
+            }
+        })    
+        this.setState({  ...this.state, departamentos_disponibles  })
+        
+    }
+    
+    showProyectos = () => {
+        const {  options, form } = this.state 
+        let proyectos_disponibles=[] 
+        options.proyectos.forEach((proyecto) => {
+            let existe =false
+            form.proyectos.forEach((proyectoForm) => {
+                if (proyecto.value ===proyectoForm.value) {
+                    existe = true
+                } 
+            })  
+            if(!existe){
+                proyectos_disponibles.push(proyecto)
+            }
+        })    
+        this.setState({   proyectos_disponibles  })
+        
+    }
+    onChangeAndAdd = (e, arreglo) => {
+        // console.log(arreglo,'arreglo')
+        const { value } = e.target
+        const { options, form } = this.state
+        let auxArray = form[arreglo]
+        let aux = []
+        options[arreglo].find(function (_aux) {
+            if (_aux.value.toString() === value.toString())
+                auxArray.push(_aux)
+            else
+                aux.push(_aux)
+            return false
+        })
+        form[arreglo] = auxArray
+        this.setState({
+            ...this.state,
+            form,
+            options
+        })
+        if(arreglo==="departamentos"){this.showDepartamentos();}
+        if(arreglo==="proyectos"){this.showProyectos();}
+    }
+    onChangeSwal = (value, tipo) => {
+        console.log(value, 'value')
+        console.log(tipo, 'tipo')
+        const { form } = this.state
+        form[tipo] = value
+        this.setState({...this.state, form})
+    }
+    clearForm = () => {
+        const { form } = this.state
+        let aux = Object.keys(form)
+        aux.forEach((element) => {
+            switch(element){
+                case 'adjuntos':
+                    form[element] = {
+                        adjuntos: {
+                            value: '',
+                            placeholder: 'Adjuntos',
+                            files: []
+                        }
+                    }
+                    break;
+                default:
+                    form[element] = ''
+                break;
+            }
+        })
+        return form
+    }
+    patchUsuario = async( data,tipo ) => {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        let value = form[tipo]
+        waitAlert()
+        await axios.put(`${URL_DEV}v2/usuarios/usuarios/${tipo}/${data.id}`, 
+            { value: value }, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.getHerramientasAxios()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El rendimiento fue editado con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    setSwalHeader = (tipo) => {
+        switch(tipo){
+            case 'name':
+                return 'EDITAR EL USUARIO'
+            case 'email':
+                return 'EDITAR EL CORREO ELECTRÓNICO'
+            case 'departamentos':
+                return 'EDITAR EL DEPARTAMENTO'
+            case 'proyectos':
+                return 'EDITAR EL PROYECTO'
+            default:
+                return ''
+        }
+    }
+    setOptions = (data, tipo) => {
+        const { options } = this.state
+        switch(tipo){
+            case 'departamentos':
+                return options.departamentos
+            case 'proyectos':
+                return options.proyectos
+            default: return []
+        }
+    }
     setActions= () => {
         let aux = []
             aux.push(

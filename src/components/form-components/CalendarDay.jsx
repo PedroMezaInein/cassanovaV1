@@ -6,16 +6,18 @@ import es from "date-fns/locale/es";
 export default class CalendarDay extends Component {
 
     state = {
-        date: new Date()
+        date: new Date(),
+        currentDate:new Date()
     }
 
     componentDidMount(){
-        const { date } = this.props
+        const { date, value } = this.props
         
         let newDate = new Date(date)
         let aux = Date.parse(newDate)
         this.setState({
             ...this.state,
+            currentDate:newDate,
             date: isNaN(aux) ? null : newDate
         })
     }
@@ -31,23 +33,26 @@ export default class CalendarDay extends Component {
     }
 
     updateDate = item => {
-        const { onChange, name } = this.props
+        const { onChange, name } = this.props 
         this.setState({
             ...this.state,
-            date: item
+            date: item,
+            currentDate : item
         })
         onChange({ target: { name: name, value: item } })
+
     }
     render() {
         const { date, withformgroup, disabledWeekends, className } = this.props
+        let {currentDate}=this.state
         return (
             <>
                 <div className={withformgroup?'form-group':''}>
                     <Calendar
                         className = { className }
-                        onChange={ (item) => { this.updateDate(item)} }
+                        onChange={ (item) => {  this.updateDate(item)} }
                         locale = { es }
-                        date = { date }
+                        date = { currentDate }
                         color = {"#2171c1"}
                         disabledDay = {
                             (date) => {

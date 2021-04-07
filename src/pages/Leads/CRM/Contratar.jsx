@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Accordion, Card, Form } from 'react-bootstrap'
+import { Accordion, Card } from 'react-bootstrap'
 import { connect } from 'react-redux'
 import { Button } from '../../../components/form-components'
 import ClienteForm from '../../../components/forms/ClienteForm'
@@ -7,7 +7,7 @@ import Layout from '../../../components/layout/layout'
 import { Modal } from '../../../components/singles'
 import { CP_URL, URL_DEV, TOKEN_CP } from '../../../constants'
 import axios from 'axios'
-import { createAlertSA2WithClose, doneAlert, errorAlert, printResponseErrorAlert, questionAlert2, waitAlert, createAlertSA2WithCloseAndHtml } from '../../../functions/alert'
+import { doneAlert, errorAlert, printResponseErrorAlert, questionAlert2, waitAlert, createAlertSA2WithCloseAndHtml } from '../../../functions/alert'
 import ProyectosFormGray from '../../../components/forms/proyectos/ProyectosFormGray'
 import { setOptions } from '../../../functions/setters'
 import Swal from 'sweetalert2'
@@ -290,7 +290,6 @@ class Contratar extends Component {
                 (response) => {
                     const { proyecto } = response.data
                     const { history } = this.props;
-                    const { formModal } = this.state
                     createAlertSA2WithCloseAndHtml(
                         <div>
                             <h2 className = 'swal2-title mb-4 mt-2'>

@@ -2,19 +2,21 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import { renderToString } from 'react-dom/server'
-import { waitAlert, errorAlert, validateAlert, doneAlert, printResponseErrorAlert } from '../../../functions/alert'
-import { setTextTable, setDateTable, setMoneyTable, setArrayTable, setTextTableCenter } from '../../../functions/setters'
+import { waitAlert, errorAlert, validateAlert, doneAlert, printResponseErrorAlert, customInputAlert } from '../../../functions/alert'
+import { setTextTable, setDateTable, setMoneyTable, setArrayTable, setTextTableCenter, setTextTableReactDom, setOptions, setMoneyTableReactDom, setDateTableReactDom } from '../../../functions/setters'
 import Layout from '../../../components/layout/layout'
 import { Tabs, Tab, Form } from 'react-bootstrap'
 import { CONTRATOS_PROVEEDORES_COLUMNS, CONTRATOS_CLIENTES_COLUMNS, URL_DEV, ADJ_CONTRATOS_COLUMNS } from '../../../constants'
 import { Modal, ModalDelete } from '../../../components/singles'
-import { Button } from '../../../components/form-components'
+import { Button, CalendarDay, SelectSearchGray, InputGray } from '../../../components/form-components'
 import FileInput from '../../../components/form-components/FileInput'
 import TableForModals from '../../../components/tables/TableForModals'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { ContratoCard } from '../../../components/cards'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+import { Update } from '../../../components/Lottie'
+import NumberFormat from 'react-number-format'
 const MySwal = withReactContent(Swal)
 const $ = require('jquery');
 class Contratos extends Component {
@@ -37,12 +39,12 @@ class Contratos extends Component {
             adjuntos: false,
             see: false,
         },
-        // options: {
-        //     empresas: [],
-        //     clientes: [],
-        //     proveedores: [],
-        //     tiposContratos: []
-        // },
+        options: {
+            empresas: [],
+            clientes: [],
+            proveedores: [],
+            tiposContratos: []
+        },
         form: {
             cliente: '',
             proveedor: '',
@@ -78,7 +80,7 @@ class Contratos extends Component {
         });
         if (!contratos)
             history.push('/')
-        // this.getOptionsAxios()
+        this.getOptionsAxios()
     }
     changePageEdit = contrato => {
         const { history } = this.props
@@ -187,29 +189,30 @@ class Contratos extends Component {
             contrato: ''
         })
     }
-    // async getOptionsAxios() {
-    //     waitAlert()
-    //     const { access_token } = this.props.authUser
-    //     await axios.get(URL_DEV + 'contratos/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
-    //         (response) => {
-    //             swal.close()
-    //             const { empresas, clientes, proveedores, tiposContratos } = response.data
-    //             const { options } = this.state
-    //             options.empresas = setOptions(empresas, 'name', 'id')
-    //             options.proveedores = setOptions(proveedores, 'razon_social', 'id')
-    //             options.clientes = setOptions(clientes, 'empresa', 'id')
-    //             options.tiposContratos = setOptions(tiposContratos, 'tipo', 'id')
-    //             this.setState({
-    //                 ...this.state,
-    //                 options
-    //             })
-    //         },
-    //         (error) => {printResponseErrorAlert(error) }
-    //     ).catch((error) => {
-    //         errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-    //         console.log(error, 'error')
-    //     })
-    // }
+    async getOptionsAxios() {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'contratos/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                Swal.close()
+                const { empresas, clientes, proveedores, tiposContratos } = response.data
+                const { options } = this.state
+                options.empresas = setOptions(empresas, 'name', 'id')
+                options.proveedores = setOptions(proveedores, 'razon_social', 'id')
+                options.clientes = setOptions(clientes, 'empresa', 'id')
+                options.tiposContratos = setOptions(tiposContratos, 'tipo', 'id')
+                this.setState({
+                    ...this.state,
+                    options
+                })
+            }, (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     async deleteContratoAxios() {
         const { access_token } = this.props.authUser
         const { contrato } = this.state
@@ -217,7 +220,7 @@ class Contratos extends Component {
             (response) => {
                 const { modal, key } = this.state
                 if (key === 'cliente') {
-                    this.getBancosAxios()
+                    this.getClientesAxios()
                 }
                 if (key === 'proveedor') {
                     this.getCajasAxios()
@@ -271,16 +274,16 @@ class Contratos extends Component {
         contratos.map((contrato) => {
             aux.push({
                 actions: this.setActionsCliente(contrato),
-                nombre: renderToString(setTextTable(contrato.nombre)),
-                cliente: renderToString(setTextTable(contrato.cliente.empresa)),
-                empresa: contrato.empresa ? renderToString(setTextTableCenter(contrato.empresa.name)) : '',
-                fechaInicio: renderToString(setDateTable(contrato.fecha_inicio)),
-                fechaFin: renderToString(setDateTable(contrato.fecha_fin)),
-                monto: renderToString(setMoneyTable(contrato.monto)),
+                nombre: setTextTableReactDom(contrato.nombre, this.doubleClick, contrato, 'nombre', 'text-justify'),
+                cliente: setTextTableReactDom(contrato.cliente.empresa, this.doubleClick, contrato, 'cliente', 'text-justify'),
+                empresa: contrato.empresa ? setTextTableReactDom(contrato.empresa.name, this.doubleClick, contrato, 'empresa', 'text-center') : '',
+                fechaInicio: setDateTableReactDom(contrato.fecha_inicio, this.doubleClick, contrato, 'fecha_inicio', 'text-center'),
+                fechaFin: setDateTableReactDom(contrato.fecha_fin, this.doubleClick, contrato, 'fecha_fin', 'text-center'),
+                monto: setMoneyTableReactDom(contrato.monto, this.doubleClick, contrato, 'monto'),
                 acumulado: renderToString(setMoneyTable(contrato.sumatoria ? contrato.sumatoria : 0)),
                 pendiente: renderToString(setMoneyTable(contrato.sumatoria ? contrato.monto - contrato.sumatoria : contrato.monto)),
-                contrato: contrato.tipo_contrato ? renderToString((setTextTableCenter(contrato.tipo_contrato.tipo))) : '',
-                descripcion: renderToString(setTextTable(contrato.descripcion)),
+                contrato: contrato.tipo_contrato ? setTextTableReactDom(contrato.tipo_contrato.tipo, this.doubleClick, contrato, 'tipo_contrato', 'text-center') : '',
+                descripcion: setTextTableReactDom(contrato.descripcion, this.doubleClick, contrato, 'descripcion', 'text-justify'),
                 id: contrato.id
             })
             return false
@@ -307,6 +310,164 @@ class Contratos extends Component {
             return false
         })
         return aux
+    }
+    doubleClick = (data, tipo) => {
+        const { form } = this.state
+        switch(tipo){
+            case 'cliente':
+            case 'empresa':
+            case 'tipo_contrato':
+                if(data[tipo])
+                    form[tipo] = data[tipo].id.toString()
+                break
+            case 'fecha_inicio':
+                form.fechaInicio = new Date(data.fecha_inicio)
+                break
+            case 'fecha_fin':
+                form.fechaFin = new Date(data.fecha_fin)
+                break
+            default:
+                form[tipo] = data[tipo]
+                break
+        }
+        this.setState({form})
+        customInputAlert(
+            <div>
+                <h2 className = 'swal2-title mb-4 mt-2'> { this.setSwalHeader(tipo) } </h2>
+                {
+                    tipo === 'nombre' ?
+                        // <div className="input-group input-group-solid rounded-0 mb-2 mt-7">
+                        //     <input name={tipo} defaultValue = { data[tipo] } onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} }
+                        //         className="form-control text-dark-50 font-weight-bold form-control text-uppercase text-justify">
+                        //     </input>
+                        // </div>
+                        <InputGray 
+                            withtaglabel={0}
+                            withtextlabel={0}
+                            withplaceholder={0}
+                            withicon={0}
+                            requirevalidation={0}
+                            // placeholder='COMENTARIO'
+                            value={form[tipo]}
+                            name={tipo}
+                            onChange = { (e) => { e.preventDefault();  this.onChangeSwal(e.target.value, tipo)} }
+                        />
+                    :<></>
+                }
+                {
+                    tipo === 'descripcion' &&
+                        <div className="input-group input-group-solid rounded-0 mb-2 mt-7">
+                            <textarea name="descripcion" rows="6" id='descripcion-form' defaultValue = { data.descripcion }
+                                onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} }
+                                className="form-control text-dark-50 font-weight-bold form-control text-uppercase text-justify">
+                            </textarea>
+                        </div>
+                }
+                {
+                    tipo === 'monto' &&
+                        <div className="row mx-0 justify-content-center">
+                            <div className="col-12 col-md-6">
+                                <div className="input-group input-group-solid rounded-0 mb-2 mt-7">
+                                    <NumberFormat value = { form[tipo] } displayType = 'input' thousandSeparator = { true }
+                                        prefix = '$' className = 'form-control text-dark-50 font-weight-bold text-uppercase'
+                                        renderText = { form => <div> form[tipo] </div>} defaultValue = { data[tipo] }
+                                        onValueChange = { (values) => this.onChangeSwal(values.value, tipo)}/>
+                                </div>
+                            </div>
+                        </div>
+                }
+                {
+                    tipo === 'fecha_inicio' || tipo === 'fecha_fin' ?
+                        <CalendarDay value = { tipo==='fecha_inicio'?form.fechaInicio:form.fechaFin } onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } name = { tipo } date = { tipo==='fecha_inicio'?form.fechaInicio:form.fechaFin } withformgroup={0} />
+                    :<></>
+                }
+                {
+                    tipo === 'cliente' || tipo === 'empresa' || tipo === 'tipo_contrato' ?
+                        <SelectSearchGray options = { this.setOptions(data, tipo) }
+                        onChange = { (value) => { this.onChangeSwal(value, tipo)} } name = { tipo }
+                        value = { form[tipo] } customdiv="mb-2 mt-7"/>
+                    :<></>
+                }
+            </div>,
+            <Update />,
+            () => { this.patchContrato(data, tipo) },
+            () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
+        )
+    }
+    onChangeSwal = (value, tipo) => {
+        const { form } = this.state
+        form[tipo] = value
+        this.setState({...this.state, form})
+    }
+    clearForm = () => {
+        const { form } = this.state
+        let aux = Object.keys(form)
+        aux.forEach((element) => {
+            switch(element){
+                case 'adjuntos':
+                    form[element] = {
+                        adjunto: {
+                            value: '',
+                            placeholder: 'Ingresa los adjuntos',
+                            files: []
+                        }
+                    }
+                    break;
+                default:
+                    form[element] = ''
+                break;
+            }
+        })
+        return form
+    }
+    patchContrato = async( data,tipo ) => {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        let value = form[tipo]
+        waitAlert()
+        await axios.put(`${URL_DEV}v2/administracion/contratos/${tipo}/${data.id}`, 
+            { value: value }, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.getClientesAxios()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El rendimiento fue editado con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    setSwalHeader = (tipo) => {
+        switch(tipo){
+            case 'nombre':
+                return 'EDITAR EL NOMBRE DEL CONTRATO'
+            case 'cliente':
+                return 'EDITAR EL CLIENTE'
+            case 'empresa':
+                return 'EDITAR LA EMPRESA'
+            case 'monto':
+                return 'EDITAR EL MONTO CON IVA'
+            case 'tipo_contrato':
+                return 'EDITAR EL TIPO DE CONTRATO'
+            case 'fecha_inicio':
+                return 'EDITAR LA FECHA DE INCIO'
+            case 'fecha_fin':
+                return 'EDITAR LA FECHA FINAL'
+            default:
+                return ''
+        }
+    }
+    setOptions = (data, tipo) => {
+        const { options } = this.state
+        switch(tipo){
+            case 'cliente':
+                return options.clientes
+            case 'empresa':
+                return options.empresas
+            case 'tipo_contrato':
+                return options.tiposContratos
+            default: return []
+        }
     }
     setActionsCliente = () => {
         let aux = []
@@ -402,7 +563,7 @@ class Contratos extends Component {
         )
         return aux
     }
-    async getBancosAxios() {
+    async getClientesAxios() {
         $('#kt_datatable_cliente').DataTable().ajax.reload();
     }
     async getCajasAxios() {
@@ -410,7 +571,7 @@ class Contratos extends Component {
     }
     controlledTab = value => {
         if (value === 'cliente') {
-            this.getBancosAxios()
+            this.getClientesAxios()
         }
         if (value === 'proveedor') {
             this.getCajasAxios()
@@ -440,7 +601,7 @@ class Contratos extends Component {
                 const { contrato } = response.data
                 const { data, modal, key } = this.state
                 if (key === 'cliente') {
-                    this.getBancosAxios()
+                    this.getClientesAxios()
                 }
                 if (key === 'proveedor') {
                     this.getCajasAxios()
@@ -469,7 +630,7 @@ class Contratos extends Component {
                 const { contrato } = response.data
                 const { modal, key } = this.state
                 if (key === 'cliente') {
-                    this.getBancosAxios()
+                    this.getClientesAxios()
                 }
                 if (key === 'proveedor') {
                     this.getCajasAxios()

@@ -119,6 +119,7 @@ export function setTextTableReactDom(text, doubleClick, data, tipo, style){
             onClick = { (e) => { 
                 e.preventDefault(); 
                 if(isMobile){
+                    console.log(" isMobile ")
                     doubleClick(data, tipo)
                 }
             } } > 
@@ -140,6 +141,57 @@ export function setMoneyTableReactDom(text, doubleClick, data, tipo){
             } } > 
             <NumberFormat value={cantidad} displayType='text' thousandSeparator={true} prefix='$'
                 renderText={cantidad => <span className="font-size-11px "> {cantidad} </span>} />
+        </div>
+    )
+}
+export function setDateTableReactDom(date, doubleClick, data, tipo, style) {
+    let seconds = new Date(date);
+    seconds = seconds.getTime() / 1000;
+    return (
+        <div className = {`${style} font-size-11px ${(date === '' ? 'm-5 p-5' : '')}`} onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data, tipo)} }
+            onClick = { (e) => { 
+                e.preventDefault(); 
+                if(isMobile){
+                    doubleClick(data, tipo)
+                }
+            } } >
+            <span className="d-none">
+                {
+                    seconds
+                }
+            </span>
+            <span className="d-none">
+                <Moment format="YYYY/MM/DD">
+                    {date}
+                </Moment>
+            </span>
+            <Moment format="DD/MM/YYYY">
+                {date}
+            </Moment>
+        </div>
+    )
+}
+
+export function setListTableReactDom(arreglo, nombre, minwidth, doubleClick, data, tipo, style) {
+    return (
+        <div className = {`${style} font-size-11px ${(arreglo === '' ? 'm-5 p-5' : '')}`} onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data, tipo)} }
+            onClick = { (e) => { 
+                e.preventDefault(); 
+                if(isMobile){
+                    doubleClick(data, tipo)
+                }
+            } } >
+            <div className="setListTable" style={{minWidth:minwidth}}>
+                {
+                    arreglo.map((element,  key ) => {
+                        return (
+                            <>
+                                <span key = { key }>&#8226; {element[nombre]}</span><br/>
+                            </>
+                        )
+                    })
+                }
+            </div>
         </div>
     )
 }

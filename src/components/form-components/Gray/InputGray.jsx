@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
 class InputGray extends Component {
     state = {
+        //nuevo state
+        currentValue:"",
         inputValido: !this.props.requirevalidation
     }
 
@@ -39,24 +41,32 @@ class InputGray extends Component {
             }
     }
     
-    componentDidMount(){
+    componentDidMount(){ 
         const { formeditado, value } = this.props
         if(formeditado){
             this.validarInput({ target: { value: value } })
         }
+        //inicializar currentValue con "value"
+        let {currentValue} = this.state 
+        currentValue= value
+        this.setState({currentValue})
     }
     
     render() {
-        const { messageinc,error, onChange, placeholder, iconclass, letterCase, customlabel, customstyle, customclass, withicon, withtextlabel, withtaglabel, withplaceholder, customdiv, withformgroup, ...props } = this.props
-        const { inputValido } =  this.state
-        const toInputUppercase = e => {
-            const { type, value, selectionStart, selectionEnd } = e.target
+        //sacar value de props
+        const { messageinc,error, onChange, placeholder, iconclass, letterCase, customlabel, value, customstyle, customclass, withicon, withtextlabel, withtaglabel, withplaceholder, customdiv, withformgroup, ...props } = this.props
+        const {currentValue, inputValido } =  this.state
+        const toInputUppercase = e => { 
+            const { type, value, selectionStart, selectionEnd } = e.target 
             if(letterCase !== false)
                 e.target.value = value.toUpperCase()
             if( type !== 'email'){
                 e.target.selectionStart = selectionStart
                 e.target.selectionEnd = selectionEnd
-            }
+            } 
+            //Actualizar current Value
+            this.setState({currentValue:value.toUpperCase()})
+
             return e
         }
         return (
@@ -76,10 +86,13 @@ class InputGray extends Component {
                         </div>
                         :''
                     }
-                    
+                
                     <Form.Control placeholder = { withplaceholder ? placeholder :'' } style = { customstyle }
                         className = {`form-control text-dark-50 font-weight-bold ${customclass}` }
-                        onChange = { (e) => { e.preventDefault(); this.validarInput(e); onChange(toInputUppercase(e)) }} {...props} />
+                        value={//Aqui agregar value={currentValue} 
+                            currentValue
+                        }
+                        onChange = { (e) => { e.preventDefault(); this.validarInput(e); onChange(toInputUppercase(e)) }} {...props}/>
                 </div>
                 <span className={ inputValido ? "form-text text-danger hidden" : "form-text text-danger is-invalid" }> {messageinc} </span>
             </div>
