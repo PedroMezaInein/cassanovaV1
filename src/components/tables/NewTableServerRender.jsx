@@ -276,20 +276,35 @@ class NewTableServerRender extends Component {
                         let arregloRendered = []
                         let hiddenCount = 0
                         var data = $.map( columns, function ( col, i ) {
-                             
                             if(col.hidden){
                                 hiddenCount++;
                                 if(renderedHeader.includes(i)){
-                                    let valorCelda = col.data.props.children.props.children?
-                                    col.data.props.children.props.children[1]:col.data.props.children.props.value
-                                    
+                                    // console.log(col,'col')
+                                    let valorCelda = ''
+                                    let data_children= col.data.props.children
+                                    if(data_children){
+                                        if(data_children.props){
+                                            if(data_children.props.children){
+                                                //Input
+                                                valorCelda = data_children.props.children[1]
+                                                // console.log(valorCelda,'Input')
+                                            }else if(data_children.props.value){
+                                                // Input costo
+                                                valorCelda = data_children.props.value
+                                                // console.log(valorCelda,'Costo')
+                                            }
+                                        }else if(data_children[1].props.children.props.children){
+                                            //Fecha
+                                            valorCelda = data_children[1].props.children.props.children
+                                            // console.log(valorCelda,'Fecha')
+                                        }
+                                    }
                                     arregloRendered.push(col)
                                     return '<tr data-dt-row="'+col.rowIndex+'" data-dt-column="'+col.columnIndex+'">'+
                                         '<td>'+col.title+':'+'</td> '+
                                         '<td>'+ valorCelda+'</td>'+
                                     '</tr>'
                                 }else{
-                                     
                                     return '<tr data-dt-row="'+col.rowIndex+'" data-dt-column="'+col.columnIndex+'">'+
                                         '<td>'+col.title+':'+'</td> '+
                                         '<td> '+ col.data+'</td>'+
@@ -300,14 +315,14 @@ class NewTableServerRender extends Component {
 
                         let tablaModificada = $('<table/>').append( data ) 
                         let tablaInternaResponsiva =  tablaModificada[0]['children']
-                        console.log(tablaInternaResponsiva)
+                        // console.log(tablaInternaResponsiva)
                         arregloRendered.forEach((col, index) => { 
                             tablaInternaResponsiva.forEach(element=>{
                                 if(parseInt(element.dataset.dtColumn)===parseInt(col.columnIndex))
                                 { 
-                                    console.log("Si hice match ",element.dataset.dtColumn, " con ",col.columnIndex)
+                                    // console.log("Si hice match ",element.dataset.dtColumn, " con ",col.columnIndex)
                                     let td = element['children'][1] 
-                                    console.log(td)
+                                    // console.log(td)
                                     ReactDOM.render( col.data, td)
                                 }
                             })  
