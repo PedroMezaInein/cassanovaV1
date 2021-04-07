@@ -3,10 +3,9 @@ import '../../styles/custom_datatable.css'
 import '../../styles/metronic/_datables.scss';
 import { errorAlert } from '../../functions/alert'
 import { Card, Dropdown, DropdownButton, OverlayTrigger  } from 'react-bootstrap'
-import { renderToNodeStream, renderToString } from 'react-dom/server';
+import { renderToString } from 'react-dom/server';
 import Tooltip from 'react-bootstrap/Tooltip'
-import ReactDOM, { hydrate } from 'react-dom'
-import { Children } from 'react';
+import ReactDOM from 'react-dom'
 const $ = require('jquery');
 const global_variable = {}
 $.DataTable = require('datatables.net');
@@ -314,7 +313,6 @@ class NewTableServerRender extends Component {
                             })  
                            // console.log(valor[0],'data')
                             
-                              
                         })
      
                         return data ?
