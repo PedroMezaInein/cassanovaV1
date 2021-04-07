@@ -362,7 +362,7 @@ class Usuarios extends Component {
             <div>
                 <h2 className = 'swal2-title mb-4 mt-2'> { this.setSwalHeader(tipo) } </h2>
                 {
-                    tipo === 'name' || tipo === 'email' ?
+                    (tipo === 'name') || (tipo === 'email') ?
                         <div className="input-group input-group-solid rounded-0 mb-2 mt-7">
                             <input name={tipo} defaultValue = { data[tipo] } onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} }
                                 className="form-control text-dark-50 font-weight-bold form-control text-uppercase text-justify">
@@ -371,7 +371,7 @@ class Usuarios extends Component {
                     :<></>
                 }
                 {
-                    tipo === 'departamentos' || tipo === 'proyectos' ?
+                    (tipo === 'departamentos') || (tipo === 'proyectos') ?
                     <TagSelectSearchGray
                         // placeholder="SELECCIONA EL(LOS) DEPARTAMENTO(S)"
                         options={this.transformarOptions(this.setOptions(data, tipo))}

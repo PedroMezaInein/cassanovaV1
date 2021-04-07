@@ -15,6 +15,7 @@ import inputImage from './InputImage'
 import inputNumber from './InputNumber'
 import inputPhone from './InputPhone'
 import calendarDay from './CalendarDay'
+import calendarDaySwal from './CalendarDaySwal'
 import rangeCalendar from './RangeCalendar'
 import imageUpload from './ImageUpload'
 import optionsCheckboxHeaders from './OptionsCheckboxHeaders'
@@ -72,6 +73,7 @@ export const InputImage = inputImage
 export const InputNumber = inputNumber
 export const InputPhone = inputPhone
 export const CalendarDay = calendarDay
+export const CalendarDaySwal = calendarDaySwal
 export const RangeCalendar = rangeCalendar
 export const ImageUpload = imageUpload
 export const OptionsCheckboxHeaders = optionsCheckboxHeaders
