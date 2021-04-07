@@ -167,10 +167,11 @@ class Conceptos extends Component {
                         </div>
                 }
                 {
-                    tipo !== 'descripcion' && tipo !== 'costo' &&
+                    (tipo !== 'descripcion') && (tipo !== 'costo') &&
                         <SelectSearchGray options = { this.setOptions(data, tipo) }
                             onChange = { (value) => { this.updateSelectSearch(value, tipo)} } name = { tipo }
-                            value = { form[tipo] } customdiv="mb-2 mt-7"/>
+                            value = { form[tipo] } customdiv="mb-2 mt-7" requirevalidation={1} 
+                            placeholder={`SELECCIONA ${tipo==='proveedor' ? 'el proveedor' : 'la ' + tipo }`}/>
                 }
             </div>,
             <Update />,

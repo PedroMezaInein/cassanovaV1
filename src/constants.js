@@ -1624,27 +1624,33 @@ export const CONTRATOS_PROVEEDORES_COLUMNS = [
     },
     {
         Header: 'Nombre',
-        accessor: 'nombre'
+        accessor: 'nombre',
+        customRender: true
     },
     {
         Header: 'Proveedor',
-        accessor: 'proveedor'
+        accessor: 'proveedor',
+        customRender: true
     },
     {
         Header: 'Empresa',
-        accessor: 'empresa'
+        accessor: 'empresa',
+        customRender: true
     },
     {
         Header: 'Fecha de inicio',
-        accessor: 'fechaInicio'
+        accessor: 'fechaInicio',
+        customRender: true
     },
     {
         Header: 'Fecha de fin',
-        accessor: 'fechaFin'
+        accessor: 'fechaFin',
+        customRender: true
     },
     {
         Header: 'Monto con IVA',
-        accessor: 'monto'
+        accessor: 'monto',
+        customRender: true
     },
     {
         Header: 'Monto Pagado',
@@ -1656,11 +1662,13 @@ export const CONTRATOS_PROVEEDORES_COLUMNS = [
     },
     {
         Header: 'Tipo de contrato',
-        accessor: 'contrato'
+        accessor: 'contrato',
+        customRender: true
     },
     {
         Header: 'Descripción',
-        accessor: 'descripcion'
+        accessor: 'descripcion',
+        customRender: true
     }
 ]
 
