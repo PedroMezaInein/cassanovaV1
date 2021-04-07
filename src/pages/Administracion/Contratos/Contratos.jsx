@@ -8,7 +8,7 @@ import Layout from '../../../components/layout/layout'
 import { Tabs, Tab, Form } from 'react-bootstrap'
 import { CONTRATOS_PROVEEDORES_COLUMNS, CONTRATOS_CLIENTES_COLUMNS, URL_DEV, ADJ_CONTRATOS_COLUMNS } from '../../../constants'
 import { Modal, ModalDelete } from '../../../components/singles'
-import { Button, CalendarDay, SelectSearchGray, InputGray } from '../../../components/form-components'
+import { Button, CalendarDaySwal, SelectSearchGray } from '../../../components/form-components'
 import FileInput from '../../../components/form-components/FileInput'
 import TableForModals from '../../../components/tables/TableForModals'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
@@ -283,7 +283,7 @@ class Contratos extends Component {
                 acumulado: renderToString(setMoneyTable(contrato.sumatoria ? contrato.sumatoria : 0)),
                 pendiente: renderToString(setMoneyTable(contrato.sumatoria ? contrato.monto - contrato.sumatoria : contrato.monto)),
                 contrato: contrato.tipo_contrato ? setTextTableReactDom(contrato.tipo_contrato.tipo, this.doubleClick, contrato, 'tipo_contrato', 'text-center') : '',
-                descripcion: setTextTableReactDom(contrato.descripcion, this.doubleClick, contrato, 'descripcion', 'text-justify'),
+                descripcion: setTextTableReactDom(contrato.descripcion !== null ? contrato.descripcion :'', this.doubleClick, contrato, 'descripcion', 'text-justify'),
                 id: contrato.id
             })
             return false
@@ -295,16 +295,16 @@ class Contratos extends Component {
         contratos.map((contrato) => {
             aux.push({
                 actions: this.setActionsProveedor(contrato),
-                nombre: renderToString(setTextTable(contrato.nombre)),
-                empresa: contrato.empresa ? renderToString(setTextTableCenter(contrato.empresa.name)) : '',
-                proveedor: renderToString(setTextTable(contrato.proveedor.razon_social)),
-                fechaInicio: renderToString(setDateTable(contrato.fecha_inicio)),
-                fechaFin: renderToString(setDateTable(contrato.fecha_fin)),
-                monto: renderToString(setMoneyTable(contrato.monto)),
+                nombre: setTextTableReactDom(contrato.nombre, this.doubleClick, contrato, 'nombre', 'text-justify'),
+                empresa: contrato.empresa ? setTextTableReactDom(contrato.empresa.name, this.doubleClick, contrato, 'empresa', 'text-center') : '',
+                proveedor: setTextTableReactDom(contrato.proveedor.razon_social, this.doubleClick, contrato, 'proveedor', 'text-justify'),
+                fechaInicio: setDateTableReactDom(contrato.fecha_inicio, this.doubleClick, contrato, 'fecha_inicio', 'text-center'),
+                fechaFin: setDateTableReactDom(contrato.fecha_fin, this.doubleClick, contrato, 'fecha_fin', 'text-center'),
+                monto: setMoneyTableReactDom(contrato.monto, this.doubleClick, contrato, 'monto'),
                 acumulado: renderToString(setMoneyTable(contrato.sumatoria ? contrato.sumatoria : 0)),
                 pendiente: renderToString(setMoneyTable(contrato.sumatoria ? contrato.monto - contrato.sumatoria : contrato.monto)),
-                contrato: contrato.tipo_contrato ? renderToString((setTextTableCenter(contrato.tipo_contrato.tipo))) : '',
-                descripcion: renderToString(setTextTable(contrato.descripcion)),
+                contrato: contrato.tipo_contrato ? setTextTableReactDom(contrato.tipo_contrato.tipo, this.doubleClick, contrato, 'tipo_contrato', 'text-center') : '',
+                descripcion: setTextTableReactDom(contrato.descripcion !== null ? contrato.descripcion :'', this.doubleClick, contrato, 'descripcion', 'text-justify'),
                 id: contrato.id
             })
             return false
@@ -317,6 +317,7 @@ class Contratos extends Component {
             case 'cliente':
             case 'empresa':
             case 'tipo_contrato':
+            case 'proveedor':
                 if(data[tipo])
                     form[tipo] = data[tipo].id.toString()
                 break
@@ -336,22 +337,11 @@ class Contratos extends Component {
                 <h2 className = 'swal2-title mb-4 mt-2'> { this.setSwalHeader(tipo) } </h2>
                 {
                     tipo === 'nombre' ?
-                        // <div className="input-group input-group-solid rounded-0 mb-2 mt-7">
-                        //     <input name={tipo} defaultValue = { data[tipo] } onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} }
-                        //         className="form-control text-dark-50 font-weight-bold form-control text-uppercase text-justify">
-                        //     </input>
-                        // </div>
-                        <InputGray 
-                            withtaglabel={0}
-                            withtextlabel={0}
-                            withplaceholder={0}
-                            withicon={0}
-                            requirevalidation={0}
-                            // placeholder='COMENTARIO'
-                            value={form[tipo]}
-                            name={tipo}
-                            onChange = { (e) => { e.preventDefault();  this.onChangeSwal(e.target.value, tipo)} }
-                        />
+                        <div className="input-group input-group-solid rounded-0 mb-2 mt-7">
+                            <input name={tipo} defaultValue = { data[tipo] } onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} }
+                                className="form-control text-dark-50 font-weight-bold form-control text-uppercase text-justify">
+                            </input>
+                        </div>
                     :<></>
                 }
                 {
@@ -377,15 +367,16 @@ class Contratos extends Component {
                         </div>
                 }
                 {
-                    tipo === 'fecha_inicio' || tipo === 'fecha_fin' ?
-                        <CalendarDay value = { tipo==='fecha_inicio'?form.fechaInicio:form.fechaFin } onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } name = { tipo } date = { tipo==='fecha_inicio'?form.fechaInicio:form.fechaFin } withformgroup={0} />
+                    (tipo === 'fecha_inicio') || (tipo === 'fecha_fin') ?
+                        <CalendarDaySwal value = { tipo==='fecha_inicio'?form.fechaInicio:form.fechaFin } onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } name = { tipo } date = { tipo==='fecha_inicio'?form.fechaInicio:form.fechaFin } withformgroup={0} />
                     :<></>
                 }
                 {
-                    tipo === 'cliente' || tipo === 'empresa' || tipo === 'tipo_contrato' ?
+                    (tipo === 'cliente') || (tipo === 'empresa') || (tipo === 'tipo_contrato') || (tipo === 'proveedor') ?
                         <SelectSearchGray options = { this.setOptions(data, tipo) }
                         onChange = { (value) => { this.onChangeSwal(value, tipo)} } name = { tipo }
-                        value = { form[tipo] } customdiv="mb-2 mt-7"/>
+                        value = { form[tipo] } customdiv="mb-2 mt-7" requirevalidation={1} 
+                        placeholder={this.setSwalPlaceholder(tipo)}/>
                     :<></>
                 }
             </div>,
@@ -393,6 +384,20 @@ class Contratos extends Component {
             () => { this.patchContrato(data, tipo) },
             () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
         )
+    }
+    setSwalPlaceholder = (tipo) => {
+        switch(tipo){
+            case 'cliente':
+                return 'SELECCIONA EL CLIENTE'
+            case 'empresa':
+                return 'SELECCIONA LA EMPRESA'
+            case 'tipo_contrato':
+                return 'SELECCIONA EL TIPO DE CONTRATO'
+            case 'proveedor':
+                return 'SELECCIONA EL PROVEEDOR'
+            default:
+                return ''
+        }
     }
     onChangeSwal = (value, tipo) => {
         const { form } = this.state
@@ -453,6 +458,8 @@ class Contratos extends Component {
                 return 'EDITAR LA FECHA DE INCIO'
             case 'fecha_fin':
                 return 'EDITAR LA FECHA FINAL'
+            case 'proveedor':
+                return 'EDITAR EL PROVEEDOR'
             default:
                 return ''
         }
@@ -466,6 +473,8 @@ class Contratos extends Component {
                 return options.empresas
             case 'tipo_contrato':
                 return options.tiposContratos
+            case 'proveedor':
+                return options.proveedores
             default: return []
         }
     }

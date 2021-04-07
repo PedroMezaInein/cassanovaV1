@@ -9,7 +9,7 @@ import { Modal } from '../../components/singles'
 import { TareaForm } from '../../components/forms'
 import { Button } from '../../components/form-components'
 import { Card, Nav, Tab, Row, Col, Form} from 'react-bootstrap'
-import { errorAlert, printResponseErrorAlert, waitAlert, validateAlert, commentAlert } from '../../functions/alert'
+import { errorAlert, printResponseErrorAlert, waitAlert, validateAlert, commentAlert, doneAlert } from '../../functions/alert'
 import { CaducadasCard, EnProcesoCard, ProximasCaducarCard } from '../../components/cards'
 import Swal from 'sweetalert2'
 import ItemSlider from '../../components/singles/ItemSlider'
@@ -17,9 +17,11 @@ import InputGray from '../../components/form-components/Gray/InputGray'
 import SVG from "react-inlinesvg"
 import { toAbsoluteUrl } from "../../functions/routers"
 import { diffCommentDate } from '../../functions/functions'
+import moment from 'moment'
 class Tareas extends Component {
 
     state = {
+        activePane: '1',
         columns: [],
         tableros: [],
         user: '',
@@ -27,18 +29,22 @@ class Tareas extends Component {
         activeKey: '',
         form: {
             titulo: '',
-            grupo: '',
-            participantes: []
+            descripcion: '',
+            fecha_limite: null,
+            responsables: [],
+            comentario: '',
+            adjuntos: {
+                adjunto: {
+                    value: '',
+                    placeholder: 'Adjunto',
+                    files: []
+                }
+            }
         },
+        options: { responsables: [] },
         formeditado: 0,
-        participantes: [],
-        participantesTask: [],
         tarea: '',
         modal: false,
-        comentario: '',
-        adjunto: '',
-        adjuntoFile: '',
-        adjuntoName: '',
         defaultactivekey: "",
         en_proceso: {
             data: [],
@@ -60,15 +66,6 @@ class Tareas extends Component {
             total: 0,
             total_paginas: 0,
             value: "caducadas"
-        },
-        formComentarioAdj: {
-            adjuntos: {
-                adjunto: {
-                    value: '',
-                    placeholder: 'Adjunto',
-                    files: []
-                },
-            }
         }
     }
 
@@ -101,111 +98,21 @@ class Tareas extends Component {
         }
     }
 
-    /* diffCommentDate = (comentario) => {
-        var now = new Date();
-        var then = new Date(comentario.created_at);
-
-        var diff = moment.duration(moment(now).diff(moment(then)));
-        var months = parseInt(moment(now).diff(moment(then), 'month'))
-
-        var days = parseInt(diff.asDays());
-        var hours = parseInt(diff.asHours());
-        var minutes = parseInt(diff.asMinutes());
-
-        if (months) {
-            if (months === 1)
-                return 'Hace un mes'
-            else
-                return `Hace ${months} meses`
-        }
-        else {
-            if (days) {
-                if (days === 1)
-                    return 'Hace un día'
-                else
-                    return `Hace ${days} días`
-            }
-            else {
-                if (hours) {
-                    if (hours === 1)
-                        return 'Hace una hora'
-                    else
-                        return `Hace ${hours} horas`
-                }
-                else {
-                    if (minutes) {
-                        if (minutes === 1)
-                            return 'Hace un minuto'
-                        else
-                            return `Hace ${minutes} minutos`
-                    }
-                    else {
-                        return 'Hace un momento'
-                    }
-                }
-            }
-        }
-
-    } */
-
     handleCloseModal = () => {
+        const { form } = this.state
+        form.comentario = ''
+        form.adjuntos.adjunto = { value: '', files: [] }
+        this.getTareasAxios()
         this.setState({
             ...this.state,
             modal: !this.state.modal,
             tarea: '',
-            adjuntoName: '',
-            adjuntoFile: '',
-            adjunto: '',
-            formComentarioAdj: this.clearForm()
+            form
         })
     }
 
-    handleClickTask = tarea => {
-
-        this.setState({
-            ...this.state,
-            tarea: tarea,
-            modal: true,
-            adjuntoName: '',
-            adjuntoFile: '',
-            adjunto: '',
-        })
-    }
-
-    setOptions = tarea => {
-        const { users } = this.state
-
-        let aux = []
-        tarea.participantes.map((participante, key) => {
-            aux.push({ name: participante.name, value: participante.email, identificador: participante.id })
-            return false
-        })
-
-        let _aux = []
-        users.map((participante, key) => {
-            _aux.push({ name: participante.name, value: participante.email, identificador: participante.id })
-            return false
-        })
-
-        let _index = []
-
-        _aux.map((element, index) => {
-            let validador = false
-            aux.map((_element, key) => {
-                if (element.identificador === _element.identificador)
-                    validador = true
-                return false
-            })
-            if (!validador)
-                _index.push(element)
-            return false
-        })
-
-        this.setState({
-            ...this.state,
-            participantesTask: aux,
-            participantes: _index
-        })
+    handleClickTask = (tarea) => {
+        this.getTareaAxios(tarea.id)
     }
 
     onDragEnd = result => {
@@ -244,10 +151,6 @@ class Tareas extends Component {
         })
     }
 
-    submitAdd = () => {
-        this.addTaskAxios();
-    }
-
     onChange = event => {
         const { name, value } = event.target
         const { form } = this.state
@@ -258,54 +161,24 @@ class Tareas extends Component {
         })
     }
 
-    onChangeComentario = (e) => {
-        const { value, name } = e.target
-        if (name === 'adjunto') {
-            this.setState({
-                ...this.state,
-                adjuntoFile: e.target.files[0],
-                adjunto: e.target.value,
-                adjuntoName: e.target.files[0].name
-            })
-        } else {
-            this.setState({
-                ...this.state,
-                comentario: value
-            })
+    changeValue = (event, flag) => {
+        const { name, value } = event.target
+        const { form } = this.state
+        switch(name){
+            case 'responsables':
+                form.responsables = []
+                if(value !== null)
+                    value.forEach( (element) => {
+                        form.responsables.push(element)
+                    })
+                break;
+            default: 
+                form[name] = value
+                break;
         }
-    }
-
-    onChangeParticipantes = (value) => {
-        const { tarea: { id } } = this.state
-        this.addParticipanteAxios(id, value.identificador);
-    }
-
-    deleteParticipante = value => {
-        this.deleteParticipanteAxios(value);
-    }
-
-    changeValue = event => {
-        const { name, value } = event.target
-        const { tarea } = this.state
-        tarea[name] = value
-        this.setState({
-            ...this.state,
-            tarea: tarea,
-            formeditado: 1
-        })
-    }
-
-    changeValueSend = event => {
-        const { name, value } = event.target
-        this.editTaskAxios({ [name]: value })
-    }
-
-    deleteAdjunto = () => {
-        this.setState({
-            adjunto: '',
-            adjuntoFile: '',
-            adjuntoName: ''
-        })
+        this.setState({ ...this.state, form })
+        if(flag)
+            this.editTaskAxios( name, value )
     }
 
     updateActiveTabContainer = active => {
@@ -323,7 +196,7 @@ class Tareas extends Component {
 
     async getTareasAxios() {
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'user/tareas', { headers: { Authorization: `Bearer ${access_token}`, } }).then(
+        await axios.get(`${URL_DEV}v2/usuarios/tareas`, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
                 const { tableros, user, users } = response.data
                 const { subActiveKey } = this.state
@@ -344,10 +217,7 @@ class Tareas extends Component {
                     subActiveKey: auxiliar ? tableros[auxiliar].nombre : tableros[0].nombre,
                     columns: auxiliar ? tableros[auxiliar].tareas : tableros[0].tareas
                 })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -355,29 +225,43 @@ class Tareas extends Component {
     }
 
     async getTareaAxios(tarea) {
+        waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'user/tareas/single/' + tarea, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
+        await axios.get(`${URL_DEV}v2/usuarios/tareas/${tarea}`, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
-                const { tarea } = response.data
-                this.setState({
-                    ...this.state,
-                    tarea: tarea,
-                    modal: true,
-                    adjuntoName: '',
-                    adjuntoFile: '',
-                    adjunto: '',
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                Swal.close()
+                const { tarea, usuarios } = response.data
+                const { form, options } = this.state
+                form.descripcion = tarea.descripcion
+                form.titulo = tarea.titulo
+                form.fecha_limite = tarea.fecha_limite ? new Date( moment( tarea.fecha_limite ) ) : null
+                form.responsables = []
+                options.responsables = []
+                tarea.responsables.forEach( ( element ) => {
+                    form.responsables.push(
+                        {
+                            name: element.name,
+                            value: element.id.toString(),
+                            label: element.name
+                        }
+                    )
+                });
+                usuarios.forEach( ( element ) => {
+                    options.responsables.push({
+                        name: element.name,
+                        value: element.id.toString(),
+                        label: element.name
+                    })
+                });
+                this.setState({ ...this.state, tarea: tarea, modal: true,  options, activePane: '1'})
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
 
-    async addTaskAxios() {
+    addTaskAxios = async () => {
         const { access_token } = this.props.authUser
         const { form, subActiveKey } = this.state
         waitAlert()
@@ -408,10 +292,7 @@ class Tareas extends Component {
                     columns: auxTareas
                 })
 
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -419,8 +300,8 @@ class Tareas extends Component {
     }
 
     addComentario = () => {
-        const { comentario } = this.state
-        if (comentario !== ''){
+        const { form } = this.state
+        if (form.comentario !== ''){
             commentAlert()
             this.addComentarioAxios()
         }
@@ -428,144 +309,106 @@ class Tareas extends Component {
 
     async addComentarioAxios() {
         const { access_token } = this.props.authUser
-        const { comentario, tarea, adjuntoFile, adjuntoName, subActiveKey, formComentarioAdj} = this.state
+        const { tarea, form } = this.state
         const data = new FormData();
-        data.append('comentario', comentario)
-        data.append('adjunto', adjuntoFile)
-        data.append('adjuntoName', adjuntoName)
+        if (form.adjuntos.adjunto.value !== '')
+            form.adjuntos.adjunto.files.forEach( (file) => { data.append(`files_adjunto[]`, file.file) })
         data.append('id', tarea.id)
-
-        let aux = Object.keys(formComentarioAdj.adjuntos)
-        aux.map((element) => {
-            if (formComentarioAdj.adjuntos[element].value !== '') {
-                for (var i = 0; i < formComentarioAdj.adjuntos[element].files.length; i++) {
-                    data.append(`files_name_${element}[]`, formComentarioAdj.adjuntos[element].files[i].name)
-                    data.append(`files_${element}[]`, formComentarioAdj.adjuntos[element].files[i].file)
-                }
-                data.append('adjuntos[]', element)
-            }
-            return false
-        })
-        await axios.post(URL_DEV + 'user/tareas/comentario', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}`, } }).then(
+        data.append('comentario', form.comentario)
+        await axios.post(`${URL_DEV}v2/usuarios/tareas/${tarea.id}/comentario`, data, 
+            { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
-                const { tableros, tarea } = response.data
-                let auxTareas = []
-                tableros.map((tablero) => {
-                    if (tablero.nombre === subActiveKey) 
-                        auxTareas = tablero.tareas
-                    return false
-                })
-                this.setState({
-                    ...this.state,
-                    comentario: '',
-                    tarea: tarea,
-                    tableros: tableros,
-                    columns: auxTareas,
-                    formComentarioAdj: this.clearForm()
-                })
-                Swal.close()
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                doneAlert('Comentario agregado con éxito')
+                const { tarea } = response.data
+                const { form } = this.state
+                form.comentario = ''
+                form.adjuntos.adjunto = { value: '', files: [] }
+                this.setState({...this.state, tarea: tarea, activePane: '3'})
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
 
-    async editTaskAxios(data) {
+    editTaskAxios = async(name, value) => {
+        waitAlert()
         const { access_token } = this.props.authUser
         const { tarea } = this.state
-        await axios.put(URL_DEV + 'user/tareas/edit/' + tarea.id, data, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
+        await axios.put(`${URL_DEV}v2/usuarios/tareas/${tarea.id}`, { name: name, value: value }, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
-                if(!data.hasOwnProperty('descripcion')){
+                Swal.close()
+                const { tarea, usuarios } = response.data
+                const { form, options } = this.state
+                if(name !== 'descripcion'){
                     this.getEnProceso()
                     this.getCaducadas()
                     this.getProximasCaducar()
                 }
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                switch(name){
+                    case 'fecha_limite':
+                        form.fecha_limite = tarea.fecha_limite ? new Date( moment( tarea.fecha_limite ) ) : null
+                        break;
+                    case 'responsables':
+                        form.responsables = []
+                        options.responsables = []
+                        tarea.responsables.forEach( ( element ) => {
+                            form.responsables.push(
+                                {
+                                    name: element.name,
+                                    value: element.id.toString(),
+                                    label: element.name
+                                }
+                            )
+                        });
+                        usuarios.forEach( ( element ) => {
+                            options.responsables.push({
+                                name: element.name,
+                                value: element.id.toString(),
+                                label: element.name
+                            })
+                        });
+                        break;
+                    default:
+                        form[name] = tarea[name]
+                        break;
+                }
+                this.setState({ ...this.state, tarea: tarea, options})
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
 
-    deleteTarea = (id) => {
-        this.deleteTareaAxios(id)
-    }
-
-    endTarea = (id) => {
-        this.endTareaAxios(id)
-    }
-
-    async deleteTareaAxios(id) {
+    deleteTarea = async(id) => {
         const { access_token } = this.props.authUser
         const { subActiveKey } = this.state
-        await axios.delete(URL_DEV + 'user/tareas/' + id, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
+        await axios.delete(`${URL_DEV}v2/usuarios/tareas/${id}`, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
+                doneAlert('Tarea eliminada con éxito')
                 this.getEnProceso()
                 this.getCaducadas()
                 this.getProximasCaducar()
-                const { tableros } = response.data
-                let auxTareas = []
-                tableros.map((tablero) => {
-                    if (tablero.nombre === subActiveKey) 
-                        auxTareas = tablero.tareas
-                    return false
-                })
-                this.setState({
-                    ...this.state,
-                    modal: false,
-                    tarea: '',
-                    adjuntoName: '',
-                    adjuntoFile: '',
-                    adjunto: '',
-                    tableros: tableros,
-                    columns: auxTareas
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                this.handleCloseModal()
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
-    async endTareaAxios(id) {
+
+    endTarea = async(id) => {
+        waitAlert()
         const { access_token } = this.props.authUser
-        const { subActiveKey } = this.state
-        await axios.put(URL_DEV + 'user/tareas/' + id + '/end', {}, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
+        await axios.get(`${URL_DEV}v2/usuarios/tareas/${id}/end`, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
+                doneAlert('Tarea terminada con éxito')
                 this.getEnProceso()
                 this.getCaducadas()
                 this.getProximasCaducar()
-                const { tableros } = response.data
-                let auxTareas = []
-                tableros.map((tablero) => {
-                    if (tablero.nombre === subActiveKey) 
-                        auxTareas = tablero.tareas
-                    return false
-                })
-                this.setState({
-                    ...this.state,
-                    modal: false,
-                    tarea: '',
-                    adjuntoName: '',
-                    adjuntoFile: '',
-                    adjunto: '',
-                    formeditado: 1,
-                    tableros: tableros,
-                    columns: auxTareas
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                this.handleCloseModal()
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -578,29 +421,20 @@ class Tareas extends Component {
         waitAlert()
         await axios.put(URL_DEV + 'user/tareas/order', { source, destination, task }, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
+                const { tableros } = response.data
                 if(source.grupo !== destination.grupo){
                     this.getCaducadas()
                     this.getEnProceso()
                     this.getProximasCaducar()
                 }
-                const { tableros } = response.data
                 let auxTareas = []
-                tableros.map((tablero) => {
+                tableros.forEach((tablero) => {
                     if (tablero.nombre === subActiveKey) 
                         auxTareas = tablero.tareas
-                    return false
                 })
                 Swal.close()
-                this.setState({
-                    ...this.state,
-                    modal: false,
-                    tableros: tableros,
-                    columns: auxTareas
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                this.setState({ ...this.state, modal: false, tableros: tableros, columns: auxTareas })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -610,20 +444,14 @@ class Tareas extends Component {
     nextPageEnProceso = (e) => {
         e.preventDefault()
         const { en_proceso } = this.state
-        if (en_proceso.numPage < en_proceso.total_paginas - 1) {
-            this.setState({
-                numPage: en_proceso.numPage++
-            })
-        }
+        if (en_proceso.numPage < en_proceso.total_paginas - 1) { this.setState({ numPage: en_proceso.numPage++ }) }
         this.getEnProceso()
     }
     prevPageEnProceso = (e) => {
         e.preventDefault()
         const { en_proceso } = this.state
         if (en_proceso.numPage > 0) {
-            this.setState({
-                numPage: en_proceso.numPage--
-            })
+            this.setState({ numPage: en_proceso.numPage-- })
             this.getEnProceso()
         }
     }
@@ -631,9 +459,7 @@ class Tareas extends Component {
         e.preventDefault()
         const { proximas_caducar } = this.state
         if (proximas_caducar.numPage < proximas_caducar.total_paginas - 1) {
-            this.setState({
-                numPage: proximas_caducar.numPage++
-            })
+            this.setState({ numPage: proximas_caducar.numPage++ })
             this.getProximasCaducar()
         }
     }
@@ -641,9 +467,7 @@ class Tareas extends Component {
         e.preventDefault()
         const { proximas_caducar } = this.state
         if (proximas_caducar.numPage > 0) {
-            this.setState({
-                numPage: proximas_caducar.numPage--
-            })
+            this.setState({ numPage: proximas_caducar.numPage-- })
             this.getProximasCaducar()
         }
     }
@@ -651,9 +475,7 @@ class Tareas extends Component {
         e.preventDefault()
         const { caducadas } = this.state
         if (caducadas.numPage < caducadas.total_paginas - 1) {
-            this.setState({
-                numPage: caducadas.numPage++
-            })
+            this.setState({ numPage: caducadas.numPage++ })
             this.getCaducadas()
         }
     }
@@ -661,9 +483,7 @@ class Tareas extends Component {
         e.preventDefault()
         const { caducadas } = this.state
         if (caducadas.numPage > 0) {
-            this.setState({
-                numPage: caducadas.numPage--
-            })
+            this.setState({ numPage: caducadas.numPage-- })
             this.getCaducadas()
         }
     }
@@ -678,14 +498,8 @@ class Tareas extends Component {
                 en_proceso.total = total
                 let total_paginas = Math.ceil(total / 5)
                 en_proceso.total_paginas = total_paginas
-                this.setState({
-                    ...this.state,
-                    en_proceso
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                this.setState({ ...this.state, en_proceso })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -702,14 +516,8 @@ class Tareas extends Component {
                 proximas_caducar.total = total
                 let total_paginas = Math.ceil(total / 5)
                 proximas_caducar.total_paginas = total_paginas
-                this.setState({
-                    ...this.state,
-                    proximas_caducar
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                this.setState({ ...this.state, proximas_caducar })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -726,72 +534,49 @@ class Tareas extends Component {
                 caducadas.data = tareas
                 caducadas.total = total
                 caducadas.total_paginas = total_paginas
-                this.setState({
-                    ...this.state,
-                    caducadas
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                this.setState({ ...this.state, caducadas })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
+
     handleChange = (files, item) => {
-        const { formComentarioAdj } = this.state
+        const { form } = this.state
         let aux = []
-        for (let counter = 0; counter < files.length; counter++) {
-            aux.push(
-                {
-                    name: files[counter].name,
-                    file: files[counter],
-                    url: URL.createObjectURL(files[counter]),
-                    key: counter
-                }
-            )
-        }
-        formComentarioAdj['adjuntos'][item].value = files
-        formComentarioAdj['adjuntos'][item].files = aux
-        this.setState({
-            ...this.state,
-            formComentarioAdj
+        files.forEach((file) => {
+            aux.push({
+                name: file.name,
+                file: file,
+                url: URL.createObjectURL(file)
+            })
         })
-    }
-    clearForm = () => {
-        const { formComentarioAdj } = this.state
-        let aux = Object.keys(formComentarioAdj)
-        aux.map((element) => {
-            switch (element) {
-                case 'adjuntos':
-                    formComentarioAdj[element] = {
-                        adjunto: {
-                            files: [],
-                            value: '',
-                            placeholder: 'Adjunto'
-                        }
-                    }
-                    break;
-                default:
-                    formComentarioAdj[element] = ''
-                    break;
-            }
-            return false
-        })
-        return formComentarioAdj;
+        form.adjuntos[item].value = files
+        form.adjuntos[item].files = aux
+        this.setState({ ...this.state, form })
     }
 
     onClickCard = (tarea) => {
         this.getTareaAxios(tarea.id)
     }
 
+    hasComentario = tarea => {
+        if(tarea)
+            if(tarea.comentarios)
+                if(tarea.comentarios.length)
+                    return true
+        return false
+    }
+
+    updateTabContainer = value => { this.setState({ ...this.state, activePane: value }) }
+
     render() {
 
-        const { columns, user, form, activeKey, modal, tarea,participantesTask, participantes, formeditado, tableros, defaultactivekey, subActiveKey,
-            en_proceso, proximas_caducar, caducadas, formComentarioAdj, comentario } = this.state
+        const { columns, user, form, activeKey, modal, tarea, formeditado, tableros, defaultactivekey, subActiveKey,
+            en_proceso, proximas_caducar, caducadas, options, activePane } = this.state
         return (
-            <Layout active={'usuarios'} {...this.props}>
+            <Layout active = 'usuarios' {...this.props}>
                 <Row>
                     <Col lg={4}>
                         <EnProcesoCard en_proceso = { en_proceso } onClick = { this.nextPageEnProceso }
@@ -809,12 +594,9 @@ class Tareas extends Component {
                 <div className="d-flex flex-row">
                     <div className="flex-row-fluid">
                         <div className="d-flex flex-column flex-grow-1">
-                            <Tab.Container
-                                id="left-tabs-example"
-                                activeKey={subActiveKey ? subActiveKey : defaultactivekey}
-                                defaultActiveKey={defaultactivekey}
-                                onSelect={(select) => { this.updateActiveTabContainer(select) }}
-                            >
+                            <Tab.Container id = "left-tabs-example" activeKey = { subActiveKey ? subActiveKey : defaultactivekey }
+                                defaultActiveKey = { defaultactivekey }
+                                onSelect={(select) => { this.updateActiveTabContainer(select) }} >
                                 <Card className="card-custom card-stretch gutter-b py-2">
                                     <Card.Header className="align-items-center border-0 pt-3">
                                         <h3 className="card-title align-items-start flex-column">
@@ -847,7 +629,7 @@ class Tareas extends Component {
                                                                     <div key={column.id} className="col-md-6 col-lg-3 px-3">
                                                                         <Column
                                                                             form={form}
-                                                                            submit={this.submitAdd}
+                                                                            submit={this.addTaskAxios}
                                                                             onChange={this.onChange}
                                                                             column={column}
                                                                             clickTask={this.handleClickTask}
@@ -871,102 +653,61 @@ class Tareas extends Component {
                     </div>
                 </div>
                 <Modal size="xl" title="Tareas" show={modal} handleClose={this.handleCloseModal} >
-                    <Tab.Container defaultActiveKey="1">
+                    <Tab.Container defaultActiveKey="1" activeKey = { activePane }
+                        onSelect = { (select) => { this.updateTabContainer(select) } } >
                         <Nav className="nav-tabs nav-bold nav-tabs-line nav-tabs-line-3x border-0 nav-tabs-line-info mt-3 d-flex justify-content-end" id="nav-tareas">
                             <Nav.Item>
                                 <Nav.Link eventKey="1">
-                                    <span className="nav-icon">
-                                        <i className="flaticon2-writing"></i>
-                                    </span>
+                                    <span className="nav-icon"> <i className="flaticon2-writing"></i> </span>
                                     <span className="nav-text">INFORMACIÓN DE LA TAREA</span>
                                 </Nav.Link>
                             </Nav.Item>
                             <Nav.Item>
                                 <Nav.Link eventKey="2">
-                                    <span className="nav-icon">
-                                        <i className="flaticon2-plus"></i>
-                                    </span>
+                                    <span className="nav-icon"> <i className="flaticon2-plus"></i> </span>
                                     <span className="nav-text">AGREGAR COMENTARIO</span>
                                 </Nav.Link>
                             </Nav.Item>
                             {
-                                tarea?
-                                    tarea.comentarios.length>0?
-                                        <Nav.Item>
-                                            <Nav.Link eventKey="3">
-                                                <span className="nav-icon">
-                                                    <i className="flaticon2-chat-1"></i>
-                                                </span>
-                                                <span className="nav-text">MOSTRAR COMENTARIOS</span>
-                                                </Nav.Link>
-                                        </Nav.Item>
-                                    :''
-                                :''
+                                this.hasComentario(tarea) && 
+                                    <Nav.Item>
+                                        <Nav.Link eventKey="3">
+                                            <span className="nav-icon"> <i className="flaticon2-chat-1"></i> </span>
+                                            <span className="nav-text">MOSTRAR COMENTARIOS</span>
+                                        </Nav.Link>
+                                    </Nav.Item>
                             }
                         </Nav>
                         <Tab.Content>
                             <Tab.Pane eventKey="1">
-                                <TareaForm
-                                    participantes={participantes}
-                                    user={user}
-                                    form={tarea}
-                                    update={this.onChangeParticipantes}
-                                    participantesTask={participantesTask}
-                                    deleteParticipante={this.deleteParticipante}
-                                    changeValue={this.changeValue}
-                                    changeValueSend={this.changeValueSend}
-                                    deleteTarea={this.deleteTarea}
-                                    endTarea={(value) => this.endTareaAxios(value)}
-                                    formeditado={formeditado}
-                                />
+                                <TareaForm form = { form } tarea = { tarea } options = { options } onChange = { this.changeValue } 
+                                    endTarea = { (value) => this.endTarea(value) } deleteTarea = { this.deleteTarea } formeditado={formeditado}  />
                             </Tab.Pane>
                             <Tab.Pane eventKey="2">
-                                <Form id="form-comentario-adjunto"
-                                    onSubmit={
-                                        (e) => {
-                                            e.preventDefault();
-                                            validateAlert(this.addComentario, e, 'form-comentario-adjunto')
-                                        }
-                                    }
-                                    >
+                                <Form id = "form-comentario-adjunto"
+                                    onSubmit = { (e) => { e.preventDefault(); validateAlert(this.addComentario, e, 'form-comentario-adjunto') } } >
                                     <div className="form-group row form-group-marginless mt-3 d-flex justify-content-center">
                                         <div className="col-md-11 align-self-center">
                                             <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 }
                                                 withicon = { 0 } requirevalidation = { 0 } withformgroup = { 1 }
-                                                placeholder = 'COMENTARIO' value = { comentario } name = 'comentario'
-                                                onChange = { this.onChangeComentario } as = "textarea" rows = "3"
-                                                letterCase = { false } spellCheck = { true } />
+                                                placeholder = 'COMENTARIO' value = { form.comentario } name = 'comentario'
+                                                onChange = { (e) => { e.preventDefault(); this.changeValue(e, false) } } as = "textarea" rows = "3"
+                                                letterCase = { false } spellCheck = { false } />
                                         </div>
-                                        <div className="col-md-12 d-flex justify-content-center align-self-center">
-                                            <div>
+                                        <div className="col-md-8 col-12">
+                                            <div className = 'w-100'>
                                                 <div className="text-center font-weight-bolder mb-2">
-                                                    {formComentarioAdj.adjuntos.adjunto.placeholder}
+                                                    {form.adjuntos.adjunto.placeholder}
                                                 </div>
-                                                <ItemSlider
-                                                    multiple={true}
-                                                    items={formComentarioAdj.adjuntos.adjunto.files}
-                                                    item='adjunto'
-                                                    handleChange={this.handleChange}
-                                                />
+                                                <ItemSlider multiple = { true } items = { form.adjuntos.adjunto.files}
+                                                    item = 'adjunto' handleChange = { this.handleChange } />
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="card-footer py-3 pr-1">
-                                        <div className="row">
-                                            <div className="col-lg-12 text-right pr-0 pb-0">
-                                                <Button
-                                                    icon=''
-                                                    className="btn btn-light-primary font-weight-bold"
-                                                    onClick={
-                                                        (e) => {
-                                                            e.preventDefault();
-                                                            validateAlert(this.addComentario, e, 'form-comentario-adjunto')
-                                                        }
-                                                    }
-                                                    text="ENVIAR"
-                                                />
-                                            </div>
-                                        </div>
+                                    <div className="card-footer py-3 pr-1 text-center">
+                                        <Button icon = '' className = "btn btn-light-primary font-weight-bold"
+                                            onClick = { (e) => { e.preventDefault(); validateAlert(this.addComentario, e, 'form-comentario-adjunto') } }
+                                            text = "ENVIAR" />
                                     </div>
                                 </Form>
                             </Tab.Pane>
@@ -976,7 +717,7 @@ class Tareas extends Component {
                                     <div className="col-md-12 row d-flex justify-content-center">
                                         <div className="col-md-7 mt-5">
                                             {
-                                                tarea.comentarios.length > 0 &&
+                                                this.hasComentario(tarea) &&
                                                 tarea.comentarios.map((comentario, key) => {
                                                     return (
                                                         <div key={key} className="form-group row form-group-marginless px-3">
@@ -990,20 +731,20 @@ class Tareas extends Component {
                                                                             <div className="timeline-content">
                                                                                 <span className="text-info font-weight-bolder">{comentario.user.name}</span>
                                                                                 <span className="text-muted ml-2 font-weight-bold">
-                                                                                    {/* {this.diffCommentDate(comentario)} */}
                                                                                     { diffCommentDate(comentario) }
                                                                                 </span>
-                                                                                <p className={comentario.adjunto===null?"p-0 font-weight-light mb-0":"p-0 font-weight-light"}>{comentario.comentario}</p>
+                                                                                <p className = {comentario.adjunto === null ? "p-0 font-weight-light mb-0" : "p-0 font-weight-light" } >
+                                                                                    {comentario.comentario}
+                                                                                </p>
                                                                                 {
-                                                                                    comentario.adjunto ?
+                                                                                    comentario.adjunto &&
                                                                                         <div className="d-flex justify-content-end">
                                                                                             <a href={comentario.adjunto.url} target='_blank' rel="noopener noreferrer" className="text-muted text-hover-info font-weight-bold">
                                                                                                 <span className="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
                                                                                                     <SVG src={toAbsoluteUrl('/images/svg/Attachment1.svg')} />
                                                                                                 </span>VER ADJUNTO
-                                                                                                    </a>
+                                                                                            </a>
                                                                                         </div>
-                                                                                        : ''
                                                                                 }
                                                                             </div>
                                                                         </div>
