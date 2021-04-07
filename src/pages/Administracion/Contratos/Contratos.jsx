@@ -434,8 +434,12 @@ class Contratos extends Component {
             { value: value }, 
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                this.getClientesAxios()
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El rendimiento fue editado con éxito.')
+                const { key } = this.state
+                if (key === 'cliente')
+                    this.getClientesAxios()
+                if (key === 'proveedor')
+                    this.getCajasAxios()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El contrato fue editado con éxito.')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -460,6 +464,8 @@ class Contratos extends Component {
                 return 'EDITAR LA FECHA FINAL'
             case 'proveedor':
                 return 'EDITAR EL PROVEEDOR'
+            case 'descripcion':
+                return 'EDITAR LA DESCRIPCIÓN'
             default:
                 return ''
         }
