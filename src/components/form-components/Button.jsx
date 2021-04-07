@@ -4,9 +4,7 @@ import { Button } from 'react-bootstrap'
 import OverlayTrigger from 'react-bootstrap/OverlayTrigger'
 import { Tooltip } from 'react-bootstrap'
 
-
 export default class button extends Component {
-
     render() {
         const { children, color, text, icon, onClick, className, type, tooltip, pulse, only_icon, id, ...props } = this.props
         return (
