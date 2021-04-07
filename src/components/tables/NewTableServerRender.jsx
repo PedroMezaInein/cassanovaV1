@@ -277,6 +277,7 @@ class NewTableServerRender extends Component {
                         let arregloRendered = []
                         let hiddenCount = 0
                         var data = $.map( columns, function ( col, i ) {
+                             
                             if(col.hidden){
                                 hiddenCount++;
                                 if(renderedHeader.includes(i)){
@@ -289,6 +290,7 @@ class NewTableServerRender extends Component {
                                         '<td>'+ valorCelda+'</td>'+
                                     '</tr>'
                                 }else{
+                                     
                                     return '<tr data-dt-row="'+col.rowIndex+'" data-dt-column="'+col.columnIndex+'">'+
                                         '<td>'+col.title+':'+'</td> '+
                                         '<td> '+ col.data+'</td>'+
@@ -309,8 +311,12 @@ class NewTableServerRender extends Component {
                                     console.log(td)
                                     ReactDOM.render( col.data, td)
                                 }
-                            })
-                        })    
+                            })  
+                           // console.log(valor[0],'data')
+                            
+                              
+                        })
+     
                         return data ?
                         tablaModificada :
                             false;
