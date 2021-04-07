@@ -5,14 +5,15 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV, EMPRESA_COLUMNS} from '../../../constants'
 import { Modal, ModalDelete } from '../../../components/singles'
-import { setTextTableCenter } from '../../../functions/setters'
+import { setTextTableReactDom } from '../../../functions/setters'
 import ItemSlider from '../../../components/singles/ItemSlider'
 import { Nav, Tab, Col, Row, Card } from 'react-bootstrap'
-import { waitAlert, printResponseErrorAlert, errorAlert, doneAlert, questionAlertY } from '../../../functions/alert'
+import { waitAlert, printResponseErrorAlert, errorAlert, doneAlert, questionAlertY, customInputAlert } from '../../../functions/alert'
 import { EmpresaCard } from '../../../components/cards'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
+import { Update } from '../../../components/Lottie'
 const MySwal = withReactContent(Swal)
 const $ = require('jquery');
 class Empresas extends Component {
@@ -112,16 +113,81 @@ class Empresas extends Component {
                 logo: renderToString(empresa.logo_principal.length !== 0 ? 
                     <div className="text-center"><img className="img-empresa" src={empresa.logo_principal[empresa.logo_principal.length - 1].url} alt={empresa.name} /> </div>
                 : <div className="text-center font-size-12px">-</div>),
-                name: renderToString(setTextTableCenter(empresa.name)),
-                razonSocial: renderToString(setTextTableCenter(empresa.razon_social)),
-                rfc: renderToString(setTextTableCenter(empresa.rfc)),
+                name: setTextTableReactDom(empresa.name, this.doubleClick, empresa, 'name', 'text-center'),
+                razonSocial: setTextTableReactDom(empresa.razon_social, this.doubleClick, empresa, 'razon_social', 'text-center'),
+                rfc: setTextTableReactDom(empresa.rfc, this.doubleClick, empresa, 'rfc', 'text-center'),
                 id: empresa.id
             })
             return false
         })
         return aux
     }
-
+    doubleClick = (data, tipo) => {
+        const { form } = this.state
+        if(tipo){
+            form[tipo] = data[tipo]
+        }
+        this.setState({form})
+        customInputAlert(
+            <div>
+                <h2 className = 'swal2-title mb-4 mt-2'> { this.setSwalHeader(tipo) } </h2>
+                <div className="input-group input-group-solid rounded-0 mb-2 mt-7">
+                    <input name={tipo} defaultValue = { data[tipo] } onChange = { (e) => { this.onChange(e.target.value, tipo)} }
+                        className="form-control text-dark-50 font-weight-bold form-control text-uppercase text-justify">
+                    </input>
+                </div>
+            </div>,
+            <Update />,
+            () => { this.patchEmpresa(data, tipo) },
+            () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
+        )
+    }
+    onChange = (value, tipo) => {
+        const { form } = this.state
+        form[tipo] = value
+        this.setState({...this.state, form})
+    }
+    clearForm = () => {
+        const { form } = this.state
+        let aux = Object.keys(form)
+        aux.forEach((element) => {
+            switch(element){
+                default:
+                    form[element] = ''
+                break;
+            }
+        })
+        return form
+    }
+    patchEmpresa = async( data,tipo ) => {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        let value = form[tipo]
+        waitAlert()
+        await axios.put(`${URL_DEV}v2/usuarios/empresas/${tipo}/${data.id}`, 
+            { value: value }, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.getEmpresas()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El rendimiento fue editado con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    setSwalHeader = (tipo) => {
+        switch(tipo){
+            case 'name':
+                return 'EDITAR EL NOMBRE'
+            case 'razonSocial':
+                return 'EDITAR LA RAZÓN SOCIAL'
+            case 'rfc':
+                return 'EDITAR EL RFC'
+            default:
+                return ''
+        }
+    }
     setActions = () => {
         let aux = []
         aux.push(

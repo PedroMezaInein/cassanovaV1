@@ -3,10 +3,9 @@ import '../../styles/custom_datatable.css'
 import '../../styles/metronic/_datables.scss';
 import { errorAlert } from '../../functions/alert'
 import { Card, Dropdown, DropdownButton, OverlayTrigger  } from 'react-bootstrap'
-import { renderToNodeStream, renderToString } from 'react-dom/server';
+import { renderToString } from 'react-dom/server';
 import Tooltip from 'react-bootstrap/Tooltip'
-import ReactDOM, { hydrate } from 'react-dom'
-import { Children } from 'react';
+import ReactDOM from 'react-dom'
 const $ = require('jquery');
 const global_variable = {}
 $.DataTable = require('datatables.net');
@@ -273,38 +272,51 @@ class NewTableServerRender extends Component {
             colReorder: true,
             responsive: {
                 details: {
-                    renderer: function(api, rowIdx, columns){
+                    renderer: function(api, rowIdx, columns){ 
                         let arregloRendered = []
                         let hiddenCount = 0
                         var data = $.map( columns, function ( col, i ) {
-                            
+                             
                             if(col.hidden){
                                 hiddenCount++;
                                 if(renderedHeader.includes(i)){
+                                    let valorCelda = col.data.props.children.props.children?
+                                    col.data.props.children.props.children[1]:col.data.props.children.props.value
+                                    
                                     arregloRendered.push(col)
                                     return '<tr data-dt-row="'+col.rowIndex+'" data-dt-column="'+col.columnIndex+'">'+
                                         '<td>'+col.title+':'+'</td> '+
-                                        '<td></td>'+
+                                        '<td>'+ valorCelda+'</td>'+
                                     '</tr>'
                                 }else{
+                                     
                                     return '<tr data-dt-row="'+col.rowIndex+'" data-dt-column="'+col.columnIndex+'">'+
                                         '<td>'+col.title+':'+'</td> '+
-                                        '<td>'+col.data+'</td>'+
+                                        '<td> '+ col.data+'</td>'+
                                     '</tr>'
                                 }
                             }
                         } ).join('');
 
-                        let valor = $('<table/>').append( data )
-                        arregloRendered.forEach((col, index) => {
-                            let numero = columns.length - hiddenCount;
-                            let td = valor[0]['children'][numero]['children'][1]
-                            if(td)
-                                ReactDOM.render( col.data, td)
+                        let tablaModificada = $('<table/>').append( data ) 
+                        let tablaInternaResponsiva =  tablaModificada[0]['children']
+                        console.log(tablaInternaResponsiva)
+                        arregloRendered.forEach((col, index) => { 
+                            tablaInternaResponsiva.forEach(element=>{
+                                if(parseInt(element.dataset.dtColumn)===parseInt(col.columnIndex))
+                                { 
+                                    console.log("Si hice match ",element.dataset.dtColumn, " con ",col.columnIndex)
+                                    let td = element['children'][1] 
+                                    console.log(td)
+                                    ReactDOM.render( col.data, td)
+                                }
+                            })  
+                           // console.log(valor[0],'data')
+                            
                         })
      
                         return data ?
-                            valor :
+                        tablaModificada :
                             false;
                     }
                 }

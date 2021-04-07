@@ -1301,7 +1301,7 @@ export const CONCEPTOS_COLUMNS = [
     },
     {
         Header: 'Clave',
-        accessor: 'clave'
+        accessor: 'clave',
     },
     {
         Header: 'Unidad',
@@ -1334,30 +1334,37 @@ export const HERRAMIENTAS_COLUMNS = [
     {
         Header: 'Empresa',
         accessor: 'empresa',
+        customRender: true
     },
     {
         Header: 'Proyecto',
         accessor: 'proyecto',
+        customRender: true
     },
     {
         Header: 'Nombre',
         accessor: 'nombre',
+        customRender: true
     },
     {
         Header: 'Modelo',
         accessor: 'modelo',
+        customRender: true
     },
     {
         Header: 'Serie',
         accessor: 'serie',
+        customRender: true
     },
     {
         Header: 'Fecha de compra',
         accessor: 'fecha',
+        customRender: true
     },
     {
         Header: 'Descripción',
         accessor: 'descripcion',
+        customRender: true
     }
 ]
 
@@ -1541,14 +1548,17 @@ export const EMPRESA_COLUMNS = [
     {
         Header: 'Nombre',
         accessor: 'name',
+        customRender: true
     },
     {
         Header: 'Razón social',
         accessor: 'razonSocial',
+        customRender: true
     },
     {
         Header: 'RFC',
         accessor: 'rfc',
+        customRender: true
     },
 ]
 
@@ -1559,27 +1569,33 @@ export const CONTRATOS_CLIENTES_COLUMNS = [
     },
     {
         Header: 'Nombre',
-        accessor: 'nombre'
+        accessor: 'nombre',
+        customRender: true
     },
     {
         Header: 'Cliente',
-        accessor: 'cliente'
+        accessor: 'cliente',
+        customRender: true
     },
     {
         Header: 'Empresa',
-        accessor: 'empresa'
+        accessor: 'empresa',
+        customRender: true
     },
     {
         Header: 'Fecha de inicio',
-        accessor: 'fechaInicio'
+        accessor: 'fechaInicio',
+        customRender: true
     },
     {
         Header: 'Fecha de fin',
-        accessor: 'fechaFin'
+        accessor: 'fechaFin',
+        customRender: true
     },
     {
         Header: 'Monto con IVA',
-        accessor: 'monto'
+        accessor: 'monto',
+        customRender: true
     },
     {
         Header: 'Monto Pagado',
@@ -1591,11 +1607,13 @@ export const CONTRATOS_CLIENTES_COLUMNS = [
     },
     {
         Header: 'Tipo de contrato',
-        accessor: 'contrato'
+        accessor: 'contrato',
+        customRender: true
     },
     {
         Header: 'Descripción',
-        accessor: 'descripcion'
+        accessor: 'descripcion',
+        customRender: true
     }
 ]
 
@@ -2020,14 +2038,17 @@ export const USUARIOS = [
     {
         Header: 'Nombre',
         accessor: 'name',
+        customRender: true
     },
     {
         Header: 'Correo',
         accessor: 'email',
+        customRender: true
     },
     {
         Header: 'Departamento',
         accessor: 'departamento',
+        customRender: true
     }
 ]
 
@@ -2039,14 +2060,17 @@ export const CLIENTES = [
     {
         Header: 'Nombre',
         accessor: 'name',
+        customRender: true
     },
     {
         Header: 'Correo',
         accessor: 'email',
+        customRender: true
     },
     {
         Header: 'Proyecto',
         accessor: 'proyecto',
+        customRender: true
     }
 ]
 

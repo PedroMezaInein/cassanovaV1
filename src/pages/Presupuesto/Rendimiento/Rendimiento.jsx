@@ -11,7 +11,7 @@ import { RendimientoCard } from '../../../components/cards'
 import { Update } from '../../../components/Lottie'
 import Swal from 'sweetalert2'
 import NumberFormat from 'react-number-format'
-import { SelectSearchGray, InputGray } from '../../../components/form-components'
+import { SelectSearchGray } from '../../../components/form-components'
 const $ = require('jquery');
 class Rendimientos extends Component {
     state = {
@@ -144,7 +144,7 @@ class Rendimientos extends Component {
             <div>
                 <h2 className = 'swal2-title mb-4 mt-2'> { this.setSwalHeader(tipo) } </h2>
                 {
-                    tipo === 'materiales' || tipo === 'rendimiento' ?
+                   ( tipo === 'materiales') || (tipo === 'rendimiento') ?
                         <div className="input-group input-group-solid rounded-0 mb-2 mt-7">
                             <input name={tipo} defaultValue = { data[tipo] } onChange = { (e) => { this.onChange(e.target.value, tipo)} }
                                 className="form-control text-dark-50 font-weight-bold form-control text-uppercase text-justify">
