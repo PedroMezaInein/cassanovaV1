@@ -383,7 +383,6 @@ class Tareas extends Component {
 
     deleteTarea = async(id) => {
         const { access_token } = this.props.authUser
-        const { subActiveKey } = this.state
         await axios.delete(`${URL_DEV}v2/usuarios/tareas/${id}`, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
                 doneAlert('Tarea eliminada con éxito')
