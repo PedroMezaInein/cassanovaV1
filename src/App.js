@@ -28,6 +28,8 @@ const UsuariosForm = Loader(() => import('./pages/Usuarios/Usuarios/UsuariosForm
 const Accesos = Loader(() => import('./pages/Usuarios/Accesos/Accesos') )
 const AccesosForm = Loader(() => import('./pages/Usuarios/Accesos/AccesosForm') )
 
+const CalendarioTareas = Loader(() => import('./pages/Usuarios/CalendarioTareas/CalendarioTareas') )
+
 const Normas = Loader(() => import('./pages/Normas') )
 
 const Leads = Loader(() => import('./pages/Leads/Leads/Leads') )
@@ -290,6 +292,8 @@ class App extends Component{
                     <Route path = "/usuarios/accesos" exact component = { Accesos } />
                     <Route path = "/usuarios/accesos/:action" exact component ={ AccesosForm } />
 
+                    <Route path = "/usuarios/calendario-tareas" exact component ={ CalendarioTareas } />
+
                     {/*  ANCHOR Routes for presupuesto */}
 
                     <Route path = "/presupuesto/conceptos" exact component ={ Conceptos } />
@@ -443,7 +447,7 @@ class App extends Component{
                     <Route path = "/rh/empleados/:action" exact component ={ EmpleadosForm } />
                     
                     <Route path = "/rh/vacaciones" exact component ={ Vacaciones } />
-
+                    
                     <Route path = "/rh/imss" exact component ={ Imss } />
                     <Route path = "/rh/imss/:action" exact component = { ImssForm } />
 
