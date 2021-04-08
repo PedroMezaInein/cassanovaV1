@@ -7,7 +7,7 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 :root {
-  --blue: #007bff;
+  --blue: #2171c1;
   --indigo: #6610f2;
   --purple: #6f42c1;
   --pink: #e83e8c;
@@ -11024,7 +11024,7 @@ a.text-dark-75:focus {
 .bg-hover-state-primary:hover {
   -webkit-transition: all 0.15s ease;
   transition: all 0.15s ease;
-  background-color: #187DE4 !important;
+  background-color: #2171c1 !important;
 }
 
 .bg-diagonal-primary:before {
@@ -37952,7 +37952,7 @@ button {
 
 .alert.alert-custom.alert-light-primary .alert-close:focus,
 .alert.alert-custom.alert-light-primary .alert-close:hover {
-  color: #187DE4;
+  color: #2171c1;
 }
 
 .alert.alert-custom.alert-light-primary.alert-notice {
@@ -39351,8 +39351,8 @@ button {
 .btn.btn-primary:focus:not(.btn-text),
 .btn.btn-primary.focus:not(.btn-text) {
   color: #FFFFFF;
-  background-color: #187DE4;
-  border-color: #187DE4;
+  background-color: #2171c1;
+  border-color: #2171c1;
 }
 
 .btn.btn-primary:hover:not(.btn-text) i,
@@ -39417,8 +39417,8 @@ button {
 .show>.btn.btn-primary.dropdown-toggle,
 .show .btn.btn-primary.btn-dropdown {
   color: #FFFFFF;
-  background-color: #187DE4;
-  border-color: #187DE4;
+  background-color: #2171c1;
+  border-color: #2171c1;
 }
 
 .btn.btn-primary:not(:disabled):not(.disabled):active:not(.btn-text) i,
@@ -40082,7 +40082,7 @@ button {
 .btn.btn-link-primary:hover:not(.btn-text),
 .btn.btn-link-primary:focus:not(.btn-text),
 .btn.btn-link-primary.focus:not(.btn-text) {
-  color: #187DE4;
+  color: #2171c1;
   background-color: transparent !important;
   border-color: transparent !important;
 }
@@ -40090,7 +40090,7 @@ button {
 .btn.btn-link-primary:hover:not(.btn-text) i,
 .btn.btn-link-primary:focus:not(.btn-text) i,
 .btn.btn-link-primary.focus:not(.btn-text) i {
-  color: #187DE4;
+  color: #2171c1;
 }
 
 .btn.btn-link-primary:hover:not(.btn-text) .svg-icon svg g [fill],
@@ -40098,7 +40098,7 @@ button {
 .btn.btn-link-primary.focus:not(.btn-text) .svg-icon svg g [fill] {
   -webkit-transition: fill 0.3s ease;
   transition: fill 0.3s ease;
-  fill: #187DE4;
+  fill: #2171c1;
 }
 
 .btn.btn-link-primary:hover:not(.btn-text) .svg-icon svg:hover g [fill],
@@ -40111,7 +40111,7 @@ button {
 .btn.btn-link-primary:hover:not(.btn-text).dropdown-toggle:after,
 .btn.btn-link-primary:focus:not(.btn-text).dropdown-toggle:after,
 .btn.btn-link-primary.focus:not(.btn-text).dropdown-toggle:after {
-  color: #187DE4;
+  color: #2171c1;
 }
 
 .btn.btn-link-primary.disabled,
@@ -40148,7 +40148,7 @@ button {
 .btn.btn-link-primary:not(:disabled):not(.disabled).active,
 .show>.btn.btn-link-primary.dropdown-toggle,
 .show .btn.btn-link-primary.btn-dropdown {
-  color: #187DE4;
+  color: #2171c1;
   background-color: transparent !important;
   border-color: transparent !important;
 }
@@ -40157,7 +40157,7 @@ button {
 .btn.btn-link-primary:not(:disabled):not(.disabled).active i,
 .show>.btn.btn-link-primary.dropdown-toggle i,
 .show .btn.btn-link-primary.btn-dropdown i {
-  color: #187DE4;
+  color: #2171c1;
 }
 
 .btn.btn-link-primary:not(:disabled):not(.disabled):active:not(.btn-text) .svg-icon svg g [fill],
@@ -40166,7 +40166,7 @@ button {
 .show .btn.btn-link-primary.btn-dropdown .svg-icon svg g [fill] {
   -webkit-transition: fill 0.3s ease;
   transition: fill 0.3s ease;
-  fill: #187DE4;
+  fill: #2171c1;
 }
 
 .btn.btn-link-primary:not(:disabled):not(.disabled):active:not(.btn-text) .svg-icon svg:hover g [fill],
@@ -40181,7 +40181,7 @@ button {
 .btn.btn-link-primary:not(:disabled):not(.disabled).active.dropdown-toggle:after,
 .show>.btn.btn-link-primary.dropdown-toggle.dropdown-toggle:after,
 .show .btn.btn-link-primary.btn-dropdown.dropdown-toggle:after {
-  color: #187DE4;
+  color: #2171c1;
 }
 
 .btn.btn-hover-primary:hover:not(.btn-text),
@@ -54862,7 +54862,7 @@ code {
 }
 
 .bar-chart.bar-chart-primary .bar-chart-value {
-  background-color: #187DE4;
+  background-color: #2171c1;
 }
 
 .bar-chart.bar-chart-primary [class*="bar-chart-value-"] {
