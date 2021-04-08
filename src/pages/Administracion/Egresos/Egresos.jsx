@@ -596,7 +596,7 @@ class egresos extends Component {
             (response) => {
                 let { form } = this.state
                 const { egreso } = response.data
-                form = this.revertForm()
+                form = this.revertForm(egreso)
                 Swal.close()
                 this.setState({ ...this.state, form, modalFacturaExtranjera: true, egreso })
             }, (error) => { printResponseErrorAlert(error) }
@@ -874,7 +874,6 @@ class egresos extends Component {
                 printResponseErrorAlert(error) 
             }
         ).catch((error) => {
-            this.revertForm();
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
