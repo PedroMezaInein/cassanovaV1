@@ -4,10 +4,10 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import { URL_DEV, COMPRAS_COLUMNS } from '../../../constants'
-import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setAdjuntosList, setTextTableCenter } from '../../../functions/setters'
-import { errorAlert, waitAlert, createAlert, printResponseErrorAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis, createAlertSA2WithActionOnClose } from '../../../functions/alert'
+import { setOptions, setSelectOptions, setTextTable, setDateTableReactDom, setMoneyTable, setArrayTable, setAdjuntosList, setTextTableCenter, setTextTableReactDom } from '../../../functions/setters'
+import { errorAlert, waitAlert, createAlert, printResponseErrorAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis, createAlertSA2WithActionOnClose, customInputAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
-import { Button, FileInput } from '../../../components/form-components'
+import { Button, FileInput, SelectSearchGray, CalendarDaySwal,RadioGroup } from '../../../components/form-components'
 import { Modal, ModalDelete } from '../../../components/singles'
 import { FacturaTable } from '../../../components/tables'
 import { ComprasCard } from '../../../components/cards'
@@ -15,6 +15,8 @@ import { Form } from 'react-bootstrap'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import {AdjuntosForm, FacturaExtranjera} from '../../../components/forms'
 import Select from '../../../components/form-components/Select'
+import { Update } from '../../../components/Lottie'
+import NumberFormat from 'react-number-format'
 const $ = require('jquery');
 
 class Compras extends Component {
@@ -88,7 +90,17 @@ class Compras extends Component {
             formasPago: [],
             metodosPago: [],
             estatusFacturas: [],
-            contratos: []
+            contratos: [],
+            optionsFactura:[
+                {
+                    label: 'Si',
+                    value: 'Con factura'
+                },
+                {
+                    label: 'No',
+                    value: 'Sin factura'
+                }
+            ],
         },
         data: {
             clientes: [],
@@ -429,20 +441,20 @@ class Compras extends Component {
                             { name: '# de cuenta', text: compra.cuenta ? compra.cuenta.numero : '' }
                         ],'153px'
                     )),
-                    proyecto: renderToString(setTextTable(compra.proyecto ? compra.proyecto.nombre : '')),
+                    proyecto: setTextTableReactDom(compra.proyecto ? compra.proyecto.nombre : '', this.doubleClick, compra, 'proyecto', 'text-center'),
                     proveedor: renderToString(setTextTable(compra.proveedor ? compra.proveedor.razon_social : '')),
-                    factura: renderToString(setTextTableCenter(compra.factura ? 'Con factura' : 'Sin factura')),
+                    factura: setTextTableReactDom(compra.factura ? 'Con factura' : 'Sin factura', this.doubleClick, compra, 'factura', 'text-justify'),
                     monto: renderToString(setMoneyTable(compra.monto)),
                     comision: renderToString(setMoneyTable(compra.comision ? compra.comision : 0.0)),
-                    impuesto: renderToString(setTextTableCenter(compra.tipo_impuesto ? compra.tipo_impuesto.tipo : 'Sin definir')),
-                    tipoPago: renderToString(setTextTableCenter(compra.tipo_pago.tipo)),
-                    descripcion: renderToString(setTextTable(compra.descripcion)),
+                    impuesto: setTextTableReactDom(compra.tipo_impuesto ? compra.tipo_impuesto.tipo : 'Sin definir', this.doubleClick, compra, 'tipoImpuesto', 'text-justify'),
+                    tipoPago: setTextTableReactDom(compra.tipo_pago.tipo, this.doubleClick, compra, 'tipoPago', 'text-justify'),
+                    descripcion: setTextTableReactDom(compra.descripcion !== null ? compra.descripcion :'', this.doubleClick, compra, 'descripcion', 'text-justify'),
                     area: renderToString(setTextTableCenter(compra.subarea ? compra.subarea.area ? compra.subarea.area.nombre : '' : '')),
                     subarea: renderToString(setTextTableCenter(compra.subarea ? compra.subarea.nombre : '')),
-                    estatusCompra: renderToString(setTextTableCenter(compra.estatus_compra ? compra.estatus_compra.estatus : '')),
+                    estatusCompra: setTextTableReactDom(compra.estatus_compra ? compra.estatus_compra.estatus : '', this.doubleClick, compra, 'estatusCompra', 'text-justify'),
                     total: renderToString(setMoneyTable(compra.total)),
                     adjuntos: renderToString(setArrayTable(_aux)),
-                    fecha: renderToString(setDateTable(compra.created_at)),
+                    fecha: setDateTableReactDom(compra.created_at, this.doubleClick, compra, 'fecha', 'text-center'),
                     id: compra.id,
                     objeto: compra
                 }
@@ -450,6 +462,215 @@ class Compras extends Component {
             return false
         })
         return aux
+    }
+    doubleClick = (data, tipo) => {
+        const { form } = this.state
+        console.log(data)
+        switch(tipo){
+            case 'proyecto':
+                if(data[tipo])
+                    form[tipo] = data[tipo].id.toString()
+                break
+            // case 'tipoImpuesto':
+            //     form.tipoImpuesto = data.tipo_impuesto.tipo
+            case 'fecha':
+                form.fecha = new Date(data.created_at)
+                break
+            default:
+                form[tipo] = data[tipo]
+                break
+        }
+        this.setState({form})
+        customInputAlert(
+            <div>
+                <h2 className = 'swal2-title mb-4 mt-2'> { this.setSwalHeader(tipo) } </h2>
+                {
+                    tipo === 'factura' ?
+                        // <div className="radio-inline">
+                        //     {
+                        //         options.map((option, key) => {
+                        //             return (
+                        //                 <label className="radio radio-outline radio-outline-2x radio-primary" key={key}>
+                        //                     <input
+                        //                         type='radio'
+                        //                         name={name}
+                        //                         value={option.value}
+                        //                         onChange={onChange}
+                        //                         checked={value === option.value}
+                        //                     />
+                        //                     {option.label}
+                        //                     <span></span>
+                        //                 </label>
+                        //             )
+                        //         })
+                        //     }
+                        // </div>
+                            <div className="radio-inline">
+                                {
+                                    this.setOptions(data,tipo).map((option, key) => {
+                                        return (
+                                            <label className="radio radio-outline radio-outline-2x radio-primary" key={key}>
+                                                <input
+                                                    type='radio'
+                                                    name='factura'
+                                                    value={option.value}
+                                                    onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} }
+                                                    checked={form.factura === option.value}
+                                                />
+                                                {option.label}
+                                                <span></span>
+                                            </label>
+                                        )
+                                    })
+                                }
+                            </div>
+                            // <RadioGroup
+                            //     name='factura'
+                            //     onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} }
+                            //     options={
+                            //         [
+                            //             {
+                            //                 label: 'Si',
+                            //                 value: 'Con factura'
+                            //             },
+                            //             {
+                            //                 label: 'No',
+                            //                 value: 'Sin factura'
+                            //             }
+                            //         ]
+                            //     }
+                            //     value={form.factura}
+                            // />
+                    :<></>
+                }
+                {
+                    tipo === 'descripcion' &&
+                        <div className="input-group input-group-solid rounded-0 mb-2 mt-7">
+                            <textarea name="descripcion" rows="6" id='descripcion-form' defaultValue = { data.descripcion }
+                                onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} }
+                                className="form-control text-dark-50 font-weight-bold form-control text-uppercase text-justify">
+                            </textarea>
+                        </div>
+                }
+                {
+                    (tipo === 'tipoImpuesto') || (tipo === 'tipoPago') || (tipo === 'estatusCompra')?
+                        <div className="input-icon">
+                            <span className="input-icon input-icon-right">
+                                <span>
+                                    <i className={"flaticon2-search-1 icon-md text-dark-50"}></i>
+                                </span>
+                            </span>
+                                <Form.Control
+                                    className="form-control text-uppercase form-control-solid"
+                                    value={form[tipo]}
+                                    onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} }
+                                    name={tipo}
+                                    as="select">
+                                    <option value={0}>{this.setSwalPlaceholder(tipo)}</option>
+                                    {
+                                        this.setOptions(data, tipo).map((tipo, key) => {
+                                            return (
+                                                <option key={key} value={tipo.value} className="bg-white" >{tipo.text}</option>
+                                            )
+                                        })
+                                    }
+                                </Form.Control>
+                        </div>
+                    :<></>
+                }
+                {
+                    tipo === 'fecha' ?
+                        <CalendarDaySwal value = { form[tipo] } onChange = { (e) => {  this.onChangeSwal(e.target.value, tipo)} } name = { tipo } date = { form[tipo] } withformgroup={0} />
+                    :<></>
+                }
+                {
+                    // ||(tipo === 'cliente') || (tipo === 'empresa') || (tipo === 'tipo_contrato') 
+                    (tipo === 'proyecto')  ?
+                        <SelectSearchGray options = { this.setOptions(data, tipo) }
+                        onChange = { (value) => { this.onChangeSwal(value, tipo)} } name = { tipo }
+                        value = { form[tipo] } customdiv="mb-2 mt-7" requirevalidation={1} 
+                        placeholder={this.setSwalPlaceholder(tipo)}/>
+                    :<></>
+                }
+            </div>,
+            <Update />,
+            () => { this.patchCompras(data, tipo) },
+            () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
+        )
+    }
+    setSwalPlaceholder = (tipo) => {
+        switch(tipo){
+            case 'proyecto':
+                return 'SELECCIONA EL PROYECTO'
+            case 'tipoImpuesto':
+                return 'SELECCIONA EL IMPUESTO'
+            case 'tipoPago':
+                return 'SELECCIONA EL TIPO DE PAGO'
+            case 'estatusCompra':
+                return 'SELECCIONA EL ESTATUS DE COMPRA'
+            default:
+                return ''
+        }
+    }
+    onChangeSwal = (value, tipo) => {
+        console.log(value,'value')
+        console.log(tipo, 'tipo')
+        const { form } = this.state
+        form[tipo] = value
+        this.setState({...this.state, form})
+    }
+    patchCompras = async( data,tipo ) => {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        let value = form[tipo]
+        waitAlert()
+        await axios.put(`${URL_DEV}v2/proyectos/compras/${tipo}/${data.id}`, 
+            { value: value }, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.getComprasAxios()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El rendimiento fue editado con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    setSwalHeader = (tipo) => {
+        switch(tipo){
+            case 'factura':
+                return '¿LLEVA FACTURA?'
+            case 'estatusCompra':
+                return 'EDITAR EL ESTATUS DE COMPRA'
+            case 'tipoPago':
+                return 'EDITAR EL TIPO DE PAGO'
+            case 'tipoImpuesto':
+                return 'EDITAR EL IMPUESTO'
+            case 'descripcion':
+                return 'EDITAR LA DESCRIPCIÓN'
+            case 'fecha':
+                return 'EDITAR LA FECHA'
+            case 'proyecto':
+                return 'EDITAR EL PROYECTO'
+            default:
+                return ''
+        }
+    }
+    setOptions = (data, tipo) => {
+        const { options } = this.state
+        switch(tipo){
+            case '':
+                return options.optionsFactura
+            case 'estatusCompra':
+                return options.estatusCompras
+            case 'tipoPago':
+                return options.tiposPagos
+            case 'tipoImpuesto':
+                return options.tiposImpuestos
+            case 'proyecto':
+                return options.proyectos
+            default: return []
+        }
     }
     setAdjuntosTable = compra => {
         let aux = []
