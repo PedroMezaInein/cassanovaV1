@@ -12,6 +12,7 @@ import { Update } from '../../../components/Lottie'
 import Swal from 'sweetalert2'
 import NumberFormat from 'react-number-format'
 import { SelectSearchGray } from '../../../components/form-components'
+import { printSwalHeader } from '../../../functions/printers'
 const $ = require('jquery');
 class Rendimientos extends Component {
     state = {
@@ -142,7 +143,7 @@ class Rendimientos extends Component {
         this.setState({form})
         customInputAlert(
             <div>
-                <h2 className = 'swal2-title mb-4 mt-2'> { this.setSwalHeader(tipo) } </h2>
+                <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
                 {
                     ( tipo === 'materiales') || (tipo === 'rendimiento') ?
                         <div className="input-group input-group-solid rounded-0 mb-2 mt-7">
@@ -220,24 +221,7 @@ class Rendimientos extends Component {
             console.log(error, 'error')
         })
     }
-    setSwalHeader = (tipo) => {
-        switch(tipo){
-            case 'descripcion':
-                return 'EDITAR LA DESCRIPCIÓN'
-            case 'unidad':
-                return 'EDITAR LA UNIDAD'
-            case 'costo':
-                return 'EDITAR EL COSTO'
-            case 'proveedor':
-                return 'EDITAR EL PROVEEDOR'
-            case 'materiales':
-                return 'EDITAR EL MATERIAL'
-            case 'rendimiento':
-                return 'EDITAR EL RENDIMIENTO'
-            default:
-                return ''
-        }
-    }
+    
     setOptions = (data, tipo) => {
         const { options } = this.state
         switch(tipo){

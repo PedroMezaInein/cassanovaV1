@@ -13,6 +13,7 @@ import folder from './Folder'
 import fileItem from './FileItem'
 import symbolIcon from './SymbolIcon'
 import folderStatic from './FolderStatic'
+import singleTagify from './SingleTagify'
 
 export const Card = card;
 export const Modal = modal;
@@ -29,3 +30,4 @@ export const FileItem = fileItem
 export const SymbolIcon = symbolIcon
 export const FolderStatic = folderStatic
 export const ItemDoubleSlider = itemDoubleSlider
+export const SingleTagify = singleTagify

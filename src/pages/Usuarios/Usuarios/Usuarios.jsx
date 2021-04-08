@@ -3,7 +3,7 @@ import Layout from '../../../components/layout/layout'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV, USUARIOS, CLIENTES } from '../../../constants'
-import { Modal, ModalDelete } from '../../../components/singles'
+import { Modal, ModalDelete, SingleTagify } from '../../../components/singles'
 import { RegisterUserForm, PermisosForm } from '../../../components/forms'
 import Swal from 'sweetalert2'
 import { setOptions, setSelectOptions, setTextTableReactDom, setListTableReactDom } from '../../../functions/setters'
@@ -320,6 +320,34 @@ class Usuarios extends Component {
         return form;
     }
 
+    setTagLabelReactDom = (user, arreglo) => {
+        return (
+            <div className="d-flex flex-wrap tr-hover">
+                {
+                    arreglo.map((element, index) => {
+                        return(
+                            <SingleTagify />
+                            
+                        )
+                        {/* <div className="tagify pr-2 pb-2 d-flex justify-content-center align-items-center w-auto" 
+                                tabIndex="-1" style={{ borderWidth: "0px" }} key={index}>
+                                <div className=" image-upload d-flex px-3 align-items-center tagify__tag tagify__tag--success tagify--noAnim"  >
+                                    <div title="Borrar archivo" className="tagify__tag__removeBtn" role="button"
+                                        aria-label="remove tag" >
+                                    </div>
+                                    <div>
+                                        <span className="tagify__tag-text p-1 white-space"  >
+                                            {element.nombre}
+                                        </span>
+                                    </div>
+                                </div>
+                            </div> */}
+                    })
+                }
+            </div>
+        )
+    }
+
     setUsers = users => {
         let aux = []
         if (users)
@@ -330,7 +358,10 @@ class Usuarios extends Component {
                             actions: this.setActions(user),
                             name: setTextTableReactDom(user.name, this.doubleClick, user, 'name', 'text-center'),
                             email: setTextTableReactDom(user.email, this.doubleClick, user, 'email', 'text-center'),
-                            departamento: user.departamentos.length === 0 ?  setTextTableCenter("Sin definir") : setListTableReactDom(user.departamentos, "nombre", '', this.doubleClick, user, 'departamentos', ''),
+                            departamento: user.departamentos.length === 0 ? 
+                                setTextTableCenter("Sin definir") 
+                                : this.setTagLabelReactDom(user, user.departamentos),
+                                    /* setListTableReactDom(user.departamentos, "nombre", '', this.doubleClick, user, 'departamentos', ''), */
                             id: user.id
                         }
                     )
