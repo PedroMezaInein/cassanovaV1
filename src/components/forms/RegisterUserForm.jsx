@@ -65,7 +65,7 @@ class RegisterUserForm extends Component {
         return options
     }
     render() {
-        const { options, form, onChange, deleteOption, onChangeOptions, formeditado, departamentos_disponibles, proyectos_disponibles, ...props } = this.props
+        const { options, form, onChange, deleteOption, onChangeOptions, formeditado, departamentos_disponibles, proyectos_disponibles, onChangeAndAdd, ...props } = this.props
         return (
             <Form {...props} >
                 <div className="form-group row form-group-marginless">
