@@ -6,7 +6,7 @@ import { ModalDelete, Modal, ItemSlider } from '../../../components/singles'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { URL_DEV, HERRAMIENTAS_COLUMNS, UBICACIONES_HERRAMIENTAS_COLUMNS } from '../../../constants'
 import { deleteAlert, doneAlert, errorAlert, printResponseErrorAlert, waitAlert, customInputAlert } from '../../../functions/alert'
-import { setDateTable, setTextTable, setTextTableCenter, setTextTableReactDom, setDateTableReactDom, setOptions  } from '../../../functions/setters'
+import { setDateTable, setTextTable, setTextTableReactDom, setDateTableReactDom, setOptions  } from '../../../functions/setters'
 import { printSwalHeader } from '../../../functions/printers'
 import axios from 'axios'
 import { Button, CalendarDaySwal } from '../../../components/form-components'
@@ -161,7 +161,6 @@ class Herramienta extends Component {
                 if(data[tipo])
                     form[tipo] = data[tipo].id.toString()
                 break
-                case 'fecha':
             case 'fecha':
                 form.fecha = new Date(data.created_at)
                 break
