@@ -17,6 +17,7 @@ import {AdjuntosForm, FacturaExtranjera} from '../../../components/forms'
 import Select from '../../../components/form-components/Select'
 import { Update } from '../../../components/Lottie'
 import NumberFormat from 'react-number-format'
+import { printSwalHeader } from '../../../functions/printers'
 const $ = require('jquery');
 
 class Compras extends Component {
@@ -91,16 +92,6 @@ class Compras extends Component {
             metodosPago: [],
             estatusFacturas: [],
             contratos: [],
-            optionsFactura:[
-                {
-                    label: 'Si',
-                    value: 'Con factura'
-                },
-                {
-                    label: 'No',
-                    value: 'Sin factura'
-                }
-            ],
         },
         data: {
             clientes: [],
@@ -465,16 +456,22 @@ class Compras extends Component {
     }
     doubleClick = (data, tipo) => {
         const { form } = this.state
-        console.log(data)
         switch(tipo){
             case 'proyecto':
                 if(data[tipo])
                     form[tipo] = data[tipo].id.toString()
                 break
-            // case 'tipoImpuesto':
-            //     form.tipoImpuesto = data.tipo_impuesto.tipo
             case 'fecha':
                 form.fecha = new Date(data.created_at)
+                break
+            case 'tipoImpuesto':
+                form[tipo] = data.tipo_impuesto.id
+                break
+            case 'tipoPago':
+                form[tipo] = data.tipo_pago.id
+                break
+            case 'estatusCompra':
+                form[tipo] = data.estatus_compra.id
                 break
             default:
                 form[tipo] = data[tipo]
@@ -483,66 +480,7 @@ class Compras extends Component {
         this.setState({form})
         customInputAlert(
             <div>
-                <h2 className = 'swal2-title mb-4 mt-2'> { this.setSwalHeader(tipo) } </h2>
-                {
-                    tipo === 'factura' ?
-                        // <div className="radio-inline">
-                        //     {
-                        //         options.map((option, key) => {
-                        //             return (
-                        //                 <label className="radio radio-outline radio-outline-2x radio-primary" key={key}>
-                        //                     <input
-                        //                         type='radio'
-                        //                         name={name}
-                        //                         value={option.value}
-                        //                         onChange={onChange}
-                        //                         checked={value === option.value}
-                        //                     />
-                        //                     {option.label}
-                        //                     <span></span>
-                        //                 </label>
-                        //             )
-                        //         })
-                        //     }
-                        // </div>
-                            <div className="radio-inline">
-                                {
-                                    this.setOptions(data,tipo).map((option, key) => {
-                                        return (
-                                            <label className="radio radio-outline radio-outline-2x radio-primary" key={key}>
-                                                <input
-                                                    type='radio'
-                                                    name='factura'
-                                                    value={option.value}
-                                                    onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} }
-                                                    checked={form.factura === option.value}
-                                                />
-                                                {option.label}
-                                                <span></span>
-                                            </label>
-                                        )
-                                    })
-                                }
-                            </div>
-                            // <RadioGroup
-                            //     name='factura'
-                            //     onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} }
-                            //     options={
-                            //         [
-                            //             {
-                            //                 label: 'Si',
-                            //                 value: 'Con factura'
-                            //             },
-                            //             {
-                            //                 label: 'No',
-                            //                 value: 'Sin factura'
-                            //             }
-                            //         ]
-                            //     }
-                            //     value={form.factura}
-                            // />
-                    :<></>
-                }
+                <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
                 {
                     tipo === 'descripcion' &&
                         <div className="input-group input-group-solid rounded-0 mb-2 mt-7">
@@ -554,27 +492,24 @@ class Compras extends Component {
                 }
                 {
                     (tipo === 'tipoImpuesto') || (tipo === 'tipoPago') || (tipo === 'estatusCompra')?
-                        <div className="input-icon">
+                        <div className="input-icon my-3">
                             <span className="input-icon input-icon-right">
                                 <span>
                                     <i className={"flaticon2-search-1 icon-md text-dark-50"}></i>
                                 </span>
                             </span>
-                                <Form.Control
-                                    className="form-control text-uppercase form-control-solid"
-                                    value={form[tipo]}
-                                    onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} }
-                                    name={tipo}
-                                    as="select">
-                                    <option value={0}>{this.setSwalPlaceholder(tipo)}</option>
-                                    {
-                                        this.setOptions(data, tipo).map((tipo, key) => {
-                                            return (
-                                                <option key={key} value={tipo.value} className="bg-white" >{tipo.text}</option>
-                                            )
-                                        })
-                                    }
-                                </Form.Control>
+                            <Form.Control className = "form-control text-uppercase form-control-solid"
+                                onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } name = { tipo }
+                                defaultValue = { form[tipo] } as = "select">
+                                <option value={0}>{this.setSwalPlaceholder(tipo)}</option>
+                                {
+                                    this.setOptions(data, tipo).map((tipo, key) => {
+                                        return (
+                                            <option key={key} value={tipo.value} className="bg-white" >{tipo.text}</option>
+                                        )
+                                    })
+                                }
+                            </Form.Control>
                         </div>
                     :<></>
                 }
@@ -613,8 +548,6 @@ class Compras extends Component {
         }
     }
     onChangeSwal = (value, tipo) => {
-        console.log(value,'value')
-        console.log(tipo, 'tipo')
         const { form } = this.state
         form[tipo] = value
         this.setState({...this.state, form})
@@ -636,31 +569,10 @@ class Compras extends Component {
             console.log(error, 'error')
         })
     }
-    setSwalHeader = (tipo) => {
-        switch(tipo){
-            case 'factura':
-                return '¿LLEVA FACTURA?'
-            case 'estatusCompra':
-                return 'EDITAR EL ESTATUS DE COMPRA'
-            case 'tipoPago':
-                return 'EDITAR EL TIPO DE PAGO'
-            case 'tipoImpuesto':
-                return 'EDITAR EL IMPUESTO'
-            case 'descripcion':
-                return 'EDITAR LA DESCRIPCIÓN'
-            case 'fecha':
-                return 'EDITAR LA FECHA'
-            case 'proyecto':
-                return 'EDITAR EL PROYECTO'
-            default:
-                return ''
-        }
-    }
+    
     setOptions = (data, tipo) => {
         const { options } = this.state
         switch(tipo){
-            case '':
-                return options.optionsFactura
             case 'estatusCompra':
                 return options.estatusCompras
             case 'tipoPago':
@@ -672,22 +584,7 @@ class Compras extends Component {
             default: return []
         }
     }
-    setAdjuntosTable = compra => {
-        let aux = []
-        let adjuntos = compra.presupuestos.concat(compra.pagos)
-        adjuntos.map((adjunto) => {
-            aux.push({
-                actions: this.setActionsAdjuntos(adjunto),
-                url: renderToString(
-                    setAdjuntosList([{ name: adjunto.name, url: adjunto.url }])
-                ),
-                tipo: renderToString(setTextTable(adjunto.pivot.tipo)),
-                id: 'adjuntos-' + adjunto.id
-            })
-            return false
-        })
-        return aux
-    }
+    
     setActions = compra => {
         let aux = []
         aux.push(
@@ -740,18 +637,7 @@ class Compras extends Component {
         }
         return aux
     }
-    setActionsAdjuntos = () => {
-        let aux = []
-        aux.push(
-            {
-                text: 'Eliminar',
-                btnclass: 'danger',
-                iconclass: 'flaticon2-rubbish-bin',
-                action: 'deleteAdjunto',
-                tooltip: { id: 'delete-Adjunto', text: 'Eliminar', type: 'error' },
-            })
-        return aux
-    }
+    
     changePageEdit = compra => {
         const { history } = this.props
         history.push({
