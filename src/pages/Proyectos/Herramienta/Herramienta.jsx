@@ -7,6 +7,7 @@ import NewTableServerRender from '../../../components/tables/NewTableServerRende
 import { URL_DEV, HERRAMIENTAS_COLUMNS, UBICACIONES_HERRAMIENTAS_COLUMNS } from '../../../constants'
 import { deleteAlert, doneAlert, errorAlert, printResponseErrorAlert, waitAlert, customInputAlert } from '../../../functions/alert'
 import { setDateTable, setTextTable, setTextTableCenter, setTextTableReactDom, setDateTableReactDom, setOptions  } from '../../../functions/setters'
+import { printSwalHeader } from '../../../functions/printers'
 import axios from 'axios'
 import { Button, CalendarDaySwal } from '../../../components/form-components'
 import UbicacionHerramientaForm from '../../../components/forms/proyectos/UbicacionHerramientaForm'
@@ -171,7 +172,7 @@ class Herramienta extends Component {
         this.setState({form})
         customInputAlert(
             <div>
-                <h2 className = 'swal2-title mb-4 mt-2'> { this.setSwalHeader(tipo) } </h2>
+                <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
                 { this.renderInputSwal(data, tipo, form) }
             </div>,
             <Update />,
@@ -222,26 +223,7 @@ class Herramienta extends Component {
             console.log(error, 'error')
         })
     }
-    setSwalHeader = (tipo) => {
-        switch(tipo){
-            case 'empresa':
-                return 'EDITAR LA EMPRESA'
-            case 'proyecto':
-                return 'EDITAR EL PROYECTO'
-            case 'nombre':
-                return 'EDITAR EL NOMBRE'
-            case 'modelo':
-                return 'EDITAR EL MODELO'
-            case 'serie':
-                return 'EDITAR LA SERIE'
-            case 'fecha':
-                return 'EDITAR LA FECHA DE COMPRA'
-            case 'descripcion':
-                return 'EDITAR LA DESCRIPCIÓN'
-            default:
-                return ''
-        }
-    }
+    
     setOptions = (data, tipo) => {
         const { options } = this.state
         switch(tipo){

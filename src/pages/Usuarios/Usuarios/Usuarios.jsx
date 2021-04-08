@@ -3,11 +3,11 @@ import Layout from '../../../components/layout/layout'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV, USUARIOS, CLIENTES } from '../../../constants'
-import { Modal, ModalDelete } from '../../../components/singles'
+import { Modal, ModalDelete, SingleTagify } from '../../../components/singles'
 import { RegisterUserForm, PermisosForm } from '../../../components/forms'
 import Swal from 'sweetalert2'
-import { setOptions, setSelectOptions, setTextTableReactDom, setListTableReactDom } from '../../../functions/setters'
-import { printResponseErrorAlert, errorAlert, waitAlert, doneAlert, questionAlertY, customInputAlert} from '../../../functions/alert'
+import { setOptions, setSelectOptions, setTextTableReactDom, setListTableReactDom, setTagLabelReactDom } from '../../../functions/setters'
+import { printResponseErrorAlert, errorAlert, waitAlert, doneAlert, questionAlertY, customInputAlert, questionAlert} from '../../../functions/alert'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { save, deleteForm } from '../../../redux/reducers/formulario'
 import FloatButtons from '../../../components/singles/FloatButtons'
@@ -320,6 +320,27 @@ class Usuarios extends Component {
         return form;
     }
 
+    /* setTagLabelReactDom = (user, arreglo, tipo) => {
+        return (
+            <div className="d-flex flex-wrap tr-hover">
+                {
+                    arreglo.map((element, index) => {
+                        return(
+                            <div key = { index } >
+                                <SingleTagify element = { element } color = { index % 2 ? 'success' : 'primary' } 
+                                    onClick = { (e) => { questionAlert(
+                                            '¿ESTÁS SEGURO?', 
+                                            `ELIMINARÁS EL DEPARTAMENTO ${element.nombre} DEL USUARIO ${user.name}`,
+                                            () => this.deleteElementAxios(user, element, tipo)
+                                        ) } }/>
+                            </div>
+                        )
+                    })
+                }
+            </div>
+        )
+    } */
+
     setUsers = users => {
         let aux = []
         if (users)
@@ -330,7 +351,9 @@ class Usuarios extends Component {
                             actions: this.setActions(user),
                             name: setTextTableReactDom(user.name, this.doubleClick, user, 'name', 'text-center'),
                             email: setTextTableReactDom(user.email, this.doubleClick, user, 'email', 'text-center'),
-                            departamento: user.departamentos.length === 0 ?  setTextTableCenter("Sin definir") : setListTableReactDom(user.departamentos, "nombre", '', this.doubleClick, user, 'departamentos', ''),
+                            departamento: user.departamentos.length === 0 ? 
+                                setTextTableCenter("Sin definir") 
+                                : setTagLabelReactDom(user, user.departamentos, 'departamento', this.deleteElementAxios),
                             id: user.id
                         }
                     )
@@ -341,7 +364,9 @@ class Usuarios extends Component {
                             actions: this.setActions(user),
                             name: setTextTableReactDom(user.name, this.doubleClick, user, 'name', 'text-center'),
                             email: setTextTableReactDom(user.email, this.doubleClick, user, 'email', 'text-center'),
-                            proyecto: user.proyectos.length === 0 ?  setTextTableCenter("Sin definir") : setListTableReactDom(user.proyectos, "nombre", '', this.doubleClick, user, 'proyectos', ''),       
+                            proyecto: user.proyectos.length === 0 ?  
+                                setTextTableCenter("Sin definir") 
+                                : setTagLabelReactDom(user, user.proyectos, 'proyecto', this.deleteElementAxios),
                             id: user.id
                         }
                     )
@@ -532,6 +557,30 @@ class Usuarios extends Component {
         })
         return form
     }
+
+    deleteElementAxios = async(user, element, tipo) => {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        let value = form[tipo]
+        waitAlert()
+        await axios.delete(`${URL_DEV}v2/usuarios/usuarios/${user.id}/${tipo}/${element.id}`, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { key } = this.state
+                if(key === 'administrador')
+                    this.getAdministradorAxios()
+                if(key === 'empleados')
+                    this.getEmpleadosAxios()
+                if(key === 'clientes')
+                    this.getClientesAxios()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El rendimiento fue editado con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     patchUsuario = async( data,tipo ) => {
         const { access_token } = this.props.authUser
         const { form } = this.state
@@ -541,7 +590,13 @@ class Usuarios extends Component {
             { value: value }, 
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                this.getHerramientasAxios()
+                const { key } = this.state
+                if(key === 'administrador')
+                    this.getAdministradorAxios()
+                if(key === 'empleados')
+                    this.getEmpleadosAxios()
+                if(key === 'clientes')
+                    this.getClientesAxios()
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El rendimiento fue editado con éxito.')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {

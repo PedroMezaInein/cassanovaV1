@@ -14,6 +14,7 @@ import NewTableServerRender from '../../../components/tables/NewTableServerRende
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import { Update } from '../../../components/Lottie'
+import { printSwalHeader } from '../../../functions/printers'
 const MySwal = withReactContent(Swal)
 const $ = require('jquery');
 class Empresas extends Component {
@@ -130,7 +131,7 @@ class Empresas extends Component {
         this.setState({form})
         customInputAlert(
             <div>
-                <h2 className = 'swal2-title mb-4 mt-2'> { this.setSwalHeader(tipo) } </h2>
+                <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
                 <div className="input-group input-group-solid rounded-0 mb-2 mt-7">
                     <input name={tipo} defaultValue = { data[tipo] } onChange = { (e) => { this.onChange(e.target.value, tipo)} }
                         className="form-control text-dark-50 font-weight-bold form-control text-uppercase text-justify">
@@ -176,18 +177,7 @@ class Empresas extends Component {
             console.log(error, 'error')
         })
     }
-    setSwalHeader = (tipo) => {
-        switch(tipo){
-            case 'name':
-                return 'EDITAR EL NOMBRE'
-            case 'razonSocial':
-                return 'EDITAR LA RAZÓN SOCIAL'
-            case 'rfc':
-                return 'EDITAR EL RFC'
-            default:
-                return ''
-        }
-    }
+    
     setActions = () => {
         let aux = []
         aux.push(

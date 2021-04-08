@@ -2010,3 +2010,14 @@ span.font-weight-bolder.text-hover-error:hover{
 .w-33{
     width: 33%;
 }
+
+.tagify{
+    &__tag{
+        &__newtable{
+            border-radius: 0px!important;
+            span{
+                font-size: 11px;
+            }
+        }
+    }
+}
