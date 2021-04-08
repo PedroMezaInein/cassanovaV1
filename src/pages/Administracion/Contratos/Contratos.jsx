@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import { renderToString } from 'react-dom/server'
 import { waitAlert, errorAlert, validateAlert, doneAlert, printResponseErrorAlert, customInputAlert } from '../../../functions/alert'
-import { setTextTable, setDateTable, setMoneyTable, setArrayTable, setTextTableCenter, setTextTableReactDom, setOptions, setMoneyTableReactDom, setDateTableReactDom } from '../../../functions/setters'
+import { setMoneyTable, setArrayTable, setTextTableReactDom, setOptions, setMoneyTableReactDom, setDateTableReactDom } from '../../../functions/setters'
 import Layout from '../../../components/layout/layout'
 import { Tabs, Tab, Form } from 'react-bootstrap'
 import { CONTRATOS_PROVEEDORES_COLUMNS, CONTRATOS_CLIENTES_COLUMNS, URL_DEV, ADJ_CONTRATOS_COLUMNS } from '../../../constants'
@@ -17,6 +17,7 @@ import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import { Update } from '../../../components/Lottie'
 import NumberFormat from 'react-number-format'
+import { printSwalHeader } from '../../../functions/printers'
 const MySwal = withReactContent(Swal)
 const $ = require('jquery');
 class Contratos extends Component {
@@ -334,7 +335,7 @@ class Contratos extends Component {
         this.setState({form})
         customInputAlert(
             <div>
-                <h2 className = 'swal2-title mb-4 mt-2'> { this.setSwalHeader(tipo) } </h2>
+                <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
                 {
                     tipo === 'nombre' ?
                         <div className="input-group input-group-solid rounded-0 mb-2 mt-7">
@@ -446,30 +447,7 @@ class Contratos extends Component {
             console.log(error, 'error')
         })
     }
-    setSwalHeader = (tipo) => {
-        switch(tipo){
-            case 'nombre':
-                return 'EDITAR EL NOMBRE DEL CONTRATO'
-            case 'cliente':
-                return 'EDITAR EL CLIENTE'
-            case 'empresa':
-                return 'EDITAR LA EMPRESA'
-            case 'monto':
-                return 'EDITAR EL MONTO CON IVA'
-            case 'tipo_contrato':
-                return 'EDITAR EL TIPO DE CONTRATO'
-            case 'fecha_inicio':
-                return 'EDITAR LA FECHA DE INCIO'
-            case 'fecha_fin':
-                return 'EDITAR LA FECHA FINAL'
-            case 'proveedor':
-                return 'EDITAR EL PROVEEDOR'
-            case 'descripcion':
-                return 'EDITAR LA DESCRIPCIÓN'
-            default:
-                return ''
-        }
-    }
+
     setOptions = (data, tipo) => {
         const { options } = this.state
         switch(tipo){

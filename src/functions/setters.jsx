@@ -2,6 +2,8 @@ import React from 'react';
 import Moment from 'react-moment'
 import NumberFormat from 'react-number-format';
 import { isMobile } from 'react-device-detect';
+import { questionAlert } from './alert';
+import { SingleTagify } from '../components/singles';
 
 function compare( a, b ) {
     if ( a.name < b.name ){
@@ -192,6 +194,28 @@ export function setListTableReactDom(arreglo, nombre, minwidth, doubleClick, dat
                     })
                 }
             </div>
+        </div>
+    )
+}
+
+export function setTagLabelReactDom (user, arreglo, tipo, deleteElement){
+    return (
+        <div className="d-flex flex-wrap tr-hover">
+            {
+                arreglo.map((element, index) => {
+                    return(
+                        <div key = { index } >
+                            <SingleTagify element = { element } color = { index % 2 ? 'success' : 'primary' } 
+                                onClick = { (e) => { 
+                                    questionAlert(
+                                        '¿ESTÁS SEGURO?', 
+                                        `ELIMINARÁS ${element.nombre} DEL USUARIO ${user.name}`,
+                                        () => deleteElement(user, element, tipo)
+                                    ) } }/>
+                        </div>
+                    )
+                })
+            }
         </div>
     )
 }

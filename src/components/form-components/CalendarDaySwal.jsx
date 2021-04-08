@@ -11,7 +11,7 @@ export default class CalendarDaySwal extends Component {
     }
 
     componentDidMount(){
-        const { date, value } = this.props
+        const { date } = this.props
         
         let newDate = new Date(date)
         let aux = Date.parse(newDate)

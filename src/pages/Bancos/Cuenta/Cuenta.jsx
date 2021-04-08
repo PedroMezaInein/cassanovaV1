@@ -141,9 +141,9 @@ class Cuenta extends Component {
             },
             {
                 text: 'Detalles',
-                btnclass: 'dark',
+                btnclass: 'info',
                 iconclass: 'flaticon-eye',
-                action: 'details ',
+                action: 'details',
                 tooltip: { id: 'details', text: 'Detalles', type: 'info' },
             },
         )

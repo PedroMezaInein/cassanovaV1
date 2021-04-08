@@ -293,9 +293,19 @@ class NewTableServerRender extends Component {
                                                 valorCelda = data_children.props.value
                                                 // console.log(valorCelda,'Costo')
                                             }
-                                        }else if(data_children[1].props.children.props.children){
+                                        }else /* if(data_children[1].props.children.props.children) */{
+                                            console.log(data_children)
+                                            if(data_children !== 'Sin definir'){
+                                                if(data_children.length === 1){
+                                                    if(data_children[0].props.children.props.children)
+                                                        valorCelda = data_children[0].props.children.props.children
+                                                }else{
+                                                    if(data_children[1].props.children.props.children)
+                                                        valorCelda = data_children[1].props.children.props.children
+                                                }
+                                            }
                                             //Fecha
-                                            valorCelda = data_children[1].props.children.props.children
+                                            /* valorCelda = data_children[1].props.children.props.children */
                                             // console.log(valorCelda,'Fecha')
                                         }
                                     }
