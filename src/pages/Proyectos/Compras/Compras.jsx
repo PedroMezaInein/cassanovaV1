@@ -433,7 +433,7 @@ class Compras extends Component {
                     )),
                     proyecto: setTextTableReactDom(compra.proyecto ? compra.proyecto.nombre : '', this.doubleClick, compra, 'proyecto', 'text-center'),
                     proveedor: renderToString(setTextTable(compra.proveedor ? compra.proveedor.razon_social : '')),
-                    factura: setTextTableReactDom(compra.factura ? 'Con factura' : 'Sin factura', this.doubleClick, compra, 'factura', 'text-justify'),
+                    factura: renderToString(setTextTable(compra.factura ? 'Con factura' : 'Sin factura')),
                     monto: renderToString(setMoneyTable(compra.monto)),
                     comision: renderToString(setMoneyTable(compra.comision ? compra.comision : 0.0)),
                     impuesto: setTextTableReactDom(compra.tipo_impuesto ? compra.tipo_impuesto.tipo : 'Sin definir', this.doubleClick, compra, 'tipoImpuesto', 'text-justify'),
@@ -443,7 +443,6 @@ class Compras extends Component {
                     subarea: renderToString(setTextTableCenter(compra.subarea ? compra.subarea.nombre : '')),
                     estatusCompra: setTextTableReactDom(compra.estatus_compra ? compra.estatus_compra.estatus : '', this.doubleClick, compra, 'estatusCompra', 'text-justify'),
                     total: renderToString(setMoneyTable(compra.total)),
-                    adjuntos: renderToString(setArrayTable(_aux)),
                     fecha: setDateTableReactDom(compra.created_at, this.doubleClick, compra, 'fecha', 'text-center'),
                     id: compra.id,
                     objeto: compra
