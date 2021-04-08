@@ -16,8 +16,7 @@ class Calendario extends Component {
         events: [],
         checador: [],
         json: {},
-        calendar_mistareas : true,
-        calendar_departamentos : false
+        tipo: 'own'
     };
 
     componentDidMount() {
@@ -28,7 +27,7 @@ class Calendario extends Component {
             return pathname === url
         });
         this.getUserChecador()
-        this.getCalendarioTareasAxios()
+        this.getCalendarioTareasAxios('own')
     }
 
     actualizarChecadorAxios = async(tipo) => {
@@ -106,49 +105,17 @@ class Calendario extends Component {
         })
     }
 
-    async getCalendarioTareasAxios() {
+    async getCalendarioTareasAxios(tipo) {
+        waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'vacaciones', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(`${URL_DEV}v2/usuarios/calendario-proyectos/${tipo}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { data, calendar_mistareas, calendar_departamentos } = this.state
-                const { empleados, empleado } = response.data
-                console.log( calendar_mistareas, 'calendar_mistareas')
-                console.log(calendar_departamentos, 'calendar_departamentos')
-
+                Swal.close()
+                const { tareas } = response.data
                 let aux = []
-                if(calendar_mistareas){
-                    let mes = ''
-                    let dia = ''
-                    let año = new Date().getFullYear();
-                    empleados.map((empleado, key) => {
-                        mes = empleado.rfc.substr(6, 2);
-                        dia = empleado.rfc.substr(8, 2);
-                        for (let x = -5; x <= 5; x++) {
-                            aux.push({
-                                title: empleado.nombre,
-                                start: Number(Number(año) + Number(x)) + '-' + mes + '-' + dia,
-                                end: Number(Number(año) + Number(x)) + '-' + mes + '-' + dia,
-                            })
-                        }
-                        return false
-                    })
-                }else if(calendar_departamentos){
-                    aux.push({
-                        title: 'PRUEBA_CALENDAR_DEPTOS',
-                        start: '2021-04-10',
-                        end: '2021-04-10'
-                    })
-                }
-                this.setState({
-                    ...this.state,
-                    events: aux,
-                    empleado: empleado,
-                    data
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                tareas.map((tarea, index) => { aux.push( { title: tarea.titulo, start: tarea.fecha_limite, end: tarea.fecha_limite, tarea: tarea } ) })
+                this.setState({ ...this.state, events: aux, tipo: tipo })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -156,34 +123,36 @@ class Calendario extends Component {
     }
 
     renderEventContent = (eventInfo) => {
+        const { tarea } = eventInfo.event._def.extendedProps
+        console.log('TAREA', tarea)
         return (
             <OverlayTrigger overlay={<Tooltip>{eventInfo.event.title}</Tooltip>}>
-                <div className="bg-primary">
-                    <span>{eventInfo.event.title}</span>
+                
+                <div className="bg-primary d-flex flex-wrap px-1 py-2">
+                    <div className="d-flex align-items-center" style = {{ overflowX: 'hidden'}}>
+                        {
+                            tarea.responsables.map((responsable) => {
+                                return(
+                                    <div className="symbol symbol-30 symbol-circle mr-1">
+                                        <img alt="Pic" src={responsable.avatar ? responsable.avatar : "/default.jpg"} />
+                                    </div>
+                                )
+                            })
+                        }
+                        <div> <span className = 'text-white'>{eventInfo.event.title}</span> </div>
+                    </div>
+                    
                 </div>
             </OverlayTrigger>
         )
     }
-    openCalendarMisTareas = () => {
-        console.log('Mis tareas')
-        this.setState({
-            ...this.state,
-            calendar_mistareas: true,
-            calendar_departamentos:false
-        })
-        this.getCalendarioTareasAxios()
-    }
-    openCalendarDeptos = () => {
-        console.log('Tareas departamentos')
-        this.setState({
-            ...this.state,
-            calendar_departamentos: true,
-            calendar_mistareas:false
-        })
-        this.getCalendarioTareasAxios()
-    }
+    
+    openCalendarMisTareas = () => { this.getCalendarioTareasAxios('own') }
+    
+    openCalendarDeptos = () => { this.getCalendarioTareasAxios('all') }
+    
     render() {
-        const { events, calendar_mistareas, calendar_departamentos } = this.state
+        const { events, tipo } = this.state
         return (
             <Layout {...this.props}>
                     <Card className="card-custom">
@@ -200,10 +169,10 @@ class Calendario extends Component {
                         <Card.Body>
                         <div className="btn-toolbar btn-group justify-content-center">
                             <div className="btn-group btn-group-sm">
-                                <button type="button" className={`btn font-weight-bolder ${calendar_mistareas ? 'btn-success' : 'btn-light-success'}`} onClick={this.openCalendarMisTareas}>
+                                <button type="button" className={`btn font-weight-bolder ${tipo === 'own' ? 'btn-success' : 'btn-light-success'}`} onClick={this.openCalendarMisTareas}>
                                     <i className="fas fa-tasks"></i> MIS TAREAS
                                 </button>
-                                <button type="button" className={`btn font-weight-bolder ${calendar_departamentos ? 'btn-primary' : 'btn-light-primary'}`}  onClick={this.openCalendarDeptos}>
+                                <button type="button" className={`btn font-weight-bolder ${tipo === 'all' ? 'btn-primary' : 'btn-light-primary'}`}  onClick={this.openCalendarDeptos}>
                                     <i className="fas fa-list-ol"></i> TAREAS DEPTOS
                                 </button>
                             </div>
