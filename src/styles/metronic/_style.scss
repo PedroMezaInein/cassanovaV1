@@ -6,7 +6,7 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 :root {
-  --blue: #007bff;
+  --blue: #2171c1;
   --indigo: #6610f2;
   --purple: #6f42c1;
   --pink: #e83e8c;
@@ -6715,7 +6715,7 @@ a.text-dark-75:hover, a.text-dark-75:focus {
   .bg-hover-state-primary:hover {
     -webkit-transition: all 0.15s ease;
     transition: all 0.15s ease;
-    background-color: #187DE4 !important; }
+    background-color: #2171c1 !important; }
 
 .bg-diagonal-primary:before {
   background-color: #3699FF !important; }
@@ -23328,7 +23328,7 @@ button {
     .alert.alert-custom.alert-light-primary .alert-close i {
       color: #3699FF; }
     .alert.alert-custom.alert-light-primary .alert-close:focus, .alert.alert-custom.alert-light-primary .alert-close:hover {
-      color: #187DE4; }
+      color: #2171c1; }
     .alert.alert-custom.alert-light-primary.alert-notice {
       border: 0;
       border-left: 4px solid #3699FF;
@@ -25622,7 +25622,7 @@ code {
       color: #B5B5C3;
       font-weight: 500; }
   .bar-chart.bar-chart-primary .bar-chart-value {
-    background-color: #187DE4; }
+    background-color: #2171c1; }
   .bar-chart.bar-chart-primary [class*="bar-chart-value-"] {
     background-color: #3699FF; }
   .bar-chart.bar-chart-secondary .bar-chart-value {
