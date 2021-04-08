@@ -563,7 +563,7 @@ class Usuarios extends Component {
         const { form } = this.state
         let value = form[tipo]
         waitAlert()
-        await axios.put(`${URL_DEV}v2/usuarios/usuarios/${tipo}/${data.id}`, 
+        await axios.put(`${URL_DEV}v2/usuarios/usuarios/update/${tipo}/${data.id}`, 
             { value: value }, 
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {

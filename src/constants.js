@@ -1120,8 +1120,7 @@ export const COMPRAS_COLUMNS = [
     },
     {
         Header: 'Factura',
-        accessor: 'factura',
-        customRender: true
+        accessor: 'factura'
     },
     {
         Header: 'Área',
