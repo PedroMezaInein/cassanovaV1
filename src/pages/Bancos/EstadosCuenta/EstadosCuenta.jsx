@@ -157,7 +157,7 @@ class EstadosCuenta extends Component {
                     }}
                     accessToken={this.props.authUser.access_token}
                     setter={this.setEstados}
-                    urlRender={URL_DEV + 'estados-cuentas'}
+                    urlRender={`${URL_DEV}v2/bancos/estados-cuentas`}
                     idTable='kt_datatable_estados_cuenta'
                     cardTable='cardTable'
                     cardTableHeader='cardTableHeader'
