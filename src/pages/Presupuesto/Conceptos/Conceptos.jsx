@@ -7,12 +7,12 @@ import { setMoneyTableReactDom, setTextTableReactDom, setOptions, setTextTableCe
 import Layout from '../../../components/layout/layout'
 import { ModalDelete, Modal } from '../../../components/singles'
 import { printResponseErrorAlert, errorAlert, doneAlert, waitAlert, customInputAlert } from '../../../functions/alert'
+import { replaceAll } from '../../../functions/functions'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { ConceptoCard } from '../../../components/cards'
-import { SelectSearchGray } from '../../../components/form-components'
+import { InputGray, InputNumberGray, SelectSearchGray } from '../../../components/form-components'
 import { Update } from '../../../components/Lottie'
 import Swal from 'sweetalert2'
-import NumberFormat from 'react-number-format'
 import { printSwalHeader } from '../../../functions/printers'
 
 const $ = require('jquery');
@@ -130,25 +130,15 @@ class Conceptos extends Component {
                 <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
                 {
                     tipo === 'descripcion' &&
-                        <div className="input-group input-group-solid rounded-0 mb-2 mt-7">
-                            <textarea name="descripcion" rows="6" id='descripcion-form' defaultValue = { data.descripcion }
-                                onChange = { (e) => { this.onChange(e.target.value, tipo)} }
-                                className="form-control text-dark-50 font-weight-bold undefined form-control text-uppercase text-justify">
-                            </textarea>
-                        </div>
+                        <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
+                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } rows  = { 6 } as = 'textarea'
+                            onChange = { (e) => { this.onChange(e.target.value, tipo)} } swal = { true } letterCase = { false } />
                 }
                 {
                     tipo === 'costo' &&
-                        <div className="row mx-0 justify-content-center">
-                            <div className="col-12 col-md-6">
-                                <div className="input-group input-group-solid rounded-0 mb-2 mt-7">
-                                    <NumberFormat value = { form[tipo] } displayType = 'input' thousandSeparator = { true }
-                                        prefix = '$' className = 'form-control text-dark-50 font-weight-bold text-uppercase'
-                                        renderText = { form => <div> form[tipo] </div>} defaultValue = { data[tipo] }
-                                        onValueChange = { (values) => this.onChange(values.value, tipo)}/>
-                                </div>
-                            </div>
-                        </div>
+                        <InputNumberGray withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
+                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } prefix = '$' thousandSeparator = { true }
+                            onChange = { (e) => { this.onChange(e.target.value, tipo)} } swal = { true } />
                 }
                 {
                     (tipo !== 'descripcion') && (tipo !== 'costo') &&
@@ -261,7 +251,16 @@ class Conceptos extends Component {
     patchConcepto = async( data,tipo ) => {
         const { access_token } = this.props.authUser
         const { form } = this.state
-        let value = form[tipo]
+        let value = ''
+        switch(tipo){
+            case 'costo':
+                value = replaceAll(form[tipo], ',', '')
+                value = replaceAll(value, '$', '')
+                break
+            default:
+                value = form[tipo]
+                break
+        }
         waitAlert()
         await axios.put(`${URL_DEV}v2/presupuesto/conceptos/${tipo}/${data.id}`, 
             { value: value }, 

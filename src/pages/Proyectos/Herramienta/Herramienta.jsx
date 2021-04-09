@@ -9,7 +9,7 @@ import { deleteAlert, doneAlert, errorAlert, printResponseErrorAlert, waitAlert,
 import { setDateTable, setTextTable, setTextTableReactDom, setDateTableReactDom, setOptions  } from '../../../functions/setters'
 import { printSwalHeader } from '../../../functions/printers'
 import axios from 'axios'
-import { Button, CalendarDaySwal } from '../../../components/form-components'
+import { Button, CalendarDaySwal, InputGray } from '../../../components/form-components'
 import UbicacionHerramientaForm from '../../../components/forms/proyectos/UbicacionHerramientaForm'
 import { Tab, Tabs } from 'react-bootstrap'
 import TableForModals from '../../../components/tables/TableForModals'
@@ -135,20 +135,15 @@ class Herramienta extends Component {
                 )
             case  'descripcion':
                 return(
-                    <div className="input-group input-group-solid rounded-0 mb-2 mt-7">
-                        <textarea name="descripcion" rows="6" id='descripcion-form' defaultValue = { data[tipo] }
-                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} }
-                            className="form-control text-dark-50 font-weight-bold form-control text-uppercase text-justify">
-                        </textarea>
-                    </div>
+                    <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
+                        requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } rows  = { 6 } as = 'textarea'
+                        onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true } letterCase = { false } />
                 )
             default:
                 return (
-                    <div className="input-group input-group-solid rounded-0 mb-2 mt-7">
-                        <input name={tipo} defaultValue = { data[tipo] } onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} }
-                            className="form-control text-dark-50 font-weight-bold form-control text-uppercase text-justify">
-                        </input>
-                    </div>
+                    <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
+                        requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } 
+                        onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true } />
                 )
         }
     }

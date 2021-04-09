@@ -7,7 +7,7 @@ import { URL_DEV, COMPRAS_COLUMNS } from '../../../constants'
 import { setOptions, setSelectOptions, setTextTable, setDateTableReactDom, setMoneyTable, setArrayTable, setTextTableCenter, setTextTableReactDom } from '../../../functions/setters'
 import { errorAlert, waitAlert, createAlert, printResponseErrorAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis, createAlertSA2WithActionOnClose, customInputAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
-import { Button, FileInput, SelectSearchGray, CalendarDaySwal } from '../../../components/form-components'
+import { Button, FileInput, SelectSearchGray, CalendarDaySwal, InputGray } from '../../../components/form-components'
 import { Modal, ModalDelete } from '../../../components/singles'
 import { FacturaTable } from '../../../components/tables'
 import { ComprasCard } from '../../../components/cards'
@@ -481,12 +481,9 @@ class Compras extends Component {
                 <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
                 {
                     tipo === 'descripcion' &&
-                        <div className="input-group input-group-solid rounded-0 mb-2 mt-7">
-                            <textarea name="descripcion" rows="6" id='descripcion-form' defaultValue = { data.descripcion }
-                                onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} }
-                                className="form-control text-dark-50 font-weight-bold form-control text-uppercase text-justify">
-                            </textarea>
-                        </div>
+                        <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
+                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } rows  = { 6 } as = 'textarea'
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true } letterCase = { false } />
                 }
                 {
                     (tipo === 'tipoImpuesto') || (tipo === 'tipoPago') || (tipo === 'estatusCompra')?

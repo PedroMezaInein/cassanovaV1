@@ -15,7 +15,7 @@ import { setTextTableCenter } from '../../../functions/setters'
 import { Tabs, Tab } from 'react-bootstrap' 
 import { UsuarioCard } from '../../../components/cards'
 import { Update } from '../../../components/Lottie'
-import { TagSelectSearchGray } from '../../../components/form-components'
+import { InputGray, TagSelectSearchGray } from '../../../components/form-components'
 const $ = require('jquery');
 
 class Usuarios extends Component {
@@ -367,11 +367,9 @@ class Usuarios extends Component {
                 <h2 className = 'swal2-title mb-4 mt-2'> { this.setSwalHeader(tipo) } </h2>
                 {
                     (tipo === 'name') || (tipo === 'email') ?
-                        <div className="input-group input-group-solid rounded-0 mb-2 mt-7">
-                            <input name={tipo} defaultValue = { data[tipo] } onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} }
-                                className="form-control text-dark-50 font-weight-bold form-control text-uppercase text-justify">
-                            </input>
-                        </div>
+                        <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
+                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo }
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true } />
                     :<></>
                 }
                 {
