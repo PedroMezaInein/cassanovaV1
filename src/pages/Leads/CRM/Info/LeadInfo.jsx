@@ -7,6 +7,7 @@ import { URL_DEV } from '../../../../constants'
 import SVG from "react-inlinesvg"
 import { toAbsoluteUrl } from "../../../../functions/routers"
 import { setOptions, setDateTableLG, setContactoIcon } from '../../../../functions/setters'
+import { replaceAll } from '../../../../functions/functions'
 import axios from 'axios'
 import { doneAlert, errorAlert, waitAlert, questionAlert2, questionAlert, deleteAlert, printResponseErrorAlert } from '../../../../functions/alert'
 import Swal from 'sweetalert2'
@@ -933,6 +934,16 @@ class LeadInfo extends Component {
             case 'tiempo_ejecucion_diseno':
                 formDiseño.semanas = this.calculateSemanas(value)
                 break;
+            case 'construccion_interiores_inf':
+            case 'construccion_interiores_sup':
+            case 'construccion_civil_inf':
+            case 'construccion_civil_sup':
+            case 'mobiliario_inf':
+            case 'mobiliario_sup':
+            case 'total':
+                formDiseño[name] = replaceAll(value.toString(), ',', '')
+                formDiseño[name] = replaceAll(formDiseño[name], '$', '')
+                break
             default:
                 break;
         }
@@ -941,7 +952,8 @@ class LeadInfo extends Component {
                 formDiseño.subtotal = this.getSubtotal(formDiseño.m2, formDiseño.esquema)
             }
         if (formDiseño.subtotal > 0) {
-            formDiseño.total = formDiseño.subtotal * (1 - (formDiseño.descuento / 100))
+            if(name === 'm2' || name === 'esquema' || name === 'descuento' )
+                formDiseño.total = formDiseño.subtotal * (1 - (formDiseño.descuento / 100))
         }
         if (type === 'checkbox')
             formDiseño[name] = checked
@@ -950,20 +962,6 @@ class LeadInfo extends Component {
             if(name === 'si_desglose' || name === 'si_renders')
                 formDiseño[name] = value === "true" ? true : false
         }
-
-        switch (name) {
-            case 'construccion_interiores_inf':
-            case 'construccion_interiores_sup':
-            case 'construccion_civil_inf':
-            case 'construccion_civil_sup':
-            case 'mobiliario_inf':
-            case 'mobiliario_sup':
-                formDiseño[name] = value.replace(/[,]/gi, '')
-                break
-            default:
-                break;
-        }
-        console.log(formDiseño, 'FORMDISEÑO')
         this.setState({ ...this.state, formDiseño })
     }
 

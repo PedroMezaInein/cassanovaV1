@@ -4,11 +4,12 @@ import axios from 'axios'
 import { renderToString } from 'react-dom/server'
 import { waitAlert, errorAlert, validateAlert, doneAlert, printResponseErrorAlert, customInputAlert } from '../../../functions/alert'
 import { setMoneyTable, setArrayTable, setTextTableReactDom, setOptions, setMoneyTableReactDom, setDateTableReactDom } from '../../../functions/setters'
+import { replaceAll } from '../../../functions/functions'
 import Layout from '../../../components/layout/layout'
 import { Tabs, Tab, Form } from 'react-bootstrap'
 import { CONTRATOS_PROVEEDORES_COLUMNS, CONTRATOS_CLIENTES_COLUMNS, URL_DEV, ADJ_CONTRATOS_COLUMNS } from '../../../constants'
 import { Modal, ModalDelete } from '../../../components/singles'
-import { Button, SelectSearchGray, RangeCalendarSwal } from '../../../components/form-components'
+import { Button, SelectSearchGray, RangeCalendarSwal, InputGray, InputNumberGray } from '../../../components/form-components'
 import FileInput from '../../../components/form-components/FileInput'
 import TableForModals from '../../../components/tables/TableForModals'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
@@ -16,7 +17,6 @@ import { ContratoCard } from '../../../components/cards'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import { Update } from '../../../components/Lottie'
-import NumberFormat from 'react-number-format'
 import { printSwalHeader } from '../../../functions/printers'
 const MySwal = withReactContent(Swal)
 const $ = require('jquery');
@@ -324,12 +324,10 @@ class Contratos extends Component {
                 break
             case 'fecha_inicio':
             case 'fecha_fin':
-                form.fechaInicio = new Date(data.fecha_inicio)
-                form.fechaFin = new Date(data.fecha_fin)
-                break
             case 'range':
                 form.fechaInicio = new Date(data.fecha_inicio)
                 form.fechaFin = new Date(data.fecha_fin)
+                break
             default:
                 form[tipo] = data[tipo]
                 break
@@ -338,13 +336,17 @@ class Contratos extends Component {
         customInputAlert(
             <div>
                 <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
-                {
-                    tipo === 'nombre' ?
-                        <div className="input-group input-group-solid rounded-0 mb-2 mt-7">
+
+                        {/* <div className="input-group input-group-solid rounded-0 mb-2 mt-7">
                             <input name={tipo} defaultValue = { data[tipo] } onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} }
                                 className="form-control text-dark-50 font-weight-bold form-control text-uppercase text-justify">
                             </input>
-                        </div>
+                        </div> */}
+                {
+                    tipo === 'nombre' ?
+                        <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
+                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } 
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true } />
                     :<></>
                 }
                 {
@@ -358,16 +360,11 @@ class Contratos extends Component {
                 }
                 {
                     tipo === 'monto' &&
-                        <div className="row mx-0 justify-content-center">
-                            <div className="col-12 col-md-6">
-                                <div className="input-group input-group-solid rounded-0 mb-2 mt-7">
-                                    <NumberFormat value = { form[tipo] } displayType = 'input' thousandSeparator = { true }
-                                        prefix = '$' className = 'form-control text-dark-50 font-weight-bold text-uppercase'
-                                        renderText = { form => <div> form[tipo] </div>} defaultValue = { data[tipo] }
-                                        onValueChange = { (values) => this.onChangeSwal(values.value, tipo)}/>
-                                </div>
-                            </div>
-                        </div>
+                        <>
+                            <InputNumberGray withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
+                                requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } prefix = '$' thousandSeparator = { true }
+                                onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true } />
+                        </>
                 }
                 {
                     (tipo === 'fecha_inicio') || (tipo === 'fecha_fin') ?
@@ -440,7 +437,23 @@ class Contratos extends Component {
     patchContrato = async( data,tipo ) => {
         const { access_token } = this.props.authUser
         const { form } = this.state
-        let value = form[tipo]
+        let value = ''
+        switch(tipo){
+            case 'fecha_inicio':
+            case 'fecha_fin':
+                value = {
+                    fecha_inicio: form.fechaInicio,
+                    fecha_fin: form.fechaFin
+                }
+                break;
+            case 'monto':
+                value = replaceAll(form[tipo], ',', '')
+                value = replaceAll(value, '$', '')
+                break
+            default:
+                value = form[tipo]
+                break
+        }
         waitAlert()
         await axios.put(`${URL_DEV}v2/administracion/contratos/${tipo}/${data.id}`, 
             { value: value }, 

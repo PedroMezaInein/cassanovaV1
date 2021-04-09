@@ -17,13 +17,13 @@ class TareaForm extends Component {
             <Form {...props}>
                 <div className="row mx-0">
                     <div className="form-group row form-group-marginless col-md-12 pt-4 mx-0">
-                        <div className="col-md-5 text-center align-self-center">
+                        <div className="col-lg-5 col-12 text-center align-self-center">
                             <div className="d-flex justify-content-center" style={{ height: '1px' }}>
                                 <label className="text-center font-weight-bolder">Fecha de entrega</label>
                             </div>
                             <CalendarDay date = { form.fecha_limite } onChange = { (e) => { onChange(e, true) } } name='fecha_limite' />
                         </div>
-                        <div className="col-md-7 align-self-center">
+                        <div className="col-lg-7 col-12 align-self-center">
                             <div className="col-md-12 px-0">
                                 <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 }
                                     withicon = { 1 } requirevalidation = { 0 } withformgroup = { 1 }
