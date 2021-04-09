@@ -15,6 +15,7 @@ import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import { Update } from '../../../components/Lottie'
 import { printSwalHeader } from '../../../functions/printers'
+import { InputGray } from '../../../components/form-components'
 const MySwal = withReactContent(Swal)
 const $ = require('jquery');
 class Empresas extends Component {
@@ -132,11 +133,9 @@ class Empresas extends Component {
         customInputAlert(
             <div>
                 <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
-                <div className="input-group input-group-solid rounded-0 mb-2 mt-7">
-                    <input name={tipo} defaultValue = { data[tipo] } onChange = { (e) => { this.onChange(e.target.value, tipo)} }
-                        className="form-control text-dark-50 font-weight-bold form-control text-uppercase text-justify">
-                    </input>
-                </div>
+                <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
+                    requirevalidation = { 0 }  value = { form[tipo] } name = { tipo }
+                    onChange = { (e) => { this.onChange(e.target.value, tipo)} } swal = { true } />
             </div>,
             <Update />,
             () => { this.patchEmpresa(data, tipo) },

@@ -336,35 +336,24 @@ class Contratos extends Component {
         customInputAlert(
             <div>
                 <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
-
-                        {/* <div className="input-group input-group-solid rounded-0 mb-2 mt-7">
-                            <input name={tipo} defaultValue = { data[tipo] } onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} }
-                                className="form-control text-dark-50 font-weight-bold form-control text-uppercase text-justify">
-                            </input>
-                        </div> */}
                 {
                     tipo === 'nombre' ?
                         <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
-                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } 
+                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } letterCase = { false }
                             onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true } />
                     :<></>
                 }
                 {
                     tipo === 'descripcion' &&
-                        <div className="input-group input-group-solid rounded-0 mb-2 mt-7">
-                            <textarea name="descripcion" rows="6" id='descripcion-form' defaultValue = { data.descripcion }
-                                onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} }
-                                className="form-control text-dark-50 font-weight-bold form-control text-uppercase text-justify">
-                            </textarea>
-                        </div>
+                        <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
+                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } rows  = { 6 } as = 'textarea'
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true } letterCase = { false } />
                 }
                 {
                     tipo === 'monto' &&
-                        <>
-                            <InputNumberGray withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
-                                requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } prefix = '$' thousandSeparator = { true }
-                                onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true } />
-                        </>
+                        <InputNumberGray withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
+                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } prefix = '$' thousandSeparator = { true }
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true } />
                 }
                 {
                     (tipo === 'fecha_inicio') || (tipo === 'fecha_fin') ?
