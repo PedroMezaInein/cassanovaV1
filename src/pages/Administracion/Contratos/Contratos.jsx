@@ -8,7 +8,7 @@ import Layout from '../../../components/layout/layout'
 import { Tabs, Tab, Form } from 'react-bootstrap'
 import { CONTRATOS_PROVEEDORES_COLUMNS, CONTRATOS_CLIENTES_COLUMNS, URL_DEV, ADJ_CONTRATOS_COLUMNS } from '../../../constants'
 import { Modal, ModalDelete } from '../../../components/singles'
-import { Button, SelectSearchGray, RangeCalendarSwal } from '../../../components/form-components'
+import { Button, SelectSearchGray, RangeCalendarSwal, InputGray } from '../../../components/form-components'
 import FileInput from '../../../components/form-components/FileInput'
 import TableForModals from '../../../components/tables/TableForModals'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
@@ -324,12 +324,10 @@ class Contratos extends Component {
                 break
             case 'fecha_inicio':
             case 'fecha_fin':
-                form.fechaInicio = new Date(data.fecha_inicio)
-                form.fechaFin = new Date(data.fecha_fin)
-                break
             case 'range':
                 form.fechaInicio = new Date(data.fecha_inicio)
                 form.fechaFin = new Date(data.fecha_fin)
+                break
             default:
                 form[tipo] = data[tipo]
                 break
@@ -338,13 +336,17 @@ class Contratos extends Component {
         customInputAlert(
             <div>
                 <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
-                {
-                    tipo === 'nombre' ?
-                        <div className="input-group input-group-solid rounded-0 mb-2 mt-7">
+
+                        {/* <div className="input-group input-group-solid rounded-0 mb-2 mt-7">
                             <input name={tipo} defaultValue = { data[tipo] } onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} }
                                 className="form-control text-dark-50 font-weight-bold form-control text-uppercase text-justify">
                             </input>
-                        </div>
+                        </div> */}
+                {
+                    tipo === 'nombre' ?
+                        <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
+                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } 
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true } />
                     :<></>
                 }
                 {
@@ -440,7 +442,20 @@ class Contratos extends Component {
     patchContrato = async( data,tipo ) => {
         const { access_token } = this.props.authUser
         const { form } = this.state
-        let value = form[tipo]
+        let value = ''
+        switch(tipo){
+            case 'fecha_inicio':
+            case 'fecha_fin':
+                value = {
+                    fecha_inicio: form.fechaInicio,
+                    fecha_fin: form.fechaFin
+                }
+                break;
+            default:
+                value = form[tipo]
+                break
+        }
+        console.log(value)
         waitAlert()
         await axios.put(`${URL_DEV}v2/administracion/contratos/${tipo}/${data.id}`, 
             { value: value }, 
