@@ -8,7 +8,7 @@ import Layout from '../../../components/layout/layout'
 import { Tabs, Tab, Form } from 'react-bootstrap'
 import { CONTRATOS_PROVEEDORES_COLUMNS, CONTRATOS_CLIENTES_COLUMNS, URL_DEV, ADJ_CONTRATOS_COLUMNS } from '../../../constants'
 import { Modal, ModalDelete } from '../../../components/singles'
-import { Button, CalendarDaySwal, SelectSearchGray } from '../../../components/form-components'
+import { Button, SelectSearchGray, RangeCalendarSwal } from '../../../components/form-components'
 import FileInput from '../../../components/form-components/FileInput'
 import TableForModals from '../../../components/tables/TableForModals'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
@@ -193,7 +193,7 @@ class Contratos extends Component {
     async getOptionsAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'contratos/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(URL_DEV + 'contratos/options', { responseType: 'json', headers: { Accept: '/', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 Swal.close()
                 const { empresas, clientes, proveedores, tiposContratos } = response.data
@@ -278,7 +278,7 @@ class Contratos extends Component {
                 nombre: setTextTableReactDom(contrato.nombre, this.doubleClick, contrato, 'nombre', 'text-justify'),
                 cliente: setTextTableReactDom(contrato.cliente.empresa, this.doubleClick, contrato, 'cliente', 'text-justify'),
                 empresa: contrato.empresa ? setTextTableReactDom(contrato.empresa.name, this.doubleClick, contrato, 'empresa', 'text-center') : '',
-                fechaInicio: setDateTableReactDom(contrato.fecha_inicio, this.doubleClick, contrato, 'fecha_inicio', 'text-center'),
+                fechaInicio: setDateTableReactDom(contrato.fecha_inicio,this.doubleClick, contrato, 'fecha_inicio', 'text-center'),
                 fechaFin: setDateTableReactDom(contrato.fecha_fin, this.doubleClick, contrato, 'fecha_fin', 'text-center'),
                 monto: setMoneyTableReactDom(contrato.monto, this.doubleClick, contrato, 'monto'),
                 acumulado: renderToString(setMoneyTable(contrato.sumatoria ? contrato.sumatoria : 0)),
@@ -323,11 +323,13 @@ class Contratos extends Component {
                     form[tipo] = data[tipo].id.toString()
                 break
             case 'fecha_inicio':
-                form.fechaInicio = new Date(data.fecha_inicio)
-                break
             case 'fecha_fin':
+                form.fechaInicio = new Date(data.fecha_inicio)
                 form.fechaFin = new Date(data.fecha_fin)
                 break
+            case 'range':
+                form.fechaInicio = new Date(data.fecha_inicio)
+                form.fechaFin = new Date(data.fecha_fin)
             default:
                 form[tipo] = data[tipo]
                 break
@@ -369,8 +371,7 @@ class Contratos extends Component {
                 }
                 {
                     (tipo === 'fecha_inicio') || (tipo === 'fecha_fin') ?
-                        <CalendarDaySwal value = { tipo==='fecha_inicio'?form.fechaInicio:form.fechaFin } onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } name = { tipo } date = { tipo==='fecha_inicio'?form.fechaInicio:form.fechaFin } withformgroup={0} />
-                    :<></>
+                        <RangeCalendarSwal onChange = { this.onChangeRange } start = { form.fechaInicio } end = {form.fechaFin } />:<></>
                 }
                 {
                     (tipo === 'cliente') || (tipo === 'empresa') || (tipo === 'tipo_contrato') || (tipo === 'proveedor') ?
@@ -385,6 +386,16 @@ class Contratos extends Component {
             () => { this.patchContrato(data, tipo) },
             () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
         )
+    }
+    onChangeRange = range => {
+        const { startDate, endDate } = range
+        const { form } = this.state
+        form.fechaInicio = startDate
+        form.fechaFin = endDate
+        this.setState({
+            ...this.state,
+            form
+        })
     }
     setSwalPlaceholder = (tipo) => {
         switch(tipo){
@@ -589,7 +600,7 @@ class Contratos extends Component {
             }
             return false
         })
-        await axios.post(URL_DEV + 'contratos/' + contrato.id + '/adjunto/', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(URL_DEV + 'contratos/' + contrato.id + '/adjunto/', data, { headers: { Accept: '/', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { contrato } = response.data
                 const { data, modal, key } = this.state
