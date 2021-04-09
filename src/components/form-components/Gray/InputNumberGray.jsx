@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import NumberFormat from 'react-number-format'
 class InputNumberGray extends Component {
     state = {
+        valor: '',
         inputValido: !this.props.requirevalidation
     }
     validarInput(e) {
@@ -50,13 +51,21 @@ class InputNumberGray extends Component {
     }
     componentDidMount() {
         const { formeditado, value } = this.props
+        this.setState({...this.state, valor: value})
         if (formeditado) {
             this.validarInput({ target: { value: value } })
         }
     }
+
+    onChange = e => {
+        const { onChange } = this.props
+        const { value } = e.target
+        onChange(e)
+        this.setState({...this.state, valor: value})
+    }
     render() {
-        const { error, onChange, placeholder, iconclass, messageinc, typeformat, customlabel, customclass, customstyle, thousandseparator, formgroup, ...props } = this.props
-        const { inputValido } = this.state
+        const { error, placeholder, iconclass, messageinc, typeformat, customlabel, customclass, customstyle, thousandseparator, formgroup, value, swal, ...props } = this.props
+        const { inputValido, valor } = this.state
         return (
             <div className={`form-group ${formgroup}`}>
                 <label className={`col-form-label font-weight-bold text-dark-60  ${customlabel}`}>{placeholder}</label>
@@ -69,8 +78,9 @@ class InputNumberGray extends Component {
                     <NumberFormat
                         placeholder={placeholder}
                         className={`form-control text-dark-50 font-weight-bold ${customclass}`}
-                        onChange={(e) => { e.preventDefault(); this.validarInput(e); onChange(e) }}
+                        onChange={(e) => { e.preventDefault(); this.validarInput(e); this.onChange(e) }}
                         thousandSeparator={thousandseparator ? ',' : ''}
+                        value = { swal === true ? valor : value }
                         {...props}
                         format={typeformat}
                         style={customstyle}
