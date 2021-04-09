@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
 class InputGray extends Component {
     state = {
+        valor: '',
         inputValido: !this.props.requirevalidation
     }
 
@@ -41,14 +42,15 @@ class InputGray extends Component {
     
     componentDidMount(){
         const { formeditado, value } = this.props
+        this.setState({...this.state, valor: value})
         if(formeditado){
             this.validarInput({ target: { value: value } })
         }
     }
     
     render() {
-        const { messageinc,error, onChange, placeholder, iconclass, letterCase, customlabel, customstyle, customclass, withicon, withtextlabel, withtaglabel, withplaceholder, customdiv, withformgroup, ...props } = this.props
-        const { inputValido } =  this.state
+        const { messageinc,error, onChange, placeholder, iconclass, letterCase, customlabel, customstyle, customclass, withicon, withtextlabel, withtaglabel, withplaceholder, customdiv, withformgroup, swal, value, ...props } = this.props
+        const { inputValido, valor } =  this.state
         const toInputUppercase = e => {
             const { type, value, selectionStart, selectionEnd } = e.target
             if(letterCase !== false)
@@ -57,6 +59,7 @@ class InputGray extends Component {
                 e.target.selectionStart = selectionStart
                 e.target.selectionEnd = selectionEnd
             }
+            this.setState({...this.state, valor: e.target.value})
             return e
         }
         return (
@@ -79,7 +82,8 @@ class InputGray extends Component {
                     
                     <Form.Control placeholder = { withplaceholder ? placeholder :'' } style = { customstyle }
                         className = {`form-control text-dark-50 font-weight-bold ${customclass}` }
-                        onChange = { (e) => { e.preventDefault(); this.validarInput(e); onChange(toInputUppercase(e)) }} {...props} />
+                        onChange = { (e) => { e.preventDefault(); this.validarInput(e); onChange(toInputUppercase(e)) }}
+                        value = { swal === true ? valor : value } {...props} />
                 </div>
                 <span className={ inputValido ? "form-text text-danger hidden" : "form-text text-danger is-invalid" }> {messageinc} </span>
             </div>
