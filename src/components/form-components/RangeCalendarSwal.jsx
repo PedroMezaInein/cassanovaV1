@@ -60,6 +60,8 @@ class RangeCalendarSwal extends Component {
 
     render() {
         const { start, end } = this.props
+        // console.log(start, 'start')
+        // console.log(end,'end')
         const { disabledDates } = this.props
         const rangeHoy = { startDate: new Date(), endDate: new Date() }
         const rangeEstaSema = this.getThisWeek()
