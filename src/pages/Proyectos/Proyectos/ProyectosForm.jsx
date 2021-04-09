@@ -593,6 +593,8 @@ class ProyectosForm extends Component {
         await axios.get(URL_DEV + 'cuentas/proyecto/caja/' + proyecto.id, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert('Caja chica generada con éxito.')
+                const { history } = this.props
+                history.push({ pathname: '/proyectos/proyectos' });
             },
             (error) => {
                 printResponseErrorAlert(error)
