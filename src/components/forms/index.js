@@ -91,6 +91,9 @@ import formProveedoresRRHH from './leads/FormProveedoresRRHH'
 import facturaExtranjera from './FacturaExtranjera'
 import comentarios from './Comentarios'
 import buscarLead from './leads/BuscarLead'
+import formCalendarioTareas from './usuarios/FormCalendarioTareas'
+import comentarioForm from './ComentarioForm'
+import timelineComments from './TimelineComments'
 
 export const RegisterUserForm = registerUserForm
 export const EmpresaForm = empresaForm
@@ -185,3 +188,6 @@ export const FormProveedoresRRHH = formProveedoresRRHH
 export const FacturaExtranjera = facturaExtranjera
 export const Comentarios = comentarios
 export const BuscarLead = buscarLead
+export const FormCalendarioTareas = formCalendarioTareas
+export const ComentarioForm = comentarioForm
+export const TimelineComments = timelineComments

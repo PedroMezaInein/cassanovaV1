@@ -45,6 +45,7 @@ a.fc-daygrid-event.fc-daygrid-block-event.fc-h-event.fc-event.fc-event-start.fc-
 
 a.fc-daygrid-event.fc-daygrid-block-event.fc-h-event.fc-event.fc-event-start.fc-event-end.fc-event-future {
     border-color: white;
+    background-color: transparent!important;
 }
 a.fc-daygrid-event.fc-daygrid-block-event.fc-h-event.fc-event.fc-event-start.fc-event-end.fc-event-today{
     border-color: #F3F6F9 ;
@@ -143,7 +144,8 @@ a.fc-col-header-cell-cushion {
 }
 
 .fc-h-event{
-    border: 1px solid #ECF0F3 !important;
+    border: transparent !important;
+    background-color:transparent!important;
 }
 
 .tool-calendar{
@@ -217,7 +219,7 @@ i.icon-purple{
                     // }
                     .fc-h-event{
                         border: none!important;
-                        background-color: transparent;
+                        background-color: transparent!important;
                         &:hover{
                             cursor: pointer;
                         }
