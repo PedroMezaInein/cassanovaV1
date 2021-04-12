@@ -324,7 +324,6 @@ class Contratos extends Component {
                 break
             case 'fecha_inicio':
             case 'fecha_fin':
-            case 'range':
                 form.fechaInicio = new Date(data.fecha_inicio)
                 form.fechaFin = new Date(data.fecha_fin)
                 break

@@ -5,11 +5,14 @@ import Layout from '../../../components/layout/layout'
 import { ModalDelete, Modal, ItemSlider } from '../../../components/singles'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { URL_DEV, DOCUMENTOS_COLUMNS } from '../../../constants'
-import { setDateTable, setAdjuntoDocumento, setTextTableCenter } from '../../../functions/setters'
-import { waitAlert, errorAlert, doneAlert, deleteAlert, printResponseErrorAlert } from '../../../functions/alert'
+import { setAdjuntoDocumento, setDateTableReactDom, setOptions, setTextTableReactDom } from '../../../functions/setters'
+import { waitAlert, errorAlert, doneAlert, deleteAlert, printResponseErrorAlert, customInputAlert } from '../../../functions/alert'
 import axios from 'axios'
-import { Button } from '../../../components/form-components'
+import Swal from 'sweetalert2'
+import { Button, CalendarDaySwal, SelectSearchGray, InputGray } from '../../../components/form-components'
 import { DocumentosCard } from '../../../components/cards'
+import { Update } from '../../../components/Lottie'
+import { printSwalHeader } from '../../../functions/printers'
 const $ = require('jquery');
 class Documentos extends Component {
     state = {
@@ -17,6 +20,9 @@ class Documentos extends Component {
         modalAdjuntos: false,
         modalSee: false,
         documento: '',
+        options: {
+            empresas: []
+        },
         form: {
             adjuntos: {
                 adjuntos: {
@@ -27,20 +33,157 @@ class Documentos extends Component {
             }
         }
     }
+    componentDidMount() {
+        const { authUser: { user: { permisos } } } = this.props
+        const { history: { location: { pathname } } } = this.props
+        const { history } = this.props
+        const documentos = permisos.find(function (element, index) {
+            const { modulo: { url } } = element
+            return pathname === url
+        });
+        if (!documentos)
+            history.push('/')
+        this.getOptionsAxios()
+    }
+    async getOptionsAxios() {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'documentos/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                Swal.close()
+                const { empresas } = response.data
+                const { options } = this.state
+                options.empresas = setOptions(empresas, 'name', 'id')
+                this.setState({
+                    ...this.state,
+                    options
+                })
+            }, (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     setDocumentos = documentos => {
         let aux = []
         documentos.map((documento) => {
             aux.push({
                 actions: this.setActions(documento),
-                empresa: renderToString(setTextTableCenter(documento.empresa ? documento.empresa.name : 'Sin definir')),
-                nombre: renderToString(setTextTableCenter(documento.nombre)),
-                fecha: renderToString(setDateTable(documento.created_at)),
+                empresa: setTextTableReactDom(documento.empresa ? documento.empresa.name : 'Sin definir', this.doubleClick, documento, 'empresa', 'text-center'),
+                nombre: setTextTableReactDom(documento.nombre, this.doubleClick, documento, 'nombre', 'text-center'),
+                fecha: setDateTableReactDom(documento.created_at, this.doubleClick, documento, 'fecha', 'text-center'),
                 documento: renderToString(setAdjuntoDocumento(documento)),
                 id: documento.id
             })
             return false
         })
         return aux
+    }
+    doubleClick = (data, tipo) => {
+        const { form } = this.state
+        switch(tipo){
+            case 'empresa':
+                if(data[tipo])
+                    form[tipo] = data[tipo].id.toString()
+                break
+            case 'fecha':
+                form.fecha = new Date(data.created_at)
+                break
+            default:
+                form[tipo] = data[tipo]
+                break
+        }
+        this.setState({form})
+        customInputAlert(
+            <div>
+                <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
+                {
+                    tipo === 'nombre' &&
+                        <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
+                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } letterCase = { false }
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true }
+                        />
+                }
+                {
+                    tipo === 'fecha' ?
+                        <CalendarDaySwal value = { form[tipo] } onChange = { (e) => {  this.onChangeSwal(e.target.value, tipo)} } name = { tipo } date = { form[tipo] } withformgroup={0} />
+                    :<></>
+                }
+                {
+                    tipo === 'empresa' &&
+                        <SelectSearchGray options = { this.setOptions(data, tipo) }
+                        onChange = { (value) => { this.onChangeSwal(value, tipo)} } name = { tipo }
+                        value = { form[tipo] } customdiv="mb-2 mt-7" requirevalidation={1} 
+                        placeholder={this.setSwalPlaceholder(tipo)}/>
+                    
+                }
+            </div>,
+            <Update />,
+            () => { this.patchDocumentos(data, tipo) },
+            () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
+        )
+    }
+    setSwalPlaceholder = (tipo) => {
+        switch(tipo){
+            case 'empresa':
+                return 'SELECCIONA LA EMPRESA'
+            default:
+                return ''
+        }
+    }
+    onChangeSwal = (value, tipo) => {
+        const { form } = this.state
+        form[tipo] = value
+        this.setState({...this.state, form})
+    }
+    patchDocumentos = async( data,tipo ) => {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        let value = form[tipo]
+        waitAlert()
+        await axios.put(`${URL_DEV}v2/administracion/documentos/${tipo}/${data.id}`, 
+            { value: value }, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.getComprasAxios()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El documento del IMSS editado con éxito')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    
+    setOptions = (data, tipo) => {
+        const { options } = this.state
+        switch(tipo){
+            case 'empresa':
+                return options.empresas
+            default: return []
+        }
+    }
+    clearForm = () => {
+        const { form } = this.state
+        let aux = Object.keys(form)
+        aux.forEach((element) => {
+            switch(element){
+                case 'adjuntos':
+                    form[element] = {
+                        adjuntos: {
+                            value: '',
+                            placeholder: 'Adjuntos',
+                            files: []
+                        }
+                    }
+                    break;
+                default:
+                    form[element] = ''
+                break;
+            }
+        })
+        return form
     }
     setActions = () => {
         let aux = []

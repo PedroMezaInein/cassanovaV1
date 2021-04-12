@@ -2,15 +2,18 @@ import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
+import Swal from 'sweetalert2'
 import { URL_DEV, REMISION_COLUMNS } from '../../../constants'
-import { setTextTable, setDateTable, setArrayTable, setTextTableCenter } from '../../../functions/setters'
-import { errorAlert, printResponseErrorAlert, doneAlert } from '../../../functions/alert'
+import { setArrayTable, setTextTableCenter, setTextTableReactDom, setOptions, setDateTableReactDom } from '../../../functions/setters'
+import { errorAlert, printResponseErrorAlert, doneAlert, customInputAlert, waitAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { Modal, ModalDelete } from '../../../components/singles'
-import { Button } from '../../../components/form-components'
+import { Button, SelectSearchGray, CalendarDaySwal, InputGray } from '../../../components/form-components'
 import { faSync } from '@fortawesome/free-solid-svg-icons'
 import { RemisionCard } from '../../../components/cards'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
+import { Update } from '../../../components/Lottie'
+import { printSwalHeader } from '../../../functions/printers'
 const $ = require('jquery');
 class Remisiones extends Component {
     state = {
@@ -19,6 +22,25 @@ class Remisiones extends Component {
         title: 'Nueva remisión',
         remision: '',
         formeditado: 0,
+        form: {
+            proyecto: '',
+            fecha: new Date(),
+            area: '',
+            subarea: '',
+            descripcion: '',
+            adjuntos: {
+                adjunto: {
+                    value: '',
+                    placeholder: 'Adjunto',
+                    files: []
+                }
+            }
+        },
+        options: {
+            proyectos: [],
+            areas: [],
+            subareas: []
+        },
     }
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
@@ -30,6 +52,7 @@ class Remisiones extends Component {
         });
         if (!remisiones)
             history.push('/')
+            this.getOptionsAxios()
         let queryString = this.props.history.location.search
         if (queryString) {
             let params = new URLSearchParams(queryString)
@@ -74,11 +97,11 @@ class Remisiones extends Component {
             aux.push(
                 {
                     actions: this.setActions(remision),
-                    fecha: renderToString(setDateTable(remision.created_at)),
-                    proyecto: renderToString(setTextTable(remision.proyecto ? remision.proyecto.nombre : '')),
+                    fecha: setDateTableReactDom(remision.created_at, this.doubleClick, remision, 'fecha', 'text-center'),
+                    proyecto: setTextTableReactDom(remision.proyecto ? remision.proyecto.nombre : '', this.doubleClick, remision, 'proyecto', 'text-center'),
                     area: renderToString(setTextTableCenter(remision.subarea ? remision.subarea.area ? remision.subarea.area.nombre : '' : '')),
-                    subarea: renderToString(setTextTableCenter(remision.subarea ? remision.subarea.nombre : '')),
-                    descripcion: renderToString(setTextTable(remision.descripcion)),
+                    subarea: remision.subarea ? setTextTableReactDom(remision.subarea.nombre, this.doubleClick, remision, 'subarea', 'text-center') : '',
+                    descripcion: setTextTableReactDom(remision.descripcion !== null ? remision.descripcion :'', this.doubleClick, remision, 'descripcion', 'text-justify'),
                     adjunto: remision.adjunto ? renderToString(setArrayTable([{ text: remision.adjunto.name, url: remision.adjunto.url }])) : renderToString(setTextTableCenter('Sin adjuntos')),
                     id: remision.id
                 }
@@ -86,6 +109,110 @@ class Remisiones extends Component {
             return false
         })
         return aux
+    }
+    doubleClick = (data, tipo) => {
+        console.log(data)
+        const { form } = this.state
+        switch(tipo){
+            case 'proyecto':
+            case 'subarea':
+                if(data[tipo])
+                    form[tipo] = data[tipo].id.toString()
+                break
+            case 'fecha':
+                form.fecha = new Date(data.created_at)
+                break
+            default:
+                form[tipo] = data[tipo]
+                break
+        }
+        this.setState({form})
+        customInputAlert(
+            <div>
+                <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
+                {
+                    tipo === 'descripcion' &&
+                        <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
+                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } rows  = { 6 } as = 'textarea'
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true } letterCase = { false } />
+                }
+                {
+                    tipo === 'fecha' ?
+                        <CalendarDaySwal value = { form[tipo] } onChange = { (e) => {  this.onChangeSwal(e.target.value, tipo)} } name = { tipo } date = { form[tipo] } withformgroup={0} />
+                    :<></>
+                }
+                {
+                    (tipo === 'proyecto') || (tipo === 'subarea') ?
+                        <SelectSearchGray options = { this.setOptions(data, tipo) }
+                        onChange = { (value) => { this.onChangeSwal(value, tipo)} } name = { tipo }
+                        value = { form[tipo] } customdiv="mb-2 mt-7" requirevalidation={1} 
+                        placeholder={this.setSwalPlaceholder(tipo)}/>
+                    :<></>
+                }
+            </div>,
+            <Update />,
+            () => { this.patchRemision(data, tipo) },
+            () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
+        )
+    }
+    setSwalPlaceholder = (tipo) => {
+        switch(tipo){
+            case 'proyecto':
+                return 'SELECCIONA EL PROYECTO'
+            case 'subarea':
+                return 'SELECCIONA EL SUBÁREA'
+            default:
+                return ''
+        }
+    }
+    onChangeSwal = (value, tipo) => {
+        const { form } = this.state
+        form[tipo] = value
+        this.setState({...this.state, form})
+    }
+    patchRemision = async( data,tipo ) => {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        let value = form[tipo]
+        waitAlert()
+        await axios.put(`${URL_DEV}v2/proyectos/remision/${tipo}/${data.id}`, 
+            { value: value }, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.getComprasAxios()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La remisión fue editado con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    
+    setOptions = (data, tipo) => {
+        const { options } = this.state
+        switch(tipo){
+            case 'proyecto':
+                return options.proyectos
+            case 'subarea':
+                if(data.subarea)
+                    if(data.subarea.area)
+                        if(data.subarea.area.subareas)
+                            return setOptions(data.subarea.area.subareas, 'nombre', 'id')
+                    return []
+            default: return []
+        }
+    }
+    clearForm = () => {
+        const { form } = this.state
+        let aux = Object.keys(form)
+        aux.forEach((element) => {
+            switch(element){
+                default:
+                    form[element] = ''
+                break;
+            }
+        })
+        return form
     }
     setActions = () => {
         let aux = []
@@ -170,6 +297,27 @@ class Remisiones extends Component {
                     ...this.state,
                     modalDelete: false,
                     remision: '',
+                })
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    async getOptionsAxios() {
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'remision/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { proyectos, areas } = response.data
+                const { options } = this.state
+                options['proyectos'] = setOptions(proyectos, 'nombre', 'id')
+                options['areas'] = setOptions(areas, 'nombre', 'id')
+                this.setState({
+                    ...this.state,
+                    options
                 })
             },
             (error) => {

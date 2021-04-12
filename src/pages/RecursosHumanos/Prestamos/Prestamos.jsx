@@ -5,16 +5,19 @@ import Layout from '../../../components/layout/layout'
 import { ModalDelete, Modal, ItemSlider } from '../../../components/singles'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { PRESTAMOS_COLUMNS, URL_DEV } from '../../../constants'
-import { setDateTable, setMoneyTable, setMoneyTableSinSmall, setTextTable, setTextTableCenter } from '../../../functions/setters'
+import { setDateTable, setMoneyTable, setMoneyTableSinSmall, setTextTableReactDom, setTextTableCenter, setDateTableReactDom } from '../../../functions/setters'
 import axios from 'axios'
-import { deleteAlert, doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../../functions/alert'
-import { Button } from '../../../components/form-components'
+import Swal from 'sweetalert2'
+import { deleteAlert, doneAlert, errorAlert, printResponseErrorAlert, waitAlert, customInputAlert } from '../../../functions/alert'
+import { Button, InputGray, CalendarDaySwal } from '../../../components/form-components'
 import { Tab, Tabs } from 'react-bootstrap'
 import Pagination from "react-js-pagination"
 import { AbonoPrestamosForm } from '../../../components/forms'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../../functions/routers"
 import { PrestamosCard } from '../../../components/cards'
+import { Update } from '../../../components/Lottie'
+import { printSwalHeader } from '../../../functions/printers'
 const $ = require('jquery');
 class Prestamos extends Component {
     state = {
@@ -41,9 +44,9 @@ class Prestamos extends Component {
             aux.push({
                 actions: this.setActions(prestamo),
                 empleado: renderToString(setTextTableCenter(prestamo.empleado ? prestamo.empleado.nombre : 'Sin definir')),
-                fecha: renderToString(setDateTable(prestamo.fecha)),
+                fecha: setDateTableReactDom(prestamo.fecha, this.doubleClick, prestamo, 'fecha', 'text-center'),
                 monto: renderToString(setMoneyTable(prestamo.monto)),
-                descripcion: renderToString(setTextTable(prestamo.descripcion)),
+                descripcion: setTextTableReactDom(prestamo.descripcion !== null ? prestamo.descripcion :'', this.doubleClick, prestamo, 'descripcion', 'text-justify'),
                 acumulado: renderToString(setMoneyTable(prestamo.acumulado)),
                 restante: renderToString(setMoneyTable(prestamo.restante)),
                 id: prestamo.id
@@ -51,6 +54,80 @@ class Prestamos extends Component {
             return false
         })
         return aux
+    }
+    doubleClick = (data, tipo) => {
+        const { form } = this.state
+        switch(tipo){
+            case 'fecha':
+                form.fecha = new Date(data.created_at)
+                break
+            default:
+                form[tipo] = data[tipo]
+                break
+        }
+        this.setState({form})
+        customInputAlert(
+            <div>
+                <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
+                {
+                    tipo === 'descripcion' &&
+                        <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
+                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } rows  = { 6 } as = 'textarea'
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true } letterCase = { false } />
+                }
+                {
+                    tipo === 'fecha' ?
+                        <CalendarDaySwal value = { form[tipo] } onChange = { (e) => {  this.onChangeSwal(e.target.value, tipo)} } name = { tipo } date = { form[tipo] } withformgroup={0} />
+                    :<></>
+                }
+            </div>,
+            <Update />,
+            () => { this.patchPrestamos(data, tipo) },
+            () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
+        )
+    }
+    clearForm = () => {
+        const { form } = this.state
+        let aux = Object.keys(form)
+        aux.forEach((element) => {
+            switch(element){
+                case 'adjuntos':
+                    form[element] = {
+                        adjuntos: {
+                            value: '',
+                            placeholder: 'Adjuntos',
+                            files: []
+                        }
+                    }
+                    break;
+                default:
+                    form[element] = ''
+                break;
+            }
+        })
+        return form
+    }
+    onChangeSwal = (value, tipo) => {
+        const { form } = this.state
+        form[tipo] = value
+        this.setState({...this.state, form})
+    }
+    patchPrestamos = async( data,tipo ) => {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        let value = form[tipo]
+        waitAlert()
+        await axios.put(`${URL_DEV}v2/rh/prestamos/${tipo}/${data.id}`, 
+            { value: value }, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.getComprasAxios()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El préstamo fue editado con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
     }
     setActions = () => {
         let aux = []

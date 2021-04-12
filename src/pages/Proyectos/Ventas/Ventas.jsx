@@ -123,7 +123,7 @@ class Ventas extends Component {
         });
         if (!ventas)
             history.push('/')
-        this.getOptionsAxios()
+        this.getOptionsAxiosv2()
         let queryString = this.props.history.location.search
         if (queryString) {
             let params = new URLSearchParams(queryString)
@@ -569,7 +569,7 @@ class Ventas extends Component {
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 this.getComprasAxios()
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El rendimiento fue editado con éxito.')
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La venta fue editada con éxito.')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -875,10 +875,10 @@ class Ventas extends Component {
     async getVentasAxios() {
         $('#kt_datatable2_ventas').DataTable().ajax.reload();
     }
-    async getOptionsAxios() {
+    async getOptionsAxiosv2() {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'ventas/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(`${URL_DEV}v2/proyectos/ventas/ventas/options`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras,
                     clientes, metodosPago, formasPago, estatusFacturas, proyectos } = response.data
