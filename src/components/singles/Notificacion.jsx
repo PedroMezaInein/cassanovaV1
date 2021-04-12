@@ -21,6 +21,8 @@ class Notificacion extends Component {
                 return toAbsoluteUrl('/images/svg/notificaciones/qa.svg');
             case 'cancel':
                 return toAbsoluteUrl('/images/svg/notificaciones/cancelar.svg');
+            case 'proyecto':
+                return toAbsoluteUrl('/images/svg/notificaciones/construir.svg');
             default:
                 return toAbsoluteUrl('/images/svg/portapapeles.svg');
         }

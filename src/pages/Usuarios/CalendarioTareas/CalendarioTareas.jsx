@@ -11,6 +11,7 @@ import { URL_DEV } from '../../../constants'
 import bootstrapPlugin from '@fullcalendar/bootstrap'
 import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import Swal from 'sweetalert2'
+import Pusher from 'pusher-js'
 import { Modal } from '../../../components/singles'
 import FormCalendarioTareas from '../../../components/forms/usuarios/FormCalendarioTareas'
 class Calendario extends Component {
@@ -44,6 +45,18 @@ class Calendario extends Component {
         });
         this.getUserChecador()
         this.getCalendarioTareasAxios('own')
+        const pusher = new Pusher('112ff49dfbf7dccb6934', {
+            cluster: 'us2',
+            encrypted: false
+        });
+        const channel = pusher.subscribe('responsable-tarea');
+        channel.bind('App\\Events\\ResponsableTarea', data => {
+            const { usuario, tarea } = data
+            const { user } = this.props.authUser
+            const { tipo } = this.state
+            if(user.id === usuario.id)
+                this.getCalendarioTareasAxios(tipo)
+        });
     }
 
     actualizarChecadorAxios = async(tipo) => {
@@ -217,36 +230,35 @@ class Calendario extends Component {
     openCalendarDeptos = () => { this.getCalendarioTareasAxios('all') }
 
     addComentarioAxios = async () => {
-        // waitAlert()
-        // const { access_token } = this.props.authUser
-        // const { form, proyecto } = this.state
-        // const data = new FormData();
-
-        // form.adjuntos.adjunto_comentario.files.map(( adjunto) => {
-        //     data.append(`files_name_adjunto[]`, adjunto.name)
-        //     data.append(`files_adjunto[]`, adjunto.file)
-        //     return ''
-        // })
-
-        // data.append(`comentario`, form.comentario)
-        // await axios.post(`${URL_DEV}v2/usuarios/calendario-tareas/tarea/${tarea.id}/tarea`, data, { headers: {'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
-        //     (response) => {
-        //         doneAlert('Comentario agregado con éxito');
-        //         const { proyecto } = response.data
-        //         const { form } = this.state
-        //         form.comentario = ''
-        //         form.adjuntos.adjunto_comentario = {
-        //             value: '',
-        //             placeholder: 'Adjunto',
-        //             files: []
-        //         }
-        //         this.setState({ ...this.state, form, proyecto: proyecto })
-        //     }, (error) => { printResponseErrorAlert(error) }
-        // ).catch((error) => {
-        //     errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-        //     console.log(error, 'error')
-        // })
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { form, tarea } = this.state
+        const data = new FormData();
+        form.adjuntos.adjunto_comentario.files.map(( adjunto) => {
+            data.append(`files_name_adjunto[]`, adjunto.name)
+            data.append(`files_adjunto[]`, adjunto.file)
+            return ''
+        })
+        data.append(`comentario`, form.comentario)
+        await axios.post(`${URL_DEV}v2/usuarios/tareas/${tarea.id}/comentario`, data, { headers: {'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert('Comentario agregado con éxito');
+                const { tarea } = response.data
+                const { form } = this.state
+                form.comentario = ''
+                form.adjuntos.adjunto_comentario = {
+                    value: '',
+                    placeholder: 'Adjunto',
+                    files: []
+                }
+                this.setState({ ...this.state, form, tarea: tarea })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
     }
+
     onChange = e => {
         const { name, value } = e.target
         const { form } = this.state
