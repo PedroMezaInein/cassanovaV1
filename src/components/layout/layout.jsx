@@ -44,8 +44,18 @@ class Layout extends Component {
     }
 
     componentDidMount() {
-        this.getNotificacionesAxios()
-        this.getIpInfo()
+        /* this.getNotificacionesAxios()
+        this.getIpInfo() */
+        const pusher = new Pusher('112ff49dfbf7dccb6934', {
+            cluster: 'us2',
+            encrypted: false
+        });
+        const { user } = this.props.authUser
+        const channel = pusher.subscribe('Notificacion.User.'+user.id);
+        channel.bind('App\\Events\\NuevaNotificacion', data => {
+            console.log('PUSHER', data)
+            this.getNotificacionesAxios()
+        });
     }
 
     logoutUser = () => {
@@ -68,11 +78,11 @@ class Layout extends Component {
         }
     }
 
-    getIpInfo = async () => {
+    /* getIpInfo = async () => {
         axios.get('https://ipapi.co/json').then((response) => {
             this.setState({json: response.data})
         }).catch((error) => { console.log(error); });
-    }
+    } */
 
     getUserChecador = async() => {
         const { access_token } = this.props.authUser
@@ -110,9 +120,9 @@ class Layout extends Component {
                     )
                     return false
                 })
-                setTimeout(() => {
+                /* setTimeout(() => {
                     this.getNotificacionesAxios()
-                }, (numero * 2500) + 500000)
+                }, (numero * 2500) + 500000) */
             },
             (error) => {
             }
