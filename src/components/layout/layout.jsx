@@ -53,7 +53,6 @@ class Layout extends Component {
         const { user } = this.props.authUser
         const channel = pusher.subscribe('Notificacion.User.'+user.id);
         channel.bind('App\\Events\\NuevaNotificacion', data => {
-            console.log('PUSHER', data)
             this.getNotificacionesAxios()
         });
     }
