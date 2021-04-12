@@ -4,11 +4,11 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import { URL_DEV, INGRESOS_COLUMNS } from '../../../constants'
-import { setOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setAdjuntosList, setSelectOptions, setTextTableCenter } from '../../../functions/setters'
-import { errorAlert, waitAlert, createAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis, createAlertSA2WithActionOnClose, printResponseErrorAlert } from '../../../functions/alert'
+import { setOptions, setTextTable, setDateTableReactDom, setMoneyTable, setArrayTable, setAdjuntosList, setSelectOptions, setTextTableCenter, setTextTableReactDom } from '../../../functions/setters'
+import { errorAlert, waitAlert, createAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis, createAlertSA2WithActionOnClose, printResponseErrorAlert, customInputAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { Modal, ModalDelete } from '../../../components/singles'
-import { Button, FileInput } from '../../../components/form-components'
+import { Button, FileInput, InputGray, CalendarDaySwal } from '../../../components/form-components'
 import { FacturaForm } from '../../../components/forms'
 import { FacturaTable } from '../../../components/tables'
 import { Form } from 'react-bootstrap'
@@ -17,6 +17,8 @@ import Select from '../../../components/form-components/Select'
 import { AdjuntosForm, FacturaExtranjera} from '../../../components/forms'
 import { IngresosCard } from '../../../components/cards'
 import { Tab, Tabs } from 'react-bootstrap'
+import { printSwalHeader } from '../../../functions/printers'
+import { Update } from '../../../components/Lottie'
 const $ = require('jquery');
 class Ingresos extends Component {
     state = {
@@ -426,15 +428,15 @@ class Ingresos extends Component {
                     cliente: renderToString(setTextTableCenter(ingreso.cliente ? ingreso.cliente.empresa : '')),
                     factura: renderToString(setTextTableCenter(ingreso.factura ? 'Con factura' : 'Sin factura')),
                     monto: renderToString(setMoneyTable(ingreso.monto)),
-                    impuesto: renderToString(setTextTableCenter(ingreso.tipo_impuesto ? ingreso.tipo_impuesto.tipo : 'Sin definir')),
-                    tipoPago: renderToString(setTextTableCenter(ingreso.tipo_pago ? ingreso.tipo_pago.tipo : '')),
-                    descripcion: renderToString(setTextTable(ingreso.descripcion)),
+                    impuesto: setTextTableReactDom(ingreso.tipo_impuesto ? ingreso.tipo_impuesto.tipo : 'Sin definir', this.doubleClick, ingreso, 'tipoImpuesto', 'text-center'),
+                    tipoPago: setTextTableReactDom(ingreso.tipo_pago.tipo, this.doubleClick, ingreso, 'tipoPago', 'text-center'),
+                    descripcion: setTextTableReactDom(ingreso.descripcion !== null ? ingreso.descripcion :'', this.doubleClick, ingreso, 'descripcion', 'text-justify'),
                     area: renderToString(setTextTableCenter(ingreso.subarea ? ingreso.subarea.area.nombre : '')),
                     subarea: renderToString(setTextTableCenter(ingreso.subarea ? ingreso.subarea.nombre : '')),
-                    estatusCompra: renderToString(setTextTableCenter(ingreso.estatus_compra ? ingreso.estatus_compra.estatus : '')),
+                    estatusCompra: setTextTableReactDom(ingreso.estatus_compra ? ingreso.estatus_compra.estatus : '', this.doubleClick, ingreso, 'estatusCompra', 'text-center'),
                     total: renderToString(setMoneyTable(ingreso.total)),
                     /* adjuntos: renderToString(setArrayTable(_aux)), */
-                    fecha: renderToString(setDateTable(ingreso.created_at)),
+                    fecha: setDateTableReactDom(ingreso.created_at, this.doubleClick, ingreso, 'fecha', 'text-center'),
                     id: ingreso.id,
                     objeto: ingreso
                 }
@@ -442,6 +444,118 @@ class Ingresos extends Component {
             return false
         })
         return aux
+    }
+    doubleClick = (data, tipo) => {
+        console.log(data, 'data')
+        console.log(tipo, 'tipo')
+        const { form } = this.state
+        switch(tipo){
+            case 'fecha':
+                form.fecha = new Date(data.created_at)
+                break
+            case 'tipoImpuesto':
+                form[tipo] = data.tipo_impuesto.id
+                break
+            case 'tipoPago':
+                form[tipo] = data.tipo_pago.id
+                break
+            case 'estatusCompra':
+                form[tipo] = data.estatus_compra.id
+                break
+            default:
+                form[tipo] = data[tipo]
+                break
+        }
+        this.setState({form})
+        customInputAlert(
+            <div>
+                <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
+                {
+                    tipo === 'descripcion' &&
+                        <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
+                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } rows  = { 6 } as = 'textarea'
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true } letterCase = { false } />
+                }
+                {
+                    (tipo === 'tipoImpuesto') || (tipo === 'tipoPago') || (tipo === 'estatusCompra')?
+                        <div className="input-icon my-3">
+                            <span className="input-icon input-icon-right">
+                                <span>
+                                    <i className={"flaticon2-search-1 icon-md text-dark-50"}></i>
+                                </span>
+                            </span>
+                            <Form.Control className = "form-control text-uppercase form-control-solid"
+                                onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } name = { tipo }
+                                defaultValue = { form[tipo] } as = "select">
+                                <option value={0}>{this.setSwalPlaceholder(tipo)}</option>
+                                {
+                                    this.setOptions(data, tipo).map((tipo, key) => {
+                                        return (
+                                            <option key={key} value={tipo.value} className="bg-white" >{tipo.text}</option>
+                                        )
+                                    })
+                                }
+                            </Form.Control>
+                        </div>
+                    :<></>
+                }
+                {
+                    tipo === 'fecha' ?
+                        <CalendarDaySwal value = { form[tipo] } onChange = { (e) => {  this.onChangeSwal(e.target.value, tipo)} } name = { tipo } date = { form[tipo] } withformgroup={0} />
+                    :<></>
+                }
+            </div>,
+            <Update />,
+            () => { this.patchIngresos(data, tipo) },
+            () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
+        )
+    }
+    setSwalPlaceholder = (tipo) => {
+        switch(tipo){
+            case 'tipoImpuesto':
+                return 'SELECCIONA EL IMPUESTO'
+            case 'tipoPago':
+                return 'SELECCIONA EL TIPO DE PAGO'
+            case 'estatusCompra':
+                return 'SELECCIONA EL ESTATUS DE COMPRA'
+            default:
+                return ''
+        }
+    }
+    onChangeSwal = (value, tipo) => {
+        const { form } = this.state
+        form[tipo] = value
+        this.setState({...this.state, form})
+    }
+    patchIngresos = async( data,tipo ) => {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        let value = form[tipo]
+        waitAlert()
+        await axios.put(`${URL_DEV}v2/administracion/ingresos/${tipo}/${data.id}`, 
+            { value: value }, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.getComprasAxios()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El rendimiento fue editado con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    
+    setOptions = (data, tipo) => {
+        const { options } = this.state
+        switch(tipo){
+            case 'estatusCompra':
+                return options.estatusCompras
+            case 'tipoPago':
+                return options.tiposPagos
+            case 'tipoImpuesto':
+                return options.tiposImpuestos
+            default: return []
+        }
     }
     setAdjuntosTable = ingreso => {
         let aux = []
@@ -730,13 +844,15 @@ class Ingresos extends Component {
         await axios.get(URL_DEV + 'ingresos/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { data, options } = this.state
-                const { clientes, empresas, formasPago, metodosPago, estatusFacturas, estatusCompras } = response.data
+                const { clientes, empresas, formasPago, metodosPago, estatusFacturas, estatusCompras, tiposPagos, tiposImpuestos } = response.data
                 options['metodosPago'] = setOptions(metodosPago, 'nombre', 'id')
                 options['formasPago'] = setOptions(formasPago, 'nombre', 'id')
                 options['estatusFacturas'] = setOptions(estatusFacturas, 'estatus', 'id')
                 options['estatusCompras'] = setSelectOptions(estatusCompras, 'estatus')
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['clientes'] = setOptions(clientes, 'empresa', 'id')
+                options['tiposPagos'] = setSelectOptions(tiposPagos, 'tipo')
+                options['tiposImpuestos'] = setSelectOptions(tiposImpuestos, 'tipo')
                 data.clientes = clientes
                 data.empresas = empresas
                 Swal.close()

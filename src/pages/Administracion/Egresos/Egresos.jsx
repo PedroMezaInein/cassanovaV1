@@ -3,10 +3,10 @@ import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV, EGRESOS_COLUMNS } from '../../../constants'
-import { setOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setAdjuntosList, setSelectOptions, setTextTableCenter } from '../../../functions/setters'
-import { errorAlert, waitAlert, createAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis, createAlertSA2WithActionOnClose, printResponseErrorAlert } from '../../../functions/alert'
+import { setOptions, setTextTable, setDateTableReactDom, setMoneyTable, setArrayTable, setAdjuntosList, setSelectOptions, setTextTableCenter, setTextTableReactDom } from '../../../functions/setters'
+import { errorAlert, waitAlert, createAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis, createAlertSA2WithActionOnClose, printResponseErrorAlert, customInputAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
-import { Button, FileInput } from '../../../components/form-components'
+import { Button, FileInput, InputGray, CalendarDaySwal } from '../../../components/form-components'
 import { Modal, ModalDelete } from '../../../components/singles'
 import { FacturaTable } from '../../../components/tables'
 import { Form } from 'react-bootstrap'
@@ -15,6 +15,8 @@ import Select from '../../../components/form-components/Select'
 import { AdjuntosForm, FacturaExtranjera } from '../../../components/forms'
 import { EgresosCard } from '../../../components/cards'
 import Swal from 'sweetalert2'
+import { printSwalHeader } from '../../../functions/printers'
+import { Update } from '../../../components/Lottie'
 const $ = require('jquery');
 class egresos extends Component {
     state = {
@@ -398,14 +400,14 @@ class egresos extends Component {
                         monto: renderToString(setMoneyTable(egreso.monto)),
                         comision: renderToString(setMoneyTable(egreso.comision ? egreso.comision : 0.0)),
                         total: renderToString(setMoneyTable(egreso.total)),
-                        impuesto: renderToString(setTextTableCenter(egreso.tipo_impuesto ? egreso.tipo_impuesto.tipo : 'Sin definir')),
-                        tipoPago: renderToString(setTextTableCenter(egreso.tipo_pago ? egreso.tipo_pago.tipo : '')),
-                        descripcion: renderToString(setTextTable(egreso.descripcion)),
+                        impuesto: setTextTableReactDom(egreso.tipo_impuesto ? egreso.tipo_impuesto.tipo : 'Sin definir', this.doubleClick, egreso, 'tipoImpuesto', 'text-center'),
+                        tipoPago: setTextTableReactDom(egreso.tipo_pago.tipo, this.doubleClick, egreso, 'tipoPago', 'text-center'),
+                        descripcion: setTextTableReactDom(egreso.descripcion !== null ? egreso.descripcion :'', this.doubleClick, egreso, 'descripcion', 'text-justify'),
                         area: renderToString(setTextTableCenter(egreso.subarea ? egreso.subarea.area.nombre : '')),
                         subarea: renderToString(setTextTableCenter(egreso.subarea ? egreso.subarea.nombre : '')),
-                        estatusCompra: renderToString(setTextTableCenter(egreso.estatus_compra ? egreso.estatus_compra.estatus : '')),
+                        estatusCompra: setTextTableReactDom(egreso.estatus_compra ? egreso.estatus_compra.estatus : '', this.doubleClick, egreso, 'estatusCompra', 'text-center'),
                         adjuntos: renderToString(setArrayTable(_aux)),
-                        fecha: renderToString(setDateTable(egreso.created_at)),
+                        fecha: setDateTableReactDom(egreso.created_at, this.doubleClick, egreso, 'fecha', 'text-center'),
                         id: egreso.id,
                         objeto: egreso
                     }
@@ -413,6 +415,118 @@ class egresos extends Component {
                 return false
             })
         return aux
+    }
+    doubleClick = (data, tipo) => {
+        console.log(data, 'data')
+        console.log(tipo, 'tipo')
+        const { form } = this.state
+        switch(tipo){
+            case 'fecha':
+                form.fecha = new Date(data.created_at)
+                break
+            case 'tipoImpuesto':
+                form[tipo] = data.tipo_impuesto.id
+                break
+            case 'tipoPago':
+                form[tipo] = data.tipo_pago.id
+                break
+            case 'estatusCompra':
+                form[tipo] = data.estatus_compra.id
+                break
+            default:
+                form[tipo] = data[tipo]
+                break
+        }
+        this.setState({form})
+        customInputAlert(
+            <div>
+                <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
+                {
+                    tipo === 'descripcion' &&
+                        <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
+                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } rows  = { 6 } as = 'textarea'
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true } letterCase = { false } />
+                }
+                {
+                    (tipo === 'tipoImpuesto') || (tipo === 'tipoPago') || (tipo === 'estatusCompra')?
+                        <div className="input-icon my-3">
+                            <span className="input-icon input-icon-right">
+                                <span>
+                                    <i className={"flaticon2-search-1 icon-md text-dark-50"}></i>
+                                </span>
+                            </span>
+                            <Form.Control className = "form-control text-uppercase form-control-solid"
+                                onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } name = { tipo }
+                                defaultValue = { form[tipo] } as = "select">
+                                <option value={0}>{this.setSwalPlaceholder(tipo)}</option>
+                                {
+                                    this.setOptions(data, tipo).map((tipo, key) => {
+                                        return (
+                                            <option key={key} value={tipo.value} className="bg-white" >{tipo.text}</option>
+                                        )
+                                    })
+                                }
+                            </Form.Control>
+                        </div>
+                    :<></>
+                }
+                {
+                    tipo === 'fecha' ?
+                        <CalendarDaySwal value = { form[tipo] } onChange = { (e) => {  this.onChangeSwal(e.target.value, tipo)} } name = { tipo } date = { form[tipo] } withformgroup={0} />
+                    :<></>
+                }
+            </div>,
+            <Update />,
+            () => { this.patchEgresos(data, tipo) },
+            () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
+        )
+    }
+    setSwalPlaceholder = (tipo) => {
+        switch(tipo){
+            case 'tipoImpuesto':
+                return 'SELECCIONA EL IMPUESTO'
+            case 'tipoPago':
+                return 'SELECCIONA EL TIPO DE PAGO'
+            case 'estatusCompra':
+                return 'SELECCIONA EL ESTATUS DE COMPRA'
+            default:
+                return ''
+        }
+    }
+    onChangeSwal = (value, tipo) => {
+        const { form } = this.state
+        form[tipo] = value
+        this.setState({...this.state, form})
+    }
+    patchEgresos = async( data,tipo ) => {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        let value = form[tipo]
+        waitAlert()
+        await axios.put(`${URL_DEV}v2/administracion/egresos/${tipo}/${data.id}`, 
+            { value: value }, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.getComprasAxios()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El rendimiento fue editado con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    
+    setOptions = (data, tipo) => {
+        const { options } = this.state
+        switch(tipo){
+            case 'estatusCompra':
+                return options.estatusCompras
+            case 'tipoPago':
+                return options.tiposPagos
+            case 'tipoImpuesto':
+                return options.tiposImpuestos
+            default: return []
+        }
     }
     setAdjuntosTable = egreso => {
         let aux = []
@@ -704,10 +818,16 @@ class egresos extends Component {
         await axios.get(URL_DEV + 'egresos/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { data, options } = this.state
-                const { proveedores, empresas, estatusCompras } = response.data
+                const { proveedores, empresas, estatusCompras, areas, tiposPagos, tiposImpuestos } = response.data
+                
                 data.proveedores = proveedores
                 data.empresas = empresas
                 options['estatusCompras'] = setSelectOptions(estatusCompras, 'estatus')
+                options['empresas'] = setOptions(empresas, 'name', 'id')
+                options['areas'] = setOptions(areas, 'nombre', 'id')
+                options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
+                options['tiposPagos'] = setSelectOptions(tiposPagos, 'tipo')
+                options['tiposImpuestos'] = setSelectOptions(tiposImpuestos, 'tipo')
                 Swal.close()
                 this.setState({
                     ...this.state,
