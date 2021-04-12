@@ -51,11 +51,14 @@ class Layout extends Component {
             encrypted: false
         });
         const { user } = this.props.authUser
-        const channel = pusher.subscribe('Notificacion.User.'+user.id);
-        channel.bind('App\\Events\\NuevaNotificacion', data => {
-            console.log('PUSHER', data)
+        const channelNot = pusher.subscribe('Notificacion.User.'+user.id);
+        channelNot.bind('App\\Events\\NuevaNotificacion', data => {
             this.getNotificacionesAxios()
         });
+        /* const channelMessage = pusher.subscribe('Message.User.'+user.id);
+        channelMessage.bind('App\\Events\\NewMessage', data => {
+            console.log('DATA', data)
+        }); */
     }
 
     logoutUser = () => {
