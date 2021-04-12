@@ -54,7 +54,7 @@ class FormCalendarioTareas extends Component {
                 </div>
                 <div className={this.state.showForm ? 'col-md-12 mb-5' : 'd-none'}>
                     <ComentarioForm
-                        addComentario={addComentario}
+                        addComentario={ ()=> {this.mostrarFormulario(); addComentario();}}
                         form={form}
                         onChange={onChange}
                         handleChange={handleChange}
