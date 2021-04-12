@@ -11,6 +11,7 @@ import { URL_DEV } from '../../../constants'
 import bootstrapPlugin from '@fullcalendar/bootstrap'
 import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import Swal from 'sweetalert2'
+import Pusher from 'pusher-js'
 class Calendario extends Component {
     state = {
         events: [],
@@ -28,6 +29,18 @@ class Calendario extends Component {
         });
         this.getUserChecador()
         this.getCalendarioTareasAxios('own')
+        const pusher = new Pusher('112ff49dfbf7dccb6934', {
+            cluster: 'us2',
+            encrypted: false
+        });
+        const channel = pusher.subscribe('responsable-tarea');
+        channel.bind('App\\Events\\ResponsableTarea', data => {
+            const { usuario, tarea } = data
+            const { user } = this.props.authUser
+            const { tipo } = this.state
+            if(user.id === usuario.id)
+                this.getCalendarioTareasAxios(tipo)
+        });
     }
 
     actualizarChecadorAxios = async(tipo) => {
