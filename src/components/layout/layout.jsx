@@ -12,6 +12,7 @@ import { Notificacion } from '../singles'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { errorAlert, printResponseErrorAlert, doneAlert, waitAlert } from '../../functions/alert'
+import Pusher from 'pusher-js'
 
 /* function openUserProfile() {
     if (document.getElementsByClassName("offcanvas")[0].classList.contains("offcanvas-on")) {
