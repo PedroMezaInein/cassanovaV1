@@ -555,6 +555,7 @@ export const INGRESOS_COLUMNS = [
     {
         Header: 'Fecha',
         accessor: 'fecha',
+        customRender: true
     },
     {
         Header: 'Cliente',
@@ -582,19 +583,23 @@ export const INGRESOS_COLUMNS = [
     },
     {
         Header: 'Impuesto',
-        accessor: 'impuesto'
+        accessor: 'impuesto',
+        customRender: true
     },
     {
         Header: 'Pago',
-        accessor: 'tipoPago'
+        accessor: 'tipoPago',
+        customRender: true
     },
     {
         Header: 'Descripción',
-        accessor: 'descripcion'
+        accessor: 'descripcion',
+        customRender: true
     },
     {
         Header: 'Estatus',
-        accessor: 'estatusCompra'
+        accessor: 'estatusCompra',
+        customRender: true
     }/* ,
     {
         Header: 'Adjuntos',
@@ -615,6 +620,7 @@ export const EGRESOS_COLUMNS = [
     {
         Header: 'Fecha',
         accessor: 'fecha',
+        customRender: true
     },
     {
         Header: 'Proveedor',
@@ -650,19 +656,23 @@ export const EGRESOS_COLUMNS = [
     },
     {
         Header: 'Pago', //Cambié de Tipo de pago a Pago
-        accessor: 'tipoPago'
+        accessor: 'tipoPago',
+        customRender: true
     },    
     {
         Header: 'Impuesto',
-        accessor: 'impuesto'
+        accessor: 'impuesto',
+        customRender: true
     },
     {
         Header: 'Estatus',
-        accessor: 'estatusCompra'
+        accessor: 'estatusCompra',
+        customRender: true
     }, 
     {
         Header: 'Descripción',
-        accessor: 'descripcion'
+        accessor: 'descripcion',
+        customRender: true
     },
 ]
 
@@ -1044,6 +1054,7 @@ export const VENTAS_COLUMNS = [
     {
         Header: 'Fecha',
         accessor: 'fecha',
+        customRender: true
     },
     {
         Header: 'Cliente',
@@ -1051,7 +1062,8 @@ export const VENTAS_COLUMNS = [
     },
     {
         Header: 'Proyecto',
-        accessor: 'proyecto'
+        accessor: 'proyecto',
+        customRender: true
     },
     {
         Header: 'Factura',
@@ -1075,19 +1087,23 @@ export const VENTAS_COLUMNS = [
     },
     {
         Header: 'Impuesto',
-        accessor: 'impuesto'
+        accessor: 'impuesto',
+        customRender: true
     },
     {
         Header: 'Pago',
-        accessor: 'tipoPago'
+        accessor: 'tipoPago',
+        customRender: true
     },
     {
         Header: 'Estatus',
-        accessor: 'estatusCompra'
+        accessor: 'estatusCompra',
+        customRender: true
     },
     {
         Header: 'Descripción',
-        accessor: 'descripcion'
+        accessor: 'descripcion',
+        customRender: true
     },
     /* {
         Header: 'Adjuntos',

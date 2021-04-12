@@ -4,10 +4,10 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import { URL_DEV, VENTAS_COLUMNS } from '../../../constants'
-import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setAdjuntosList, setTextTableCenter } from '../../../functions/setters'
-import { waitAlert, errorAlert, createAlert, printResponseErrorAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis, createAlertSA2WithActionOnClose } from '../../../functions/alert'
+import { setOptions, setSelectOptions, setTextTable, setDateTableReactDom, setMoneyTable, setArrayTable, setAdjuntosList, setTextTableCenter, setTextTableReactDom } from '../../../functions/setters'
+import { waitAlert, errorAlert, createAlert, printResponseErrorAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis, createAlertSA2WithActionOnClose, customInputAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
-import { Button, FileInput } from '../../../components/form-components'
+import { Button, FileInput, InputGray, CalendarDaySwal, SelectSearchGray } from '../../../components/form-components'
 import { Modal, ModalDelete } from '../../../components/singles'
 import { FacturaForm, AdjuntosForm, FacturaExtranjera } from '../../../components/forms'
 import { FacturaTable } from '../../../components/tables'
@@ -16,6 +16,8 @@ import NewTableServerRender from '../../../components/tables/NewTableServerRende
 import Select from '../../../components/form-components/Select'
 import { VentasCard } from '../../../components/cards'
 import { Tab, Tabs } from 'react-bootstrap';
+import { printSwalHeader } from '../../../functions/printers'
+import { Update } from '../../../components/Lottie'
 const $ = require('jquery');
 class Ventas extends Component {
     state = {
@@ -443,18 +445,18 @@ class Ventas extends Component {
                             { name: '# de cuenta', text: venta.cuenta ? venta.cuenta.numero : '' }
                         ],'235px'
                     )),
-                    proyecto: renderToString(setTextTableCenter(venta.proyecto ? venta.proyecto.nombre : '')),
+                    proyecto: setTextTableReactDom(venta.proyecto ? venta.proyecto.nombre : '', this.doubleClick, venta, 'proyecto', 'text-center'),
                     cliente: renderToString(setTextTableCenter(venta.cliente ? venta.cliente.empresa : '')),
                     factura: renderToString(setTextTableCenter(venta.factura ? 'Con factura' : 'Sin factura')),
                     monto: renderToString(setMoneyTable(venta.monto)),
-                    impuesto: renderToString(setTextTableCenter(venta.tipo_impuesto ? venta.tipo_impuesto.tipo : 'Sin definir')),
-                    tipoPago: renderToString(setTextTableCenter(venta.tipo_pago ? venta.tipo_pago.tipo : '')),
-                    descripcion: renderToString(setTextTable(venta.descripcion)),
+                    impuesto: setTextTableReactDom(venta.tipo_impuesto ? venta.tipo_impuesto.tipo : 'Sin definir', this.doubleClick, venta, 'tipoImpuesto', 'text-center'),
+                    tipoPago: setTextTableReactDom(venta.tipo_pago.tipo, this.doubleClick, venta, 'tipoPago', 'text-center'),
+                    descripcion: setTextTableReactDom(venta.descripcion !== null ? venta.descripcion :'', this.doubleClick, venta, 'descripcion', 'text-justify'),
                     area: renderToString(setTextTableCenter(venta.subarea ? venta.subarea.area ? venta.subarea.area.nombre : '' : '')),
                     subarea: renderToString(setTextTableCenter(venta.subarea ? venta.subarea.nombre : '')),
-                    estatusCompra: renderToString(setTextTableCenter(venta.estatus_compra ? venta.estatus_compra.estatus : '')),
+                    estatusCompra: setTextTableReactDom(venta.estatus_compra ? venta.estatus_compra.estatus : '', this.doubleClick, venta, 'estatusCompra', 'text-center'),
                     total: renderToString(setMoneyTable(venta.total)),
-                    fecha: renderToString(setDateTable(venta.created_at)),
+                    fecha: setDateTableReactDom(venta.created_at, this.doubleClick, venta, 'fecha', 'text-center'),
                     id: venta.id,
                     objeto: venta
                 }
@@ -462,6 +464,132 @@ class Ventas extends Component {
             return false
         })
         return aux
+    }
+    doubleClick = (data, tipo) => {
+        const { form } = this.state
+        switch(tipo){
+            case 'proyecto':
+                if(data[tipo])
+                    form[tipo] = data[tipo].id.toString()
+                break
+            case 'fecha':
+                form.fecha = new Date(data.created_at)
+                break
+            case 'tipoImpuesto':
+                form[tipo] = data.tipo_impuesto.id
+                break
+            case 'tipoPago':
+                form[tipo] = data.tipo_pago.id
+                break
+            case 'estatusCompra':
+                form[tipo] = data.estatus_compra.id
+                break
+            default:
+                form[tipo] = data[tipo]
+                break
+        }
+        this.setState({form})
+        customInputAlert(
+            <div>
+                <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
+                {
+                    tipo === 'descripcion' &&
+                        <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
+                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } rows  = { 6 } as = 'textarea'
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true } letterCase = { false } />
+                }
+                {
+                    (tipo === 'tipoImpuesto') || (tipo === 'tipoPago') || (tipo === 'estatusCompra')?
+                        <div className="input-icon my-3">
+                            <span className="input-icon input-icon-right">
+                                <span>
+                                    <i className={"flaticon2-search-1 icon-md text-dark-50"}></i>
+                                </span>
+                            </span>
+                            <Form.Control className = "form-control text-uppercase form-control-solid"
+                                onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } name = { tipo }
+                                defaultValue = { form[tipo] } as = "select">
+                                <option value={0}>{this.setSwalPlaceholder(tipo)}</option>
+                                {
+                                    this.setOptions(data, tipo).map((tipo, key) => {
+                                        return (
+                                            <option key={key} value={tipo.value} className="bg-white" >{tipo.text}</option>
+                                        )
+                                    })
+                                }
+                            </Form.Control>
+                        </div>
+                    :<></>
+                }
+                {
+                    tipo === 'fecha' ?
+                        <CalendarDaySwal value = { form[tipo] } onChange = { (e) => {  this.onChangeSwal(e.target.value, tipo)} } name = { tipo } date = { form[tipo] } withformgroup={0} />
+                    :<></>
+                }
+                {
+                    (tipo === 'proyecto')  ?
+                        <SelectSearchGray options = { this.setOptions(data, tipo) }
+                        onChange = { (value) => { this.onChangeSwal(value, tipo)} } name = { tipo }
+                        value = { form[tipo] } customdiv="mb-2 mt-7" requirevalidation={1} 
+                        placeholder={this.setSwalPlaceholder(tipo)}/>
+                    :<></>
+                }
+            </div>,
+            <Update />,
+            () => { this.patchVentas(data, tipo) },
+            () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
+        )
+    }
+    setSwalPlaceholder = (tipo) => {
+        switch(tipo){
+            case 'proyecto':
+                return 'SELECCIONA EL PROYECTO'
+            case 'tipoImpuesto':
+                return 'SELECCIONA EL IMPUESTO'
+            case 'tipoPago':
+                return 'SELECCIONA EL TIPO DE PAGO'
+            case 'estatusCompra':
+                return 'SELECCIONA EL ESTATUS DE COMPRA'
+            default:
+                return ''
+        }
+    }
+    onChangeSwal = (value, tipo) => {
+        const { form } = this.state
+        form[tipo] = value
+        this.setState({...this.state, form})
+    }
+    patchVentas = async( data,tipo ) => {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        let value = form[tipo]
+        waitAlert()
+        await axios.put(`${URL_DEV}v2/proyectos/ventas/${tipo}/${data.id}`, 
+            { value: value }, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.getComprasAxios()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El rendimiento fue editado con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    
+    setOptions = (data, tipo) => {
+        const { options } = this.state
+        switch(tipo){
+            case 'estatusCompra':
+                return options.estatusCompras
+            case 'tipoPago':
+                return options.tiposPagos
+            case 'tipoImpuesto':
+                return options.tiposImpuestos
+            case 'proyecto':
+                return options.proyectos
+            default: return []
+        }
     }
     setAdjuntosTable = venta => {
         let aux = []
@@ -753,7 +881,7 @@ class Ventas extends Component {
         await axios.get(URL_DEV + 'ventas/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { empresas, areas, tiposPagos, tiposImpuestos, estatusCompras,
-                    clientes, metodosPago, formasPago, estatusFacturas } = response.data
+                    clientes, metodosPago, formasPago, estatusFacturas, proyectos } = response.data
                 const { options, data } = this.state
                 options['empresas'] = setOptions(empresas, 'name', 'id')
                 options['areas'] = setOptions(areas, 'nombre', 'id')
@@ -764,6 +892,7 @@ class Ventas extends Component {
                 options['tiposPagos'] = setSelectOptions(tiposPagos, 'tipo')
                 options['tiposImpuestos'] = setSelectOptions(tiposImpuestos, 'tipo')
                 options['estatusCompras'] = setSelectOptions(estatusCompras, 'estatus')
+                options['proyectos'] = setOptions(proyectos, 'nombre', 'id')
                 data.clientes = clientes
                 data.empresas = empresas
                 Swal.close()

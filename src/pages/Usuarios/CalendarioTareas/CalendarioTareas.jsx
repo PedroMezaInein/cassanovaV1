@@ -12,12 +12,28 @@ import bootstrapPlugin from '@fullcalendar/bootstrap'
 import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import Swal from 'sweetalert2'
 import Pusher from 'pusher-js'
+import { Modal } from '../../../components/singles'
+import FormCalendarioTareas from '../../../components/forms/usuarios/FormCalendarioTareas'
 class Calendario extends Component {
     state = {
         events: [],
         checador: [],
         json: {},
-        tipo: 'own'
+        tipo: 'own',
+        title:'',
+        modal: {
+            tareas:false
+        },
+        form: {
+            adjuntos: {
+                adjunto_comentario: {
+                    value: '',
+                    placeholder: 'Adjunto',
+                    files: []
+                }
+            },
+            comentario: ''
+        },
     };
 
     componentDidMount() {
@@ -135,26 +151,75 @@ class Calendario extends Component {
         })
     }
 
+    getTareas = (tarea) => {
+        console.log(tarea)
+        const { modal } = this.state
+        modal.tareas = true
+        this.setState({
+            ...this.state,
+            modal,
+            tarea: tarea,
+            title: tarea.titulo,
+            form: this.clearForm(),
+        })
+    }
+    
+    handleCloseModalT = () => {
+        const { modal } = this.state
+        modal.tareas = false
+        this.setState({
+            ...this.state,
+            modal
+        })
+    }
+
+    clearForm = () => {
+        const { form } = this.state
+        let aux = Object.keys(form)
+        aux.map((element) => {
+            switch (element) {
+                case 'adjuntos':
+                    form[element] = {
+                        adjunto_comentario: {
+                            value: '',
+                            placeholder: 'Adjunto',
+                            files: []
+                        },
+                    }
+                    break;
+                default:
+                    form[element] = ''
+                    break;
+            }
+            return false
+        })
+        return form
+    }
     renderEventContent = (eventInfo) => {
         const { tarea } = eventInfo.event._def.extendedProps
-        console.log('TAREA', tarea)
         return (
             <OverlayTrigger overlay={<Tooltip>{eventInfo.event.title}</Tooltip>}>
-                
-                <div className="bg-primary d-flex flex-wrap px-1 py-2">
-                    <div className="d-flex align-items-center" style = {{ overflowX: 'hidden'}}>
-                        {
-                            tarea.responsables.map((responsable) => {
-                                return(
-                                    <div className="symbol symbol-30 symbol-circle mr-1">
-                                        <img alt="Pic" src={responsable.avatar ? responsable.avatar : "/default.jpg"} />
-                                    </div>
-                                )
-                            })
-                        }
-                        <div> <span className = 'text-white'>{eventInfo.event.title}</span> </div>
+                <div className="container p-1 bg-info rounded-xl" onClick={(e) => { e.preventDefault(); this.getTareas(tarea) }}>
+                    <div className="row mx-0 row-paddingless">
+                        <div className="col-md-auto mr-2 text-truncate">
+                            {
+                                <div className="symbol-group symbol-hover justify-content-center">
+                                    {
+                                        tarea.responsables.map((responsable, key) => {
+                                            return(
+                                                <div className="symbol symbol-25 symbol-circle border-1" key={key}>
+                                                    <img src={responsable.avatar ? responsable.avatar : "/default.jpg"}/>
+                                                </div>
+                                            )
+                                        })
+                                    }
+                                </div>
+                            }
+                        </div>
+                        <div className="col align-self-center text-truncate">
+                            <span className="text-white font-weight-bold">{eventInfo.event.title}</span>
+                        </div>
                     </div>
-                    
                 </div>
             </OverlayTrigger>
         )
@@ -163,9 +228,69 @@ class Calendario extends Component {
     openCalendarMisTareas = () => { this.getCalendarioTareasAxios('own') }
     
     openCalendarDeptos = () => { this.getCalendarioTareasAxios('all') }
-    
+
+    addComentarioAxios = async () => {
+        // waitAlert()
+        // const { access_token } = this.props.authUser
+        // const { form, proyecto } = this.state
+        // const data = new FormData();
+
+        // form.adjuntos.adjunto_comentario.files.map(( adjunto) => {
+        //     data.append(`files_name_adjunto[]`, adjunto.name)
+        //     data.append(`files_adjunto[]`, adjunto.file)
+        //     return ''
+        // })
+
+        // data.append(`comentario`, form.comentario)
+        // await axios.post(`${URL_DEV}v2/usuarios/calendario-tareas/tarea/${tarea.id}/tarea`, data, { headers: {'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        //     (response) => {
+        //         doneAlert('Comentario agregado con éxito');
+        //         const { proyecto } = response.data
+        //         const { form } = this.state
+        //         form.comentario = ''
+        //         form.adjuntos.adjunto_comentario = {
+        //             value: '',
+        //             placeholder: 'Adjunto',
+        //             files: []
+        //         }
+        //         this.setState({ ...this.state, form, proyecto: proyecto })
+        //     }, (error) => { printResponseErrorAlert(error) }
+        // ).catch((error) => {
+        //     errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+        //     console.log(error, 'error')
+        // })
+    }
+    onChange = e => {
+        const { name, value } = e.target
+        const { form } = this.state
+        form[name] = value
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
+    handleChangeComentario = (files, item) => {
+        const { form } = this.state
+        let aux = []
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        form['adjuntos'][item].value = files
+        form['adjuntos'][item].files = aux
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
     render() {
-        const { events, tipo } = this.state
+        const { events, tipo, title, modal, tarea, form } = this.state
         return (
             <Layout {...this.props}>
                     <Card className="card-custom">
@@ -180,7 +305,7 @@ class Calendario extends Component {
                             </div>
                         </Card.Header>
                         <Card.Body>
-                        <div className="btn-toolbar btn-group justify-content-center">
+                        <div className="btn-toolbar btn-group justify-content-center mb-7">
                             <div className="btn-group btn-group-sm">
                                 <button type="button" className={`btn font-weight-bolder ${tipo === 'own' ? 'btn-success' : 'btn-light-success'}`} onClick={this.openCalendarMisTareas}>
                                     <i className="fas fa-tasks"></i> MIS TAREAS
@@ -196,7 +321,7 @@ class Calendario extends Component {
                                 initialView="dayGridMonth"
                                 weekends={true}
                                 events={events}
-                                dateClick={this.handleDateClick}
+                                // dateClick={this.handleDateClick}
                                 eventContent={this.renderEventContent}
                                 firstDay={1}
                                 themeSystem='bootstrap'
@@ -204,6 +329,15 @@ class Calendario extends Component {
                             />
                         </Card.Body>
                     </Card>
+                <Modal size="lg" title={title} show={modal.tareas} handleClose={this.handleCloseModalT}>
+                    <FormCalendarioTareas
+                        tarea={tarea}
+                        addComentario={this.addComentarioAxios} 
+                        form={form}
+                        onChange={this.onChange}
+                        handleChange={this.handleChangeComentario}
+                    />
+                </Modal>
             </Layout>
         );
     }
