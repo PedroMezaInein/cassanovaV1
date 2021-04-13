@@ -117,7 +117,7 @@ export function setTextTableCenter(text, minwidth) {
 
 export function setTextTableReactDom(text, doubleClick, data, tipo, style){
     return(
-        <div className = {`${style} ${(text === '' ? 'm-5 p-5' : '')}`} onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data, tipo)} }
+        <div className = {`text-hover ${style} ${(text === '' ? 'm-5 p-5' : '')}`} onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data, tipo)} }
             onClick = { (e) => { 
                 e.preventDefault(); 
                 if(isMobile){
@@ -150,9 +150,9 @@ export function setDateTableReactDom(date, doubleClick, data, tipo, style) {
     let seconds = new Date(date);
     seconds = seconds.getTime() / 1000;
     return (
-        <div className = {`${style} font-size-11px ${(date === '' ? 'm-5 p-5' : '')}`} onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data, tipo)} }
+        <div className = {`text-hover ${style} font-size-11px ${(date === '' ? 'm-5 p-5' : '')}`} onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data, tipo)} }
             onClick = { (e) => { 
-                e.preventDefault(); 
+                /* e.preventDefault();  */
                 if(isMobile){
                     doubleClick(data, tipo)
                 }
@@ -219,6 +219,119 @@ export function setTagLabelReactDom (user, arreglo, tipo, deleteElement){
         </div>
     )
 }
+export function setTagLabelProyectoReactDom (proyecto, arreglo, tipo, deleteElement){
+    return (
+        <div className="">
+            {
+                arreglo.map((element, index) => {
+                    return(
+                        <div key = { index } >
+                            <div className="container px-0 font-size-11px mb-3">
+                                <div className="container-fluid px-0">
+                                    <div className="row mx-0 row-paddingless w-100">
+                                        <div className="w-10 text-hover"  onClick = { (e) => { 
+                                            questionAlert(
+                                                '¿ESTÁS SEGURO?', 
+                                                `ELIMINARÁS ${element.nombre} DEL PROYECTO ${proyecto.nombre}`,
+                                                () => deleteElement(proyecto, element, tipo)
+                                            ) } }>
+                                            <div className="bg-gray-100 text-center py-1">
+                                                <i class="flaticon2-delete icon-xs text-dark-50 text-hover-danger"></i>
+                                            </div>
+                                        </div>
+                                        <div className="w-90">
+                                            <div className="text-truncate py-1">
+                                                <span className="bg-gray-100 pr-2 py-1 font-weight-bolder text-dark-50 letter-spacing-0-4 ">
+                                                    { element.nombre }
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )
+                })
+            }
+        </div>
+    )
+}
+
+export function setArrayTableReactDom (arreglo, minwidth, doubleClick, data, tipo) {
+    return (
+        <div className = {`text-hover ${(arreglo === '' ? 'm-5 p-5' : '')}`}  style={{minWidth:minwidth}} onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data, tipo)} }
+            onClick = { (e) => { 
+                e.preventDefault(); 
+                if(isMobile){
+                    console.log(" isMobile ")
+                    doubleClick(data, tipo)
+                }
+            } } > 
+            {
+                arreglo.map((element) => {
+                    return (
+                        <div className={`mb-2 ${minwidth?'':'center-td'}`}>
+                            {
+                                element.name ?
+                                    <span className="mr-1 font-size-12px" >
+                                        <span className="font-weight-bold">
+                                            {
+                                                element.lista ?
+                                                    element.name + '.'
+                                                : element.name + ':'
+                                            }
+                                        </span>
+                                    </span>
+                                    : ''
+                            }
+                            {
+                                element.url ?
+                                    <a href={element.url} target="_blank" rel="noopener noreferrer">
+                                        <span className="font-size-11px">
+                                            {
+                                                element.text
+                                            }
+                                        </span>
+                                    </a>
+                                    :
+                                    <span className="font-size-11px">
+                                        {
+                                            element.text
+                                        }
+                                    </span>
+                            }
+                        </div>
+                    )
+                })
+            }
+        </div>
+    )
+}
+export function setLabelTableReactDom (text, doubleClick, data, tipo) {
+    return (
+        <div className = {`text-center white-space-nowrap ${(text === '' ? 'm-5 p-5' : 'm-2')}`} onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data, tipo)} }
+            onClick = { (e) => { 
+                e.preventDefault(); 
+                if(isMobile){
+                    doubleClick(data, tipo)
+                }
+            } } > 
+            <div className="d-none">
+                {text.estatus}
+            </div>
+            <span style={{
+                backgroundColor:`${text.fondo}`,
+                color: `${text.letra}`,
+                border: 'transparent', padding: '2.8px 5.6px',
+                width:text.estatus==='Respuesta pendiente'?'min-content':'auto', 
+                margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '11px',
+                fontWeight: 500, borderRadius:'0.42rem'
+            }} >
+                {text.estatus}
+            </span>
+        </div>
+    )
+}
 
 export function setColor(text) {
     return (
@@ -236,7 +349,7 @@ export function setLabelTable(text) {
                 color: `${text.letra}`,
                 border: 'transparent', padding: '2.8px 5.6px',
                 width:text.estatus==='Respuesta pendiente'?'min-content':'auto', 
-                margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '10.7px',
+                margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '11px',
                 fontWeight: 500, borderRadius:'0.42rem'
             }} >
                 {text.estatus}

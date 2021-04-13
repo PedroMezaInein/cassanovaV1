@@ -920,7 +920,8 @@ export const UNIDADES_COLUMNS = [
     },
     {
         Header: 'Unidad',
-        accessor: 'unidad'
+        accessor: 'unidad',
+        customRender: true
     }
 ]
 export const ROLES_COLUMNS = [
@@ -978,7 +979,8 @@ export const TIPOS_COLUMNS = [
     },
     {
         Header: 'Tipo',
-        accessor: 'tipo'
+        accessor: 'tipo',
+        customRender: true
     }
 ]
 
@@ -994,15 +996,18 @@ export const PROYECTOS_COLUMNS = [
     },
     {
         Header: 'Nombre',
-        accessor: 'nombre'
+        accessor: 'nombre',
+        customRender: true
     },
     {
         Header: 'T.Proyecto',
-        accessor: 'tipo_proyecto'
+        accessor: 'tipo_proyecto',
+        customRender: true
     },
     {
         Header: 'Cliente',
-        accessor: 'cliente'
+        accessor: 'cliente',
+        customRender: true
     },
     {
         Header: 'Dirección',
@@ -1010,7 +1015,8 @@ export const PROYECTOS_COLUMNS = [
     },
     {
         Header: 'Contacto',
-        accessor: 'contacto'
+        accessor: 'contacto',
+        customRender: true
     },
     {
         Header: 'Empresa',
@@ -1022,15 +1028,18 @@ export const PROYECTOS_COLUMNS = [
     },*/
     {
         Header: 'F.Inicio',
-        accessor: 'fechaInicio'
+        accessor: 'fechaInicio',
+        customRender: true
     },
     {
         Header: 'F.Fin',
-        accessor: 'fechaFin'
+        accessor: 'fechaFin',
+        customRender: true
     },
     {
         Header: 'Descripción',
-        accessor: 'descripcion'
+        accessor: 'descripcion',
+        customRender: true
     },
     {
         Header: 'Fases',
@@ -1398,14 +1407,17 @@ export const DOCUMENTOS_COLUMNS = [
     {
         Header: 'Empresa',
         accessor: 'empresa',
+        customRender: true
     },
     {
         Header: 'Nombre',
         accessor: 'nombre',
+        customRender: true
     },
     {
         Header: 'Fecha',
         accessor: 'fecha',
+        customRender: true
     },
     {
         Header: 'Documento',
@@ -1421,10 +1433,12 @@ export const IMSS_COLUMNS = [
     {
         Header: 'Empresa',
         accessor: 'empresa',
+        customRender: true
     },
     {
         Header: 'Fecha',
         accessor: 'fecha',
+        customRender: true
     },
     {
         Header: 'Adjunto',
@@ -1444,10 +1458,12 @@ export const PRESTAMOS_COLUMNS = [
     {
         Header: 'Fecha',
         accessor: 'fecha',
+        customRender: true
     },
     {
         Header: 'Descripción',
         accessor: 'descripcion',
+        customRender: true
     },
     {
         Header: 'Monto',
@@ -1530,11 +1546,13 @@ export const REMISION_COLUMNS = [
     },
     {
         Header: 'Fecha',
-        accessor: 'fecha'
+        accessor: 'fecha',
+        customRender: true
     },
     {
         Header: 'Proyecto',
-        accessor: 'proyecto'
+        accessor: 'proyecto',
+        customRender: true
     },
     {
         Header: 'Área',
@@ -1542,11 +1560,13 @@ export const REMISION_COLUMNS = [
     },
     {
         Header: 'Sub - Área',
-        accessor: 'subarea'
+        accessor: 'subarea',
+        customRender: true
     },
     {
         Header: 'Descripción',
-        accessor: 'descripcion'
+        accessor: 'descripcion',
+        customRender: true
     },
     {
         Header: 'Adjunto',

@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import NumberFormat from 'react-number-format'
 class InputPhoneGray extends Component {
     state = {
-        inputPhone: !this.props.requirevalidation
+        inputPhone: !this.props.requirevalidation,
+        valor: ''
     }
     validarPhone(e) {
         const { value } = e.target
@@ -51,6 +52,7 @@ class InputPhoneGray extends Component {
     }
     componentDidMount() {
         const { formeditado, value } = this.props
+        this.setState({...this.state, valor: value})
         if (formeditado) {
             this.validarPhone({ target: { value: value } })
         }
@@ -58,11 +60,12 @@ class InputPhoneGray extends Component {
     onChange = values => {
         const { onChange, name } = this.props
         this.validarPhone({ target: { value: values.value, name: name } })
+        this.setState({...this.state, valor: values.value})
         onChange({ target: { value: values.value, name: name } })
     }
     render() {
-        const { error, onChange, messageinc, placeholder, iconclass, value, thousandseparator, customlabel, customstyle, customclass, ...props } = this.props
-        const { inputPhone } = this.state
+        const { error, onChange, messageinc, placeholder, iconclass, value, thousandseparator, customlabel, customstyle, customclass, swal,...props } = this.props
+        const { inputPhone, valor } = this.state
         return (
             <div className="form-group">
                 <label className={`col-form-label font-weight-bold text-dark-60  ${customlabel}`}>{placeholder}</label>
@@ -73,7 +76,7 @@ class InputPhoneGray extends Component {
                         </span>
                     </div>
                     <NumberFormat
-                        value={value}
+                        value = { swal === true ? valor : value } 
                         displayType={'input'}
                         thousandSeparator={thousandseparator ? thousandseparator : false}
                         renderText={value => <div> {value} </div>}
