@@ -568,7 +568,7 @@ class Ventas extends Component {
             { value: value }, 
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                this.getComprasAxios()
+                this.getVentasAxios()
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La venta fue editada con éxito.')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -1277,13 +1277,6 @@ class Ventas extends Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        authUser: state.authUser
-    }
-}
-
-const mapDispatchToProps = dispatch => ({
-})
-
+const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapDispatchToProps = dispatch => ({ })
 export default connect(mapStateToProps, mapDispatchToProps)(Ventas);
