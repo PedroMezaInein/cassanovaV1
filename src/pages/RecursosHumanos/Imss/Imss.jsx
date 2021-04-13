@@ -74,7 +74,7 @@ class Imss extends Component {
             aux.push({
                 actions: this.setActions(imss),
                 empresa: setTextTableReactDom(imss.empresa ? imss.empresa.name : 'Sin definir', this.doubleClick, imss, 'empresa', 'text-center'),
-                fecha: setDateTableReactDom(imss.fecha, this.doubleClick, imss, 'fecha', 'text-center'),
+                fecha: setDateTableReactDom(imss.created_at, this.doubleClick, imss, 'fecha', 'text-center'),
                 adjunto: renderToString(setAdjuntoDocumento(imss)),
                 id: imss.id
             })
@@ -475,14 +475,6 @@ class Imss extends Component {
     }
 }
 
-
-const mapStateToProps = state => {
-    return {
-        authUser: state.authUser
-    }
-}
-
-const mapDispatchToProps = dispatch => ({
-})
-
+const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapDispatchToProps = dispatch => ({ })
 export default connect(mapStateToProps, mapDispatchToProps)(Imss)
