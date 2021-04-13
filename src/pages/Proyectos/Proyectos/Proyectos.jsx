@@ -1067,7 +1067,8 @@ class Proyectos extends Component {
                             requirevalidation = { 0 }  value = { form.contacto } name = { 'contacto' } letterCase = { false }
                             onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true } />
 
-                        <InputPhoneGray withicon={1} iconclass="fas fa-mobile-alt" name="numeroContacto" value={form.numeroContacto} onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} }
+                        <InputPhoneGray withicon={1} iconclass="fas fa-mobile-alt" name="numeroContacto" value={form.numeroContacto} 
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, 'numeroContacto')} }
                             patterns={TEL} thousandseparator={false} prefix=''  swal = { true } 
                         />
                     </>
@@ -1142,22 +1143,45 @@ class Proyectos extends Component {
                     fecha_fin: form.fechaFin
                 }
                 break;
+            case 'contacto':
+                value = { 
+                    contacto: form.contacto,
+                    numeroContacto: form.numeroContacto
+                }
+                break
             default:
                 value = form[tipo]
                 break
         }
-        waitAlert()
+        console.log(form, 'form')
+        console.log(value, 'VALUE')
+        /* waitAlert()
         await axios.put(`${URL_DEV}v2/proyectos/proyectos/${tipo}/${data.id}`, 
             { value: value }, 
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                this.getComprasAxios()
+                const { key } = this.state
+                switch(key){
+                    case 'all':
+                        this.getProyectoAxios();
+                        break;
+                    case 'fase1':
+                        this.getProyectoFase1Axios();
+                        break;
+                    case 'fase2':
+                        this.getProyectoFase2Axios();
+                        break;
+                    case 'fase3':
+                        this.getProyectoFase3Axios();
+                        break;
+                    default: break;
+                }
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue editado con éxito.')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
-        })
+        }) */
     }
     setOptions = (data, tipo) => {
         const { options } = this.state
