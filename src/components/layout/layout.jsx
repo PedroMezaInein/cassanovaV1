@@ -46,15 +46,17 @@ class Layout extends Component {
     componentDidMount() {
         /* this.getNotificacionesAxios()
         this.getIpInfo() */
-        const pusher = new Pusher('112ff49dfbf7dccb6934', {
-            cluster: 'us2',
-            encrypted: false
-        });
-        const { user } = this.props.authUser
-        const channelNot = pusher.subscribe('Notificacion.User.'+user.id);
-        channelNot.bind('App\\Events\\NuevaNotificacion', data => {
-            this.getNotificacionesAxios()
-        });
+        if(process.env.NODE_ENV === 'production'){
+            const pusher = new Pusher('112ff49dfbf7dccb6934', {
+                cluster: 'us2',
+                encrypted: false
+            });
+            const { user } = this.props.authUser
+            const channelNot = pusher.subscribe('Notificacion.User.'+user.id);
+            channelNot.bind('App\\Events\\NuevaNotificacion', data => {
+                this.getNotificacionesAxios()
+            });
+        }
         /* const channelMessage = pusher.subscribe('Message.User.'+user.id);
         channelMessage.bind('App\\Events\\NewMessage', data => {
             console.log('DATA', data)
