@@ -504,6 +504,7 @@ export const EDOS_CUENTAS_COLUMNS_2 = [
     {
         Header: 'Fecha',
         accessor: 'fecha',
+        customRender: true
     },
 ]
 
