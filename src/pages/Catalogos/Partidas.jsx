@@ -2,14 +2,18 @@ import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
+import Swal from 'sweetalert2'
 import { URL_DEV, PARTIDAS_COLUMNS} from '../../constants'
-import { setArrayTable, setTextTableCenter } from '../../functions/setters'
-import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert } from '../../functions/alert'
+import { setTagLabelReactDom, setTextTableCenter, setTextTableReactDom } from '../../functions/setters'
+import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert, customInputAlert } from '../../functions/alert'
 import Layout from '../../components/layout/layout'
 import { Modal, ModalDelete } from '../../components/singles'
 import { PartidaForm } from '../../components/forms'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
 import { PartidaCard } from '../../components/cards'
+import { Update } from '../../components/Lottie'
+import { InputGray } from '../../components/form-components'
+import { printSwalHeader } from '../../functions/printers'
 
 const $ = require('jquery');
 class Partidas extends Component {
@@ -116,15 +120,76 @@ class Partidas extends Component {
             aux.push({
                 actions: this.setActions(partida),
                 clave: renderToString(setTextTableCenter(partida.id)),
-                partida: renderToString(setTextTableCenter(partida.nombre)),
-                subpartidas: renderToString(setArrayTable(this.setArrayTable(partida.subpartidas),'100px')),
+                partida: setTextTableReactDom(partida.nombre, this.doubleClick, partida, 'partida', 'text-center'),
+                subpartidas: setTagLabelReactDom(partida, partida.subpartidas, 'subpartidas', this.deleteElementAxios),
                 id: partida.id
             })
             return false
         })
         return aux
     }
-
+    deleteElementAxios = async(data, element, tipo) => {
+        const { access_token } = this.props.authUser
+        waitAlert()
+        await axios.delete(`${URL_DEV}v2/catalogos/partidas/${data.id}/${tipo}/${element.id}`, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El rendimiento fue editado con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    doubleClick = (data, tipo) => {
+        const { form } = this.state
+        switch(tipo){
+            case 'partida':
+                form.partida = data.nombre
+                break
+            default:
+                form[tipo] = data[tipo]
+                break
+        }
+        this.setState({form})
+        customInputAlert(
+            <div>
+                <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
+                {
+                    tipo === 'partida' &&
+                        <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
+                            requirevalidation = { 0 }  value = { form.partida } name = { 'partida' }
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, 'nombre')} } swal = { true }
+                        />
+                }
+            </div>,
+            <Update />,
+            () => { this.patchPartida(data, tipo) },
+            () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
+        )
+    }
+    patchPartida = async( data,tipo ) => {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        let value = form[tipo]
+        waitAlert()
+        await axios.put(`${URL_DEV}v2/catalogos/partidas/${tipo}/${data.id}`, 
+            { value: value }, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.getPartidaAxios()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El rendimiento fue editado con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    onChangeSwal = (value, tipo) => {
+        const { form } = this.state
+        form[tipo] = value
+        this.setState({...this.state, form})
+    }
     setArrayTable = subpartidas => {
         let aux = []
         subpartidas.map( (subpartida) => {

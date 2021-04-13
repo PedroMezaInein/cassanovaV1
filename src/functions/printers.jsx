@@ -88,6 +88,8 @@ export function printSwalHeader(tipo){
             return 'EDITAR EL SERVICIO'
         case 'area':
             return 'EDITAR EL ÁREA'
+        case 'partida':
+            return 'EDITAR LA PARTIDA'
         default:
             return ''
     }
