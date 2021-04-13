@@ -1,17 +1,19 @@
 import React, { Component } from 'react'
-import { renderToString } from 'react-dom/server'
 import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
 import { AreasForm } from '../../components/forms'
 import { URL_DEV, AREAS_COLUMNS } from '../../constants'
 import { Modal, ModalDelete } from '../../components/singles'
 import axios from 'axios'
+import Swal from 'sweetalert2'
 import { AreaCard } from '../../components/cards'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
-import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert } from '../../functions/alert'
-import { setListTable, setTextTableCenter} from '../../functions/setters'
+import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert, customInputAlert } from '../../functions/alert'
+import { setTagLabelReactDom, setTextTableReactDom} from '../../functions/setters'
 import { Tabs, Tab } from 'react-bootstrap'
-
+import { Update } from '../../components/Lottie'
+import { InputGray } from '../../components/form-components'
+import { printSwalHeader } from '../../functions/printers'
 const $ = require('jquery');
 
 class Areas extends Component {
@@ -114,15 +116,79 @@ class Areas extends Component {
         areas.map((area) => {
             aux.push({
                 actions: this.setActions(area),
-                area: renderToString(setTextTableCenter(area.nombre)),
-                subareas: renderToString(setListTable(area.subareas, 'nombre')),
+                area: setTextTableReactDom(area.nombre, this.doubleClick, area, 'area', 'text-center'),
+                subareas: setTagLabelReactDom(area, area.subareas, 'subareas', this.deleteElementAxios),
                 id: area.id
             })
             return false
         })
         return aux
     }
-
+    deleteElementAxios = async(data, element, tipo) => {
+        const { access_token } = this.props.authUser
+        waitAlert()
+        await axios.delete(`${URL_DEV}v2/catalogos/areas/${data.id}/${tipo}/${element.id}`, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { key } = this.state
+                this.controlledTab(key)
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El rendimiento fue editado con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    doubleClick = (data, tipo) => {
+        const { form } = this.state
+        switch(tipo){
+            case 'area':
+                form.nombre = data.nombre
+                break
+            default:
+                form[tipo] = data[tipo]
+                break
+        }
+        this.setState({form})
+        customInputAlert(
+            <div>
+                <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
+                {
+                    tipo === 'area' &&
+                        <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
+                            requirevalidation = { 0 }  value = { form.nombre } name = { 'nombre' }
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, 'nombre')} } swal = { true }
+                        />
+                }
+            </div>,
+            <Update />,
+            () => { this.patchArea(data, tipo) },
+            () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
+        )
+    }
+    patchArea = async( data,tipo ) => {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        let value = form[tipo]
+        waitAlert()
+        await axios.put(`${URL_DEV}v2/catalogos/areas/${tipo}/${data.id}`, 
+            { value: value }, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { key } = this.state
+                this.controlledTab(key)
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El rendimiento fue editado con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    onChangeSwal = (value, tipo) => {
+        const { form } = this.state
+        form[tipo] = value
+        this.setState({...this.state, form})
+    }
     setActions = () => {
         let aux = []
         aux.push(

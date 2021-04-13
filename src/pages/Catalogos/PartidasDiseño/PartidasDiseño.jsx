@@ -275,14 +275,12 @@ class PartidasDiseño extends Component {
                         </div>
                     </Card.Header>
                 </Card>
-                <Tab.Container activeKey = { empresa.id} >
+                <Tab.Container activeKey = { empresa.id } >
                     <Tab.Content>
                         {
                             data.empresas.map((empresa, key) => {
                                 return(
-                                    <Tab.Pane eventKey = { empresa.id } key = { key } >
-                                        {this.printTable(empresa)}
-                                    </Tab.Pane>
+                                    <Tab.Pane eventKey = { empresa.id } key = { key } > { this.printTable(empresa) } </Tab.Pane>
                                 )
                             })
                         }

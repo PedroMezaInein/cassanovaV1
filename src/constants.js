@@ -892,11 +892,13 @@ export const PARTIDAS_COLUMNS = [
     },
     {
         Header: 'Partida',
-        accessor: 'partida'
+        accessor: 'partida',
+        customRender: true
     },
     {
         Header: 'Sub partidas',
-        accessor: 'subpartidas'
+        accessor: 'subpartidas',
+        customRender: true
     }
 ]
 
