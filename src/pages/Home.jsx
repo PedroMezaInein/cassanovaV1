@@ -59,13 +59,6 @@ class Home extends Component{
     }
 }
 
-const mapStateToProps = state => {
-    return{
-        authUser: state.authUser
-    }
-}
-
-const mapDispatchToProps = dispatch => ({
-})
-
+const mapStateToProps = state => { return{ authUser: state.authUser } }
+const mapDispatchToProps = dispatch => ({ })
 export default connect(mapStateToProps, mapDispatchToProps)(Home)
