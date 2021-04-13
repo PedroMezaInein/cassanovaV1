@@ -84,7 +84,7 @@ class TiposContratos extends Component {
                 }
             </div>,
             <Update />,
-            () => { this.patchUnidades(data, tipo) },
+            () => { this.patchTiposContratos(data, tipo) },
             () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
         )
     }
@@ -93,16 +93,16 @@ class TiposContratos extends Component {
         form[tipo] = value
         this.setState({...this.state, form})
     }
-    patchUnidades = async( data,tipo ) => {
+    patchTiposContratos = async( data,tipo ) => {
         const { access_token } = this.props.authUser
         const { form } = this.state
         let value = form[tipo]
         waitAlert()
-        await axios.put(`${URL_DEV}v2/catalogos/unidades/${tipo}/${data.id}`, 
+        await axios.put(`${URL_DEV}v2/catalogos/tipos-contratos/${tipo}/${data.id}`, 
             { value: value }, 
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                this.getComprasAxios()
+                this.getTiposContratosAxios()
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito el tipo de contrato.')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {

@@ -179,7 +179,7 @@ class Remisiones extends Component {
             { value: value }, 
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                this.getComprasAxios()
+                this.getRemisionesAxios()
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La remisión fue editado con éxito.')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {

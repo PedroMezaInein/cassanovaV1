@@ -536,7 +536,7 @@ class Ingresos extends Component {
             { value: value }, 
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                this.getComprasAxios()
+                this.getIngresosAxios()
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El rendimiento fue editado con éxito.')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {

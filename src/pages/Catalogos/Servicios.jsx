@@ -5,10 +5,14 @@ import Layout from '../../components/layout/layout'
 import { Modal, ModalDelete } from '../../components/singles'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
 import { SERVICIOS_COLUMNS, URL_DEV } from '../../constants'
-import { setOptions, setTextTableCenter } from '../../functions/setters'
+import { setOptions, setTextTableCenter, setTextTableReactDom } from '../../functions/setters'
 import { ServicioForm } from '../../components/forms'
 import axios from 'axios'
-import { doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../functions/alert'
+import { doneAlert, errorAlert, printResponseErrorAlert, waitAlert, customInputAlert } from '../../functions/alert'
+import Swal from 'sweetalert2'
+import { Update } from '../../components/Lottie'
+import { printSwalHeader } from '../../functions/printers'
+import { InputGray } from '../../components/form-components'
 const $ = require('jquery');
 
 class Servicios extends Component{
@@ -139,7 +143,7 @@ class Servicios extends Component{
         servicios.map((servicio) => {
             aux.push({
                 actions: this.setActions(servicio),
-                servicio: renderToString(setTextTableCenter(servicio.servicio)),
+                servicio: setTextTableReactDom(servicio.servicio, this.doubleClick, servicio, 'servicio', 'text-center'),
                 empresa: renderToString(setTextTableCenter(servicio.empresa ? servicio.empresa.name : '')),
                 id: servicio.id
             })
@@ -147,7 +151,52 @@ class Servicios extends Component{
         })
         return aux
     }
-
+    doubleClick = (data, tipo) => {
+        const { form } = this.state
+        switch(tipo){
+            default:
+                form[tipo] = data[tipo]
+                break
+        }
+        this.setState({form})
+        customInputAlert(
+            <div>
+                <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
+                {
+                    tipo === 'servicio' &&
+                        <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
+                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } letterCase = { false }
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true }
+                        />
+                }
+            </div>,
+            <Update />,
+            () => { this.patchServicios(data, tipo) },
+            () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
+        )
+    }
+    onChangeSwal = (value, tipo) => {
+        const { form } = this.state
+        form[tipo] = value
+        this.setState({...this.state, form})
+    }
+    patchServicios = async( data,tipo ) => {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        let value = form[tipo]
+        waitAlert()
+        await axios.put(`${URL_DEV}v2/catalogos/servicios/${tipo}/${data.id}`, 
+            { value: value }, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.updateTable()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito la unidad.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     setActions = () => {
         let aux = []
         aux.push(
