@@ -17,28 +17,18 @@ import { CalendarDaySwal } from '../../../components/form-components'
 const $ = require('jquery');
 class EstadosCuenta extends Component {
     state = {
-        modal: {
-            delete: false,
-            see: false
-        },
+        modal: { delete: false, see: false },
         cuentas: [],
         cuenta: '',
         estados: [],
-        data: {
-            estados: []
-        },
+        data: { estados: [] },
         form: {
             fecha: new Date(),
             cuenta: '',
-            adjuntos: {
-                adjuntos: {
-                    value: '',
-                    placeholder: 'Adjunto',
-                    files: []
-                }
-            }
+            adjuntos: { adjuntos: { value: '', placeholder: 'Adjunto', files: [] } }
         },
     }
+    
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
@@ -50,6 +40,7 @@ class EstadosCuenta extends Component {
         if (!estados)
             history.push('/')
     }
+    
     setEstados = estados => {
         let aux = []
         estados.map((estado, key) => {
@@ -72,6 +63,7 @@ class EstadosCuenta extends Component {
         })
         return aux
     }
+    
     doubleClick = (data, tipo) => {
         const { form } = this.state
         switch(tipo){
@@ -97,17 +89,19 @@ class EstadosCuenta extends Component {
             () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
         )
     }
+    
     onChangeSwal = (value, tipo) => {
         const { form } = this.state
         form[tipo] = value
         this.setState({...this.state, form})
     }
+    
     patchEstadosCuenta = async( data,tipo ) => {
         const { access_token } = this.props.authUser
         const { form } = this.state
         let value = form[tipo]
         waitAlert()
-        await axios.put(`${URL_DEV}v2/bancos/estados-cuenta/${tipo}/${data.id}`, 
+        await axios.put(`${URL_DEV}v2/bancos/estados-cuentas/${tipo}/${data.id}`, 
             { value: value }, 
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
@@ -119,6 +113,7 @@ class EstadosCuenta extends Component {
             console.log(error, 'error')
         })
     }
+    
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
@@ -140,6 +135,7 @@ class EstadosCuenta extends Component {
         })
         return form
     }
+
     setActions = () => {
         let aux = []
         aux.push(
@@ -160,46 +156,33 @@ class EstadosCuenta extends Component {
         )
         return aux
     }
+
     openModalDelete = estado => {
-        console.log('ESTADO', estado)
         const { modal } = this.state
         modal.delete = true
-        this.setState({
-            ...this.state,
-            modal,
-            estado: estado
-        })
+        this.setState({ ...this.state, modal, estado: estado })
     }
+
     handleCloseDelete = () => {
         const { modal } = this.state
         modal.delete = false
-        this.setState({
-            ...this.state,
-            modal,
-            estado: ''
-        })
+        this.setState({ ...this.state, modal, estado: '' })
     }
+
     openModalSee = estado => {
         const { modal } = this.state
         modal.see = true
-        this.setState({
-            ...this.state,
-            modal,
-            estado: estado
-        })
+        this.setState({ ...this.state, modal, estado: estado })
     }
+
     handleCloseSee = () => {
         const { modal } = this.state
         modal.see = false
-        this.setState({
-            ...this.state,
-            modal,
-            estado: ''
-        })
+        this.setState({ ...this.state, modal, estado: '' })
     }
-    async getEstadosCuentaAxios() {
-        $('#kt_datatable_estados_cuenta').DataTable().ajax.reload();
-    }
+
+    async getEstadosCuentaAxios() { $('#kt_datatable_estados_cuenta').DataTable().ajax.reload(); }
+
     async deleteEstadoAxios() {
         const { access_token } = this.props.authUser
         const { estado } = this.state
@@ -208,51 +191,26 @@ class EstadosCuenta extends Component {
                 this.getEstadosCuentaAxios()
                 const { modal } = this.state
                 modal.delete = false
-                this.setState({
-                    ...this.state,
-                    modal,
-                    estado: ''
-                })
+                this.setState({ ...this.state, modal, estado: '' })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste el estado de cuenta')
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
+
     render() {
         const { modal, estado } = this.state
         return (
             <Layout active={'bancos'}  {...this.props}>
-                <NewTableServerRender
-                    columns={EDOS_CUENTAS_COLUMNS_2}
-                    title='Estados de cuenta'
-                    subtitle='Listado de estados de cuenta'
-                    mostrar_boton={true}
-                    abrir_modal={false}
-                    url = '/bancos/estados-cuenta/add'
-                    mostrar_acciones={true}
-                    actions={{
-                        'delete': { function: this.openModalDelete },
-                        'see': { function: this.openModalSee },
-                    }}
-                    accessToken={this.props.authUser.access_token}
-                    setter={this.setEstados}
-                    urlRender={`${URL_DEV}v2/bancos/estados-cuentas`}
-                    idTable='kt_datatable_estados_cuenta'
-                    cardTable='cardTable'
-                    cardTableHeader='cardTableHeader'
-                    cardBody='cardBody'
-                />
-                <ModalDelete 
-                    title={"¿Estás seguro que deseas eliminar el estado de cuenta?"}
-                    show={modal.delete}
-                    handleClose={this.handleCloseDelete}
-                    onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteEstadoAxios() }}
-                />
+                <NewTableServerRender columns = { EDOS_CUENTAS_COLUMNS_2 } title = 'Estados de cuenta' subtitle = 'Listado de estados de cuenta'
+                    mostrar_boton = { true } abrir_modal = { false } url = '/bancos/estados-cuenta/add' mostrar_acciones = { true }
+                    actions = { { 'delete': { function: this.openModalDelete }, 'see': { function: this.openModalSee } } }
+                    accessToken = { this.props.authUser.access_token } setter = { this.setEstados } urlRender = { `${URL_DEV}v2/bancos/estados-cuentas` }
+                    idTable = 'kt_datatable_estados_cuenta' cardTable = 'cardTable' cardTableHeader = 'cardTableHeader' cardBody = 'cardBody' />
+                <ModalDelete title = "¿Estás seguro que deseas eliminar el estado de cuenta?" show = { modal.delete } handleClose = { this.handleCloseDelete }
+                    onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteEstadoAxios() }} />
                 <Modal size="lg" title="Estado de cuenta" show={modal.see} handleClose={this.handleCloseSee} >
                     <EstadoCuentaCard estado={estado} />
                 </Modal>
@@ -260,11 +218,6 @@ class EstadosCuenta extends Component {
         )
     }
 }
-const mapStateToProps = state => {
-    return {
-        authUser: state.authUser
-    }
-}
-const mapDispatchToProps = dispatch => ({
-})
+const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapDispatchToProps = dispatch => ({ })
 export default connect(mapStateToProps, mapDispatchToProps)(EstadosCuenta);
