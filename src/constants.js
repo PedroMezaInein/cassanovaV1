@@ -1230,7 +1230,8 @@ export const SOLICITUD_COMPRA_COLUMNS = [
     },
     {
         Header: 'Factura',
-        accessor: 'factura'
+        accessor: 'factura',
+        customRender: true
     },
     {
         Header: 'Pago', //Cambié de Tipo de pago a Pago
@@ -1318,16 +1319,15 @@ export const PAGOS_COLUMNS = [
 
 export const SOLICITUD_VENTA_COLUMNS = [
     { Header: 'OPCIONES', accessor: 'actions' },
-    { Header: 'Proyecto', accessor: 'proyecto' },
-    { Header: 'Empresa', accessor: 'empresa' },
-    { Header: 'Monto', accessor: 'monto' },
+    { Header: 'Proyecto', accessor: 'proyecto',customRender: true },
+    { Header: 'Empresa', accessor: 'empresa',customRender: true },
+    { Header: 'Monto', accessor: 'monto',customRender: true },
     { Header: 'Factura', accessor: 'factura' },
-    { Header: 'Pago', accessor: 'tipoPago' },
+    { Header: 'Pago', accessor: 'tipoPago',customRender: true },
     { Header: 'Área', accessor: 'area' },
-    { Header: 'Sub-Área', accessor: 'subarea' },
-    { Header: 'Adjunto', accessor: 'adjunto' },
-    { Header: 'Fecha', accessor: 'fecha' },
-    { Header: 'Descripción', accessor: 'descripcion' }
+    { Header: 'Sub-Área', accessor: 'subarea',customRender: true },
+    { Header: 'Fecha', accessor: 'fecha',customRender: true },
+    { Header: 'Descripción', accessor: 'descripcion',customRender: true }
 ]
 
 export const CONCEPTOS_COLUMNS = [

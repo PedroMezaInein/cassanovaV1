@@ -47,7 +47,11 @@ class SolicitudCompra extends Component {
             proveedores: [],
             proyectos: [],
             empresas: [],
-            tiposPagos: []
+            tiposPagos: [],
+            facturas: [
+                { name: "Si", value: "Con factura", label: "Si" },
+                { name: "No", value: "Sin factura", label: "No" },
+            ],
         },
     }
     componentDidMount() {
@@ -166,7 +170,7 @@ class SolicitudCompra extends Component {
                     proyecto: setTextTableReactDom(solicitud.proyecto ? solicitud.proyecto.nombre : '', this.doubleClick, solicitud, 'proyecto', 'text-center'),
                     empresa: setTextTableReactDom(solicitud.empresa ? solicitud.empresa.name : 'Sin definir', this.doubleClick, solicitud, 'empresa', 'text-center'),
                     proveedor: setTextTableReactDom(solicitud.proveedor.razon_social, this.doubleClick, solicitud, 'proveedor', 'text-justify'),
-                    factura: renderToString(setTextTableCenter(solicitud.factura ? 'Con factura' : 'Sin factura')),
+                    factura: setTextTableReactDom(solicitud.factura ? 'Con factura' : 'Sin factura', this.doubleClick, solicitud, 'factura', 'text-justify'),
                     monto: setMoneyTableReactDom(solicitud.monto, this.doubleClick, solicitud, 'monto'),
                     tipoPago: setTextTableReactDom(solicitud.tipo_pago.tipo, this.doubleClick, solicitud, 'tipoPago', 'text-center'),
                     descripcion: setTextTableReactDom(solicitud.descripcion !== null ? solicitud.descripcion :'', this.doubleClick, solicitud, 'descripcion', 'text-justify'),
@@ -195,6 +199,12 @@ class SolicitudCompra extends Component {
                 break
             case 'tipoPago':
                 form[tipo] = data.tipo_pago.id
+                break
+            case 'factura':
+                if (data.factura)
+                    form.factura = 'Con factura'
+                else
+                    form.factura = 'Sin factura'
                 break
             default:
                 form[tipo] = data[tipo]
@@ -252,11 +262,48 @@ class SolicitudCompra extends Component {
                         placeholder={this.setSwalPlaceholder(tipo)}/>
                     :<></>
                 }
+                {
+                    (tipo === 'factura') ?
+                        <Form.Group>
+                            <div className="radio-inline">
+                                {
+                                    this.setOptions(data, tipo).map((option, key) => {
+                                        return (
+                                            <label className="radio radio-outline radio-outline-2x radio-primary" key={key}>
+                                                <input
+                                                    type='radio'
+                                                    name = { 'factura' }
+                                                    value={option.value}
+                                                    onChange={(e) => this.onChange(e)}
+                                                    checked={form.factura === option.value}
+                                                />
+                                                {option.label}
+                                                <span></span>
+                                            </label>
+                                        )
+                                    })
+                                }
+                            </div>
+                        </Form.Group>
+                    :<></>
+                }
             </div>,
             <Update />,
             () => { this.patchSolicitudCompra(data, tipo) },
             () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
         )
+    }
+    onChange = e => {
+        const { name, value, checked, type } = e.target
+        const { form } = this.state
+        form[name] = value
+        if (type === 'radio') {
+            form[name] = checked
+        }
+        this.setState({
+            ...this.state,
+            form
+        })
     }
     setSwalPlaceholder = (tipo) => {
         switch(tipo){
@@ -314,6 +361,8 @@ class SolicitudCompra extends Component {
                         if(data.subarea.area.subareas)
                             return setOptions(data.subarea.area.subareas, 'nombre', 'id')
                         return []
+            case 'factura':
+                return options.facturas
             default: return []
         }
     }
@@ -382,7 +431,7 @@ class SolicitudCompra extends Component {
                 iconclass: 'flaticon-attachment',
                 action: 'adjuntos',
                 tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
-            },
+            }
         )
         return aux
     }
