@@ -47,7 +47,7 @@ export function printSwalHeader(tipo){
         case 'empresa':
             return 'EDITAR LA EMPRESA'
         case 'monto':
-            return 'EDITAR EL MONTO CON IVA'
+            return 'EDITAR EL MONTO'
         case 'tipo_contrato':
             return 'EDITAR EL TIPO DE CONTRATO'
         case 'fecha_inicio':
@@ -90,6 +90,8 @@ export function printSwalHeader(tipo){
             return 'EDITAR EL ÁREA'
         case 'partida':
             return 'EDITAR LA PARTIDA'
+        case 'subarea':
+            return 'EDITAR EL SUBÁREA'
         default:
             return ''
     }
