@@ -474,7 +474,7 @@ class Ingresos extends Component {
                     tipo === 'descripcion' &&
                         <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
                             requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } rows  = { 6 } as = 'textarea'
-                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true } letterCase = { false } />
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true } />
                 }
                 {
                     (tipo === 'tipoImpuesto') || (tipo === 'tipoPago') || (tipo === 'estatusCompra')?
