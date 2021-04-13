@@ -117,7 +117,7 @@ export function setTextTableCenter(text, minwidth) {
 
 export function setTextTableReactDom(text, doubleClick, data, tipo, style){
     return(
-        <div className = {`${style} ${(text === '' ? 'm-5 p-5' : '')}`} onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data, tipo)} }
+        <div className = {`text-hover ${style} ${(text === '' ? 'm-5 p-5' : '')}`} onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data, tipo)} }
             onClick = { (e) => { 
                 e.preventDefault(); 
                 if(isMobile){
@@ -150,9 +150,9 @@ export function setDateTableReactDom(date, doubleClick, data, tipo, style) {
     let seconds = new Date(date);
     seconds = seconds.getTime() / 1000;
     return (
-        <div className = {`${style} font-size-11px ${(date === '' ? 'm-5 p-5' : '')}`} onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data, tipo)} }
+        <div className = {`text-hover ${style} font-size-11px ${(date === '' ? 'm-5 p-5' : '')}`} onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data, tipo)} }
             onClick = { (e) => { 
-                e.preventDefault(); 
+                /* e.preventDefault();  */
                 if(isMobile){
                     doubleClick(data, tipo)
                 }
@@ -229,7 +229,7 @@ export function setTagLabelProyectoReactDom (proyecto, arreglo, tipo, deleteElem
                             <div className="container px-0 font-size-11px mb-3">
                                 <div className="container-fluid px-0">
                                     <div className="row mx-0 row-paddingless w-100">
-                                        <div className="w-10"  onClick = { (e) => { 
+                                        <div className="w-10 text-hover"  onClick = { (e) => { 
                                             questionAlert(
                                                 '¿ESTÁS SEGURO?', 
                                                 `ELIMINARÁS ${element.nombre} DEL PROYECTO ${proyecto.nombre}`,
@@ -259,7 +259,7 @@ export function setTagLabelProyectoReactDom (proyecto, arreglo, tipo, deleteElem
 
 export function setArrayTableReactDom (arreglo, minwidth, doubleClick, data, tipo) {
     return (
-        <div className = {`${(arreglo === '' ? 'm-5 p-5' : '')}`}  style={{minWidth:minwidth}} onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data, tipo)} }
+        <div className = {`text-hover ${(arreglo === '' ? 'm-5 p-5' : '')}`}  style={{minWidth:minwidth}} onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data, tipo)} }
             onClick = { (e) => { 
                 e.preventDefault(); 
                 if(isMobile){

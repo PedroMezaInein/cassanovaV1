@@ -7,6 +7,8 @@ class FormCalendarioTareas extends Component {
         showForm: false,
     }
     descripcion(descripcion) {
+        if(descripcion === null)
+            return ''
         let text = ''
         text = descripcion.replace('↵↵•', '</br>')
         return text
