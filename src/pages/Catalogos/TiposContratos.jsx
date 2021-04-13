@@ -71,7 +71,7 @@ class TiposContratos extends Component {
                 form[tipo] = data[tipo]
                 break
         }
-        this.setState({form})
+        this.setState({form, tipo: data})
         customInputAlert(
             <div>
                 <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) + 'DEL CONTRATO'} </h2>
@@ -84,7 +84,7 @@ class TiposContratos extends Component {
                 }
             </div>,
             <Update />,
-            () => { this.patchTiposContratos(data, tipo) },
+            () => { this.updateTipoContratoAxios() },
             () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
         )
     }
@@ -246,25 +246,14 @@ class TiposContratos extends Component {
     async updateTipoContratoAxios() {
         const { access_token } = this.props.authUser
         const { form, tipo, modal } = this.state
+        console.log(form, 'FORM')
         await axios.put(URL_DEV + 'tipos-contratos/' + tipo.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 modal.form = false
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito el área.')
-
                 this.getTiposContratosAxios()
-
-                this.setState({
-                    ...this.state,
-                    modal,
-                    form: this.clearForm(),
-                    tipo: ''
-                })
-
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                this.setState({ ...this.state, modal, form: this.clearForm(), tipo: '' })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -336,7 +325,6 @@ class TiposContratos extends Component {
         )
     }
 }
-
 
 const mapStateToProps = state => {
     return {
