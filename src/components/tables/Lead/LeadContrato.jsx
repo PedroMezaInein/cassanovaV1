@@ -51,7 +51,7 @@ class LeadContrato extends Component {
                                 <th style={{ minWidth: "120px" }} className="text-center">Empresa</th>
                                 <th style={{ minWidth: "100px" }} className="text-center">Vendedor</th>
                                 <th style={{ minWidth: "100px" }} className="text-center">Estatus</th>
-                                <th style={{ minWidth: "70px" }} className="text-center">Continuidad</th>
+                                <th style={{ minWidth: "175px" }} className="text-center">Continuidad</th>
                                 <th style={{ minWidth: "70px" }}></th>
                             </tr>
                         </thead>
