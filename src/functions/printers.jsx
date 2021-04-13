@@ -76,6 +76,12 @@ export function printSwalHeader(tipo){
             return 'EDITAR LA RAZÓN SOCIAL'
         case 'rfc':
             return 'EDITAR EL RFC'
+        case 'contacto':
+            return 'EDITAR EL CONTACTO'
+        case 'status':
+            return 'EDITAR EL ESTATUS'
+        case 'tipo':
+            return 'EDITAR EL TIPO'
         default:
             return ''
     }

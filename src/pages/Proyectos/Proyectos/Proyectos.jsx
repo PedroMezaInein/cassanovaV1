@@ -5,20 +5,23 @@ import { connect } from 'react-redux'
 import { Modal, ModalDelete } from '../../../components/singles'
 import { AvanceForm } from '../../../components/forms'
 import axios from 'axios'
-import { URL_DEV, PROYECTOS_COLUMNS, URL_ASSETS } from '../../../constants'
+import { URL_DEV, PROYECTOS_COLUMNS, URL_ASSETS, TEL } from '../../../constants'
 import { Small } from '../../../components/texts'
-import { Card, Tabs } from 'react-bootstrap'
-import { setTextTable, setDateTable, setArrayTable, setListTable, setLabelTable, setTextTableCenter, setDireccion } from '../../../functions/setters'
+import { setTextTable, setArrayTable, setListTable, setLabelTableReactDom, setTextTableCenter, setDireccion, setTextTableReactDom, setDateTableReactDom, setArrayTableReactDom, setTagLabelProyectoReactDom} from '../../../functions/setters'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
-import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert } from '../../../functions/alert'
+import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, customInputAlert, questionAlert } from '../../../functions/alert'
 import ItemSlider from '../../../components/singles/ItemSlider'
-import { Nav, Tab, Col, Row } from 'react-bootstrap'
+import { Nav, Tab, Col, Row, Card, Tabs, Dropdown } from 'react-bootstrap'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import { OneLead } from '../../../components/modal'
 import Comentarios from '../../../components/forms/Comentarios'
 import InformacionProyecto from '../../../components/cards/Proyectos/InformacionProyecto'
 import moment from 'moment'
+import { InputGray, RangeCalendarSwal, SelectSearchGray, InputPhoneGray } from '../../../components/form-components'
+import { printSwalHeader } from '../../../functions/printers'
+import { Update } from '../../../components/Lottie'
+import { setOptions } from '../../../functions/setters'
 const MySwal = withReactContent(Swal)
 const $ = require('jquery');
 class Proyectos extends Component {
@@ -447,12 +450,13 @@ class Proyectos extends Component {
                     }
                 }
             ],
-            
+            tipoProyecto:''
         },
         options: {
             clientes: [],
             empresas: [],
-            colonias: []
+            colonias: [],
+            tipos:[]
         },
         myBucket: '',
         tipo: ''
@@ -922,21 +926,21 @@ class Proyectos extends Component {
         proyectos.map((proyecto) => {
             aux.push({
                 actions: this.setActions(proyecto),
-                status: proyecto ? setLabelTable(proyecto.estatus) : '',
-                nombre: renderToString(setTextTableCenter(proyecto.nombre)),
-                cliente: renderToString(setListTable(proyecto.clientes, 'empresa', '140px')),
-                tipo_proyecto:renderToString(setTextTableCenter(proyecto.tipo_proyecto?proyecto.tipo_proyecto.tipo:'Sin tipo de proyecto')),
+                status: proyecto ? setLabelTableReactDom(proyecto.estatus, this.doubleClick, proyecto, 'status') : '',
+                nombre: setTextTableReactDom(proyecto.nombre, this.doubleClick, proyecto, 'nombre', 'text-center'),
+                cliente: setTagLabelProyectoReactDom(proyecto, proyecto.clientes, 'cliente', this.deleteElementAxios),
+                tipo_proyecto: setTextTableReactDom(proyecto.tipo_proyecto?proyecto.tipo_proyecto.tipo:'Sin tipo de proyecto', this.doubleClick, proyecto, 'tipo_proyecto', 'text-center'),
                 direccion: renderToString(setDireccion(proyecto)),
-                contacto: renderToString(setArrayTable(
+                contacto: setArrayTableReactDom(
                     [
                         { name: 'Nombre', text: proyecto.contacto },
                         { name: 'Teléfono', text: proyecto.numero_contacto, url: `tel:+${proyecto.numero_contacto}` }
-                    ],'190px')),
+                    ],'190px',  this.doubleClick, proyecto, 'contacto' ),
                 empresa: renderToString(setTextTableCenter(proyecto.empresa ? proyecto.empresa.name : '')),
                 porcentaje: renderToString(setTextTable(proyecto.porcentaje + '%')),
-                fechaInicio: renderToString(setDateTable(proyecto.fecha_inicio)),
-                descripcion: renderToString(setTextTable(proyecto.descripcion)),
-                fechaFin: renderToString(proyecto.fecha_fin !== null ? setDateTable(proyecto.fecha_fin) : setTextTable('Sin definir')),
+                fechaInicio: setDateTableReactDom(proyecto.fecha_inicio, this.doubleClick, proyecto, 'fecha_inicio', 'text-center'),
+                fechaFin: proyecto.fecha_fin !== null ? setDateTableReactDom(proyecto.fecha_fin, this.doubleClick, proyecto, 'fecha_fin', 'text-center') : setTextTableCenter('Sin definir'),
+                descripcion: setTextTableReactDom(proyecto.descripcion !== null ? proyecto.descripcion :'', this.doubleClick, proyecto, 'descripcion', 'text-justify'),
                 adjuntos: renderToString(this.setAdjuntosTable(proyecto)),
                 fases: renderToString(setListTable(this.setFasesList(proyecto), 'text')),
                 id: proyecto.id
@@ -944,6 +948,251 @@ class Proyectos extends Component {
             return false
         })
         return aux
+    }
+    deleteElementAxios = async(proyecto, element, tipo) => {
+        const { access_token } = this.props.authUser
+        waitAlert()
+        await axios.delete(`${URL_DEV}v2/proyectos/proyectos/${proyecto.id}/${tipo}/${element.id}`, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El rendimiento fue editado con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    doubleClick = (data, tipo) => {
+        const { form } = this.state
+        switch(tipo){
+            case 'tipo_proyecto':
+                if(data[tipo])
+                    form[tipo] = data[tipo].id.toString()
+                break
+            case 'fecha_inicio':
+            case 'fecha_fin':
+                form.fechaInicio = new Date(data.fecha_inicio)
+                form.fechaFin = new Date(data.fecha_fin)
+                break
+            case 'contacto':
+                form.contacto = data.contacto
+                form.numeroContacto = data.numero_contacto
+                break
+            default:
+                form[tipo] = data[tipo]
+                break
+        }
+        this.setState({form})
+        customInputAlert(
+            <div>
+                <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
+                {
+                    tipo === 'status' &&
+                    <>
+                        {
+                            data ?
+                                data.estatus ?
+                                    <Dropdown>
+                                        <Dropdown.Toggle
+                                            style={
+                                                {
+                                                    backgroundColor: data.estatus.fondo, color: data.estatus.letra, border: 'transparent', padding: '0.4rem 0.75rem',
+                                                    width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '1rem',
+                                                    fontWeight: 600
+                                                }}>
+                                            {data.estatus.estatus.toUpperCase()}
+                                        </Dropdown.Toggle>
+                                        <Dropdown.Menu className="p-0" >
+                                            <Dropdown.Header>
+                                                <span className="font-size-sm">Elige una opción</span>
+                                            </Dropdown.Header>
+                                            <Dropdown.Item className="p-0" onClick={() => { this.changeEstatus('Detenido') }} >
+                                                <span className="navi-link w-100">
+                                                    <span className="navi-text">
+                                                        <span className="label label-xl label-inline label-light-danger rounded-0 w-100">DETENIDO</span>
+                                                    </span>
+                                                </span>
+                                            </Dropdown.Item>
+                                            <Dropdown.Item className="p-0" onClick={() => { this.changeEstatus('Terminado') }} >
+                                                <span className="navi-link w-100">
+                                                    <span className="navi-text">
+                                                        <span className="label label-xl label-inline label-light-primary rounded-0 w-100">TERMINADO</span>
+                                                    </span>
+                                                </span>
+                                            </Dropdown.Item>
+                                            <Dropdown.Item className="p-0" onClick={() => { this.changeEstatus('En proceso') }} >
+                                                <span className="navi-link w-100">
+                                                    <span className="navi-text">
+                                                        <span className="label label-xl label-inline label-light-success rounded-0 w-100">EN PROCESO</span>
+                                                    </span>
+                                                </span>
+                                            </Dropdown.Item>
+                                        </Dropdown.Menu>
+                                    </Dropdown>
+                                    : ''
+                                : ''
+                                    }
+                    </>
+                }
+                {
+                    tipo === 'nombre' &&
+                        <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
+                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } letterCase = { false }
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true }
+                        />
+                }
+                {
+                    tipo === 'descripcion' &&
+                        <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
+                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } rows  = { 6 } as = 'textarea'
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true } letterCase = { false }
+                        />
+                }
+                {
+                    (tipo === 'fecha_inicio') || (tipo === 'fecha_fin') ?
+                        <RangeCalendarSwal onChange = { this.onChangeRange } start = { form.fechaInicio } end = {form.fechaFin } />:<></>
+                }
+                {
+                    tipo === 'tipo_proyecto' &&
+                        <SelectSearchGray options = { this.setOptions(data, tipo) }
+                        onChange = { (value) => { this.onChangeSwal(value, tipo)} } name = { tipo }
+                        value = { form[tipo] } customdiv="mb-2 mt-7" requirevalidation={1} 
+                        placeholder={this.setSwalPlaceholder(tipo)}
+                    />
+                }
+                {
+                    tipo === 'contacto' &&
+                    <>
+                        <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 1 } withicon = { 0 } placeholder="NOMBRE DEL CONTACTO"
+                            requirevalidation = { 0 }  value = { form.contacto } name = { 'contacto' } letterCase = { false }
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true } />
+
+                        <InputPhoneGray withicon={1} iconclass="fas fa-mobile-alt" name="numeroContacto" value={form.numeroContacto} 
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, 'numeroContacto')} }
+                            patterns={TEL} thousandseparator={false} prefix=''  swal = { true } 
+                        />
+                    </>
+                }
+            </div>,
+            <Update />,
+            () => { this.patchProyectos(data, tipo) },
+            () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
+        )
+    }
+    changeEstatus = estatus =>  {
+        estatus === 'Detenido'?
+            questionAlert('¿ESTÁS SEGURO?', 'DETENDRÁS EL PROYECTO ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios(estatus))
+        : estatus === 'Terminado' ?
+            questionAlert('¿ESTÁS SEGURO?', 'DARÁS POR TEMINADO EL PROYECTO ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios(estatus))
+        : 
+            questionAlert('¿ESTÁS SEGURO?', 'EL PROYECTO ESTARÁ EN PROCESO ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios(estatus))
+    }
+    async changeEstatusAxios(estatus){
+        waitAlert()
+        const { proyecto } = this.state
+        const { access_token } = this.props.authUser
+        await axios.put(`${URL_DEV}proyectos/${proyecto.id}/estatus`,{estatus: estatus}, { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                Swal.close()
+                doneAlert('Estado actualizado con éxito')
+                const { history } = this.props
+                history.push({
+                    pathname: '/proyectos/proyectos'
+                });
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    setSwalPlaceholder = (tipo) => {
+        switch(tipo){
+            case 'tipo_proyecto':
+                return 'SELECCIONA EL TIPO DE PROYECTO'
+            default:
+                return ''
+        }
+    }
+    onChangeSwal = (value, tipo) => {
+        const { form } = this.state
+        form[tipo] = value
+        this.setState({...this.state, form})
+    }
+    onChangeRange = range => {
+        const { startDate, endDate } = range
+        const { form } = this.state
+        form.fechaInicio = startDate
+        form.fechaFin = endDate
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
+    patchProyectos = async( data,tipo ) => {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        let value = ''
+        switch(tipo){
+            case 'fecha_inicio':
+            case 'fecha_fin':
+                value = {
+                    fecha_inicio: form.fechaInicio,
+                    fecha_fin: form.fechaFin
+                }
+                break;
+            case 'contacto':
+                value = { 
+                    contacto: form.contacto,
+                    numeroContacto: form.numeroContacto
+                }
+                break
+            default:
+                value = form[tipo]
+                break
+        }
+        console.log(form, 'form')
+        console.log(value, 'VALUE')
+        /* waitAlert()
+        await axios.put(`${URL_DEV}v2/proyectos/proyectos/${tipo}/${data.id}`, 
+            { value: value }, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { key } = this.state
+                switch(key){
+                    case 'all':
+                        this.getProyectoAxios();
+                        break;
+                    case 'fase1':
+                        this.getProyectoFase1Axios();
+                        break;
+                    case 'fase2':
+                        this.getProyectoFase2Axios();
+                        break;
+                    case 'fase3':
+                        this.getProyectoFase3Axios();
+                        break;
+                    default: break;
+                }
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue editado con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        }) */
+    }
+    setOptions = (data, tipo) => {
+        const { options } = this.state
+        switch(tipo){
+            case 'tipo_proyecto':
+                if(data.empresa)
+                    if(data.empresa.tipos)
+                        return setOptions(data.empresa.tipos, 'tipo', 'id')
+                return []
+            default: return []
+        }
     }
     setFasesList = proyecto => {
         let aux = [];

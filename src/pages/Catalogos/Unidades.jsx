@@ -1,14 +1,17 @@
 import React, { Component } from 'react'
-import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
+import Swal from 'sweetalert2'
 import { URL_DEV, UNIDADES_COLUMNS, } from '../../constants'
-import { setTextTableCenter } from '../../functions/setters'
-import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert } from '../../functions/alert'
+import { setTextTableReactDom } from '../../functions/setters'
+import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert, customInputAlert } from '../../functions/alert'
 import Layout from '../../components/layout/layout'
 import { Modal, ModalDelete } from '../../components/singles'
 import { UnidadForm } from '../../components/forms'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
+import { Update } from '../../components/Lottie'
+import { printSwalHeader } from '../../functions/printers'
+import { InputGray } from '../../components/form-components'
 const $ = require('jquery');
 class Unidades extends Component {
     state = {
@@ -56,14 +59,60 @@ class Unidades extends Component {
         unidades.map((unidad) => {
             aux.push({
                 actions: this.setActions(unidad),
-                unidad: renderToString(setTextTableCenter(unidad.nombre)),
+                unidad: setTextTableReactDom(unidad.nombre, this.doubleClick, unidad, 'nombre', 'text-center'),
                 id: unidad.id
             })
             return false
         })
         return aux
     }
-
+    doubleClick = (data, tipo) => {
+        console.log(data)
+        const { form } = this.state
+        switch(tipo){
+            default:
+                form[tipo] = data[tipo]
+                break
+        }
+        this.setState({form})
+        customInputAlert(
+            <div>
+                <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) + ' DE LA UNIDAD' } </h2>
+                {
+                    tipo === 'nombre' &&
+                        <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
+                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } letterCase = { false }
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true }
+                        />
+                }
+            </div>,
+            <Update />,
+            () => { this.patchUnidades(data, tipo) },
+            () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
+        )
+    }
+    onChangeSwal = (value, tipo) => {
+        const { form } = this.state
+        form[tipo] = value
+        this.setState({...this.state, form})
+    }
+    patchUnidades = async( data,tipo ) => {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        let value = form[tipo]
+        waitAlert()
+        await axios.put(`${URL_DEV}v2/catalogos/unidades/${tipo}/${data.id}`, 
+            { value: value }, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.getComprasAxios()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito la unidad.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     setActions = () => {
         let aux = []
         aux.push(
@@ -175,7 +224,7 @@ class Unidades extends Component {
                 modal.form = false
                 data.unidades = unidades
 
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Creaste con éxito una nueva área.')
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Creaste con éxito la unidad.')
 
                 this.setState({
                     ...this.state,
@@ -204,7 +253,7 @@ class Unidades extends Component {
                 data.unidades = unidades
                 modal.form = false
 
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito el área.')
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito la unidad.')
 
                 this.setState({
                     ...this.state,
