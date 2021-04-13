@@ -116,7 +116,7 @@ class Areas extends Component {
         areas.map((area) => {
             aux.push({
                 actions: this.setActions(area),
-                area: setTextTableReactDom(area.nombre, this.doubleClick, area, 'area', 'text-center'),
+                area: setTextTableReactDom(area.nombre, this.doubleClick, area, 'nombre', 'text-center'),
                 subareas: setTagLabelReactDom(area, area.subareas, 'subareas', this.deleteElementAxios),
                 id: area.id
             })
@@ -127,7 +127,7 @@ class Areas extends Component {
     deleteElementAxios = async(data, element, tipo) => {
         const { access_token } = this.props.authUser
         waitAlert()
-        await axios.delete(`${URL_DEV}v2/catalogos/areas/${data.id}/${tipo}/${element.id}`, 
+        await axios.delete(`${URL_DEV}v2/catalogos/areas/${data.id}/subarea/${element.id}`, 
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { key } = this.state
@@ -154,11 +154,10 @@ class Areas extends Component {
             <div>
                 <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
                 {
-                    tipo === 'area' &&
+                    tipo === 'nombre' &&
                         <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
-                            requirevalidation = { 0 }  value = { form.nombre } name = { 'nombre' }
-                            onChange = { (e) => { this.onChangeSwal(e.target.value, 'nombre')} } swal = { true }
-                        />
+                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } swal = { true }
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } />
                 }
             </div>,
             <Update />,
@@ -166,6 +165,7 @@ class Areas extends Component {
             () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
         )
     }
+
     patchArea = async( data,tipo ) => {
         const { access_token } = this.props.authUser
         const { form } = this.state
@@ -184,11 +184,13 @@ class Areas extends Component {
             console.log(error, 'error')
         })
     }
+
     onChangeSwal = (value, tipo) => {
         const { form } = this.state
         form[tipo] = value
         this.setState({...this.state, form})
     }
+
     setActions = () => {
         let aux = []
         aux.push(
@@ -482,19 +484,13 @@ class Areas extends Component {
     render() {
         const { form, modal, modalDelete, title, formeditado, key, modalSee, area} = this.state
         return (
-            <Layout active={'catalogos'}  {...this.props}>
-                <Tabs id="tabsAreas" defaultActiveKey="compras" activeKey={key} onSelect={(value) => { this.controlledTab(value) }}>
+            <Layout active = 'catalogos'  {...this.props}>
+                <Tabs id = "tabsAreas" defaultActiveKey = "compras" activeKey = { key } onSelect = { (value) => { this.controlledTab(value) } } >
                     <Tab eventKey="compras" title="Compras" >
                         {
                             key === 'compras' ?
-                                <NewTableServerRender
-                                    columns = { AREAS_COLUMNS }
-                                    title = 'Áreas' 
-                                    subtitle = 'Listado de áreas'
-                                    mostrar_boton = { true }
-                                    abrir_modal = { true }
-                                    mostrar_acciones = { true }
-                                    onClick = { this.openModal }
+                                <NewTableServerRender columns = { AREAS_COLUMNS } title = 'Áreas' subtitle = 'Listado de áreas' mostrar_boton = { true }
+                                    abrir_modal = { true } mostrar_acciones = { true } onClick = { this.openModal } setter =  {this.setAreas }
                                     actions = {
                                         {
                                             'edit': { function: this.openModalEdit },
@@ -502,29 +498,16 @@ class Areas extends Component {
                                             'see': { function: this.openModalSee },
                                         }
                                     }
-                                    accessToken = { this.props.authUser.access_token }
-                                    setter =  {this.setAreas }
-                                    urlRender = { URL_DEV + 'areas/compras'}
-                                    idTable = 'kt_datatable_compras'
-                                    cardTable = 'cardTable_compras'
-                                    cardTableHeader = 'cardTableHeader_compras'
-                                    cardBody = 'cardBody_compras'
-                                    isTab = {true}
-                                    />
+                                    accessToken = { this.props.authUser.access_token } urlRender = { URL_DEV + 'areas/compras'} idTable = 'kt_datatable_compras'
+                                    cardTable = 'cardTable_compras' cardTableHeader = 'cardTableHeader_compras' cardBody = 'cardBody_compras' isTab = { true } />
                             : ''
                         }
                     </Tab>
                     <Tab eventKey="ventas" title="Ventas e ingresos">
                         {
                             key === 'ventas' ?
-                                <NewTableServerRender
-                                    columns = { AREAS_COLUMNS }
-                                    title = 'Áreas' 
-                                    subtitle = 'Listado de áreas'
-                                    mostrar_boton = { true }
-                                    abrir_modal = { true }
-                                    mostrar_acciones = { true }
-                                    onClick = { this.openModalVentas }
+                                <NewTableServerRender columns = { AREAS_COLUMNS } title = 'Áreas'  subtitle = 'Listado de áreas' mostrar_boton = { true }
+                                    abrir_modal = { true } mostrar_acciones = { true } onClick = { this.openModalVentas } setter =  { this.setAreas }
                                     actions = {
                                         {
                                             'edit': { function: this.openModalEditVentas },
@@ -532,48 +515,27 @@ class Areas extends Component {
                                             'see': { function: this.openModalSee },
                                         }
                                     }
-                                    accessToken = { this.props.authUser.access_token }
-                                    setter =  {this.setAreas }
-                                    urlRender = { URL_DEV + 'areas/ventas'}
-                                    idTable='kt_datatable_ventas'
-                                    cardTable='cardTable_ventas'
-                                    cardTableHeader='cardTableHeader_ventas'
-                                    cardBody='cardBody_ventas'
-                                    isTab = {true}
-                                    />
+                                    accessToken = { this.props.authUser.access_token } urlRender = { `${URL_DEV}areas/ventas` } idTable = 'kt_datatable_ventas'
+                                    cardTable = 'cardTable_ventas' cardTableHeader = 'cardTableHeader_ventas' cardBody = 'cardBody_ventas' isTab = { true } />
                             : ''
                         }
                     </Tab>
                     <Tab eventKey="egresos" title="Egresos">
                         {
                             key === 'egresos' ?
-                                <NewTableServerRender
-                                    columns = { AREAS_COLUMNS }
-                                    title = 'Áreas' 
-                                    subtitle = 'Listado de áreas'
-                                    mostrar_boton = { true }
-                                    abrir_modal = { true }
-                                    mostrar_acciones = { true }
-                                    onClick = { this.openModalEgresos }
-                                    actions = {
-                                        {
+                                <NewTableServerRender columns = { AREAS_COLUMNS } title = 'Áreas'  subtitle = 'Listado de áreas' mostrar_boton = { true }
+                                    abrir_modal = { true } mostrar_acciones = { true } onClick = { this.openModalEgresos } 
+                                    actions = { {
                                             'edit': { function: this.openModalEditEgresos },
                                             'delete': { function: this.openModalDelete },
                                             'see': { function: this.openModalSee },
                                         }
                                     }
-                                    accessToken = { this.props.authUser.access_token }
-                                    setter =  {this.setAreas }
-                                    urlRender = { URL_DEV + 'areas/egresos'}
-                                    idTable='kt_datatable_egresos'
-                                    cardTable='cardTable_egresos'
-                                    cardTableHeader='cardTableHeader_egresos'
-                                    cardBody='cardBody_egresos'
-                                    isTab = {true}
-                                    />
+                                    accessToken = { this.props.authUser.access_token } setter =  {this.setAreas } urlRender = { `${URL_DEV}areas/egresos`}
+                                    idTable = 'kt_datatable_egresos' cardTable = 'cardTable_egresos' cardTableHeader = 'cardTableHeader_egresos'
+                                    cardBody = 'cardBody_egresos' isTab = {true} />
                             : ''
                         }
-                        
                     </Tab>
                 </Tabs>
 
@@ -582,8 +544,8 @@ class Areas extends Component {
                         deleteSubarea = { this.deleteSubarea } title = { title } onSubmit = { this.onSubmit } formeditado = { formeditado } />
                 </Modal>
                 
-                <ModalDelete title={"¿Estás seguro que deseas eliminar el área?"} show = { modalDelete } handleClose = { this.handleCloseDelete } onClick = { (e) => { e.preventDefault(); waitAlert(); this.safeDelete(e)() }}>
-                </ModalDelete>
+                <ModalDelete title = "¿Estás seguro que deseas eliminar el área?" show = { modalDelete } handleClose = { this.handleCloseDelete } 
+                    onClick = { (e) => { e.preventDefault(); waitAlert(); this.safeDelete(e)() }} />
 
                 <Modal title={key === 'egresos' ?'Egreso' : key === 'compras' ? 'Compra' : key === 'ventas' ? 'Venta/Ingreso' :''} show = { modalSee } handleClose = { this.handleCloseSee } >
                     <AreaCard area={area}/>
@@ -593,13 +555,7 @@ class Areas extends Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        authUser: state.authUser
-    }
-}
-
-const mapDispatchToProps = dispatch => ({
-})
+const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapDispatchToProps = dispatch => ({ })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Areas);
