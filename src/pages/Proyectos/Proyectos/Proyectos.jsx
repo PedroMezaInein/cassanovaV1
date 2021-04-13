@@ -955,6 +955,22 @@ class Proyectos extends Component {
         await axios.delete(`${URL_DEV}v2/proyectos/proyectos/${proyecto.id}/${tipo}/${element.id}`, 
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                const { key } = this.state
+                switch(key){
+                    case 'all':
+                        this.getProyectoAxios();
+                        break;
+                    case 'fase1':
+                        this.getProyectoFase1Axios();
+                        break;
+                    case 'fase2':
+                        this.getProyectoFase2Axios();
+                        break;
+                    case 'fase3':
+                        this.getProyectoFase3Axios();
+                        break;
+                    default: break;
+                }
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El rendimiento fue editado con éxito.')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -1037,7 +1053,7 @@ class Proyectos extends Component {
                 {
                     tipo === 'nombre' &&
                         <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
-                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } letterCase = { false }
+                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo }
                             onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true }
                         />
                 }
@@ -1045,7 +1061,7 @@ class Proyectos extends Component {
                     tipo === 'descripcion' &&
                         <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
                             requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } rows  = { 6 } as = 'textarea'
-                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true } letterCase = { false }
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true }
                         />
                 }
                 {
@@ -1054,11 +1070,9 @@ class Proyectos extends Component {
                 }
                 {
                     tipo === 'tipo_proyecto' &&
-                        <SelectSearchGray options = { this.setOptions(data, tipo) }
-                        onChange = { (value) => { this.onChangeSwal(value, tipo)} } name = { tipo }
-                        value = { form[tipo] } customdiv="mb-2 mt-7" requirevalidation={1} 
-                        placeholder={this.setSwalPlaceholder(tipo)}
-                    />
+                        <SelectSearchGray options = { this.setOptions(data, tipo) } value = { form[tipo] } customdiv="mb-2 mt-7"
+                            onChange = { (value) => { this.onChangeSwal(value, tipo)} } name = { tipo } requirevalidation={1} 
+                            placeholder={this.setSwalPlaceholder(tipo)} />
                 }
                 {
                     tipo === 'contacto' &&
@@ -1153,9 +1167,7 @@ class Proyectos extends Component {
                 value = form[tipo]
                 break
         }
-        console.log(form, 'form')
-        console.log(value, 'VALUE')
-        /* waitAlert()
+        waitAlert()
         await axios.put(`${URL_DEV}v2/proyectos/proyectos/${tipo}/${data.id}`, 
             { value: value }, 
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -1181,7 +1193,7 @@ class Proyectos extends Component {
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
-        }) */
+        })
     }
     setOptions = (data, tipo) => {
         const { options } = this.state
