@@ -17,18 +17,11 @@ const $ = require('jquery');
 class RedesSociales extends Component {
 
     state = {
-        form: {
-            nombre: '',
-        },
-        data: {
-            redesSociales: []
-        },
+        form: { nombre: '', },
+        data: { redesSociales: [] },
         formeditado: 0,
         redesSociales: [],
-        modal: {
-            form: false,
-            delete: false,
-        },
+        modal: { form: false, delete: false, },
         title: 'Nueva red social',
         origen: ''
     }
@@ -57,6 +50,7 @@ class RedesSociales extends Component {
         })
         return aux
     }
+
     doubleClick = (data, tipo) => {
         const { form } = this.state
         switch(tipo){
@@ -64,20 +58,19 @@ class RedesSociales extends Component {
                 form[tipo] = data[tipo]
                 break
         }
-        this.setState({form})
+        this.setState({form, redSocial: data})
         customInputAlert(
             <div>
                 <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) + ' DE LA RED SOCIAL' } </h2>
                 {
                     tipo === 'nombre' &&
                         <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
-                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } letterCase = { false }
-                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true }
-                        />
+                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } swal = { true }
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } />
                 }
             </div>,
             <Update />,
-            () => { this.patchRedesSociales(data, tipo) },
+            () => { this.updateRedSocialAxios() },
             () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
         )
     }
@@ -86,23 +79,7 @@ class RedesSociales extends Component {
         form[tipo] = value
         this.setState({...this.state, form})
     }
-    patchRedesSociales = async( data,tipo ) => {
-        const { access_token } = this.props.authUser
-        const { form } = this.state
-        let value = form[tipo]
-        waitAlert()
-        await axios.put(`${URL_DEV}v2/catalogos/redes-sociales/${tipo}/${data.id}`, 
-            { value: value }, 
-            { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                this.getRedSocialAxios()
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito la unidad.')
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
+    
     setActions = () => {
         let aux = []
         aux.push(
@@ -214,17 +191,8 @@ class RedesSociales extends Component {
                 modal.form = false
                 this.getRedSocialAxios()
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Creaste con éxito la red social.')
-
-                this.setState({
-                    ...this.state,
-                    modal,
-                    form: this.clearForm()
-                })
-
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                this.setState({ ...this.state, modal, form: this.clearForm() })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -239,18 +207,8 @@ class RedesSociales extends Component {
                 modal.form = false
                 this.getRedSocialAxios()
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito la red social.')
-
-                this.setState({
-                    ...this.state,
-                    modal,
-                    form: this.clearForm(),
-                    redSocial: ''
-                })
-
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                this.setState({ ...this.state, modal, form: this.clearForm(), redSocial: '' })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -266,25 +224,15 @@ class RedesSociales extends Component {
                 this.getRedSocialAxios()
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito la red social.')
                 modal.delete=false
-
-                this.setState({
-                    ...this.state,
-                    modal,
-                    redSocial: '',
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                this.setState({ ...this.state, modal, redSocial: '' })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
 
-    async getRedSocialAxios() {
-        $('#kt_datatable_redesSociales').DataTable().ajax.reload();
-    }
+    async getRedSocialAxios() { $('#kt_datatable_redesSociales').DataTable().ajax.reload(); }
 
     render() {
         const { modal, title, form, formeditado } = this.state

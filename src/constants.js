@@ -871,11 +871,13 @@ export const AREAS_COLUMNS = [
     },
     {
         Header: 'Área',
-        accessor: 'area'
+        accessor: 'area',
+        customRender: true
     },
     {
         Header: 'Sub áreas',
-        accessor: 'subareas'
+        accessor: 'subareas',
+        customRender: true
     }
 ]
 
@@ -905,11 +907,13 @@ export const PARTIDAS_DISEÑO_COLUMNS = [
     },
     {
         Header: 'Partida',
-        accessor: 'partida'
+        accessor: 'partida',
+        customRender: true
     },
     {
         Header: 'Tipo',
-        accessor: 'tipo'
+        accessor: 'tipo',
+        customRender: true
     }
 ]
 
@@ -946,7 +950,8 @@ export const ORIGENES_COLUMNS = [
     },
     {
         Header: 'Origen',
-        accessor: 'origen'
+        accessor: 'origen', 
+        customRender: true
     }
 ]
 
@@ -957,7 +962,8 @@ export const RED_SOCIAL_COLUMNS = [
     },
     {
         Header: 'Red Social',
-        accessor: 'redSocial'
+        accessor: 'redSocial',
+        customRender: true
     }
 ]
 
@@ -968,7 +974,8 @@ export const BANCOS_COLUMNS = [
     },
     {
         Header: 'Banco',
-        accessor: 'banco'
+        accessor: 'banco', 
+        customRender: true
     }
 ]
 
@@ -2285,6 +2292,7 @@ export const SERVICIOS_COLUMNS = [
     {
         Header: 'Servicio',
         accessor: 'servicio',
+        customRender: true
     },
     {
         Header: 'Empresa',

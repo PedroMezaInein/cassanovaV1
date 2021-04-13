@@ -21,13 +21,8 @@ class Servicios extends Component{
         servicio: '',
         modal: false,
         modalDelete: false,
-        form: {
-            servicio: '',
-            empresa: ''
-        },
-        options: {
-            empresas: []
-        },
+        form: { servicio: '', empresa: '' },
+        options: { empresas: [] },
         title: '',
         formeditado: 0
     }
@@ -55,8 +50,7 @@ class Servicios extends Component{
                 const { empresas } = response.data
                 options.empresas = setOptions(empresas, 'name', 'id')
                 this.setState({ ...this.state, options })
-            },
-            (error) => { printResponseErrorAlert(error) }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -121,6 +115,7 @@ class Servicios extends Component{
     }
 
     openModal = () => { this.setState({ ...this.state, modal: true, form: this.clearForm(), title: 'Nuevo servicio', formeditado: 0 }) }
+    
     openModalEdit = servicio => {
         const { form } = this.state
         if(servicio.empresa)
@@ -128,6 +123,7 @@ class Servicios extends Component{
         form.servicio = servicio.servicio
         this.setState({ ...this.state, modal: true, form, servicio: servicio, title: 'Editar servicio', formeditado: 1 })
     }
+
     openModalDelete = servicio => { this.setState({ modalDelete: true, servicio: servicio }) }
 
     handleClose = () => {
@@ -136,6 +132,7 @@ class Servicios extends Component{
         form.servicio = ''
         this.setState({ ...this.state, modal: false, form, servicio: '' })
     }
+    
     handleCloseDelete = () => { this.setState({ ...this.state, modalDelete: false, servicio: '' }) }
 
     setServicio = servicios => {
@@ -151,6 +148,7 @@ class Servicios extends Component{
         })
         return aux
     }
+
     doubleClick = (data, tipo) => {
         const { form } = this.state
         switch(tipo){
@@ -175,11 +173,13 @@ class Servicios extends Component{
             () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
         )
     }
+
     onChangeSwal = (value, tipo) => {
         const { form } = this.state
         form[tipo] = value
         this.setState({...this.state, form})
     }
+    
     patchServicios = async( data,tipo ) => {
         const { access_token } = this.props.authUser
         const { form } = this.state
@@ -197,6 +197,7 @@ class Servicios extends Component{
             console.log(error, 'error')
         })
     }
+
     setActions = () => {
         let aux = []
         aux.push(
@@ -235,28 +236,15 @@ class Servicios extends Component{
         const { modal, modalDelete, title, form, options, formeditado } = this.state
         return(
             <Layout active = 'catalogos' {...this.props} >
-                <NewTableServerRender
-                    columns = { SERVICIOS_COLUMNS }
-                    title = 'Servicios solicitados'
-                    subtitle = 'Listado de servicios solicitados'
-                    mostrar_boton = { true }
-                    abrir_modal = { true }
-                    mostrar_acciones = { true }
-                    onClick = { this.openModal } 
+                <NewTableServerRender columns = { SERVICIOS_COLUMNS } title = 'Servicios solicitados' subtitle = 'Listado de servicios solicitados'
+                    mostrar_boton = { true } abrir_modal = { true } mostrar_acciones = { true } onClick = { this.openModal } 
                     actions = { { 'edit': { function: this.openModalEdit }, 'delete': { function: this.openModalDelete } } }
-                    idTable = 'kt_datatable_servicios'
-                    cardTable = 'cardTable'
-                    cardTableHeader = 'cardTableHeader'
-                    cardBody = 'cardBody'
-                    accessToken = { this.props.authUser.access_token }
-                    setter = { this.setServicio }
-                    urlRender = { `${URL_DEV}v2/catalogos/servicios` }
-                />
+                    idTable = 'kt_datatable_servicios' cardTable = 'cardTable' cardTableHeader = 'cardTableHeader' cardBody = 'cardBody'
+                    accessToken = { this.props.authUser.access_token } setter = { this.setServicio } urlRender = { `${URL_DEV}v2/catalogos/servicios` } />
                 <Modal show = { modal } size = 'lg' title = { title } handleClose = { this.handleClose }>
                     <ServicioForm form = { form } title = { title } options = { options } onChange = { this.onChange } formeditado = { formeditado } 
                         onSubmit = { this.onSubmit } />
                 </Modal>
-
                 <ModalDelete title = '¿Deseas eliminar el servicio?' show = { modalDelete } handleClose = { this.handleCloseDelete }
                     onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteServicioAxios() }} />
             </Layout>

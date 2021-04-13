@@ -69,20 +69,19 @@ class Bancos extends Component {
                 form[tipo] = data[tipo]
                 break
         }
-        this.setState({form})
+        this.setState({form, banco: data})
         customInputAlert(
             <div>
                 <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) + ' DEL BANCO' } </h2>
                 {
                     tipo === 'nombre' &&
                         <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
-                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } letterCase = { false }
-                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true }
-                        />
+                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } swal = { true }
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } />
                 }
             </div>,
             <Update />,
-            () => { this.patchBancos(data, tipo) },
+            () => { this.updateBancoAxios() },
             () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
         )
     }
@@ -91,24 +90,7 @@ class Bancos extends Component {
         form[tipo] = value
         this.setState({...this.state, form})
     }
-    patchBancos = async( data,tipo ) => {
-        const { access_token } = this.props.authUser
-        const { form } = this.state
-        let value = form[tipo]
-        waitAlert()
-        await axios.put(`${URL_DEV}v2/catalogos/bancos/${tipo}/${data.id}`, 
-            { value: value }, 
-            { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                this.getBancosAxios()
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito la unidad.')
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-
+    
     setActions = banco => {
         let aux = []
         aux.push(
@@ -201,13 +183,9 @@ class Bancos extends Component {
             this.updateBancoAxios()
     }
 
-    safeDelete = e => () => {
-        this.deleteBancoAxios()
-    }
+    safeDelete = e => () => { this.deleteBancoAxios() }
 
-    async getBancosAxios() {
-        $('#kt_datatable_catalogos').DataTable().ajax.reload();
-    }
+    async getBancosAxios() { $('#kt_datatable_catalogos').DataTable().ajax.reload(); }
 
     async addBancoAxios() {
         const { access_token } = this.props.authUser
@@ -216,21 +194,10 @@ class Bancos extends Component {
             (response) => {
                 const { modal } = this.state
                 modal.form = false
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Creaste con éxito una nueva área.')
-                
                 this.getBancosAxios()
-
-                this.setState({
-                    ...this.state,
-                    modal,
-                    form: this.clearForm()
-                })
-
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                this.setState({ ...this.state, modal, form: this.clearForm() })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -242,24 +209,11 @@ class Bancos extends Component {
         const { form, banco, modal } = this.state
         await axios.put(URL_DEV + 'bancos/' + banco.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-
                 modal.form = false
-
                 this.getBancosAxios()
-                
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito el área.')
-                
-                this.setState({
-                    ...this.state,
-                    modal,
-                    form: this.clearForm(),
-                    banco: ''
-                })
-
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito el área.') 
+                this.setState({ ...this.state, modal, form: this.clearForm(), banco: '' })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -271,24 +225,11 @@ class Bancos extends Component {
         const { banco, modal } = this.state
         await axios.delete(URL_DEV + 'bancos/' + banco.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-
                 modal.delete = false
-
                 this.getBancosAxios()
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito el área.')
-                
-                this.setState({
-                    ...this.state,
-                    modal,
-                    form: this.clearForm(),
-                    banco: '',
-                })
-
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                this.setState({ ...this.state, modal, form: this.clearForm(), banco: '', })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -299,46 +240,22 @@ class Bancos extends Component {
         const { form, modal, title, formeditado} = this.state
         return (
             <Layout active={'catalogos'}  {...this.props}>
-                <NewTableServerRender 
-                    columns = { BANCOS_COLUMNS } 
-                    title = 'Bancos' 
-                    subtitle='Listado de bancos'
-                    mostrar_boton={true}
-                    abrir_modal={true}
-                    mostrar_acciones={true}
-                    onClick={this.openModal}
-                    actions={{
-                        'edit': { function: this.openModalEdit },
-                        'delete': { function: this.openModalDelete }
-                    }}
-                    idTable = 'kt_datatable_catalogos'
-                    cardTable='cardTable'
-                    cardTableHeader='cardTableHeader'
-                    cardBody='cardBody'
-                    accessToken = { this.props.authUser.access_token }
-                    setter =  {this.setBancos }
-                    urlRender = { URL_DEV + 'bancos'}
-                />
-
+                <NewTableServerRender columns = { BANCOS_COLUMNS } title = 'Bancos' subtitle='Listado de bancos' mostrar_boton = { true }
+                    abrir_modal = { true } mostrar_acciones = { true } onClick = { this.openModal } idTable = 'kt_datatable_catalogos'
+                    actions = { { 'edit': { function: this.openModalEdit }, 'delete': { function: this.openModalDelete } } }
+                    cardTable = 'cardTable' cardTableHeader = 'cardTableHeader' cardBody = 'cardBody' accessToken = { this.props.authUser.access_token }
+                    setter =  {this.setBancos } urlRender = { `${URL_DEV}bancos` } />
                 <Modal size="xl" show={modal.form} title = {title} handleClose={this.handleClose}>
-                    <BancoForm form = { form } onChange = { this.onChange }
-                        onSubmit = { this.onSubmit } formeditado={formeditado} />
+                    <BancoForm form = { form } onChange = { this.onChange } onSubmit = { this.onSubmit } formeditado={formeditado} />
                 </Modal>
-                <ModalDelete title={"¿Estás seguro que deseas eliminar el banco?"} show = { modal.delete } handleClose = { this.handleCloseDelete } onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteBancoAxios() }}>
-                </ModalDelete>
+                <ModalDelete title = "¿Estás seguro que deseas eliminar el banco?" show = { modal.delete } handleClose = { this.handleCloseDelete } 
+                    onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteBancoAxios() }} />
             </Layout>
         )
     }
 }
 
-
-const mapStateToProps = state => {
-    return {
-        authUser: state.authUser
-    }
-}
-
-const mapDispatchToProps = dispatch => ({
-})
+const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapDispatchToProps = dispatch => ({})
 
 export default connect(mapStateToProps, mapDispatchToProps)(Bancos);
