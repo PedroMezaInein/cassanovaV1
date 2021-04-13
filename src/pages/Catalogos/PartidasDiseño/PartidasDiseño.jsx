@@ -22,30 +22,15 @@ class PartidasDiseño extends Component {
     state = {
         partidas: [],
         partida: '',
-        modal: {
-            delete: false,
-        },
+        modal: { delete: false, },
         title: 'Nueva partida',
-        form: {
-            partida: '',
-            empresa: 'inein',
-        },
-        data:{
-            partidas:[],
-            empresas: []
-        },
+        form: { partida: '', empresa: 'inein', },
+        data:{ partidas:[], empresas: [] },
         options:{
-            rubro:
-            [
-                {
-                    name: "ACABADOS E INSTALACIONES", value: "Acabados e instalaciones", label: "ACABADOS E INSTALACIONES"
-                },
-                {
-                    name: "OBRA CIVIL", value: "Obra civil", label: "OBRA CIVIL"
-                },
-                {
-                    name: "MOBILIARIO", value: "Mobiliario", label: "MOBILIARIO"
-                },
+            rubro: [
+                { name: "ACABADOS E INSTALACIONES", value: "Acabados e instalaciones", label: "ACABADOS E INSTALACIONES" },
+                { name: "OBRA CIVIL", value: "Obra civil", label: "OBRA CIVIL" },
+                { name: "MOBILIARIO", value: "Mobiliario", label: "MOBILIARIO" },
             ],
             empresas: [],
         },
@@ -83,6 +68,7 @@ class PartidasDiseño extends Component {
         })
         return aux
     }
+
     doubleClick = (data, tipo) => {
         const { form } = this.state
         switch(tipo){
@@ -115,6 +101,7 @@ class PartidasDiseño extends Component {
             () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
         )
     }
+    
     setOptions = (data, tipo) => {
         const { options } = this.state
         switch(tipo){
@@ -123,16 +110,19 @@ class PartidasDiseño extends Component {
             default: return []
         }
     }
+    
     updateSelectSearch = (value, tipo) => {
         const { form } = this.state
         form[tipo] = value
         this.setState({...this.state, form})
     }
+    
     onChangeSwal = (value, tipo) => {
         const { form } = this.state
         form[tipo] = value
         this.setState({...this.state, form})
     }
+    
     patchPartidasDiseño = async( data,tipo ) => {
         const { access_token } = this.props.authUser
         const { form } = this.state
@@ -142,7 +132,8 @@ class PartidasDiseño extends Component {
             { value: value }, 
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                this.getPartidas()
+                const { empresa } = this.state
+                this.getPartidas(empresa)
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito la unidad.')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -150,6 +141,7 @@ class PartidasDiseño extends Component {
             console.log(error, 'error')
         })
     }
+    
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
@@ -159,6 +151,7 @@ class PartidasDiseño extends Component {
         })
         return form;
     }
+    
     setActions= () => {
         let aux = []
             aux.push(
@@ -182,30 +175,19 @@ class PartidasDiseño extends Component {
 
     changePageEdit = partida => {
         const { history } = this.props
-        history.push({
-            pathname: '/catalogos/partidas-diseño/edit',
-            state: { partida: partida}
-        });
+        history.push({ pathname: '/catalogos/partidas-diseño/edit', state: { partida: partida} });
     }
 
     openModalDelete = (partida) => {
         const { modal } = this.state
         modal.delete = true
-        this.setState({
-            ...this.state,
-            modal,
-            partida: partida
-        })
+        this.setState({ ...this.state, modal, partida: partida })
     }
 
     handleCloseDelete = () => {
         const { modal } = this.state
         modal.delete = false
-        this.setState({
-            ...this.state,
-            modal,
-            partida: ''
-        })
+        this.setState({ ...this.state, modal, partida: '' })
     }
 
     printTable = empresa => {
@@ -213,38 +195,20 @@ class PartidasDiseño extends Component {
         const { access_token } = this.props.authUser
         if(empresa){
             return(
-                <NewTableServerRender 
-                    columns = { PARTIDAS_DISEÑO_COLUMNS }
-                    // title = { `Partidas de diseño ${empresa.name}` } 
-                    subtitle = { `Listado de partidas ${empresa.name}` }
-                    mostrar_boton = { true }
-                    abrir_modal = { false }
-                    url = {`/catalogos/partidas-diseño/add?empresa=${empresa.id}`}
-                    mostrar_acciones = { true } 
-                    actions = { {
-                        'edit': { function: this.changePageEdit },
-                        'delete': { function: this.openModalDelete }
-                    } }
-                    accessToken = { access_token } setter = { this.setPartidasDiseño } 
-                    urlRender = { url } idTable = {`kt_datatable_partida_${empresa.id}`}
-                    cardTable = {`cardTable_partidas_${empresa.id}`}
-                    cardTableHeader = {`cardTableHeader_partidas_${empresa.id}`}
-                    cardBody = {`cardBody_partidas_${empresa.id}`}
-                    isNav = { true }
-                    customcard={'card-without-box-shadown'}
-                    customheader={'rounded-0'}
-                    customtitle={'d-flex align-items-start mt-0 '}
-                    customsubtitle={'pt-0 hidden-subtitle'}
-                    customlabel={'hidden-label'}
-                />
+                <NewTableServerRender  columns = { PARTIDAS_DISEÑO_COLUMNS } subtitle = { `Listado de partidas ${empresa.name}` }
+                    mostrar_boton = { true } abrir_modal = { false } url = {`/catalogos/partidas-diseño/add?empresa=${empresa.id}`}
+                    mostrar_acciones = { true } accessToken = { access_token } setter = { this.setPartidasDiseño } 
+                    actions = { { 'edit': { function: this.changePageEdit }, 'delete': { function: this.openModalDelete } } }
+                    urlRender = { url } idTable = {`kt_datatable_partida_${empresa.id}`} cardTable = {`cardTable_partidas_${empresa.id}`}
+                    cardTableHeader = {`cardTableHeader_partidas_${empresa.id}`} cardBody = {`cardBody_partidas_${empresa.id}`}
+                    isNav = { true } customcard = 'card-without-box-shadown' customheader = 'rounded-0' customtitle = 'd-flex align-items-start mt-0 '
+                    customsubtitle = 'pt-0 hidden-subtitle' customlabel = 'hidden-label' />
             )
         }
         return ''
     }
 
-    getPartidas = async(empresa) => {
-        $(`#kt_datatable_partida_${empresa.id}`).DataTable().ajax.reload();
-    }
+    getPartidas = async(empresa) => { $(`#kt_datatable_partida_${empresa.id}`).DataTable().ajax.reload(); }
 
     getPartidasDiseño = async() => {
         const { access_token } = this.props.authUser
@@ -257,10 +221,7 @@ class PartidasDiseño extends Component {
                 if(empresas.length)
                     empresa = empresas[0]
                 this.setState({...this.state,data,empresa})
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error)=>{
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -277,10 +238,7 @@ class PartidasDiseño extends Component {
                 this.setState({ ...this.state, modal, partida: '' })
                 this.getPartidas(empresa)
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito al usuario.')
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -290,7 +248,7 @@ class PartidasDiseño extends Component {
     render(){
         const { modal, empresa, data } = this.state
         return (
-            <Layout active = { 'catalogos' }  { ...this.props } >
+            <Layout active = 'catalogos'  { ...this.props } >
                 <Card className = 'card-custom rounded-0'>
                     <Card.Header className="border-bottom-0">
                         <div className = 'd-flex align-items-end'>
@@ -330,27 +288,14 @@ class PartidasDiseño extends Component {
                         }
                     </Tab.Content>
                 </Tab.Container>
-                <ModalDelete 
-                    title =  "¿Estás seguro que deseas eliminar la partida?"
-                    show = { modal.delete } handleClose = { this.handleCloseDelete } 
-                    onClick = { (e) => { e.preventDefault(); waitAlert(); this.deletePartidaDiseñoAxios() }}>
-                </ModalDelete>
-
+                <ModalDelete  title =  "¿Estás seguro que deseas eliminar la partida?" show = { modal.delete } handleClose = { this.handleCloseDelete } 
+                    onClick = { (e) => { e.preventDefault(); waitAlert(); this.deletePartidaDiseñoAxios() }} />
             </Layout>
         )
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        authUser: state.authUser,
-        formulario: state.formulario
-    }
-}
-
-const mapDispatchToProps = dispatch => ({
-    save: payload => dispatch(save(payload)),
-    deleteForm: () => dispatch(deleteForm()),
-})
+const mapStateToProps = state => { return { authUser: state.authUser, formulario: state.formulario } }
+const mapDispatchToProps = dispatch => ({ save: payload => dispatch(save(payload)), deleteForm: () => dispatch(deleteForm()), })
 
 export default connect(mapStateToProps, mapDispatchToProps)(PartidasDiseño);
