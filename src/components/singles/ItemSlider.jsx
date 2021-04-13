@@ -180,7 +180,7 @@ class ItemSlider extends Component {
                     </div>
                 </div>
                 <div className="d-flex justify-content-center align-items-center mt-3">
-                    <div>
+                    <div className="text-center">
                         {
                             items.length > 0 && active !== items.length ? 
                                 deleteFile && items[active].id ?
