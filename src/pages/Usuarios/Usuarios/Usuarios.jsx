@@ -15,7 +15,7 @@ import { setTextTableCenter } from '../../../functions/setters'
 import { Tabs, Tab } from 'react-bootstrap' 
 import { UsuarioCard } from '../../../components/cards'
 import { Update } from '../../../components/Lottie'
-import { InputGray, TagSelectSearchGray } from '../../../components/form-components'
+import { InputGray } from '../../../components/form-components'
 const $ = require('jquery');
 
 class Usuarios extends Component {
@@ -356,11 +356,9 @@ class Usuarios extends Component {
     }
     doubleClick = (data, tipo) => {
         const { form } = this.state
-        console.log(form)
         if(tipo){
             form[tipo] = data[tipo]
         }
-        this.setState({form})
         this.setState({form})
         customInputAlert(
             <div>
@@ -372,143 +370,13 @@ class Usuarios extends Component {
                             onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true } />
                     :<></>
                 }
-                {
-                    (tipo === 'departamentos') || (tipo === 'proyectos') ?
-                    <TagSelectSearchGray
-                        // placeholder="SELECCIONA EL(LOS) DEPARTAMENTO(S)"
-                        options={this.transformarOptions(this.setOptions(data, tipo))}
-                        defaultvalue={this.transformarOptions(form[tipo])}
-                        onChange= { (value) => this.nuevoUpdateTagSelect(value, tipo)}
-                        iconclass={"fas fa-layer-group"}
-                        requirevalidation={1}
-                        messageinc={`Incorrecto. Selecciona el(los) ${tipo}`}
-                    />
-                    :<></>
-                }
             </div>,
             <Update />,
             () => { this.patchUsuario(data, tipo) },
             () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
         )
     }
-    transformarOptions = options => {  
-        options = options?options:[]
-        options.map((value)=>{
-            value.label = value.name 
-            return ''
-        } );
-        return options
-    }
-    nuevoUpdateTagSelect = (seleccionados, tipo) =>{
-        const { form } = this.state
-        seleccionados = seleccionados?seleccionados:[];
-        if(seleccionados.length>form[tipo].length){
-            let diferencia = $(seleccionados).not(form[tipo]).get();
-            let val_diferencia = diferencia[0].value
-            this.updateTagSelect(val_diferencia, tipo)
-        }
-        else {
-            let diferencia = $(form[tipo]).not(seleccionados).get(); 
-            diferencia.forEach(borrar=>{
-                this.deleteOptionTag(borrar,tipo)
-            })
-        }
-    }
-    updateTagSelect = (value, tipo) => {
-        const { options } = this.state
-        let tipoSingular = ''
-        if(tipo==='departamentos'){
-            tipoSingular = 'departamento'
-        }else{
-            tipoSingular = 'proyecto'
-        }
-        options.departamentos.map((tipo_option) => {
-            // console.log(tipo_option,'tipo_option')
-            if (tipo_option.value === value)
-                this.onChangeAndAdd({ target: { value: tipo_option.value, name: tipoSingular } }, tipo)
-            return false
-        })
-        this.onChange({ target: { value: value, name: 'departamento' } })
-    }
-    deleteOptionTag = (element, array) => {
-        // console.log(element, 'element')
-        // console.log(array,'array')
-        let { form } = this.state
-
-        let auxForm = []
-        form[array].map( ( elemento, key ) => {
-            if(element !== elemento)
-                auxForm.push(elemento)
-            return false
-        })
-        form[array] = auxForm
-        this.setState({
-            ...this.state,
-            form
-        });
-        if(array==="departamentos"){this.showDepartamentos();}
-        if(array==="proyectos"){  this.showProyectos();}
-    }
-    showDepartamentos = () => {
-        const {  options, form } = this.state 
-        let departamentos_disponibles=[]
-        options.departamentos.forEach((departamento) => {
-            let existe =false
-            form.departamentos.forEach((departamentoForm) => {
-                if (departamento.value ===departamentoForm.value) {
-                    existe = true
-                } 
-            })  
-            if(!existe){
-                departamentos_disponibles.push(departamento)
-            }
-        })    
-        this.setState({  ...this.state, departamentos_disponibles  })
-        
-    }
-    
-    showProyectos = () => {
-        const {  options, form } = this.state 
-        let proyectos_disponibles=[] 
-        options.proyectos.forEach((proyecto) => {
-            let existe =false
-            form.proyectos.forEach((proyectoForm) => {
-                if (proyecto.value ===proyectoForm.value) {
-                    existe = true
-                } 
-            })  
-            if(!existe){
-                proyectos_disponibles.push(proyecto)
-            }
-        })    
-        this.setState({   proyectos_disponibles  })
-        
-    }
-    onChangeAndAdd = (e, arreglo) => {
-        // console.log(arreglo,'arreglo')
-        const { value } = e.target
-        const { options, form } = this.state
-        let auxArray = form[arreglo]
-        let aux = []
-        options[arreglo].find(function (_aux) {
-            if (_aux.value.toString() === value.toString())
-                auxArray.push(_aux)
-            else
-                aux.push(_aux)
-            return false
-        })
-        form[arreglo] = auxArray
-        this.setState({
-            ...this.state,
-            form,
-            options
-        })
-        if(arreglo==="departamentos"){this.showDepartamentos();}
-        if(arreglo==="proyectos"){this.showProyectos();}
-    }
     onChangeSwal = (value, tipo) => {
-        console.log(value, 'value')
-        console.log(tipo, 'tipo')
         const { form } = this.state
         form[tipo] = value
         this.setState({...this.state, form})

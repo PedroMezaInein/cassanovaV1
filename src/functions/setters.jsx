@@ -198,19 +198,37 @@ export function setListTableReactDom(arreglo, nombre, minwidth, doubleClick, dat
     )
 }
 
-export function setTagLabelReactDom (user, arreglo, tipo, deleteElement){
+export function setTagLabelReactDom (data, arreglo, tipo, deleteElement){
     return (
-        <div className="d-flex flex-wrap tr-hover">
+        <div className="tr-hover">
             {
                 arreglo.map((element, index) => {
+                    let textAlert =''
+                    switch(tipo){
+                        case 'proyecto':
+                            textAlert = `ELIMINARÁS ${element.nombre} DEL USUARIO ${data.name}`
+                            break
+                        case 'departamento':
+                            textAlert = `ELIMINARÁS ${element.nombre} DEL USUARIO ${data.name}`
+                            break
+                        case 'subareas':
+                            textAlert = `ELIMINARÁS ${element.nombre} DEL ÁREA ${data.nombre}`
+                            break
+                        case 'subpartidas':
+                            textAlert = `ELIMINARÁS ${element.nombre} DE LA PARTIDA ${data.nombre}`
+                            break
+                        default:
+                            textAlert =''
+                            break
+                    }
                     return(
-                        <div key = { index } >
+                        <div key = { index } className="d-table mb-2">
                             <SingleTagify element = { element } color = { index % 2 ? 'success' : 'primary' } 
                                 onClick = { (e) => { 
                                     questionAlert(
                                         '¿ESTÁS SEGURO?', 
-                                        `ELIMINARÁS ${element.nombre} DEL USUARIO ${user.name}`,
-                                        () => deleteElement(user, element, tipo)
+                                        `${textAlert}`,
+                                        () => deleteElement(data, element, tipo)
                                     ) } }/>
                         </div>
                     )
