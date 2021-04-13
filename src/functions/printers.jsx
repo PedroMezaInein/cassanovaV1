@@ -82,6 +82,10 @@ export function printSwalHeader(tipo){
             return 'EDITAR EL ESTATUS'
         case 'tipo':
             return 'EDITAR EL TIPO'
+        case 'origen':
+            return 'EDITAR EL ORIGEN'
+        case 'servicio':
+            return 'EDITAR EL SERVICIO'
         default:
             return ''
     }

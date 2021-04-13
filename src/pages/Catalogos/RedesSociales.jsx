@@ -1,14 +1,17 @@
 import React, { Component } from 'react'
-import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import { RedesSocialesForm } from '../../components/forms'
 import Layout from '../../components/layout/layout'
 import { ModalDelete, Modal } from '../../components/singles'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
 import { URL_DEV, RED_SOCIAL_COLUMNS } from '../../constants'
-import { doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../functions/alert'
-import { setTextTableCenter } from '../../functions/setters'
+import { doneAlert, errorAlert, printResponseErrorAlert, waitAlert, customInputAlert} from '../../functions/alert'
+import { setTextTableReactDom } from '../../functions/setters'
 import axios from 'axios'
+import Swal from 'sweetalert2'
+import { Update } from '../../components/Lottie'
+import { printSwalHeader } from '../../functions/printers'
+import { InputGray } from '../../components/form-components'
 const $ = require('jquery');
 
 class RedesSociales extends Component {
@@ -47,14 +50,59 @@ class RedesSociales extends Component {
         redesSociales.map((redSocial) => {
             aux.push({
                 actions: this.setActions(redSocial),
-                redSocial: renderToString(setTextTableCenter(redSocial.nombre)),
+                redSocial: setTextTableReactDom(redSocial.nombre, this.doubleClick, redSocial, 'nombre', 'text-center'),
                 id: redSocial.id
             })
             return false
         })
         return aux
     }
-
+    doubleClick = (data, tipo) => {
+        const { form } = this.state
+        switch(tipo){
+            default:
+                form[tipo] = data[tipo]
+                break
+        }
+        this.setState({form})
+        customInputAlert(
+            <div>
+                <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) + ' DE LA RED SOCIAL' } </h2>
+                {
+                    tipo === 'nombre' &&
+                        <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
+                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } letterCase = { false }
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true }
+                        />
+                }
+            </div>,
+            <Update />,
+            () => { this.patchRedesSociales(data, tipo) },
+            () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
+        )
+    }
+    onChangeSwal = (value, tipo) => {
+        const { form } = this.state
+        form[tipo] = value
+        this.setState({...this.state, form})
+    }
+    patchRedesSociales = async( data,tipo ) => {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        let value = form[tipo]
+        waitAlert()
+        await axios.put(`${URL_DEV}v2/catalogos/redes-sociales/${tipo}/${data.id}`, 
+            { value: value }, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.getRedSocialAxios()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito la unidad.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     setActions = () => {
         let aux = []
         aux.push(

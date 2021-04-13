@@ -105,7 +105,7 @@ class Unidades extends Component {
             { value: value }, 
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                this.getComprasAxios()
+                this.getUnidadesAxios()
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito la unidad.')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
