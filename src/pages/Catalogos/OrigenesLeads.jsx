@@ -17,18 +17,11 @@ const $ = require('jquery');
 class OrigenesLeads extends Component {
 
     state = {
-        form: {
-            origen: '',
-        },
-        data: {
-            origenes: []
-        },
+        form: { origen: '', },
+        data: { origenes: [] },
         formeditado: 0,
         origenes: [],
-        modal: {
-            form: false,
-            delete: false,
-        },
+        modal: { form: false, delete: false, },
         title: 'Nuevo origen',
         origen: ''
     }
@@ -64,20 +57,19 @@ class OrigenesLeads extends Component {
                 form[tipo] = data[tipo]
                 break
         }
-        this.setState({form})
+        this.setState({form, origen: data})
         customInputAlert(
             <div>
                 <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
                 {
                     tipo === 'origen' &&
                         <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
-                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } letterCase = { false }
-                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true }
-                        />
+                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } swal = { true }
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } />
                 }
             </div>,
             <Update />,
-            () => { this.patchOrigenesLeads(data, tipo) },
+            () => { this.updateOrigenAxios() },
             () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
         )
     }
@@ -86,23 +78,7 @@ class OrigenesLeads extends Component {
         form[tipo] = value
         this.setState({...this.state, form})
     }
-    patchOrigenesLeads = async( data,tipo ) => {
-        const { access_token } = this.props.authUser
-        const { form } = this.state
-        let value = form[tipo]
-        waitAlert()
-        await axios.put(`${URL_DEV}v2/catalogos/origenes-leads/${tipo}/${data.id}`, 
-            { value: value }, 
-            { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                this.getOrigenesAxios()
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito la unidad.')
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
+
     setActions = () => {
         let aux = []
         aux.push(
@@ -214,17 +190,8 @@ class OrigenesLeads extends Component {
                 modal.form = false
                 this.getOrigenesAxios()
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Creaste con éxito una nueva área.')
-
-                this.setState({
-                    ...this.state,
-                    modal,
-                    form: this.clearForm()
-                })
-
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                this.setState({ ...this.state, modal, form: this.clearForm() })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -239,18 +206,8 @@ class OrigenesLeads extends Component {
                 modal.form = false
                 this.getOrigenesAxios()
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito el área.')
-
-                this.setState({
-                    ...this.state,
-                    modal,
-                    form: this.clearForm(),
-                    origen: ''
-                })
-
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                this.setState({ ...this.state, modal, form: this.clearForm(), origen: '' })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -266,65 +223,30 @@ class OrigenesLeads extends Component {
                 const { modal } = this.state
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito la origen.')
                 modal.delete=false
-                this.setState({
-                    ...this.state,
-                    modal,
-                    origen: '',
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                this.setState({ ...this.state, modal, origen: '', })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
 
-    async getOrigenesAxios() {
-        $('#kt_datatable_origenes').DataTable().ajax.reload();
-    }
+    async getOrigenesAxios() { $('#kt_datatable_origenes').DataTable().ajax.reload(); }
 
     render() {
         const { modal, title, form, formeditado } = this.state
         return (
             <Layout active = 'catalogos' {...this.props}>
-                <NewTableServerRender
-                    columns = { ORIGENES_COLUMNS }
-                    title = 'ORIGENES LEADS'
-                    subtitle='Listado de origenes de leads'
-                    mostrar_boton = { true }
-                    abrir_modal = { true }
-                    mostrar_acciones = { true }
-                    onClick = { this.openModal }
-                    actions = {
-                        {
-                            'edit': { function: this.openModalEdit },
-                            'delete': { function: this.openModalDelete }
-                        }
-                    }
-                    idTable = 'kt_datatable_origenes'
-                    accessToken = { this.props.authUser.access_token }
-                    setter = { this.setOrigenes }
-                    urlRender = { URL_DEV + 'origenes'}
-                    cardTable = 'cardTable'
-                    cardTableHeader = 'cardTableHeader'
-                    cardBody = 'cardBody'
-                />
+                <NewTableServerRender columns = { ORIGENES_COLUMNS } title = 'ORIGENES LEADS' subtitle = 'Listado de origenes de leads' mostrar_boton = { true }
+                    abrir_modal = { true } mostrar_acciones = { true } onClick = { this.openModal } idTable = 'kt_datatable_origenes'
+                    actions = { { 'edit': { function: this.openModalEdit }, 'delete': { function: this.openModalDelete } } }
+                    accessToken = { this.props.authUser.access_token } setter = { this.setOrigenes } urlRender = { URL_DEV + 'origenes'}
+                    cardTable = 'cardTable' cardTableHeader = 'cardTableHeader' cardBody = 'cardBody' />
                 <Modal size="xl" show = { modal.form } title = { title } handleClose = { this.handleClose } >
-                    <OrigenLeadForm
-                        form = { form }
-                        onChange = { this.onChange }
-                        onSubmit = { this.onSubmit }
-                        formeditado = { formeditado }
-                    />
+                    <OrigenLeadForm form = { form } onChange = { this.onChange } onSubmit = { this.onSubmit } formeditado = { formeditado } />
                 </Modal>
-                <ModalDelete 
-                    title = '¿Estás seguro que deseas eliminar el origen?'
-                    show = { modal.delete } 
-                    handleClose = { this.handleCloseDelete }
-                    onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteOrigenAxios() }}
-                    />
+                <ModalDelete  title = '¿Estás seguro que deseas eliminar el origen?' show = { modal.delete }  handleClose = { this.handleCloseDelete }
+                    onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteOrigenAxios() }} />
             </Layout>
         )
     }

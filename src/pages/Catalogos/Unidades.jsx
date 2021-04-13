@@ -74,20 +74,20 @@ class Unidades extends Component {
                 form[tipo] = data[tipo]
                 break
         }
-        this.setState({form})
+        this.setState({form, unidad: data})
         customInputAlert(
             <div>
                 <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) + ' DE LA UNIDAD' } </h2>
                 {
                     tipo === 'nombre' &&
                         <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
-                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } letterCase = { false }
-                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true }
+                            requirevalidation = { 0 }  value = { form['unidad'] } name = { 'unidad' }
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, 'unidad')} } swal = { true }
                         />
                 }
             </div>,
             <Update />,
-            () => { this.patchUnidades(data, tipo) },
+            () => { this.updateUnidadAxios() },
             () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
         )
     }
@@ -219,10 +219,8 @@ class Unidades extends Component {
         const { form } = this.state
         await axios.post(URL_DEV + 'unidades', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { unidades } = response.data
-                const { data, modal } = this.state
+                const { modal } = this.state
                 modal.form = false
-                data.unidades = unidades
 
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Creaste con éxito la unidad.')
 
@@ -230,8 +228,6 @@ class Unidades extends Component {
                     ...this.state,
                     modal,
                     form: this.clearForm(),
-                    unidades: this.setUnidades(unidades),
-                    data
                 })
 
             },
@@ -246,27 +242,15 @@ class Unidades extends Component {
 
     async updateUnidadAxios() {
         const { access_token } = this.props.authUser
-        const { form, unidad, data, modal } = this.state
+        const { form, unidad, modal } = this.state
+        console.log(form, 'FORM')
         await axios.put(URL_DEV + 'unidades/' + unidad.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { unidades } = response.data
-                data.unidades = unidades
                 modal.form = false
-
+                this.getUnidadesAxios()
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito la unidad.')
-
-                this.setState({
-                    ...this.state,
-                    modal,
-                    form: this.clearForm(),
-                    unidades: this.setUnidades(unidades),
-                    unidad: ''
-                })
-
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                this.setState({ ...this.state, modal, form: this.clearForm(), unidad: '' })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -279,67 +263,30 @@ class Unidades extends Component {
         await axios.delete(URL_DEV + 'unidades/' + unidad.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { modal } = this.state
-                // data.unidades = unidades
-                // modal.delete = false
                 this.getUnidadesAxios()
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito la unidad.')
                 modal.delete=false
-
-                this.setState({
-                    ...this.state,
-                    modal,
-                    // form: this.clearForm(),
-                    // unidades: this.setUnidades(unidades),
-                    unidad: '',
-                    // data
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                this.setState({ ...this.state, modal, unidad: '', })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
 
-    async getUnidadesAxios() {
-        $('#kt_datatable_unidades').DataTable().ajax.reload();
-    }
+    async getUnidadesAxios() { $('#kt_datatable_unidades').DataTable().ajax.reload(); }
 
     render() {
         const { form, modal, title, formeditado } = this.state
         return (
             <Layout active={'catalogos'}  {...this.props}>
-                <NewTableServerRender
-                    columns={UNIDADES_COLUMNS}
-                    // data = { unidades }
-                    title='Unidades'
-                    subtitle='Listado de unidades'
-                    mostrar_boton={true}
-                    abrir_modal={true}
-                    mostrar_acciones={true}
-                    onClick={this.openModal}
-                    actions={{
-                        'edit': { function: this.openModalEdit },
-                        'delete': { function: this.openModalDelete }
-                    }}
-                    idTable='kt_datatable_unidades'
-                    accessToken={this.props.authUser.access_token}
-                    setter={this.setUnidades}
-                    urlRender={URL_DEV + 'unidades'}
-                    // elements={data.unidades}
-                    cardTable='cardTable'
-                    cardTableHeader='cardTableHeader'
-                    cardBody='cardBody'
-                />
+                <NewTableServerRender columns = { UNIDADES_COLUMNS } title = 'Unidades' subtitle = 'Listado de unidades' mostrar_boton = { true }
+                    abrir_modal = { true } mostrar_acciones = { true } onClick = { this.openModal } idTable = 'kt_datatable_unidades' 
+                    actions = { { 'edit': { function: this.openModalEdit }, 'delete': { function: this.openModalDelete } } }
+                    accessToken = { this.props.authUser.access_token } setter = { this.setUnidades } urlRender = { `${URL_DEV}unidades` } 
+                    cardTable = 'cardTable' cardTableHeader = 'cardTableHeader' cardBody = 'cardBody' />
                 <Modal size="xl" show={modal.form} title={title} handleClose={this.handleClose}>
-                    <UnidadForm
-                        form={form}
-                        onChange={this.onChange}
-                        onSubmit={this.onSubmit}
-                        formeditado={formeditado}
-                    />
+                    <UnidadForm form = { form } onChange = { this.onChange } onSubmit = { this.onSubmit } formeditado = { formeditado } />
                 </Modal>
                 <ModalDelete title={"¿Estás seguro que deseas eliminar la unidad?"} show={modal.delete} handleClose={this.handleCloseDelete} onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteUnidadAxios() }}>
                 </ModalDelete>
@@ -348,14 +295,7 @@ class Unidades extends Component {
     }
 }
 
-
-const mapStateToProps = state => {
-    return {
-        authUser: state.authUser
-    }
-}
-
-const mapDispatchToProps = dispatch => ({
-})
+const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapDispatchToProps = dispatch => ({ })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Unidades);
