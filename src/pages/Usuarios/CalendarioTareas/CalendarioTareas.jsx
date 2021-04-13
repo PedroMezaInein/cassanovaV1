@@ -153,16 +153,20 @@ class Calendario extends Component {
         })
     }
 
-    getTareas = (tarea) => {
-        console.log(tarea)
-        const { modal } = this.state
-        modal.tareas = true
-        this.setState({
-            ...this.state,
-            modal,
-            tarea: tarea,
-            title: tarea.titulo,
-            form: this.clearForm(),
+    getTareas = async(tarea) => {
+        const { access_token } = this.props.authUser
+        waitAlert()
+        await axios.get(`${URL_DEV}v2/usuarios/tareas/${tarea.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { tarea } = response.data
+                const { modal } = this.state
+                modal.tareas = true
+                Swal.close()
+                this.setState({ ...this.state, modal, tarea: tarea, title: tarea.titulo, form: this.clearForm() })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
         })
     }
     
