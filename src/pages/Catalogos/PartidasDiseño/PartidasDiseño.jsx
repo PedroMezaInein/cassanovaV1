@@ -4,13 +4,16 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import { URL_DEV } from '../../../constants'
 import { ModalDelete } from '../../../components/singles'
-import { printResponseErrorAlert, errorAlert, waitAlert, doneAlert } from '../../../functions/alert'
+import { printResponseErrorAlert, errorAlert, waitAlert, doneAlert, customInputAlert } from '../../../functions/alert'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { PARTIDAS_DISEÑO_COLUMNS } from '../../../constants'
 import { save, deleteForm } from '../../../redux/reducers/formulario'
-import { setTextTableCenter } from '../../../functions/setters'
-import { renderToString } from 'react-dom/server'
+import { setTextTableReactDom } from '../../../functions/setters'
 import { Tab, Card, Nav } from 'react-bootstrap' 
+import Swal from 'sweetalert2'
+import { Update } from '../../../components/Lottie'
+import { printSwalHeader } from '../../../functions/printers'
+import { InputGray, SelectSearchGray } from '../../../components/form-components'
 
 const $ = require('jquery');
 
@@ -30,6 +33,21 @@ class PartidasDiseño extends Component {
         data:{
             partidas:[],
             empresas: []
+        },
+        options:{
+            rubro:
+            [
+                {
+                    name: "ACABADOS E INSTALACIONES", value: "Acabados e instalaciones", label: "ACABADOS E INSTALACIONES"
+                },
+                {
+                    name: "OBRA CIVIL", value: "Obra civil", label: "OBRA CIVIL"
+                },
+                {
+                    name: "MOBILIARIO", value: "Mobiliario", label: "MOBILIARIO"
+                },
+            ],
+            empresas: [],
         },
         empresa: ''
     }
@@ -57,15 +75,90 @@ class PartidasDiseño extends Component {
         partidas.map((partida) => {
             aux.push({
                 actions: this.setActions(partida),
-                partida: renderToString(setTextTableCenter(partida.nombre)),
-                tipo: renderToString(setTextTableCenter(partida.tipo)),
+                partida: setTextTableReactDom(partida.nombre, this.doubleClick, partida, 'nombre', 'text-center'),
+                tipo: setTextTableReactDom(partida.tipo, this.doubleClick, partida, 'tipo', 'text-center'),
                 id: partida.id
             })
             return false
         })
         return aux
     }
-
+    doubleClick = (data, tipo) => {
+        const { form } = this.state
+        switch(tipo){
+            default:
+                form[tipo] = data[tipo]
+                break
+        }
+        this.setState({form})
+        customInputAlert(
+            <div>
+                <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
+                {
+                    tipo === 'nombre' &&
+                        <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
+                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } letterCase = { false }
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true }
+                        />
+                }
+                {
+                    tipo === 'tipo' &&
+                        <SelectSearchGray options = { this.setOptions(data, tipo) }
+                            onChange = { (value) => { this.updateSelectSearch(value, tipo)} } name = { tipo }
+                            value = { form[tipo] } customdiv="mb-2 mt-7" requirevalidation={1} 
+                            placeholder={`SELECCIONA EL TIPO DE RUBRO `}
+                        />
+                }
+            </div>,
+            <Update />,
+            () => { this.patchPartidasDiseño(data, tipo) },
+            () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
+        )
+    }
+    setOptions = (data, tipo) => {
+        const { options } = this.state
+        switch(tipo){
+            case 'tipo':
+                return options.rubro
+            default: return []
+        }
+    }
+    updateSelectSearch = (value, tipo) => {
+        const { form } = this.state
+        form[tipo] = value
+        this.setState({...this.state, form})
+    }
+    onChangeSwal = (value, tipo) => {
+        const { form } = this.state
+        form[tipo] = value
+        this.setState({...this.state, form})
+    }
+    patchPartidasDiseño = async( data,tipo ) => {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        let value = form[tipo]
+        waitAlert()
+        await axios.put(`${URL_DEV}v2/catalogos/partidas-diseño/${tipo}/${data.id}`, 
+            { value: value }, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.getPartidas()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito la unidad.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    clearForm = () => {
+        const { form } = this.state
+        let aux = Object.keys(form)
+        aux.map((element) => {
+            form[element] = ''
+            return false
+        })
+        return form;
+    }
     setActions= () => {
         let aux = []
             aux.push(
@@ -118,7 +211,6 @@ class PartidasDiseño extends Component {
     printTable = empresa => {
         let url = `${URL_DEV}partidas-diseño/${empresa.id}`
         const { access_token } = this.props.authUser
-        console.log(empresa, 'empresa print')
         if(empresa){
             return(
                 <NewTableServerRender 
@@ -229,7 +321,6 @@ class PartidasDiseño extends Component {
                     <Tab.Content>
                         {
                             data.empresas.map((empresa, key) => {
-                                console.log(empresa, 'EMPRESA')
                                 return(
                                     <Tab.Pane eventKey = { empresa.id } key = { key } >
                                         {this.printTable(empresa)}
