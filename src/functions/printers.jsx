@@ -94,6 +94,12 @@ export function printSwalHeader(tipo){
             return 'EDITAR EL SUBÁREA'
         case 'factura':
             return '¿LLEVA FACTURA?'
+        case 'puesto':
+            return 'EDITAR EL PUESTO'
+        case 'vacaciones_disponibles':
+            return 'EDITAR VACACIONES DISPONIBLES'
+        case 'nombre_emergencia':
+            return 'EDITAR CONTACTO DE EMERGENCIA'
         default:
             return ''
     }
