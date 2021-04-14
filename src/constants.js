@@ -963,11 +963,13 @@ export const ROLES_COLUMNS = [
     },
     {
         Header: 'Rol',
-        accessor: 'rol'
+        accessor: 'rol',
+        customRender: true
     },
     {
         Header: 'Color',
-        accessor: 'color'
+        accessor: 'color',
+        customRender: true
     }
 ]
 

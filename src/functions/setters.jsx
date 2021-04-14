@@ -129,7 +129,18 @@ export function setTextTableReactDom(text, doubleClick, data, tipo, style){
         </div>
     )
 }
-
+export function setColorTableReactDom(text, doubleClick, data, tipo) {
+    return (
+        <div className={`dot mx-auto ${(text === '' ? 'm-5 p-5' : '')}`} style={{backgroundColor: `${text}`}} onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data, tipo)} }
+        onClick = { (e) => { 
+            e.preventDefault(); 
+            if(isMobile){
+                console.log(" isMobile ")
+                doubleClick(data, tipo)
+            }
+        } }></div>
+    )
+}
 export function setMoneyTableReactDom(text, doubleClick, data, tipo){
     let cantidad = 0
     cantidad = parseFloat(text).toFixed(2)
