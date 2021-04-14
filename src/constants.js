@@ -1285,39 +1285,47 @@ export const SOLICITUD_EGRESO_COLUMNS = [
     },
     {
         Header: 'Proveedor',
-        accessor: 'proveedor'
+        accessor: 'proveedor',
+        customRender: true
     },
     {
         Header: 'Empresa',
-        accessor: 'empresa'
+        accessor: 'empresa',
+        customRender: true
     },
     {
         Header: 'Monto',
-        accessor: 'monto'
+        accessor: 'monto',
+        customRender: true
     },
     {
         Header: 'Factura',
-        accessor: 'factura'
+        accessor: 'factura',
+        customRender: true
     },
     {
         Header: 'Pago', //Cambié de Tipo de pago a Pago
-        accessor: 'tipoPago'
+        accessor: 'tipoPago',
+        customRender: true
     },   
     {
         Header: 'Fecha',
         accessor: 'fecha',
+        customRender: true
     },
     {
         Header: 'Sub-Área',
-        accessor: 'subarea'
+        accessor: 'subarea',
+        customRender: true
     },
-    {
+    /* {
         Header: 'Adjunto',
         accessor: 'adjunto'
-    },
+    },*/
     {
         Header: 'Descripción',
-        accessor: 'descripcion'
+        accessor: 'descripcion',
+        customRender: true
     }
 ]
 
