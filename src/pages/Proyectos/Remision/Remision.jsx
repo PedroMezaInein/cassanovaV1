@@ -8,7 +8,7 @@ import { setArrayTable, setTextTableCenter, setTextTableReactDom, setOptions, se
 import { errorAlert, printResponseErrorAlert, doneAlert, customInputAlert, waitAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { Modal, ModalDelete } from '../../../components/singles'
-import { Button, SelectSearchGray, CalendarDaySwal, InputGray } from '../../../components/form-components'
+import { Button, SelectSearchGray, CalendarDaySwal, InputGray, DoubleSelectSearchGray } from '../../../components/form-components'
 import { faSync } from '@fortawesome/free-solid-svg-icons'
 import { RemisionCard } from '../../../components/cards'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
@@ -99,7 +99,7 @@ class Remisiones extends Component {
                     actions: this.setActions(remision),
                     fecha: setDateTableReactDom(remision.created_at, this.doubleClick, remision, 'fecha', 'text-center'),
                     proyecto: setTextTableReactDom(remision.proyecto ? remision.proyecto.nombre : '', this.doubleClick, remision, 'proyecto', 'text-center'),
-                    area: renderToString(setTextTableCenter(remision.subarea ? remision.subarea.area ? remision.subarea.area.nombre : '' : '')),
+                    area: remision.subarea ? remision.subarea.area ? setTextTableReactDom(remision.subarea.area.nombre, this.doubleClick, remision, 'area', 'text-center') : '' : '',
                     subarea: remision.subarea ? setTextTableReactDom(remision.subarea.nombre, this.doubleClick, remision, 'subarea', 'text-center') : '',
                     descripcion: setTextTableReactDom(remision.descripcion !== null ? remision.descripcion :'', this.doubleClick, remision, 'descripcion', 'text-justify'),
                     adjunto: remision.adjunto ? renderToString(setArrayTable([{ text: remision.adjunto.name, url: remision.adjunto.url }])) : renderToString(setTextTableCenter('Sin adjuntos')),
@@ -112,12 +112,21 @@ class Remisiones extends Component {
     }
     doubleClick = (data, tipo) => {
         console.log(data)
-        const { form } = this.state
+        const { form, options } = this.state
         switch(tipo){
             case 'proyecto':
             case 'subarea':
                 if(data[tipo])
                     form[tipo] = data[tipo].id.toString()
+                break
+            case 'area':
+                if(data.subarea){
+                    if(data.subarea.area){
+                        form.area = data.subarea.area.id.toString()
+                        form.subarea = data.subarea.id.toString()
+                        options.subareas = setOptions(data.subarea.area.subareas, 'nombre', 'id')
+                    }
+                }
                 break
             case 'fecha':
                 form.fecha = new Date(data.created_at)
@@ -126,7 +135,7 @@ class Remisiones extends Component {
                 form[tipo] = data[tipo]
                 break
         }
-        this.setState({form})
+        this.setState({form, options})
         customInputAlert(
             <div>
                 <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
@@ -148,6 +157,12 @@ class Remisiones extends Component {
                         value = { form[tipo] } customdiv="mb-2 mt-7" requirevalidation={1} 
                         placeholder={this.setSwalPlaceholder(tipo)}/>
                     :<></>
+                }
+                {
+                    tipo === 'area' &&
+                        <DoubleSelectSearchGray options = { options } form = { form } onChange = { this.onChangeSwal } 
+                        one = { { placeholder: 'SELECCIONA EL ÁREA', name: 'area', opciones: 'areas'} } 
+                        two = { { placeholder: 'SELECCIONA EL SUBÁREA', name: 'subarea', opciones: 'subareas'} }/>
                 }
             </div>,
             <Update />,
@@ -173,7 +188,11 @@ class Remisiones extends Component {
     patchRemision = async( data,tipo ) => {
         const { access_token } = this.props.authUser
         const { form } = this.state
-        let value = form[tipo]
+        let value = ''
+        if(tipo === 'area')
+            value = { area: form.area, subarea: form.subarea }
+        else
+            value = form[tipo]
         waitAlert()
         await axios.put(`${URL_DEV}v2/proyectos/remision/${tipo}/${data.id}`, 
             { value: value }, 

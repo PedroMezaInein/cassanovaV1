@@ -4,10 +4,10 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import { URL_DEV, SOLICITUD_VENTA_COLUMNS } from '../../../constants'
-import { setOptions, setSelectOptions, setDateTableReactDom, setMoneyTableReactDom, setTextTableReactDom, setTextTableCenter } from '../../../functions/setters'
+import { setOptions, setSelectOptions, setDateTableReactDom, setMoneyTableReactDom, setTextTableReactDom } from '../../../functions/setters'
 import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert, customInputAlert, deleteAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
-import { Button, CalendarDaySwal, SelectSearchGray, InputGray, InputNumberGray } from '../../../components/form-components'
+import { Button, CalendarDaySwal, SelectSearchGray, InputGray, InputNumberGray, DoubleSelectSearchGray } from '../../../components/form-components'
 import { Modal, ModalDelete, ItemSlider } from '../../../components/singles'
 import { faSync } from '@fortawesome/free-solid-svg-icons'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
@@ -16,6 +16,7 @@ import { SolicitudVentaCard } from '../../../components/cards'
 import { Update } from '../../../components/Lottie'
 import { printSwalHeader } from '../../../functions/printers'
 import { Form } from 'react-bootstrap'
+import { replaceMoney } from '../../../functions/functions'
 const $ = require('jquery');
 class SolicitudVenta extends Component {
     state = {
@@ -44,8 +45,8 @@ class SolicitudVenta extends Component {
             metodosPago: [],
             formasPago: [],
             facturas: [
-                { name: "Si", value: "Con factura", label: "Si" },
-                { name: "No", value: "Sin factura", label: "No" },
+                { text: "Si", value: "Con factura", label: "Si" },
+                { text: "No", value: "Sin factura", label: "No" },
             ],
         },
         form: {
@@ -189,7 +190,7 @@ class SolicitudVenta extends Component {
                     monto: setMoneyTableReactDom(solicitud.monto, this.doubleClick, solicitud, 'monto'),
                     tipoPago: setTextTableReactDom(solicitud.tipo_pago.tipo, this.doubleClick, solicitud, 'tipoPago', 'text-center'),
                     descripcion: setTextTableReactDom(solicitud.descripcion !== null ? solicitud.descripcion :'', this.doubleClick, solicitud, 'descripcion', 'text-justify'),
-                    area: renderToString(setTextTableCenter(solicitud.subarea ? solicitud.subarea.area ? solicitud.subarea.area.nombre : '' : '')),
+                    area: solicitud.subarea ? solicitud.subarea.area ? setTextTableReactDom(solicitud.subarea.area.nombre, this.doubleClick, solicitud, 'area', 'text-center') : '' : '',
                     subarea: solicitud.subarea ? setTextTableReactDom(solicitud.subarea.nombre, this.doubleClick, solicitud, 'subarea', 'text-center') : '',
                     fecha: setDateTableReactDom(solicitud.created_at, this.doubleClick, solicitud, 'fecha', 'text-center'),
                     id: solicitud.id
@@ -200,13 +201,22 @@ class SolicitudVenta extends Component {
         return aux
     }
     doubleClick = (data, tipo) => {
-        const { form } = this.state
+        const { form, options } = this.state
         switch(tipo){
             case 'proyecto':
             case 'empresa':
             case 'subarea':
                 if(data[tipo])
                     form[tipo] = data[tipo].id.toString()
+                break
+            case 'area':
+                if(data.subarea){
+                    if(data.subarea.area){
+                        form.area = data.subarea.area.id.toString()
+                        form.subarea = data.subarea.id.toString()
+                        options.subareas = setOptions(data.subarea.area.subareas, 'nombre', 'id')
+                    }
+                }
                 break
             case 'fecha':
                 form.fecha = new Date(data.created_at)
@@ -224,7 +234,7 @@ class SolicitudVenta extends Component {
                 form[tipo] = data[tipo]
                 break
         }
-        this.setState({form})
+        this.setState({form, options})
         customInputAlert(
             <div>
                 <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
@@ -241,7 +251,7 @@ class SolicitudVenta extends Component {
                             onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true } />
                 }
                 {
-                    (tipo === 'tipoPago') ?
+                    (tipo === 'tipoPago') || (tipo === 'factura') ?
                         <div className="input-icon my-3">
                             <span className="input-icon input-icon-right">
                                 <span>
@@ -251,7 +261,7 @@ class SolicitudVenta extends Component {
                             <Form.Control className = "form-control text-uppercase form-control-solid"
                                 onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } name = { tipo }
                                 defaultValue = { form[tipo] } as = "select">
-                                <option value={0}>{this.setSwalPlaceholder(tipo)}</option>
+                                <option disabled value={0}>{this.setSwalPlaceholder(tipo)}</option>
                                 {
                                     this.setOptions(data, tipo).map((tipo, key) => {
                                         return (
@@ -269,12 +279,18 @@ class SolicitudVenta extends Component {
                     :<></>
                 }
                 {
-                    (tipo === 'proyecto') || (tipo === 'empresa') || (tipo === 'subarea') || (tipo === 'factura')?
+                    (tipo === 'proyecto') || (tipo === 'empresa') || (tipo === 'subarea') ?
                         <SelectSearchGray options = { this.setOptions(data, tipo) }
                         onChange = { (value) => { this.onChangeSwal(value, tipo)} } name = { tipo }
                         value = { form[tipo] } customdiv="mb-2 mt-7" requirevalidation={1} 
                         placeholder={this.setSwalPlaceholder(tipo)}/>
                     :<></>
+                }
+                {
+                    tipo === 'area' &&
+                        <DoubleSelectSearchGray options = { options } form = { form } onChange = { this.onChangeSwal } 
+                            one = { { placeholder: 'SELECCIONA EL ÁREA', name: 'area', opciones: 'areas'} } 
+                            two = { { placeholder: 'SELECCIONA EL SUBÁREA', name: 'subarea', opciones: 'subareas'} }/>
                 }
             </div>,
             <Update />,
@@ -306,7 +322,18 @@ class SolicitudVenta extends Component {
     patchSolicitudCompra = async( data,tipo ) => {
         const { access_token } = this.props.authUser
         const { form } = this.state
-        let value = form[tipo]
+        let value = ''
+        switch(tipo){
+            case 'monto':
+                value = replaceMoney(form.monto)
+                break;
+            case 'area':
+                value = {area: form.area, subarea: form.subarea}
+                break;
+            default:
+                value = form[tipo]
+                break;
+        }
         waitAlert()
         await axios.put(`${URL_DEV}v2/proyectos/solicitud-venta/${tipo}/${data.id}`, 
             { value: value }, 
