@@ -15,6 +15,7 @@ import NewTableServerRender from '../../../components/tables/NewTableServerRende
 import { Update } from '../../../components/Lottie'
 import { printSwalHeader } from '../../../functions/printers'
 import { Form } from 'react-bootstrap'
+import { replaceMoney } from '../../../functions/functions'
 const $ = require('jquery');
 class SolicitudCompra extends Component {
     state = {
@@ -49,11 +50,12 @@ class SolicitudCompra extends Component {
             empresas: [],
             tiposPagos: [],
             facturas: [
-                { name: "Si", value: "Con factura", label: "Si" },
-                { name: "No", value: "Sin factura", label: "No" },
+                { text: "Si", value: "Con factura" },
+                { text: "No", value: "Sin factura" },
             ],
         },
     }
+
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
@@ -70,78 +72,31 @@ class SolicitudCompra extends Component {
             let params = new URLSearchParams(queryString)
             let id = parseInt(params.get("id"))
             if (id) {
-
-                this.setState({
-                    ...this.state,
-                    modalSingle: true
-                })
+                this.setState({ ...this.state, modalSingle: true })
                 this.getSolicitudCompraAxios(id)
             }
         }
     }
-    async getOptionsAxios() {
-        const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'solicitud-compra/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { empresas, tiposPagos, proveedores, proyectos } = response.data
-                const { options } = this.state
-                options['empresas'] = setOptions(empresas, 'name', 'id')
-                options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
-                options['proyectos'] = setOptions(proyectos, 'nombre', 'id')
-                options['tiposPagos'] = setSelectOptions(tiposPagos, 'tipo')
-                this.setState({
-                    ...this.state,
-                    options
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
+
     openModalDelete = solicitud => {
-        this.setState({
-            ...this.state,
-            modalDelete: true,
-            title: 'Nueva solicitud de compra',
-            solicitud: solicitud
-        })
+        this.setState({ ...this.state, modalDelete: true, title: 'Nueva solicitud de compra', solicitud: solicitud })
     }
+
     handleCloseDelete = () => {
         const { modalDelete } = this.state
-        this.setState({
-            ...this.state,
-            modalDelete: !modalDelete,
-            solicitud: '',
-            remision: ''
-        })
+        this.setState({ ...this.state, modalDelete: !modalDelete, solicitud: '', remision: '' })
     }
-    openModalSee = solicitud => {
-        this.setState({
-            ...this.state,
-            modalSingle: true,
-            solicitud: solicitud
-        })
-    }
+    
+    openModalSee = solicitud => { this.setState({ ...this.state, modalSingle: true, solicitud: solicitud }) }
+
     openModalAdjuntos = solicitud => {
         const { form } = this.state
         let aux = []
-        aux.push({
-            name: solicitud.adjunto.name,
-            url: solicitud.adjunto.url,
-            id: solicitud.adjunto.id
-        })
+        aux.push({ name: solicitud.adjunto.name, url: solicitud.adjunto.url, id: solicitud.adjunto.id })
         form.adjuntos.adjunto.files = aux
-        this.setState({
-            ...this.state,
-            solicitud: solicitud,
-            modalAdjuntos: true,
-            form
-        })
+        this.setState({ ...this.state, solicitud: solicitud, modalAdjuntos: true, form })
     }
+
     handleCloseSingle = () => {
         const { modalSingle } = this.state
         this.setState({
@@ -151,6 +106,7 @@ class SolicitudCompra extends Component {
             remision: ''
         })
     }
+
     handleCloseAdjuntos = () => {
         const { form } = this.state
         form.adjuntos.adjunto.files = []
@@ -161,6 +117,7 @@ class SolicitudCompra extends Component {
             form
         })
     }
+
     setSolicitudes = solicitudes => {
         let aux = []
         solicitudes.map((solicitud) => {
@@ -184,6 +141,7 @@ class SolicitudCompra extends Component {
         })
         return aux
     }
+
     doubleClick = (data, tipo) => {
         const { form } = this.state
         switch(tipo){
@@ -227,7 +185,7 @@ class SolicitudCompra extends Component {
                             onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true } />
                 }
                 {
-                    (tipo === 'tipoPago') ?
+                    (tipo === 'tipoPago') || (tipo === 'factura') ?
                         <div className="input-icon my-3">
                             <span className="input-icon input-icon-right">
                                 <span>
@@ -237,7 +195,7 @@ class SolicitudCompra extends Component {
                             <Form.Control className = "form-control text-uppercase form-control-solid"
                                 onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } name = { tipo }
                                 defaultValue = { form[tipo] } as = "select">
-                                <option value={0}>{this.setSwalPlaceholder(tipo)}</option>
+                                <option value={0} disabled>{this.setSwalPlaceholder(tipo)}</option>
                                 {
                                     this.setOptions(data, tipo).map((tipo, key) => {
                                         return (
@@ -250,55 +208,25 @@ class SolicitudCompra extends Component {
                     :<></>
                 }
                 {
-                    tipo === 'fecha' ?
-                        <CalendarDaySwal value = { form[tipo] } onChange = { (e) => {  this.onChangeSwal(e.target.value, tipo)} } name = { tipo } date = { form[tipo] } withformgroup={0} />
-                    :<></>
+                    tipo === 'fecha' &&
+                        <CalendarDaySwal value = { form[tipo] } onChange = { (e) => {  this.onChangeSwal(e.target.value, tipo)} } name = { tipo } 
+                            date = { form[tipo] } withformgroup={0} />
                 }
                 {
-                    (tipo === 'proyecto') || (tipo === 'proveedor')  || (tipo === 'empresa') || (tipo === 'subarea') || (tipo === 'factura') ?
+                    (tipo === 'proyecto') || (tipo === 'proveedor')  || (tipo === 'empresa') || (tipo === 'subarea') ?
                         <SelectSearchGray options = { this.setOptions(data, tipo) }
                         onChange = { (value) => { this.onChangeSwal(value, tipo)} } name = { tipo }
                         value = { form[tipo] } customdiv="mb-2 mt-7" requirevalidation={1} 
                         placeholder={this.setSwalPlaceholder(tipo)}/>
                     :<></>
                 }
-                {/* {
-                    (tipo === 'factura') ?
-                    <>
-                    {console.log("Mostrar popup")}
-                        <Form.Group>
-                            <div className="radio-inline" id="factura">
-                                {
-                                    this.setOptions(data, tipo).map((option, key) => {
-                                        {console.log("Holaa")}
-                                        {console.log(form.factura)}
-                                        {console.log( option.value)}
-                                        {console.log( form.factura=== option.value)}
-                                        return (
-                                            <label className="radio radio-outline radio-outline-2x radio-primary" key={key}>
-                                                <input
-                                                    type='radio'
-                                                    name = { 'factura' }
-                                                    value={option.value}
-                                                    onChange={(e) =>{  this.onChangeFact(e)}} 
-                                                />
-                                                {option.label}
-                                                <span></span>
-                                            </label>
-                                        )
-                                    })
-                                }
-                            </div>
-                        </Form.Group>
-                    </>
-                    :<></>
-                } */}
             </div>,
             <Update />,
             () => { this.patchSolicitudCompra(data, tipo) },
             () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
         )
     }
+
     // onChangeFact = e => {
     //     const { name, value, checked, type } = e.target
     //     console.log(name, value, checked, type)
@@ -327,6 +255,7 @@ class SolicitudCompra extends Component {
     //         form
     //     })
     // }
+
     setSwalPlaceholder = (tipo) => {
         switch(tipo){
             case 'proyecto':
@@ -339,31 +268,17 @@ class SolicitudCompra extends Component {
                 return 'SELECCIONA EL TIPO DE PAGO'
             case 'subarea':
                 return 'SELECCIONA EL SUBÁREA'
+            case 'factura':
+                return '¿LLEVA FACTURA?'
             default:
                 return ''
         }
     }
+
     onChangeSwal = (value, tipo) => {
         const { form } = this.state
         form[tipo] = value
         this.setState({...this.state, form})
-    }
-    patchSolicitudCompra = async( data,tipo ) => {
-        const { access_token } = this.props.authUser
-        const { form } = this.state
-        let value = form[tipo]
-        waitAlert()
-        await axios.put(`${URL_DEV}v2/proyectos/solicitud-compra/${tipo}/${data.id}`, 
-            { value: value }, 
-            { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                this.getComprasAxios()
-                doneAlert(response.data.message !== undefined ? response.data.message : 'La solicitud de compra fue editada con éxito.')
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
     }
     
     setOptions = (data, tipo) => {
@@ -382,12 +297,13 @@ class SolicitudCompra extends Component {
                     if(data.subarea.area)
                         if(data.subarea.area.subareas)
                             return setOptions(data.subarea.area.subareas, 'nombre', 'id')
-                        return []
+                return []
             case 'factura':
                 return options.facturas
             default: return []
         }
     }
+
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
@@ -400,13 +316,7 @@ class SolicitudCompra extends Component {
                     form[element] = new Date()
                     break;
                 case 'adjuntos':
-                    form[element] = {
-                        adjunto: {
-                            value: '',
-                            placeholder: 'Presupuesto',
-                            files: []
-                        }
-                    }
+                    form[element] = { adjunto: { value: '', placeholder: 'Presupuesto', files: [] } }
                     break;
                 default:
                     form[element] = ''
@@ -416,6 +326,7 @@ class SolicitudCompra extends Component {
         })
         return form;
     }
+
     setActions = () => {
         let aux = []
         aux.push(
@@ -457,66 +368,17 @@ class SolicitudCompra extends Component {
         )
         return aux
     }
+
     changePageConvert = solicitud => {
         const { history } = this.props
-        history.push({
-            pathname: '/proyectos/compras/convert',
-            state: { solicitud: solicitud }
-        });
+        history.push({ pathname: '/proyectos/compras/convert', state: { solicitud: solicitud } });
     }
+
     changePageEdit = solicitud => {
         const { history } = this.props
-        history.push({
-            pathname: '/proyectos/solicitud-compra/edit',
-            state: { solicitud: solicitud }
-        });
+        history.push({ pathname: '/proyectos/solicitud-compra/edit', state: { solicitud: solicitud } });
     }
-    async getSolicitudesCompraAxios() {
-        $('#kt_datatable_solicitudes_compras').DataTable().ajax.reload();
-    }
-    async getSolicitudCompraAxios(id) {
-        const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'solicitud-compra/single/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { solicitud } = response.data
-                this.setState({
-                    ...this.state,
-                    solicitud: solicitud
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-    async deleteSolicitudAxios() {
-        const { access_token } = this.props.authUser
-        const { solicitud } = this.state
-        await axios.delete(URL_DEV + 'solicitud-compra/' + solicitud.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
 
-                doneAlert(response.data.message !== undefined ? response.data.message : 'La solicitud fue registrado con éxito.')
-
-                this.getSolicitudesCompraAxios()
-
-                this.setState({
-                    ...this.state,
-                    modalDelete: false,
-                    title: 'Nueva solicitud de compra',
-                    solicitud: ''
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
     handleChange = (files, item) => {
         const { form } = this.state
         let aux = []
@@ -532,48 +394,104 @@ class SolicitudCompra extends Component {
         }
         form['adjuntos'][item].value = files
         form['adjuntos'][item].files = aux
-        this.setState({
-            ...this.state,
-            form
-        })
+        this.setState({ ...this.state, form })
     }
-    deleteFile = element => {
-        deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', '', () => this.deleteAdjuntoAxios(element.id))
-    }
-    async deleteAdjuntoAxios(id) {
-        waitAlert()
+
+    deleteFile = element => { deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', '', () => this.deleteAdjuntoAxios(element.id)) }
+
+    async getOptionsAxios() {
         const { access_token } = this.props.authUser
-        const { solicitud } = this.state
-        await axios.delete(URL_DEV + 'solicitud/' + solicitud.id + '/adjuntos/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(`${URL_DEV}solicitud-compra/options`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { solicitud } = response.data
-                const { form } = this.state
-                let aux = []
-                solicitud.adjuntos.map((adj) => {
-                    aux.push({
-                        name: adj.name,
-                        url: adj.url,
-                        id: adj.id
-                    })
-                    return false
-                })
-                form.adjuntos.adjunto.files = aux
-                this.setState({
-                    ...this.state,
-                    modalDelete: false,
-                    solicitud: '',
-                    form
-                })
-                doneAlert('Adjunto eliminado con éxito')
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                const { empresas, tiposPagos, proveedores, proyectos } = response.data
+                const { options } = this.state
+                options['empresas'] = setOptions(empresas, 'name', 'id')
+                options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
+                options['proyectos'] = setOptions(proyectos, 'nombre', 'id')
+                options['tiposPagos'] = setSelectOptions(tiposPagos, 'tipo')
+                this.setState({ ...this.state, options })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
+
+    patchSolicitudCompra = async( data,tipo ) => {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        let value = ''
+        if(tipo === 'monto')
+            value = replaceMoney(form[tipo])
+        else
+            value = form[tipo]
+        waitAlert()
+        await axios.put(`${URL_DEV}v2/proyectos/solicitud-compra/${tipo}/${data.id}`, 
+            { value: value }, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.getSolicitudesCompraAxios()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La solicitud de compra fue editada con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async getSolicitudesCompraAxios() { $('#kt_datatable_solicitudes_compras').DataTable().ajax.reload(); }
+
+    async getSolicitudCompraAxios(id) {
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}solicitud-compra/single/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { solicitud } = response.data
+                this.setState({ ...this.state, solicitud: solicitud })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async deleteSolicitudAxios() {
+        const { access_token } = this.props.authUser
+        const { solicitud } = this.state
+        await axios.delete(`${URL_DEV}solicitud-compra/${solicitud.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La solicitud fue registrado con éxito.')
+                this.getSolicitudesCompraAxios()
+                this.setState({ ...this.state, modalDelete: false, title: 'Nueva solicitud de compra', solicitud: '' })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async deleteAdjuntoAxios(id) {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { solicitud } = this.state
+        await axios.delete(`${URL_DEV}solicitud/${solicitud.id}/adjuntos/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { solicitud } = response.data
+                const { form } = this.state
+                let aux = []
+                solicitud.adjuntos.map((adj) => {
+                    aux.push({ name: adj.name, url: adj.url, id: adj.id })
+                    return false
+                })
+                form.adjuntos.adjunto.files = aux
+                this.setState({ ...this.state, modalDelete: false, solicitud: '', form })
+                doneAlert('Adjunto eliminado con éxito')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     async sendAdjuntoAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -602,48 +520,31 @@ class SolicitudCompra extends Component {
             data.append('adjuntos[]', element)
             return false
         })
-        await axios.post(URL_DEV + 'solicitud/' + solicitud.id + '/adjuntos', data, { headers: { 'Content-Type': 'multipart/form-data;', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}solicitud/${solicitud.id}/adjuntos`, data, { headers: { 'Content-Type': 'multipart/form-data;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { solicitud } = response.data
                 const { form } = this.state
                 let aux = []
                 solicitud.adjunto.map((adj) => {
-                    aux.push({
-                        name: adj.name,
-                        url: adj.url,
-                        id: adj.id
-                    })
+                    aux.push({ name: adj.name, url: adj.url, id: adj.id })
                     return false
                 })
                 form.adjuntos.adjunto.files = aux
-                this.setState({
-                    ...this.state,
-                    modalDelete: false,
-                    solicitud: '',
-                    form
-                })
+                this.setState({ ...this.state, modalDelete: false, solicitud: '', form })
                 doneAlert('Adjunto creado con éxito')
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
+
     render() {
         const { modalDelete, modalSingle, solicitud, modalAdjuntos, form } = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
-                <NewTableServerRender 
-                    columns = { SOLICITUD_COMPRA_COLUMNS } 
-                    title = 'Solicitudes de compra' 
-                    subtitle = 'Listado de solicitudes de compra'
-                    mostrar_boton = { true }
-                    abrir_modal = { false }
-                    url = '/proyectos/solicitud-compra/add'
-                    mostrar_acciones = { true }
+                <NewTableServerRender columns = { SOLICITUD_COMPRA_COLUMNS } title = 'Solicitudes de compra'  subtitle = 'Listado de solicitudes de compra'
+                    mostrar_boton = { true } abrir_modal = { false } url = '/proyectos/solicitud-compra/add' mostrar_acciones = { true }
                     actions = {
                         {
                             'edit': { function: this.changePageEdit },
@@ -653,41 +554,25 @@ class SolicitudCompra extends Component {
                             'adjuntos': { function: this.openModalAdjuntos },
                         }
                     }
-                    cardTable='cardTable'
-                    cardTableHeader='cardTableHeader'
-                    cardBody='cardBody'
-                    idTable = 'kt_datatable_solicitudes_compras'
-                    accessToken = { this.props.authUser.access_token }
-                    setter = { this.setSolicitudes }
-                    urlRender = { URL_DEV + 'solicitud-compra' }
-                />
-                <ModalDelete title={"¿Quieres eliminar la solicitud de compra?"} show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { e.preventDefault(); this.deleteSolicitudAxios() }}>
-                </ModalDelete>
-
-                <Modal size="xl" title="Solicitud de compra" show={modalSingle} handleClose={this.handleCloseSingle} >
+                    cardTable = 'cardTable' cardTableHeader = 'cardTableHeader' cardBody = 'cardBody' idTable = 'kt_datatable_solicitudes_compras'
+                    accessToken = { this.props.authUser.access_token } setter = { this.setSolicitudes } urlRender = { `${URL_DEV}solicitud-compra` } />
+                <ModalDelete title = "¿Quieres eliminar la solicitud de compra?" show = { modalDelete } handleClose = { this.handleCloseDelete } 
+                    onClick={(e) => { e.preventDefault(); this.deleteSolicitudAxios() }} />
+                <Modal size = "xl" title = "Solicitud de compra" show = { modalSingle } handleClose = { this.handleCloseSingle } >
                     <SolicitudCompraCard data={solicitud} >
                         {
                             solicitud.convertido ? '' :
-                                <Button
-                                    pulse="pulse-ring"
-                                    className="btn btn-icon btn-light-info pulse pulse-info"
-                                    onClick={(e) => { e.preventDefault(); this.changePageConvert(solicitud) }}
-                                    icon={faSync}
-                                    tooltip={{ text: 'COMPRAR' }}
-                                />
+                                <Button pulse = "pulse-ring" className = "btn btn-icon btn-light-info pulse pulse-info"
+                                    onClick = { (e) => { e.preventDefault(); this.changePageConvert(solicitud) } }
+                                    icon = { faSync } tooltip = { { text: 'COMPRAR' } } />
                         }
                     </SolicitudCompraCard>
                 </Modal>
-                <Modal size="lg" title="Adjuntos" show={modalAdjuntos} handleClose={this.handleCloseAdjuntos} >
+                <Modal size = "lg" title = "Adjuntos" show = { modalAdjuntos } handleClose = { this.handleCloseAdjuntos } >
                     <div className="mt-6">
-                        <ItemSlider
-                            items={form.adjuntos.adjunto.files}
-                            item='adjunto'
-                            handleChange={this.handleChange}
-                            deleteFile={this.deleteFile}
-                        />
+                        <ItemSlider items = { form.adjuntos.adjunto.files } item = 'adjunto' handleChange = { this.handleChange }
+                            deleteFile = { this.deleteFile } />
                     </div>
-                    
                     {
                         form.adjuntos.adjunto.value ?
                             <div className="card-footer py-3 pr-1">
@@ -706,13 +591,7 @@ class SolicitudCompra extends Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        authUser: state.authUser
-    }
-}
-
-const mapDispatchToProps = dispatch => ({
-})
+const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapDispatchToProps = dispatch => ({})
 
 export default connect(mapStateToProps, mapDispatchToProps)(SolicitudCompra);

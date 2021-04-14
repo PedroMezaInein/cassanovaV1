@@ -65,3 +65,11 @@ export function replaceAll( text, busca, reemplaza ){
         text = text.toString().replace(busca,reemplaza);
     return text;
 }
+
+export function replaceMoney( text ){
+    while (text.toString().indexOf('$') != -1)
+        text = text.toString().replace('$','');
+    while (text.toString().indexOf(',') != -1)
+        text = text.toString().replace(',','');
+    return text;
+}
