@@ -200,7 +200,7 @@ export function setListTableReactDom(arreglo, nombre, minwidth, doubleClick, dat
 
 export function setTagLabelReactDom (data, arreglo, tipo, deleteElement){
     return (
-        <div className="tr-hover">
+        <div className="tr-hover w-max-content">
             {
                 arreglo.map((element, index) => {
                     let textAlert =''
@@ -216,6 +216,9 @@ export function setTagLabelReactDom (data, arreglo, tipo, deleteElement){
                             break
                         case 'subpartidas':
                             textAlert = `ELIMINARÁS ${element.nombre} DE LA PARTIDA ${data.nombre}`
+                            break
+                        case 'empresa':
+                            textAlert = `ELIMINARÁS ${element.name} DE LA CUENTA ${data.nombre}`
                             break
                         default:
                             textAlert =''
@@ -329,7 +332,7 @@ export function setLabelTableReactDom (data, changeEstatus) {
     return (
         data ?
             data.estatus ?
-                <Dropdown>
+                <Dropdown className="text-center">
                     <Dropdown.Toggle
                         style={
                             {
@@ -361,6 +364,54 @@ export function setLabelTableReactDom (data, changeEstatus) {
                             <span className="navi-link w-100">
                                 <span className="navi-text">
                                     <span className="label label-xl label-inline label-light-success rounded-0 w-100 font-size-12px">EN PROCESO</span>
+                                </span>
+                            </span>
+                        </Dropdown.Item>
+                    </Dropdown.Menu>
+                </Dropdown>
+            : ''
+        : ''
+    )
+}
+export function setEstatusBancoTableReactDom (data, changeEstatus) {
+    let text = {}
+    if (data.estatus.estatus === "Activo") {
+        text.letra = '#388E3C'
+        text.fondo = '#E8F5E9'
+        text.estatus = 'Activo'
+    } else {
+        text.letra = '#F64E60'
+        text.fondo = '#FFE2E5'
+        text.estatus = 'Inactivo'
+    }
+    return (
+        data ?
+            data.estatus ?
+                <Dropdown className="text-center">
+                    <Dropdown.Toggle
+                        style={
+                            {
+                                backgroundColor: text.fondo, color: text.letra, border: 'transparent', padding: '0.3rem 0.6rem',
+                                width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '10px',
+                                fontWeight: 600
+                            }}>
+                        {text.estatus.toUpperCase()}
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu className="p-0" >
+                        <Dropdown.Header>
+                            <span className="font-size-11px">Elige una opción</span>
+                        </Dropdown.Header>
+                        <Dropdown.Item className="p-0" onClick={() => { changeEstatus('Activo', data) }} >
+                            <span className="navi-link w-100">
+                                <span className="navi-text">
+                                    <span className="label label-xl label-inline label-light-success rounded-0 w-100 font-size-12px">ACTIVO</span>
+                                </span>
+                            </span>
+                        </Dropdown.Item>
+                        <Dropdown.Item className="p-0" onClick={() => { changeEstatus('Inactivo', data) }} >
+                            <span className="navi-link w-100">
+                                <span className="navi-text">
+                                    <span className="label label-xl label-inline label-light-danger rounded-0 w-100 font-size-12px">INACTIVO</span>
                                 </span>
                             </span>
                         </Dropdown.Item>

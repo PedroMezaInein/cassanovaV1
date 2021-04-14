@@ -419,22 +419,27 @@ export const CUENTAS_COLUMNS = [
     {
         Header: 'Nombre',
         accessor: 'nombre',
+        customRender: true
     },
     {
         Header: 'Empresa',
         accessor: 'empresa',
+        customRender: true
     },
     {
         Header: 'Empresa principal',
-        accessor: 'principal'
+        accessor: 'principal',
+        customRender: true
     },
     {
         Header: 'Banco',
         accessor: 'banco',
+        customRender: true
     },
     {
         Header: 'Número de cuenta',
         accessor: 'numero',
+        customRender: true
     },
     {
         Header: 'Balance',
@@ -443,18 +448,22 @@ export const CUENTAS_COLUMNS = [
     {
         Header: 'Estatus',
         accessor: 'estatus',
+        customRender: true
     },
     {
         Header: 'Tipo',
         accessor: 'tipo',
+        customRender: true
     },
     {
         Header: 'Fecha',
         accessor: 'fecha',
+        customRender: true
     },    
     {
         Header: 'Descripción',
         accessor: 'descripcion',
+        customRender: true
     },
 ]
 

@@ -10,9 +10,13 @@ import ItemSlider from '../../../components/singles/ItemSlider'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import TableForModals from '../../../components/tables/TableForModals'
 import { CUENTAS_COLUMNS, EDOS_CUENTAS_COLUMNS, URL_DEV } from '../../../constants'
-import { deleteAlert, doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../../functions/alert'
-import { setArrayTable, setDateTable, setListTable, setMoneyTable, setTextTable, setLabelTable, setTextTableCenter } from '../../../functions/setters'
+import { deleteAlert, doneAlert, errorAlert, printResponseErrorAlert, waitAlert, customInputAlert, questionAlert } from '../../../functions/alert'
+import { setArrayTable, setDateTable, setSelectOptions, setMoneyTable, setTextTableCenter, setDateTableReactDom, setTextTableReactDom, setOptions, setTagLabelReactDom, setEstatusBancoTableReactDom } from '../../../functions/setters'
 import axios from 'axios'
+import Swal from 'sweetalert2'
+import { printSwalHeader } from '../../../functions/printers'
+import { Update } from '../../../components/Lottie'
+import { InputGray, CalendarDaySwal, SelectSearchGray, InputNumberGray } from '../../../components/form-components'
 const $ = require('jquery');
 class Cuenta extends Component {
     state = {
@@ -24,6 +28,16 @@ class Cuenta extends Component {
             estado: false
         },
         form: {
+            nombre: '',
+            numero: '',
+            estatus: 0,
+            tipo: '',
+            banco: '',
+            empresa_principal: '',
+            empresa: '',
+            empresas: [],
+            descripcion: '',
+            usuarios: [],
             adjuntos: {
                 adjuntos: {
                     files: [],
@@ -31,6 +45,13 @@ class Cuenta extends Component {
                 }
             },
             fecha: new Date()
+        },
+        options: {
+            empresas: [],
+            bancos: [],
+            estatus: [],
+            tipos: [],
+            usuarios:[]
         },
         data: {
             estados: []
@@ -48,6 +69,81 @@ class Cuenta extends Component {
         });
         if (!modulo)
             history.push('/')
+            this.getOptionsAxios()
+    }
+    async getOptionsAxios(tipo) {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'cuentas/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                Swal.close()
+                const { bancos, estatus, tipos, empresas, users } = response.data
+                const { options, cuenta } = this.state
+                let aux = []
+                if (tipo === 'bancos') {
+                    bancos.map((banco) => {
+                        if (banco.nombre !== 'CAJA CHICA')
+                            aux.push(banco)
+                        return false
+                    })
+                }
+                if (tipo === 'cajas') {
+                    bancos.map((banco) => {
+                        if (banco.nombre === 'CAJA CHICA') {
+                            aux.push(banco)
+                            this.onChange({ target: { value: banco.id.toString(), name: 'banco' } })
+                        }
+                        return false
+                    })
+                    tipos.map((element) => {
+                        if (element.tipo === 'EFECTIVO') {
+                            this.onChange({ target: { value: element.id.toString(), name: 'tipo' } })
+                        }
+                        return false
+                    })
+                }
+                if (cuenta) {
+                    if (cuenta.banco) {
+                        if (cuenta.banco.nombre === 'CAJA CHICA') {
+                            tipo = 'cajas'
+                            bancos.map((banco) => {
+                                if (banco.nombre === 'CAJA CHICA') {
+                                    aux.push(banco)
+                                    this.onChange({ target: { value: banco.id.toString(), name: 'banco' } })
+                                }
+                                return false
+                            })
+                        } else {
+                            tipo = 'bancos'
+                            bancos.map((banco) => {
+                                if (banco.nombre !== 'CAJA CHICA')
+                                    aux.push(banco)
+                                return false
+                            })
+                            this.onChange({ target: { value: cuenta.banco.id.toString(), name: 'banco' } })
+                        }
+                    }
+                }
+                if (aux.length === 0)
+                    aux = bancos
+                options.bancos = setOptions(aux, 'nombre', 'id')
+                options.tipos = setOptions(tipos, 'tipo', 'id')
+                options.empresas = setOptions(empresas, 'name', 'id')
+                options.estatus = setSelectOptions(estatus, 'estatus')
+                options.usuarios =  setOptions(users, 'name', 'id')
+                this.setState({
+                    ...this.state,
+                    options,
+                    tipo: tipo
+                })
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
     }
     controlledTab = value => {
         if (value === 'bancos') {
@@ -75,38 +171,211 @@ class Cuenta extends Component {
         })
     }
     setCuentas = cuentas => {
+        const { key } = this.state
+        let keyTab = key
+        console.log(keyTab)
         let aux = []
         cuentas.map((cuenta, key) => {
             aux.push({
                 actions: this.setActions(cuenta),
-                nombre: renderToString(setTextTableCenter(cuenta.nombre, '180px')),
-                numero: renderToString(setTextTable(cuenta.numero)),
+                nombre: setTextTableReactDom(cuenta.nombre, this.doubleClick, cuenta, 'nombre', 'text-center '),
+                numero: keyTab === 'bancos'? setTextTableReactDom(cuenta.numero, this.doubleClick, cuenta, 'numero', 'text-center'): setTextTableCenter(cuenta.numero),
                 balance: renderToString(setMoneyTable(cuenta.balance)),
-                descripcion: renderToString(setTextTable(cuenta.descripcion)),
-                banco: renderToString(setTextTableCenter(cuenta.banco ? cuenta.banco.nombre : '')),
-                tipo: renderToString(setTextTableCenter(cuenta.tipo ? cuenta.tipo.tipo : '')),
-                estatus: cuenta.estatus ? renderToString(this.setLabel(cuenta.estatus.estatus)) : '',
-                empresa: renderToString(setListTable(cuenta.empresa, 'name', '151px')),
-                principal: renderToString(setTextTableCenter(cuenta ? cuenta.empresa_principal ? cuenta.empresa_principal.name : '' : '', '153px')),
-                fecha: renderToString(setDateTable(cuenta.created_at)),
+                descripcion: setTextTableReactDom(cuenta.descripcion !== null ? cuenta.descripcion :'', this.doubleClick, cuenta, 'descripcion', 'text-justify'),
+                banco: setTextTableReactDom(cuenta.banco ? cuenta.banco.nombre : '', this.doubleClick, cuenta, 'banco', 'text-center'),
+                tipo: setTextTableReactDom(cuenta.tipo ? cuenta.tipo.tipo : '', this.doubleClick, cuenta, 'tipo', 'text-center'),
+                estatus: cuenta.estatus ? setEstatusBancoTableReactDom(cuenta, this.changeEstatus ) : '',
+                empresa: setTagLabelReactDom(cuenta, cuenta.empresa, 'empresa', this.deleteElementAxios),
+                principal: setTextTableReactDom(cuenta ? cuenta.empresa_principal ? cuenta.empresa_principal.name : '' : '', this.doubleClick, cuenta, 'empresa_principal', 'text-center min-width-153px'),
+                fecha: setDateTableReactDom(cuenta.created_at, this.doubleClick, cuenta, 'fecha', 'text-center'),
                 id: cuenta.id
             })
             return false
         })
         return aux
     }
-    setLabel = estatus => {
-        let text = {}
-        if (estatus === "Activo") {
-            text.letra = '#388E3C'
-            text.fondo = '#E8F5E9'
-            text.estatus = 'Activo'
-        } else {
-            text.letra = '#F64E60'
-            text.fondo = '#FFE2E5'
-            text.estatus = 'Inactivo'
+    changeEstatus = (estatus, cuenta) =>  {
+        estatus === 'Activo'?
+            questionAlert('¿ESTÁS SEGURO?', 'ACTIVARÁS LA CUENTA ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios(estatus, cuenta))
+        : 
+            questionAlert('¿ESTÁS SEGURO?', 'INHABILITARÁS LA CUENTA ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios(estatus, cuenta))
+    }
+    async changeEstatusAxios(estatus, cuenta){
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.put(`${URL_DEV}proyectos/${cuenta.id}/estatus`,{estatus: estatus}, { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                Swal.close()
+                doneAlert('Estatus actualizado con éxito')
+                const { key } = this.state
+                if (key === 'bancos') {
+                    this.getBancosAxios()
+                }
+                if (key === 'cajas') {
+                    this.getCajasAxios()
+                }
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    deleteElementAxios = async(data, element, tipo) => {
+        const { access_token } = this.props.authUser
+        waitAlert()
+        await axios.delete(`${URL_DEV}v2/bancos/cuentas/${data.id}/${element.id}`, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { key } = this.state
+                if (key === 'bancos') {
+                    this.getBancosAxios()
+                }
+                if (key === 'cajas') {
+                    this.getCajasAxios()
+                }
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El rendimiento fue editado con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    doubleClick = (data, tipo) => {
+        // console.log(data)
+        const { form } = this.state
+        switch(tipo){
+            case 'empresa_principal':
+            case 'banco':
+            case 'tipo':
+                if(data[tipo])
+                    form[tipo] = data[tipo].id.toString()
+                break
+            case 'fecha':
+                form.fecha = new Date(data.created_at)
+                break
+            default:
+                form[tipo] = data[tipo]
+                break
         }
-        return setLabelTable(text)
+        this.setState({form})
+        customInputAlert(
+            <div>
+                <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
+                {
+                    tipo === 'nombre' &&
+                        <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
+                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo }
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true }
+                        />
+                }
+                {
+                    tipo === 'descripcion' &&
+                        <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
+                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } rows  = { 6 } as = 'textarea'
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true }
+                        />
+                }
+                {
+                    tipo === 'fecha' ?
+                        <CalendarDaySwal value = { form[tipo] } onChange = { (e) => {  this.onChangeSwal(e.target.value, tipo)} } name = { tipo } date = { form[tipo] } withformgroup={0} />
+                    :<></>
+                }
+                {
+                    (tipo === 'empresa_principal') || (tipo === 'banco') || (tipo === 'tipo') ?
+                        <SelectSearchGray options = { this.setOptions(data, tipo) } value = { form[tipo] } customdiv="mb-2 mt-7"
+                            onChange = { (value) => { this.onChangeSwal(value, tipo)} } name = { tipo } requirevalidation={1} 
+                            placeholder={this.setSwalPlaceholder(tipo)}
+                        />
+                    :<></>
+                }
+                {
+                    tipo === 'numero' &&
+                        <InputNumberGray withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
+                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } type="text"
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true } />
+                }
+            </div>,
+            <Update />,
+            () => { this.patchCuenta(data, tipo) },
+            () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
+        )
+    }
+    setSwalPlaceholder = (tipo) => {
+        switch(tipo){
+            case 'empresa_principal':
+                return 'SELECCIONA LA EMPRESA'
+            case 'banco':
+                return 'SELECCIONA EL BANCO'
+            case 'tipo':
+                return 'SELECCIONA EL TIPO DE CUENTA'
+            default:
+                return ''
+        }
+    }
+    onChangeSwal = (value, tipo) => {
+        const { form } = this.state
+        form[tipo] = value
+        this.setState({...this.state, form})
+    }
+    patchCuenta = async( data,tipo ) => {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        let value = form[tipo]
+        waitAlert()
+        await axios.put(`${URL_DEV}v2/bancos/cuentas/${tipo}/${data.id}`, 
+            { value: value }, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { key } = this.state
+                if (key === 'bancos') {
+                    this.getBancosAxios()
+                }
+                if (key === 'cajas') {
+                    this.getCajasAxios()
+                }
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La cuenta fue editada con éxito')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    
+    setOptions = (data, tipo) => {
+        const { options } = this.state
+        switch(tipo){
+            case 'empresa_principal':
+                return options.empresas
+            case 'banco':
+                return options.bancos
+            case 'tipo':
+                return options.tipos
+            default: return []
+        }
+    }
+    clearForm = () => {
+        const { form } = this.state
+        let aux = Object.keys(form)
+        aux.forEach((element) => {
+            switch(element){
+                case 'adjuntos':
+                    form[element] = {
+                        adjuntos: {
+                            value: '',
+                            placeholder: 'Adjuntos',
+                            files: []
+                        }
+                    }
+                    break;
+                default:
+                    form[element] = ''
+                break;
+            }
+        })
+        return form
     }
     setActions = () => {
         let aux = []
