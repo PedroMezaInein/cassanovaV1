@@ -254,7 +254,7 @@ export function setTagLabelProyectoReactDom (proyecto, arreglo, tipo, deleteElem
                                                 () => deleteElement(proyecto, element, tipo)
                                             ) } }>
                                             <div className="bg-gray-100 text-center py-1">
-                                                <i class="flaticon2-delete icon-xs text-dark-50 text-hover-danger"></i>
+                                                <i className="flaticon2-delete icon-xs text-dark-50 text-hover-danger"></i>
                                             </div>
                                         </div>
                                         <div className="w-90">
@@ -326,7 +326,6 @@ export function setArrayTableReactDom (arreglo, minwidth, doubleClick, data, tip
     )
 }
 export function setLabelTableReactDom (data, changeEstatus) {
-    console.log(data)
     return (
         data ?
             data.estatus ?
@@ -334,41 +333,41 @@ export function setLabelTableReactDom (data, changeEstatus) {
                     <Dropdown.Toggle
                         style={
                             {
-                                backgroundColor: data.estatus.fondo, color: data.estatus.letra, border: 'transparent', padding: '0.4rem 0.75rem',
-                                width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '11px',
+                                backgroundColor: data.estatus.fondo, color: data.estatus.letra, border: 'transparent', padding: '0.3rem 0.6rem',
+                                width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '10px',
                                 fontWeight: 600
                             }}>
                         {data.estatus.estatus.toUpperCase()}
                     </Dropdown.Toggle>
                     <Dropdown.Menu className="p-0" >
                         <Dropdown.Header>
-                            <span className="font-size-sm">Elige una opción</span>
+                            <span className="font-size-11px">Elige una opción</span>
                         </Dropdown.Header>
-                        <Dropdown.Item className="p-0" onClick={() => { changeEstatus('Detenido') }} >
+                        <Dropdown.Item className="p-0" onClick={() => { changeEstatus('Detenido', data) }} >
                             <span className="navi-link w-100">
                                 <span className="navi-text">
-                                    <span className="label label-xl label-inline label-light-danger rounded-0 w-100">DETENIDO</span>
+                                    <span className="label label-xl label-inline label-light-danger rounded-0 w-100 font-size-12px">DETENIDO</span>
                                 </span>
                             </span>
                         </Dropdown.Item>
-                        <Dropdown.Item className="p-0" onClick={() => { changeEstatus('Terminado') }} >
+                        <Dropdown.Item className="p-0" onClick={() => { changeEstatus('Terminado', data) }} >
                             <span className="navi-link w-100">
                                 <span className="navi-text">
-                                    <span className="label label-xl label-inline label-light-primary rounded-0 w-100">TERMINADO</span>
+                                    <span className="label label-xl label-inline label-light-primary rounded-0 w-100 font-size-12px">TERMINADO</span>
                                 </span>
                             </span>
                         </Dropdown.Item>
-                        <Dropdown.Item className="p-0" onClick={() => { changeEstatus('En proceso') }} >
+                        <Dropdown.Item className="p-0" onClick={() => { changeEstatus('En proceso', data) }} >
                             <span className="navi-link w-100">
                                 <span className="navi-text">
-                                    <span className="label label-xl label-inline label-light-success rounded-0 w-100">EN PROCESO</span>
+                                    <span className="label label-xl label-inline label-light-success rounded-0 w-100 font-size-12px">EN PROCESO</span>
                                 </span>
                             </span>
                         </Dropdown.Item>
                     </Dropdown.Menu>
                 </Dropdown>
-                : ''
-                                : ''
+            : ''
+        : ''
     )
 }
 
