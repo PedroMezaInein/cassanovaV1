@@ -16,6 +16,7 @@ import { Update } from '../../../components/Lottie'
 import { printSwalHeader } from '../../../functions/printers'
 import { Form } from 'react-bootstrap'
 import { replaceMoney } from '../../../functions/functions'
+
 const $ = require('jquery');
 class SolicitudCompra extends Component {
     state = {
@@ -233,7 +234,9 @@ class SolicitudCompra extends Component {
                 }
                 {
                     tipo === 'area' &&
-                        <DoubleSelectSearchGray options = { options } form = { form } onChange = { this.onChangeSwal } />
+                        <DoubleSelectSearchGray options = { options } form = { form } onChange = { this.onChangeSwal } 
+                            one = { { placeholder: 'SELECCIONA EL ÁREA', name: 'area', opciones: 'areas'} } 
+                            two = { { placeholder: 'SELECCIONA EL SUBÁREA', name: 'subarea', opciones: 'subareas'} }/>
                 }
             </div>,
             <Update />,
