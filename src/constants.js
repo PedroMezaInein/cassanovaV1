@@ -541,6 +541,7 @@ export const TRASPASOS_COLUMNS = [
     {
         Header: 'Comentario',
         accessor: 'comentario',
+        customRender: true
     },
     {
         Header: 'Usuario',
@@ -550,6 +551,7 @@ export const TRASPASOS_COLUMNS = [
     {
         Header: 'Fecha',
         accessor: 'fecha',
+        customRender: true
     },
 ]
 
