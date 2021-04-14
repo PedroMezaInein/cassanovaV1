@@ -133,7 +133,6 @@ class SolicitudCompra extends Component {
                     monto: setMoneyTableReactDom(solicitud.monto, this.doubleClick, solicitud, 'monto'),
                     tipoPago: setTextTableReactDom(solicitud.tipo_pago.tipo, this.doubleClick, solicitud, 'tipoPago', 'text-center'),
                     descripcion: setTextTableReactDom(solicitud.descripcion !== null ? solicitud.descripcion :'', this.doubleClick, solicitud, 'descripcion', 'text-justify'),
-                    //area: setTextTableReactDom(solicitud.subarea ? solicitud.subarea.area ? solicitud.subarea.area.nombre : '' : ''),
                     area: solicitud.subarea ? solicitud.subarea.area ? setTextTableReactDom(solicitud.subarea.area.nombre, this.doubleClick, solicitud, 'area', 'text-center') : '' : '',
                     subarea: solicitud.subarea ? setTextTableReactDom(solicitud.subarea.nombre, this.doubleClick, solicitud, 'subarea', 'text-center') : '',
                     fecha: setDateTableReactDom(solicitud.created_at, this.doubleClick, solicitud, 'fecha', 'text-center'),

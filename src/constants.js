@@ -1336,7 +1336,7 @@ export const SOLICITUD_VENTA_COLUMNS = [
     { Header: 'Monto', accessor: 'monto',customRender: true },
     { Header: 'Factura', accessor: 'factura', customRender: true },
     { Header: 'Pago', accessor: 'tipoPago',customRender: true },
-    { Header: 'Área', accessor: 'area' },
+    { Header: 'Área', accessor: 'area',customRender: true },
     { Header: 'Sub-Área', accessor: 'subarea',customRender: true },
     { Header: 'Fecha', accessor: 'fecha',customRender: true },
     { Header: 'Descripción', accessor: 'descripcion',customRender: true }
@@ -1583,7 +1583,8 @@ export const REMISION_COLUMNS = [
     },
     {
         Header: 'Área',
-        accessor: 'area'
+        accessor: 'area',
+        customRender: true
     },
     {
         Header: 'Sub - Área',
