@@ -2,16 +2,20 @@ import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
+import Swal from 'sweetalert2'
 import { URL_DEV, SOLICITUD_VENTA_COLUMNS } from '../../../constants'
-import { setOptions, setSelectOptions, setTextTable, setDateTable, setMoneyTable, setArrayTable, setTextTableCenter } from '../../../functions/setters'
-import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert } from '../../../functions/alert'
+import { setOptions, setSelectOptions, setDateTableReactDom, setMoneyTableReactDom, setTextTableReactDom, setTextTableCenter } from '../../../functions/setters'
+import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert, customInputAlert, deleteAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
-import { Button } from '../../../components/form-components'
-import { Modal, ModalDelete } from '../../../components/singles'
+import { Button, CalendarDaySwal, SelectSearchGray, InputGray, InputNumberGray } from '../../../components/form-components'
+import { Modal, ModalDelete, ItemSlider } from '../../../components/singles'
 import { faSync } from '@fortawesome/free-solid-svg-icons'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { FacturaForm } from '../../../components/forms'
 import { SolicitudVentaCard } from '../../../components/cards'
+import { Update } from '../../../components/Lottie'
+import { printSwalHeader } from '../../../functions/printers'
+import { Form } from 'react-bootstrap'
 const $ = require('jquery');
 class SolicitudVenta extends Component {
     state = {
@@ -19,6 +23,7 @@ class SolicitudVenta extends Component {
         modalDelete: false,
         modalSingle: false,
         modalAskFactura: false,
+        modalAdjuntos: false,
         title: 'Nueva solicitud de compra',
         solicitud: '',
         solicitudes: [],
@@ -37,7 +42,11 @@ class SolicitudVenta extends Component {
             clientes: [],
             estatusFacturas: [],
             metodosPago: [],
-            formasPago: []
+            formasPago: [],
+            facturas: [
+                { name: "Si", value: "Con factura", label: "Si" },
+                { name: "No", value: "Sin factura", label: "No" },
+            ],
         },
         form: {
             cliente: '',
@@ -142,28 +151,223 @@ class SolicitudVenta extends Component {
             solicitud: ''
         })
     }
+    openModalAdjuntos = solicitud => {
+        const { form } = this.state
+        let aux = []
+        aux.push({
+            name: solicitud.adjunto.name,
+            url: solicitud.adjunto.url,
+            id: solicitud.adjunto.id
+        })
+        form.adjuntos.adjunto.files = aux
+        this.setState({
+            ...this.state,
+            solicitud: solicitud,
+            modalAdjuntos: true,
+            form
+        })
+    }
+    handleCloseAdjuntos = () => {
+        const { form } = this.state
+        form.adjuntos.adjunto.files = []
+        this.setState({
+            ...this.state,
+            modalAdjuntos: false,
+            solicitud: '',
+            form
+        })
+    }
     setSolicitudes = solicitudes => {
         let aux = []
         solicitudes.map((solicitud) => {
             aux.push(
                 {
                     actions: this.setActions(solicitud),
-                    proyecto: renderToString(setTextTable(solicitud.proyecto ? solicitud.proyecto.nombre : '')),
-                    empresa: renderToString(setTextTableCenter(solicitud.empresa ? solicitud.empresa.name : '')),
-                    factura: renderToString(setTextTableCenter(solicitud.factura ? 'Con factura' : 'Sin factura')),
-                    monto: renderToString(setMoneyTable(solicitud.monto)),
-                    tipoPago: renderToString(setTextTableCenter(solicitud.tipo_pago ? solicitud.tipo_pago.tipo : '')),
-                    descripcion: renderToString(setTextTable(solicitud.descripcion)),
+                    proyecto: setTextTableReactDom(solicitud.proyecto ? solicitud.proyecto.nombre : '', this.doubleClick, solicitud, 'proyecto', 'text-center'),
+                    empresa: setTextTableReactDom(solicitud.empresa ? solicitud.empresa.name : 'Sin definir', this.doubleClick, solicitud, 'empresa', 'text-center'),
+                    factura: setTextTableReactDom(solicitud.factura ? 'Con factura' : 'Sin factura', this.doubleClick, solicitud, 'factura', 'text-center'),
+                    monto: setMoneyTableReactDom(solicitud.monto, this.doubleClick, solicitud, 'monto'),
+                    tipoPago: setTextTableReactDom(solicitud.tipo_pago.tipo, this.doubleClick, solicitud, 'tipoPago', 'text-center'),
+                    descripcion: setTextTableReactDom(solicitud.descripcion !== null ? solicitud.descripcion :'', this.doubleClick, solicitud, 'descripcion', 'text-justify'),
                     area: renderToString(setTextTableCenter(solicitud.subarea ? solicitud.subarea.area ? solicitud.subarea.area.nombre : '' : '')),
-                    subarea: renderToString(setTextTableCenter(solicitud.subarea ? solicitud.subarea.nombre : '')),
-                    fecha: renderToString(setDateTable(solicitud.created_at)),
-                    adjunto: solicitud.adjunto ? renderToString(setArrayTable([{ text: 'Adjunto', url: solicitud.adjunto.url }])) : renderToString(setTextTable('Sin adjuntos')),
+                    subarea: solicitud.subarea ? setTextTableReactDom(solicitud.subarea.nombre, this.doubleClick, solicitud, 'subarea', 'text-center') : '',
+                    fecha: setDateTableReactDom(solicitud.created_at, this.doubleClick, solicitud, 'fecha', 'text-center'),
                     id: solicitud.id
                 }
             )
             return false
         })
         return aux
+    }
+    doubleClick = (data, tipo) => {
+        const { form } = this.state
+        switch(tipo){
+            case 'proyecto':
+            case 'empresa':
+            case 'subarea':
+                if(data[tipo])
+                    form[tipo] = data[tipo].id.toString()
+                break
+            case 'fecha':
+                form.fecha = new Date(data.created_at)
+                break
+            case 'tipoPago':
+                form[tipo] = data.tipo_pago.id
+                break
+            case 'factura':
+                if (data.factura)
+                    form.factura = 'Con factura'
+                else
+                    form.factura = 'Sin factura'
+                break
+            default:
+                form[tipo] = data[tipo]
+                break
+        }
+        this.setState({form})
+        customInputAlert(
+            <div>
+                <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
+                {
+                    tipo === 'descripcion' &&
+                        <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
+                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } rows  = { 6 } as = 'textarea'
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true }  />
+                }
+                {
+                    tipo === 'monto' &&
+                        <InputNumberGray withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
+                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } prefix = '$' thousandSeparator = { true }
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true } />
+                }
+                {
+                    (tipo === 'tipoPago') ?
+                        <div className="input-icon my-3">
+                            <span className="input-icon input-icon-right">
+                                <span>
+                                    <i className={"flaticon2-search-1 icon-md text-dark-50"}></i>
+                                </span>
+                            </span>
+                            <Form.Control className = "form-control text-uppercase form-control-solid"
+                                onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } name = { tipo }
+                                defaultValue = { form[tipo] } as = "select">
+                                <option value={0}>{this.setSwalPlaceholder(tipo)}</option>
+                                {
+                                    this.setOptions(data, tipo).map((tipo, key) => {
+                                        return (
+                                            <option key={key} value={tipo.value} className="bg-white" >{tipo.text}</option>
+                                        )
+                                    })
+                                }
+                            </Form.Control>
+                        </div>
+                    :<></>
+                }
+                {
+                    tipo === 'fecha' ?
+                        <CalendarDaySwal value = { form[tipo] } onChange = { (e) => {  this.onChangeSwal(e.target.value, tipo)} } name = { tipo } date = { form[tipo] } withformgroup={0} />
+                    :<></>
+                }
+                {
+                    (tipo === 'proyecto') || (tipo === 'empresa') || (tipo === 'subarea') || (tipo === 'factura')?
+                        <SelectSearchGray options = { this.setOptions(data, tipo) }
+                        onChange = { (value) => { this.onChangeSwal(value, tipo)} } name = { tipo }
+                        value = { form[tipo] } customdiv="mb-2 mt-7" requirevalidation={1} 
+                        placeholder={this.setSwalPlaceholder(tipo)}/>
+                    :<></>
+                }
+            </div>,
+            <Update />,
+            () => { this.patchSolicitudCompra(data, tipo) },
+            () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
+        )
+    }
+    setSwalPlaceholder = (tipo) => {
+        switch(tipo){
+            case 'proyecto':
+                return 'SELECCIONA EL PROYECTO'
+            case 'empresa':
+                return 'SELECCIONA LA EMPRESA'
+            case 'tipoPago':
+                return 'SELECCIONA EL TIPO DE PAGO'
+            case 'subarea':
+                return 'SELECCIONA EL SUBÁREA'
+            case 'factura':
+                return '¿LLEVA FACTURA?'
+            default:
+                return ''
+        }
+    }
+    onChangeSwal = (value, tipo) => {
+        const { form } = this.state
+        form[tipo] = value
+        this.setState({...this.state, form})
+    }
+    patchSolicitudCompra = async( data,tipo ) => {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        let value = form[tipo]
+        waitAlert()
+        await axios.put(`${URL_DEV}v2/proyectos/solicitud-venta/${tipo}/${data.id}`, 
+            { value: value }, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.getSolicitudAxios()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La solicitud de venta fue editada con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    
+    setOptions = (data, tipo) => {
+        const { options } = this.state
+        switch(tipo){
+            case 'tipoPago':
+                return options.tiposPagos
+            case 'empresa':
+                return options.empresas
+            case 'proyecto':
+                return options.proyectos
+            case 'subarea':
+                if(data.subarea)
+                    if(data.subarea.area)
+                        if(data.subarea.area.subareas)
+                            return setOptions(data.subarea.area.subareas, 'nombre', 'id')
+                        return []
+            case 'factura':
+                return options.facturas
+            default: return []
+        }
+    }
+    clearForm = () => {
+        const { form } = this.state
+        let aux = Object.keys(form)
+        aux.map((element) => {
+            switch (element) {
+                case 'tipoPago':
+                    form[element] = 0
+                    break;
+                case 'fecha':
+                    form[element] = new Date()
+                    break;
+                case 'adjuntos':
+                    form[element] = {
+                        adjunto: {
+                            value: '',
+                            placeholder: 'Presupuesto',
+                            files: []
+                        }
+                    }
+                    break;
+                default:
+                    form[element] = ''
+                    break;
+            }
+            return false
+        })
+        return form;
     }
     setActions = () => {
         let aux = []
@@ -202,6 +406,13 @@ class SolicitudVenta extends Component {
                 iconclass: 'flaticon-file-1',
                 action: 'bills',
                 tooltip: { id: 'bills', text: 'Pedir factura' }
+            },
+            {
+                text: 'Adjuntos',
+                btnclass: 'info',
+                iconclass: 'flaticon-attachment',
+                action: 'adjuntos',
+                tooltip: { id: 'adjuntos', text: 'Adjuntos', type: 'error' }
             }
         )
         return aux
@@ -372,8 +583,123 @@ class SolicitudVenta extends Component {
             console.log(error, 'error')
         })
     }
+    handleChange = (files, item) => {
+        const { form } = this.state
+        let aux = []
+        for (let counter = 0; counter < files.length; counter++) {
+            aux.push(
+                {
+                    name: files[counter].name,
+                    file: files[counter],
+                    url: URL.createObjectURL(files[counter]),
+                    key: counter
+                }
+            )
+        }
+        form['adjuntos'][item].value = files
+        form['adjuntos'][item].files = aux
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
+    deleteFile = element => {
+        deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', '', () => this.deleteAdjuntoAxios(element.id))
+    }
+    async deleteAdjuntoAxios(id) {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { solicitud } = this.state
+        await axios.delete(URL_DEV + 'solicitud/' + solicitud.id + '/adjuntos/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { solicitud } = response.data
+                const { form } = this.state
+                let aux = []
+                solicitud.adjuntos.map((adj) => {
+                    aux.push({
+                        name: adj.name,
+                        url: adj.url,
+                        id: adj.id
+                    })
+                    return false
+                })
+                form.adjuntos.adjunto.files = aux
+                this.setState({
+                    ...this.state,
+                    modalDelete: false,
+                    solicitud: '',
+                    form
+                })
+                doneAlert('Adjunto eliminado con éxito')
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    async sendAdjuntoAxios() {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { form, solicitud } = this.state
+        const data = new FormData();
+        let aux = Object.keys(form)
+        aux.map((element) => {
+            switch (element) {
+                case 'fecha':
+                    data.append(element, (new Date(form[element])).toDateString())
+                    break
+                case 'adjuntos':
+                    break;
+                default:
+                    data.append(element, form[element])
+                    break
+            }
+            return false
+        })
+        aux = Object.keys(form.adjuntos)
+        aux.map((element) => {
+            for (var i = 0; i < form.adjuntos[element].files.length; i++) {
+                data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
+                data.append(`files_${element}[]`, form.adjuntos[element].files[i].file)
+            }
+            data.append('adjuntos[]', element)
+            return false
+        })
+        await axios.post(URL_DEV + 'solicitud/' + solicitud.id + '/adjuntos', data, { headers: { 'Content-Type': 'multipart/form-data;', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { solicitud } = response.data
+                const { form } = this.state
+                let aux = []
+                solicitud.adjunto.map((adj) => {
+                    aux.push({
+                        name: adj.name,
+                        url: adj.url,
+                        id: adj.id
+                    })
+                    return false
+                })
+                form.adjuntos.adjunto.files = aux
+                this.setState({
+                    ...this.state,
+                    modalDelete: false,
+                    solicitud: '',
+                    form
+                })
+                doneAlert('Adjunto creado con éxito')
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     render() {
-        const { data, modalDelete, form, options, solicitud, modalSingle, formeditado, modalAskFactura } = this.state
+        const { data, modalDelete, form, options, solicitud, modalSingle, formeditado, modalAskFactura, modalAdjuntos } = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
                 <NewTableServerRender
@@ -389,7 +715,8 @@ class SolicitudVenta extends Component {
                         'delete': { function: this.openModalDelete },
                         'convert': { function: this.changePageConvert },
                         'see': { function: this.openModalSingle },
-                        'bills': { function: this.openModalAskFactura }
+                        'bills': { function: this.openModalAskFactura },
+                        'adjuntos': { function: this.openModalAdjuntos }
                     }}
                     idTable='kt_datatable_solicitud'
                     accessToken={this.props.authUser.access_token}
@@ -419,6 +746,29 @@ class SolicitudVenta extends Component {
                         formeditado={formeditado}
                         data={data}
                     />
+                </Modal>
+                <Modal size="lg" title="Adjuntos" show={modalAdjuntos} handleClose={this.handleCloseAdjuntos} >
+                    <div className="mt-6">
+                        <ItemSlider
+                            items={form.adjuntos.adjunto.files}
+                            item='adjunto'
+                            handleChange={this.handleChange}
+                            deleteFile={this.deleteFile}
+                        />
+                    </div>
+                    
+                    {
+                        form.adjuntos.adjunto.value ?
+                            <div className="card-footer py-3 pr-1">
+                                <div className="row mx-0">
+                                    <div className="col-lg-12 text-right pr-0 pb-0">
+                                        <Button icon='' text='ENVIAR'
+                                            onClick={(e) => { e.preventDefault(); this.sendAdjuntoAxios() }} />
+                                    </div>
+                                </div>
+                            </div>
+                            : ''
+                    }
                 </Modal>
             </Layout>
         )

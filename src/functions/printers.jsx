@@ -92,6 +92,8 @@ export function printSwalHeader(tipo){
             return 'EDITAR LA PARTIDA'
         case 'subarea':
             return 'EDITAR EL SUBÁREA'
+        case 'factura':
+            return '¿LLEVA FACTURA?'
         default:
             return ''
     }

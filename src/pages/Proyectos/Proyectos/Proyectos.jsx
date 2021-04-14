@@ -926,7 +926,7 @@ class Proyectos extends Component {
         proyectos.map((proyecto) => {
             aux.push({
                 actions: this.setActions(proyecto),
-                status: proyecto ? setLabelTableReactDom(proyecto.estatus, this.doubleClick, proyecto, 'status') : '',
+                status: proyecto ? setLabelTableReactDom(proyecto, this.changeEstatus ) : '',
                 nombre: setTextTableReactDom(proyecto.nombre, this.doubleClick, proyecto, 'nombre', 'text-center'),
                 cliente: setTagLabelProyectoReactDom(proyecto, proyecto.clientes, 'cliente', this.deleteElementAxios),
                 tipo_proyecto: setTextTableReactDom(proyecto.tipo_proyecto?proyecto.tipo_proyecto.tipo:'Sin tipo de proyecto', this.doubleClick, proyecto, 'tipo_proyecto', 'text-center'),
@@ -1003,54 +1003,6 @@ class Proyectos extends Component {
             <div>
                 <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
                 {
-                    tipo === 'status' &&
-                    <>
-                        {
-                            data ?
-                                data.estatus ?
-                                    <Dropdown>
-                                        <Dropdown.Toggle
-                                            style={
-                                                {
-                                                    backgroundColor: data.estatus.fondo, color: data.estatus.letra, border: 'transparent', padding: '0.4rem 0.75rem',
-                                                    width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '1rem',
-                                                    fontWeight: 600
-                                                }}>
-                                            {data.estatus.estatus.toUpperCase()}
-                                        </Dropdown.Toggle>
-                                        <Dropdown.Menu className="p-0" >
-                                            <Dropdown.Header>
-                                                <span className="font-size-sm">Elige una opción</span>
-                                            </Dropdown.Header>
-                                            <Dropdown.Item className="p-0" onClick={() => { this.changeEstatus('Detenido') }} >
-                                                <span className="navi-link w-100">
-                                                    <span className="navi-text">
-                                                        <span className="label label-xl label-inline label-light-danger rounded-0 w-100">DETENIDO</span>
-                                                    </span>
-                                                </span>
-                                            </Dropdown.Item>
-                                            <Dropdown.Item className="p-0" onClick={() => { this.changeEstatus('Terminado') }} >
-                                                <span className="navi-link w-100">
-                                                    <span className="navi-text">
-                                                        <span className="label label-xl label-inline label-light-primary rounded-0 w-100">TERMINADO</span>
-                                                    </span>
-                                                </span>
-                                            </Dropdown.Item>
-                                            <Dropdown.Item className="p-0" onClick={() => { this.changeEstatus('En proceso') }} >
-                                                <span className="navi-link w-100">
-                                                    <span className="navi-text">
-                                                        <span className="label label-xl label-inline label-light-success rounded-0 w-100">EN PROCESO</span>
-                                                    </span>
-                                                </span>
-                                            </Dropdown.Item>
-                                        </Dropdown.Menu>
-                                    </Dropdown>
-                                    : ''
-                                : ''
-                                    }
-                    </>
-                }
-                {
                     tipo === 'nombre' &&
                         <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
                             requirevalidation = { 0 }  value = { form[tipo] } name = { tipo }
@@ -1080,7 +1032,6 @@ class Proyectos extends Component {
                         <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 1 } withicon = { 0 } placeholder="NOMBRE DEL CONTACTO"
                             requirevalidation = { 0 }  value = { form.contacto } name = { 'contacto' } letterCase = { false }
                             onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true } />
-
                         <InputPhoneGray withicon={1} iconclass="fas fa-mobile-alt" name="numeroContacto" value={form.numeroContacto} 
                             onChange = { (e) => { this.onChangeSwal(e.target.value, 'numeroContacto')} }
                             patterns={TEL} thousandseparator={false} prefix=''  swal = { true } 
@@ -1093,26 +1044,38 @@ class Proyectos extends Component {
             () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
         )
     }
-    changeEstatus = estatus =>  {
+    changeEstatus = (estatus, proyecto) =>  {
         estatus === 'Detenido'?
-            questionAlert('¿ESTÁS SEGURO?', 'DETENDRÁS EL PROYECTO ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios(estatus))
+            questionAlert('¿ESTÁS SEGURO?', 'DETENDRÁS EL PROYECTO ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios(estatus, proyecto))
         : estatus === 'Terminado' ?
-            questionAlert('¿ESTÁS SEGURO?', 'DARÁS POR TEMINADO EL PROYECTO ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios(estatus))
+            questionAlert('¿ESTÁS SEGURO?', 'DARÁS POR TEMINADO EL PROYECTO ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios(estatus, proyecto))
         : 
-            questionAlert('¿ESTÁS SEGURO?', 'EL PROYECTO ESTARÁ EN PROCESO ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios(estatus))
+            questionAlert('¿ESTÁS SEGURO?', 'EL PROYECTO ESTARÁ EN PROCESO ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios(estatus, proyecto))
     }
-    async changeEstatusAxios(estatus){
+    async changeEstatusAxios(estatus, proyecto){
         waitAlert()
-        const { proyecto } = this.state
         const { access_token } = this.props.authUser
+
         await axios.put(`${URL_DEV}proyectos/${proyecto.id}/estatus`,{estatus: estatus}, { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 Swal.close()
                 doneAlert('Estado actualizado con éxito')
-                const { history } = this.props
-                history.push({
-                    pathname: '/proyectos/proyectos'
-                });
+                const { key } = this.state
+                switch(key){
+                    case 'all':
+                        this.getProyectoAxios();
+                        break;
+                    case 'fase1':
+                        this.getProyectoFase1Axios();
+                        break;
+                    case 'fase2':
+                        this.getProyectoFase2Axios();
+                        break;
+                    case 'fase3':
+                        this.getProyectoFase3Axios();
+                        break;
+                    default: break;
+                }
             },
             (error) => {
                 printResponseErrorAlert(error)
