@@ -5,14 +5,18 @@ import axios from 'axios'
 import Swal from 'sweetalert2'
 import Layout from '../../../components/layout/layout'
 import { Modal, ModalDelete } from '../../../components/singles'
-import { EMPLEADOS_COLUMNS, URL_DEV, ADJUNTOS_COLUMNS } from '../../../constants'
+import { EMPLEADOS_COLUMNS, URL_DEV, ADJUNTOS_COLUMNS, TEL } from '../../../constants'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { AdjuntosForm } from '../../../components/forms'
-import { setOptions, setTextTable, setArrayTable, setAdjuntosList, setDateTable,setLabelTable, setTextTableCenter } from '../../../functions/setters'
-import { errorAlert, waitAlert, printResponseErrorAlert, deleteAlert, doneAlert } from '../../../functions/alert'
+import { setOptions, setTextTable, setArrayTable, setAdjuntosList, setDateTableReactDom,setLabelTable, setArrayTableReactDom, setTextTableReactDom, setEstatusBancoTableReactDom } from '../../../functions/setters'
+import { errorAlert, waitAlert, printResponseErrorAlert, deleteAlert, doneAlert, questionAlert, customInputAlert } from '../../../functions/alert'
 import { Tabs, Tab } from 'react-bootstrap'
 import TableForModals from '../../../components/tables/TableForModals'
 import { EmpleadosCard } from '../../../components/cards'
+import { printSwalHeader } from '../../../functions/printers'
+import { Update } from '../../../components/Lottie'
+import { InputGray, CalendarDaySwal, SelectSearchGray, InputNumberGray, InputPhoneGray } from '../../../components/form-components'
+import moment from 'moment'
 const $ = require('jquery');
 
 class Empleados extends Component {
@@ -85,7 +89,7 @@ class Empleados extends Component {
         });
         if (!empleados)
             history.push('/')
-        // this.getOptionsAxios()
+        this.getOptionsAxios()
     }
     changePageEdit = empleado => {
         const { history } = this.props
@@ -267,14 +271,14 @@ class Empleados extends Component {
                 aux.push(
                     {
                         actions: this.setActions(empleado),
-                        nombre: renderToString(setTextTableCenter(empleado.nombre)),
-                        empresa: renderToString(setTextTableCenter(empleado.empresa ? empleado.empresa.name : '')),
-                        puesto: renderToString(setTextTableCenter(empleado.puesto)),
-                        rfc: renderToString(setTextTableCenter(empleado.rfc)),
-                        nss: renderToString(setTextTableCenter(empleado.nss)),
-                        curp: renderToString(setTextTableCenter(empleado.curp)),
-                        estatus: renderToString(this.setLabel(empleado.estatus_empleado)),
-                        fechaInicio: renderToString(setDateTable(empleado.fecha_inicio)),
+                        nombre: setTextTableReactDom(empleado.nombre, this.doubleClick, empleado, 'nombre', 'text-center'),
+                        empresa: setTextTableReactDom(empleado.empresa ? empleado.empresa.name : '', this.doubleClick, empleado, 'empresa', 'text-center '),
+                        puesto: setTextTableReactDom(empleado.puesto, this.doubleClick, empleado, 'puesto', 'text-center'),
+                        rfc: setTextTableReactDom(empleado.rfc, this.doubleClick, empleado, 'rfc', 'text-center'),
+                        nss: setTextTableReactDom(empleado.nss, this.doubleClick, empleado, 'nss', 'text-center'),
+                        curp: setTextTableReactDom(empleado.curp, this.doubleClick, empleado, 'curp', 'text-center'),
+                        estatus: setEstatusBancoTableReactDom(empleado, this.changeEstatus ),
+                        fechaInicio: setDateTableReactDom(empleado.fecha_inicio, this.doubleClick, empleado, 'fecha', 'text-center'),
                         cuenta: renderToString(setArrayTable(
                             [
                                 { 'name': 'Banco', 'text': empleado.banco ? empleado.banco : 'Sin definir' },
@@ -282,19 +286,206 @@ class Empleados extends Component {
                                 { 'name': 'Clabe', 'text': empleado.clabe ? empleado.clabe : 'Sin definir' },
                             ], '180px'
                         )),
-                        nombre_emergencia: renderToString(setArrayTable(
+                        nombre_emergencia:setArrayTableReactDom(
                             [
                                 { 'name': 'Nombre', 'text': empleado.nombre_emergencia ? empleado.nombre_emergencia : 'Sin definir' },
                                 { 'name': 'Teléfono', 'text': empleado.telefono_emergencia ? empleado.telefono_emergencia : 'Sin definir' }
-                            ],'120px'
-                        )),
-                        vacaciones_tomadas: renderToString(setTextTableCenter(empleado.vacaciones_tomadas)),
+                            ],'120px', this.doubleClick, empleado, 'nombre_emergencia'
+                        ),
+                        vacaciones_tomadas: setTextTableReactDom(empleado.vacaciones_disponibles, this.doubleClick, empleado, 'vacaciones_disponibles', 'text-center'),
                         id: empleado.id
                     }
                 )
                 return false
             })
         return aux
+    }
+    doubleClick = (data, tipo) => {
+        console.log(data)
+        const { form } = this.state
+        switch(tipo){
+            case 'empresa':
+                if(data[tipo])
+                    form[tipo] = data[tipo].id.toString()
+                break
+            case 'fecha':
+                form.fechaInicio = new Date(moment(data.fecha_inicio))
+                break
+            case 'nombre_emergencia':
+                form.nombre_emergencia = data.nombre_emergencia
+                form.telefono_emergencia = data.telefono_emergencia
+                break
+            default:
+                form[tipo] = data[tipo]
+                break
+        }
+        this.setState({form})
+        customInputAlert(
+            <div>
+                <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
+                {
+                    (tipo === 'nombre') || (tipo === 'puesto') || (tipo === 'rfc') || (tipo === 'curp') ?
+                        <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
+                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo }
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true }
+                        />
+                    :<></>
+                }
+                {
+                    tipo === 'nombre_emergencia' &&
+                    <>
+                        <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 1 } withicon = { 0 } placeholder="NOMBRE DEL CONTACTO DE EMERGENCIA"
+                            requirevalidation = { 0 }  value = { form.nombre_emergencia } name = { 'nombre_emergencia' } letterCase = { false }
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true } />
+                        
+                        <InputPhoneGray withicon={1} iconclass="fas fa-mobile-alt" name="telefono_emergencia" value={form.telefono_emergencia} 
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, 'telefono_emergencia')} }
+                            patterns={TEL} thousandseparator={false} prefix=''  swal = { true } 
+                        />
+                    </>
+                }
+                {
+                    tipo === 'fecha' ?
+                        <CalendarDaySwal value = { form.fechaInicio } onChange = { (e) => {  this.onChangeSwal(e.target.value, 'fechaInicio')} } name = { 'fechaInicio' } date = { form.fechaInicio } withformgroup={0} />
+                    :<></>
+                }
+                {
+                    (tipo === 'empresa')  ?
+                        <SelectSearchGray options = { this.setOptions(data, tipo) } value = { form[tipo] } customdiv="mb-2 mt-7"
+                            onChange = { (value) => { this.onChangeSwal(value, tipo)} } name = { tipo } requirevalidation={1} 
+                            placeholder={this.setSwalPlaceholder(tipo)}
+                        />
+                    :<></>
+                }
+                {
+                    (tipo === 'nss') || (tipo ==='vacaciones_disponibles') ?
+                        <InputNumberGray withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
+                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } type="text"
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true }
+                        />
+                    :<></>
+                }
+            </div>,
+            <Update />,
+            () => { this.patchEmpleados(data, tipo) },
+            () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
+        )
+    }
+    changeEstatus = (estatus, empleado) =>  {
+        estatus === 'Activo'?
+            questionAlert('¿ESTÁS SEGURO?', 'ACTIVARÁS EL EMPLEADO', () => this.changeEstatusAxios(estatus, empleado))
+        : 
+            questionAlert('¿ESTÁS SEGURO?', 'INHABILITARÁS EL EMPLEADO', () => this.changeEstatusAxios(estatus, empleado))
+    }
+    async changeEstatusAxios(estatus, empleado){
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.put(`${URL_DEV}proyectos/${empleado.id}/estatus`,{estatus: estatus}, { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                Swal.close()
+                doneAlert('Estatus actualizado con éxito')
+                const { key } = this.state
+                if (key === 'administrativo') {
+                    this.getEmpleadosAxios()
+                }
+                if (key === 'obra') {
+                    this.getEmpleadosObraAxios()
+                }
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    deleteElementAxios = async(data, element, tipo) => {
+        const { access_token } = this.props.authUser
+        waitAlert()
+        await axios.delete(`${URL_DEV}v2/bancos/cuentas/${data.id}/${element.id}`, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { key } = this.state
+                if (key === 'administrativo') {
+                    this.getEmpleadosAxios()
+                }
+                if (key === 'obra') {
+                    this.getEmpleadosObraAxios()
+                }
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El empleado fue editado con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    
+    setSwalPlaceholder = (tipo) => {
+        switch(tipo){
+            case 'empresa':
+                return 'SELECCIONA LA EMPRESA'
+            default:
+                return ''
+        }
+    }
+    onChangeSwal = (value, tipo) => {
+        const { form } = this.state
+        form[tipo] = value
+        this.setState({...this.state, form})
+    }
+    patchEmpleados = async( data,tipo ) => {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        let value = form[tipo]
+        waitAlert()
+        await axios.put(`${URL_DEV}v2/rh/empleados/${tipo}/${data.id}`, 
+            { value: value }, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { key } = this.state
+                if (key === 'administrativo') {
+                    this.getEmpleadosAxios()
+                }
+                if (key === 'obra') {
+                    this.getEmpleadosObraAxios()
+                }
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La empleado fue editado con éxito')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    
+    setOptions = (data, tipo) => {
+        const { options } = this.state
+        switch(tipo){
+            case 'empresa':
+                return options.empresas
+            default: return []
+        }
+    }
+    clearForm = () => {
+        const { form } = this.state
+        let aux = Object.keys(form)
+        aux.forEach((element) => {
+            switch(element){
+                case 'adjuntos':
+                    form[element] = {
+                        adjuntos: {
+                            value: '',
+                            placeholder: 'Adjuntos',
+                            files: []
+                        }
+                    }
+                    break;
+                default:
+                    form[element] = ''
+                break;
+            }
+        })
+        return form
     }
     setLabel = estatus => {
         let text = {}

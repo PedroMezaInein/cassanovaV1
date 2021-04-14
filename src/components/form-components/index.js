@@ -37,6 +37,7 @@ import selectCreateSinText from './SinText/SelectCreateSinText'
 import inputGray from './Gray/InputGray'
 import inputPhoneGray from './Gray/InputPhoneGray'
 import selectSearchGray from './Gray/SelectSearchGray'
+import doubleSelectSearchGray from './Gray/DoubleSelectSearchGray'
 import inputMoneyGray from './Gray/InputMoneyGray'
 import inputNumberGray from './Gray/InputNumberGray'
 import radioGroupGray from './Gray/RadioGroupGray'
@@ -96,6 +97,7 @@ export const SelectCreateSinText = selectCreateSinText
 export const InputGray = inputGray
 export const InputPhoneGray = inputPhoneGray
 export const SelectSearchGray = selectSearchGray
+export const DoubleSelectSearchGray = doubleSelectSearchGray
 export const InputMoneyGray = inputMoneyGray
 export const InputNumberGray = inputNumberGray
 export const RadioGroupGray = radioGroupGray

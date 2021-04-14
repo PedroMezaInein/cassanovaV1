@@ -10,7 +10,7 @@ class SingleTagify extends Component{
                         onClick = { onClick }/>
                     <div style={{padding:'1px'}}>
                         <span className="tagify__tag-text p-1 white-space font-weight-bold letter-spacing-0-4 font-size-11px">
-                            { element.nombre }
+                            { element.nombre === undefined ? element.name : element.nombre }
                         </span>
                     </div>
                 </div>
