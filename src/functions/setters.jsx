@@ -134,7 +134,7 @@ export function setMoneyTableReactDom(text, doubleClick, data, tipo){
     let cantidad = 0
     cantidad = parseFloat(text).toFixed(2)
     return(
-        <div className = {`text-center ${(text === '' ? 'm-5 p-5' : 'm-2')}`} onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data, tipo)} }
+        <div className = {`text-hover text-center ${(text === '' ? 'm-5 p-5' : 'm-2')}`} onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data, tipo)} }
             onClick = { (e) => { 
                 e.preventDefault(); 
                 if(isMobile){
