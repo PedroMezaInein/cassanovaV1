@@ -196,9 +196,9 @@ class Cuenta extends Component {
     }
     changeEstatus = (estatus, cuenta) =>  {
         estatus === 'Activo'?
-            questionAlert('¿ESTÁS SEGURO?', 'ACTIVARÁS LA CUENTA ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios(estatus, cuenta))
+            questionAlert('¿ESTÁS SEGURO?', 'ACTIVARÁS LA CUENTA', () => this.changeEstatusAxios(estatus, cuenta))
         : 
-            questionAlert('¿ESTÁS SEGURO?', 'INHABILITARÁS LA CUENTA ¡NO PODRÁS REVERTIR ESTO!', () => this.changeEstatusAxios(estatus, cuenta))
+            questionAlert('¿ESTÁS SEGURO?', 'INHABILITARÁS LA CUENTA', () => this.changeEstatusAxios(estatus, cuenta))
     }
     async changeEstatusAxios(estatus, cuenta){
         waitAlert()

@@ -374,8 +374,9 @@ export function setLabelTableReactDom (data, changeEstatus) {
     )
 }
 export function setEstatusBancoTableReactDom (data, changeEstatus) {
+    let estatus =  data.estatus? data.estatus.estatus !== undefined ? data.estatus.estatus : data.estatus_empleado:data.estatus_empleado
     let text = {}
-    if (data.estatus.estatus === "Activo") {
+    if ( estatus === "Activo" ) {
         text.letra = '#388E3C'
         text.fondo = '#E8F5E9'
         text.estatus = 'Activo'
@@ -386,7 +387,7 @@ export function setEstatusBancoTableReactDom (data, changeEstatus) {
     }
     return (
         data ?
-            data.estatus ?
+            (data.estatus) || (data.estatus_empleado) ?
                 <Dropdown className="text-center">
                     <Dropdown.Toggle
                         style={

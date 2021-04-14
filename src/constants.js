@@ -1979,34 +1979,42 @@ export const EMPLEADOS_COLUMNS = [
     {
         Header: 'Nombre',
         accessor: 'nombre',
+        customRender: true
     },
     {
         Header: 'Empresa',
-        accessor: 'empresa'
+        accessor: 'empresa',
+        customRender: true
     },
     {
         Header: 'Puesto',
-        accessor: 'puesto'
+        accessor: 'puesto',
+        customRender: true
     },
     {
         Header: 'RFC',
-        accessor: 'rfc'
+        accessor: 'rfc',
+        customRender: true
     },
     {
         Header: 'NSS',
-        accessor: 'nss'
+        accessor: 'nss',
+        customRender: true
     },
     {
         Header: 'CURP',
-        accessor: 'curp'
+        accessor: 'curp',
+        customRender: true
     },
     {
         Header: 'Estatus',
-        accessor: 'estatus'
+        accessor: 'estatus',
+        customRender: true
     },
     {
         Header: 'F.Inicio',
-        accessor: 'fechaInicio'
+        accessor: 'fechaInicio',
+        customRender: true
     },
     {
         Header: 'Cuenta de Depósito',
@@ -2014,11 +2022,13 @@ export const EMPLEADOS_COLUMNS = [
     },
     {
         Header: 'Contacto de Emergencia',
-        accessor: 'nombre_emergencia'
+        accessor: 'nombre_emergencia',
+        customRender: true
     },
     {
-        Header: 'Días de Vacaciones Tomadas',
-        accessor: 'vacaciones_tomadas'
+        Header: 'Días de vacaciones dispobibles',
+        accessor: 'vacaciones_tomadas',
+        customRender: true
     }
 ]
 
