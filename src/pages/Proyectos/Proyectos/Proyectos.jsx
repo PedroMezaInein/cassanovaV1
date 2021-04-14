@@ -926,7 +926,7 @@ class Proyectos extends Component {
         proyectos.map((proyecto) => {
             aux.push({
                 actions: this.setActions(proyecto),
-                status: proyecto ? setLabelTableReactDom(proyecto.estatus, this.doubleClick, proyecto, 'status') : '',
+                status: proyecto ? setLabelTableReactDom(proyecto, this.changeEstatus ) : '',
                 nombre: setTextTableReactDom(proyecto.nombre, this.doubleClick, proyecto, 'nombre', 'text-center'),
                 cliente: setTagLabelProyectoReactDom(proyecto, proyecto.clientes, 'cliente', this.deleteElementAxios),
                 tipo_proyecto: setTextTableReactDom(proyecto.tipo_proyecto?proyecto.tipo_proyecto.tipo:'Sin tipo de proyecto', this.doubleClick, proyecto, 'tipo_proyecto', 'text-center'),

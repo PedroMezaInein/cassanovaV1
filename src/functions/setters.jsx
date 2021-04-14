@@ -4,7 +4,7 @@ import NumberFormat from 'react-number-format';
 import { isMobile } from 'react-device-detect';
 import { questionAlert } from './alert';
 import { SingleTagify } from '../components/singles';
-
+import { Dropdown } from 'react-bootstrap'
 function compare( a, b ) {
     if ( a.name < b.name ){
         return -1;
@@ -325,29 +325,50 @@ export function setArrayTableReactDom (arreglo, minwidth, doubleClick, data, tip
         </div>
     )
 }
-export function setLabelTableReactDom (text, doubleClick, data, tipo) {
+export function setLabelTableReactDom (data, changeEstatus) {
+    console.log(data)
     return (
-        <div className = {`text-center white-space-nowrap ${(text === '' ? 'm-5 p-5' : 'm-2')}`} onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data, tipo)} }
-            onClick = { (e) => { 
-                e.preventDefault(); 
-                if(isMobile){
-                    doubleClick(data, tipo)
-                }
-            } } > 
-            <div className="d-none">
-                {text.estatus}
-            </div>
-            <span style={{
-                backgroundColor:`${text.fondo}`,
-                color: `${text.letra}`,
-                border: 'transparent', padding: '2.8px 5.6px',
-                width:text.estatus==='Respuesta pendiente'?'min-content':'auto', 
-                margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '11px',
-                fontWeight: 500, borderRadius:'0.42rem'
-            }} >
-                {text.estatus}
-            </span>
-        </div>
+        data ?
+            data.estatus ?
+                <Dropdown>
+                    <Dropdown.Toggle
+                        style={
+                            {
+                                backgroundColor: data.estatus.fondo, color: data.estatus.letra, border: 'transparent', padding: '0.4rem 0.75rem',
+                                width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '11px',
+                                fontWeight: 600
+                            }}>
+                        {data.estatus.estatus.toUpperCase()}
+                    </Dropdown.Toggle>
+                    <Dropdown.Menu className="p-0" >
+                        <Dropdown.Header>
+                            <span className="font-size-sm">Elige una opción</span>
+                        </Dropdown.Header>
+                        <Dropdown.Item className="p-0" onClick={() => { changeEstatus('Detenido') }} >
+                            <span className="navi-link w-100">
+                                <span className="navi-text">
+                                    <span className="label label-xl label-inline label-light-danger rounded-0 w-100">DETENIDO</span>
+                                </span>
+                            </span>
+                        </Dropdown.Item>
+                        <Dropdown.Item className="p-0" onClick={() => { changeEstatus('Terminado') }} >
+                            <span className="navi-link w-100">
+                                <span className="navi-text">
+                                    <span className="label label-xl label-inline label-light-primary rounded-0 w-100">TERMINADO</span>
+                                </span>
+                            </span>
+                        </Dropdown.Item>
+                        <Dropdown.Item className="p-0" onClick={() => { changeEstatus('En proceso') }} >
+                            <span className="navi-link w-100">
+                                <span className="navi-text">
+                                    <span className="label label-xl label-inline label-light-success rounded-0 w-100">EN PROCESO</span>
+                                </span>
+                            </span>
+                        </Dropdown.Item>
+                    </Dropdown.Menu>
+                </Dropdown>
+                : ''
+                                : ''
     )
 }
 

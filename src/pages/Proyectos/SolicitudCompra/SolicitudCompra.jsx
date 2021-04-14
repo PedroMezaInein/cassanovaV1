@@ -255,27 +255,32 @@ class SolicitudCompra extends Component {
                     :<></>
                 }
                 {
-                    (tipo === 'proyecto') || (tipo === 'proveedor')  || (tipo === 'empresa') || (tipo === 'subarea')?
+                    (tipo === 'proyecto') || (tipo === 'proveedor')  || (tipo === 'empresa') || (tipo === 'subarea') || (tipo === 'factura') ?
                         <SelectSearchGray options = { this.setOptions(data, tipo) }
                         onChange = { (value) => { this.onChangeSwal(value, tipo)} } name = { tipo }
                         value = { form[tipo] } customdiv="mb-2 mt-7" requirevalidation={1} 
                         placeholder={this.setSwalPlaceholder(tipo)}/>
                     :<></>
                 }
-                {
+                {/* {
                     (tipo === 'factura') ?
+                    <>
+                    {console.log("Mostrar popup")}
                         <Form.Group>
-                            <div className="radio-inline">
+                            <div className="radio-inline" id="factura">
                                 {
                                     this.setOptions(data, tipo).map((option, key) => {
+                                        {console.log("Holaa")}
+                                        {console.log(form.factura)}
+                                        {console.log( option.value)}
+                                        {console.log( form.factura=== option.value)}
                                         return (
                                             <label className="radio radio-outline radio-outline-2x radio-primary" key={key}>
                                                 <input
                                                     type='radio'
                                                     name = { 'factura' }
                                                     value={option.value}
-                                                    onChange={(e) => this.onChange(e)}
-                                                    checked={form.factura === option.value}
+                                                    onChange={(e) =>{  this.onChangeFact(e)}} 
                                                 />
                                                 {option.label}
                                                 <span></span>
@@ -285,26 +290,43 @@ class SolicitudCompra extends Component {
                                 }
                             </div>
                         </Form.Group>
+                    </>
                     :<></>
-                }
+                } */}
             </div>,
             <Update />,
             () => { this.patchSolicitudCompra(data, tipo) },
             () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
         )
     }
-    onChange = e => {
-        const { name, value, checked, type } = e.target
-        const { form } = this.state
-        form[name] = value
-        if (type === 'radio') {
-            form[name] = checked
-        }
-        this.setState({
-            ...this.state,
-            form
-        })
-    }
+    // onChangeFact = e => {
+    //     const { name, value, checked, type } = e.target
+    //     console.log(name, value, checked, type)
+    //     const { form } = this.state
+    //     console.log(form[name])
+        
+    //     console.log( form.factura)
+    //     form[name] = value
+        
+    //     form.factura=value   
+
+    //     // for(let i=0; i<inputs.length; i++){
+    //     //     let inputJq = $(inputs[i])
+    //     //     if(inputJq.val()===value){
+    //     //         inputJq.attr('checked', 'checked');
+    //     //     }else{
+    //     //         inputJq.removeAttr('checked')
+    //     //     }
+    //     // }
+    //     console.log( form.factura)
+
+    //     // if (type === 'radio') {
+    //     //     form[name] = checked
+    //     // }
+    //     this.setState({  
+    //         form
+    //     })
+    // }
     setSwalPlaceholder = (tipo) => {
         switch(tipo){
             case 'proyecto':

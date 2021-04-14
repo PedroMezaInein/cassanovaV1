@@ -6,13 +6,6 @@ class FormCalendarioTareas extends Component {
     state = {
         showForm: false,
     }
-    descripcion(descripcion) {
-        if(descripcion === null)
-            return ''
-        let text = ''
-        text = descripcion.replace('↵↵•', '</br>')
-        return text
-    }
     responsables(responsables) {
         let aux = [];
         responsables.map((responsable) => {
@@ -45,8 +38,8 @@ class FormCalendarioTareas extends Component {
                     <i className="fas fa-user-friends font-size-lg text-primary mr-2"></i>
                     {this.responsables(tarea.responsables)}
                 </div>
-                <div className="text-muted-50 text-justify font-weight-light">
-                    {this.descripcion(tarea.descripcion)}
+                <div className="text-muted-50 text-justify font-weight-light salto">
+                    {tarea.descripcion}
                 </div>
                 <div className="separator separator-dashed separator-border-2 my-8"></div>
                 <div className="d-flex justify-content-end">
