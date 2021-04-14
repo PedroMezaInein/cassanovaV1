@@ -1266,7 +1266,8 @@ export const SOLICITUD_COMPRA_COLUMNS = [
     },
     {
         Header: 'Área',
-        accessor: 'area'
+        accessor: 'area',
+        customRender: true
     },
     {
         Header: 'Sub-Área',
@@ -1340,7 +1341,7 @@ export const SOLICITUD_VENTA_COLUMNS = [
     { Header: 'Monto', accessor: 'monto',customRender: true },
     { Header: 'Factura', accessor: 'factura', customRender: true },
     { Header: 'Pago', accessor: 'tipoPago',customRender: true },
-    { Header: 'Área', accessor: 'area' },
+    { Header: 'Área', accessor: 'area',customRender: true },
     { Header: 'Sub-Área', accessor: 'subarea',customRender: true },
     { Header: 'Fecha', accessor: 'fecha',customRender: true },
     { Header: 'Descripción', accessor: 'descripcion',customRender: true }
@@ -1353,7 +1354,8 @@ export const CONCEPTOS_COLUMNS = [
     },
     {
         Header: 'Partida',
-        accessor: 'partida'
+        accessor: 'partida',
+        customRender: true
     },
     {
         Header: 'Subpartida',
@@ -1586,7 +1588,8 @@ export const REMISION_COLUMNS = [
     },
     {
         Header: 'Área',
-        accessor: 'area'
+        accessor: 'area',
+        customRender: true
     },
     {
         Header: 'Sub - Área',
