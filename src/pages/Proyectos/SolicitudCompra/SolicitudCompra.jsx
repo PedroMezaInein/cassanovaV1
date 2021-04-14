@@ -8,7 +8,7 @@ import { setDateTableReactDom, setMoneyTableReactDom, setTextTableCenter, setTex
 import { errorAlert, printResponseErrorAlert, doneAlert, deleteAlert, waitAlert, customInputAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { Modal, ModalDelete, ItemSlider} from '../../../components/singles'
-import { Button, CalendarDaySwal, SelectSearchGray, InputGray, InputNumberGray } from '../../../components/form-components'
+import { Button, CalendarDaySwal, SelectSearchGray, InputGray, InputNumberGray, DoubleSelectSearchGray } from '../../../components/form-components'
 import { faSync } from '@fortawesome/free-solid-svg-icons'
 import { SolicitudCompraCard } from '../../../components/cards'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
@@ -132,7 +132,8 @@ class SolicitudCompra extends Component {
                     monto: setMoneyTableReactDom(solicitud.monto, this.doubleClick, solicitud, 'monto'),
                     tipoPago: setTextTableReactDom(solicitud.tipo_pago.tipo, this.doubleClick, solicitud, 'tipoPago', 'text-center'),
                     descripcion: setTextTableReactDom(solicitud.descripcion !== null ? solicitud.descripcion :'', this.doubleClick, solicitud, 'descripcion', 'text-justify'),
-                    area: renderToString(setTextTableCenter(solicitud.subarea ? solicitud.subarea.area ? solicitud.subarea.area.nombre : '' : '')),
+                    //area: setTextTableReactDom(solicitud.subarea ? solicitud.subarea.area ? solicitud.subarea.area.nombre : '' : ''),
+                    area: solicitud.subarea ? solicitud.subarea.area ? setTextTableReactDom(solicitud.subarea.area.nombre, this.doubleClick, solicitud, 'area', 'text-center') : '' : '',
                     subarea: solicitud.subarea ? setTextTableReactDom(solicitud.subarea.nombre, this.doubleClick, solicitud, 'subarea', 'text-center') : '',
                     fecha: setDateTableReactDom(solicitud.created_at, this.doubleClick, solicitud, 'fecha', 'text-center'),
                     id: solicitud.id
@@ -144,7 +145,7 @@ class SolicitudCompra extends Component {
     }
 
     doubleClick = (data, tipo) => {
-        const { form } = this.state
+        const { form, options } = this.state
         switch(tipo){
             case 'proyecto':
             case 'proveedor':
@@ -152,6 +153,15 @@ class SolicitudCompra extends Component {
             case 'subarea':
                 if(data[tipo])
                     form[tipo] = data[tipo].id.toString()
+                break
+            case 'area':
+                if(data.subarea){
+                    if(data.subarea.area){
+                        form.area = data.subarea.area.id.toString()
+                        form.subarea = data.subarea.id.toString()
+                        options.subareas = setOptions(data.subarea.area.subareas, 'nombre', 'id')
+                    }
+                }
                 break
             case 'fecha':
                 form.fecha = new Date(data.created_at)
@@ -169,7 +179,7 @@ class SolicitudCompra extends Component {
                 form[tipo] = data[tipo]
                 break
         }
-        this.setState({form})
+        this.setState({form, options})
         customInputAlert(
             <div>
                 <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
@@ -220,6 +230,10 @@ class SolicitudCompra extends Component {
                         value = { form[tipo] } customdiv="mb-2 mt-7" requirevalidation={1} 
                         placeholder={this.setSwalPlaceholder(tipo)}/>
                     :<></>
+                }
+                {
+                    tipo === 'area' &&
+                        <DoubleSelectSearchGray options = { options } form = { form } onChange = { this.onChangeSwal } />
                 }
             </div>,
             <Update />,
@@ -299,6 +313,8 @@ class SolicitudCompra extends Component {
                         if(data.subarea.area.subareas)
                             return setOptions(data.subarea.area.subareas, 'nombre', 'id')
                 return []
+            case 'area':
+                return options.areas
             case 'factura':
                 return options.facturas
             default: return []
@@ -404,12 +420,13 @@ class SolicitudCompra extends Component {
         const { access_token } = this.props.authUser
         await axios.get(`${URL_DEV}solicitud-compra/options`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { empresas, tiposPagos, proveedores, proyectos } = response.data
+                const { empresas, tiposPagos, proveedores, proyectos, areas } = response.data
                 const { options } = this.state
-                options['empresas'] = setOptions(empresas, 'name', 'id')
-                options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
-                options['proyectos'] = setOptions(proyectos, 'nombre', 'id')
-                options['tiposPagos'] = setSelectOptions(tiposPagos, 'tipo')
+                options.empresas = setOptions(empresas, 'name', 'id')
+                options.proveedores = setOptions(proveedores, 'razon_social', 'id')
+                options.proyectos = setOptions(proyectos, 'nombre', 'id')
+                options.tiposPagos = setSelectOptions(tiposPagos, 'tipo')
+                options.areas = setOptions(areas, 'nombre', 'id')
                 this.setState({ ...this.state, options })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -422,10 +439,17 @@ class SolicitudCompra extends Component {
         const { access_token } = this.props.authUser
         const { form } = this.state
         let value = ''
-        if(tipo === 'monto')
-            value = replaceMoney(form[tipo])
-        else
-            value = form[tipo]
+        switch(tipo){
+            case 'monto':
+                value = replaceMoney(form[tipo])
+                break
+            case 'area':
+                value = { area: form.area, subarea: form.subarea }
+                break
+            default: 
+                value = form[tipo]    
+                break
+        }
         waitAlert()
         await axios.put(`${URL_DEV}v2/proyectos/solicitud-compra/${tipo}/${data.id}`, 
             { value: value }, 

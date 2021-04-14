@@ -1250,7 +1250,8 @@ export const SOLICITUD_COMPRA_COLUMNS = [
     },
     {
         Header: 'Área',
-        accessor: 'area'
+        accessor: 'area',
+        customRender: true
     },
     {
         Header: 'Sub-Área',
