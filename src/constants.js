@@ -379,14 +379,17 @@ export const CLIENTES_COLUMNS = [
     {
         Header: 'Empresa',
         accessor: 'empresa',
+        customRender: true
     },
     {
         Header: 'Nombre',
         accessor: 'nombre',
+        customRender: true
     },
     {
         Header: 'Proyecto',
         accessor: 'proyecto',
+        customRender: true
     },
     {
         Header: 'Dirección',
@@ -400,14 +403,17 @@ export const CLIENTES_COLUMNS = [
     {
         Header: 'Puesto',
         accessor: 'puesto',
+        customRender: true
     },
     {
         Header: 'RFC',
-        accessor: 'rfc'
+        accessor: 'rfc',
+        customRender: true
     },
     {
         Header: 'Fecha',
         accessor: 'fecha',
+        customRender: true
     },
 ]
 

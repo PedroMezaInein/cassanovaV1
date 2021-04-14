@@ -277,7 +277,82 @@ export function setTagLabelProyectoReactDom (proyecto, arreglo, tipo, deleteElem
         </div>
     )
 }
+export function setTagLabelClienteReactDom (cliente, arreglo, tipo, deleteElement){
+    console.log(cliente)
 
+    // {
+    //     arreglo.map((element,  key ) => { 
+    //         return (
+    //             <>
+    //                 <div key={key} className="font-size-11px text-center font-weight-bold white-space-nowrap">
+    //                     &#8226;&nbsp;
+    //                     <a href={'/mi-proyecto?id='+element.id} className="text-primary">
+    //                             { element[nombre] }
+    //                         </a>
+    //                         {
+    //                             element.estatus ?
+    //                                 <>
+    //                                     &nbsp;-&nbsp;<span style={{ color: `${element.estatus.letra}` }}>
+    //                                         {element.estatus.estatus}
+    //                                     </span>
+    //                                 </>
+    //                             :''
+    //                         }
+    //                 </div>
+    //                 <br/>
+    //             </>
+    //         )
+    //     })
+    // }
+    return (
+        <div className="">
+            {
+                arreglo.map((element, index) => {
+                    return(
+                        <div key = { index } >
+                            <div className="container px-0 font-size-11px mb-3">
+                                <div className="container-fluid px-0">
+                                    <div className="row mx-0 row-paddingless">
+                                        <span className="w-100">
+                                            <span className="text-hover"  onClick = { (e) => { 
+                                                questionAlert(
+                                                    '¿ESTÁS SEGURO?', 
+                                                    `ELIMINARÁS ${element.nombre} DEL CLIENTE ${cliente.nombre}`,
+                                                    () => deleteElement(cliente, element, tipo)
+                                                ) } }>
+                                                <span className="bg-gray-100 text-center py-1">
+                                                    <i className="flaticon2-delete icon-xs text-dark-50 text-hover-danger mx-2"></i>
+                                                </span>
+                                            </span>
+                                            <span className="text-truncate py-1 ">
+                                                <span className="bg-gray-100 pr-2 py-1 font-weight-bolder text-dark-50 letter-spacing-0-4 ">
+                                                    { element.nombre } &nbsp;-
+                                                </span>
+                                                {
+                                                    element.estatus ?
+                                                        <>
+                                                            <span style={{
+                                                                backgroundColor: element.estatus.fondo, color: element.estatus.letra, border: 'transparent', padding: '0.29rem 0.3rem',
+                                                                width: 'auto', margin: 0, display: 'inline-flex', justifyContent: 'center', alignItems: 'center', fontSize: '10px',
+                                                                fontWeight: 600
+                                                            }} className="font-weight-bolder letter-spacing-0-4 ">
+                                                                {element.estatus.estatus}
+                                                            </span>
+                                                        </>
+                                                    :''
+                                                }
+                                            </span>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    )
+                })
+            }
+        </div>
+    )
+}
 export function setArrayTableReactDom (arreglo, minwidth, doubleClick, data, tipo) {
     return (
         <div className = {`text-hover ${(arreglo === '' ? 'm-5 p-5' : '')}`}  style={{minWidth:minwidth}} onDoubleClick = { (e) => { e.preventDefault(); doubleClick(data, tipo)} }
