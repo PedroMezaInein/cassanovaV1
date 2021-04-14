@@ -7,10 +7,10 @@ import { setMoneyTableReactDom, setTextTableReactDom, setOptions, setTextTableCe
 import Layout from '../../../components/layout/layout'
 import { ModalDelete, Modal } from '../../../components/singles'
 import { printResponseErrorAlert, errorAlert, doneAlert, waitAlert, customInputAlert } from '../../../functions/alert'
-import { replaceAll } from '../../../functions/functions'
+import { replaceAll, replaceMoney } from '../../../functions/functions'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { ConceptoCard } from '../../../components/cards'
-import { InputGray, InputNumberGray, SelectSearchGray } from '../../../components/form-components'
+import { DoubleSelectSearchGray, InputGray, InputNumberGray, SelectSearchGray } from '../../../components/form-components'
 import { Update } from '../../../components/Lottie'
 import Swal from 'sweetalert2'
 import { printSwalHeader } from '../../../functions/printers'
@@ -112,7 +112,7 @@ class Conceptos extends Component {
     }
 
     doubleClick = (data, tipo) => {
-        const { form } = this.state
+        const { form, options } = this.state
         switch(tipo){
             case 'proveedor':
             case 'unidad':
@@ -120,11 +120,20 @@ class Conceptos extends Component {
                 if(data[tipo])
                     form[tipo] = data[tipo].id.toString()
                 break
+            case 'partida':
+                if(data.subpartida){
+                    if(data.subpartida.partida){
+                        form.partida = data.subpartida.partida.id.toString()
+                        form.subpartida = data.subpartida.id.toString()
+                        options.subpartidas = setOptions(data.subpartida.partida.subpartidas, 'nombre', 'id')
+                    }
+                }
+                break;
             default:
                 form[tipo] = data[tipo]
                 break
         }
-        this.setState({form})
+        this.setState({form, options})
         customInputAlert(
             <div>
                 <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
@@ -141,11 +150,17 @@ class Conceptos extends Component {
                             onChange = { (e) => { this.onChange(e.target.value, tipo)} } swal = { true } />
                 }
                 {
-                    (tipo !== 'descripcion') && (tipo !== 'costo') &&
+                    (tipo !== 'descripcion') && (tipo !== 'costo') && (tipo !== 'partida') &&
                         <SelectSearchGray options = { this.setOptions(data, tipo) }
                             onChange = { (value) => { this.updateSelectSearch(value, tipo)} } name = { tipo }
                             value = { form[tipo] } customdiv="mb-2 mt-7" requirevalidation={1} 
                             placeholder={`SELECCIONA ${tipo==='proveedor' ? 'el proveedor' : 'la ' + tipo }`}/>
+                }
+                {
+                    tipo === 'partida' &&
+                    <DoubleSelectSearchGray options = { options } form = { form } onChange = { this.onChange } 
+                        one = { { placeholder: 'SELECCIONA LA PARTIDA', name: 'partida', opciones: 'partidas'} } 
+                        two = { { placeholder: 'SELECCIONA LA SUBPARTIDA', name: 'subpartida', opciones: 'subpartidas'} }/>
                 }
             </div>,
             <Update />,
@@ -183,7 +198,7 @@ class Conceptos extends Component {
                     descripcion: setTextTableReactDom(concepto.descripcion, this.doubleClick, concepto, 'descripcion', 'text-justify'),
                     unidad: concepto.unidad ? setTextTableReactDom(concepto.unidad.nombre, this.doubleClick, concepto, 'unidad', 'text-center') : '',
                     costo: setMoneyTableReactDom(concepto.costo, this.doubleClick, concepto, 'costo'),
-                    partida: concepto.subpartida ? concepto.subpartida.partida ? renderToString(setTextTableReactDom(concepto.subpartida.partida.nombre, this.doubleClick, concepto, 'partida', 'text-center')) : '' : '',
+                    partida: concepto.subpartida ? concepto.subpartida.partida ? setTextTableReactDom(concepto.subpartida.partida.nombre, this.doubleClick, concepto, 'partida', 'text-center') : '' : '',
                     subpartida: concepto.subpartida ? setTextTableReactDom(concepto.subpartida.nombre, this.doubleClick, concepto, 'subpartida', 'text-center') : '',
                     proveedor: setTextTableReactDom(concepto.proveedor ? concepto.proveedor.razon_social : '', this.doubleClick, concepto, 'proveedor', 'text-center'),
                     id: concepto.id
@@ -254,8 +269,10 @@ class Conceptos extends Component {
         let value = ''
         switch(tipo){
             case 'costo':
-                value = replaceAll(form[tipo], ',', '')
-                value = replaceAll(value, '$', '')
+                value = replaceMoney(form[tipo])
+                break
+            case 'partida':
+                value = { partida: form.partida, subpartida: form.subpartida }
                 break
             default:
                 value = form[tipo]
