@@ -809,15 +809,18 @@ export const PROVEEDORES_COLUMNS = [
     },
     {
         Header: 'Nombre',
-        accessor: 'nombre'
+        accessor: 'nombre',
+        customRender: true
     },
     {
         Header: 'Razón Social',
-        accessor: 'razonSocial'
+        accessor: 'razonSocial',
+        customRender: true
     },
     {
         Header: 'Contacto',
-        accessor: 'contacto'
+        accessor: 'contacto',
+        customRender: true
     },
     {
         Header: 'Cuenta',
@@ -829,7 +832,8 @@ export const PROVEEDORES_COLUMNS = [
     },
     {
         Header: 'Sub-área',
-        accessor: 'subarea'
+        accessor: 'subarea',
+        customRender: true
     },
     {
         Header: 'Total de compras',
@@ -841,7 +845,8 @@ export const PROVEEDORES_COLUMNS = [
     }, */
     {
         Header: 'RFC',
-        accessor: 'rfc'
+        accessor: 'rfc',
+        customRender: true
     },
 ]
 

@@ -2,13 +2,17 @@ import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import { URL_DEV, PROVEEDORES_COLUMNS } from '../../../constants'
-import { setDateTable, setMoneyTable, setArrayTable, setTextTableCenter } from '../../../functions/setters'
-import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert } from '../../../functions/alert'
+import Swal from 'sweetalert2'
+import { URL_DEV, PROVEEDORES_COLUMNS, TEL } from '../../../constants'
+import { setDateTable, setMoneyTable, setArrayTable, setTextTableCenter, setTextTableReactDom, setOptions, setArrayTableReactDom } from '../../../functions/setters'
+import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, customInputAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { ModalDelete, Modal } from '../../../components/singles'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { ProveedorCard } from '../../../components/cards'
+import { printSwalHeader } from '../../../functions/printers'
+import { Update } from '../../../components/Lottie'
+import { InputGray, SelectSearchGray, InputPhoneGray } from '../../../components/form-components'
 const $ = require('jquery');
 class Proveedor extends Component {
     state = {
@@ -19,6 +23,26 @@ class Proveedor extends Component {
         proveedores: [],
         data: {
             proveedores: []
+        },
+        form: {
+            nombre: '',
+            razonSocial: '',
+            rfc: '',
+            correo: '',
+            telefono: '',
+            cuenta: '',
+            numCuenta: '',
+            tipo: 0,
+            banco: 0,
+            leadId: '',
+            area: '',
+            subarea: ''
+        },
+        options: {
+            areas: [],
+            subareas: [],
+            bancos: [],
+            tipos: []
         }
     }
     componentDidMount() {
@@ -38,15 +62,15 @@ class Proveedor extends Component {
             aux.push(
                 {
                     actions: this.setActions(proveedor),
-                    nombre: renderToString(setTextTableCenter(proveedor.nombre)),
-                    razonSocial: renderToString(setTextTableCenter(proveedor.razon_social)),
-                    rfc: renderToString(setTextTableCenter(proveedor.rfc)),
-                    contacto: renderToString(setArrayTable(
+                    nombre: setTextTableReactDom(proveedor.nombre, this.doubleClick, proveedor, 'nombre', 'text-center'),
+                    razonSocial: setTextTableReactDom(proveedor.razon_social, this.doubleClick, proveedor, 'razonSocial', 'text-center'),
+                    rfc: setTextTableReactDom(proveedor.rfc, this.doubleClick, proveedor, 'rfc', 'text-center'),
+                    contacto:setArrayTableReactDom(
                         [
-                            { 'url': `tel:+${proveedor.telefono}`, 'text': proveedor.telefono },
-                            { 'url': `mailto:${proveedor.email}`, 'text': proveedor.email }
-                        ],'120px'
-                    )),
+                            { 'name': 'Correo', 'text': proveedor.email ? proveedor.email : 'Sin definir' },
+                            { 'name': 'Teléfono', 'text': proveedor.telefono ? proveedor.telefono : 'Sin definir' }
+                        ],'120px', this.doubleClick, proveedor, 'contacto'
+                    ),
                     cuenta: renderToString(setArrayTable(
                         [
                             { 'name': 'No. Cuenta', 'text': proveedor.numero_cuenta ? proveedor.numero_cuenta : 'Sin definir' },
@@ -55,7 +79,7 @@ class Proveedor extends Component {
                         ],'120px'
                     )),
                     area: renderToString(setTextTableCenter(proveedor.subarea ? proveedor.subarea.area.nombre : 'Sin definir')),
-                    subarea: renderToString(setTextTableCenter(proveedor.subarea ? proveedor.subarea.nombre : 'Sin definir')),
+                    subarea: proveedor.subarea ? setTextTableReactDom(proveedor.subarea.nombre, this.doubleClick, proveedor, 'subarea', 'text-center') : '',
                     total: renderToString(setMoneyTable(proveedor.sumatoria_compras + proveedor.sumatoria_egresos)),
                     fecha: renderToString(setDateTable(proveedor.created_at)),
                     id: proveedor.id
@@ -64,6 +88,126 @@ class Proveedor extends Component {
             return false
         })
         return aux
+    }
+    doubleClick = (data, tipo) => {
+        const { form } = this.state
+        switch(tipo){
+            case 'subarea':
+                if(data[tipo])
+                    form[tipo] = data[tipo].id.toString()
+                break
+            case 'razonSocial':
+                form.razonSocial = data.razon_social
+                break
+            case 'contacto':
+                form.correo = data.email
+                form.telefono = data.telefono
+                break
+            default:
+                form[tipo] = data[tipo]
+                break
+        }
+        this.setState({form})
+        customInputAlert(
+            <div>
+                <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
+                {
+                    (tipo === 'nombre') || (tipo === 'razonSocial') || (tipo === 'rfc') ?
+                        <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
+                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo }
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true }
+                        />
+                    :<></>
+                }
+                {
+                    tipo === 'contacto' &&
+                    <>
+                        <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 1 } withicon = { 1 } placeholder="CORREO ELECTRÓNICO"
+                            requirevalidation = { 0 }  value = { form.correo} name = { 'correo' } letterCase = { false } iconclass={"fas fa-envelope"}
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, 'correo')} } swal = { true } />
+                        
+                        <InputPhoneGray withicon={1} iconclass="fas fa-mobile-alt" name="telefono" value={form.telefono} 
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, 'telefono')} }
+                            patterns={TEL} thousandseparator={false} prefix=''  swal = { true } 
+                        />
+                    </>
+                }
+                {
+                    (tipo === 'subarea')  ?
+                        <SelectSearchGray options = { this.setOptions(data, tipo) } value = { form[tipo] } customdiv="mb-2 mt-7"
+                            onChange = { (value) => { this.onChangeSwal(value, tipo)} } name = { tipo } requirevalidation={1} 
+                            placeholder={this.setSwalPlaceholder(tipo)}
+                        />
+                    :<></>
+                }
+            </div>,
+            <Update />,
+            () => { this.patchProveedores(data, tipo) },
+            () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
+        )
+    }
+    setSwalPlaceholder = (tipo) => {
+        switch(tipo){
+            case 'subarea':
+                return 'SELECCIONA EL SUBÁREA'
+            default:
+                return ''
+        }
+    }
+    onChangeSwal = (value, tipo) => {
+        const { form } = this.state
+        form[tipo] = value
+        this.setState({...this.state, form})
+    }
+    patchProveedores = async( data,tipo ) => {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        let value = form[tipo]
+        waitAlert()
+        await axios.put(`${URL_DEV}v2/leads/proveedores/${tipo}/${data.id}`, 
+            { value: value }, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.getProveedorAxios()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La proveedor fue editado con éxito')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    
+    setOptions = (data, tipo) => {
+        switch(tipo){
+            case 'subarea':
+                if(data.subarea)
+                    if(data.subarea.area)
+                        if(data.subarea.area.subareas)
+                            return setOptions(data.subarea.area.subareas, 'nombre', 'id')
+                    return []
+            default: return []
+        }
+    }
+    clearForm = () => {
+        const { form } = this.state
+        let aux = Object.keys(form)
+        aux.forEach((element) => {
+            switch(element){
+                case 'adjuntos':
+                    form[element] = {
+                        adjuntos: {
+                            value: '',
+                            placeholder: 'Adjuntos',
+                            files: []
+                        }
+                    }
+                    break;
+                default:
+                    form[element] = ''
+                break;
+            }
+        })
+        return form
     }
     setActions = () => {
         let aux = []
