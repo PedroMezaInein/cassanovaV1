@@ -861,11 +861,13 @@ export const PROVEEDORES_MERCA_COLUMNS = [
     }, */
     {
         Header: 'Razón Social',
-        accessor: 'razonSocial'
+        accessor: 'razonSocial',
+        customRender: true
     },
     {
         Header: 'RFC',
-        accessor: 'rfc'
+        accessor: 'rfc',
+        customRender: true
     },
     /* {
         Header: 'Contacto',
@@ -877,7 +879,8 @@ export const PROVEEDORES_MERCA_COLUMNS = [
     }, */
     {
         Header: 'Área',
-        accessor: 'subarea'
+        accessor: 'subarea',
+        customRender: true
     },
 ]
 
