@@ -92,7 +92,8 @@ class SolicitudCompra extends Component {
     openModalAdjuntos = solicitud => {
         const { form } = this.state
         let aux = []
-        aux.push({ name: solicitud.adjunto.name, url: solicitud.adjunto.url, id: solicitud.adjunto.id })
+        if(solicitud.adjunto)
+            aux.push({ name: solicitud.adjunto.name, url: solicitud.adjunto.url, id: solicitud.adjunto.id })
         form.adjuntos.adjunto.files = aux
         this.setState({ ...this.state, solicitud: solicitud, modalAdjuntos: true, form })
     }
@@ -473,17 +474,16 @@ class SolicitudCompra extends Component {
         waitAlert()
         const { access_token } = this.props.authUser
         const { solicitud } = this.state
-        await axios.delete(`${URL_DEV}solicitud/${solicitud.id}/adjuntos/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.delete(`${URL_DEV}v2/proyectos/solicitud-compra/${solicitud.id}/adjuntos/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { solicitud } = response.data
                 const { form } = this.state
                 let aux = []
-                solicitud.adjuntos.map((adj) => {
-                    aux.push({ name: adj.name, url: adj.url, id: adj.id })
-                    return false
-                })
+                if(solicitud.adjunto)
+                    aux.push({ name: solicitud.adjunto.name, url: solicitud.adjunto.url, id: solicitud.adjunto.id })
                 form.adjuntos.adjunto.files = aux
-                this.setState({ ...this.state, modalDelete: false, solicitud: '', form })
+                this.setState({ ...this.state, solicitud: solicitud, form })
+                this.getSolicitudesCompraAxios();
                 doneAlert('Adjunto eliminado con éxito')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -520,17 +520,17 @@ class SolicitudCompra extends Component {
             data.append('adjuntos[]', element)
             return false
         })
-        await axios.post(`${URL_DEV}solicitud/${solicitud.id}/adjuntos`, data, { headers: { 'Content-Type': 'multipart/form-data;', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}v2/proyectos/solicitud-compra/${solicitud.id}/adjuntos`, data, { headers: { 'Content-Type': 'multipart/form-data;', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { solicitud } = response.data
                 const { form } = this.state
                 let aux = []
-                solicitud.adjunto.map((adj) => {
-                    aux.push({ name: adj.name, url: adj.url, id: adj.id })
-                    return false
-                })
+                if(solicitud.adjunto)
+                    aux.push({ name: solicitud.adjunto.name, url: solicitud.adjunto.url, id: solicitud.adjunto.id })
                 form.adjuntos.adjunto.files = aux
-                this.setState({ ...this.state, modalDelete: false, solicitud: '', form })
+                form.adjuntos.adjunto.value = []
+                this.setState({ ...this.state, solicitud: solicitud, form })
+                this.getSolicitudesCompraAxios();
                 doneAlert('Adjunto creado con éxito')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -570,7 +570,7 @@ class SolicitudCompra extends Component {
                 </Modal>
                 <Modal size = "lg" title = "Adjuntos" show = { modalAdjuntos } handleClose = { this.handleCloseAdjuntos } >
                     <div className="mt-6">
-                        <ItemSlider items = { form.adjuntos.adjunto.files } item = 'adjunto' handleChange = { this.handleChange }
+                        <ItemSlider items = { form.adjuntos.adjunto.files } item = 'adjunto' handleChange = { form.adjuntos.adjunto.files.length ? null : this.handleChange }
                             deleteFile = { this.deleteFile } />
                     </div>
                     {
