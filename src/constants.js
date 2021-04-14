@@ -1338,7 +1338,8 @@ export const CONCEPTOS_COLUMNS = [
     },
     {
         Header: 'Partida',
-        accessor: 'partida'
+        accessor: 'partida',
+        customRender: true
     },
     {
         Header: 'Subpartida',
