@@ -1322,7 +1322,7 @@ export const SOLICITUD_VENTA_COLUMNS = [
     { Header: 'Proyecto', accessor: 'proyecto',customRender: true },
     { Header: 'Empresa', accessor: 'empresa',customRender: true },
     { Header: 'Monto', accessor: 'monto',customRender: true },
-    { Header: 'Factura', accessor: 'factura' },
+    { Header: 'Factura', accessor: 'factura', customRender: true },
     { Header: 'Pago', accessor: 'tipoPago',customRender: true },
     { Header: 'Área', accessor: 'area' },
     { Header: 'Sub-Área', accessor: 'subarea',customRender: true },

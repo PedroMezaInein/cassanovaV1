@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import { URL_DEV, SOLICITUD_VENTA_COLUMNS } from '../../../constants'
-import { setOptions, setSelectOptions, setTextTable, setDateTableReactDom, setMoneyTableReactDom, setTextTableReactDom, setTextTableCenter } from '../../../functions/setters'
+import { setOptions, setSelectOptions, setDateTableReactDom, setMoneyTableReactDom, setTextTableReactDom, setTextTableCenter } from '../../../functions/setters'
 import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert, customInputAlert, deleteAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { Button, CalendarDaySwal, SelectSearchGray, InputGray, InputNumberGray } from '../../../components/form-components'
@@ -42,7 +42,11 @@ class SolicitudVenta extends Component {
             clientes: [],
             estatusFacturas: [],
             metodosPago: [],
-            formasPago: []
+            formasPago: [],
+            facturas: [
+                { name: "Si", value: "Con factura", label: "Si" },
+                { name: "No", value: "Sin factura", label: "No" },
+            ],
         },
         form: {
             cliente: '',
@@ -181,7 +185,7 @@ class SolicitudVenta extends Component {
                     actions: this.setActions(solicitud),
                     proyecto: setTextTableReactDom(solicitud.proyecto ? solicitud.proyecto.nombre : '', this.doubleClick, solicitud, 'proyecto', 'text-center'),
                     empresa: setTextTableReactDom(solicitud.empresa ? solicitud.empresa.name : 'Sin definir', this.doubleClick, solicitud, 'empresa', 'text-center'),
-                    factura: renderToString(setTextTableCenter(solicitud.factura ? 'Con factura' : 'Sin factura')),
+                    factura: setTextTableReactDom(solicitud.factura ? 'Con factura' : 'Sin factura', this.doubleClick, solicitud, 'factura', 'text-center'),
                     monto: setMoneyTableReactDom(solicitud.monto, this.doubleClick, solicitud, 'monto'),
                     tipoPago: setTextTableReactDom(solicitud.tipo_pago.tipo, this.doubleClick, solicitud, 'tipoPago', 'text-center'),
                     descripcion: setTextTableReactDom(solicitud.descripcion !== null ? solicitud.descripcion :'', this.doubleClick, solicitud, 'descripcion', 'text-justify'),
@@ -209,6 +213,12 @@ class SolicitudVenta extends Component {
                 break
             case 'tipoPago':
                 form[tipo] = data.tipo_pago.id
+                break
+            case 'factura':
+                if (data.factura)
+                    form.factura = 'Con factura'
+                else
+                    form.factura = 'Sin factura'
                 break
             default:
                 form[tipo] = data[tipo]
@@ -259,7 +269,7 @@ class SolicitudVenta extends Component {
                     :<></>
                 }
                 {
-                    (tipo === 'proyecto') || (tipo === 'empresa') || (tipo === 'subarea')?
+                    (tipo === 'proyecto') || (tipo === 'empresa') || (tipo === 'subarea') || (tipo === 'factura')?
                         <SelectSearchGray options = { this.setOptions(data, tipo) }
                         onChange = { (value) => { this.onChangeSwal(value, tipo)} } name = { tipo }
                         value = { form[tipo] } customdiv="mb-2 mt-7" requirevalidation={1} 
@@ -282,6 +292,8 @@ class SolicitudVenta extends Component {
                 return 'SELECCIONA EL TIPO DE PAGO'
             case 'subarea':
                 return 'SELECCIONA EL SUBÁREA'
+            case 'factura':
+                return '¿LLEVA FACTURA?'
             default:
                 return ''
         }
@@ -296,12 +308,12 @@ class SolicitudVenta extends Component {
         const { form } = this.state
         let value = form[tipo]
         waitAlert()
-        await axios.put(`${URL_DEV}v2/proyectos/solicitud-compra/${tipo}/${data.id}`, 
+        await axios.put(`${URL_DEV}v2/proyectos/solicitud-venta/${tipo}/${data.id}`, 
             { value: value }, 
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                this.getComprasAxios()
-                doneAlert(response.data.message !== undefined ? response.data.message : 'La solicitud de compra fue editada con éxito.')
+                this.getSolicitudAxios()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La solicitud de venta fue editada con éxito.')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -324,6 +336,8 @@ class SolicitudVenta extends Component {
                         if(data.subarea.area.subareas)
                             return setOptions(data.subarea.area.subareas, 'nombre', 'id')
                         return []
+            case 'factura':
+                return options.facturas
             default: return []
         }
     }

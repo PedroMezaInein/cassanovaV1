@@ -170,7 +170,7 @@ class SolicitudCompra extends Component {
                     proyecto: setTextTableReactDom(solicitud.proyecto ? solicitud.proyecto.nombre : '', this.doubleClick, solicitud, 'proyecto', 'text-center'),
                     empresa: setTextTableReactDom(solicitud.empresa ? solicitud.empresa.name : 'Sin definir', this.doubleClick, solicitud, 'empresa', 'text-center'),
                     proveedor: setTextTableReactDom(solicitud.proveedor.razon_social, this.doubleClick, solicitud, 'proveedor', 'text-justify'),
-                    factura: setTextTableReactDom(solicitud.factura ? 'Con factura' : 'Sin factura', this.doubleClick, solicitud, 'factura', 'text-justify'),
+                    factura: setTextTableReactDom(solicitud.factura ? 'Con factura' : 'Sin factura', this.doubleClick, solicitud, 'factura', 'text-center'),
                     monto: setMoneyTableReactDom(solicitud.monto, this.doubleClick, solicitud, 'monto'),
                     tipoPago: setTextTableReactDom(solicitud.tipo_pago.tipo, this.doubleClick, solicitud, 'tipoPago', 'text-center'),
                     descripcion: setTextTableReactDom(solicitud.descripcion !== null ? solicitud.descripcion :'', this.doubleClick, solicitud, 'descripcion', 'text-justify'),
@@ -339,6 +339,8 @@ class SolicitudCompra extends Component {
                 return 'SELECCIONA EL TIPO DE PAGO'
             case 'subarea':
                 return 'SELECCIONA EL SUBÁREA'
+            case 'factura':
+                return '¿LLEVA FACTURA?'
             default:
                 return ''
         }
@@ -357,7 +359,7 @@ class SolicitudCompra extends Component {
             { value: value }, 
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                this.getComprasAxios()
+                this.getSolicitudesCompraAxios()
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La solicitud de compra fue editada con éxito.')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
