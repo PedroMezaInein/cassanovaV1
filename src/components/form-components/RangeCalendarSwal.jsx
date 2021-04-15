@@ -4,7 +4,7 @@ import 'react-date-range/dist/styles.css'; // main css file
 import 'react-date-range/dist/theme/default.css'; // theme css file
 // import { addDays } from 'date-fns';
 import es from "date-fns/locale/es";
-import moment from 'moment'
+// import moment from 'moment'
 
 class RangeCalendarSwal extends Component {
 
@@ -33,7 +33,7 @@ class RangeCalendarSwal extends Component {
     }
 
     render() {
-        const { start, end } = this.props
+        // const { start, end } = this.props
         // console.log(start, 'start')
         // console.log(end,'end')
         const { disabledDates } = this.props

@@ -1,6 +1,4 @@
 import React, { Component } from 'react'
-import SelectSearch from 'react-select-search'
-import InputGray from './InputGray'
 import '../../../styles/select_custom_gray.css';
 import { SelectSearchGray } from '..';
 import { setOptions } from '../../../functions/setters';

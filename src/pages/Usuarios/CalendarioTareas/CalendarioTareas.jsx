@@ -52,7 +52,7 @@ class Calendario extends Component {
             });
             const channel = pusher.subscribe('responsable-tarea');
             channel.bind('App\\Events\\ResponsableTarea', data => {
-                const { usuario, tarea } = data
+                const { usuario } = data
                 const { user } = this.props.authUser
                 const { tipo } = this.state
                 if(user.id === usuario.id)
