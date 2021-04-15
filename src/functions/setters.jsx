@@ -375,9 +375,9 @@ export function setArrayTableReactDom (arreglo, minwidth, doubleClick, data, tip
                 }
             } } > 
             {
-                arreglo.map((element) => {
+                arreglo.map((element, key) => {
                     return (
-                        <div className={`mb-2 ${minwidth?'':'center-td'}`}>
+                        <div key = { key } className={`mb-2 ${minwidth?'':'center-td'}`}>
                             {
                                 element.name ?
                                     <span className="mr-1 font-size-12px" >
