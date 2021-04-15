@@ -723,7 +723,6 @@ class MiProyecto extends Component {
     }
 
     setImage(proyecto){
-        console.log(proyecto)
         if(proyecto){
             if(proyecto.empresa.name==='INEIN'){
                 return 'url("/inein_proyecto1.jpg")'
