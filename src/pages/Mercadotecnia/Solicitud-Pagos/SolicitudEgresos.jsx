@@ -153,22 +153,13 @@ class SolicitudEgresos extends Component {
         return aux
     }
     doubleClick = (data, tipo) => {
-        const { form, options } = this.state
+        const { form } = this.state
         switch(tipo){
             case 'proveedor':
             case 'empresa':
             case 'subarea':
                 if(data[tipo])
                     form[tipo] = data[tipo].id.toString()
-                break
-            case 'area':
-                if(data.subarea){
-                    if(data.subarea.area){
-                        form.area = data.subarea.area.id.toString()
-                        form.subarea = data.subarea.id.toString()
-                        options.subareas = setOptions(data.subarea.area.subareas, 'nombre', 'id')
-                    }
-                }
                 break
             case 'fecha':
                 form.fecha = new Date(moment(data.fecha))
@@ -186,7 +177,7 @@ class SolicitudEgresos extends Component {
                 form[tipo] = data[tipo]
                 break
         }
-        this.setState({form, options})
+        this.setState({ ...this.state, form })
         customInputAlert(
             <div>
                 <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
@@ -238,12 +229,6 @@ class SolicitudEgresos extends Component {
                         placeholder={this.setSwalPlaceholder(tipo)}/>
                     :<></>
                 }
-                {
-                    tipo === 'area' &&
-                        <DoubleSelectSearchGray options = { options } form = { form } onChange = { this.onChangeSwal } 
-                            one = { { placeholder: 'SELECCIONA EL ÁREA', name: 'area', opciones: 'areas'} } 
-                            two = { { placeholder: 'SELECCIONA EL SUBÁREA', name: 'subarea', opciones: 'subareas'} }/>
-                }
             </div>,
             <Update />,
             () => { this.patchSolicitudEgresos(data, tipo) },
@@ -258,15 +243,12 @@ class SolicitudEgresos extends Component {
             case 'monto':
                 value = replaceMoney(form[tipo])
                 break
-            case 'area':
-                value = { area: form.area, subarea: form.subarea }
-                break
             default: 
                 value = form[tipo]    
                 break
         }
         waitAlert()
-        await axios.put(`${URL_DEV}v2/mercadotecnia/solicitud-de-pagos/${tipo}/${data.id}`, 
+        await axios.put(`${URL_DEV}v2/mercadotecnia/solicitud-de-pago/${tipo}/${data.id}`, 
             { value: value }, 
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
