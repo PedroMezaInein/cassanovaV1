@@ -203,21 +203,16 @@ class Cuenta extends Component {
     async changeEstatusAxios(estatus, cuenta){
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.put(`${URL_DEV}proyectos/${cuenta.id}/estatus`,{estatus: estatus}, { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.put(`${URL_DEV}v2/bancos/cuentas/update/${cuenta.id}/estatus`,{estatus: estatus}, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 Swal.close()
                 doneAlert('Estatus actualizado con éxito')
                 const { key } = this.state
-                if (key === 'bancos') {
+                if (key === 'bancos') 
                     this.getBancosAxios()
-                }
-                if (key === 'cajas') {
+                if (key === 'cajas') 
                     this.getCajasAxios()
-                }
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -226,7 +221,7 @@ class Cuenta extends Component {
     deleteElementAxios = async(data, element, tipo) => {
         const { access_token } = this.props.authUser
         waitAlert()
-        await axios.delete(`${URL_DEV}v2/bancos/cuentas/${data.id}/${element.id}`, 
+        await axios.delete(`${URL_DEV}v2/bancos/cuentas/${data.id}/empresa/${element.id}`, 
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { key } = this.state

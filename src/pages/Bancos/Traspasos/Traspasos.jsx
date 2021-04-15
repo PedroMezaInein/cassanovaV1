@@ -16,25 +16,18 @@ import { CalendarDaySwal, InputGray } from '../../../components/form-components'
 const $ = require('jquery');
 class Traspasos extends Component {
     state = {
-        modal: {
-            delete: false,
-            see: false
-        },
+        modal: { delete: false, see: false },
         form: {
             origen: '',
             destino: '',
             cantidad: 0,
             fecha: new Date(),
             comentario: '',
-            adjuntos: {
-                adjuntos: {
-                    files: [],
-                    value: ''
-                }
-            }
+            adjuntos: { adjuntos: { files: [], value: '' } }
         },
         traspaso: ''
     }
+    
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
@@ -52,14 +45,12 @@ class Traspasos extends Component {
             if (id) {
                 const {modal} = this.state
                 modal.see = true
-                this.setState({
-                    ...this.state,
-                    modal
-                })
+                this.setState({ ...this.state, modal })
                 this.getTraspaso(id)
             }
         }
     }
+
     setTraspasos = traspasos => {
         let aux = []
         traspasos.map((traspaso) => {
@@ -80,6 +71,7 @@ class Traspasos extends Component {
         })
         return aux
     }
+
     doubleClick = (data, tipo) => {
         const { form } = this.state
         switch(tipo){
@@ -111,11 +103,13 @@ class Traspasos extends Component {
             () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
         )
     }
+
     onChangeSwal = (value, tipo) => {
         const { form } = this.state
         form[tipo] = value
         this.setState({...this.state, form})
     }
+
     patchTraspasos = async( data,tipo ) => {
         const { access_token } = this.props.authUser
         const { form } = this.state
@@ -133,6 +127,7 @@ class Traspasos extends Component {
             console.log(error, 'error')
         })
     }
+
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
@@ -154,6 +149,7 @@ class Traspasos extends Component {
         })
         return form
     }
+
     setActions = traspaso => {
         let aux = []
         aux.push(
@@ -192,6 +188,7 @@ class Traspasos extends Component {
         }
         return aux
     }
+
     changePageEdit = traspaso => {
         const { history } = this.props
         history.push({
@@ -199,67 +196,51 @@ class Traspasos extends Component {
             state: { traspaso: traspaso }
         });
     }
+
     openModalDelete = traspaso => {
         const { modal } = this.state
         modal.delete = true
-        this.setState({
-            ...this.state,
-            modal,
-            traspaso: traspaso
-        })
+        this.setState({ ...this.state, modal, traspaso: traspaso })
     }
+
     handleCloseDelete = () => {
         const { modal } = this.state
         modal.delete = false
-        this.setState({
-            ...this.state,
-            modal,
-            traspaso: ''
-        })
+        this.setState({ ...this.state, modal, traspaso: '' })
     }
+
     openModalSee = traspaso => {
         const { modal } = this.state
         modal.see = true
-        this.setState({
-            ...this.state,
-            modal,
-            traspaso: traspaso
-        })
+        this.setState({ ...this.state, modal, traspaso: traspaso })
     }
+
     handleCloseSee = () => {
         const { modal } = this.state
         modal.see = false
-        this.setState({
-            ...this.state,
-            modal,
-            traspaso: ''
-        })
+        this.setState({ ...this.state, modal, traspaso: '' })
     }
+
     adjuntoTranspaso = (traspaso) => {
         var win = window.open(traspaso.adjunto.url, '_blank');
         win.focus();
     }
-    async getTraspasosAxios() {
-        $('#kt_datatable_transpasos').DataTable().ajax.reload();
-    }
+
+    async getTraspasosAxios() { $('#kt_datatable_transpasos').DataTable().ajax.reload(); }
+
     async getTraspaso(id) {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'traspasos/single/' + id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { traspaso } = response.data
-                this.setState({
-                    ...this.state,
-                    traspaso: traspaso
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                this.setState({ ...this.state, traspaso: traspaso })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
+
     async exportTraspasosAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -272,15 +253,13 @@ class Traspasos extends Component {
                 document.body.appendChild(link);
                 link.click();
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
+
     async deleteTraspasoAxios() {
         const { access_token } = this.props.authUser
         const { traspaso } = this.state
@@ -289,33 +268,21 @@ class Traspasos extends Component {
                 this.getTraspasosAxios()
                 const { modal } = this.state
                 modal.delete = false
-                this.setState({
-                    ...this.state,
-                    modal,
-                    traspaso: ''
-                })
+                this.setState({ ...this.state, modal, traspaso: '' })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
+
     render() {
         const { modal, traspaso } = this.state
         return (
             <Layout active='bancos' {...this.props}>
-                <NewTableServerRender
-                    columns={TRASPASOS_COLUMNS}
-                    title='Traspasos'
-                    subtitle='Listado de traspasos'
-                    mostrar_boton={true}
-                    abrir_modal={false}
-                    url='/bancos/traspasos/add'
-                    mostrar_acciones={true}
+                <NewTableServerRender columns = { TRASPASOS_COLUMNS } title = 'Traspasos' subtitle = 'Listado de traspasos' mostrar_boton = { true }
+                    abrir_modal = { false } url = '/bancos/traspasos/add' mostrar_acciones = { true } accessToken = { this.props.authUser.access_token }
                     actions={
                         {
                             'edit': { function: this.changePageEdit },
@@ -324,21 +291,10 @@ class Traspasos extends Component {
                             'see': { function: this.openModalSee },
                         }
                     }
-                    accessToken={this.props.authUser.access_token}
-                    setter={this.setTraspasos}
-                    urlRender={URL_DEV + 'traspasos'}
-                    idTable='kt_datatable_transpasos'
-                    exportar_boton={true}
-                    onClickExport={() => this.exportTraspasosAxios()}
-                    cardTable='cardTable'
-                    cardTableHeader='cardTableHeader'
-                    cardBody='cardBody'
-                />
-                <ModalDelete 
-                    title="¿Estás seguro que deseas eliminar el traspaso?"
-                    show={modal.delete} handleClose={this.handleCloseDelete}
-                    onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteTraspasoAxios() }} 
-                />
+                    setter = { this.setTraspasos } urlRender = { `${URL_DEV}traspasos` } idTable = 'kt_datatable_transpasos' exportar_boton = { true }
+                    onClickExport = { () => this.exportTraspasosAxios() } cardTable = 'cardTable' cardTableHeader = 'cardTableHeader' cardBody = 'cardBody' />
+                <ModalDelete title = "¿Estás seguro que deseas eliminar el traspaso?" show = { modal.delete } handleClose = { this.handleCloseDelete }
+                    onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteTraspasoAxios() } } />
                 <Modal size="lg" title="Traspaso" show={modal.see} handleClose={this.handleCloseSee} >
                     <TraspasoCard traspaso={traspaso} />
                 </Modal>

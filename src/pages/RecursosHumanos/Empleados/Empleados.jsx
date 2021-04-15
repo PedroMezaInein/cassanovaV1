@@ -380,17 +380,15 @@ class Empleados extends Component {
     async changeEstatusAxios(estatus, empleado){
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.put(`${URL_DEV}proyectos/${empleado.id}/estatus`,{estatus: estatus}, { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.put(`${URL_DEV}v2/rh/empleados/update/${empleado.id}/estatus`,{estatus: estatus}, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 Swal.close()
                 doneAlert('Estatus actualizado con éxito')
                 const { key } = this.state
-                if (key === 'administrativo') {
+                if (key === 'administrativo')
                     this.getEmpleadosAxios()
-                }
-                if (key === 'obra') {
+                if (key === 'obra')
                     this.getEmpleadosObraAxios()
-                }
             },
             (error) => {
                 printResponseErrorAlert(error)
@@ -437,19 +435,31 @@ class Empleados extends Component {
     patchEmpleados = async( data,tipo ) => {
         const { access_token } = this.props.authUser
         const { form } = this.state
-        let value = form[tipo]
+        let value = ''
+        switch(tipo){
+            case 'fecha':
+                value = form.fechaInicio
+            break
+            case 'nombre_emergencia':
+                value = {
+                    nombre: form.nombre_emergencia,
+                    telefono: form.telefono_emergencia
+                }
+            break;
+            default:
+                value = form[tipo]
+            break;
+        }
         waitAlert()
         await axios.put(`${URL_DEV}v2/rh/empleados/${tipo}/${data.id}`, 
             { value: value }, 
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { key } = this.state
-                if (key === 'administrativo') {
+                if (key === 'administrativo')
                     this.getEmpleadosAxios()
-                }
-                if (key === 'obra') {
+                if (key === 'obra')
                     this.getEmpleadosObraAxios()
-                }
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La empleado fue editado con éxito')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
