@@ -1,14 +1,17 @@
 import React, { Component } from 'react'
-import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import { URL_DEV, ROLES_COLUMNS } from '../../constants'
-import { setTextTableCenter, setColor } from '../../functions/setters'
-import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert } from '../../functions/alert'
+import { URL_DEV, ROLES_COLUMNS, COLORS } from '../../constants'
+import { setTextTableReactDom, setColorTableReactDom } from '../../functions/setters'
+import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert, customInputAlert } from '../../functions/alert'
 import Layout from '../../components/layout/layout'
 import { Modal, ModalDelete } from '../../components/singles'
 import { RolesMercadotecniaForm } from '../../components/forms'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
+import Swal from 'sweetalert2'
+import { Update } from '../../components/Lottie'
+import { printSwalHeader } from '../../functions/printers'
+import { InputGray, CircleColor } from '../../components/form-components'
 const $ = require('jquery');
 class RolesMercadotecnia extends Component {
     state = {
@@ -26,7 +29,8 @@ class RolesMercadotecnia extends Component {
             delete: false,
         },
         title: 'Nuevo rol',
-        rol: ''
+        rol: '',
+        color: ''
     }
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
@@ -53,13 +57,67 @@ class RolesMercadotecnia extends Component {
         roles.map((rol) => {
             aux.push({
                 actions: this.setActions(rol),
-                rol: renderToString(setTextTableCenter(rol.nombre)),
-                color: renderToString(setColor(rol.color)),
+                rol: setTextTableReactDom(rol.nombre, this.doubleClick, rol, 'nombre', 'text-center'),
+                color: setColorTableReactDom(rol.color, this.doubleClick, rol, 'color', 'text-center'),
                 id: rol.id
             })
             return false
         })
         return aux
+    }
+    doubleClick = (data, tipo) => {
+        const { form } = this.state
+        switch(tipo){
+            default:
+                form[tipo] = data[tipo]
+                break
+        }
+        this.setState({form})
+        customInputAlert(
+            <div>
+                <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) + ' DEL ROL'} </h2>
+                {
+                    tipo === 'nombre' &&
+                        <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
+                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo }
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true }
+                        />
+                }
+                {
+                    tipo === 'color' &&
+                        <CircleColor circlesize = { 23 } width = "auto" onChange = { this.handleChangeColor }
+                        colors = { COLORS } classlabel="d-none" value = { data.color } classdiv='ml-2' swal = { true }/>
+                }
+            </div>,
+            <Update />,
+            () => { this.patchRedesSociales(data, tipo) },
+            () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
+        )
+    }
+    handleChangeColor = (color) => {
+        this.setState({...this.state,color:color.hex});
+    }
+    onChangeSwal = (value, tipo) => {
+        const { form } = this.state
+        form[tipo] = value
+        this.setState({...this.state, form})
+    }
+    patchRedesSociales = async( data,tipo ) => {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        let value = form[tipo]
+        waitAlert()
+        await axios.put(`${URL_DEV}v2/catalogos/redes-sociales/${tipo}/${data.id}`, 
+            { value: value }, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.getRedSocialAxios()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito la unidad.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
     }
     setActions = () => {
         let aux = []

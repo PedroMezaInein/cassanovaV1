@@ -1611,6 +1611,9 @@ span.font-weight-bolder.text-hover-error:hover{
     border-radius: 0;
 }
 
+.w-40{
+    width: 40%;
+}
 .w-4-5{
     width: 5.5%;
 }
@@ -2049,4 +2052,7 @@ span.font-weight-bolder.text-hover-error:hover{
 }
 .w-max-content{
     width: max-content;
+}
+.circle-swal{
+    flex-flow:column!important;
 }
