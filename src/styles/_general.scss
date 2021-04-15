@@ -1861,7 +1861,7 @@ span.font-weight-bolder.text-hover-error:hover{
 }
 
 .justify-content-flex-end{
-    justify-content: flex-end; 
+    justify-content: flex-end!important; 
 }
 .width-content-validation{
     width: max-content;
@@ -2055,4 +2055,11 @@ span.font-weight-bolder.text-hover-error:hover{
 }
 .circle-swal{
     flex-flow:column!important;
+}
+.bg-comment{
+    border-radius: 0.5rem;
+    position: relative;
+    background-color: #F3F6F9;
+    margin: 0px 30px;
+    padding: 0.75rem 1.5rem!important;
 }
