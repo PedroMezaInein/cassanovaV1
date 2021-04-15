@@ -1,10 +1,7 @@
 import React, { Component } from 'react'
 import Layout from '../components/layout/layout'
 import { connect } from 'react-redux'
-import { Button, Video } from '../components/form-components/'
-import { Tab, Nav, Col, Row, OverlayTrigger, Tooltip, Card, Dropdown } from 'react-bootstrap'
-import SVG from "react-inlinesvg";
-import { toAbsoluteUrl } from "../functions/routers"
+import { Dropdown } from 'react-bootstrap'
 class Normas extends Component {
 
     state = {
@@ -57,101 +54,10 @@ class Normas extends Component {
             history.push('/')
     }
     render() {
-        const { accordion } = this.state
-        const table = (element) => {
-            switch (element.tipo) {
-                case 1: return <Nav className="navi navi-bold navi-hover navi-active navi-link-rounded">
-                    <Nav.Item className="navi-item mb-2">
-                        <Nav.Link className="navi-link px-2" eventKey="1">
-                            <span className="navi-icon mr-2">
-                                <span className="svg-icon">
-                                    <SVG src={toAbsoluteUrl('/images/svg/File.svg')} />
-                                </span>
-                            </span>
-                            <div className="navi-text">
-                                <span className="d-block font-weight-bold">Paso 1</span>
-                                <span className="text-muted">Descripción del paso 1</span>
-                            </div>
-                        </Nav.Link>
-                    </Nav.Item>
-                    <Nav.Item className="navi-item mb-2">
-                        <Nav.Link className="navi-link px-2" eventKey="2">
-                            <span className="navi-icon mr-2">
-                                <span className="svg-icon">
-                                    <SVG src={toAbsoluteUrl('/images/svg/clock.svg')} />
-                                </span>
-                            </span>
-                            <div className="navi-text">
-                                <span className="d-block font-weight-bold">Paso 2</span>
-                                <span className="text-muted">Descripción del paso 2</span>
-                            </div>
-                        </Nav.Link>
-                    </Nav.Item>
-                </Nav>;
-                case 2: return <Nav className="navi navi-hover navi-primary navi-accent">
-                    <Nav.Item className="navi-item">
-                        <Nav.Link className="navi-link" eventKey="3">
-                            <span className="navi-icon"><i className="flaticon2-analytics"></i></span>
-                            <span className="navi-text">Paso 1</span>
-                        </Nav.Link>
-                    </Nav.Item>
-                    <Nav.Item className="navi-item">
-                        <Nav.Link className="navi-link" eventKey="4">
-                            <span className="navi-icon"><i className="flaticon2-analytics"></i></span>
-                            <span className="navi-text">Paso 2</span>
-                        </Nav.Link>
-                    </Nav.Item> </Nav>;
-                case 3: return '3';
-                case 4: return '4';
-                default:
-                    return ''
-            }
-        }
+        
         return (
             <Layout {...this.props}>
-
                 <div className="d-flex flex-row">
-                    {/* <div className="flex-row-auto offcanvas-mobile w-200px w-xxl-275px">
-                        <div className="card card-custom card-stretch">
-                            <div className="card-body px-5">
-                                <div className="navi navi-hover navi-active navi-link-rounded navi-bold navi-icon-center navi-light-icon">
-                                    <div className="navi-section mb-2 font-size-h6 font-weight-bold pb-0">Tags</div>
-                                    <div className="navi-item my-2 text-hover-warning">
-                                        <a href="#" className="navi-link">
-                                            <span className="navi-icon mr-4">
-                                                <i className="fa fa-genderless text-warning"></i>
-                                            </span>
-                                            <span className="navi-text font-weight-bolder font-size-lg text-hover-warning">PENDIENTE</span>
-                                        </a>
-                                    </div>
-                                    <div className="navi-item my-2">
-                                        <a href="#" className="navi-link">
-                                            <span className="navi-icon mr-4">
-                                                <i className="fa fa-genderless text-success"></i>
-                                            </span>
-                                            <span className="navi-text font-weight-bolder font-size-lg text-hover-success">EN REVISIÓN</span>
-                                        </a>
-                                    </div>
-                                    <div className="navi-item my-2">
-                                        <a href="#" className="navi-link">
-                                            <span className="navi-icon mr-4">
-                                                <i className="fa fa-genderless text-info"></i>
-                                            </span>
-                                            <span className="navi-text font-weight-bolder font-size-lg text-hover-info">EN PROCESO</span>
-                                        </a>
-                                    </div>
-                                    <div className="navi-item my-2">
-                                        <a href="#" className="navi-link">
-                                            <span className="navi-icon mr-4">
-                                                <i className="fa flaticon2-plus icon-1x"></i>
-                                            </span>
-                                            <span className="navi-text font-weight-bolder font-size-lg">Agregar tag</span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div> */}
                     <div className="flex-row-fluid ">
                         <div className="d-flex flex-column flex-grow-1 ">
                             <div className="card card-custom gutter-b">
@@ -365,12 +271,12 @@ class Normas extends Component {
                                     <div className="card card-custom card-stretch">
                                         <div className="card-header align-items-center flex-wrap justify-content-between border-0 py-6 h-auto">
                                             <div className="d-flex flex-column mr-2 py-2">
-                                                <a href="#" className="text-dark text-hover-primary font-weight-bold font-size-h4 mr-3">PROPUESTA DE DISEÑO MÓDULO DE MERCADOTECNIA</a>
+                                                <span className="text-dark text-hover-primary font-weight-bold font-size-h4 mr-3">PROPUESTA DE DISEÑO MÓDULO DE MERCADOTECNIA</span>
                                                 <div className="d-flex align-items-center py-1">
-                                                    <a href="#" className="d-flex align-items-center text-muted text-hover-info mr-2 font-weight-bold">
-                                                        <span className="fa fa-genderless text-info icon-md mr-2"></span>EN PROCESO</a>
-                                                    <a href="#" className="d-flex align-items-center text-muted text-hover-danger font-weight-bold">
-                                                        <span className="fa fa-genderless text-danger icon-md mr-2"></span>URGENTE</a>
+                                                    <span className="d-flex align-items-center text-muted text-hover-info mr-2 font-weight-bold">
+                                                        <span className="fa fa-genderless text-info icon-md mr-2"></span>EN PROCESO</span>
+                                                    <span className="d-flex align-items-center text-muted text-hover-danger font-weight-bold">
+                                                        <span className="fa fa-genderless text-danger icon-md mr-2"></span>URGENTE</span>
                                                 </div>
                                             </div>
                                             <div className="d-flex align-items-center justify-content-end text-right my-2">
@@ -434,9 +340,9 @@ class Normas extends Component {
                                                                 <div className="text-muted font-weight-bold toggle-on-item" data-inbox="toggle">Estos textos hacen parecerlo un español que se puede leer. </div>
 
                                                                 <div className="d-flex flex-column font-size-sm font-weight-bold ">
-                                                                    <a href="#" className="d-flex align-items-center text-muted text-hover-primary py-1 justify-content-flex-end">
+                                                                    <span className="d-flex align-items-center text-muted text-hover-primary py-1 justify-content-flex-end">
                                                                         <span className="flaticon2-clip-symbol text-primary icon-1x mr-2"></span>Requerimientos.pdf
-                                                                    </a>
+                                                                    </span>
                                                                 </div>
                                                             </div>
                                                         </div>

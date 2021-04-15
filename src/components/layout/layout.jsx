@@ -8,7 +8,7 @@ import { URL_DEV } from '../../constants'
 import UrlLocation from './urlLocation'
 import MobileHeader from './mobileHeader'
 import UserPanel from '../../../src/components/layout/UserPanel/userPanel'
-import { Notificacion } from '../singles'
+import { AudioApp, Notificacion } from '../singles'
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { errorAlert, printResponseErrorAlert, doneAlert, waitAlert } from '../../functions/alert'

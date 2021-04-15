@@ -7,7 +7,7 @@ import { setMoneyTableReactDom, setTextTableReactDom, setOptions, setTextTableCe
 import Layout from '../../../components/layout/layout'
 import { ModalDelete, Modal } from '../../../components/singles'
 import { printResponseErrorAlert, errorAlert, doneAlert, waitAlert, customInputAlert } from '../../../functions/alert'
-import { replaceAll, replaceMoney } from '../../../functions/functions'
+import { replaceMoney } from '../../../functions/functions'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { ConceptoCard } from '../../../components/cards'
 import { DoubleSelectSearchGray, InputGray, InputNumberGray, SelectSearchGray } from '../../../components/form-components'
