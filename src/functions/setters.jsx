@@ -251,7 +251,7 @@ export function setTagLabelReactDom (data, arreglo, tipo, deleteElement){
         </div>
     )
 }
-export function setTagLabelProyectoReactDom (proyecto, arreglo, tipo, deleteElement){
+export function setTagLabelProyectoReactDom (proyecto, arreglo, tipo, deleteElement, nombre){
     return (
         <div className="">
             {
@@ -274,7 +274,7 @@ export function setTagLabelProyectoReactDom (proyecto, arreglo, tipo, deleteElem
                                         <div className="w-90">
                                             <div className="text-truncate py-1">
                                                 <span className="bg-gray-100 pr-2 py-1 font-weight-bolder text-dark-50 letter-spacing-0-4 ">
-                                                    { element.nombre }
+                                                    { nombre ? element[nombre] : element.nombre }
                                                 </span>
                                             </div>
                                         </div>
@@ -375,9 +375,9 @@ export function setArrayTableReactDom (arreglo, minwidth, doubleClick, data, tip
                 }
             } } > 
             {
-                arreglo.map((element) => {
+                arreglo.map((element, key) => {
                     return (
-                        <div className={`mb-2 ${minwidth?'':'center-td'}`}>
+                        <div key = { key } className={`mb-2 ${minwidth?'':'center-td'}`}>
                             {
                                 element.name ?
                                     <span className="mr-1 font-size-12px" >

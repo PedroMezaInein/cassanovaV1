@@ -17,6 +17,7 @@ import moment from 'moment'
 const $ = require('jquery');
 
 class Leads extends Component {
+
     state = {
         modal: {
             delete: false,
@@ -44,6 +45,7 @@ class Leads extends Component {
             fecha: new Date(),
         }
     }
+
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
@@ -55,6 +57,7 @@ class Leads extends Component {
         if (!clientes)
             history.push('/')
     }
+
     setClientes = clientes => {
         let aux = []
         clientes.map((cliente) => {
@@ -73,6 +76,7 @@ class Leads extends Component {
         })
         return aux
     }
+
     doubleClick = (data, tipo) => {
         const { form } = this.state
         switch(tipo){
@@ -110,43 +114,13 @@ class Leads extends Component {
             () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
         )
     }
-    deleteElementAxios = async(data, element, tipo) => {
-        const { access_token } = this.props.authUser
-        waitAlert()
-        await axios.delete(`${URL_DEV}v2/leads/clientes/${data.id}/${element.id}`, 
-            { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                this.getClientesAxios()
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El empleado fue editado con éxito.')
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
     
     onChangeSwal = (value, tipo) => {
         const { form } = this.state
         form[tipo] = value
         this.setState({...this.state, form})
     }
-    patchEmpleados = async( data,tipo ) => {
-        const { access_token } = this.props.authUser
-        const { form } = this.state
-        let value = form[tipo]
-        waitAlert()
-        await axios.put(`${URL_DEV}v2/rh/empleados/${tipo}/${data.id}`, 
-            { value: value }, 
-            { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                this.getClientesAxios()
-                doneAlert(response.data.message !== undefined ? response.data.message : 'La empleado fue editado con éxito')
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
+
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
@@ -159,6 +133,7 @@ class Leads extends Component {
         })
         return form
     }
+
     setActions = () => {
         let aux = []
         aux.push(
@@ -182,82 +157,53 @@ class Leads extends Component {
                 iconclass: 'flaticon2-magnifier-tool',
                 action: 'see',
                 tooltip: { id: 'see', text: 'Mostrar', type: 'info' },
-            },
-            // {
-            //     text: 'Agregar&nbsp;prospecto',
-            //     btnclass: 'info',
-            //     iconclass: 'flaticon2-user-1',
-            //     action: 'prospecto',
-            //     tooltip: { id: 'prospecto', text: 'Agregar prospecto' }
-            // }
+            }
         )
         return aux
     }
-    async getClientesAxios() {
-        $('#clientes').DataTable().ajax.reload();
-    }
+
     changePageEdit = cliente => {
         const { history } = this.props
-        history.push({
-            pathname: '/leads/clientes/edit',
-            state: { cliente: cliente }
-        });
+        history.push({ pathname: '/leads/clientes/edit', state: { cliente: cliente } });
     }
+
     openModalDelete = cliente => {
         const { modal } = this.state
         modal.delete = true
-        this.setState({
-            ...this.state,
-            modal,
-            cliente
-        })
+        this.setState({ ...this.state, modal, cliente })
     }
+
     handleDeleteModal = () => {
         const { modal } = this.state
         modal.delete = false
-        this.setState({
-            ...this.state,
-            modal,
-            cliente: ''
-        })
+        this.setState({ ...this.state, modal, cliente: '' })
     }
+
     openModalSee = cliente => {
         const { modal } = this.state
         modal.see = true
-        this.setState({
-            ...this.state,
-            modal,
-            cliente: cliente
-        })
+        this.setState({ ...this.state, modal, cliente: cliente })
     }
+
     handleCloseSee = () => {
         const { modal } = this.state
         modal.see = false
-        this.setState({
-            ...this.state,
-            modal,
-            cliente: ''
-        })
+        this.setState({ ...this.state, modal, cliente: '' })
     }
+
     openModalAddProspecto = cliente => {
         const { modal } = this.state
         modal.prospecto = true
-        this.setState({
-            ...this.state,
-            modal,
-            cliente: cliente
-        })
+        this.setState({ ...this.state, modal, cliente: cliente })
     }
+
     handleCloseAddProspecto = () => {
         const { modal } = this.state
         modal.prospecto = false
-        this.setState({
-            ...this.state,
-            modal,
-            cliente: ''
-        })
+        this.setState({ ...this.state, modal, cliente: '' })
     }
-    async deleteClienteAxios() {
+
+    deleteClienteAxios = async () => {
         const { access_token } = this.props.authUser
         const { cliente } = this.state
         await axios.delete(URL_DEV + 'cliente/' + cliente.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -265,76 +211,75 @@ class Leads extends Component {
                 this.getClientesAxios()
                 const { modal } = this.state
                 modal.delete = false
-                this.setState({
-                    ...this.state,
-                    modal,
-                    cliente: ''
-                })
+                this.setState({ ...this.state, modal, cliente: '' })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Cliente eliminada con éxito.')
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
 
+    patchEmpleados = async( data,tipo ) => {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        let value = form[tipo]
+        waitAlert()
+        await axios.put(`${URL_DEV}v2/leads/clientes/${tipo}/${data.id}`, 
+            { value: value }, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.getClientesAxios()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La empleado fue editado con éxito')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    
+    deleteElementAxios = async(data, element, tipo) => {
+        const { access_token } = this.props.authUser
+        waitAlert()
+        await axios.delete(`${URL_DEV}v2/leads/clientes/${data.id}/proyecto/${element.id}`, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.getClientesAxios()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El empleado fue editado con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    getClientesAxios = async () => { $('#clientes').DataTable().ajax.reload(); }
+
     render() {
         const { modal, cliente } = this.state
         return (
-            <Layout active={'leads'}  {...this.props}>
-                <NewTableServerRender
-                    columns={CLIENTES_COLUMNS}
-                    title='Clientes'
-                    subtitle='Listado de clientes'
-                    mostrar_boton={true}
-                    abrir_modal={false}
-                    url='/leads/clientes/add'
-                    mostrar_acciones={true}
+            <Layout active = 'leads'  {...this.props}>
+                <NewTableServerRender columns = { CLIENTES_COLUMNS } title = 'Clientes' subtitle = 'Listado de clientes' mostrar_boton = { true }
+                    abrir_modal = { false } url = '/leads/clientes/add' mostrar_acciones = { true } accessToken = { this.props.authUser.access_token }
                     actions={{
                         'edit': { function: this.changePageEdit },
                         'delete': { function: this.openModalDelete },
                         'see': { function: this.openModalSee },
                         'prospecto': { function: this.openModalAddProspecto }
                     }}
-                    accessToken={this.props.authUser.access_token}
-                    setter={this.setClientes}
-                    urlRender={URL_DEV + 'cliente'}
-                    cardTable='cardTable'
-                    cardTableHeader='cardTableHeader'
-                    cardBody='cardBody'
-                    idTable='clientes'
-                />
-                <ModalDelete
-                    title={cliente === null ? "¿Estás seguro que deseas eliminar a " : "¿Estás seguro que deseas eliminar a " + cliente.empresa + " ?"}
-                    show={modal.delete}
-                    handleClose={this.handleDeleteModal}
-                    onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteClienteAxios() }}
-                />
+                    setter = { this.setClientes } urlRender = { `${URL_DEV}cliente` } cardTable = 'cardTable' cardTableHeader = 'cardTableHeader'
+                    cardBody = 'cardBody' idTable = 'clientes' />
+                <ModalDelete title = { cliente === null ? "¿Estás seguro que deseas eliminar a " : "¿Estás seguro que deseas eliminar a " + cliente.empresa + " ?" }
+                    show = { modal.delete } handleClose = { this.handleDeleteModal } onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteClienteAxios() }} />
                 <Modal size="lg" title="Cliente" show={modal.see} handleClose={this.handleCloseSee} >
                     <ClienteCard cliente={cliente} />
-                </Modal>
-                <Modal title="Agregar prospecto" show={modal.prospecto} handleClose={this.handleCloseAddProspecto} >
-                    {/* <ProspectoForm
-                    
-                    /> */}
-                    Formulario prospecto
                 </Modal>
             </Layout>
         )
     }
 }
 
-
-const mapStateToProps = state => {
-    return {
-        authUser: state.authUser
-    }
-}
-
-const mapDispatchToProps = dispatch => ({
-})
+const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapDispatchToProps = dispatch => ({ })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Leads);

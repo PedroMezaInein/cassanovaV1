@@ -834,7 +834,8 @@ export const PROVEEDORES_COLUMNS = [
     },
     {
         Header: 'Área',
-        accessor: 'area'
+        accessor: 'area',
+        customRender: true
     },
     {
         Header: 'Sub-área',
