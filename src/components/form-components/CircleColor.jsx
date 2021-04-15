@@ -1,18 +1,27 @@
 import React, { Component } from 'react'
 import { CirclePicker } from 'react-color';
 class CircleColor extends Component {
+    state = {
+        valor: ''
+    }
+    componentDidMount(){
+        const { value } = this.props
+        this.setState({...this.state, valor: value})
+    }
     render() {
-        const {onChange, placeholder, colors, width, circlesize, value } = this.props
+        const {onChange, placeholder, colors, width, circlesize, value, classlabel, classdiv, swal } = this.props
+        const { valor } =  this.state
+        console.log(value)
         return (
-            <div className="">
-                <div className="col-form-label">{placeholder}</div>
-                <div className="p-2">
+            <div className={`${classdiv}`}>
+                <div className={`col-form-label ${classlabel}`}>{placeholder}</div>
+                <div className={`p-2 ${classdiv}`}>
                     <CirclePicker
                         circleSize={circlesize} 
                         width={width}
                         colors={colors}
                         onChange={ onChange }
-                        color = { value }
+                        color = { swal === true ? valor : value }
                     />
                 </div>
                 {/* {

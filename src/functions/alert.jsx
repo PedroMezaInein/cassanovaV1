@@ -485,6 +485,7 @@ export function customInputAlert(html, iconHtml, success, cancel){
         cancelButtonText: "CANCELAR",
         reverseButtons: true,
         customClass: { 
+            htmlContainer:'overflow-hidden',
             cancelButton: 'bg-transparent bg-hover-danger text-danger text-hover-white', 
             confirmButton: 'bg-transparent bg-hover-primary text-primary text-hover-white',
             actions: 'd-flex justify-content-between px-0 mt-0'

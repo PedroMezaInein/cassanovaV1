@@ -2,13 +2,20 @@ import React, { Component } from 'react'
 import { renderToString } from 'react-dom/server'
 import { connect } from 'react-redux'
 import axios from 'axios'
+import Swal from 'sweetalert2'
 import { URL_DEV, SOLICITUD_EGRESO_COLUMNS } from '../../../constants'
-import { setTextTable, setDateTable, setMoneyTable, setArrayTable, setTextTableCenter } from '../../../functions/setters'
-import { errorAlert, printResponseErrorAlert, doneAlert, waitAlert, deleteAlert, questionAlert } from '../../../functions/alert'
+import { setDateTableReactDom, setMoneyTableReactDom, setArrayTable, setTextTableCenter, setOptions, setTextTableReactDom, setSelectOptions } from '../../../functions/setters'
+import { errorAlert, printResponseErrorAlert, doneAlert, waitAlert, deleteAlert, questionAlert, customInputAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { ModalDelete, Modal, ItemSlider } from '../../../components/singles'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { SolicitudEgresoCard } from '../../../components/cards'
+import { Update } from '../../../components/Lottie'
+import { printSwalHeader } from '../../../functions/printers'
+import { Form } from 'react-bootstrap'
+import { CalendarDaySwal, SelectSearchGray, InputGray, InputNumberGray, DoubleSelectSearchGray } from '../../../components/form-components'
+import moment from 'moment'
+import { replaceMoney } from '../../../functions/functions'
 const $ = require('jquery');
 class SolicitudEgresos extends Component {
 
@@ -19,6 +26,17 @@ class SolicitudEgresos extends Component {
         title: 'Nueva solicitud de egreso',
         solicitud: '',
         form: {
+            proveedor: '',
+            proyecto: '',
+            area: '',
+            subarea: '',
+            empresa: '',
+            descripcion: '',
+            total: '',
+            remision: '',
+            fecha: new Date(),
+            tipoPago: 0,
+            factura: 'Sin factura',
             adjuntos: {
                 adjunto: {
                     value: '',
@@ -26,7 +44,17 @@ class SolicitudEgresos extends Component {
                     files: []
                 }
             }
-        }
+        },
+        options: {
+            proveedores: [],
+            empresas: [],
+            subareas: [],
+            tiposPagos: [],
+            facturas: [
+                { text: "Si", value: "Con factura" },
+                { text: "No", value: "Sin factura" },
+            ],
+        },
     }
     
     componentDidMount() {
@@ -39,6 +67,7 @@ class SolicitudEgresos extends Component {
         });
         if (!solicitud)
             history.push('/')
+            this.getOptionsAxios()
         let queryString = this.props.history.location.search
         if (queryString) {
             let params = new URLSearchParams(queryString)
@@ -49,7 +78,26 @@ class SolicitudEgresos extends Component {
             }
         }
     }
-    
+    async getOptionsAxios() {
+        const { access_token } = this.props.authUser
+        await axios.get(URL_DEV + 'mercadotecnia/solicitud-pagos/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                const { empresas, subareas, tipos, proveedores } = response.data
+                const { options } = this.state
+                options['empresas'] = setOptions(empresas, 'name', 'id')
+                options['proveedores'] = setOptions(proveedores, 'razon_social', 'id')
+                options['subareas'] = setOptions(subareas, 'nombre', 'id')
+                options['tiposPagos'] = setSelectOptions(tipos, 'tipo')
+                this.setState({ ...this.state, options })
+            },
+            (error) => {
+                printResponseErrorAlert(error)
+            }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     openModalDelete = solicitud => {
         this.setState({ ...this.state, modalDelete: true, title: 'Nueva solicitud de egreso', solicitud: solicitud })
     }
@@ -88,15 +136,15 @@ class SolicitudEgresos extends Component {
             aux.push(
                 {
                     actions: this.setActions(solicitud),
-                    empresa: renderToString(setTextTableCenter(solicitud.empresa ? solicitud.empresa.name : '')),
-                    proveedor: renderToString(setTextTableCenter(solicitud.proveedor ? solicitud.proveedor.razon_social : '')),
-                    factura: renderToString(setTextTableCenter(solicitud.factura ? 'Con factura' : 'Sin factura')),
-                    monto: renderToString(setMoneyTable(solicitud.monto)),
-                    tipoPago: renderToString(setTextTableCenter(solicitud.tipo_pago ? solicitud.tipo_pago.tipo : '')),
-                    subarea: renderToString(setTextTableCenter(solicitud.subarea ? solicitud.subarea.nombre : '')),
-                    fecha: renderToString(setDateTable(solicitud.fecha)),
+                    empresa: setTextTableReactDom(solicitud.empresa ? solicitud.empresa.name : 'Sin definir', this.doubleClick, solicitud, 'empresa', 'text-center'),
+                    proveedor: setTextTableReactDom(solicitud.proveedor.razon_social, this.doubleClick, solicitud, 'proveedor', 'text-center'),
+                    factura: setTextTableReactDom(solicitud.factura ? 'Con factura' : 'Sin factura', this.doubleClick, solicitud, 'factura', 'text-center'),
+                    monto: setMoneyTableReactDom(solicitud.monto, this.doubleClick, solicitud, 'monto'),
+                    tipoPago: setTextTableReactDom(solicitud.tipo_pago.tipo, this.doubleClick, solicitud, 'tipoPago', 'text-center'),
+                    subarea: solicitud.subarea ? setTextTableReactDom(solicitud.subarea.nombre, this.doubleClick, solicitud, 'subarea', 'text-center') : '',
+                    fecha: setDateTableReactDom(solicitud.fecha, this.doubleClick, solicitud, 'fecha', 'text-center'),
                     adjunto: solicitud.adjunto ? renderToString(setArrayTable([{ text: solicitud.adjunto.name, url: solicitud.adjunto.url }])) : renderToString(setTextTableCenter('Sin adjuntos')),
-                    descripcion: renderToString(setTextTable(solicitud.descripcion)),
+                    descripcion: setTextTableReactDom(solicitud.descripcion !== null ? solicitud.descripcion :'', this.doubleClick, solicitud, 'descripcion', 'text-justify'),
                     id: solicitud.id
                 }
             )
@@ -104,7 +152,182 @@ class SolicitudEgresos extends Component {
         })
         return aux
     }
+    doubleClick = (data, tipo) => {
+        const { form } = this.state
+        switch(tipo){
+            case 'proveedor':
+            case 'empresa':
+            case 'subarea':
+                if(data[tipo])
+                    form[tipo] = data[tipo].id.toString()
+                break
+            case 'fecha':
+                form.fecha = new Date(moment(data.fecha))
+                break
+            case 'tipoPago':
+                form[tipo] = data.tipo_pago.id
+                break
+            case 'factura':
+                if (data.factura)
+                    form.factura = 'Con factura'
+                else
+                    form.factura = 'Sin factura'
+                break
+            default:
+                form[tipo] = data[tipo]
+                break
+        }
+        this.setState({ ...this.state, form })
+        customInputAlert(
+            <div>
+                <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
+                {
+                    tipo === 'descripcion' &&
+                        <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
+                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } rows  = { 6 } as = 'textarea'
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true }  />
+                }
+                {
+                    tipo === 'monto' &&
+                        <InputNumberGray withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
+                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo } prefix = '$' thousandSeparator = { true }
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true } />
+                }
+                {
+                    (tipo === 'tipoPago') || (tipo === 'factura') ?
+                        <div className="input-icon my-3">
+                            <span className="input-icon input-icon-right">
+                                <span>
+                                    <i className={"flaticon2-search-1 icon-md text-dark-50"}></i>
+                                </span>
+                            </span>
+                            <Form.Control className = "form-control text-uppercase form-control-solid"
+                                onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } name = { tipo }
+                                defaultValue = { form[tipo] } as = "select">
+                                <option value={0} disabled>{this.setSwalPlaceholder(tipo)}</option>
+                                {
+                                    this.setOptions(data, tipo).map((tipo, key) => {
+                                        return (
+                                            <option key={key} value={tipo.value} className="bg-white" >{tipo.text}</option>
+                                        )
+                                    })
+                                }
+                            </Form.Control>
+                        </div>
+                    :<></>
+                }
+                {
+                    tipo === 'fecha' &&
+                        <CalendarDaySwal value = { form[tipo] } onChange = { (e) => {  this.onChangeSwal(e.target.value, tipo)} } name = { tipo } 
+                            date = { form[tipo] } withformgroup={0} />
+                }
+                {
+                    (tipo === 'proveedor')  || (tipo === 'empresa') || (tipo === 'subarea') ?
+                        <SelectSearchGray options = { this.setOptions(data, tipo) }
+                        onChange = { (value) => { this.onChangeSwal(value, tipo)} } name = { tipo }
+                        value = { form[tipo] } customdiv="mb-2 mt-7" requirevalidation={1} 
+                        placeholder={this.setSwalPlaceholder(tipo)}/>
+                    :<></>
+                }
+            </div>,
+            <Update />,
+            () => { this.patchSolicitudEgresos(data, tipo) },
+            () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
+        )
+    }
+    patchSolicitudEgresos = async( data,tipo ) => {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        let value = ''
+        switch(tipo){
+            case 'monto':
+                value = replaceMoney(form[tipo])
+                break
+            default: 
+                value = form[tipo]    
+                break
+        }
+        waitAlert()
+        await axios.put(`${URL_DEV}v2/mercadotecnia/solicitud-de-pago/${tipo}/${data.id}`, 
+            { value: value }, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.getSolicitudesEgresoAxios()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La solicitud de pago fue editada con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    setSwalPlaceholder = (tipo) => {
+        switch(tipo){
+            case 'proveedor':
+                return 'SELECCIONA EL PROVEEDOR'
+            case 'empresa':
+                return 'SELECCIONA LA EMPRESA'
+            case 'tipoPago':
+                return 'SELECCIONA EL TIPO DE PAGO'
+            case 'subarea':
+                return 'SELECCIONA EL SUBÁREA'
+            case 'factura':
+                return '¿LLEVA FACTURA?'
+            default:
+                return ''
+        }
+    }
+
+    onChangeSwal = (value, tipo) => {
+        const { form } = this.state
+        form[tipo] = value
+        this.setState({...this.state, form})
+    }
     
+    setOptions = (data, tipo) => {
+        const { options } = this.state
+        switch(tipo){
+            case 'tipoPago':
+                return options.tiposPagos
+            case 'empresa':
+                return options.empresas
+            case 'proveedor':
+                return options.proveedores
+            case 'subarea':
+                if(data.subarea)
+                    if(data.subarea.area)
+                        if(data.subarea.area.subareas)
+                            return setOptions(data.subarea.area.subareas, 'nombre', 'id')
+                return []
+            case 'area':
+                return options.areas
+            case 'factura':
+                return options.facturas
+            default: return []
+        }
+    }
+
+    clearForm = () => {
+        const { form } = this.state
+        let aux = Object.keys(form)
+        aux.map((element) => {
+            switch (element) {
+                case 'tipoPago':
+                    form[element] = 0
+                    break;
+                case 'fecha':
+                    form[element] = new Date()
+                    break;
+                case 'adjuntos':
+                    form[element] = { adjunto: { value: '', placeholder: 'Presupuesto', files: [] } }
+                    break;
+                default:
+                    form[element] = ''
+                    break;
+            }
+            return false
+        })
+        return form;
+    }
     setActions = () => {
         const { user } = this.props.authUser
         let aux = []

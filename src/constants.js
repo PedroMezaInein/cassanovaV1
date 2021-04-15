@@ -379,14 +379,17 @@ export const CLIENTES_COLUMNS = [
     {
         Header: 'Empresa',
         accessor: 'empresa',
+        customRender: true
     },
     {
         Header: 'Nombre',
         accessor: 'nombre',
+        customRender: true
     },
     {
         Header: 'Proyecto',
         accessor: 'proyecto',
+        customRender: true
     },
     {
         Header: 'Dirección',
@@ -400,14 +403,17 @@ export const CLIENTES_COLUMNS = [
     {
         Header: 'Puesto',
         accessor: 'puesto',
+        customRender: true
     },
     {
         Header: 'RFC',
-        accessor: 'rfc'
+        accessor: 'rfc',
+        customRender: true
     },
     {
         Header: 'Fecha',
         accessor: 'fecha',
+        customRender: true
     },
 ]
 
@@ -809,15 +815,18 @@ export const PROVEEDORES_COLUMNS = [
     },
     {
         Header: 'Nombre',
-        accessor: 'nombre'
+        accessor: 'nombre',
+        customRender: true
     },
     {
         Header: 'Razón Social',
-        accessor: 'razonSocial'
+        accessor: 'razonSocial',
+        customRender: true
     },
     {
         Header: 'Contacto',
-        accessor: 'contacto'
+        accessor: 'contacto',
+        customRender: true
     },
     {
         Header: 'Cuenta',
@@ -825,11 +834,13 @@ export const PROVEEDORES_COLUMNS = [
     },
     {
         Header: 'Área',
-        accessor: 'area'
+        accessor: 'area',
+        customRender: true
     },
     {
         Header: 'Sub-área',
-        accessor: 'subarea'
+        accessor: 'subarea',
+        customRender: true
     },
     {
         Header: 'Total de compras',
@@ -841,7 +852,8 @@ export const PROVEEDORES_COLUMNS = [
     }, */
     {
         Header: 'RFC',
-        accessor: 'rfc'
+        accessor: 'rfc',
+        customRender: true
     },
 ]
 
@@ -856,11 +868,13 @@ export const PROVEEDORES_MERCA_COLUMNS = [
     }, */
     {
         Header: 'Razón Social',
-        accessor: 'razonSocial'
+        accessor: 'razonSocial',
+        customRender: true
     },
     {
         Header: 'RFC',
-        accessor: 'rfc'
+        accessor: 'rfc',
+        customRender: true
     },
     /* {
         Header: 'Contacto',
@@ -872,7 +886,8 @@ export const PROVEEDORES_MERCA_COLUMNS = [
     }, */
     {
         Header: 'Área',
-        accessor: 'subarea'
+        accessor: 'subarea',
+        customRender: true
     },
 ]
 
@@ -949,11 +964,13 @@ export const ROLES_COLUMNS = [
     },
     {
         Header: 'Rol',
-        accessor: 'rol'
+        accessor: 'rol',
+        customRender: true
     },
     {
         Header: 'Color',
-        accessor: 'color'
+        accessor: 'color',
+        customRender: true
     }
 ]
 
@@ -1277,39 +1294,47 @@ export const SOLICITUD_EGRESO_COLUMNS = [
     },
     {
         Header: 'Proveedor',
-        accessor: 'proveedor'
+        accessor: 'proveedor',
+        customRender: true
     },
     {
         Header: 'Empresa',
-        accessor: 'empresa'
+        accessor: 'empresa',
+        customRender: true
     },
     {
         Header: 'Monto',
-        accessor: 'monto'
+        accessor: 'monto',
+        customRender: true
     },
     {
         Header: 'Factura',
-        accessor: 'factura'
+        accessor: 'factura',
+        customRender: true
     },
     {
         Header: 'Pago', //Cambié de Tipo de pago a Pago
-        accessor: 'tipoPago'
+        accessor: 'tipoPago',
+        customRender: true
     },   
     {
         Header: 'Fecha',
         accessor: 'fecha',
+        customRender: true
     },
     {
         Header: 'Sub-Área',
-        accessor: 'subarea'
+        accessor: 'subarea',
+        customRender: true
     },
-    {
+    /* {
         Header: 'Adjunto',
         accessor: 'adjunto'
-    },
+    },*/
     {
         Header: 'Descripción',
-        accessor: 'descripcion'
+        accessor: 'descripcion',
+        customRender: true
     }
 ]
 

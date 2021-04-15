@@ -100,6 +100,8 @@ export function printSwalHeader(tipo){
             return 'EDITAR VACACIONES DISPONIBLES'
         case 'nombre_emergencia':
             return 'EDITAR CONTACTO DE EMERGENCIA'
+        case 'color':
+            return 'EDITAR EL COLOR'
         default:
             return ''
     }
