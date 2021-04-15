@@ -224,63 +224,42 @@ class Calendario extends Component {
 
     getDiasDisponibles = (empleado, vacaciones_totales) => {
         /* const { empleado, vacaciones_totales } = this.state */
-        let contador = 0
+        let contador = empleado.vacaciones_disponibles
         let fecha_inicio_empleado = ''
         if (empleado) {
-
-            fecha_inicio_empleado = new Date(empleado.fecha_inicio)
-            fecha_inicio_empleado.setDate(fecha_inicio_empleado.getDate() + 1)
-
+            fecha_inicio_empleado = new Date(moment(empleado.fecha_inicio))
             let mes = fecha_inicio_empleado.getMonth() + 1
-
-            if (mes.toString().length === 1) {
+            if (mes.toString().length === 1)  
                 mes = '0' + mes
-            }
-
             let dia = fecha_inicio_empleado.getDate()
             let now = new Date();
-            now.setDate(now.getDate() + 366)
-            let año = now.getFullYear();
-
-            let fecha_fin = new Date(mes + '/' + dia + '/' + año)
-            let fecha_inicio = new Date(mes + '/' + dia + '/' + (año - 1))
-
-            if (fecha_fin < fecha_inicio_empleado) {
-                fecha_fin = new Date(mes + '/' + dia + '/' + (año + 1))
-                fecha_inicio = new Date(mes + '/' + dia + '/' + año)
+            let año = new Date().getFullYear();
+            let verificador = new Date(mes + '/' + dia + '/' + año)
+            let final = ''
+            let inicio = ''
+            if(now > verificador){
+                inicio = verificador
+                final = new Date(mes + '/' + dia + '/' + (año + 1))
             }
-
-            vacaciones_totales.map((vacacion, key) => {
+            else{
+                final = verificador
+                inicio = new Date(mes + '/' + dia + '/' + (año - 1))
+            }
+            empleado.vacaciones.forEach((vacacion) => {
                 if (vacacion.estatus !== 'Rechazadas') {
-                    let vacacion_fecha_inicio = new Date(vacacion.fecha_inicio)
-                    let vacacion_fecha_fin = new Date(vacacion.fecha_fin)
-                    if (vacacion_fecha_inicio >= fecha_inicio && vacacion_fecha_inicio < fecha_fin && vacacion_fecha_fin >= fecha_inicio && vacacion_fecha_fin < fecha_fin)
-                        contador = contador + countDaysWithoutWeekend(vacacion_fecha_inicio, vacacion_fecha_fin)
-                    if (vacacion_fecha_inicio >= fecha_inicio && vacacion_fecha_inicio < fecha_fin && !(vacacion_fecha_fin >= fecha_inicio && vacacion_fecha_fin < fecha_fin)) {
-                        while (vacacion_fecha_inicio.getTime() >= vacacion_fecha_fin.getTime()) {
-                            if (vacacion_fecha_inicio >= fecha_inicio && vacacion_fecha_inicio < fecha_fin)
-                                if (vacacion_fecha_inicio.getDay() !== 6 && vacacion_fecha_inicio.getDay() !== 0)
-                                    contador++
-                            vacacion_fecha_inicio.setDate(vacacion_fecha_inicio.getDate() + 1);
-                        }
-                    }
-                    if (!(vacacion_fecha_inicio >= fecha_inicio && vacacion_fecha_inicio < fecha_fin) && (vacacion_fecha_fin >= fecha_inicio && vacacion_fecha_fin < fecha_fin)) {
-                        while (vacacion_fecha_inicio.getTime() < vacacion_fecha_fin.getTime()) {
-                            if (vacacion_fecha_fin >= fecha_inicio && vacacion_fecha_fin < fecha_fin) {
-                                if (vacacion_fecha_fin.getDay() !== 6 && vacacion_fecha_fin.getDay() !== 0)
-                                    contador++
-                            }
-                            vacacion_fecha_fin.setDate(vacacion_fecha_fin.getDate() - 1);
-                        }
+                    let dias = moment(vacacion.fecha_fin).diff(moment(vacacion.fecha_inicio), 'days') + 1
+                    for(let i = 0; i < dias; i++){
+                        let date = new Date(moment(vacacion.fecha_inicio).add(i, 'days'))
+                        if(date.getDay() > 0 && date.getDay() < 6)
+                            if(date >= inicio && date < final)
+                                contador--
                     }
                 }
-                return false
             })
-
-            return empleado.vacaciones_disponibles - contador
         }
-        else
-            return contador
+        if(contador < 0)
+            return 0
+        return contador
     }
 
     getVacaciones(empleado, vacaciones_totales) {
