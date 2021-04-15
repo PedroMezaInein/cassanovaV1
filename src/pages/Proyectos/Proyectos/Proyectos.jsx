@@ -928,7 +928,7 @@ class Proyectos extends Component {
                 actions: this.setActions(proyecto),
                 status: proyecto ? setLabelTableReactDom(proyecto, this.changeEstatus ) : '',
                 nombre: setTextTableReactDom(proyecto.nombre, this.doubleClick, proyecto, 'nombre', 'text-center'),
-                cliente: setTagLabelProyectoReactDom(proyecto, proyecto.clientes, 'cliente', this.deleteElementAxios),
+                cliente: setTagLabelProyectoReactDom(proyecto, proyecto.clientes, 'cliente', this.deleteElementAxios, 'empresa'),
                 tipo_proyecto: setTextTableReactDom(proyecto.tipo_proyecto?proyecto.tipo_proyecto.tipo:'Sin tipo de proyecto', this.doubleClick, proyecto, 'tipo_proyecto', 'text-center'),
                 direccion: renderToString(setDireccion(proyecto)),
                 contacto: setArrayTableReactDom(
