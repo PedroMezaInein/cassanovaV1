@@ -32,23 +32,9 @@ class Proveedores extends Component{
             aux.push(
                 {
                     actions: this.setActions(proveedor),
-                    nombre: renderToString(setTextTable(proveedor.nombre)),
                     razonSocial: setTextTableReactDom(proveedor.razon_social, this.doubleClick, proveedor, 'razonSocial', 'text-center'),
-                    rfc: setTextTableReactDom(proveedor.rfc, this.doubleClick, proveedor, 'rfc', 'text-center'),
-                    contacto: renderToString(setArrayTable(
-                        [
-                            { 'url': `tel:+${proveedor.telefono}`, 'text': proveedor.telefono },
-                            { 'url': `mailto:${proveedor.email}`, 'text': proveedor.email }
-                        ]
-                    )),
-                    cuenta: renderToString(setArrayTable(
-                        [
-                            { 'name': 'No. Cuenta', 'text': proveedor.numero_cuenta ? proveedor.numero_cuenta : 'Sin definir' },
-                            { 'name': 'Banco', 'text': proveedor.banco ? proveedor.banco.nombre : 'Sin definir' },
-                            { 'name': 'Tipo Cuenta', 'text': proveedor.tipo_cuenta ? proveedor.tipo_cuenta.tipo : 'Sin definir' },
-                        ]
-                    )),
-                    subarea: proveedor.subarea ? setTextTableReactDom(proveedor.subarea.nombre, this.doubleClick, proveedor, 'subarea', 'text-center') : '',
+                    rfc: setTextTableReactDom(proveedor.rfc ? proveedor.rfc : '', this.doubleClick, proveedor, 'rfc', 'text-center'),
+                    subarea: setTextTableReactDom( proveedor.subarea ? proveedor.subarea.nombre : '', this.doubleClick, proveedor, 'subarea', 'text-center'),
                     id: proveedor.id
                 }
             )
@@ -114,11 +100,11 @@ class Proveedores extends Component{
         const { form } = this.state
         let value = form[tipo]
         waitAlert()
-        await axios.put(`${URL_DEV}v2/mercadotecnia/merca-proveedores/${tipo}/${data.id}`, 
+        await axios.put(`${URL_DEV}v2/leads/proveedores/${tipo}/${data.id}`, 
             { value: value }, 
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                this.getProveedorAxios()
+                this.getProveedoresAxios()
                 doneAlert(response.data.message !== undefined ? response.data.message : 'La proveedor fue editado con éxito')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
