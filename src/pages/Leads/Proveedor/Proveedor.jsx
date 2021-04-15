@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import { URL_DEV, PROVEEDORES_COLUMNS, TEL } from '../../../constants'
-import { setDateTable, setMoneyTable, setArrayTable, setTextTableCenter, setTextTableReactDom, setOptions, setArrayTableReactDom } from '../../../functions/setters'
+import { setDateTable, setMoneyTable, setArrayTable, setTextTableReactDom, setOptions, setArrayTableReactDom } from '../../../functions/setters'
 import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, customInputAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { ModalDelete, Modal } from '../../../components/singles'
@@ -12,9 +12,10 @@ import NewTableServerRender from '../../../components/tables/NewTableServerRende
 import { ProveedorCard } from '../../../components/cards'
 import { printSwalHeader } from '../../../functions/printers'
 import { Update } from '../../../components/Lottie'
-import { InputGray, SelectSearchGray, InputPhoneGray } from '../../../components/form-components'
+import { InputGray, SelectSearchGray, InputPhoneGray, DoubleSelectSearchGray } from '../../../components/form-components'
 const $ = require('jquery');
 class Proveedor extends Component {
+
     state = {
         modalDelete: false,
         modalSee: false,
@@ -45,6 +46,7 @@ class Proveedor extends Component {
             tipos: []
         }
     }
+
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
@@ -55,7 +57,9 @@ class Proveedor extends Component {
         });
         if (!proveedor)
             history.push('/')
+        this.getOptionsAxios()
     }
+
     setProveedores = proveedores => {
         let aux = []
         proveedores.map((proveedor) => {
@@ -78,8 +82,8 @@ class Proveedor extends Component {
                             { 'name': 'Tipo Cuenta', 'text': proveedor.tipo_cuenta ? proveedor.tipo_cuenta.tipo : 'Sin definir' },
                         ],'120px'
                     )),
-                    area: renderToString(setTextTableCenter(proveedor.subarea ? proveedor.subarea.area.nombre : 'Sin definir')),
-                    subarea: proveedor.subarea ? setTextTableReactDom(proveedor.subarea.nombre, this.doubleClick, proveedor, 'subarea', 'text-center') : '',
+                    area: setTextTableReactDom(proveedor.subarea ? proveedor.subarea.area ? proveedor.subarea.area.nombre : '' : '', this.doubleClick, proveedor, 'area', 'text-center'),
+                    subarea: setTextTableReactDom(proveedor.subarea ? proveedor.subarea.nombre : '', this.doubleClick, proveedor, 'subarea', 'text-center'),
                     total: renderToString(setMoneyTable(proveedor.sumatoria_compras + proveedor.sumatoria_egresos)),
                     fecha: renderToString(setDateTable(proveedor.created_at)),
                     id: proveedor.id
@@ -89,12 +93,22 @@ class Proveedor extends Component {
         })
         return aux
     }
+
     doubleClick = (data, tipo) => {
-        const { form } = this.state
+        const { form, options } = this.state
         switch(tipo){
             case 'subarea':
                 if(data[tipo])
                     form[tipo] = data[tipo].id.toString()
+                break
+            case 'area':
+                if(data.subarea){
+                    if(data.subarea.area){
+                        form.area = data.subarea.area.id.toString()
+                        form.subarea = data.subarea.id.toString()
+                        options.subareas = setOptions(data.subarea.area.subareas, 'nombre', 'id')
+                    }
+                }
                 break
             case 'razonSocial':
                 form.razonSocial = data.razon_social
@@ -107,7 +121,7 @@ class Proveedor extends Component {
                 form[tipo] = data[tipo]
                 break
         }
-        this.setState({form})
+        this.setState({ ...this.state, form, options})
         customInputAlert(
             <div>
                 <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
@@ -140,12 +154,19 @@ class Proveedor extends Component {
                         />
                     :<></>
                 }
+                {
+                    tipo === 'area' &&
+                        <DoubleSelectSearchGray options = { options } form = { form } onChange = { this.onChangeSwal } 
+                            one = { { placeholder: 'SELECCIONA EL ÁREA', name: 'area', opciones: 'areas'} } 
+                            two = { { placeholder: 'SELECCIONA EL SUBÁREA', name: 'subarea', opciones: 'subareas'} }/>
+                }
             </div>,
             <Update />,
             () => { this.patchProveedores(data, tipo) },
             () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
         )
     }
+
     setSwalPlaceholder = (tipo) => {
         switch(tipo){
             case 'subarea':
@@ -154,27 +175,11 @@ class Proveedor extends Component {
                 return ''
         }
     }
+
     onChangeSwal = (value, tipo) => {
         const { form } = this.state
         form[tipo] = value
         this.setState({...this.state, form})
-    }
-    patchProveedores = async( data,tipo ) => {
-        const { access_token } = this.props.authUser
-        const { form } = this.state
-        let value = form[tipo]
-        waitAlert()
-        await axios.put(`${URL_DEV}v2/leads/proveedores/${tipo}/${data.id}`, 
-            { value: value }, 
-            { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                this.getProveedorAxios()
-                doneAlert(response.data.message !== undefined ? response.data.message : 'La proveedor fue editado con éxito')
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
     }
     
     setOptions = (data, tipo) => {
@@ -184,23 +189,18 @@ class Proveedor extends Component {
                     if(data.subarea.area)
                         if(data.subarea.area.subareas)
                             return setOptions(data.subarea.area.subareas, 'nombre', 'id')
-                    return []
+            return []
             default: return []
         }
     }
+
     clearForm = () => {
         const { form } = this.state
         let aux = Object.keys(form)
         aux.forEach((element) => {
             switch(element){
                 case 'adjuntos':
-                    form[element] = {
-                        adjuntos: {
-                            value: '',
-                            placeholder: 'Adjuntos',
-                            files: []
-                        }
-                    }
+                    form[element] = { adjuntos: { value: '', placeholder: 'Adjuntos', files: [] } }
                     break;
                 default:
                     form[element] = ''
@@ -209,6 +209,7 @@ class Proveedor extends Component {
         })
         return form
     }
+
     setActions = () => {
         let aux = []
         aux.push(
@@ -236,101 +237,97 @@ class Proveedor extends Component {
         )
         return aux
     }
+
     changePageEdit = (proveedor) => {
         const { history } = this.props
-        history.push({
-            pathname: '/leads/proveedores/edit',
-            state: { proveedor: proveedor }
-        });
+        history.push({ pathname: '/leads/proveedores/edit', state: { proveedor: proveedor } });
     }
-    openModalDelete = proveedor => {
-        this.setState({
-            ...this.state,
-            modalDelete: true,
-            proveedor: proveedor
-        })
-    }
-    handleCloseDelete = () => {
-        this.setState({
-            modalDelete: false,
-            proveedor: ''
-        })
-    }
-    openModalSee = proveedor => {
-        this.setState({
-            ...this.state,
-            modalSee: true,
-            proveedor: proveedor
-        })
-    }
-    handleCloseSee = () => {
-        this.setState({
-            ...this.state,
-            modalSee: false,
-            proveedor: ''
-        })
-    }
+
+    openModalDelete = proveedor => { this.setState({ ...this.state, modalDelete: true, proveedor: proveedor }) }
+
+    handleCloseDelete = () => { this.setState({ modalDelete: false, proveedor: '' }) }
+
+    openModalSee = proveedor => { this.setState({ ...this.state, modalSee: true, proveedor: proveedor }) }
+
+    handleCloseSee = () => { this.setState({ ...this.state, modalSee: false, proveedor: '' }) }
+    
     async deleteProveedor() {
         const { access_token } = this.props.authUser
         const { proveedor } = this.state
         await axios.delete(URL_DEV + 'proveedores/' + proveedor.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 this.getProveedorAxios()
-                const { proveedores } = response.data
-                const { data } = this.state
-                data.proveedores = proveedores
-                this.setState({
-                    ...this.state,
-                    proveedores: this.setProveedores(proveedores),
-                    data,
-                    modalDelete: false,
-                    proveedor: ''
-                })
+                this.setState({ ...this.state,  modalDelete: false, proveedor: '' })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El provedor fue eliminado con éxito.')
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
-    async getProveedorAxios() {
-        $('#proveedor_table').DataTable().ajax.reload();
+
+    patchProveedores = async( data,tipo ) => {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        let value = ''
+        switch(tipo){
+            case 'area':
+                value = { area: form.area, subarea: form.subarea }
+                break
+            case 'contacto':
+                value = { telefono: form.telefono, correo: form.correo }
+                break
+            default: 
+                value = form[tipo]    
+                break
+        }
+        waitAlert()
+        await axios.put(`${URL_DEV}v2/leads/proveedores/${tipo}/${data.id}`, 
+            { value: value }, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.getProveedorAxios()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La proveedor fue editado con éxito')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
     }
+
+    getOptionsAxios = async() => {
+        const { access_token } = this.props.authUser
+        waitAlert()
+        await axios.get(`${URL_DEV}proveedores/options`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                Swal.close()
+                const { areas } = response.data
+                const { options } = this.state
+                options.areas = setOptions(areas, 'nombre', 'id')
+                this.setState({...this.state, options})
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    async getProveedorAxios() { $('#proveedor_table').DataTable().ajax.reload(); }
+    
     render() {
         const { modalDelete, modalSee, proveedor } = this.state
         return (
-            <Layout active={'leads'}  {...this.props}>
-                <NewTableServerRender
-                    columns={PROVEEDORES_COLUMNS}
-                    title='Proveedores'
-                    subtitle='Listado de proveedores'
-                    mostrar_boton={true}
-                    abrir_modal={false}
-                    url='/leads/proveedores/add'
-                    mostrar_acciones={true}
-                    actions={{
+            <Layout active = 'leads'  {...this.props}>
+                <NewTableServerRender columns = { PROVEEDORES_COLUMNS } title = 'Proveedores' subtitle = 'Listado de proveedores' mostrar_boton = { true }
+                    abrir_modal = { false } url = '/leads/proveedores/add' mostrar_acciones = { true } accessToken = { this.props.authUser.access_token }
+                    actions = { {
                         'edit': { function: this.changePageEdit },
                         'delete': { function: this.openModalDelete },
                         'see': { function: this.openModalSee },
-                    }}
-                    accessToken={this.props.authUser.access_token}
-                    setter={this.setProveedores}
-                    urlRender={URL_DEV + 'proveedores'}
-                    cardTable='cardTable'
-                    cardTableHeader='cardTableHeader'
-                    cardBody='cardBody'
-                    idTable='proveedor_table'
-                />
-                <ModalDelete
-                    title={"¿Deseas eliminar el proveedor?"}
-                    show={modalDelete}
-                    handleClose={this.handleCloseDelete}
-                    onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteProveedor() }}
-                >
-                </ModalDelete>
+                    } } setter = { this.setProveedores } urlRender = { `${URL_DEV}proveedores` } cardTable = 'cardTable' cardTableHeader = 'cardTableHeader'
+                    cardBody = 'cardBody' idTable = 'proveedor_table' />
+                <ModalDelete title = "¿Deseas eliminar el proveedor?" show = { modalDelete } handleClose = { this.handleCloseDelete }
+                    onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteProveedor() } } />
                 <Modal title="Proveedor" show={modalSee} handleClose={this.handleCloseSee} >
                     <ProveedorCard proveedor={proveedor} />
                 </Modal>
@@ -339,13 +336,7 @@ class Proveedor extends Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        authUser: state.authUser
-    }
-}
-
-const mapDispatchToProps = dispatch => ({
-})
+const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapDispatchToProps = dispatch => ({})
 
 export default connect(mapStateToProps, mapDispatchToProps)(Proveedor);
