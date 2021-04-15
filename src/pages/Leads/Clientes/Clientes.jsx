@@ -3,12 +3,17 @@ import { renderToString } from 'react-dom/server'
 import Layout from '../../../components/layout/layout'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import { URL_DEV, CLIENTES_COLUMNS} from '../../../constants'
+import Swal from 'sweetalert2'
+import { URL_DEV, CLIENTES_COLUMNS } from '../../../constants'
 import { Modal, ModalDelete } from '../../../components/singles'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
-import { setDateTable, setListTableLinkProyecto, setTextTableCenter, setDireccion } from '../../../functions/setters'
-import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert } from '../../../functions/alert'
+import { setDateTableReactDom, setTagLabelClienteReactDom, setDireccion, setTextTableReactDom } from '../../../functions/setters'
+import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert, customInputAlert } from '../../../functions/alert'
 import { ClienteCard } from '../../../components/cards'
+import { printSwalHeader } from '../../../functions/printers'
+import { Update } from '../../../components/Lottie'
+import { InputGray, CalendarDaySwal } from '../../../components/form-components'
+import moment from 'moment'
 const $ = require('jquery');
 
 class Leads extends Component {
@@ -22,6 +27,21 @@ class Leads extends Component {
         cliente: '',
         data: {
             clientes: []
+        },
+        form: {
+            colonias: [],
+            empresa: '',
+            nombre: '',
+            puesto: '',
+            cp: '',
+            estado: '',
+            municipio: '',
+            colonia: '',
+            calle: '',
+            perfil: '',
+            rfc: '',
+            contacto:'',
+            fecha: new Date(),
         }
     }
     componentDidMount() {
@@ -40,21 +60,105 @@ class Leads extends Component {
         clientes.map((cliente) => {
             aux.push({
                 actions: this.setActions(cliente),
-                empresa: renderToString(setTextTableCenter(cliente.empresa)),
-                nombre: renderToString(setTextTableCenter(cliente.nombre)),
-                proyecto: renderToString(cliente.proyectos.length === 0 ? setTextTableCenter("Sin definir") : setListTableLinkProyecto(cliente.proyectos, "nombre")),
+                empresa: setTextTableReactDom(cliente.empresa, this.doubleClick, cliente, 'empresa', 'text-center'),
+                nombre: setTextTableReactDom(cliente.nombre, this.doubleClick, cliente, 'nombre', 'text-center'),
+                proyecto: setTagLabelClienteReactDom(cliente, cliente.proyectos, 'proyecto', this.deleteElementAxios),
                 direccion: renderToString(setDireccion(cliente)),
-                // perfil: renderToString(setTextTableCenter(cliente.perfil)),
-                puesto: renderToString(setTextTableCenter(cliente.puesto)),
-                rfc: renderToString(setTextTableCenter(cliente.rfc)),
-                fecha: renderToString(setDateTable(cliente.created_at)),
+                puesto: setTextTableReactDom(cliente.puesto, this.doubleClick, cliente, 'puesto', 'text-center'),
+                rfc: setTextTableReactDom(cliente.rfc, this.doubleClick, cliente, 'rfc', 'text-center'),
+                fecha: setDateTableReactDom(cliente.created_at, this.doubleClick, cliente, 'fecha', 'text-center'),
                 id: cliente.id
             })
             return false
         })
         return aux
     }
-
+    doubleClick = (data, tipo) => {
+        const { form } = this.state
+        switch(tipo){
+            case 'fecha':
+                form.fecha = new Date(moment(data.created_at))
+                break
+            case 'nombre_emergencia':
+                form.nombre_emergencia = data.nombre_emergencia
+                form.telefono_emergencia = data.telefono_emergencia
+                break
+            default:
+                form[tipo] = data[tipo]
+                break
+        }
+        this.setState({form})
+        customInputAlert(
+            <div>
+                <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
+                {
+                    (tipo === 'nombre') || (tipo === 'puesto') || (tipo === 'rfc') || (tipo === 'empresa') ?
+                        <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
+                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo }
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true }
+                        />
+                    :<></>
+                }
+                {
+                    tipo === 'fecha' ?
+                        <CalendarDaySwal value = { form.fecha } onChange = { (e) => {  this.onChangeSwal(e.target.value, 'fecha')} } name = { 'fecha' } date = { form.fecha } withformgroup={0} />
+                    :<></>
+                }
+            </div>,
+            <Update />,
+            () => { this.patchEmpleados(data, tipo) },
+            () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
+        )
+    }
+    deleteElementAxios = async(data, element, tipo) => {
+        const { access_token } = this.props.authUser
+        waitAlert()
+        await axios.delete(`${URL_DEV}v2/leads/clientes/${data.id}/${element.id}`, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.getClientesAxios()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El empleado fue editado con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    
+    onChangeSwal = (value, tipo) => {
+        const { form } = this.state
+        form[tipo] = value
+        this.setState({...this.state, form})
+    }
+    patchEmpleados = async( data,tipo ) => {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        let value = form[tipo]
+        waitAlert()
+        await axios.put(`${URL_DEV}v2/rh/empleados/${tipo}/${data.id}`, 
+            { value: value }, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.getClientesAxios()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La empleado fue editado con éxito')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    clearForm = () => {
+        const { form } = this.state
+        let aux = Object.keys(form)
+        aux.forEach((element) => {
+            switch(element){
+                default:
+                    form[element] = ''
+                break;
+            }
+        })
+        return form
+    }
     setActions = () => {
         let aux = []
         aux.push(

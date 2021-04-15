@@ -5,10 +5,14 @@ import Layout from '../../../components/layout/layout'
 import { ModalDelete, Modal } from '../../../components/singles'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { PROVEEDORES_MERCA_COLUMNS, URL_DEV } from '../../../constants'
-import { doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../../functions/alert'
-import { setArrayTable, setTextTable, setTextTableCenter } from '../../../functions/setters'
+import { doneAlert, errorAlert, printResponseErrorAlert, waitAlert, customInputAlert } from '../../../functions/alert'
+import { setArrayTable, setTextTable, setTextTableReactDom, setOptions } from '../../../functions/setters'
 import axios from 'axios'
+import Swal from 'sweetalert2'
 import { ProveedorCard } from '../../../components/cards'
+import { printSwalHeader } from '../../../functions/printers'
+import { Update } from '../../../components/Lottie'
+import { InputGray, SelectSearchGray } from '../../../components/form-components'
 
 const $ = require('jquery');
 
@@ -16,7 +20,10 @@ class Proveedores extends Component{
 
     state = {
         modal_delete: false,
-        modal_see: false
+        modal_see: false,
+        form: {
+            nombre: '', rfc: '', razonSocial: '', correo: '', telefono: '', numCuenta: '', tipo: 0, banco: 0, subarea: ''
+        },
     }
 
     setProveedores = proveedores => {
@@ -26,8 +33,8 @@ class Proveedores extends Component{
                 {
                     actions: this.setActions(proveedor),
                     nombre: renderToString(setTextTable(proveedor.nombre)),
-                    razonSocial: renderToString(setTextTableCenter(proveedor.razon_social)),
-                    rfc: renderToString(setTextTableCenter(proveedor.rfc)),
+                    razonSocial: setTextTableReactDom(proveedor.razon_social, this.doubleClick, proveedor, 'razonSocial', 'text-center'),
+                    rfc: setTextTableReactDom(proveedor.rfc, this.doubleClick, proveedor, 'rfc', 'text-center'),
                     contacto: renderToString(setArrayTable(
                         [
                             { 'url': `tel:+${proveedor.telefono}`, 'text': proveedor.telefono },
@@ -41,7 +48,7 @@ class Proveedores extends Component{
                             { 'name': 'Tipo Cuenta', 'text': proveedor.tipo_cuenta ? proveedor.tipo_cuenta.tipo : 'Sin definir' },
                         ]
                     )),
-                    subarea: renderToString(setTextTableCenter(proveedor.subarea ? proveedor.subarea.nombre : 'Sin definir')),
+                    subarea: proveedor.subarea ? setTextTableReactDom(proveedor.subarea.nombre, this.doubleClick, proveedor, 'subarea', 'text-center') : '',
                     id: proveedor.id
                 }
             )
@@ -49,7 +56,100 @@ class Proveedores extends Component{
         })
         return aux
     }
-
+    doubleClick = (data, tipo) => {
+        const { form } = this.state
+        switch(tipo){
+            case 'subarea':
+                if(data[tipo])
+                    form[tipo] = data[tipo].id.toString()
+                break
+            case 'razonSocial':
+                form.razonSocial = data.razon_social
+                break
+            default:
+                form[tipo] = data[tipo]
+                break
+        }
+        this.setState({form})
+        customInputAlert(
+            <div>
+                <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
+                {
+                    (tipo === 'razonSocial') || (tipo === 'rfc') ?
+                        <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
+                            requirevalidation = { 0 }  value = { form[tipo] } name = { tipo }
+                            onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true }
+                        />
+                    :<></>
+                }
+                {
+                    (tipo === 'subarea')  &&
+                        <SelectSearchGray options = { this.setOptions(data, tipo) } value = { form[tipo] } customdiv="mb-2 mt-7"
+                            onChange = { (value) => { this.onChangeSwal(value, tipo)} } name = { tipo } requirevalidation={1} 
+                            placeholder={this.setSwalPlaceholder(tipo)}
+                        />
+                }
+            </div>,
+            <Update />,
+            () => { this.patchProveedores(data, tipo) },
+            () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
+        )
+    }
+    
+    setSwalPlaceholder = (tipo) => {
+        switch(tipo){
+            case 'subarea':
+                return 'SELECCIONA EL SUBÁREA'
+            default:
+                return ''
+        }
+    }
+    onChangeSwal = (value, tipo) => {
+        const { form } = this.state
+        form[tipo] = value
+        this.setState({...this.state, form})
+    }
+    patchProveedores = async( data,tipo ) => {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        let value = form[tipo]
+        waitAlert()
+        await axios.put(`${URL_DEV}v2/mercadotecnia/merca-proveedores/${tipo}/${data.id}`, 
+            { value: value }, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.getProveedorAxios()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La proveedor fue editado con éxito')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    
+    setOptions = (data, tipo) => {
+        switch(tipo){
+            case 'subarea':
+                if(data.subarea)
+                    if(data.subarea.area)
+                        if(data.subarea.area.subareas)
+                            return setOptions(data.subarea.area.subareas, 'nombre', 'id')
+                    return []
+            default: return []
+        }
+    }
+    clearForm = () => {
+        const { form } = this.state
+        let aux = Object.keys(form)
+        aux.forEach((element) => {
+            switch(element){
+                default:
+                    form[element] = ''
+                break;
+            }
+        })
+        return form
+    }
     setActions = () => {
         let aux = []
         aux.push(
