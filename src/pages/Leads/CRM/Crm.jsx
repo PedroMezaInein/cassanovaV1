@@ -4,7 +4,7 @@ import axios from 'axios'
 import { URL_DEV } from '../../../constants'
 import Layout from '../../../components/layout/layout'
 import { Col, Row, Card, Form, Tab, Nav, DropdownButton, Dropdown } from 'react-bootstrap'
-import { setOptions, setDateTableLG, setContactoIcon } from '../../../functions/setters'
+import { setOptions, setDateTableLG, setContactoIcon, setEmpresaLogo } from '../../../functions/setters'
 import { UltimosContactosCard, SinContacto, UltimosIngresosCard } from '../../../components/cards'
 import { printResponseErrorAlert, errorAlert, waitAlert, doneAlert, questionAlert, questionAlert2, deleteAlert} from '../../../functions/alert'
 import LeadRhProveedor from '../../../components/tables/Lead/LeadRhProveedor'
@@ -1833,7 +1833,6 @@ class Crm extends Component {
         else
             this.addRRHHP()
     }
-
     render() {
         const { ultimos_contactados, prospectos_sin_contactar, ultimos_ingresados, lead_web, activeTable, leads_en_contacto, leads_en_negociacion, modal_one_lead,
             leads_contratados, leads_cancelados, leads_detenidos, modal_agendar, form, lead, lead_rh_proveedores, options, modal_editar, formEditar, modal_historial,
@@ -2216,18 +2215,18 @@ class Crm extends Component {
                 </Modal>
 
                 {/* ANCHOR MODAL SINGLE ONE LEAD */}
-                <Modal size="xl" title='INFORMACIÓN DEL LEAD' 
-                    show = { modal_one_lead } handleClose = { this.handleCloseModalOneLead } >
-                        
-                    <div className = "row mx-0">
+                <Modal size="lg" title={`INFORMACIÓN DE ${lead.nombre}`} show = { modal_one_lead } handleClose = { this.handleCloseModalOneLead } >
+                    <div className = "row mx-0 d-flex justify-content-center">
                         <div className = "col-md-12">
                             <div className = "d-flex justify-content-between mt-4">
-                                <p className = "font-size-h5 text-muted font-size-lg mt-0">
-                                    Nombre:&nbsp; <strong className="font-size-h6">{lead.nombre}</strong>
-                                </p>
+                                {
+                                    setEmpresaLogo(lead) !== '' ?
+                                        <img alt='' src={setEmpresaLogo(lead)} class="img-empresa"/>
+                                        : ''
+                                }
                                 {
                                     lead.estatus ? 
-                                        <span className="navi-link">
+                                        <span className="navi-link align-self-center">
                                             <span className="navi-text">
                                                 <span className="label label-xl label-inline w-100 font-weight-bolder" 
                                                     style = { { backgroundColor: lead.estatus.color_fondo, color: lead.estatus.color_texto, border: 'transparent' } }>
@@ -2238,7 +2237,6 @@ class Crm extends Component {
                                     : ''
                                 }
                             </div>
-                            <div className="separator separator-solid mb-3"></div>
                         </div>
                     </div>
                     <Tab.Container defaultActiveKey = 'info'>
@@ -2247,15 +2245,15 @@ class Crm extends Component {
                             lead.prospecto ?
                                 lead.prospecto.contactos ?
                                     lead.prospecto.contactos.length > 0 ?
-                                        <Nav className="nav-tabs nav-bold nav-tabs-line nav-tabs-line-3x border-0 mb-8 justify-content-end">
+                                        <Nav className="nav nav-bolder nav-pills border-0 nav-light-primary mb-10 justify-content-center mt-5">
                                             <Nav.Item className="nav-item">
                                                 <Nav.Link eventKey="info">
-                                                    <span className="nav-text font-weight-bold">INFORMACIÓN GENERAL</span>
+                                                    <span className="nav-text">INFORMACIÓN GENERAL</span>
                                                 </Nav.Link>
                                             </Nav.Item>
                                             <Nav.Item className="nav-item">
                                                 <Nav.Link eventKey="contactos">
-                                                    <span className="nav-text font-weight-bold">HISTORIAL DE CONTACTO</span>
+                                                    <span className="nav-text">HISTORIAL DE CONTACTO</span>
                                                 </Nav.Link>
                                             </Nav.Item>
                                             {
@@ -2264,7 +2262,7 @@ class Crm extends Component {
                                                         lead.presupuesto_diseño.pdfs.length > 0 ?
                                                             <Nav.Item className="nav-item">
                                                                 <Nav.Link eventKey="presupuesto">
-                                                                    <span className="nav-text font-weight-bold">Presupuesto</span>
+                                                                    <span className="nav-text">Presupuesto</span>
                                                                 </Nav.Link>
                                                             </Nav.Item>
                                                         : ''
@@ -2311,7 +2309,7 @@ class Crm extends Component {
                             </Tab.Pane>
                             <Tab.Pane eventKey = 'contactos'>
                                 <div className = "row mx-0 justify-content-center">
-                                    <div className="col-md-7 pt-4">
+                                    <div className="col-md-10 pt-4">
                                         {
                                             lead ?
                                                 lead.prospecto ?
@@ -2352,47 +2350,46 @@ class Crm extends Component {
                                 </div>
                             </Tab.Pane>
                             <Tab.Pane eventKey = 'info'>
-                                <div className = "row mx-0 px-lg-2">
-                                    {
-                                        lead.empresa ? 
-                                            <div className="col-md-3 text-truncate">
-                                                <div className="d-flex justify-content-start">
-                                                    <SymbolIcon tipo = 'info' urlIcon = '/images/svg/Building.svg' />
-                                                    <div>
-                                                        <div className="font-size-h6 text-dark-75 font-weight-bolder">{lead.empresa.name}</div>
-                                                        <div className="font-size-sm text-muted font-weight-bold mt-1">Empresa</div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        : ''
-                                    }
-                                    <div className="col-md-3 text-truncate">
-                                        <div className="d-flex justify-content-start mr-2">
+                                <div className = "row mx-auto mt-10 col-md-12">
+                                    <div className="col-md-6 form-group">
+                                        <div className="d-flex justify-content-start">
                                             <SymbolIcon tipo = 'primary' urlIcon = '/images/svg/iPhone-X.svg' />
                                             <div>
                                                 <a target="_blank" href={`tel:+${lead.telefono}`} rel="noopener noreferrer"
-                                                    className="font-size-h6 text-dark-75 font-weight-bolder text-hover-primary">
+                                                    className="font-size-lg text-dark-75 font-weight-bolder text-hover-primary">
                                                     { lead.telefono }
                                                 </a>
                                                 <div className="font-size-sm text-muted font-weight-bold mt-1">TELÉFONO</div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-md-3 text-truncate">
-                                        <div className="d-flex justify-content-start mr-2">
+                                    <div className="col-md-6 form-group">
+                                        <div className="d-flex justify-content-start">
                                             <SymbolIcon tipo = 'info' urlIcon = '/images/svg/Box1.svg' />
                                             <div>
-                                                <div className="font-size-h6 text-dark-75 font-weight-bolder"><Moment format="DD/MM/YYYY">{lead.created_at}</Moment></div>
+                                                <div className="font-size-lg text-dark-75 font-weight-bolder"><Moment format="DD/MM/YYYY">{lead.created_at}</Moment></div>
                                                 <div className="font-size-sm text-muted font-weight-bold mt-1">FECHA</div>
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="col-md-3 text-truncate">
-                                        <div className="d-flex justify-content-start mr-2">
-                                            <SymbolIcon tipo = 'primary' urlIcon = '/images/svg/Mail.svg' />
-                                            <div>
+                                    {
+                                        lead.origen && 
+                                        <div className="col-md-6 form-group">
+                                            <div className="d-flex justify-content-start">
+                                                <SymbolIcon tipo = 'primary' urlIcon = '/images/svg/Folder-cloud.svg' />
+                                                <div>
+                                                    <div className="font-size-lg text-dark-75 font-weight-bolder">{lead.origen.origen}</div>
+                                                    <div className="font-size-sm text-muted font-weight-bold mt-1">Origen</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    }
+                                    <div className="col-md-6 form-group">
+                                        <div className="d-flex justify-content-start">
+                                            <SymbolIcon tipo = 'info' urlIcon = '/images/svg/Mail.svg' />
+                                            <div className="text-truncate">
                                                 <a target="_blank" href={`mailto:+${lead.email}`} rel="noopener noreferrer"
-                                                    className="font-size-h6 text-dark-75 font-weight-bolder text-hover-primary">
+                                                    className="font-size-lg text-dark-75 font-weight-bolder text-hover-primary">
                                                     { lead.email }
                                                 </a>
                                                 <div className="font-size-sm text-muted font-weight-bold mt-1">CORREO ELECTRÓNICO</div>
@@ -2400,43 +2397,36 @@ class Crm extends Component {
                                         </div>
                                     </div>
                                     {
-                                        lead.origen ? 
-                                            <div className="col-md-3 mt-4 text-truncate">
-                                                <div className="d-flex justify-content-start mr-2">
-                                                    <SymbolIcon tipo = 'primary' urlIcon = '/images/svg/Folder-cloud.svg' />
-                                                    <div>
-                                                        <div className="font-size-h6 text-dark-75 font-weight-bolder">{lead.origen.origen}</div>
-                                                        <div className="font-size-sm text-muted font-weight-bold mt-1">Origen</div>
+                                        lead.servicios ?
+                                            lead.servicios.length > 0 ?
+                                                <div className="col-md-6 text-truncate form-group">
+                                                    <div className="d-flex justify-content-start">
+                                                        <SymbolIcon tipo = 'primary' urlIcon = '/images/svg/Tools.svg' />
+                                                        <div>
+                                                            <ul className="list-inline mb-0 font-size-lg text-dark-75 font-weight-bolder">
+                                                                {
+                                                                    lead.servicios.map((servicio, key) => {
+                                                                        return (
+                                                                            <li className="list-inline-item" key={key}>&#8226; {servicio.servicio}</li>
+                                                                        )
+                                                                    }) 
+                                                                }
+                                                            </ul>
+                                                            <div className="font-size-sm text-muted font-weight-bold mt-1">Servicios</div>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        : ''
+                                            :''
+                                        :''
                                     }
-                                    <div className="col-md-9 mt-4 text-truncate">
-                                        <div className="d-flex justify-content-start mr-2">
-                                            <SymbolIcon tipo = 'info' urlIcon = '/images/svg/Tools.svg' />
-                                            <div>
-                                                <ul className="list-inline mb-0 font-size-h6 text-dark-75 font-weight-bolder">
-                                                    {
-                                                        lead.servicios ? 
-                                                            lead.servicios.map((servicio, key) => {
-                                                                return (
-                                                                    <li className="list-inline-item" key={key}>&#8226; {servicio.servicio}</li>
-                                                                )
-                                                            })
-                                                        :
-                                                            <li className="list-inline-item">No hay servicios registrados</li>
-                                                    }
-                                                </ul>
-                                                <div className="font-size-sm text-muted font-weight-bold mt-1">Servicios</div>
+                                    {
+                                        lead.comentario &&
+                                        <div className = 'col-md-12'>
+                                            <div className="bg-gray-100 p-3 font-size-lg font-weight-light text-justify" >
+                                                <strong >Comentario: </strong>{lead.comentario}
                                             </div>
                                         </div>
-                                    </div>
-                                    <div className = 'col-md-12 mt-4'>
-                                        <div className="bg-gray-100 p-3 font-size-lg font-weight-light text-justify" >
-                                            <strong >Comentario: </strong>{lead.comentario}
-                                        </div>
-                                    </div>
+                                    }
                                 </div>
                             </Tab.Pane>
                         </Tab.Content>
