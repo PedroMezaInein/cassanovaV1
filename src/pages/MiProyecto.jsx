@@ -6,7 +6,7 @@ import axios from 'axios'
 import { URL_DEV, URL_ASSETS, TICKETS_ESTATUS } from '../constants'
 import { errorAlert, waitAlert, doneAlert, questionAlert, printResponseErrorAlert } from '../functions/alert'
 import { SelectSearch, SelectSearchGray, Input } from '../components/form-components'
-import { setOptions, setLabelTable } from '../functions/setters'
+import { setOptions, setLabelTable, setEmpresaLogo } from '../functions/setters'
 import { Card, Nav, Tab, Col, Row, NavDropdown, Navbar } from 'react-bootstrap'
 import { Button } from '../components/form-components'
 import Moment from 'react-moment'
@@ -713,15 +713,6 @@ class MiProyecto extends Component {
         })
     }
 
-    setEmpresaLogo =  proyecto => {
-        if(proyecto)
-            if(proyecto.empresa)
-                if(proyecto.empresa.logo_principal)
-                    if(proyecto.empresa.logo_principal.length)
-                        return proyecto.empresa.logo_principal[0].url
-        return ''
-    }
-
     setImage(proyecto){
         if(proyecto){
             if(proyecto.empresa.name==='INEIN'){
@@ -779,8 +770,8 @@ class MiProyecto extends Component {
                                             <Navbar expand="lg">
                                                 <Navbar.Brand target = '_blank' href = { this.getWebPage(proyecto)} className="overflow-hidden pr-3">
                                                     {
-                                                        this.setEmpresaLogo(proyecto) !== '' ?
-                                                            <img alt = '' width="120" src = { this.setEmpresaLogo(proyecto) }  />
+                                                        setEmpresaLogo(proyecto) !== '' ?
+                                                            <img alt = '' width="120" src = { setEmpresaLogo(proyecto) }  />
                                                         : ''
                                                     }
                                                 </Navbar.Brand>

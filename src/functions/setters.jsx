@@ -947,3 +947,12 @@ export function getEstados (){
         { name: "Zacatecas", value: "Zacatecas" },
     ]
 }
+
+export function setEmpresaLogo(lead) {
+    if(lead)
+        if(lead.empresa)
+            if(lead.empresa.logo_principal)
+                if(lead.empresa.logo_principal.length)
+                    return lead.empresa.logo_principal[0].url
+    return ''
+}
