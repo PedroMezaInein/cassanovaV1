@@ -7,6 +7,8 @@ import { URL_DEV } from '../../../constants'
 import { getMeses, getAños, getQuincena } from '../../../functions/setters'
 import { errorAlert, printResponseErrorAlert } from '../../../functions/alert'
 import { SelectSearchGray } from '../../../components/form-components'
+import Pusher from 'pusher-js'
+
 const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
 const horasPorTrabajar = 8
 class Empleados extends Component {
@@ -37,9 +39,21 @@ class Empleados extends Component {
             history.push('/')
         const { quincena, mes, año } = this.state
         let { mes_number } = this.state
-
         mes_number=this.mesNumber(mes)
         this.getEmpleadosChecador(quincena, mes_number, año)
+        if(process.env.NODE_ENV === 'production'){
+            console.log('PUSHER')
+            const pusher = new Pusher('112ff49dfbf7dccb6934', {
+                cluster: 'us2',
+                encrypted: false
+            });
+            const channel = pusher.subscribe('rrhh-checador');
+            channel.bind('App\\Events\\UsuarioChecando', data => {
+                let { mes, quincena, mes_number, año} = this.state
+                mes_number=this.mesNumber(mes)
+                this.getEmpleadosChecador(quincena, mes_number, año)
+            });
+        }
     }
     getEmpleadosChecador = async(quincena, mes, año) => {
         const { access_token } = this.props.authUser
