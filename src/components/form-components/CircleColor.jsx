@@ -11,7 +11,6 @@ class CircleColor extends Component {
     render() {
         const {onChange, placeholder, colors, width, circlesize, value, classlabel, classdiv, swal } = this.props
         const { valor } =  this.state
-        console.log(value)
         return (
             <div className={`${classdiv}`}>
                 <div className={`col-form-label ${classlabel}`}>{placeholder}</div>

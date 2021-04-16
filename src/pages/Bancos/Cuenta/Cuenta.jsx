@@ -173,7 +173,6 @@ class Cuenta extends Component {
     setCuentas = cuentas => {
         const { key } = this.state
         let keyTab = key
-        console.log(keyTab)
         let aux = []
         cuentas.map((cuenta, key) => {
             aux.push({

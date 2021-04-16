@@ -1610,7 +1610,6 @@ class Proyectos extends Component {
                 .on('httpUploadProgress', (evt) => {})
                 .send((err)=>{
                     if(err)
-                        console.log(err, 'error')
                 })
         }) */
         await axios.post(URL_DEV + 'proyectos/' + proyecto.id + '/adjuntos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}`}, 

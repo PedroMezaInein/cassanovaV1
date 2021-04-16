@@ -101,7 +101,6 @@ class ParrillaContenidoForm extends Component {
         const { options, form, onChange, onSubmit, formeditado, activeKey, onChangeModalTab, addComentario, evento, handleChange, deleteContenido,
             title, addAdjunto, handleChangeSubmit, onClickDelete, onClickFacebookPost, post, ...props } = this.props
         const { itemsPerPage, activePage } = this.state
-        console.log(form)
         return (
             <Tab.Container activeKey={activeKey} >
                 <div className='d-flex justify-content-between'>
