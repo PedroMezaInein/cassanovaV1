@@ -585,11 +585,13 @@ export const INGRESOS_COLUMNS = [
     },
     {
         Header: 'Área',
-        accessor: 'area'
+        accessor: 'area',
+        customRender: true
     },
     {
         Header: 'Sub-A',
-        accessor: 'subarea'
+        accessor: 'subarea',
+        customRender: true
     },
     {
         Header: 'Total',
@@ -650,11 +652,13 @@ export const EGRESOS_COLUMNS = [
     },    
     {
         Header: 'Área',
-        accessor: 'area'
+        accessor: 'area',
+        customRender: true
     },
     {
         Header: 'Sub-Área',
-        accessor: 'subarea'
+        accessor: 'subarea',
+        customRender: true
     },
     {
         Header: 'Monto',
@@ -1118,11 +1122,13 @@ export const VENTAS_COLUMNS = [
     },
     {
         Header: 'Área',
-        accessor: 'area'
+        accessor: 'area',
+        customRender: true
     },
     {
         Header: 'Sub-A',
-        accessor: 'subarea'
+        accessor: 'subarea',
+        customRender: true
     },
     {
         Header: 'Total',
@@ -1187,11 +1193,13 @@ export const COMPRAS_COLUMNS = [
     },
     {
         Header: 'Área',
-        accessor: 'area'
+        accessor: 'area',
+        customRender: true
     },
     {
         Header: 'Sub-A',
-        accessor: 'subarea'
+        accessor: 'subarea',
+        customRender: true
     },
     {
         Header: 'Monto',

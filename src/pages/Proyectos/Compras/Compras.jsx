@@ -7,7 +7,7 @@ import { URL_DEV, COMPRAS_COLUMNS } from '../../../constants'
 import { setOptions, setSelectOptions, setTextTable, setDateTableReactDom, setMoneyTable, setArrayTable, setTextTableCenter, setTextTableReactDom } from '../../../functions/setters'
 import { errorAlert, waitAlert, createAlert, printResponseErrorAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis, createAlertSA2WithActionOnClose, customInputAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
-import { Button, FileInput, SelectSearchGray, CalendarDaySwal, InputGray } from '../../../components/form-components'
+import { Button, FileInput, SelectSearchGray, CalendarDaySwal, InputGray, DoubleSelectSearchGray } from '../../../components/form-components'
 import { Modal, ModalDelete } from '../../../components/singles'
 import { FacturaTable } from '../../../components/tables'
 import { ComprasCard } from '../../../components/cards'
@@ -439,8 +439,8 @@ class Compras extends Component {
                     impuesto: setTextTableReactDom(compra.tipo_impuesto ? compra.tipo_impuesto.tipo : 'Sin definir', this.doubleClick, compra, 'tipoImpuesto', 'text-center'),
                     tipoPago: setTextTableReactDom(compra.tipo_pago.tipo, this.doubleClick, compra, 'tipoPago', 'text-center'),
                     descripcion: setTextTableReactDom(compra.descripcion !== null ? compra.descripcion :'', this.doubleClick, compra, 'descripcion', 'text-justify'),
-                    area: renderToString(setTextTableCenter(compra.subarea ? compra.subarea.area ? compra.subarea.area.nombre : '' : '')),
-                    subarea: renderToString(setTextTableCenter(compra.subarea ? compra.subarea.nombre : '')),
+                    area: setTextTableReactDom(compra.subarea ? compra.subarea.area ? compra.subarea.area.nombre : '' : '', this.doubleClick, compra, 'area', 'text-center'),
+                    subarea: setTextTableReactDom(compra.subarea ? compra.subarea.nombre : '', this.doubleClick, compra, 'subarea', 'text-center'),
                     estatusCompra: setTextTableReactDom(compra.estatus_compra ? compra.estatus_compra.estatus : '', this.doubleClick, compra, 'estatusCompra', 'text-center'),
                     total: renderToString(setMoneyTable(compra.total)),
                     fecha: setDateTableReactDom(compra.created_at, this.doubleClick, compra, 'fecha', 'text-center'),
@@ -452,30 +452,44 @@ class Compras extends Component {
         })
         return aux
     }
+
     doubleClick = (data, tipo) => {
-        const { form } = this.state
+        const { form, options } = this.state
         switch(tipo){
             case 'proyecto':
+            case 'subarea':
                 if(data[tipo])
                     form[tipo] = data[tipo].id.toString()
+                break
+            case 'area':
+                if(data.subarea){
+                    if(data.subarea.area){
+                        form.area = data.subarea.area.id.toString()
+                        form.subarea = data.subarea.id.toString()
+                        options.subareas = setOptions(data.subarea.area.subareas, 'nombre', 'id')
+                    }
+                }
                 break
             case 'fecha':
                 form.fecha = new Date(data.created_at)
                 break
             case 'tipoImpuesto':
-                form[tipo] = data.tipo_impuesto.id
+                if(data.tipo_impuesto)
+                    form[tipo] = data.tipo_impuesto.id
                 break
             case 'tipoPago':
-                form[tipo] = data.tipo_pago.id
+                if(data.tipo_pago)
+                    form[tipo] = data.tipo_pago.id
                 break
             case 'estatusCompra':
-                form[tipo] = data.estatus_compra.id
+                if(data.estatus_compra)
+                    form[tipo] = data.estatus_compra.id
                 break
             default:
                 form[tipo] = data[tipo]
                 break
         }
-        this.setState({form})
+        this.setState({form, options})
         customInputAlert(
             <div>
                 <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
@@ -509,18 +523,20 @@ class Compras extends Component {
                     :<></>
                 }
                 {
-                    tipo === 'fecha' ?
+                    tipo === 'fecha' &&
                         <CalendarDaySwal value = { form[tipo] } onChange = { (e) => {  this.onChangeSwal(e.target.value, tipo)} } name = { tipo } date = { form[tipo] } withformgroup={0} />
-                    :<></>
                 }
                 {
-                    // ||(tipo === 'cliente') || (tipo === 'empresa') || (tipo === 'tipo_contrato') 
-                    (tipo === 'proyecto')  ?
-                        <SelectSearchGray options = { this.setOptions(data, tipo) }
-                        onChange = { (value) => { this.onChangeSwal(value, tipo)} } name = { tipo }
-                        value = { form[tipo] } customdiv="mb-2 mt-7" requirevalidation={1} 
-                        placeholder={this.setSwalPlaceholder(tipo)}/>
-                    :<></>
+                    (tipo === 'proyecto') || (tipo === 'subarea') ?
+                        <SelectSearchGray options = { this.setOptions(data, tipo) } value = { form[tipo] } customdiv = "mb-2 mt-7" requirevalidation = { 1 } 
+                            onChange = { (value) => { this.onChangeSwal(value, tipo)} } name = { tipo } placeholder={this.setSwalPlaceholder(tipo)}/>
+                    : <></>
+                }
+                {
+                    tipo === 'area' &&
+                        <DoubleSelectSearchGray options = { options } form = { form } onChange = { this.onChangeSwal } 
+                            one = { { placeholder: 'SELECCIONA EL ÁREA', name: 'area', opciones: 'areas'} } 
+                            two = { { placeholder: 'SELECCIONA EL SUBÁREA', name: 'subarea', opciones: 'subareas'} }/>
                 }
             </div>,
             <Update />,
@@ -547,23 +563,6 @@ class Compras extends Component {
         form[tipo] = value
         this.setState({...this.state, form})
     }
-    patchCompras = async( data,tipo ) => {
-        const { access_token } = this.props.authUser
-        const { form } = this.state
-        let value = form[tipo]
-        waitAlert()
-        await axios.put(`${URL_DEV}v2/proyectos/compras/${tipo}/${data.id}`, 
-            { value: value }, 
-            { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                this.getComprasAxios()
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El rendimiento fue editado con éxito.')
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
     
     setOptions = (data, tipo) => {
         const { options } = this.state
@@ -576,6 +575,12 @@ class Compras extends Component {
                 return options.tiposImpuestos
             case 'proyecto':
                 return options.proyectos
+            case 'subarea':
+                if(data.subarea)
+                    if(data.subarea.area)
+                        if(data.subarea.area.subareas)
+                            return setOptions(data.subarea.area.subareas, 'nombre', 'id')
+                return []
             default: return []
         }
     }
@@ -1011,8 +1016,33 @@ class Compras extends Component {
             (response) => {
                 this.setState({ ...this.state })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Archivo adjuntado con éxito.')
-            },
-            (error) => { printResponseErrorAlert(error) }
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    
+    patchCompras = async( data,tipo ) => {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        let value = ''
+        switch(tipo){
+            case 'area':
+                value = { area: form.area, subarea: form.subarea }
+                break
+            default:
+                value = form[tipo]
+                break
+        }
+        waitAlert()
+        await axios.put(`${URL_DEV}v2/proyectos/compras/${tipo}/${data.id}`, 
+            { value: value }, 
+            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.getComprasAxios()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'El rendimiento fue editado con éxito.')
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -1020,15 +1050,11 @@ class Compras extends Component {
     }
 
     render() {
-        const {modalDelete, modalFacturas, modalAdjuntos, form, options, compras, facturas, compra, data, modalSee, modalFacturaExtranjera } = this.state
+        const {modalDelete, modalFacturas, modalAdjuntos, form, options, facturas, compra, modalSee, modalFacturaExtranjera } = this.state
         return (
             <Layout active={'proyectos'}  {...this.props}>
-                <NewTableServerRender columns={COMPRAS_COLUMNS} data={compras}
-                    title='Compras' subtitle='Listado de compras'
-                    url='/proyectos/compras/add'
-                    mostrar_boton={true}
-                    abrir_modal={false}
-                    mostrar_acciones={true}
+                <NewTableServerRender columns = { COMPRAS_COLUMNS } title = 'Compras' subtitle = 'Listado de compras' url = '/proyectos/compras/add'
+                    mostrar_boton = { true } abrir_modal = { false } mostrar_acciones = { true } idTable = 'compras' exportar_boton = { true }
                     actions={{
                         'edit': { function: this.changePageEdit },
                         'delete': { function: this.openModalDelete },
@@ -1037,29 +1063,12 @@ class Compras extends Component {
                         'see': { function: this.openModalSee },
                         'facturaExtranjera': { function: this.openFacturaExtranjera}
                     }}
-                    elements={data.compras}
-                    idTable='compras'
-                    exportar_boton={true}
-                    onClickExport={() => this.exportComprasAxios()}
-                    accessToken={this.props.authUser.access_token}
-                    setter={this.setCompras}
-                    urlRender = { `${URL_DEV}v2/proyectos/compras`}
-                    validateFactura={true}
-                    tipo_validacion='compras'
-                    cardTable='cardTable'
-                    cardTableHeader='cardTableHeader'
-                    cardBody='cardBody'
-                />
-                <ModalDelete title={"¿Estás seguro que deseas eliminar la compra?"} show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteCompraAxios() }}>
-                </ModalDelete>
-                <Modal size="xl" title={"Facturas"} show={modalFacturas} handleClose={this.handleCloseFacturas}>
-                    {/* <div className="form-group row form-group-marginless pt-4">
-                        <div className="col-md-12">
-                            <ProgressBar animated label={`${porcentaje}`}
-                                variant={porcentaje > 100 ? 'danger' : porcentaje > 75 ? 'success' : 'warning'}
-                                now={porcentaje} />
-                        </div>
-                    </div> */}
+                    onClickExport = { () => this.exportComprasAxios() } accessToken = { this.props.authUser.access_token } setter = { this.setCompras }
+                    urlRender = { `${URL_DEV}v2/proyectos/compras`} validateFactura = { true } tipo_validacion = 'compras' cardTable = 'cardTable'
+                    cardTableHeader = 'cardTableHeader' cardBody = 'cardBody' />
+                <ModalDelete title = "¿Estás seguro que deseas eliminar la compra?" show = { modalDelete } handleClose = { this.handleCloseDelete } 
+                    onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteCompraAxios() }} />
+                <Modal size = "xl" title = "Facturas" show = { modalFacturas } handleClose = { this.handleCloseFacturas } >
                     <Form onSubmit={(e) => { e.preventDefault(); waitAlert(); this.sendFacturaAxios(); }}>
                         <div className="row mx-0 pt-4">
                             <div className="col-md-6 px-2">
