@@ -6,7 +6,7 @@ import { URL_DEV, EGRESOS_COLUMNS } from '../../../constants'
 import { setOptions, setTextTable, setDateTableReactDom, setMoneyTable, setArrayTable, setAdjuntosList, setSelectOptions, setTextTableCenter, setTextTableReactDom } from '../../../functions/setters'
 import { errorAlert, waitAlert, createAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis, createAlertSA2WithActionOnClose, printResponseErrorAlert, customInputAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
-import { Button, FileInput, InputGray, CalendarDaySwal } from '../../../components/form-components'
+import { Button, FileInput, InputGray, CalendarDaySwal, SelectSearchGray, DoubleSelectSearchGray } from '../../../components/form-components'
 import { Modal, ModalDelete } from '../../../components/singles'
 import { FacturaTable } from '../../../components/tables'
 import { Form } from 'react-bootstrap'
@@ -403,8 +403,8 @@ class egresos extends Component {
                         impuesto: setTextTableReactDom(egreso.tipo_impuesto ? egreso.tipo_impuesto.tipo : 'Sin definir', this.doubleClick, egreso, 'tipoImpuesto', 'text-center'),
                         tipoPago: setTextTableReactDom(egreso.tipo_pago.tipo, this.doubleClick, egreso, 'tipoPago', 'text-center'),
                         descripcion: setTextTableReactDom(egreso.descripcion !== null ? egreso.descripcion :'', this.doubleClick, egreso, 'descripcion', 'text-justify'),
-                        area: renderToString(setTextTableCenter(egreso.subarea ? egreso.subarea.area.nombre : '')),
-                        subarea: renderToString(setTextTableCenter(egreso.subarea ? egreso.subarea.nombre : '')),
+                        area: setTextTableReactDom(egreso.subarea ? egreso.subarea.area ? egreso.subarea.area.nombre : '' : '', this.doubleClick, egreso, 'area', 'text-center'),
+                        subarea: setTextTableReactDom(egreso.subarea ? egreso.subarea.nombre : '', this.doubleClick, egreso, 'subarea', 'text-center'),
                         estatusCompra: setTextTableReactDom(egreso.estatus_compra ? egreso.estatus_compra.estatus : '', this.doubleClick, egreso, 'estatusCompra', 'text-center'),
                         adjuntos: renderToString(setArrayTable(_aux)),
                         fecha: setDateTableReactDom(egreso.created_at, this.doubleClick, egreso, 'fecha', 'text-center'),
@@ -417,25 +417,41 @@ class egresos extends Component {
         return aux
     }
     doubleClick = (data, tipo) => {
-        const { form } = this.state
+        const { form, options } = this.state
         switch(tipo){
+            case 'subarea':
+                if(data[tipo])
+                    form[tipo] = data[tipo].id.toString()
+                break
+            case 'area':
+                if(data.subarea){
+                    if(data.subarea.area){
+                        form.area = data.subarea.area.id.toString()
+                        form.subarea = data.subarea.id.toString()
+                        options.subareas = setOptions(data.subarea.area.subareas, 'nombre', 'id')
+                    }
+                }
+                break
             case 'fecha':
                 form.fecha = new Date(data.created_at)
                 break
             case 'tipoImpuesto':
-                form[tipo] = data.tipo_impuesto.id
+                if(data.tipo_impuesto)
+                    form[tipo] = data.tipo_impuesto.id
                 break
             case 'tipoPago':
-                form[tipo] = data.tipo_pago.id
+                if(data.tipo_pago)
+                    form[tipo] = data.tipo_pago.id
                 break
             case 'estatusCompra':
-                form[tipo] = data.estatus_compra.id
+                if(data.estatus_compra)
+                    form[tipo] = data.estatus_compra.id
                 break
             default:
                 form[tipo] = data[tipo]
                 break
         }
-        this.setState({form})
+        this.setState({form, options})
         customInputAlert(
             <div>
                 <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
@@ -472,6 +488,19 @@ class egresos extends Component {
                     tipo === 'fecha' ?
                         <CalendarDaySwal value = { form[tipo] } onChange = { (e) => {  this.onChangeSwal(e.target.value, tipo)} } name = { tipo } date = { form[tipo] } withformgroup={0} />
                     :<></>
+                }
+                {
+                    (tipo === 'subarea')  &&
+                        <SelectSearchGray options = { this.setOptions(data, tipo) }
+                        onChange = { (value) => { this.onChangeSwal(value, tipo)} } name = { tipo }
+                        value = { form[tipo] } customdiv="mb-2 mt-7" requirevalidation={1} 
+                        placeholder={this.setSwalPlaceholder(tipo)}/>
+                }
+                {
+                    tipo === 'area' &&
+                        <DoubleSelectSearchGray options = { options } form = { form } onChange = { this.onChangeSwal } 
+                            one = { { placeholder: 'SELECCIONA EL ÁREA', name: 'area', opciones: 'areas'} } 
+                            two = { { placeholder: 'SELECCIONA EL SUBÁREA', name: 'subarea', opciones: 'subareas'} }/>
                 }
             </div>,
             <Update />,
@@ -523,6 +552,12 @@ class egresos extends Component {
                 return options.tiposPagos
             case 'tipoImpuesto':
                 return options.tiposImpuestos
+            case 'subarea':
+                if(data.subarea)
+                    if(data.subarea.area)
+                        if(data.subarea.area.subareas)
+                            return setOptions(data.subarea.area.subareas, 'nombre', 'id')
+                return []
             default: return []
         }
     }
@@ -1080,15 +1115,12 @@ class egresos extends Component {
         })
     }
     render() {
-        const { egresos, modalDelete, modalFacturas, modalAdjuntos, facturas, form, data, options, modalSee, egreso, modalFacturaExtranjera} = this.state
+        const { modalDelete, modalFacturas, modalAdjuntos, facturas, form, options, modalSee, egreso, modalFacturaExtranjera } = this.state
         return (
-            <Layout active={'administracion'}  {...this.props}>
-                <NewTableServerRender columns={EGRESOS_COLUMNS} data={egresos}
-                    title='Egresos' subtitle='Listado de egresos'
-                    url='/administracion/egresos/add'
-                    mostrar_boton={true}
-                    abrir_modal={false}
-                    mostrar_acciones={true}
+            <Layout active = 'administracion'  {...this.props}>
+
+                <NewTableServerRender columns = { EGRESOS_COLUMNS } title = 'Egresos' subtitle = 'Listado de egresos' url = '/administracion/egresos/add'
+                    mostrar_boton = { true } abrir_modal = { false } mostrar_acciones = { true } idTable = 'egresos' exportar_boton = { true }
                     actions={{
                         'edit': { function: this.changePageEdit },
                         'delete': { function: this.openModalDelete },
@@ -1097,21 +1129,12 @@ class egresos extends Component {
                         'see': { function: this.openModalSee },
                         'facturaExtranjera': { function: this.openFacturaExtranjera}
                     }}
-                    elements={data.egresos}
-                    idTable='egresos'
-                    exportar_boton={true}
-                    onClickExport={() => this.exportEgresosAxios()}
-                    accessToken={this.props.authUser.access_token}
-                    setter={this.setEgresos}
-                    urlRender = { `${URL_DEV}v2/administracion/egresos`}
-                    validateFactura={true}
-                    tipo_validacion='compras'
-                    cardTable='cardTable'
-                    cardTableHeader='cardTableHeader'
-                    cardBody='cardBody'
-                />
-                <ModalDelete title={"¿Estás seguro que deseas eliminar el egreso?"} show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteEgresoAxios() }}>
-                </ModalDelete>
+                    onClickExport = { () => this.exportEgresosAxios() } accessToken = { this.props.authUser.access_token } setter = { this.setEgresos }
+                    urlRender = { `${URL_DEV}v2/administracion/egresos`} validateFactura = { true } tipo_validacion = 'compras' cardTable = 'cardTable'
+                    cardTableHeader = 'cardTableHeader' cardBody = 'cardBody' />
+
+                <ModalDelete title = "¿Estás seguro que deseas eliminar el egreso?" show = { modalDelete } handleClose = { this.handleCloseDelete } 
+                    onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteEgresoAxios() } } />
 
                 <Modal size="xl" title={"Facturas"} show={modalFacturas} handleClose={this.handleCloseFacturas}>
                     {/* <div className="form-group row form-group-marginless pt-4">
