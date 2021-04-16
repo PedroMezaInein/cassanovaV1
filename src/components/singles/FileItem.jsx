@@ -60,8 +60,8 @@ class FileItem extends Component {
     }
 
     render() {
-        const { item, onClickDelete, anotherDate } = this.props
-        return(<tr>
+        const { item, onClickDelete, anotherDate, secondDate } = this.props
+        return (<tr>
             <td className="pl-1">
                 <a href={item.url} target='_blank' rel="noopener noreferrer">
                     <div className="row mx-0 row-paddingless">
@@ -79,19 +79,30 @@ class FileItem extends Component {
                     </Moment>
                 </span>
             </td>
-            {anotherDate?<td className="text-center">
-                <span className="text-muted font-weight-bold">
-                    <Moment format="DD/MM/YYYY">
-                        {anotherDate}
-                    </Moment>
-                </span>
-            </td>:<td></td>}
-            {onClickDelete &&(<td className="pr-0 text-right">
+            {
+                secondDate ?
+                    anotherDate.length === 0 ?
+                        <td className="text-center">
+                            <span className="text-muted font-weight-bold">
+                                -
+                            </span>
+                        </td>
+                        :
+                        <td className="text-center">
+                            <span className="text-muted font-weight-bold">
+                                <Moment format="DD/MM/YYYY">
+                                    {anotherDate}
+                                </Moment>
+                            </span>
+                        </td>
+                    : ''
+            }
+            {onClickDelete && (<td className="pr-0 text-right">
                 <span className='btn btn-icon btn-s text-danger text-hover-danger my-2' onClick={(e) => { e.preventDefault(); onClickDelete(item) }} >
                     <i className="fas fa-trash icon-md text-muted text-hover-danger"></i>
                 </span>
             </td>)}
-            </tr>
+        </tr>
         )
     }
 }

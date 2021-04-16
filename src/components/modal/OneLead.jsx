@@ -162,7 +162,7 @@ class OneLead extends Component{
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        {this.hasPresupuesto()?lead.presupuesto_diseño.pdfs.map((pdf, key) => {return(<FileItem item = { pdf } key = { key } anotherDate = { pdf ? pdf.pivot ? pdf.pivot.fecha_envio ? pdf.pivot.fecha_envio : '' : '' : '' }/>)}):<tr className="text-center text-dark-75"><th className="pl-2" colSpan = "3" >NO HAY ADJUNTOS</th></tr>}
+                                        {this.hasPresupuesto()?lead.presupuesto_diseño.pdfs.map((pdf, key) => {return(<FileItem item = { pdf } key = { key } secondDate={true} anotherDate = { pdf ? pdf.pivot ? pdf.pivot.fecha_envio ? pdf.pivot.fecha_envio : '' : '' : '' }/>)}):<tr className="text-center text-dark-75"><th className="pl-2" colSpan = "3" >NO HAY ADJUNTOS</th></tr>}
                                     </tbody>
                                 </table>
                             </div>

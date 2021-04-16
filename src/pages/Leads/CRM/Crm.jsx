@@ -2296,7 +2296,7 @@ class Crm extends Component {
                                                             lead.presupuesto_diseño.pdfs.length > 0 ?
                                                                 lead.presupuesto_diseño.pdfs.map((pdf, key) => {
                                                                     return(
-                                                                        <FileItem item = { pdf } key = { key }
+                                                                        <FileItem item = { pdf } key = { key } secondDate={true} 
                                                                             anotherDate = { pdf ? pdf.pivot ? pdf.pivot.fecha_envio ? pdf.pivot.fecha_envio : '' : '' : '' } />
                                                                     )
                                                                 })
