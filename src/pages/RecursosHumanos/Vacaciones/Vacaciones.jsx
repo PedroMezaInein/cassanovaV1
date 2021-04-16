@@ -462,23 +462,15 @@ class Vacaciones extends Component {
     async editVacacionesAxios(vacacion, estatus){
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.put(URL_DEV + 'vacaciones/'+vacacion.id, {estatus: estatus}, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.put(`${URL_DEV}v2/rh/vacaciones/${vacacion.id}`, {estatus: estatus}, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                
-                if(estatus === 'Aceptadas'){
+                if(estatus === 'Aceptadas')
                     doneAlert('Vacaciones aceptadas con éxito')
-                }
-                if(estatus === 'Rechazadas'){
+                if(estatus === 'Rechazadas')
                     doneAlert('Vacaciones rechazadas con éxito')
-                }
-
                 this.getVacaciones();
-                this.handleClose()
-
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                this.handleClose();
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
