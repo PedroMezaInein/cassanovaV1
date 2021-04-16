@@ -59,7 +59,6 @@ class Layout extends Component {
         }
         /* const channelMessage = pusher.subscribe('Message.User.'+user.id);
         channelMessage.bind('App\\Events\\NewMessage', data => {
-            console.log('DATA', data)
         }); */
     }
 

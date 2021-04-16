@@ -111,7 +111,6 @@ class Remisiones extends Component {
         return aux
     }
     doubleClick = (data, tipo) => {
-        console.log(data)
         const { form, options } = this.state
         switch(tipo){
             case 'proyecto':

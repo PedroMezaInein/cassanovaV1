@@ -12,7 +12,6 @@ export default class CalendarDay extends Component {
 
     componentDidMount(){
         const { date } = this.props
-        console.log(date, 'DATE DID MOUNT')
         let newDate = new Date(date)
         let aux = Date.parse(newDate)
         this.setState({
@@ -25,7 +24,6 @@ export default class CalendarDay extends Component {
     componentDidUpdate(nextProps){
         if (nextProps.date !== this.props.date){
             const { date } = this.props
-            console.log(date, 'DATE DID UPDATE')
             this.setState({
                 ...this.state,
                 date: new Date(date),

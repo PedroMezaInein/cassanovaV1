@@ -243,35 +243,6 @@ class SolicitudCompra extends Component {
         )
     }
 
-    // onChangeFact = e => {
-    //     const { name, value, checked, type } = e.target
-    //     console.log(name, value, checked, type)
-    //     const { form } = this.state
-    //     console.log(form[name])
-        
-    //     console.log( form.factura)
-    //     form[name] = value
-        
-    //     form.factura=value   
-
-    //     // for(let i=0; i<inputs.length; i++){
-    //     //     let inputJq = $(inputs[i])
-    //     //     if(inputJq.val()===value){
-    //     //         inputJq.attr('checked', 'checked');
-    //     //     }else{
-    //     //         inputJq.removeAttr('checked')
-    //     //     }
-    //     // }
-    //     console.log( form.factura)
-
-    //     // if (type === 'radio') {
-    //     //     form[name] = checked
-    //     // }
-    //     this.setState({  
-    //         form
-    //     })
-    // }
-
     setSwalPlaceholder = (tipo) => {
         switch(tipo){
             case 'proyecto':

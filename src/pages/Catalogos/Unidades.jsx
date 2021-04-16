@@ -67,7 +67,6 @@ class Unidades extends Component {
         return aux
     }
     doubleClick = (data, tipo) => {
-        console.log(data)
         const { form } = this.state
         switch(tipo){
             default:
@@ -243,7 +242,6 @@ class Unidades extends Component {
     async updateUnidadAxios() {
         const { access_token } = this.props.authUser
         const { form, unidad, modal } = this.state
-        console.log(form, 'FORM')
         await axios.put(URL_DEV + 'unidades/' + unidad.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 modal.form = false
