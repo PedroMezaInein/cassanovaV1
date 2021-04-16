@@ -3,15 +3,8 @@ import { Tab, Nav } from 'react-bootstrap'
 import { printDates } from '../../../functions/printers'
 import ComentarioForm from '../../forms/ComentarioForm'
 import TimelineComments from '../../forms/TimelineComments'
+import { setEmpresaLogo } from '../../../functions/setters'
 export default class InformacionProyecto extends Component {
-    setEmpresaLogo = proyecto => {
-        if (proyecto)
-            if (proyecto.empresa)
-                if (proyecto.empresa.logo_principal)
-                    if (proyecto.empresa.logo_principal.length)
-                        return proyecto.empresa.logo_principal[0].url
-        return ''
-    }
 
     hasComentarios = (proyecto) => {
         if(proyecto)
@@ -68,8 +61,8 @@ export default class InformacionProyecto extends Component {
                                             <tr>
                                                 <th colSpan="3" className="text-center pt-0">
                                                     {
-                                                        this.setEmpresaLogo(proyecto) !== '' ?
-                                                            <img alt='' width="170" src={this.setEmpresaLogo(proyecto)} />
+                                                        setEmpresaLogo(proyecto) !== '' ?
+                                                            <img alt='' width="170" src={setEmpresaLogo(proyecto)} />
                                                             : ''
                                                     }
                                                 </th>
