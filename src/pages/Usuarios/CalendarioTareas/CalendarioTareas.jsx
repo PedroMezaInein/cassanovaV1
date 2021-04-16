@@ -52,7 +52,7 @@ class Calendario extends Component {
             });
             const channel = pusher.subscribe('responsable-tarea');
             channel.bind('App\\Events\\ResponsableTarea', data => {
-                const { usuario, tarea } = data
+                const { usuario } = data
                 const { user } = this.props.authUser
                 const { tipo } = this.state
                 if(user.id === usuario.id)
@@ -144,7 +144,7 @@ class Calendario extends Component {
                 Swal.close()
                 const { tareas } = response.data
                 let aux = []
-                tareas.map((tarea, index) => { aux.push( { title: tarea.titulo, start: tarea.fecha_limite, end: tarea.fecha_limite, tarea: tarea } ) })
+                tareas.forEach((tarea) => {  aux.push( { title: tarea.titulo, start: tarea.fecha_limite, end: tarea.fecha_limite, tarea: tarea } )  })
                 this.setState({ ...this.state, events: aux, tipo: tipo })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -205,7 +205,7 @@ class Calendario extends Component {
         const { tarea } = eventInfo.event._def.extendedProps
         return (
             <OverlayTrigger overlay={<Tooltip>{eventInfo.event.title}</Tooltip>}>
-                <div className="container p-1 bg-info rounded-xl" onClick={(e) => { e.preventDefault(); this.getTareas(tarea) }}>
+                <div className="text-hover container p-1 bg-info rounded-xl" onClick={(e) => { e.preventDefault(); this.getTareas(tarea) }}>
                     <div className="row mx-0 row-paddingless">
                         <div className="col-md-auto mr-2 text-truncate">
                             {
@@ -214,7 +214,7 @@ class Calendario extends Component {
                                         tarea.responsables.map((responsable, key) => {
                                             return(
                                                 <div className="symbol symbol-25 symbol-circle border-1" key={key}>
-                                                    <img src={responsable.avatar ? responsable.avatar : "/default.jpg"}/>
+                                                    <img alt = 'user-avatar' src={responsable.avatar ? responsable.avatar : "/default.jpg"}/>
                                                 </div>
                                             )
                                         })

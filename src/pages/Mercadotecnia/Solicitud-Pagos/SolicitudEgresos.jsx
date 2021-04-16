@@ -13,7 +13,7 @@ import { SolicitudEgresoCard } from '../../../components/cards'
 import { Update } from '../../../components/Lottie'
 import { printSwalHeader } from '../../../functions/printers'
 import { Form } from 'react-bootstrap'
-import { CalendarDaySwal, SelectSearchGray, InputGray, InputNumberGray, DoubleSelectSearchGray } from '../../../components/form-components'
+import { CalendarDaySwal, SelectSearchGray, InputGray, InputNumberGray } from '../../../components/form-components'
 import moment from 'moment'
 import { replaceMoney } from '../../../functions/functions'
 const $ = require('jquery');
