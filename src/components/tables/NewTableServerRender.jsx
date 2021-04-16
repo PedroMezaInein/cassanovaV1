@@ -71,6 +71,7 @@ class TableButton extends Component{
                                         </Dropdown.Item>
                                     )
                                 }
+                                return ''
                             })
                         }
                     </DropdownButton>
@@ -91,6 +92,7 @@ class TableButton extends Component{
                                     </button>
                                 )
                             }
+                            return ''
                         })
                     }
                     
@@ -274,10 +276,10 @@ class NewTableServerRender extends Component {
                 details: {
                     renderer: function(api, rowIdx, columns){ 
                         let arregloRendered = []
-                        let hiddenCount = 0
+                        /* var hiddenCount = 0 */
                         var data = $.map( columns, function ( col, i ) {
                             if(col.hidden){
-                                hiddenCount++;
+                                /* hiddenCount++; */
                                 if(renderedHeader.includes(i)){
                                     // console.log(col,'col')
                                     let valorCelda = ''
@@ -310,15 +312,15 @@ class NewTableServerRender extends Component {
                                         }
                                     }
                                     arregloRendered.push(col)
-                                    return '<tr data-dt-row="'+col.rowIndex+'" data-dt-column="'+col.columnIndex+'">'+
-                                        '<td>'+col.title+':'+'</td> '+
-                                        '<td>'+ valorCelda+'</td>'+
-                                    '</tr>'
+                                    return `<tr data-dt-row="${col.rowIndex}" data-dt-column="${col.columnIndex}">`+
+                                        `<td>${col.title}:</td>`+
+                                        `<td>${valorCelda}</td>`+
+                                    `</tr>`
                                 }else{
-                                    return '<tr data-dt-row="'+col.rowIndex+'" data-dt-column="'+col.columnIndex+'">'+
-                                        '<td>'+col.title+':'+'</td> '+
-                                        '<td> '+ col.data+'</td>'+
-                                    '</tr>'
+                                    return `<tr data-dt-row="${col.rowIndex}" data-dt-column="${col.columnIndex}">`+
+                                        `<td>${col.title}:</td>`+
+                                        `<td>${col.data}</td>`+
+                                    `</tr>`
                                 }
                             }
                         } ).join('');

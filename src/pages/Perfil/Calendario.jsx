@@ -9,7 +9,6 @@ import esLocale from '@fullcalendar/core/locales/es'
 import { Modal } from '../../components/singles'
 import { SolicitarVacacionesForm, EstatusForm, AgendarReunionGoogle } from "../../components/forms"
 import { errorAlert, printResponseErrorAlert, waitAlert, doneAlert, questionAlert, deleteAlert } from '../../functions/alert'
-import { countDaysWithoutWeekend } from '../../functions/functions'
 import { URL_DEV } from '../../constants'
 import bootstrapPlugin from '@fullcalendar/bootstrap'
 import { DropdownButton, Dropdown, Card, OverlayTrigger, Tooltip, Nav } from 'react-bootstrap'
@@ -27,6 +26,8 @@ class Calendario extends Component {
         disponibles: 0,
         events: [],
         formeditado: 0,
+        inicio: new Date(),
+        final: new Date(),
         modal: {
             solicitar_vacaciones: false,
             status_vacaciones:false,
@@ -224,63 +225,42 @@ class Calendario extends Component {
 
     getDiasDisponibles = (empleado, vacaciones_totales) => {
         /* const { empleado, vacaciones_totales } = this.state */
-        let contador = 0
+        let contador = empleado.vacaciones_disponibles
         let fecha_inicio_empleado = ''
+        let final = ''
+        let inicio = ''    
         if (empleado) {
-
-            fecha_inicio_empleado = new Date(empleado.fecha_inicio)
-            fecha_inicio_empleado.setDate(fecha_inicio_empleado.getDate() + 1)
-
+            fecha_inicio_empleado = new Date(moment(empleado.fecha_inicio))
             let mes = fecha_inicio_empleado.getMonth() + 1
-
-            if (mes.toString().length === 1) {
+            if (mes.toString().length === 1)  
                 mes = '0' + mes
-            }
-
             let dia = fecha_inicio_empleado.getDate()
             let now = new Date();
-            now.setDate(now.getDate() + 366)
-            let año = now.getFullYear();
-
-            let fecha_fin = new Date(mes + '/' + dia + '/' + año)
-            let fecha_inicio = new Date(mes + '/' + dia + '/' + (año - 1))
-
-            if (fecha_fin < fecha_inicio_empleado) {
-                fecha_fin = new Date(mes + '/' + dia + '/' + (año + 1))
-                fecha_inicio = new Date(mes + '/' + dia + '/' + año)
+            let año = new Date().getFullYear();
+            let verificador = new Date(mes + '/' + dia + '/' + año)
+            if(now > verificador){
+                inicio = verificador
+                final = new Date(mes + '/' + dia + '/' + (año + 1))
             }
-
-            vacaciones_totales.map((vacacion, key) => {
+            else{
+                final = verificador
+                inicio = new Date(mes + '/' + dia + '/' + (año - 1))
+            }
+            empleado.vacaciones.forEach((vacacion) => {
                 if (vacacion.estatus !== 'Rechazadas') {
-                    let vacacion_fecha_inicio = new Date(vacacion.fecha_inicio)
-                    let vacacion_fecha_fin = new Date(vacacion.fecha_fin)
-                    if (vacacion_fecha_inicio >= fecha_inicio && vacacion_fecha_inicio < fecha_fin && vacacion_fecha_fin >= fecha_inicio && vacacion_fecha_fin < fecha_fin)
-                        contador = contador + countDaysWithoutWeekend(vacacion_fecha_inicio, vacacion_fecha_fin)
-                    if (vacacion_fecha_inicio >= fecha_inicio && vacacion_fecha_inicio < fecha_fin && !(vacacion_fecha_fin >= fecha_inicio && vacacion_fecha_fin < fecha_fin)) {
-                        while (vacacion_fecha_inicio.getTime() >= vacacion_fecha_fin.getTime()) {
-                            if (vacacion_fecha_inicio >= fecha_inicio && vacacion_fecha_inicio < fecha_fin)
-                                if (vacacion_fecha_inicio.getDay() !== 6 && vacacion_fecha_inicio.getDay() !== 0)
-                                    contador++
-                            vacacion_fecha_inicio.setDate(vacacion_fecha_inicio.getDate() + 1);
-                        }
-                    }
-                    if (!(vacacion_fecha_inicio >= fecha_inicio && vacacion_fecha_inicio < fecha_fin) && (vacacion_fecha_fin >= fecha_inicio && vacacion_fecha_fin < fecha_fin)) {
-                        while (vacacion_fecha_inicio.getTime() < vacacion_fecha_fin.getTime()) {
-                            if (vacacion_fecha_fin >= fecha_inicio && vacacion_fecha_fin < fecha_fin) {
-                                if (vacacion_fecha_fin.getDay() !== 6 && vacacion_fecha_fin.getDay() !== 0)
-                                    contador++
-                            }
-                            vacacion_fecha_fin.setDate(vacacion_fecha_fin.getDate() - 1);
-                        }
+                    let dias = moment(vacacion.fecha_fin).diff(moment(vacacion.fecha_inicio), 'days') + 1
+                    for(let i = 0; i < dias; i++){
+                        let date = new Date(moment(vacacion.fecha_inicio).add(i, 'days'))
+                        if(date.getDay() > 0 && date.getDay() < 6)
+                            if(date >= inicio && date < final)
+                                contador--
                     }
                 }
-                return false
             })
-
-            return empleado.vacaciones_disponibles - contador
         }
-        else
-            return contador
+        if(contador < 0)
+            contador = 0
+        return { contador: contador, inicio, inicio,  final: final }
     }
 
     getVacaciones(empleado, vacaciones_totales) {
@@ -346,22 +326,30 @@ class Calendario extends Component {
 
     async askVacationAxios() {
         const { access_token } = this.props.authUser
-        const { form } = this.state
-        await axios.post(URL_DEV + 'vacaciones', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Vacaciones solicitadas con éxito.')
-                this.getVacacionesAxios();
-                this.handleClose();
-
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
+        const { form, disponibles, inicio, final } = this.state
+        let contador = disponibles
+        let dias = moment(form.fechaFin).diff(moment(form.fechaInicio), 'days') + 1
+        for(let i = 0; i < dias; i++){
+            let date = new Date(moment(form.fechaInicio).add(i, 'days'))
+            if(date.getDay() > 0 && date.getDay() < 6)
+                if(date >= inicio && date < final)
+                    contador = contador - 1
+        }
+        if(contador < 0){
+            errorAlert('Días disponibles insuficientes')
+        }else{
+            waitAlert(); 
+            await axios.post(URL_DEV + 'vacaciones', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+                (response) => {
+                    doneAlert(response.data.message !== undefined ? response.data.message : 'Vacaciones solicitadas con éxito.')
+                    this.getVacacionesAxios();
+                    this.handleClose();
+                }, (error) => { printResponseErrorAlert(error) }
+            ).catch((error) => {
+                errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+                console.log(error, 'error')
+            })
+        }
     }
 
     async getVacacionesAxios() {
@@ -431,12 +419,15 @@ class Calendario extends Component {
                     return false
                 })
 
+                let diasDisponibles = this.getDiasDisponibles(empleado, user_vacaciones)
                 this.setState({
                     ...this.state,
                     events: aux,
                     empleado: empleado,
                     vacaciones_totales: user_vacaciones,
-                    disponibles: this.getDiasDisponibles(empleado, user_vacaciones),
+                    disponibles: diasDisponibles.contador,
+                    inicio: diasDisponibles.inicio,
+                    final: diasDisponibles.final,
                     estatus: this.getVacaciones(empleado, user_vacaciones),
                     disabledDates: aux2,
                     data
@@ -1140,7 +1131,7 @@ class Calendario extends Component {
                         form={form}
                         onChange={this.onChange}
                         disabledDates={disabledDates}
-                        onSubmit={(e) => { e.preventDefault(); waitAlert(); this.askVacationAxios() }}
+                        onSubmit={(e) => { e.preventDefault(); this.askVacationAxios() }}
                     />
                 </Modal>
                 <Modal title={title} show={modal.status_vacaciones} handleClose={this.handleCloseEstatus}>

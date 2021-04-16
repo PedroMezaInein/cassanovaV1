@@ -138,6 +138,7 @@ class BuscarLead extends Component {
                                                     </td>
                                                 </tr>
                                             )
+                                        return ''
                                     })
                                 }
                             </tbody>

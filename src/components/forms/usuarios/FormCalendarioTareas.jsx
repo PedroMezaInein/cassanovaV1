@@ -8,7 +8,7 @@ class FormCalendarioTareas extends Component {
     }
     responsables(responsables) {
         let aux = [];
-        responsables.map((responsable) => {
+        responsables.forEach((responsable) => {
             aux.push(responsable.name)
         })
         let result = ''
