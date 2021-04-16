@@ -187,27 +187,6 @@ class ContratosForm extends Component {
             form
         })
     }
-    // onChangeAdjunto = e => {
-    //     const { form } = this.state
-    //     const { files, value, name } = e.target
-    //     let aux = []
-    //     for (let counter = 0; counter < files.length; counter++) {
-    //         aux.push(
-    //             {
-    //                 name: files[counter].name,
-    //                 file: files[counter],
-    //                 url: URL.createObjectURL(files[counter]),
-    //                 key: counter
-    //             }
-    //         )
-    //     }
-    //     form.adjuntos[name].value = value
-    //     form.adjuntos[name].files = aux
-    //     this.setState({
-    //         ...this.state,
-    //         form
-    //     })
-    // }
     async getOptionsAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
@@ -345,7 +324,6 @@ class ContratosForm extends Component {
                             onSubmit={this.onSubmit}
                             formeditado={formeditado}
                             onChangeRange={this.onChangeRange}
-                            // onChangeAdjunto={this.onChangeAdjunto}
                             clearFiles={this.clearFiles}
                             title={title}
                             handleChange={this.handleChange}
