@@ -410,6 +410,7 @@ class PlanTrabajo extends Component {
                     }
                     if(bandera){
                         _arreglo = [];
+                        // eslint-disable-next-line
                         [...Array(dias)].map((unusedElement, key) => {
                             if(key === 0){
                                 dato.duracion = dias
@@ -440,6 +441,7 @@ class PlanTrabajo extends Component {
                         }
                         if(bandera){
                             _arreglo = [];
+                            // eslint-disable-next-line
                             [...Array(dias)].map((unusedElement, key) => {
                                 _arreglo.push(null)
                                 return ''
@@ -471,6 +473,7 @@ class PlanTrabajo extends Component {
                         }
                         if(bandera){
                             _arreglo = [];
+                            // eslint-disable-next-line
                             [...Array(dias)].map((unusedElement, key) => {
                                 _arreglo.push(null)
                                 return ''
@@ -488,6 +491,7 @@ class PlanTrabajo extends Component {
             }
             if(bandera === false){
                 _arreglo = [];
+                // eslint-disable-next-line
                 [...Array(dias)].map((unusedElement, key) => {
                     _arreglo.push(null)
                     return ''

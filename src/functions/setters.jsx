@@ -904,7 +904,7 @@ export const getAños = () => {
     for (let i = mes > 9 ? -1 : 0; i < limite; i++)
         arreglo.push(
             {
-                name: fecha - i,
+                name: (fecha - i).toString(),
                 value: (fecha - i).toString()
             }
         );
