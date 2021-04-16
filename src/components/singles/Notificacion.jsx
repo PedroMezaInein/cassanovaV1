@@ -6,6 +6,7 @@ import { AudioApp } from '../singles'
 class Notificacion extends Component {
 
     setIcon = tipo => {
+        /* return toAbsoluteUrl('/images/png/icon.png'); */
         switch(tipo){
             case 'lead':
                 return toAbsoluteUrl('/images/svg/notificaciones/lead.svg');
@@ -31,14 +32,14 @@ class Notificacion extends Component {
     render() {
         const { data } = this.props
         return (
-            <div className="row mx-0">
+            <div className="row mx-0 align-items-center">
                 <AudioApp />
-                <div className="col-3 d-flex justify-content-center align-items-center">
+                <div className="col-2 d-flex justify-content-center align-items-center">
                     <span className="svg-icon svg-icon-lg svg-icon-success mx-2">
                         <SVG className = 'w-100' src = { this.setIcon(data.tipo) } />
                     </span>
                 </div>
-                <div className="col-9"> <div className="text-center"> { data.texto } </div> </div>
+                <div className="col-10"> <div className="text-left text-white text-bold font-bold"> { data.texto } </div> </div>
             </div>
         );
     }

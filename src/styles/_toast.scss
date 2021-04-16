@@ -1,4 +1,8 @@
-.Toastify__toast--default{
-    
-    font-weight: bolder!important;
+.Toastify__toast-container {
+    .Toastify__toast--default{
+        border-radius: 5px;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        font-weight: 700;
+        background-color: rgb(47, 47, 54);
+    }
 }
