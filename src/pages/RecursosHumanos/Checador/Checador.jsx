@@ -81,7 +81,7 @@ class Empleados extends Component {
                 let day =''
                 let daysFeriados =''
                 data.feriados.forEach( (element) => {
-                    daysFeriados = new Date(element.fecha.replace(/-/g, '\/').replace(/T.+/, '')).getDate();
+                    daysFeriados = new Date(element.fecha.replace(/-/g, '/').replace(/T.+/, '')).getDate();
                     arregloDiasFeriados.push(daysFeriados)
                 })
                 let daysArray = ["DOM","LUN","MAR","MIÉ","JUE","VIE","SAB"];
