@@ -585,11 +585,13 @@ export const INGRESOS_COLUMNS = [
     },
     {
         Header: 'Área',
-        accessor: 'area'
+        accessor: 'area',
+        customRender: true
     },
     {
         Header: 'Sub-A',
-        accessor: 'subarea'
+        accessor: 'subarea',
+        customRender: true
     },
     {
         Header: 'Total',
