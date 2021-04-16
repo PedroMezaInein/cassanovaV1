@@ -364,7 +364,6 @@ class PresupuestoDiseñoForm extends Component {
                 }
 
                 if(presupuesto.lead){
-                    console.log(presupuesto.lead, 'LEAD')
                     if(presupuesto.lead.prospecto){
                         form.proyecto = presupuesto.lead.prospecto.nombre_proyecto
                         if(presupuesto.lead.prospecto.tipo_proyecto)

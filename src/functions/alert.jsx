@@ -19,7 +19,6 @@ export async function waitAlert() {
         }
     })
     /* let fecha = new Date()
-    console.log(fecha.getMonth())
     if(fecha.getMonth() === 11)
         MySwal.fire({
             title: '¡UN MOMENTO!',
@@ -302,7 +301,6 @@ export function questionAlert(title, text, action) {
 }
 
 export function confirmarCita(title, form, lead, action, e, name) {
-    console.log(form)
     let fecha = new Date(form.fecha)
     let months = ['01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
     let days = ['00', '01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12', '13', '14', '15', '16', '17', '18','19', '20', '21', '22', '23', '24', '25', '26', '27', '28', '29', '30', '31']
@@ -344,7 +342,6 @@ export function confirmarCita(title, form, lead, action, e, name) {
             temp='-'
         }else{
             for(var i= 0; i < array.length; i++) {
-                console.log(array.length)
                 if(array.length === 1){
                     temp += array[i];
                 }else{

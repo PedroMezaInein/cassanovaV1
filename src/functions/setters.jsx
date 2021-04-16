@@ -121,7 +121,6 @@ export function setTextTableReactDom(text, doubleClick, data, tipo, style){
             onClick = { (e) => { 
                 e.preventDefault(); 
                 if(isMobile){
-                    console.log(" isMobile ")
                     doubleClick(data, tipo)
                 }
             } } > 
@@ -135,7 +134,6 @@ export function setColorTableReactDom(text, doubleClick, data, tipo) {
         onClick = { (e) => { 
             e.preventDefault(); 
             if(isMobile){
-                console.log(" isMobile ")
                 doubleClick(data, tipo)
             }
         } }></div>
@@ -289,7 +287,6 @@ export function setTagLabelProyectoReactDom (proyecto, arreglo, tipo, deleteElem
     )
 }
 export function setTagLabelClienteReactDom (cliente, arreglo, tipo, deleteElement){
-    console.log(cliente)
 
     // {
     //     arreglo.map((element,  key ) => { 
@@ -370,7 +367,6 @@ export function setArrayTableReactDom (arreglo, minwidth, doubleClick, data, tip
             onClick = { (e) => { 
                 e.preventDefault(); 
                 if(isMobile){
-                    console.log(" isMobile ")
                     doubleClick(data, tipo)
                 }
             } } > 

@@ -640,7 +640,6 @@ class MaterialCliente extends Component {
                     if(tipoSubCarpeta === 'renders'){
                         questionAlert('ENVIAR ARCHIVO', '¿ESTÁS SEGURO QUE DESEAS ENVIARLO?', () => { waitAlert(); this.addAdjuntoInRender() })
                     }else{
-                        console.log('fotografias agregar')
                         questionAlert('ENVIAR ARCHIVO', '¿ESTÁS SEGURO QUE DESEAS ENVIARLO?', () => { waitAlert(); this.addAdjuntoInFotografias() })
                     }
                     break;
@@ -677,13 +676,9 @@ class MaterialCliente extends Component {
         const { submenuactive, url, empresa } = this.state
         let tipoSubCarpeta = url[url.length - 2];
         let carpetas = []
-        console.log(empresa,'empresa')
-        console.log(tipoSubCarpeta,'tipoSubCarpeta')
         empresa.tipos.map((tipo) => {
             if(tipo.id === submenuactive){
-                console.log(tipo,'tipo')
                 tipo[`${tipoSubCarpeta}`].map((tipo)=>{
-                    console.log('map tipoSubCarpeta')
                     if(tipo.nombre === url[url.length - 1]){
                         tipo.carpetas.map((carpeta)=>{
                             carpetas.push(carpeta)

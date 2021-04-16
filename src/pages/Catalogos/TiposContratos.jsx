@@ -246,7 +246,6 @@ class TiposContratos extends Component {
     async updateTipoContratoAxios() {
         const { access_token } = this.props.authUser
         const { form, tipo, modal } = this.state
-        console.log(form, 'FORM')
         await axios.put(URL_DEV + 'tipos-contratos/' + tipo.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 modal.form = false

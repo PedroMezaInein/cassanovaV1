@@ -301,7 +301,6 @@ class Empleados extends Component {
         return aux
     }
     doubleClick = (data, tipo) => {
-        console.log(data)
         const { form } = this.state
         switch(tipo){
             case 'empresa':

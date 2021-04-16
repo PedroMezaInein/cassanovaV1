@@ -446,8 +446,6 @@ class Ingresos extends Component {
         return aux
     }
     doubleClick = (data, tipo) => {
-        console.log(data, 'data')
-        console.log(tipo, 'tipo')
         const { form } = this.state
         switch(tipo){
             case 'fecha':
