@@ -7,7 +7,7 @@ import { URL_DEV, VENTAS_COLUMNS } from '../../../constants'
 import { setOptions, setSelectOptions, setTextTable, setDateTableReactDom, setMoneyTable, setArrayTable, setAdjuntosList, setTextTableCenter, setTextTableReactDom } from '../../../functions/setters'
 import { waitAlert, errorAlert, createAlert, printResponseErrorAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis, createAlertSA2WithActionOnClose, customInputAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
-import { Button, FileInput, InputGray, CalendarDaySwal, SelectSearchGray } from '../../../components/form-components'
+import { Button, FileInput, InputGray, CalendarDaySwal, SelectSearchGray, DoubleSelectSearchGray } from '../../../components/form-components'
 import { Modal, ModalDelete } from '../../../components/singles'
 import { FacturaForm, AdjuntosForm, FacturaExtranjera } from '../../../components/forms'
 import { FacturaTable } from '../../../components/tables'
@@ -452,8 +452,8 @@ class Ventas extends Component {
                     impuesto: setTextTableReactDom(venta.tipo_impuesto ? venta.tipo_impuesto.tipo : 'Sin definir', this.doubleClick, venta, 'tipoImpuesto', 'text-center'),
                     tipoPago: setTextTableReactDom(venta.tipo_pago.tipo, this.doubleClick, venta, 'tipoPago', 'text-center'),
                     descripcion: setTextTableReactDom(venta.descripcion !== null ? venta.descripcion :'', this.doubleClick, venta, 'descripcion', 'text-justify'),
-                    area: renderToString(setTextTableCenter(venta.subarea ? venta.subarea.area ? venta.subarea.area.nombre : '' : '')),
-                    subarea: renderToString(setTextTableCenter(venta.subarea ? venta.subarea.nombre : '')),
+                    area: setTextTableReactDom(venta.subarea ? venta.subarea.area ? venta.subarea.area.nombre : '' : '', this.doubleClick, venta, 'area', 'text-center'),
+                    subarea: setTextTableReactDom(venta.subarea ? venta.subarea.nombre : '', this.doubleClick, venta, 'subarea', 'text-center'),
                     estatusCompra: setTextTableReactDom(venta.estatus_compra ? venta.estatus_compra.estatus : '', this.doubleClick, venta, 'estatusCompra', 'text-center'),
                     total: renderToString(setMoneyTable(venta.total)),
                     fecha: setDateTableReactDom(venta.created_at, this.doubleClick, venta, 'fecha', 'text-center'),
@@ -466,29 +466,42 @@ class Ventas extends Component {
         return aux
     }
     doubleClick = (data, tipo) => {
-        const { form } = this.state
+        const { form, options } = this.state
         switch(tipo){
             case 'proyecto':
+            case 'subarea':
                 if(data[tipo])
                     form[tipo] = data[tipo].id.toString()
+                break
+            case 'area':
+                if(data.subarea){
+                    if(data.subarea.area){
+                        form.area = data.subarea.area.id.toString()
+                        form.subarea = data.subarea.id.toString()
+                        options.subareas = setOptions(data.subarea.area.subareas, 'nombre', 'id')
+                    }
+                }
                 break
             case 'fecha':
                 form.fecha = new Date(data.created_at)
                 break
             case 'tipoImpuesto':
-                form[tipo] = data.tipo_impuesto.id
+                if(data.tipo_impuesto)
+                    form[tipo] = data.tipo_impuesto.id
                 break
             case 'tipoPago':
-                form[tipo] = data.tipo_pago.id
+                if(data.tipo_pago)
+                    form[tipo] = data.tipo_pago.id
                 break
             case 'estatusCompra':
-                form[tipo] = data.estatus_compra.id
+                if(data.estatus_compra)
+                    form[tipo] = data.estatus_compra.id
                 break
             default:
                 form[tipo] = data[tipo]
                 break
         }
-        this.setState({form})
+        this.setState({form, options})
         customInputAlert(
             <div>
                 <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
@@ -527,12 +540,18 @@ class Ventas extends Component {
                     :<></>
                 }
                 {
-                    (tipo === 'proyecto')  ?
+                    (tipo === 'proyecto') || (tipo === 'subarea') ?
                         <SelectSearchGray options = { this.setOptions(data, tipo) }
                         onChange = { (value) => { this.onChangeSwal(value, tipo)} } name = { tipo }
                         value = { form[tipo] } customdiv="mb-2 mt-7" requirevalidation={1} 
                         placeholder={this.setSwalPlaceholder(tipo)}/>
                     :<></>
+                }
+                {
+                    tipo === 'area' &&
+                        <DoubleSelectSearchGray options = { options } form = { form } onChange = { this.onChangeSwal } 
+                            one = { { placeholder: 'SELECCIONA EL ÁREA', name: 'area', opciones: 'areas'} } 
+                            two = { { placeholder: 'SELECCIONA EL SUBÁREA', name: 'subarea', opciones: 'subareas'} }/>
                 }
             </div>,
             <Update />,
@@ -562,7 +581,15 @@ class Ventas extends Component {
     patchVentas = async( data,tipo ) => {
         const { access_token } = this.props.authUser
         const { form } = this.state
-        let value = form[tipo]
+        let value = ''
+        switch(tipo){
+            case 'area':
+                value = { area: form.area, subarea: form.subarea }
+                break
+            default:
+                value = form[tipo]
+                break
+        }
         waitAlert()
         await axios.put(`${URL_DEV}v2/proyectos/ventas/${tipo}/${data.id}`, 
             { value: value }, 
@@ -588,6 +615,12 @@ class Ventas extends Component {
                 return options.tiposImpuestos
             case 'proyecto':
                 return options.proyectos
+            case 'subarea':
+                if(data.subarea)
+                    if(data.subarea.area)
+                        if(data.subarea.area.subareas)
+                            return setOptions(data.subarea.area.subareas, 'nombre', 'id')
+                return []
             default: return []
         }
     }
@@ -1169,15 +1202,12 @@ class Ventas extends Component {
         })
     }
     render() {
-        const { modalDelete, modalFacturas, modalAdjuntos, options, form, ventas, venta, facturas, data, formeditado, modalSee, active, modalFacturaExtranjera } = this.state
+        const { modalDelete, modalFacturas, modalAdjuntos, options, form, venta, facturas, data, formeditado, modalSee, active, modalFacturaExtranjera } = this.state
         return (
-            <Layout active={'proyectos'}  {...this.props}>
-                <NewTableServerRender columns={VENTAS_COLUMNS} data={ventas}
-                    title='Ventas' subtitle='Listado de ventas'
-                    url='/proyectos/ventas/add'
-                    mostrar_boton={true}
-                    abrir_modal={false}
-                    mostrar_acciones={true}
+            <Layout active = 'proyectos'  {...this.props}>
+
+                <NewTableServerRender columns = { VENTAS_COLUMNS } title = 'Ventas' subtitle = 'Listado de ventas' url = '/proyectos/ventas/add'
+                    mostrar_boton = { true } abrir_modal = { false } mostrar_acciones = { true } idTable = 'kt_datatable2_ventas' exportar_boton = { true }
                     actions={{
                         'edit': { function: this.changePageEdit },
                         'delete': { function: this.openModalDelete },
@@ -1187,23 +1217,11 @@ class Ventas extends Component {
                         'see': { function: this.openModalSee },
                         'facturaExtranjera': { function: this.openFacturaExtranjera},
                     }}
-                    elements={data.ventas}
-                    idTable='kt_datatable2_ventas'
-                    exportar_boton={true}
-                    onClickExport={() => this.exportVentasAxios()}
-                    accessToken={this.props.authUser.access_token}
-                    setter={this.setVentas}
-                    urlRender = { `${URL_DEV}v2/proyectos/ventas`}
-                    // validateFactura={true}
-                    // elementClass = 'total'
-                    // zeroRed = { true }
-                    // tipo_validacion = 'ventas'
-                    cardTable='cardTable'
-                    cardTableHeader='cardTableHeader'
-                    cardBody='cardBody'
-                />
-                <ModalDelete title={"¿Estás seguro que deseas eliminar la venta?"} show={modalDelete} handleClose={this.handleCloseDelete} onClick={(e) => { e.preventDefault(); this.deleteVentaAxios() }}>
-                </ModalDelete>
+                    onClickExport = { () => this.exportVentasAxios() } accessToken = { this.props.authUser.access_token } setter = { this.setVentas }
+                    urlRender = { `${URL_DEV}v2/proyectos/ventas` } cardTable = 'cardTable' cardTableHeader = 'cardTableHeader' cardBody = 'cardBody' />
+
+                <ModalDelete title = "¿Estás seguro que deseas eliminar la venta?" show = { modalDelete } handleClose = { this.handleCloseDelete } 
+                    onClick = { (e) => { e.preventDefault(); this.deleteVentaAxios() } } />
 
                 <Modal size="xl" title={"Facturas"} show={modalFacturas} handleClose={this.handleCloseFacturas}>
                     <Tabs defaultActiveKey="facturas" className="mt-4 nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100" activeKey={active} onSelect={this.onSelect}>
