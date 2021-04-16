@@ -52,10 +52,16 @@ class Calendario extends Component {
             });
             const channel = pusher.subscribe('responsable-tarea');
             channel.bind('App\\Events\\ResponsableTarea', data => {
-                const { usuario } = data
+                const { tarea } = data
                 const { user } = this.props.authUser
                 const { tipo } = this.state
-                if(user.id === usuario.id)
+                let flag = false
+                if(tarea.responsables)
+                    tarea.responsables.forEach((element) => {
+                        if(element.id === user.id)
+                            flag = true
+                    })
+                if(flag)
                     this.getCalendarioTareasAxios(tipo)
             });
         }

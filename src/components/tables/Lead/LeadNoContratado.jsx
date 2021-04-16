@@ -122,7 +122,7 @@ class LeadNoContratado extends Component {
                                                             </span>
                                                         </div>
                                                         <div>
-                                                            <span onClick = { ( e ) => { e.preventDefault(); clickOneLead(lead.id) } } className="text-dark-75 font-weight-bolder text-hover-danger mb-1 font-size-lg">
+                                                            <span onClick = { ( e ) => { e.preventDefault(); clickOneLead(lead.id) } } className="text-dark-75 font-weight-bolder text-hover-danger mb-1 font-size-lg cursor-pointer">
                                                                 {lead.nombre}
                                                             </span>
                                                             {

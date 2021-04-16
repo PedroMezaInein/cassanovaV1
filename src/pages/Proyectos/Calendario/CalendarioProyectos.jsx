@@ -197,7 +197,7 @@ class CalendarioProyectos extends Component {
                     {
                         proyecto.descripcion!=="null" && proyecto.descripcion !==null?
                             <div className="text-justify px-5 pb-3">
-                                {proyecto.descripcion}
+                                {proyecto.descripcion.toUpperCase()}
                             </div>
                         :''
                     }
