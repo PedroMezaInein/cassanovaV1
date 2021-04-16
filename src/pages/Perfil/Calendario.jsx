@@ -357,6 +357,7 @@ class Calendario extends Component {
         await axios.get(`${URL_DEV}vacaciones`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { data } = this.state
+                const { user } = this.props.authUser
                 const { empleados, vacaciones, empleado, user_vacaciones, feriados, eventos, usuarios } = response.data
                 data.usuarios = usuarios
                 let aux = []
@@ -388,9 +389,18 @@ class Calendario extends Component {
                             containerClass: 'vacaciones'
                         })
                     if (vacacion.estatus !== 'Rechazadas') {
-                        let dias = moment(vacacion.fecha_fin).diff(moment(vacacion.fecha_inicio), 'days') + 1
-                        for(let i = 0; i < dias; i++)
-                            aux2.push(moment(vacacion.fecha_inicio).add(i, 'days').toDate())
+                        
+                        if(vacacion.empleado)
+                            if(vacacion.empleado.usuario){
+                                console.log(vacacion.empleado.usuario, user)
+                                if(vacacion.empleado.usuario.id === user.id){
+                                    let dias = moment(vacacion.fecha_fin).diff(moment(vacacion.fecha_inicio), 'days') + 1
+                                    for(let i = 0; i < dias; i++)
+                                        aux2.push(moment(vacacion.fecha_inicio).add(i, 'days').toDate())
+                                }
+                                
+                            }
+
                     }
                     return false
                 })

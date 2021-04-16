@@ -904,7 +904,7 @@ export const getAños = () => {
     for (let i = mes > 9 ? -1 : 0; i < limite; i++)
         arreglo.push(
             {
-                name: fecha - i,
+                name: (fecha - i).toString(),
                 value: (fecha - i).toString()
             }
         );
@@ -946,4 +946,13 @@ export function getEstados (){
         { name: "Yucatán", value: "Yucatán" },
         { name: "Zacatecas", value: "Zacatecas" },
     ]
+}
+
+export function setEmpresaLogo(lead) {
+    if(lead)
+        if(lead.empresa)
+            if(lead.empresa.logo_principal)
+                if(lead.empresa.logo_principal.length)
+                    return lead.empresa.logo_principal[0].url
+    return ''
 }

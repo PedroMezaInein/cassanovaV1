@@ -8,8 +8,8 @@ import { URL_DEV } from '../../constants'
 import UrlLocation from './urlLocation'
 import MobileHeader from './mobileHeader'
 import UserPanel from '../../../src/components/layout/UserPanel/userPanel'
-import { AudioApp, Notificacion } from '../singles'
-import { ToastContainer, toast } from 'react-toastify';
+import { Notificacion } from '../singles'
+import { Zoom, ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { errorAlert, printResponseErrorAlert, doneAlert, waitAlert } from '../../functions/alert'
 import Pusher from 'pusher-js'
@@ -34,7 +34,6 @@ function clickShowHeader() {
     document.getElementById("showheadermenu").classList.remove("header-menu-wrapper-on");
     document.getElementById('showheader').classList.remove("header-menu-wrapper-overlay");
 }
-
 class Layout extends Component {
 
     state = {
@@ -44,8 +43,6 @@ class Layout extends Component {
     }
 
     componentDidMount() {
-        /* this.getNotificacionesAxios()
-        this.getIpInfo() */
         if(process.env.NODE_ENV === 'production'){
             const pusher = new Pusher('112ff49dfbf7dccb6934', {
                 cluster: 'us2',
@@ -57,9 +54,7 @@ class Layout extends Component {
                 this.getNotificacionesAxios()
             });
         }
-        /* const channelMessage = pusher.subscribe('Message.User.'+user.id);
-        channelMessage.bind('App\\Events\\NewMessage', data => {
-        }); */
+        /* this.getNotificacionesAxios() */
     }
 
     logoutUser = () => {
@@ -104,12 +99,13 @@ class Layout extends Component {
     async getNotificacionesAxios() {
         const options = {
             position: "top-right",
-            autoClose: false,
+            /* autoClose: true, */
             hideProgressBar: true,
             closeOnClick: true,
             pauseOnHover: true,
             draggable: false,
             progress: undefined,
+            autoClose: 8000
         }
         const { authUser: { access_token } } = this.props
         await axios.get(`${URL_DEV}notificaciones`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -120,7 +116,7 @@ class Layout extends Component {
                     setTimeout(
                         () => {
                             toast(<Notificacion data={notificacion} />, options);
-                        }, (i) * 2500
+                        }, (i) * 4000
                     )
                     return false
                 })
@@ -188,16 +184,8 @@ class Layout extends Component {
 
         return (
             <div>
-                <ToastContainer
-                    position="top-right"
-                    autoClose={5000}
-                    hideProgressBar={false}
-                    newestOnTop={false}
-                    closeOnClick={false}
-                    rtl={false}
-                    pauseOnFocusLoss
-                    draggable={false}
-                    pauseOnHover />
+                <ToastContainer position = "top-right" autoClose = { false } hideProgressBar = { false } newestOnTop = { false } closeButton = { null }
+                    closeOnClick = { true } rtl = { false } draggable = { false } pauseOnHover limit = { 5 } transition = { Zoom } />
                 <MobileHeader />
                 <div className="d-flex flex-column flex-root">
                     <div className="d-flex flex-row flex-column-fluid page">
