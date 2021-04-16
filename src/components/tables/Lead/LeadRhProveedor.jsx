@@ -60,8 +60,8 @@ class LeadRhProveedor extends Component {
                                     <th style={{ minWidth: "100px" }}>
                                         <span>Nombre</span>
                                     </th>
-                                    <th style={{ minWidth: "151px" }}>Fecha</th>
-                                    <th style={{ minWidth: "100px" }}>Tipo</th>
+                                    <th style={{ minWidth: "100px" }} className="text-center">Fecha</th>
+                                    <th style={{ minWidth: "100px" }} className="text-center">Tipo</th>
                                     <th style={{ minWidth: "100px" }} className="text-center">Empresa</th>
                                     <th style={{ minWidth: "150px" }} className="text-center">Origen</th>
                                     <th style={{ minWidth: "100px" }} className="text-center">Comentario</th>
@@ -88,11 +88,11 @@ class LeadRhProveedor extends Component {
                                                             </div>
                                                         </div>
                                                     </td>
-                                                    <td className="font-size-lg text-left font-weight-bolder">
-                                                        <span>Ingreso: </span><span className="text-muted font-weight-bold font-size-sm">{setDateTableLG(lead.created_at)}</span><br />
+                                                    <td className="font-size-lg text-left font-weight-bolder text-center">
+                                                        <span className="text-muted font-weight-bold font-size-sm">{setDateTableLG(lead.created_at)}</span>
                                                     </td>
                                                     <td>
-                                                        <span className="text-dark-75 font-weight-bolder d-block font-size-lg">
+                                                        <span className="text-dark-75 font-weight-bolder d-block font-size-lg text-center">
                                                             {
                                                                 lead.proveedor ? 'PROVEEDOR' :
                                                                     lead.rh ? 'BOLSA DE TRABAJO' : ''
