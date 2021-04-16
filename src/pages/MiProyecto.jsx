@@ -753,6 +753,14 @@ class MiProyecto extends Component {
         return aux
     }
 
+    getWebPage = proyecto => {
+        if(proyecto)
+            if(proyecto.empresa)
+                if(proyecto.empresa.pagina_web)
+                    return 'https://' + proyecto.empresa.pagina_web;
+        return ''
+    }
+
     render() {
         const { options, proyecto, form, adjuntos, showadjuntos, primeravista, defaultactivekey, subActiveKey, formeditado, tickets, data, 
             modal, ticket, modalDetalles, /* openModalVideo */ } = this.state
@@ -769,7 +777,7 @@ class MiProyecto extends Component {
                                     <div className="znav-container znav-white znav-freya znav-fixed" id="znav-container">
                                         <div className="container wow fadeIn" data-wow-delay="1.7s" data-wow-duration="1.5s">
                                             <Navbar expand="lg">
-                                                <Navbar.Brand href={proyecto.empresa?proyecto.empresa.pagina_web:''} className="overflow-hidden pr-3">
+                                                <Navbar.Brand target = '_blank' href = { this.getWebPage(proyecto)} className="overflow-hidden pr-3">
                                                     {
                                                         this.setEmpresaLogo(proyecto) !== '' ?
                                                             <img alt = '' width="120" src = { this.setEmpresaLogo(proyecto) }  />
