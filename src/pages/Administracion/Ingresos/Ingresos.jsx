@@ -8,7 +8,7 @@ import { setOptions, setTextTable, setDateTableReactDom, setMoneyTable, setArray
 import { errorAlert, waitAlert, createAlert, deleteAlert, doneAlert, errorAlertRedirectOnDissmis, createAlertSA2WithActionOnClose, printResponseErrorAlert, customInputAlert } from '../../../functions/alert'
 import Layout from '../../../components/layout/layout'
 import { Modal, ModalDelete } from '../../../components/singles'
-import { Button, FileInput, InputGray, CalendarDaySwal } from '../../../components/form-components'
+import { Button, FileInput, InputGray, CalendarDaySwal, SelectSearchGray, DoubleSelectSearchGray } from '../../../components/form-components'
 import { FacturaForm } from '../../../components/forms'
 import { FacturaTable } from '../../../components/tables'
 import { Form } from 'react-bootstrap'
@@ -431,8 +431,8 @@ class Ingresos extends Component {
                     impuesto: setTextTableReactDom(ingreso.tipo_impuesto ? ingreso.tipo_impuesto.tipo : 'Sin definir', this.doubleClick, ingreso, 'tipoImpuesto', 'text-center'),
                     tipoPago: setTextTableReactDom(ingreso.tipo_pago.tipo, this.doubleClick, ingreso, 'tipoPago', 'text-center'),
                     descripcion: setTextTableReactDom(ingreso.descripcion !== null ? ingreso.descripcion :'', this.doubleClick, ingreso, 'descripcion', 'text-justify'),
-                    area: renderToString(setTextTableCenter(ingreso.subarea ? ingreso.subarea.area.nombre : '')),
-                    subarea: renderToString(setTextTableCenter(ingreso.subarea ? ingreso.subarea.nombre : '')),
+                    area: setTextTableReactDom(ingreso.subarea ? ingreso.subarea.area ? ingreso.subarea.area.nombre : '' : '', this.doubleClick, ingreso, 'area', 'text-center'),
+                    subarea: setTextTableReactDom(ingreso.subarea ? ingreso.subarea.nombre : '', this.doubleClick, ingreso, 'subarea', 'text-center'),
                     estatusCompra: setTextTableReactDom(ingreso.estatus_compra ? ingreso.estatus_compra.estatus : '', this.doubleClick, ingreso, 'estatusCompra', 'text-center'),
                     total: renderToString(setMoneyTable(ingreso.total)),
                     /* adjuntos: renderToString(setArrayTable(_aux)), */
@@ -446,25 +446,41 @@ class Ingresos extends Component {
         return aux
     }
     doubleClick = (data, tipo) => {
-        const { form } = this.state
+        const { form, options } = this.state
         switch(tipo){
+            case 'subarea':
+                if(data[tipo])
+                    form[tipo] = data[tipo].id.toString()
+                break
+            case 'area':
+                if(data.subarea){
+                    if(data.subarea.area){
+                        form.area = data.subarea.area.id.toString()
+                        form.subarea = data.subarea.id.toString()
+                        options.subareas = setOptions(data.subarea.area.subareas, 'nombre', 'id')
+                    }
+                }
+                break
             case 'fecha':
                 form.fecha = new Date(data.created_at)
                 break
             case 'tipoImpuesto':
-                form[tipo] = data.tipo_impuesto.id
+                if(data.tipo_impuesto)
+                    form[tipo] = data.tipo_impuesto.id
                 break
             case 'tipoPago':
-                form[tipo] = data.tipo_pago.id
+                if(data.tipo_pago)
+                    form[tipo] = data.tipo_pago.id
                 break
             case 'estatusCompra':
-                form[tipo] = data.estatus_compra.id
+                if(data.estatus_compra)
+                    form[tipo] = data.estatus_compra.id
                 break
             default:
                 form[tipo] = data[tipo]
                 break
         }
-        this.setState({form})
+        this.setState({form, options})
         customInputAlert(
             <div>
                 <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
@@ -502,6 +518,19 @@ class Ingresos extends Component {
                         <CalendarDaySwal value = { form[tipo] } onChange = { (e) => {  this.onChangeSwal(e.target.value, tipo)} } name = { tipo } date = { form[tipo] } withformgroup={0} />
                     :<></>
                 }
+                {
+                    (tipo === 'subarea')  &&
+                        <SelectSearchGray options = { this.setOptions(data, tipo) }
+                        onChange = { (value) => { this.onChangeSwal(value, tipo)} } name = { tipo }
+                        value = { form[tipo] } customdiv="mb-2 mt-7" requirevalidation={1} 
+                        placeholder={this.setSwalPlaceholder(tipo)}/>
+                }
+                {
+                    tipo === 'area' &&
+                        <DoubleSelectSearchGray options = { options } form = { form } onChange = { this.onChangeSwal } 
+                            one = { { placeholder: 'SELECCIONA EL ÁREA', name: 'area', opciones: 'areas'} } 
+                            two = { { placeholder: 'SELECCIONA EL SUBÁREA', name: 'subarea', opciones: 'subareas'} }/>
+                }
             </div>,
             <Update />,
             () => { this.patchIngresos(data, tipo) },
@@ -528,7 +557,15 @@ class Ingresos extends Component {
     patchIngresos = async( data,tipo ) => {
         const { access_token } = this.props.authUser
         const { form } = this.state
-        let value = form[tipo]
+        let value = ''
+        switch(tipo){
+            case 'area':
+                value = { area: form.area, subarea: form.subarea }
+                break
+            default:
+                value = form[tipo]
+                break
+        }
         waitAlert()
         await axios.put(`${URL_DEV}v2/administracion/ingresos/${tipo}/${data.id}`, 
             { value: value }, 
@@ -552,6 +589,12 @@ class Ingresos extends Component {
                 return options.tiposPagos
             case 'tipoImpuesto':
                 return options.tiposImpuestos
+            case 'subarea':
+                if(data.subarea)
+                    if(data.subarea.area)
+                        if(data.subarea.area.subareas)
+                            return setOptions(data.subarea.area.subareas, 'nombre', 'id')
+                return []
             default: return []
         }
     }
@@ -842,7 +885,7 @@ class Ingresos extends Component {
         await axios.get(URL_DEV + 'ingresos/options', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { data, options } = this.state
-                const { clientes, empresas, formasPago, metodosPago, estatusFacturas, estatusCompras, tiposPagos, tiposImpuestos } = response.data
+                const { clientes, empresas, formasPago, metodosPago, estatusFacturas, estatusCompras, tiposPagos, tiposImpuestos, areas } = response.data
                 options['metodosPago'] = setOptions(metodosPago, 'nombre', 'id')
                 options['formasPago'] = setOptions(formasPago, 'nombre', 'id')
                 options['estatusFacturas'] = setOptions(estatusFacturas, 'estatus', 'id')
@@ -851,6 +894,7 @@ class Ingresos extends Component {
                 options['clientes'] = setOptions(clientes, 'empresa', 'id')
                 options['tiposPagos'] = setSelectOptions(tiposPagos, 'tipo')
                 options['tiposImpuestos'] = setSelectOptions(tiposImpuestos, 'tipo')
+                options['areas'] = setOptions(areas, 'nombre', 'id')
                 data.clientes = clientes
                 data.empresas = empresas
                 Swal.close()
@@ -1137,15 +1181,11 @@ class Ingresos extends Component {
         })
     }
     render() {
-        const { ingresos, form, options, modalDelete, modalFacturas, modalAdjuntos, facturas, data, formeditado, modalSee, ingreso, active, modalFacturaExtranjera } = this.state
+        const { form, options, modalDelete, modalFacturas, modalAdjuntos, facturas, data, formeditado, modalSee, ingreso, active, modalFacturaExtranjera } = this.state
         return (
-            <Layout active={'administracion'}  {...this.props}>
-                <NewTableServerRender columns={INGRESOS_COLUMNS} data={ingresos}
-                    title='Ingresos' subtitle='Listado de ingresos'
-                    mostrar_boton={true}
-                    abrir_modal={false}
-                    url='/administracion/ingresos/add'
-                    mostrar_acciones={true}
+            <Layout active = 'administracion'  {...this.props}>
+                <NewTableServerRender columns = { INGRESOS_COLUMNS } title = 'Ingresos' subtitle = 'Listado de ingresos' exportar_boton = { true }
+                    mostrar_boton = { true } abrir_modal = { false } url = '/administracion/ingresos/add' mostrar_acciones = { true }
                     actions={{
                         'edit': { function: this.changePageEdit },
                         'delete': { function: this.openModalDelete },
@@ -1155,27 +1195,12 @@ class Ingresos extends Component {
                         'see': { function: this.openModalSee },
                         'facturaExtranjera': { function: this.openFacturaExtranjera}
                     }}
-                    elements={data.ingresos}
-                    exportar_boton={true}
-                    onClickExport={() => this.exportIngresosAxios()}
-                    accessToken={this.props.authUser.access_token}
-                    setter={this.setIngresos}
-                    urlRender = { `${URL_DEV}v2/administracion/ingresos`}
-                    elementClass='total'
-                    idTable='ingresostable'
-                    validateFactura={true}
-                    tipo_validacion='ventas'
-                    cardTable='cardTable'
-                    cardTableHeader='cardTableHeader'
-                    cardBody='cardBody'
-                />
-                <ModalDelete 
-                    title={"¿Estás seguro que deseas eliminar el ingreso?"}
-                    show={modalDelete}
-                    handleClose={this.handleCloseDelete}
-                    onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteIngresoAxios() }}
-                >
-                </ModalDelete>
+                    onClickExport = { () => this.exportIngresosAxios() } accessToken = { this.props.authUser.access_token } setter = { this.setIngresos }
+                    urlRender = { `${URL_DEV}v2/administracion/ingresos`} elementClass = 'total' idTable = 'ingresostable' validateFactura = { true }
+                    tipo_validacion = 'ventas' cardTable = 'cardTable' cardTableHeader = 'cardTableHeader' cardBody = 'cardBody' />
+
+                <ModalDelete title = "¿Estás seguro que deseas eliminar el ingreso?" show = { modalDelete } handleClose = { this.handleCloseDelete }
+                    onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteIngresoAxios() } } />
 
                 <Modal size="xl" title={"Facturas"} show={modalFacturas} handleClose={this.handleCloseFacturas}>
                     <Tabs defaultActiveKey="facturas" className="mt-4 nav nav-tabs justify-content-start nav-bold bg-gris-nav bg-gray-100" activeKey={active} onSelect={this.onSelect}>
