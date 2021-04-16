@@ -84,7 +84,7 @@ class LeadRhProveedor extends Component {
                                                                 <span className="symbol-label font-size-h5 bg-light-pink text-pink">{lead.nombre.charAt(0)}</span>
                                                             </div>
                                                             <div>
-                                                                <span onClick = { ( e ) => { e.preventDefault(); clickOneLead(lead.id) } } className="text-dark-75 font-weight-bolder text-hover-pink mb-1 font-size-lg">{lead.nombre}</span>
+                                                                <span onClick = { ( e ) => { e.preventDefault(); clickOneLead(lead.id) } } className="text-dark-75 font-weight-bolder text-hover-pink mb-1 font-size-lg cursor-pointer">{lead.nombre}</span>
                                                             </div>
                                                         </div>
                                                     </td>
