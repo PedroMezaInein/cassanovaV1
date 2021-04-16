@@ -260,7 +260,7 @@ class Calendario extends Component {
         }
         if(contador < 0)
             contador = 0
-        return { contador: contador, inicio, inicio,  final: final }
+        return { contador: contador, inicio: inicio,  final: final }
     }
 
     getVacaciones(empleado, vacaciones_totales) {
@@ -354,11 +354,10 @@ class Calendario extends Component {
 
     async getVacacionesAxios() {
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'vacaciones', { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(`${URL_DEV}vacaciones`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { data } = this.state
                 const { empleados, vacaciones, empleado, user_vacaciones, feriados, eventos, usuarios } = response.data
-
                 data.usuarios = usuarios
                 let aux = []
                 let aux2 = []
@@ -388,6 +387,11 @@ class Calendario extends Component {
                             iconClass: 'fas fa-umbrella-beach',
                             containerClass: 'vacaciones'
                         })
+                    if (vacacion.estatus !== 'Rechazadas') {
+                        let dias = moment(vacacion.fecha_fin).diff(moment(vacacion.fecha_inicio), 'days') + 1
+                        for(let i = 0; i < dias; i++)
+                            aux2.push(moment(vacacion.fecha_inicio).add(i, 'days').toDate())
+                    }
                     return false
                 })
 
@@ -432,10 +436,7 @@ class Calendario extends Component {
                     disabledDates: aux2,
                     data
                 })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -468,10 +469,7 @@ class Calendario extends Component {
                     eventos: eventos,
                     activeKey: bandera
                 })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -563,21 +561,15 @@ class Calendario extends Component {
                             invitados.map((invitado, index) => {
                                 let aux = false
                                 data.usuarios.map((user) => {
-                                    if (user.email.toUpperCase() === invitado.email.toUpperCase()) {
+                                    if (user.email.toUpperCase() === invitado.email.toUpperCase())
                                         aux = user
-                                    }
                                     return false
                                 })
                                 if (aux !== false) {
-                                    if (aux.avatar) {
-                                        return (
-                                            <img className="calendar-avatar mr-3 mb-2" src={aux.avatar} alt='' key={index} />
-                                        )
-                                    } else {
-                                        return (
-                                            <img className="calendar-avatar mr-3 mb-2" src={AVATAR} alt='' key={index} />
-                                        )
-                                    }
+                                    if (aux.avatar)
+                                        return ( <img className="calendar-avatar mr-3 mb-2" src={aux.avatar} alt='' key={index} /> )
+                                    else
+                                        return ( <img className="calendar-avatar mr-3 mb-2" src={AVATAR} alt='' key={index} /> )
                                 }
                                 return false
                             })
@@ -588,9 +580,8 @@ class Calendario extends Component {
                             invitados.map((invitado, index) => {
                                 let aux = false
                                 data.usuarios.map((user) => {
-                                    if (user.email.toUpperCase() === invitado.email.toUpperCase()) {
+                                    if (user.email.toUpperCase() === invitado.email.toUpperCase())
                                         aux = user
-                                    }
                                     return false
                                 })
                                 if (aux === false)
@@ -610,30 +601,9 @@ class Calendario extends Component {
     }
 
     setTimer = (time) => {
-        switch (time) {
-            case 0:
-                return '00'
-            case 1:
-                return '01'
-            case 2:
-                return '02'
-            case 3:
-                return '03'
-            case 4:
-                return '04'
-            case 5:
-                return '05'
-            case 6:
-                return '06'
-            case 7:
-                return '07'
-            case 8:
-                return '08'
-            case 9:
-                return '09'
-            default:
-                return time
-        }
+        if(time < 10)
+            return '0'.time
+        return time
     }
 
     getInvitadosSprits = invitados => {
@@ -677,7 +647,7 @@ class Calendario extends Component {
                         </Tooltip>
                     }
                 >
-                    <div className={eventInfo.event._def.extendedProps.containerClass + ' evento text-left'} onClick={(e) => { e.preventDefault(); this.getEventAxios(eventInfo.event._def.extendedProps.evento.googleEvent.id) }}>
+                    <div className={eventInfo.event._def.extendedProps.containerClass + ' evento text-left text-hover'} onClick={(e) => { e.preventDefault(); this.getEventAxios(eventInfo.event._def.extendedProps.evento.googleEvent.id) }}>
                         <div className="d-flex justify-content-between align-items-center">
                             <div>
                                 <i className={eventInfo.event._def.extendedProps.iconClass + " kt-font-boldest mr-3"}></i>

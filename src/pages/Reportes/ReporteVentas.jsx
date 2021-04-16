@@ -395,8 +395,6 @@ class ReporteVentas extends Component {
                 /* -------------------- ANCHOR GET TOTAL DE LEADS ANUALES ------------------- */
                 /* -------------------------------------------------------------------------- */
                 let auxData = this.setData(result, meses, 'mensual')
-                console.log('DATA   ', auxData)
-                console.log('MESES  ', meses)
                 this.setState({ ...this.state,  data: auxData,  key: '1', tipo: 'mensual', meses: meses })
             },
             (error) => {
@@ -713,7 +711,6 @@ class ReporteVentas extends Component {
         aux = []
         auxColors = []
         result.servicios_meses.forEach((mes, index) => {
-            console.log(meses[index], 'MESES INDEX')
             mes.forEach(servicio => {
                 if(tipo === 'mensual'){
                     if(index===0){

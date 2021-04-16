@@ -296,7 +296,7 @@ class NewTableServerRender extends Component {
                                                 // console.log(valorCelda,'Costo')
                                             }
                                         }else /* if(data_children[1].props.children.props.children) */{
-                                            console.log(data_children)
+                                            // console.log(data_children)
                                             if(data_children !== 'Sin definir'){
                                                 // if(data_children.length === 1){
                                                 //     if(data_children[0].props.children.props.children)
