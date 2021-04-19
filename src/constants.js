@@ -1184,8 +1184,7 @@ export const COMPRAS_COLUMNS = [
     },    
     {
         Header: 'Proveedor',
-        accessor: 'proveedor',
-        customRender: true
+        accessor: 'proveedor'
     },
     {
         Header: 'Proyecto',
