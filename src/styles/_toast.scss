@@ -6,3 +6,13 @@
         background-color: rgb(47, 47, 54);
     }
 }
+
+.notif-card{
+    border-radius: 5px;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    background-color: rgb(47, 47, 54);
+    font-weight: 700;
+    .date{
+        font-weight: 100;
+    }
+}
