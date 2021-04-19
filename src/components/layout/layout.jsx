@@ -13,6 +13,7 @@ import { Zoom, ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { errorAlert, printResponseErrorAlert, doneAlert, waitAlert } from '../../functions/alert'
 import Pusher from 'pusher-js'
+import {Helmet} from "react-helmet";
 
 /* function openUserProfile() {
     if (document.getElementsByClassName("offcanvas")[0].classList.contains("offcanvas-on")) {
@@ -37,12 +38,18 @@ function clickShowHeader() {
 class Layout extends Component {
 
     state = {
+        title: '',
         menu: false,
         json: {},
         checador: []
     }
 
     componentDidMount() {
+        const { pathname } = this.props.location
+        let textoArray = pathname.split('/')
+        let texto = 'Administrador de proyectos'
+        textoArray.forEach((element) => { if(element){ texto = texto + ' / ' + element } })
+        this.setState({ ...this.state, title: texto })
         if(process.env.NODE_ENV === 'production'){
             const pusher = new Pusher('112ff49dfbf7dccb6934', {
                 cluster: 'us2',
@@ -57,15 +64,9 @@ class Layout extends Component {
         /* this.getNotificacionesAxios() */
     }
 
-    logoutUser = () => {
-        this.logoutUserAxios();
-    }
+    logoutUser = () => { this.logoutUserAxios(); }
 
-    clickResponsiveMenu = () => {
-        this.setState({
-            menu: !this.state.menu
-        })
-    }
+    clickResponsiveMenu = () => { this.setState({ menu: !this.state.menu }) }
 
     openUserProfile = () => {
         const { json } = this.state
@@ -173,7 +174,7 @@ class Layout extends Component {
 
     render() {
         const { children, authUser } = this.props
-        const { menu, json, checador } = this.state
+        const { menu, json, checador, title } = this.state
         let tipo_usuario = authUser ? 
                             authUser.user ? 
                                 authUser.user.tipo ? 
@@ -184,6 +185,7 @@ class Layout extends Component {
 
         return (
             <div>
+                <Helmet> <title> {title} </title> </Helmet>
                 <ToastContainer position = "top-right" autoClose = { false } hideProgressBar = { false } newestOnTop = { false } closeButton = { null }
                     closeOnClick = { true } rtl = { false } draggable = { false } pauseOnHover limit = { 5 } transition = { Zoom } />
                 <MobileHeader />
