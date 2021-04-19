@@ -287,27 +287,6 @@ class NominaObraForm extends Component {
             form
         })
     }
-    // onChangeAdjunto = e => {
-    //     const { form } = this.state
-    //     const { files, value, name } = e.target
-    //     let aux = []
-    //     for (let counter = 0; counter < files.length; counter++) {
-    //         aux.push(
-    //             {
-    //                 name: files[counter].name,
-    //                 file: files[counter],
-    //                 url: URL.createObjectURL(files[counter]),
-    //                 key: counter
-    //             }
-    //         )
-    //     }
-    //     form.adjuntos[name].value = value
-    //     form.adjuntos[name].files = aux
-    //     this.setState({
-    //         ...this.state,
-    //         form
-    //     })
-    // }
     onSubmit = e => {
         e.preventDefault()
         const { title } = this.state
@@ -421,7 +400,6 @@ class NominaObraForm extends Component {
                     deleteRowNominaObra={this.deleteRowNominaObra}
                     onChangeNominasObra={this.onChangeNominasObra}
                     onChange={this.onChange}
-                    // onChangeAdjunto={this.onChangeAdjunto}
                     clearFiles={this.clearFiles}
                     onSubmit={this.onSubmit}
                     handleChange={this.handleChange}

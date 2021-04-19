@@ -11,27 +11,17 @@ import { toAbsoluteUrl } from "../../functions/routers"
 
 class Notificaciones extends Component {
 
-    state = {
-        notificaciones: []
-    }
+    state = { notificaciones: [] }
     
-    componentDidMount(){
-        this.getNotificaciones()
-    }
+    componentDidMount(){ this.getNotificaciones() }
 
     getNotificaciones = async() => {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'notificaciones/all', { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { notificaciones } = response.data
-                this.setState({
-                    ...this.state,
-                    notificaciones: notificaciones
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                this.setState({ ...this.state, notificaciones: notificaciones })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -98,13 +88,7 @@ class Notificaciones extends Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        authUser: state.authUser
-    }
-}
-
-const mapDispatchToProps = dispatch => ({
-})
+const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapDispatchToProps = dispatch => ({ })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Notificaciones)
