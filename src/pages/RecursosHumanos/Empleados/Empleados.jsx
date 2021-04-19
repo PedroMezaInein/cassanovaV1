@@ -475,27 +475,6 @@ class Empleados extends Component {
             default: return []
         }
     }
-    clearForm = () => {
-        const { form } = this.state
-        let aux = Object.keys(form)
-        aux.forEach((element) => {
-            switch(element){
-                case 'adjuntos':
-                    form[element] = {
-                        adjuntos: {
-                            value: '',
-                            placeholder: 'Adjuntos',
-                            files: []
-                        }
-                    }
-                    break;
-                default:
-                    form[element] = ''
-                break;
-            }
-        })
-        return form
-    }
     setActions = () => {
         let aux = []
         aux.push(
@@ -754,7 +733,7 @@ class Empleados extends Component {
                 <Modal size="xl" title={"Adjuntos"} show={modal.adjuntos} handleClose={this.handleCloseAdjuntos}>
                     <AdjuntosForm
                         form={form}
-                        onChangeAdjunto={this.onChangeAdjunto}
+                        onChangeAdjunto={ this.onChangeAdjunto }
                         clearFiles={this.clearFiles}
                         onSubmit={(e) => { e.preventDefault(); waitAlert(); this.addAdjuntoEmpleadoAxios() }}
                         adjuntos={['datosGenerales', 'recibosNomina', 'altasBajas']}

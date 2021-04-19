@@ -116,27 +116,6 @@ class SolicitudCompraForm extends Component {
             form
         })
     }
-    // onChangeAdjunto = e => {
-    //     const { form } = this.state
-    //     const { files, value, name } = e.target
-    //     let aux = []
-    //     for (let counter = 0; counter < files.length; counter++) {
-    //         aux.push(
-    //             {
-    //                 name: files[counter].name,
-    //                 file: files[counter],
-    //                 url: URL.createObjectURL(files[counter]),
-    //                 key: counter
-    //             }
-    //         )
-    //     }
-    //     form['adjuntos'][name].value = value
-    //     form['adjuntos'][name].files = aux
-    //     this.setState({
-    //         ...this.state,
-    //         form
-    //     })
-    // }
     clearFiles = (name, key) => {
         const { form } = this.state
         let aux = []
@@ -380,7 +359,6 @@ class SolicitudCompraForm extends Component {
                             options={options}
                             setOptions={this.setOptions}
                             onSubmit={this.onSubmit}
-                            // onChangeAdjunto={this.onChangeAdjunto}
                             clearFiles={this.clearFiles}
                             formeditado={formeditado}
                             className="px-3"

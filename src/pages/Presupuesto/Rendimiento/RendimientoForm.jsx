@@ -107,27 +107,6 @@ class RendimientoForm extends Component {
             form
         })
     }
-    // onChangeAdjunto = e => {
-    //     const { form } = this.state
-    //     const { files, value, name } = e.target
-    //     let aux = []
-    //     for (let counter = 0; counter < files.length; counter++) {
-    //         aux.push(
-    //             {
-    //                 name: files[counter].name,
-    //                 file: files[counter],
-    //                 url: URL.createObjectURL(files[counter]),
-    //                 key: counter
-    //             }
-    //         )
-    //     }
-    //     form[name].value = value
-    //     form[name].files = aux
-    //     this.setState({
-    //         ...this.state,
-    //         form
-    //     })
-    // }
     clearFiles = (name, key) => {
         const { form } = this.state
         let aux = []
@@ -276,7 +255,6 @@ class RendimientoForm extends Component {
                             title={title}
                             form={form}
                             onChange={this.onChange}
-                            // onChangeAdjunto={this.onChangeAdjunto}
                             clearFiles={this.clearFiles}
                             options={options}
                             onSubmit={this.onSubmit}

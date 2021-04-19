@@ -8,7 +8,7 @@ import { setOptions} from '../../../functions/setters'
 import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert } from '../../../functions/alert'
 import { EmpleadosForm as EmpleadosFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
-
+import { onChangeAdjunto } from '../../../functions/onChanges'
 class Empleados extends Component {
     state = {
         formeditado: 0,
@@ -334,27 +334,6 @@ class Empleados extends Component {
             form
         })
     }
-    onChangeAdjunto = e => {
-        const { form } = this.state
-        const { files, value, name } = e.target
-        let aux = []
-        for (let counter = 0; counter < files.length; counter++) {
-            aux.push(
-                {
-                    name: files[counter].name,
-                    file: files[counter],
-                    url: URL.createObjectURL(files[counter]),
-                    key: counter
-                }
-            )
-        }
-        form.adjuntos[name].value = value
-        form.adjuntos[name].files = aux
-        this.setState({
-            ...this.state,
-            form
-        })
-    }
     render() {
         const { options, title, form, formeditado} = this.state
         return (
@@ -372,7 +351,7 @@ class Empleados extends Component {
                             form={form}
                             onChange={this.onChange}
                             onSubmit={this.onSubmit}
-                            onChangeAdjunto={this.onChangeAdjunto}
+                            onChangeAdjunto={ (e) => { this.setState({...this.state,form: onChangeAdjunto(e, form) });}}
                             clearFiles={this.clearFiles}
                             title={title}
                         />
