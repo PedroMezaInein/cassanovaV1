@@ -579,7 +579,7 @@ class NewTableServerRender extends Component {
                             }
                             {(habilitar === true) ?
                                 <OverlayTrigger overlay={<Tooltip><span className="font-weight-bold text-dark-75">{text_habilitar}</span></Tooltip>}>
-                                    <button onClick={() => this.clickHandlerHabilitar()} className="btn btn-icon btn-light btn-text-primary btn-hover-text-dark font-weight-bold btn-sm mr-2">
+                                    <button onClick={() => this.clickHandlerHabilitar()} className="btn btn-icon btn-light btn-text-primary btn-hover-text-dark font-weight-bold btn-sm mx-3">
                                         <i className={`fas ${icon_habilitar} text-dark-50`}></i>
                                     </button>
                                 </OverlayTrigger>
