@@ -202,6 +202,14 @@ class Crm extends Component {
         });
         if (!crm)
             history.push('/')
+        const { search: queryString } = this.props.history.location
+        if (queryString) {
+            let id = parseInt( new URLSearchParams(queryString).get("id") )
+            if(id){
+                this.setState({ ...this.state, modal_one_lead: true })
+                this.getOneLeadInfoAxios(id)
+            }
+        }
         this.getOptionsAxios()
         this.getUltimosContactos()
         this.getSinContactar()
