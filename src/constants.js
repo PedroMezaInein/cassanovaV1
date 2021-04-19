@@ -2066,7 +2066,7 @@ export const EMPLEADOS_COLUMNS = [
         customRender: true
     },
     {
-        Header: 'Días de vacaciones dispobibles',
+        Header: 'Días de vacaciones disponibles',
         accessor: 'vacaciones_tomadas',
         customRender: true
     }
