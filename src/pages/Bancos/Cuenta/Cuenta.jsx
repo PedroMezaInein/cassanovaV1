@@ -11,7 +11,7 @@ import NewTableServerRender from '../../../components/tables/NewTableServerRende
 import TableForModals from '../../../components/tables/TableForModals'
 import { CUENTAS_COLUMNS, EDOS_CUENTAS_COLUMNS, URL_DEV } from '../../../constants'
 import { deleteAlert, doneAlert, errorAlert, printResponseErrorAlert, waitAlert, customInputAlert, questionAlert } from '../../../functions/alert'
-import { setArrayTable, setDateTable, setSelectOptions, setMoneyTable, setTextTableCenter, setDateTableReactDom, setTextTableReactDom, setOptions, setTagLabelReactDom, setEstatusBancoTableReactDom } from '../../../functions/setters'
+import { setArrayTable, setDateTable, setSelectOptions, setMoneyTable, setTextTableCenter, setDateTableReactDom, setTextTableReactDom, setOptions, setListTable, setEstatusBancoTableReactDom, setTextTable } from '../../../functions/setters'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import { printSwalHeader } from '../../../functions/printers'
@@ -177,15 +177,15 @@ class Cuenta extends Component {
         cuentas.map((cuenta, key) => {
             aux.push({
                 actions: this.setActions(cuenta),
-                nombre: setTextTableReactDom(cuenta.nombre, this.doubleClick, cuenta, 'nombre', 'text-center '),
-                numero: keyTab === 'bancos'? setTextTableReactDom(cuenta.numero, this.doubleClick, cuenta, 'numero', 'text-center'): setTextTableCenter(cuenta.numero),
+                nombre: renderToString(setTextTableCenter(cuenta.nombre, '180px')),
+                numero: renderToString(setTextTable(cuenta.numero)),
                 balance: renderToString(setMoneyTable(cuenta.balance)),
                 descripcion: setTextTableReactDom(cuenta.descripcion !== null ? cuenta.descripcion :'', this.doubleClick, cuenta, 'descripcion', 'text-justify'),
-                banco: setTextTableReactDom(cuenta.banco ? cuenta.banco.nombre : '', this.doubleClick, cuenta, 'banco', 'text-center'),
-                tipo: setTextTableReactDom(cuenta.tipo ? cuenta.tipo.tipo : '', this.doubleClick, cuenta, 'tipo', 'text-center'),
+                banco: renderToString(setTextTableCenter(cuenta.banco ? cuenta.banco.nombre : '')),
+                tipo: renderToString(setTextTableCenter(cuenta.tipo ? cuenta.tipo.tipo : '')),
                 estatus: cuenta.estatus ? setEstatusBancoTableReactDom(cuenta, this.changeEstatus ) : '',
-                empresa: setTagLabelReactDom(cuenta, cuenta.empresa, 'empresa', this.deleteElementAxios),
-                principal: setTextTableReactDom(cuenta ? cuenta.empresa_principal ? cuenta.empresa_principal.name : '' : '', this.doubleClick, cuenta, 'empresa_principal', 'text-center min-width-153px'),
+                empresa: renderToString(setListTable(cuenta.empresa, 'name', '151px')),
+                principal: renderToString(setTextTableCenter(cuenta ? cuenta.empresa_principal ? cuenta.empresa_principal.name : '' : '', '153px')),
                 fecha: setDateTableReactDom(cuenta.created_at, this.doubleClick, cuenta, 'fecha', 'text-center'),
                 id: cuenta.id
             })
