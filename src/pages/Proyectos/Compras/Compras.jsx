@@ -432,7 +432,8 @@ class Compras extends Component {
                         ],'153px'
                     )),
                     proyecto: setTextTableReactDom(compra.proyecto ? compra.proyecto.nombre : '', this.doubleClick, compra, 'proyecto', 'text-center'),
-                    proveedor: renderToString(setTextTableCenter(compra.proveedor ? compra.proveedor.razon_social : '')),
+                    //proveedor: renderToString(setTextTableCenter(compra.proveedor ? compra.proveedor.razon_social : '')),
+                    proveedor: setTextTableReactDom(compra.proveedor ? compra.proveedor.razon_social : '',this.doubleClick, compra, 'proveedor', 'text-center'),
                     factura: renderToString(setTextTable(compra.factura ? 'Con factura' : 'Sin factura')),
                     monto: renderToString(setMoneyTable(compra.monto)),
                     comision: renderToString(setMoneyTable(compra.comision ? compra.comision : 0.0)),
@@ -458,6 +459,7 @@ class Compras extends Component {
         switch(tipo){
             case 'proyecto':
             case 'subarea':
+            case 'proveedor':
                 if(data[tipo])
                     form[tipo] = data[tipo].id.toString()
                 break
@@ -527,7 +529,7 @@ class Compras extends Component {
                         <CalendarDaySwal value = { form[tipo] } onChange = { (e) => {  this.onChangeSwal(e.target.value, tipo)} } name = { tipo } date = { form[tipo] } withformgroup={0} />
                 }
                 {
-                    (tipo === 'proyecto') || (tipo === 'subarea') ?
+                    (tipo === 'proyecto') || (tipo === 'subarea') || (tipo === 'proveedor') ?
                         <SelectSearchGray options = { this.setOptions(data, tipo) } value = { form[tipo] } customdiv = "mb-2 mt-7" requirevalidation = { 1 } 
                             onChange = { (value) => { this.onChangeSwal(value, tipo)} } name = { tipo } placeholder={this.setSwalPlaceholder(tipo)}/>
                     : <></>
@@ -567,6 +569,8 @@ class Compras extends Component {
     setOptions = (data, tipo) => {
         const { options } = this.state
         switch(tipo){
+            case 'proveedor':
+                return options.proveedores
             case 'estatusCompra':
                 return options.estatusCompras
             case 'tipoPago':
