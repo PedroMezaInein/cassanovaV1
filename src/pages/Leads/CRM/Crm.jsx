@@ -1941,7 +1941,7 @@ class Crm extends Component {
                                                         name = 'continuidad' as = "select">
                                                         <option value = { 0 } >Selecciona la continuidad</option>
                                                         <option value = 'terminado' className="bg-white" >Terminado</option>
-                                                        <option value = 'recontratacion' className="bg-white" >Posible recontratación</option>
+                                                        <option value = 'recontratacion' className="bg-white">Contratar otra fase</option>
                                                     </Form.Control>
                                                 </div>
                                         }
