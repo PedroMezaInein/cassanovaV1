@@ -18,6 +18,7 @@ import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 import { Update } from '../../../components/Lottie'
 import { printSwalHeader } from '../../../functions/printers'
+import { onChangeAdjunto } from '../../../functions/onChanges'
 const MySwal = withReactContent(Swal)
 const $ = require('jquery');
 class Contratos extends Component {
@@ -672,27 +673,6 @@ class Contratos extends Component {
             form
         })
     }
-    onChangeAdjunto = e => {
-        const { form } = this.state
-        const { files, value, name } = e.target
-        let aux = []
-        for (let counter = 0; counter < files.length; counter++) {
-            aux.push(
-                {
-                    name: files[counter].name,
-                    file: files[counter],
-                    url: URL.createObjectURL(files[counter]),
-                    key: counter
-                }
-            )
-        }
-        form.adjuntos[name].value = value
-        form.adjuntos[name].files = aux
-        this.setState({
-            ...this.state,
-            form
-        })
-    }
     onSubmitAdjuntos = e => {
         e.preventDefault()
         waitAlert()
@@ -779,7 +759,7 @@ class Contratos extends Component {
                             <div className="col-md-12">
                                 <FileInput
                                     requirevalidation={0}
-                                    onChangeAdjunto={this.onChangeAdjunto}
+                                    onChangeAdjunto={ (e) => { this.setState({...this.state,form: onChangeAdjunto(e, form) });}}
                                     placeholder={form.adjuntos.adjunto.placeholder}
                                     value={form.adjuntos.adjunto.value}
                                     name='adjunto'

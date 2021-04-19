@@ -37,7 +37,7 @@ class ConceptoForm extends Component {
     }
 
     render() {
-        const { title, options, form, onChange, setOptions, onChangeAdjunto, clearFiles, requirevalidation, onSubmit, formeditado, handleChange, deleteFile, ...props } = this.props
+        const { title, options, form, onChange, setOptions, clearFiles, requirevalidation, onSubmit, formeditado, handleChange, deleteFile, ...props } = this.props
         return (
             <Form id="form-remision"
                 onSubmit={
@@ -131,7 +131,6 @@ class ConceptoForm extends Component {
                             />
                     </div>
                 </div>
-
                 <div className="card-footer py-3 pr-1">
                     <div className="row">
                         <div className="col-lg-12 text-right pr-0 pb-0">

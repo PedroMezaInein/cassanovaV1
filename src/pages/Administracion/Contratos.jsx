@@ -15,7 +15,7 @@ import TableForModals from '../../components/tables/TableForModals'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
 import { ContratoCard } from '../../components/cards'
 import Swal from 'sweetalert2'
-
+import { onChangeAdjunto } from '../../functions/onChanges'
 const $ = require('jquery');
 class Contratos extends Component {
     state = {
@@ -280,27 +280,6 @@ class Contratos extends Component {
         const { name, value } = e.target
         const { form } = this.state
         form[name] = value
-        this.setState({
-            ...this.state,
-            form
-        })
-    }
-    onChangeAdjunto = e => {
-        const { form } = this.state
-        const { files, value, name } = e.target
-        let aux = []
-        for (let counter = 0; counter < files.length; counter++) {
-            aux.push(
-                {
-                    name: files[counter].name,
-                    file: files[counter],
-                    url: URL.createObjectURL(files[counter]),
-                    key: counter
-                }
-            )
-        }
-        form.adjuntos[name].value = value
-        form.adjuntos[name].files = aux
         this.setState({
             ...this.state,
             form
@@ -798,7 +777,7 @@ class Contratos extends Component {
                         onChange={this.onChange}
                         onSubmit={this.onSubmit}
                         formeditado={formeditado}
-                        onChangeAdjunto={this.onChangeAdjunto}
+                        onChangeAdjunto={ (e) => { this.setState({...this.state,form: onChangeAdjunto(e, form) });}}
                         clearFiles={this.clearFiles}
                         title={title}
                     />
@@ -818,7 +797,7 @@ class Contratos extends Component {
                             <div className="col-md-6">
                                 <FileInput
                                     requirevalidation={0}
-                                    onChangeAdjunto={this.onChangeAdjunto}
+                                    onChangeAdjunto={ (e) => { this.setState({...this.state,form: onChangeAdjunto(e, form) });}}
                                     placeholder={form.adjuntos.adjunto.placeholder}
                                     value={form.adjuntos.adjunto.value}
                                     name='adjunto'
