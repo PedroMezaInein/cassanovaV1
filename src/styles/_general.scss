@@ -2074,6 +2074,9 @@ span.font-weight-bolder.text-hover-error:hover{
     border: none;
 }
 
+.text-transform-none{
+    text-transform: none!important;
+}
 @media (max-width: 991.98px) {
     span.ocultar-checador{
         display: none;

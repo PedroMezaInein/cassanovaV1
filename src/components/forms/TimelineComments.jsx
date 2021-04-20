@@ -1,9 +1,87 @@
 import React, { Component } from 'react'
-import { diffCommentDate } from '../../functions/functions'
+import { diffCommentDate, replaceAll } from '../../functions/functions'
 import SVG from "react-inlinesvg"
 import { toAbsoluteUrl } from "../../functions/routers"
+import { indexOf } from 'lodash-es'
 
 class TimelineComments extends Component {
+
+    indexSubcadena = (cadena, prefixA, prefixB) => {
+        let indiceA = cadena.indexOf(prefixA)
+        let indiceB = cadena.indexOf(prefixB)
+        if(indiceA === indiceB === -1)
+            return -1
+        if(indiceA === -1)
+            return indiceB
+        if(indiceB === -1)
+            return indiceA
+        if(indiceA < indiceB)
+            return indiceA
+        return indiceB
+        
+    }
+
+    printComentario = texto => {
+        /* let indice = texto.indexOf('___') < texto.indexOf('***') ? texto.indexOf('___') : texto.indexOf('***') */
+        let indice = this.indexSubcadena(texto, '___', '***')
+        let arrayAux = [];
+        if(indice === -1)        
+            return(
+                <span>
+                    {texto}
+                </span>
+            )
+        let subcadena = texto
+        let final = 0
+        let inicio = indice + 3
+        let flag = ''
+        let prefix = ''
+        while(indice !== -1){
+            inicio = indice + 3
+            switch(this.indexSubcadena(subcadena, '___', '***')){
+                case subcadena.indexOf('___'):
+                    flag = 'black';
+                    break
+                case subcadena.indexOf('***'):
+                    flag = 'info';
+                    break
+                case -1:
+                    flag = 'none'
+                    break
+            }
+            if(flag !== 'none'){
+                prefix = flag === 'black' ? '___' : '***'
+                arrayAux.push({
+                    texto: replaceAll(subcadena.substring(final, inicio), prefix, ''),
+                    tipo: 'normal'
+                })
+                final = subcadena.indexOf(prefix, inicio)
+                arrayAux.push({
+                    texto: subcadena.substring(inicio, final),
+                    tipo: flag
+                })
+                subcadena = subcadena.substring(final+3)
+                indice = this.indexSubcadena(subcadena, '___', '***')
+                console.log('SUBCADENA', subcadena)
+                final = 0
+            }
+        }
+        if(subcadena)
+            arrayAux.push({
+                texto: subcadena,
+                tipo: 'normal'
+            })
+        return arrayAux.map((elemento) => {
+            return (
+                <span className = {` ${elemento.tipo ==='black' ? 'font-weight-bolder text-success' : elemento.tipo ==='info' ? 'font-weight-bolder text-info' : '-'}`}>
+                    { 
+                    elemento.texto
+                    }
+                </span>
+            )
+        })
+    }
+
     render() {
         const { comentariosObj, color, col } = this.props
         return (
@@ -29,7 +107,12 @@ class TimelineComments extends Component {
                                                                 <span className="text-muted ml-2 font-weight-bold">
                                                                     {diffCommentDate(comentario)}
                                                                 </span>
-                                                                <p className={comentario.adjunto === null ? "p-0 font-weight-light text-justify mb-0" : "p-0 font-weight-light text-justify"}>{comentario.comentario}</p>
+                                                                <p className={`p-0 0 font-weight-light text-transform-none ${comentario.adjunto === null ? "text-justify mb-0" : "text-justify"}`}>
+                                                                    {/* {comentario.comentario} */}
+                                                                    {
+                                                                        this.printComentario(comentario.comentario)
+                                                                    }
+                                                                </p>
                                                                 {
                                                                     comentario.adjunto ?
                                                                         <div className="d-flex justify-content-end">
