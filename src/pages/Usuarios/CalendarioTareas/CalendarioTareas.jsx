@@ -11,9 +11,10 @@ import { URL_DEV } from '../../../constants'
 import bootstrapPlugin from '@fullcalendar/bootstrap'
 import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import Swal from 'sweetalert2'
-import Pusher from 'pusher-js'
+import Echo from 'laravel-echo';
 import { Modal } from '../../../components/singles'
 import FormCalendarioTareas from '../../../components/forms/usuarios/FormCalendarioTareas'
+
 class Calendario extends Component {
     state = {
         events: [],
@@ -34,6 +35,7 @@ class Calendario extends Component {
             },
             comentario: ''
         },
+        options:{ users: [] }
     };
 
     componentDidMount() {
@@ -45,26 +47,29 @@ class Calendario extends Component {
         });
         this.getUserChecador()
         this.getCalendarioTareasAxios('own')
-        if(process.env.NODE_ENV === 'production'){
-            const pusher = new Pusher('112ff49dfbf7dccb6934', {
-                cluster: 'us2',
-                encrypted: false
-            });
-            const channel = pusher.subscribe('responsable-tarea');
-            channel.bind('App\\Events\\ResponsableTarea', data => {
-                const { tarea } = data
-                const { user } = this.props.authUser
-                const { tipo } = this.state
-                let flag = false
-                if(tarea.responsables)
-                    tarea.responsables.forEach((element) => {
-                        if(element.id === user.id)
-                            flag = true
-                    })
-                if(flag)
-                    this.getCalendarioTareasAxios(tipo)
-            });
-        }
+        const pusher = new Echo({
+            broadcaster: 'pusher',
+            key: '112ff49dfbf7dccb6934',
+            cluster: 'us2',
+            forceTLS: true
+        });
+        pusher.channel('responsable-tarea').listen('ResponsableTarea', (data) => {
+            const { tarea } = data
+            const { user } = this.props.authUser
+            const { tipo } = this.state
+            let flag = false
+            if(tarea.responsables)
+                tarea.responsables.forEach((element) => {
+                    if(element.id === user.id)
+                        flag = true
+                })
+            if(flag)
+                this.getCalendarioTareasAxios(tipo)
+        })
+    }
+
+    updatePusher = data => {
+        console.log('DATA', data)
     }
 
     actualizarChecadorAxios = async(tipo) => {
@@ -145,7 +150,7 @@ class Calendario extends Component {
     async getCalendarioTareasAxios(tipo) {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}v2/usuarios/calendario-proyectos/${tipo}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(`${URL_DEV}v2/usuarios/calendario-tareas/${tipo}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 Swal.close()
                 const { tareas } = response.data
@@ -164,11 +169,13 @@ class Calendario extends Component {
         waitAlert()
         await axios.get(`${URL_DEV}v2/usuarios/tareas/${tarea.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { tarea } = response.data
-                const { modal } = this.state
+                const { tarea, usuarios } = response.data
+                const { modal, options } = this.state
                 modal.tareas = true
+                options.users = []
+                usuarios.forEach((element) => { options.users.push({ id: element.id, display: element.name }) })
                 Swal.close()
-                this.setState({ ...this.state, modal, tarea: tarea, title: tarea.titulo, form: this.clearForm() })
+                this.setState({ ...this.state, modal, tarea: tarea, title: tarea.titulo, form: this.clearForm(), options })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -301,7 +308,7 @@ class Calendario extends Component {
         })
     }
     render() {
-        const { events, tipo, title, modal, tarea, form } = this.state
+        const { events, tipo, title, modal, tarea, form, options } = this.state
         return (
             <Layout {...this.props}>
                     <Card className="card-custom">
@@ -326,28 +333,14 @@ class Calendario extends Component {
                                 </button>
                             </div>
                         </div>
-                            <FullCalendar
-                                locale={esLocale}
-                                plugins={[dayGridPlugin, interactionPlugin, bootstrapPlugin]}
-                                initialView="dayGridMonth"
-                                weekends={true}
-                                events={events}
-                                // dateClick={this.handleDateClick}
-                                eventContent={this.renderEventContent}
-                                firstDay={1}
-                                themeSystem='bootstrap'
-                                height='1290.37px'
-                            />
+                            <FullCalendar locale = { esLocale } plugins = { [dayGridPlugin, interactionPlugin, bootstrapPlugin] }
+                                initialView = "dayGridMonth" weekends = { true } events = { events } eventContent = { this.renderEventContent }
+                                firstDay = { 1 } themeSystem = 'bootstrap' height = '1290.37px' />
                         </Card.Body>
                     </Card>
                 <Modal size="lg" title={title} show={modal.tareas} handleClose={this.handleCloseModalT}>
-                    <FormCalendarioTareas
-                        tarea={tarea}
-                        addComentario={this.addComentarioAxios} 
-                        form={form}
-                        onChange={this.onChange}
-                        handleChange={this.handleChangeComentario}
-                    />
+                    <FormCalendarioTareas tarea = { tarea } addComentario = { this.addComentarioAxios } form = { form }
+                        onChange = { this.onChange } handleChange = { this.handleChangeComentario } users = { options.users } />
                 </Modal>
             </Layout>
         );
