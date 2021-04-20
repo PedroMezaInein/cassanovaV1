@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Layout from '../../../components/layout/layout'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import { URL_DEV, USUARIOS, CLIENTES } from '../../../constants'
+import { URL_DEV, USUARIOS, CLIENTES, PUSHER_OBJECT } from '../../../constants'
 import { Modal, ModalDelete } from '../../../components/singles'
 import { RegisterUserForm, PermisosForm } from '../../../components/forms'
 import Swal from 'sweetalert2'
@@ -16,6 +16,8 @@ import { Tabs, Tab } from 'react-bootstrap'
 import { UsuarioCard } from '../../../components/cards'
 import { Update } from '../../../components/Lottie'
 import { InputGray } from '../../../components/form-components'
+import Echo from 'laravel-echo';
+import { setSingleHeader } from '../../../functions/routers'
 const $ = require('jquery');
 
 class Usuarios extends Component {
@@ -67,6 +69,21 @@ class Usuarios extends Component {
         if (!usuarios)
             history.push('/')
         this.getOptionsAxios();
+        /* const pusher = new Echo( PUSHER_OBJECT );
+        pusher.channel('Usuarios.Usuario').listen('Usuarios\\UsuarioEvent', (e) => {
+            console.log(e, 'E')
+            this.getUsuariosAxios();
+        }) */
+    }
+
+    getUsuariosAxios = () => {
+        const { key } = this.state
+        if(key === 'administrador')
+            this.getAdministradorAxios()
+        if(key === 'empleados')
+            this.getEmpleadosAxios()
+        if(key === 'clientes')
+            this.getClientesAxios()
     }
 
     changePageEdit = user => {
@@ -120,7 +137,7 @@ class Usuarios extends Component {
     async getOptionsAxios() {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'user/users/options', { responseType: 'json', headers: { Accept: '*/*', 'Access-Control-Allow-Origin': '*', 'Content-Type': 'application/json;', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(URL_DEV + 'user/users/options', { responseType: 'json', headers: setSingleHeader(access_token) }).then(
             (response) => {
                 Swal.close() 
                 const { tipos, departamentos, proyectos } = response.data
@@ -431,7 +448,7 @@ class Usuarios extends Component {
         waitAlert()
         await axios.put(`${URL_DEV}v2/usuarios/usuarios/update/${tipo}/${data.id}`, 
             { value: value }, 
-            { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            { headers: setSingleHeader(access_token)  }).then(
             (response) => {
                 const { key } = this.state
                 if(key === 'administrador')

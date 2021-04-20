@@ -19,4 +19,15 @@ export function checkIsActive(location, url) {
     return false;
 }
 
+const setSingleHeader = (access_token) => {
+    return{
+        Authorization: `Bearer ${access_token}`,
+        'Access-Control-Allow-Origin' : '*',
+        'Access-Control-Allow-Methods' : 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
+    }
+
+}
+
+export { setSingleHeader }
+
 export const toAbsoluteUrl = pathname => process.env.PUBLIC_URL + pathname;

@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import NewAsideMenu from './newAsideMenu'
 import { logout, login } from '../../redux/reducers/auth_user'
 import axios from 'axios'
-import { PUSHER_OJECT, URL_DEV } from '../../constants'
+import { PUSHER_OBJECT, URL_DEV } from '../../constants'
 import UrlLocation from './urlLocation'
 import MobileHeader from './mobileHeader'
 import UserPanel from '../../../src/components/layout/UserPanel/userPanel'
@@ -52,7 +52,7 @@ class Layout extends Component {
         textoArray.forEach((element) => { if(element){ texto = texto + ' / ' + element } })
         this.setState({ ...this.state, title: texto })
         this.getUserChecador()
-        const pusher = new Echo( PUSHER_OJECT );
+        const pusher = new Echo( PUSHER_OBJECT );
         const { user } = this.props.authUser
         pusher.channel('Notificacion.User.'+user.id).listen('NuevaNotificacion', (e) => {
             this.getNotificacionesAxios()

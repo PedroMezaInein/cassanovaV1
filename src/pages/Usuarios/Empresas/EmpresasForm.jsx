@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Layout from '../../../components/layout/layout'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import { PUSHER_OJECT, URL_DEV } from '../../../constants'
+import { PUSHER_OBJECT, URL_DEV } from '../../../constants'
 import { EmpresaForm } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
 import Echo from 'laravel-echo';
@@ -133,7 +133,7 @@ class EmpresasForm extends Component {
         }
         if (!empresas)
             history.push('/')
-        const pusher = new Echo( PUSHER_OJECT );
+        const pusher = new Echo( PUSHER_OBJECT );
         pusher.channel('Usuarios.Empresa').listen('Usuarios\\EmpresaEvent', (data) => {
             const { empresa } = this.state
             const { history } = this.props
