@@ -3,7 +3,7 @@ import { renderToString } from 'react-dom/server'
 import Layout from '../../../components/layout/layout'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import { URL_DEV, EMPRESA_COLUMNS, PUSHER_OJECT} from '../../../constants'
+import { URL_DEV, EMPRESA_COLUMNS, PUSHER_OBJECT} from '../../../constants'
 import { Modal, ModalDelete } from '../../../components/singles'
 import { setTextTableReactDom } from '../../../functions/setters'
 import ItemSlider from '../../../components/singles/ItemSlider'
@@ -103,7 +103,7 @@ class Empresas extends Component {
         });
         if (!empresas)
             history.push('/')
-        const pusher = new Echo( PUSHER_OJECT );
+        const pusher = new Echo( PUSHER_OBJECT );
         pusher.channel('Usuarios.Empresa').listen('Usuarios\\EmpresaEvent', (e) => {
             this.getEmpresas()
         })

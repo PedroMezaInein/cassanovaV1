@@ -7,7 +7,7 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from "@fullcalendar/interaction"
 import esLocale from '@fullcalendar/core/locales/es'
 import { errorAlert, printResponseErrorAlert, waitAlert, doneAlert } from '../../../functions/alert'
-import { PUSHER_OJECT, URL_DEV } from '../../../constants'
+import { PUSHER_OBJECT, URL_DEV } from '../../../constants'
 import bootstrapPlugin from '@fullcalendar/bootstrap'
 import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import Swal from 'sweetalert2'
@@ -47,7 +47,7 @@ class Calendario extends Component {
             return pathname === url
         });
         this.getCalendarioTareasAxios('own')
-        const pusher = new Echo( PUSHER_OJECT );
+        const pusher = new Echo( PUSHER_OBJECT );
         pusher.channel('responsable-tarea').listen('ResponsableTarea', (data) => {
             const { tarea } = data
             const { user } = this.props.authUser
