@@ -1,10 +1,32 @@
-import { Message, Done, Sending, Robot404 } from '../components/Lottie/'
+import { Message, Done, Sending, Robot404, UserWarning } from '../components/Lottie/'
 import React from 'react'
 import Swal from 'sweetalert2'
 import withReactContent from 'sweetalert2-react-content'
 const MySwal = withReactContent(Swal)
 
-export async function waitAlert() {
+const userWarningAlert = async(texto, confirmFunction, deniedFunction) => {
+    MySwal.fire({
+        title: '¡UPS!',
+        html: <div>
+                <p> {texto} </p>
+                <UserWarning />
+            </div>,
+        showConfirmButton: true,
+        confirmButtonText: 'Recargar',
+        showDenyButton: true,
+        denyButtonText: 'Regresar',
+        showCancelButton: true,
+        cancelButtonText: 'Continuar'
+    }).then((result) => {
+        const { isConfirmed, isDenied } = result
+        if(isConfirmed)
+            confirmFunction()
+        if(isDenied)
+            deniedFunction()
+    })
+}
+
+async function waitAlert() {
     MySwal.fire({
         title: '¡UN MOMENTO!',
         html:
@@ -18,37 +40,9 @@ export async function waitAlert() {
             actions: 'd-none'
         }
     })
-    /* let fecha = new Date()
-    if(fecha.getMonth() === 11)
-        MySwal.fire({
-            title: '¡UN MOMENTO!',
-            html:
-                <div>
-                    <p>
-                        LA INFORMACIÓN ESTÁ SIENDO PROCESADA
-                    </p>
-                    <SendingDecember />
-                </div>,
-            customClass: {
-                actions: 'd-none'
-            }
-        })
-    else{
-        MySwal.fire({
-            title: '¡UN MOMENTO!',
-            html:
-                <div>
-                    <p>
-                        LA INFORMACIÓN ESTÁ SIENDO PROCESADA
-                    </p>
-                    <Sending />
-                </div>,
-            customClass: {
-                actions: 'd-none'
-            }
-        })
-    } */
 }
+
+export{ userWarningAlert, waitAlert }
 
 export async function commentAlert() {
     MySwal.fire({
