@@ -8,6 +8,7 @@ import { getMeses, getAños, getQuincena } from '../../../functions/setters'
 import { errorAlert, printResponseErrorAlert } from '../../../functions/alert'
 import { SelectSearchGray } from '../../../components/form-components'
 import Echo from 'laravel-echo';
+import Pusher from 'pusher-js';
 
 const meses = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre']
 const horasPorTrabajar = 8
