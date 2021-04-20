@@ -288,7 +288,10 @@ td.descripcion.text-center {
 
 a#tabsAreas-tab-compras,
 a#tabsAreas-tab-ventas,
-a#tabsAreas-tab-egresos {
+a#tabsAreas-tab-egresos,
+a#tabsUsuarios-tab-administrador,
+a#tabsUsuarios-tab-empleados,
+a#tabsUsuarios-tab-clientes{
     @include down-screen($md) {
         font-size: 11px;
     }
@@ -2073,4 +2076,9 @@ span.font-weight-bolder.text-hover-error:hover{
 
 .text-transform-none{
     text-transform: none!important;
+}
+@media (max-width: 991.98px) {
+    span.ocultar-checador{
+        display: none;
+    }
 }

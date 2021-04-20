@@ -25,7 +25,7 @@ class ChangePasswordFrom extends Component {
 		return (<>
 			<Tab.Container defaultActiveKey="1" className="p-5">
 				<Row>
-					<Col md={3} className="mb-3">
+					<Col md={4} className="mb-3">
 						<Card className="card-custom card-stretch">
 							<Card.Body>
 								<div className="table-responsive">
@@ -51,7 +51,7 @@ class ChangePasswordFrom extends Component {
 										</div>
 										<div className="d-flex align-items-center justify-content-between mb-2">
 											<span className="font-weight-bolder mr-2">Fecha de registro:</span>
-												<div className="text-muted font-weight-bold text-hover-dark">{user ? setDateTableLG(user.created_at): '' } </div>
+												<div className="text-muted font-weight-bold text-hover-dark">{user ? setDateTableLG(user.empleado.fecha_inicio): '' } </div>
 										</div>
 									</div>
 								</div>
@@ -100,7 +100,7 @@ class ChangePasswordFrom extends Component {
 							</Card.Body>
 						</Card >
 					</Col >
-					<Col md={9} className="mb-3">
+					<Col md={8} className="mb-3">
 						<Card className="card-custom card-stretch">
 							<Tab.Content>
 								<Tab.Pane eventKey="1">

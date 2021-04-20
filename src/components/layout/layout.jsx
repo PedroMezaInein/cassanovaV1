@@ -51,6 +51,7 @@ class Layout extends Component {
         let texto = 'Administrador de proyectos'
         textoArray.forEach((element) => { if(element){ texto = texto + ' / ' + element } })
         this.setState({ ...this.state, title: texto })
+        this.getUserChecador()
         const pusher = new Echo({
             broadcaster: 'pusher',
             key: '112ff49dfbf7dccb6934',
@@ -73,7 +74,6 @@ class Layout extends Component {
         if(document.getElementsByClassName("offcanvas")[0].classList.contains("offcanvas-on")) {
             document.getElementsByClassName("offcanvas")[0].classList.remove("offcanvas-on");
         }else{
-            this.getUserChecador()
             document.getElementsByClassName("offcanvas")[0].classList.add("offcanvas-on");
         }
     }
@@ -96,6 +96,33 @@ class Layout extends Component {
             console.log(error, 'error')
         })
     }
+
+    isCliente = usuario => {
+        if(usuario)
+            if(usuario.tipo)
+                if(usuario.tipo.tipo)
+                    if(usuario.tipo.tipo === 'Cliente')
+                        return true
+        return false
+    }
+
+    printChecador = () => {
+		const { checador } = this.state
+		if(checador.length){
+			if(checador[0].fecha_fin === null)
+				return(
+                    <span className="btn btn-sm btn-bg-light btn-icon-primary btn-hover-primary font-weight-bolder text-primary align-self-center" onClick = { (e) => { e.preventDefault(); this.actualizarChecadorAxios('salida') } } >
+                        <i className="fas fa-sign-in-alt text-primary px-0"></i><span className="pl-2 ocultar-checador">CHECAR SALIDA</span>
+                    </span>
+				)
+		}else{
+			return(
+                <span className="btn btn-sm btn-bg-light btn-icon-success btn-hover-success font-weight-bolder text-success align-self-center" onClick = { (e) => { e.preventDefault(); this.actualizarChecadorAxios('entrada') } }>
+                    <i className="fas fa-sign-in-alt text-success px-0"></i><span className="pl-2 ocultar-checador">CHECAR ENTRADA</span>
+                </span>
+			)
+		}
+	}
 
     async getNotificacionesAxios() {
         const options = {
@@ -244,7 +271,7 @@ class Layout extends Component {
                                 {
                                     tipo_usuario === 'Cliente' ?
                                         '' :
-                                        <UrlLocation {...this.props} props={this.props} />
+                                        <UrlLocation {...this.props} props={this.props} checador = { checador } actualizarChecador = { this.actualizarChecadorAxios } isCliente={this.isCliente} printChecador={this.printChecador}/>
                                 }
                                 <div className="d-flex flex-column-fluid">
                                     <div className="container-fluid">

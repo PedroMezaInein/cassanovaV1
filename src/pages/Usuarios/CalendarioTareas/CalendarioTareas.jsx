@@ -46,7 +46,6 @@ class Calendario extends Component {
             const { modulo: { url } } = element
             return pathname === url
         });
-        this.getUserChecador()
         this.getCalendarioTareasAxios('own')
         const pusher = new Echo({
             broadcaster: 'pusher',
@@ -91,37 +90,6 @@ class Calendario extends Component {
             console.log(error, 'error')
         })
     }
-
-    getUserChecador = async() => {
-        const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}v2/usuarios/usuarios/checador`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { usuario } = response.data
-                this.setState({...this.state, checador: usuario.checadores})
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-
-    printChecador = () => {
-		const { checador } = this.state
-		if(checador.length){
-			if(checador[0].fecha_fin === null)
-				return(
-                    <span className="btn btn-sm btn-bg-light btn-icon-primary btn-hover-primary font-weight-bolder text-primary" onClick = { (e) => { e.preventDefault(); this.actualizarChecadorAxios('salida') } } >
-                        <i className="fas fa-sign-in-alt text-primary"></i> CHECAR SALIDA
-                    </span>
-				)
-		}else{
-			return(
-                <span className="btn btn-sm btn-bg-light btn-icon-success btn-hover-success font-weight-bolder text-success" onClick = { (e) => { e.preventDefault(); this.actualizarChecadorAxios('entrada') } }>
-                    <i className="fas fa-sign-in-alt text-success"></i> CHECAR ENTRADA
-                </span>
-			)
-		}
-	}
 
     handleDateClick = (arg) => {
         waitAlert()
@@ -323,16 +291,13 @@ class Calendario extends Component {
     render() {
         const { events, tipo, title, modal, tarea, form, options } = this.state
         return (
-            <Layout {...this.props}>
+            <Layout active={'usuarios'} {...this.props}>
                     <Card className="card-custom">
                         <Card.Header>
                             <div className="d-flex align-items-center">
                                 <div className="align-items-start flex-column">
                                     <span className="font-weight-bolder text-dark font-size-h3">Calendario de tareas</span>
                                 </div>
-                            </div>
-                            <div className="card-toolbar">
-                                { this.printChecador() }
                             </div>
                         </Card.Header>
                         <Card.Body>

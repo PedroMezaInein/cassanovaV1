@@ -11,46 +11,8 @@ class NavUser extends Component{
 		return false
 	}
 
-	printChecador = () => {
-		const { checador, actualizarChecador } = this.props
-		if(checador.length){
-			if(checador[0].fecha_fin === null)
-				return(
-					<span className="navi-item mb-2"
-						onClick = { (e) => { e.preventDefault(); actualizarChecador('salida') } } >
-						<div className="navi-link btn btn-clean py-1">
-							<div className="symbol symbol-40 bg-light mr-3">
-								<div className="symbol-label">
-									<i className="flaticon2-hourglass text-primary icon-lg p-0"></i>
-								</div>
-							</div>
-							<div className="navi-text text-left font-weight-bold text-dark text-hover-primary">
-								Checar salida
-							</div>
-						</div>
-					</span>
-				)
-		}else{
-			return(
-				<span className="navi-item mb-2"
-					onClick = { (e) => { e.preventDefault(); actualizarChecador('entrada') } } >
-					<div className="navi-link btn btn-clean py-1">
-						<div className="symbol symbol-40 bg-light mr-3">
-							<div className="symbol-label">
-								<i className="flaticon2-hourglass-1 text-success icon-lg p-0"></i>
-							</div>
-						</div>
-						<div className="navi-text text-left font-weight-bold text-dark text-hover-success">
-							Checar entrada
-						</div>
-					</div>
-				</span>
-			)
-		}
-	}
-
 	render(){
-		const { user: usuario, cerrarSesiones } = this.props
+		const { user: usuario, cerrarSesiones, mostrarNotificaciones } = this.props
 		return(
 			<>   
 				<div className="navi navi-spacer-x-0 p-0">
@@ -83,7 +45,7 @@ class NavUser extends Component{
 										</div>
 									</div>
 								</a>
-								<a href="/mis-notificaciones" className="navi-item mb-2">
+								<a onClick={mostrarNotificaciones}  className="navi-item mb-2">
 									<div className="navi-link btn btn-clean py-1">
 										<div className="symbol symbol-40 bg-light mr-3">
 											<div className="symbol-label">
@@ -112,11 +74,8 @@ class NavUser extends Component{
 							</div>
 						</div>
 					</span>
-					{
-						!this.isCliente(usuario) && this.printChecador()
-					}
 				</div>
-        	</>
+			</>
 		)
 	}
 }
