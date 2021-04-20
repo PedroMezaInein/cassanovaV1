@@ -165,16 +165,28 @@ class Calendario extends Component {
         })
     }
 
+    setProyectoName = nombre => {
+        let arreglo = nombre.split(' ')
+        let texto = '#'
+        arreglo.forEach( (elemento) => {
+            if(elemento !== '' && elemento !== '-')
+                texto = texto + elemento.charAt(0).toUpperCase() + elemento.slice(1).toLowerCase()
+        })
+        return texto
+    }
+
     getTareas = async(tarea) => {
         const { access_token } = this.props.authUser
         waitAlert()
         await axios.get(`${URL_DEV}v2/usuarios/tareas/${tarea.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { tarea, usuarios } = response.data
+                const { tarea, usuarios, proyectos } = response.data
                 const { modal, options } = this.state
                 modal.tareas = true
                 options.users = []
+                options.proyectos = []
                 usuarios.forEach((element) => { options.users.push({ id: element.id, display: element.name }) })
+                proyectos.forEach((element) => { options.proyectos.push({ id: element.id, display: this.setProyectoName(element.nombre) }) })
                 Swal.close()
                 this.setState({ ...this.state, modal, tarea: tarea, title: tarea.titulo, form: this.clearForm(), options })
             }, (error) => { printResponseErrorAlert(error) }
@@ -340,7 +352,7 @@ class Calendario extends Component {
                         </Card.Body>
                     </Card>
                 <Modal size="lg" title={title} show={modal.tareas} handleClose={this.handleCloseModalT}>
-                    <FormCalendarioTareas tarea = { tarea } addComentario = { this.addComentarioAxios } form = { form }
+                    <FormCalendarioTareas tarea = { tarea } addComentario = { this.addComentarioAxios } form = { form } proyectos = { options.proyectos }
                         onChange = { this.onChange } handleChange = { this.handleChangeComentario } users = { options.users } />
                 </Modal>
             </Layout>

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
-import ComentarioForm from "../../forms/ComentarioForm"
+import ComentarioFormTarea from "../../forms/ComentarioFormTarea"
 import TimelineComments from '../../forms/TimelineComments'
+import { MentionsInput, Mention } from 'react-mentions'
 
 class FormCalendarioTareas extends Component {
     state = {
@@ -29,7 +30,7 @@ class FormCalendarioTareas extends Component {
         })
     }
     render() {
-        const { tarea, addComentario, form, onChange, handleChange } = this.props
+        const { tarea, addComentario, form, onChange, handleChange, users, proyectos } = this.props
         return (
             <div className="mt-6 mx-4">
                 <div className="text-dark-50 font-weight-bold mr-2 mb-5">
@@ -47,19 +48,10 @@ class FormCalendarioTareas extends Component {
                     </span>
                 </div>
                 <div className={this.state.showForm ? 'col-md-12 mb-5' : 'd-none'}>
-                    <ComentarioForm
-                        addComentario={ ()=> {this.mostrarFormulario(); addComentario();}}
-                        form={form}
-                        onChange={onChange}
-                        handleChange={handleChange}
-                        color="primary"
-                    />
+                    <ComentarioFormTarea users  = { users } proyectos = { proyectos } addComentario = { ()=> {this.mostrarFormulario(); addComentario();} }
+                        form = { form } onChange = { onChange } handleChange = { handleChange } color = "primary" />
                 </div>
-                <TimelineComments
-                    comentariosObj = {tarea}
-                    col='12'
-                    color='primary'
-                />
+                <TimelineComments comentariosObj = {tarea} col = '12' color = 'primary' />
             </div>
         )
     }
