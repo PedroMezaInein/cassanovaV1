@@ -12,8 +12,9 @@ import { Notificacion } from '../singles'
 import { Zoom, ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { errorAlert, printResponseErrorAlert, doneAlert, waitAlert } from '../../functions/alert'
-import Pusher from 'pusher-js'
 import {Helmet} from "react-helmet";
+import Pusher from 'pusher-js';
+import Echo from 'laravel-echo';
 
 /* function openUserProfile() {
     if (document.getElementsByClassName("offcanvas")[0].classList.contains("offcanvas-on")) {
@@ -50,18 +51,17 @@ class Layout extends Component {
         let texto = 'Administrador de proyectos'
         textoArray.forEach((element) => { if(element){ texto = texto + ' / ' + element } })
         this.setState({ ...this.state, title: texto })
-        if(process.env.NODE_ENV === 'production'){
-            const pusher = new Pusher('112ff49dfbf7dccb6934', {
-                cluster: 'us2',
-                encrypted: false
-            });
-            const { user } = this.props.authUser
-            const channelNot = pusher.subscribe('Notificacion.User.'+user.id);
-            channelNot.bind('App\\Events\\NuevaNotificacion', data => {
-                this.getNotificacionesAxios()
-            });
-        }
         this.getUserChecador()
+        const pusher = new Echo({
+            broadcaster: 'pusher',
+            key: '112ff49dfbf7dccb6934',
+            cluster: 'us2',
+            forceTLS: true
+        });
+        const { user } = this.props.authUser
+        pusher.private('Notificacion.User.'+user.id).listen('NuevaNotificacion', (e) => {
+            this.getNotificacionesAxios()
+        })
         /* this.getNotificacionesAxios() */
     }
 
