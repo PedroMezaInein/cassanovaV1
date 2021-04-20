@@ -11,6 +11,7 @@ import { URL_DEV } from '../../../constants'
 import bootstrapPlugin from '@fullcalendar/bootstrap'
 import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import Swal from 'sweetalert2'
+import Pusher from 'pusher-js';
 import Echo from 'laravel-echo';
 import { Modal } from '../../../components/singles'
 import FormCalendarioTareas from '../../../components/forms/usuarios/FormCalendarioTareas'
