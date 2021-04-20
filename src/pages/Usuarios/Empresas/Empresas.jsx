@@ -3,7 +3,7 @@ import { renderToString } from 'react-dom/server'
 import Layout from '../../../components/layout/layout'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import { URL_DEV, EMPRESA_COLUMNS} from '../../../constants'
+import { URL_DEV, EMPRESA_COLUMNS, PUSHER_OJECT} from '../../../constants'
 import { Modal, ModalDelete } from '../../../components/singles'
 import { setTextTableReactDom } from '../../../functions/setters'
 import ItemSlider from '../../../components/singles/ItemSlider'
@@ -16,6 +16,8 @@ import withReactContent from 'sweetalert2-react-content'
 import { Update } from '../../../components/Lottie'
 import { printSwalHeader } from '../../../functions/printers'
 import { InputGray } from '../../../components/form-components'
+/* import Pusher from 'pusher-js'; */
+import Echo from 'laravel-echo';
 const MySwal = withReactContent(Swal)
 const $ = require('jquery');
 class Empresas extends Component {
@@ -101,6 +103,10 @@ class Empresas extends Component {
         });
         if (!empresas)
             history.push('/')
+        const pusher = new Echo( PUSHER_OJECT );
+        pusher.channel('Usuarios.Empresa').listen('Usuarios\\EmpresaEvent', (e) => {
+            this.getEmpresas()
+        })
     }
 
     async getEmpresas() {
@@ -206,14 +212,14 @@ class Empresas extends Component {
                 btnclass: 'info',
                 iconclass: 'flaticon-attachment',
                 action: 'adjuntos',
-                tooltip: { id: 'adjuntos', text: 'Eliminar', type: 'error' }
+                tooltip: { id: 'adjuntos', text: 'Imagen&nbsp;coorporativa', type: 'info' }
             },
             {
                 text: 'Inhabilitar&nbsp;empresa',
-                btnclass: 'dark',
+                btnclass: 'error',
                 iconclass: 'flaticon2-lock',
                 action: 'inhabilitar',
-                tooltip: { id: 'inhabilitar', text: 'Inhabilitar empresa', type: 'info' },
+                tooltip: { id: 'inhabilitar', text: 'Inhabilitar empresa', type: 'error' },
             }
         )
         return aux
@@ -324,6 +330,7 @@ class Empresas extends Component {
     }
 
     async deleteEmpresaAxios(empresa) {
+        waitAlert()
         const { access_token } = this.props.authUser
         await axios.delete(URL_DEV + 'empresa/' + empresa, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
