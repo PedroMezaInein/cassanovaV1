@@ -7,11 +7,11 @@ import dayGridPlugin from '@fullcalendar/daygrid'
 import interactionPlugin from "@fullcalendar/interaction"
 import esLocale from '@fullcalendar/core/locales/es'
 import { errorAlert, printResponseErrorAlert, waitAlert, doneAlert } from '../../../functions/alert'
-import { URL_DEV } from '../../../constants'
+import { PUSHER_OBJECT, URL_DEV } from '../../../constants'
 import bootstrapPlugin from '@fullcalendar/bootstrap'
 import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import Swal from 'sweetalert2'
-import Pusher from 'pusher-js';
+/* import Pusher from 'pusher-js'; */
 import Echo from 'laravel-echo';
 import { Modal } from '../../../components/singles'
 import FormCalendarioTareas from '../../../components/forms/usuarios/FormCalendarioTareas'
@@ -47,12 +47,7 @@ class Calendario extends Component {
             return pathname === url
         });
         this.getCalendarioTareasAxios('own')
-        const pusher = new Echo({
-            broadcaster: 'pusher',
-            key: '112ff49dfbf7dccb6934',
-            cluster: 'us2',
-            forceTLS: true
-        });
+        const pusher = new Echo( PUSHER_OBJECT );
         pusher.channel('responsable-tarea').listen('ResponsableTarea', (data) => {
             const { tarea } = data
             const { user } = this.props.authUser
@@ -154,7 +149,7 @@ class Calendario extends Component {
                 options.users = []
                 options.proyectos = []
                 usuarios.forEach((element) => { options.users.push({ id: element.id, display: element.name }) })
-                proyectos.forEach((element) => { options.proyectos.push({ id: element.id, display: this.setProyectoName(element.nombre) }) })
+                proyectos.forEach((element) => { options.proyectos.push({ id: element.id, display: this.setProyectoName(element.nombre), name: element.nombre }) })
                 Swal.close()
                 this.setState({ ...this.state, modal, tarea: tarea, title: tarea.titulo, form: this.clearForm(), options })
             }, (error) => { printResponseErrorAlert(error) }

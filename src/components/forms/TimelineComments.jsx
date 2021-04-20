@@ -21,8 +21,18 @@ class TimelineComments extends Component {
         
     }
 
+    setLink = texto => {
+        const { proyectos } = this.props
+        let value = proyectos.find( (elemento) => {
+            return elemento.display === texto
+        })
+        let liga = '/proyectos/proyectos'
+        if(value)
+            liga = `${liga}?id=${value.id}&name=${value.name}`
+        return liga
+    }
+
     printComentario = texto => {
-        /* let indice = texto.indexOf('___') < texto.indexOf('***') ? texto.indexOf('___') : texto.indexOf('***') */
         let indice = this.indexSubcadena(texto, '___', '***')
         let arrayAux = [];
         if(indice === -1)        
@@ -62,7 +72,6 @@ class TimelineComments extends Component {
                 })
                 subcadena = subcadena.substring(final+3)
                 indice = this.indexSubcadena(subcadena, '___', '***')
-                console.log('SUBCADENA', subcadena)
                 final = 0
             }
         }
@@ -71,12 +80,19 @@ class TimelineComments extends Component {
                 texto: subcadena,
                 tipo: 'normal'
             })
-        return arrayAux.map((elemento) => {
+        return arrayAux.map((elemento, index) => {
+            if(elemento.tipo === 'info'){
+                return(
+                    <span className = 'font-weight-bolder text-info' key = { index }>
+                        <a href = {this.setLink(elemento.texto)} className = 'font-weight-bolder text-info' target = '_blank'>
+                            {elemento.texto}
+                        </a>
+                    </span>
+                )
+            }
             return (
-                <span className = {` ${elemento.tipo ==='black' ? 'font-weight-bolder text-success' : elemento.tipo ==='info' ? 'font-weight-bolder text-info' : '-'}`}>
-                    { 
-                    elemento.texto
-                    }
+                <span key = { index } className = {` ${elemento.tipo ==='black' ? 'font-weight-bolder text-success' : ''}`}>
+                    { elemento.texto }
                 </span>
             )
         })

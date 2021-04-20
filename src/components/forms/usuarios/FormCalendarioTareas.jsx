@@ -51,7 +51,7 @@ class FormCalendarioTareas extends Component {
                     <ComentarioFormTarea users  = { users } proyectos = { proyectos } addComentario = { ()=> {this.mostrarFormulario(); addComentario();} }
                         form = { form } onChange = { onChange } handleChange = { handleChange } color = "primary" />
                 </div>
-                <TimelineComments comentariosObj = {tarea} col = '12' color = 'primary' />
+                <TimelineComments comentariosObj = {tarea} col = '12' color = 'primary' proyectos = { proyectos } />
             </div>
         )
     }
