@@ -495,9 +495,15 @@ class Proyectos extends Component {
         const { search: queryString } = this.props.history.location
         if (queryString) {
             let id = parseInt( new URLSearchParams(queryString).get("id") )
+            let name = new URLSearchParams(queryString).get("name")
             if(id){
                 this.setState({ ...this.state, modalSee: true })
                 this.getOneProyectoAxios(id)
+            }
+            if(name){
+                setTimeout(() => {
+                    $('#proyecto').DataTable().column(2).search(name, false, false).ajax.reload();
+                }, 1000);
             }
         }
     }
