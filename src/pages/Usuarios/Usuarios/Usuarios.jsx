@@ -727,7 +727,7 @@ class Usuarios extends Component {
         const { formulario } = this.props
         return (
             <Layout active = { 'usuarios' }  { ...this.props } >
-                <Tabs defaultActiveKey="administrador" activeKey={key} onSelect = { (value) =>  { this.controlledTab(value)} }>
+                <Tabs id = "tabsUsuarios" defaultActiveKey="administrador" activeKey={key} onSelect = { (value) =>  { this.controlledTab(value)} }>
                     <Tab eventKey="administrador" title="Administrador">
                         <NewTableServerRender
                             columns={USUARIOS}

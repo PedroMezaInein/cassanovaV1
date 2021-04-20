@@ -22,7 +22,8 @@ class UrlLocation extends Component {
             fechaFin: new Date(), 
             name:''
         },
-        leads: []
+        leads: [],
+        checador: []
     }
 
     componentDidMount() {
@@ -37,7 +38,7 @@ class UrlLocation extends Component {
             url: url_direccion
         })
     }
-    
+
     changePageAdd = tipo => {
         const { history } = this.props
         history.push({ pathname: '/leads/crm/add/' + tipo });
@@ -110,7 +111,7 @@ class UrlLocation extends Component {
     
     render() {
         const { paths, url, modal, form, modal_buscar, leads } = this.state
-        const { authUser: { modulos }, active } = this.props
+        const { authUser: { modulos }, active, user: usuario, printChecador, isCliente } = this.props
         let icon;
         let modulo_name;
         let submodulo_name;
@@ -166,8 +167,8 @@ class UrlLocation extends Component {
                     paths.length > 0 ?
                         <div className="subheader py-2 py-lg-4 subheader-solid" id="kt_subheader">
                             <div className="container-fluid d-flex align-items-center justify-content-between flex-wrap flex-sm-nowrap">
-                                <div className="d-flex align-items-center flex-wrap mr-1">
-                                    <div className="d-flex align-items-baseline mr-5">
+                                <div className="d-flex align-items-center flex-wrap">
+                                    <div className="d-flex align-items-baseline">
                                         <h5 className="text-dark font-weight-bold my-2 mr-3">
                                             {
                                                 modulo_name
@@ -193,7 +194,10 @@ class UrlLocation extends Component {
                                         }
                                     </div>
                                 </div>
-                                <div className="d-flex justify-content-end flex-wrap">
+                                <div className="text-align-last-center">
+                                    {
+                                        !isCliente(usuario) && printChecador()
+                                    }
                                     {
                                         url === "leads/crm" ?
                                             <>

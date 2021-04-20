@@ -46,7 +46,6 @@ class Calendario extends Component {
             const { modulo: { url } } = element
             return pathname === url
         });
-        this.getUserChecador()
         this.getCalendarioTareasAxios('own')
         const pusher = new Echo({
             broadcaster: 'pusher',
@@ -92,37 +91,6 @@ class Calendario extends Component {
         })
     }
 
-    getUserChecador = async() => {
-        const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}v2/usuarios/usuarios/checador`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
-            (response) => {
-                const { usuario } = response.data
-                this.setState({...this.state, checador: usuario.checadores})
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
-
-    printChecador = () => {
-		const { checador } = this.state
-		if(checador.length){
-			if(checador[0].fecha_fin === null)
-				return(
-                    <span className="btn btn-sm btn-bg-light btn-icon-primary btn-hover-primary font-weight-bolder text-primary" onClick = { (e) => { e.preventDefault(); this.actualizarChecadorAxios('salida') } } >
-                        <i className="fas fa-sign-in-alt text-primary"></i> CHECAR SALIDA
-                    </span>
-				)
-		}else{
-			return(
-                <span className="btn btn-sm btn-bg-light btn-icon-success btn-hover-success font-weight-bolder text-success" onClick = { (e) => { e.preventDefault(); this.actualizarChecadorAxios('entrada') } }>
-                    <i className="fas fa-sign-in-alt text-success"></i> CHECAR ENTRADA
-                </span>
-			)
-		}
-	}
-
     handleDateClick = (arg) => {
         waitAlert()
         this.getEventsOneDateAxios(arg.dateStr)
@@ -165,16 +133,28 @@ class Calendario extends Component {
         })
     }
 
+    setProyectoName = nombre => {
+        let arreglo = nombre.split(' ')
+        let texto = '#'
+        arreglo.forEach( (elemento) => {
+            if(elemento !== '' && elemento !== '-')
+                texto = texto + elemento.charAt(0).toUpperCase() + elemento.slice(1).toLowerCase()
+        })
+        return texto
+    }
+
     getTareas = async(tarea) => {
         const { access_token } = this.props.authUser
         waitAlert()
         await axios.get(`${URL_DEV}v2/usuarios/tareas/${tarea.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { tarea, usuarios } = response.data
+                const { tarea, usuarios, proyectos } = response.data
                 const { modal, options } = this.state
                 modal.tareas = true
                 options.users = []
+                options.proyectos = []
                 usuarios.forEach((element) => { options.users.push({ id: element.id, display: element.name }) })
+                proyectos.forEach((element) => { options.proyectos.push({ id: element.id, display: this.setProyectoName(element.nombre) }) })
                 Swal.close()
                 this.setState({ ...this.state, modal, tarea: tarea, title: tarea.titulo, form: this.clearForm(), options })
             }, (error) => { printResponseErrorAlert(error) }
@@ -311,16 +291,13 @@ class Calendario extends Component {
     render() {
         const { events, tipo, title, modal, tarea, form, options } = this.state
         return (
-            <Layout {...this.props}>
+            <Layout active={'usuarios'} {...this.props}>
                     <Card className="card-custom">
                         <Card.Header>
                             <div className="d-flex align-items-center">
                                 <div className="align-items-start flex-column">
                                     <span className="font-weight-bolder text-dark font-size-h3">Calendario de tareas</span>
                                 </div>
-                            </div>
-                            <div className="card-toolbar">
-                                { this.printChecador() }
                             </div>
                         </Card.Header>
                         <Card.Body>
@@ -340,7 +317,7 @@ class Calendario extends Component {
                         </Card.Body>
                     </Card>
                 <Modal size="lg" title={title} show={modal.tareas} handleClose={this.handleCloseModalT}>
-                    <FormCalendarioTareas tarea = { tarea } addComentario = { this.addComentarioAxios } form = { form }
+                    <FormCalendarioTareas tarea = { tarea } addComentario = { this.addComentarioAxios } form = { form } proyectos = { options.proyectos }
                         onChange = { this.onChange } handleChange = { this.handleChangeComentario } users = { options.users } />
                 </Modal>
             </Layout>

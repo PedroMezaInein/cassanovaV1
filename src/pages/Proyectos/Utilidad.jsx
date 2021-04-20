@@ -44,7 +44,7 @@ class Utilidad extends Component {
 
     render() {
         return (
-            <Layout active={'proyectos'}  {...this.props}>
+            <Layout active={'administracion'}  {...this.props}>
                 <NewTableServerRender
                     columns = { UTILIDADES_COLUMNS } 
                     title = 'Utilidad' 

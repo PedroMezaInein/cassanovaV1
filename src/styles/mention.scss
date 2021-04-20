@@ -1,0 +1,36 @@
+.mentions {
+    background-color: #F3F6F9;
+    &__control{
+        font-size: 1rem;
+        border: 0;
+        background-color: #F3F6F9;
+    }
+    &__input{
+        border: 0;
+        /* position: relative!important; */
+        resize: auto!important;
+        padding: 0.65rem 1rem;
+        outline: 0;
+        color: #80808F !important;
+        font-weight: 500;
+    }
+    &__highlighter{
+        border: 0;
+        /* position: absolute!important; */
+        padding: 0.65rem 1rem;
+    }
+    &__suggestions{
+        background: #fff;
+        box-shadow: 0 .0625rem .125rem #464e5f;
+        font-size: 1rem;
+        max-height: 150px;
+        overflow: hidden;
+        &__item{
+            padding: 5px 8px;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.15);
+            &__display{
+              text-transform: none;
+            }
+        }
+    }   
+}
