@@ -202,6 +202,14 @@ class Crm extends Component {
         });
         if (!crm)
             history.push('/')
+        const { search: queryString } = this.props.history.location
+        if (queryString) {
+            let id = parseInt( new URLSearchParams(queryString).get("id") )
+            if(id){
+                this.setState({ ...this.state, modal_one_lead: true })
+                this.getOneLeadInfoAxios(id)
+            }
+        }
         this.getOptionsAxios()
         this.getUltimosContactos()
         this.getSinContactar()
@@ -1933,7 +1941,7 @@ class Crm extends Component {
                                                         name = 'continuidad' as = "select">
                                                         <option value = { 0 } >Selecciona la continuidad</option>
                                                         <option value = 'terminado' className="bg-white" >Terminado</option>
-                                                        <option value = 'recontratacion' className="bg-white" >Posible recontratación</option>
+                                                        <option value = 'recontratacion' className="bg-white">Contratar otra fase</option>
                                                     </Form.Control>
                                                 </div>
                                         }

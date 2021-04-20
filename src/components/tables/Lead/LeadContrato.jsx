@@ -147,7 +147,7 @@ class LeadContrato extends Component {
                                                         style={{fontSize: '10.7px'}}
                                                         onClick={(e) => { questionAlert('¿ESTÁS SEGURO?', 'CAMBIARÁS LA CONTINUIDAD DEL LEAD', () => changeContinuidadLead(lead)) }} >
                                                         {
-                                                            lead.prospecto.continuidad ? 'Posible recontratación' : 'Terminado'
+                                                            lead.prospecto.continuidad ? 'Contratar otra fase' : 'Terminado'
                                                         }
                                                     </span>
                                                 </td>
