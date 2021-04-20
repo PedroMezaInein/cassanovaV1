@@ -2,10 +2,12 @@ import React, { Component } from 'react'
 import Layout from '../../../components/layout/layout'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import { URL_DEV } from '../../../constants'
+import { PUSHER_OJECT, URL_DEV } from '../../../constants'
 import { EmpresaForm } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
-import { waitAlert, doneAlert, errorAlert, printResponseErrorAlert } from '../../../functions/alert'
+import Echo from 'laravel-echo';
+import Swal from 'sweetalert2'
+import { waitAlert, doneAlert, errorAlert, printResponseErrorAlert, userWarningAlert } from '../../../functions/alert'
 
 class EmpresasForm extends Component {
 
@@ -118,44 +120,8 @@ class EmpresasForm extends Component {
                 if (state) {
                     if (state.empresa) {
                         const { empresa } = state
-                        const { form, options } = this.state
-
-                        form.name = empresa.name
-                        form.razonSocial = empresa.razon_social
-                        form.logo = ''
-                        form.rfc = empresa.rfc
-                        form.facebook = empresa.facebook
-                        form.instagram = empresa.instagram
-                        form.linkedin = empresa.linkedin
-                        form.pinterest = empresa.pinterest
-                        form.pagina_web = empresa.pagina_web
-                        form.direccion = empresa.direccion
-                        form.telefono = empresa.telefono
-                        form.blog = empresa.blog
-                        let aux = []
-                        empresa.tipos.map((tipo) => {
-                            aux.push(tipo.tipo)
-                            return false
-                        })
-
-                        form.tipos = aux
-
-                        aux = []
-                        /* empresa.telefonos.map((telefono) => {
-                            aux.push(telefono.telefono)
-                            return false
-                        })
-
-                        form.telefonos = aux */
-
-                        this.setState({
-                            ...this.state,
-                            title: 'Editar empresa',
-                            empresa: empresa,
-                            form,
-                            options,
-                            formeditado: 1
-                        })
+                        this.getOneEmpresa(empresa.id)
+                        this.setState({ ...this.state, title: 'Editar empresa', formeditado: 1 })
                     }
                     else
                         history.push('/usuarios/empresas')
@@ -167,6 +133,16 @@ class EmpresasForm extends Component {
         }
         if (!empresas)
             history.push('/')
+        const pusher = new Echo( PUSHER_OJECT );
+        pusher.channel('Usuarios.Empresa').listen('Usuarios\\EmpresaEvent', (data) => {
+            const { empresa } = this.state
+            const { history } = this.props
+            if(data.empresa.id === empresa.id)
+                userWarningAlert('Alguien más está editando lo mismo que tú.', 
+                    () => { this.getOneEmpresa(empresa.id) },
+                    () => { history.goBack() }
+                )
+        })
     }
 
     onSubmit = (e) => {
@@ -177,47 +153,66 @@ class EmpresasForm extends Component {
             this.updateEmpresaAxios()
         } else
             this.addEmpresaAxios();
-            
     }
 
-    async updateEmpresaAxios() {
+    updateEmpresaAxios = async() => {
         const { access_token } = this.props.authUser
         const { form, empresa } = this.state
         await axios.post(URL_DEV + 'empresa/' + empresa.id, form, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Actualizaste con éxito la empresa.')
-
                 const { history } = this.props
-                history.push({
-                    pathname: '/usuarios/empresas'
-                });
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                history.push({ pathname: '/usuarios/empresas' });
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
 
-    async addEmpresaAxios() {
+    addEmpresaAxios = async () => {
         const { access_token } = this.props.authUser
         const { form } = this.state
-
         await axios.post(URL_DEV + 'empresa', form, { headers: { Accept: '*/*', Authorization: `Bearer ${access_token}`, } }).then(
             (response) => {
-
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Agregaste con éxito la empresa.')
-
                 const { history } = this.props
-                history.push({
-                    pathname: '/usuarios/empresas'
-                });
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                history.push({ pathname: '/usuarios/empresas' });
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    getOneEmpresa = async(id) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.get(`${URL_DEV}v2/usuarios/empresas/${id}`, { headers: { Authorization: `Bearer ${access_token}`, } }).then(
+            (response) => {
+                Swal.close()
+                const { empresa } = response.data
+                const { form } = this.state
+                form.name = empresa.name
+                form.razonSocial = empresa.razon_social
+                form.logo = ''
+                form.rfc = empresa.rfc
+                form.facebook = empresa.facebook
+                form.instagram = empresa.instagram
+                form.linkedin = empresa.linkedin
+                form.pinterest = empresa.pinterest
+                form.pagina_web = empresa.pagina_web
+                form.direccion = empresa.direccion
+                form.telefono = empresa.telefono
+                form.blog = empresa.blog
+                let aux = []
+                empresa.tipos.map((tipo) => {
+                    aux.push(tipo.tipo)
+                    return false
+                })
+                form.tipos = aux
+                this.setState({...this.state, form, empresa:empresa})
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -258,20 +253,6 @@ class EmpresasForm extends Component {
         }
     }
 
-    // removeFile = (e) => {
-    //     e.preventDefault()
-    //     const { name, logo, razon_social } = this.state.empresa
-    //     this.setState({
-    //         ...this.state,
-    //         form: {
-    //             name: name,
-    //             razonSocial: razon_social,
-    //             logo: '',
-    //             file: logo
-    //         },
-    //         img: ''
-    //     })
-    // }
     render() {
         const { form, title, formeditado } = this.state
         return (
