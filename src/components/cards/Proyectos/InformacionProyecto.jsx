@@ -15,7 +15,7 @@ export default class InformacionProyecto extends Component {
     }
 
     render() {
-        const { proyecto, form, addComentario, onChange, handleChange, tipo} = this.props
+        const { proyecto, form, addComentario, onChange, handleChange, tipo, urls } = this.props
         return (
             <div className="col-md-12 mt-4">
                 {
@@ -55,6 +55,24 @@ export default class InformacionProyecto extends Component {
                         </Nav>
                         <Tab.Content>
                             <Tab.Pane eventKey='tab_informacion_general'>
+                                {
+                                    urls &&
+                                    <div className="mt-5">
+                                        <div className="d-flex justify-content-center">
+                                            <a className="d-flex align-items-center pr-5 text-hover-info cursor-pointer" href = {`/proyectos/proyectos?id=${proyecto.id}`}>
+                                                <i className="las la-toolbox icon-2x mr-1 text-muted"></i>
+                                                <span className="text-muted font-weight-bolder text-hover-info border-bottom-2px-info-hover">VER PROYECTO</span>
+                                            </a>
+                                            {
+                                                proyecto.prospecto&&
+                                                <a className="d-flex align-items-center text-hover-info cursor-pointer" href = {`/leads/crm?id=${proyecto.prospecto.lead.id}`}>
+                                                    <i className="las la-user-alt icon-2x mr-1 text-muted"></i>
+                                                    <span className="text-muted font-weight-bolder text-hover-info border-bottom-2px-info-hover">VER LEAD</span>
+                                                </a>
+                                            }
+                                        </div>
+                                    </div>
+                                }
                                 <div className="table-responsive-lg mt-8">
                                     <table className="table table-vertical-center w-80 mx-auto table-borderless" id="tcalendar_p_info">
                                         <thead>

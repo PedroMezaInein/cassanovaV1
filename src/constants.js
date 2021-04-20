@@ -428,28 +428,23 @@ export const CUENTAS_COLUMNS = [
     },
     {
         Header: 'Nombre',
-        accessor: 'nombre',
-        customRender: true
+        accessor: 'nombre'
     },
     {
         Header: 'Empresa',
-        accessor: 'empresa',
-        customRender: true
+        accessor: 'empresa'
     },
     {
         Header: 'Empresa principal',
-        accessor: 'principal',
-        customRender: true
+        accessor: 'principal'
     },
     {
         Header: 'Banco',
-        accessor: 'banco',
-        customRender: true
+        accessor: 'banco'
     },
     {
         Header: 'Número de cuenta',
-        accessor: 'numero',
-        customRender: true
+        accessor: 'numero'
     },
     {
         Header: 'Balance',
@@ -462,8 +457,7 @@ export const CUENTAS_COLUMNS = [
     },
     {
         Header: 'Tipo',
-        accessor: 'tipo',
-        customRender: true
+        accessor: 'tipo'
     },
     {
         Header: 'Fecha',
@@ -2066,7 +2060,7 @@ export const EMPLEADOS_COLUMNS = [
         customRender: true
     },
     {
-        Header: 'Días de vacaciones dispobibles',
+        Header: 'Días de vacaciones disponibles',
         accessor: 'vacaciones_tomadas',
         customRender: true
     }
