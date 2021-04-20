@@ -49,10 +49,10 @@ class NavUser extends Component{
 									<div className="navi-link btn btn-clean py-1">
 										<div className="symbol symbol-40 bg-light mr-3">
 											<div className="symbol-label">
-												<i className="flaticon2-bell-2 text-warning icon-lg"></i>
+												<i className="flaticon2-bell-2 text-pink icon-lg"></i>
 											</div>
 										</div>
-										<div className="navi-text text-left font-weight-bold text-dark text-hover-warning">
+										<div className="navi-text text-left font-weight-bold text-dark text-hover-pink">
 											Notificaciones
 											<div className="text-muted font-weight-light">Mis notificaciones</div>
 										</div>

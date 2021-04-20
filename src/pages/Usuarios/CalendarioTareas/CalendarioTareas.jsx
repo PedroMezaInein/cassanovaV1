@@ -154,7 +154,7 @@ class Calendario extends Component {
                 options.users = []
                 options.proyectos = []
                 usuarios.forEach((element) => { options.users.push({ id: element.id, display: element.name }) })
-                proyectos.forEach((element) => { options.proyectos.push({ id: element.id, display: this.setProyectoName(element.nombre) }) })
+                proyectos.forEach((element) => { options.proyectos.push({ id: element.id, display: this.setProyectoName(element.nombre), name: element.nombre }) })
                 Swal.close()
                 this.setState({ ...this.state, modal, tarea: tarea, title: tarea.titulo, form: this.clearForm(), options })
             }, (error) => { printResponseErrorAlert(error) }

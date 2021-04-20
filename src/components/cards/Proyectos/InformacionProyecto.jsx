@@ -59,7 +59,7 @@ export default class InformacionProyecto extends Component {
                                     urls &&
                                     <div className="mt-5">
                                         <div className="d-flex justify-content-center">
-                                            <a className="d-flex align-items-center pr-5 text-hover-info cursor-pointer" href = {`/proyectos/proyectos?id=${proyecto.id}`}>
+                                            <a className="d-flex align-items-center pr-5 text-hover-info cursor-pointer" href = {`/proyectos/proyectos?id=${proyecto.id}&name=${proyecto.nombre}`}>
                                                 <i className="las la-toolbox icon-2x mr-1 text-muted"></i>
                                                 <span className="text-muted font-weight-bolder text-hover-info border-bottom-2px-info-hover">VER PROYECTO</span>
                                             </a>
