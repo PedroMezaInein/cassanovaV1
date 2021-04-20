@@ -127,6 +127,13 @@ export const URL_DEV = process.env.NODE_ENV === 'production' ? PROD_LINK : DEV_L
 /* export const URL_ASSETS = process.env.NODE_ENV === 'production' ? 'https://demo.proyectosadmin.com' : 'http://127.0.0.1:8000' */
 export const URL_ASSETS = process.env.NODE_ENV === 'production' ? 'https://proyectosadmin.xyz' : 'http://127.0.0.1:8000'
 
+export const PUSHER_OJECT = {
+    broadcaster: 'pusher',
+    key: '112ff49dfbf7dccb6934',
+    cluster: 'us2',
+    forceTLS: false
+}
+
 // PROD / DEV
 /* export const URL_DEV = 'https://demo.proyectosadmin.com/api/';
 export const URL_ASSETS = 'https://demo.proyectosadmin.com'; */
