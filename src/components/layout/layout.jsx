@@ -56,10 +56,10 @@ class Layout extends Component {
             broadcaster: 'pusher',
             key: '112ff49dfbf7dccb6934',
             cluster: 'us2',
-            forceTLS: true
+            forceTLS: false
         });
         const { user } = this.props.authUser
-        pusher.private('Notificacion.User.'+user.id).listen('NuevaNotificacion', (e) => {
+        pusher.channel('Notificacion.User.'+user.id).listen('NuevaNotificacion', (e) => {
             this.getNotificacionesAxios()
         })
         /* this.getNotificacionesAxios() */
