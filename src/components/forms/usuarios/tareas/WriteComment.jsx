@@ -1,16 +1,32 @@
 import React, { Component } from 'react'
+import { InputGray } from '../../../form-components'
 
 class WriteComment extends Component {
 
     render() {
+        const { form, onChange } = this.props
         return (
             <div className="card-spacer-x pb-10 pt-5">
                 <div className="card card-custom shadow-sm">
                     <div className="card-body p-0">
                         <form>
                             <div className="d-block">
-                                <div className="border-0 ql-container ql-snow" style={{ height: '85px' }}>
+                                <div className="border-0 ql-container ql-snow" style={{ height: 'auto' }}>
                                     <div className="ql-editor ql-blank px-8">
+                                        <InputGray
+                                            withtaglabel={0}
+                                            withtextlabel={0}
+                                            withplaceholder={1}
+                                            withicon={0}
+                                            withformgroup={0}
+                                            placeholder="COMENTARIO"
+                                            name="comentario"
+                                            value={form.comentario}
+                                            onChange={onChange}
+                                            rows={3}
+                                            as='textarea'
+                                            customclass='text-area-white'
+                                        />
                                     </div>
                                 </div>
                             </div>
@@ -21,11 +37,6 @@ class WriteComment extends Component {
                                     </div>
                                     <span className="btn btn-icon btn-sm btn-clean mr-2 dz-clickable">
                                         <i className="flaticon2-clip-symbol"></i>
-                                    </span>
-                                </div>
-                                <div className="d-flex align-items-center">
-                                    <span className="btn btn-icon btn-sm btn-clean text-hover-danger">
-                                        <i className="flaticon2-rubbish-bin-delete-button"></i>
                                     </span>
                                 </div>
                             </div>

@@ -2082,3 +2082,16 @@ span.font-weight-bolder.text-hover-error:hover{
         display: none;
     }
 }
+.text-area-white {
+    background-color: white!important;
+    outline: none!important;
+    border: none!important;
+    display: block!important;
+    width: 100%!important;
+    font-size: 13px!important;
+    color: #9d9da5!important;
+    padding: 15px 0px 0px 0px!important;
+    &::-webkit-input-placeholder {
+        color: #9d9da5!important;
+    }
+}

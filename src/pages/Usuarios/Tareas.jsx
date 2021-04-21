@@ -207,7 +207,7 @@ class Tareas extends Component {
                             <div className="row">
                                 <ListPanel openModal = { this.openModal } options = { options } onChange = { this.onChange } form = { form }
                                     mostrarTarea = { () => { this.mostrarTarea() } } showListPanel = { showListPanel } tareas = { tareas }/>
-                                <Task showTask={showTask}  mostrarListPanel = { () => { this.mostrarListPanel() } }/>
+                                <Task showTask={showTask}  mostrarListPanel = { () => { this.mostrarListPanel() } } onChange = { this.onChange } form = { form }/>
                             </div>
                         </div>
                     </div>
