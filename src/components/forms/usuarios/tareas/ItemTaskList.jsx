@@ -85,7 +85,7 @@ class ItemTaskList extends Component {
                     tareas.map((tarea, key) => {
                         return(
                             <tr key = { key } style={{borderBottom:'1px solid #ebedf3'}}>
-                                <td onClick={() => { mostrarTarea() }}>
+                                <td>
                                     {this.responsablesSymbol(tarea.responsables)}
                                 </td>
                                 <td className="white-space-nowrap text-hover" onClick={() => { mostrarTarea(tarea) }}>
