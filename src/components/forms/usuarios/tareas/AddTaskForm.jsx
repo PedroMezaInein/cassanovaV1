@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
 import { CalendarDay } from '../../../form-components'
-import { SelectCreateGray, TagSelectSearchGray, InputGray } from '../../../form-components'
+import { SelectCreateGray, TagSelectSearchGray, InputGray, Button } from '../../../form-components'
 class AddTaskForm extends Component {
 
     updateResponsable = value => {
@@ -10,7 +10,7 @@ class AddTaskForm extends Component {
     }
 
     render() {
-        const { form, tarea, onChange, formeditado, options, handleCreateOption, handleChangeCreate, ...props } = this.props
+        const { form, tarea, onChange, formeditado, options, handleCreateOption, handleChangeCreate, onSubmit, ...props } = this.props
         return (
             <Form {...props}>
                 <div className="row mx-0">
@@ -51,6 +51,9 @@ class AddTaskForm extends Component {
                             </div>
                         </div>
                     </div>
+                </div>
+                <div className="text-center mt-3">
+                    <Button icon = '' className="btn btn-primary mr-2" onClick = { onSubmit } text="ENVIAR" />
                 </div>
             </Form>
         )

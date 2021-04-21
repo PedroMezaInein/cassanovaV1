@@ -133,16 +133,18 @@ class EmpresasForm extends Component {
         }
         if (!empresas)
             history.push('/')
-        const pusher = new Echo( PUSHER_OBJECT );
-        pusher.channel('Usuarios.Empresa').listen('Usuarios\\EmpresaEvent', (data) => {
-            const { empresa } = this.state
-            const { history } = this.props
-            if(data.empresa.id === empresa.id)
-                userWarningAlert('Alguien más está editando lo mismo que tú.', 
-                    () => { this.getOneEmpresa(empresa.id) },
-                    () => { history.goBack() }
-                )
-        })
+        if(process.env.NODE_ENV === 'production'){
+            const pusher = new Echo( PUSHER_OBJECT );
+            pusher.channel('Usuarios.Empresa').listen('Usuarios\\EmpresaEvent', (data) => {
+                const { empresa } = this.state
+                const { history } = this.props
+                if(data.empresa.id === empresa.id)
+                    userWarningAlert('Alguien más está editando lo mismo que tú.', 
+                        () => { this.getOneEmpresa(empresa.id) },
+                        () => { history.goBack() }
+                    )
+            })
+        }
     }
 
     onSubmit = (e) => {

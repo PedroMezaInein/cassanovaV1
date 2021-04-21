@@ -3,7 +3,7 @@ import { ItemTaskList } from '../../../../components/forms'
 import Form from 'react-bootstrap/Form'
 class ListPanel extends Component {
     render() {
-        const { openModal, onChange, form, options, mostrarTarea, showListPanel } = this.props
+        const { openModal, onChange, form, options, mostrarTarea, showListPanel, tareas } = this.props
         return (
             <div className={showListPanel ? 'col-xl-12 gutter-b' : 'd-none'}>
                 <div className="card card-custom card-stretch">

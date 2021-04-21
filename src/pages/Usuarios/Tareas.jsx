@@ -6,7 +6,8 @@ import { URL_DEV } from '../../constants'
 import { connect } from 'react-redux'
 import { Tags, ListPanel, Task, AddTaskForm} from '../../components/forms'
 import { Modal } from '../../components/singles'
-import { errorAlert, printResponseErrorAlert, waitAlert } from '../../functions/alert'
+import { doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../functions/alert'
+import { setSingleHeader } from '../../functions/routers'
 class Tareas extends Component {
 
     state = {
@@ -19,18 +20,23 @@ class Tareas extends Component {
             comentario: '',
             tipo: '',
             tipoTarget: {taget: '', value: ''},
-            filtrarTarea:''
+            filtrarTarea: 'own'
         },
         options: {
             responsables: [],
             tipos: [],
             filtrarTareas: [
-                { text: "Tareas personales", value: "Tareas personales" },
-                { text: "Tareas generales", value: "Tareas generales" },
+                { text: "Tareas personales", value: "own" },
+                { text: "Tareas generales", value: "all" },
             ],
         },
         showTask: false,
         showListPanel : true,
+        pagination:{
+            page: 0,
+            limit: 10
+        },
+        tareas: []
     }
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
@@ -42,7 +48,8 @@ class Tareas extends Component {
         });
         if (!tareas)
             history.push('/')
-            this.getOptionsAxios()
+        this.getOptionsAxios()
+        this.getTasks()
     }
     mostrarTarea() {
         console.log('showTask')
@@ -61,6 +68,38 @@ class Tareas extends Component {
             showTask: false
         })
     }
+
+    onSubmit = async(e) =>  {
+        e.preventDefault();
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        waitAlert()
+        await axios.post(`${URL_DEV}v3/usuarios/tareas`, form, { headers: setSingleHeader(access_token)}).then(
+            (response) => {
+                doneAlert('Tarea generada con éxito')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    getTasks = async() => {
+        const { access_token } = this.props.authUser
+        const { form, pagination } = this.state
+        waitAlert()
+        await axios.get(`${URL_DEV}v3/usuarios/tareas?page=${pagination.page}&limit=${pagination.limit}&type=${form.filtrarTarea}`, { headers: setSingleHeader(access_token)}).then(
+            (response) => {
+                Swal.close()
+                const { tareas } = response.data
+                this.setState({ ...this.state, tareas })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     getOptionsAxios = async() => {
         const { access_token } = this.props.authUser
         waitAlert()
@@ -161,7 +200,7 @@ class Tareas extends Component {
         });
     }
     render() {
-        const { modal_tarea, form, options, showListPanel, showTask } = this.state
+        const { modal_tarea, form, options, showListPanel, showTask, tareas } = this.state
         return (
             <Layout active='usuarios' {...this.props}>
                 <div className="d-flex flex-row">
@@ -169,23 +208,16 @@ class Tareas extends Component {
                         <div className="d-flex flex-column flex-grow-1 ">
                             <Tags />
                             <div className="row">
-                                <ListPanel openModal = { this.openModal } options={options} onChange={this.onChange} form={form}
-                                    mostrarTarea={() => { this.mostrarTarea() }} showListPanel={showListPanel}
-                                
-                                />
+                                <ListPanel openModal = { this.openModal } options = { options } onChange = { this.onChange } form = { form }
+                                    mostrarTarea = { () => { this.mostrarTarea() } } showListPanel = { showListPanel } tareas = { tareas }/>
                                 <Task showTask={showTask}/>
                             </div>
                         </div>
                     </div>
                 </div>
                 <Modal size="xl" title='Agregar nueva tarea' show={modal_tarea} handleClose={this.handleCloseModal}>
-                    <AddTaskForm
-                        form={form}
-                        options={options}
-                        onChange={this.onChange}
-                        handleChangeCreate={this.handleChangeCreate}
-                        handleCreateOption={this.handleCreateOption} 
-                    />
+                    <AddTaskForm onSubmit = { this.onSubmit } form = { form } options = { options } onChange = { this.onChange }
+                        handleChangeCreate = { this.handleChangeCreate } handleCreateOption = { this.handleCreateOption } />
                 </Modal>
             </Layout>
         )

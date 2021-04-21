@@ -103,10 +103,12 @@ class Empresas extends Component {
         });
         if (!empresas)
             history.push('/')
-        const pusher = new Echo( PUSHER_OBJECT );
-        pusher.channel('Usuarios.Empresa').listen('Usuarios\\EmpresaEvent', (e) => {
-            this.getEmpresas()
-        })
+        if(process.env.NODE_ENV === 'production'){
+            const pusher = new Echo( PUSHER_OBJECT );
+            pusher.channel('Usuarios.Empresa').listen('Usuarios\\EmpresaEvent', (e) => {
+                this.getEmpresas()
+            })
+        }
     }
 
     async getEmpresas() {
