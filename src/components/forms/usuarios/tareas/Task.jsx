@@ -6,7 +6,7 @@ class Task extends Component {
     render() {
         const {showTask} = this.props
         return (
-            <div className={showTask ? 'col-xl-6 gutter-b' : 'd-none'}>
+            <div className={showTask ? 'col-xl-12 gutter-b' : 'd-none'}>
                 <div className="card card-custom card-stretch">
                     <div className="card-header align-items-center flex-wrap justify-content-between border-0 py-6 h-auto">
                         <div className="d-flex flex-column mr-2 py-2">

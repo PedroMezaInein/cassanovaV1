@@ -5,7 +5,7 @@ class ListPanel extends Component {
     render() {
         const { openModal, onChange, form, options, mostrarTarea, showListPanel } = this.props
         return (
-            <div className={showListPanel ? 'col-xl-12 gutter-b' : 'col-xl-6'}>
+            <div className={showListPanel ? 'col-xl-12 gutter-b' : 'd-none'}>
                 <div className="card card-custom card-stretch">
                     <div className="card-header p-6 border-0">
                         <div>
@@ -25,9 +25,11 @@ class ListPanel extends Component {
                     </div>                   
                     <div className="card-body pt-2">
                         <div className="table-responsive">
-                            <div className="list list-hover min-w-500px">
-                                <ItemTaskList mostrarTarea={mostrarTarea}/>
-                            </div>
+                            <table className="table table-head-custom table-head-bg table-borderless table-vertical-center">
+                                <tbody>
+                                    <ItemTaskList mostrarTarea={mostrarTarea}/>
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                     <div>
