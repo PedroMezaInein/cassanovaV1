@@ -20,7 +20,9 @@ class Tareas extends Component {
             comentario: '',
             tipo: '',
             tipoTarget: {taget: '', value: ''},
-            filtrarTarea: 'own'
+            filtrarTarea: 'own',
+            color: '',
+            mostrarColor: false
         },
         options: {
             responsables: [],
@@ -37,7 +39,7 @@ class Tareas extends Component {
             limit: 10,
             numTotal: 0,
         },
-        tareas: []
+        tareas: [],
     }
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
@@ -178,6 +180,9 @@ class Tareas extends Component {
         let aux = Object.keys(form)
         aux.map((element) => {
             switch (element) {
+                case ' mostrarColor':
+                    form[element] = false;
+                    break;
                 case 'rolTarget':
                     form[element] = { target: '', value: ''}
                     break;
@@ -203,14 +208,15 @@ class Tareas extends Component {
         if(name === 'filtrarTarea')
             this.getTasks(pagination)
     }
-    handleChangeCreate = (newValue) => {
+    handleChangeCreate = newValue => {
         const { form } = this.state
         if(newValue == null){
             newValue = { "label":"","value":"" }
         }
         let nuevoValue = {
             "label":newValue.label,
-            "value":newValue.value
+            "value":newValue.value,
+            "color":""
         }
         form.tipo = newValue.value
         form.tipoTarget = nuevoValue
@@ -229,12 +235,14 @@ class Tareas extends Component {
         options.tipos.push(newOption)
         form.tipoTarget = newOption
         form.tipo = inputValue
+        form.mostrarColor = true
         this.setState({
             ...this.state,
             form,
             options
         });
     }
+
     render() {
         const { modal_tarea, form, options, showListPanel, showTask, tareas, pagination } = this.state
         const { user } = this.props.authUser
