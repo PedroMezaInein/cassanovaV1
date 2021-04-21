@@ -43,6 +43,7 @@ import inputNumberGray from './Gray/InputNumberGray'
 import radioGroupGray from './Gray/RadioGroupGray'
 import tagInputGray from './Gray/TagInputGray'
 import tagSelectSearchGray from './Gray/TagSelectSearchGray'
+import selectCreateGray from './Gray/SelectCreateGray'
 //TIempos
 import selectMinutos from './SelectMinutos'
 import selectHorasLaborales from './SelectHorasLaborales'
@@ -103,6 +104,7 @@ export const InputNumberGray = inputNumberGray
 export const RadioGroupGray = radioGroupGray
 export const TagInputGray = tagInputGray
 export const TagSelectSearchGray = tagSelectSearchGray
+export const SelectCreateGray = selectCreateGray
 //Tiempos
 export const SelectMinutos = selectMinutos
 export const SelectHorasLaborales = selectHorasLaborales

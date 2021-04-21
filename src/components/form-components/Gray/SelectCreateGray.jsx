@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
-import Select from 'react-select';
-const $ = require('jquery');
-class TagSelectSearchGray extends Component {
-    componentDidMount() {
-        $('.css-2b097c-container').attr('id','css-2b097c-container-gray')
-    }
+import CreatableSelect from 'react-select/creatable';
+
+class SelectCreateGray extends Component {
+
+    
     render() {
-        const { options, placeholder, onChange, defaultvalue, iconclass, requirevalidation, messageinc } = this.props
+        const { placeholder, onChange, onCreateOption, iconclass, requirevalidation, messageinc, options, elementoactual} = this.props
         const customStyles = {
             indicatorSeparator: () => ({ 
                 backgroundColor:'transparent !important'
@@ -18,7 +17,7 @@ class TagSelectSearchGray extends Component {
                 fontWeight: 500
             }),
             multiValue: () => ({ 
-                backgroundColor: '#e5e5e8 !important',
+                backgroundColor: '#E1F0FF!important',
                 borderRadius:'2px!important',
                 color: '#80808F!important',
                 margin: '2px 3px!important',
@@ -41,17 +40,17 @@ class TagSelectSearchGray extends Component {
                 position:'relative',
                 transition:'all 100ms',
                 boxSizing:'border-box',
-                borderColor:'#F3F6F9',
+                borderColor:'#F3F6F9 !important',
                 paddingLeft:'calc(1.5em + 1.3rem + 2px) !important'
             }),
             dropdownIndicator: () => ({ 
-                color:'#686871',
+                color:'#80808F !important',
                 display: 'flex',
                 padding: '8px',
                 boxSizing:'border-box',
             }),
             clearIndicator: () => ({ 
-                color:'#686871',
+                color:'#F3F6F9 !important',
                 display: 'flex',
                 padding: '8px',
                 boxSizing:'border-box'
@@ -71,33 +70,37 @@ class TagSelectSearchGray extends Component {
                 width:"99.5%",
                 left:"1px",
             }),
-            // option: () => ({
+            // option: (provided) => ({
+            //     ...provided,
             // }),
+            noOptionsMessage: (provided) => ({
+                ...provided,
+                color:"#464E5F"
+            }),
         }
         return (
             <div>
                 <label className="col-form-label">{placeholder}</label>
                 <div className="input-icon">
                     <span className="input-icon input-icon-right">
-                        <i className={iconclass + " m-0 kt-font-boldest text-dark-50"} style={{zIndex:'2'}}></i>
+                        <i className={iconclass + " m-0 kt-font-boldest text-dark-50 zindex-2"} ></i>
                     </span>
-                    <Select
-                        isMulti
-                        value={defaultvalue}
-                        options={options}
-                        // noOptionsMessage={placeholder}
-                        placeholder={placeholder}
+                    <CreatableSelect
+                        noOptionsMessage={() => "NO HAY OPCIONES"}
+                        isClearable
                         onChange={onChange}
+                        onCreateOption={onCreateOption}
+                        options={options}
+                        value={elementoactual}
                         styles={customStyles}
-                        noOptionsMessage={() => "NO HAY MÁS OPCIONES"}
+                        placeholder={placeholder}
                     />
                 </div>
                 {
-                    requirevalidation?(defaultvalue.length>0?'':<span className={"form-text text-danger"}> {messageinc} </span>):''
+                    requirevalidation ? (elementoactual.value !== undefined && elementoactual.value !== null ? '' : <span className={"form-text text-danger"}> {messageinc} </span>) : ''
                 }
             </div>
         )
     }
 }
-
-export default TagSelectSearchGray 
+export default SelectCreateGray 
