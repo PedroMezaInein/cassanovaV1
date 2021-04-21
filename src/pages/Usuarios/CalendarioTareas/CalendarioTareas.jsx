@@ -47,20 +47,28 @@ class Calendario extends Component {
             return pathname === url
         });
         this.getCalendarioTareasAxios('own')
-        const pusher = new Echo( PUSHER_OBJECT );
-        pusher.channel('responsable-tarea').listen('ResponsableTarea', (data) => {
-            const { tarea } = data
-            const { user } = this.props.authUser
-            const { tipo } = this.state
-            let flag = false
-            if(tarea.responsables)
-                tarea.responsables.forEach((element) => {
-                    if(element.id === user.id)
-                        flag = true
-                })
-            if(flag)
+        if(process.env.NODE_ENV === 'production'){
+            const pusher = new Echo( PUSHER_OBJECT );
+            pusher.channel('responsable-tarea').listen('ResponsableTarea', (data) => {
+                /* const { tarea } = data */
+                /* const { user } = this.props.authUser */
+                const { tipo } = this.state
+                /* let flag = false */
                 this.getCalendarioTareasAxios(tipo)
-        })
+                /* if(tipo === 'own'){
+                    if(tarea.responsables)
+                        tarea.responsables.forEach((element) => {
+                            if(element.id === user.id)
+                                flag = true
+                        })
+                    if(flag)
+                        this.getCalendarioTareasAxios(tipo)
+                }else{
+                    this.getCalendarioTareasAxios(tipo)
+                } */
+
+            })
+        }
     }
 
     updatePusher = data => {

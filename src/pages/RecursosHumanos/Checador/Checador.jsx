@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import Layout from '../../../components/layout/layout'
 import { Card, OverlayTrigger, Tooltip } from 'react-bootstrap'
 import axios from 'axios'
-import { URL_DEV } from '../../../constants'
+import { PUSHER_OBJECT, URL_DEV } from '../../../constants'
 import { getMeses, getAños, getQuincena } from '../../../functions/setters'
 import { errorAlert, printResponseErrorAlert } from '../../../functions/alert'
 import { SelectSearchGray } from '../../../components/form-components'
@@ -42,17 +42,14 @@ class Empleados extends Component {
         let { mes_number } = this.state
         mes_number=this.mesNumber(mes)
         this.getEmpleadosChecador(quincena, mes_number, año)
-        const pusher = new Echo({
-            broadcaster: 'pusher',
-            key: '112ff49dfbf7dccb6934',
-            cluster: 'us2',
-            forceTLS: true
-        });
-        pusher.channel('rrhh-checador').listen('UsuarioChecando', (data) => {
-            let { mes, quincena, mes_number, año} = this.state
-            mes_number=this.mesNumber(mes)
-            this.getEmpleadosChecador(quincena, mes_number, año)
-        })
+        if(process.env.NODE_ENV === 'production'){
+            const pusher = new Echo( PUSHER_OBJECT );
+            pusher.channel('rrhh-checador').listen('UsuarioChecando', (data) => {
+                let { mes, quincena, mes_number, año} = this.state
+                mes_number=this.mesNumber(mes)
+                this.getEmpleadosChecador(quincena, mes_number, año)
+            })
+        }
     }
     getEmpleadosChecador = async(quincena, mes, año) => {
         const { access_token } = this.props.authUser
