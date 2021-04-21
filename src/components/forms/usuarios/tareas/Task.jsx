@@ -5,7 +5,7 @@ import { printDate } from '../../../../functions/printers'
 class Task extends Component {
 
     render() {
-        const {showTask, mostrarListPanel, tarea, completarTarea, updateFav } = this.props
+        const {showTask, mostrarListPanel, tarea, completarTarea, updateFav, form, onChange } = this.props
         if(tarea)
             return (
                 <div className={showTask ? 'col-xl-12 gutter-b' : 'd-none'}>
@@ -76,8 +76,8 @@ class Task extends Component {
                                 <div className="separator separator-dashed separator-border-3"></div>
                                 <CommentsPanel/>
                             </div>
-                            <WriteComment/>
                         </div>
+                        <WriteComment form={form} onChange={onChange}/>
                     </div>
                 </div>
             )

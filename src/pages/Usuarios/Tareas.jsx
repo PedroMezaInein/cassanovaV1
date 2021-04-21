@@ -20,7 +20,9 @@ class Tareas extends Component {
             comentario: '',
             tipo: '',
             tipoTarget: {taget: '', value: ''},
-            filtrarTarea: 'own'
+            filtrarTarea: 'own',
+            color: '',
+            mostrarColor: false
         },
         options: {
             responsables: [],
@@ -54,11 +56,13 @@ class Tareas extends Component {
         const { pagination } = this.state
         this.getTasks(pagination)
     }
+
     mostrarListPanel() {
         this.setState({
             ...this.state,
             showListPanel : true ,
-            showTask: false
+            showTask: false,
+            tarea: ''
         })
     }
 
@@ -207,6 +211,9 @@ class Tareas extends Component {
         let aux = Object.keys(form)
         aux.map((element) => {
             switch (element) {
+                case ' mostrarColor':
+                    form[element] = false;
+                    break;
                 case 'rolTarget':
                     form[element] = { target: '', value: ''}
                     break;
@@ -232,14 +239,15 @@ class Tareas extends Component {
         if(name === 'filtrarTarea')
             this.getTasks(pagination)
     }
-    handleChangeCreate = (newValue) => {
+    handleChangeCreate = newValue => {
         const { form } = this.state
         if(newValue == null){
             newValue = { "label":"","value":"" }
         }
         let nuevoValue = {
             "label":newValue.label,
-            "value":newValue.value
+            "value":newValue.value,
+            "color":""
         }
         form.tipo = newValue.value
         form.tipoTarget = nuevoValue
@@ -258,12 +266,14 @@ class Tareas extends Component {
         options.tipos.push(newOption)
         form.tipoTarget = newOption
         form.tipo = inputValue
+        form.mostrarColor = true
         this.setState({
             ...this.state,
             form,
             options
         });
     }
+
     render() {
         const { modal_tarea, form, options, showListPanel, showTask, tareas, pagination, tarea } = this.state
         const { user } = this.props.authUser
@@ -279,7 +289,8 @@ class Tareas extends Component {
                                     user = { user } updateFav = { this.updateFavAxios } pagination = { pagination } prev = { this.prevPage }
                                     next = { this.nextPage } />
                                 <Task showTask={showTask} tarea = { tarea } mostrarListPanel = { () => { this.mostrarListPanel() } }
-                                    completarTarea = { this.completarTareaAxios } updateFav = { this.updateFavAxios } />
+                                    completarTarea = { this.completarTareaAxios } updateFav = { this.updateFavAxios } form = { form }
+                                    onChange = { this.onChange } />
                             </div>
                         </div>
                     </div>
