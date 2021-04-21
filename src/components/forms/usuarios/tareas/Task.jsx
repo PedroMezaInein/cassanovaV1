@@ -4,7 +4,7 @@ import { WriteComment, CommentsPanel } from '../../../../components/forms'
 class Task extends Component {
 
     render() {
-        const {showTask} = this.props
+        const {showTask, mostrarListPanel} = this.props
         return (
             <div className={showTask ? 'col-xl-12 gutter-b' : 'd-none'}>
                 <div className="card card-custom card-stretch">
@@ -22,7 +22,7 @@ class Task extends Component {
                             <span className="btn btn-default btn-icon btn-sm mr-2">
                                     <i className="las la-edit icon-xl"></i>
                             </span>
-                            <span className="btn btn-light-danger btn-sm text-uppercase font-weight-bolder mr-2">20 ABRIL</span>
+                            <span className="btn btn-light-danger btn-sm text-uppercase font-weight-bolder mr-2" onClick={() => { mostrarListPanel() }}>20 ABRIL</span>
                             <span className="btn btn-light-success btn-sm text-uppercase font-weight-bolder">COMPLETAR</span>
                         </div>
                     </div>

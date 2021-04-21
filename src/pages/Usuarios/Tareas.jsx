@@ -52,7 +52,6 @@ class Tareas extends Component {
         this.getTasks()
     }
     mostrarTarea() {
-        console.log('showTask')
         this.setState({
             ...this.state,
             showTask: true,
@@ -60,11 +59,9 @@ class Tareas extends Component {
         })
     }
     mostrarListPanel() {
-        console.log('showListPanel ')
-        const { showListPanel  } = this.state
         this.setState({
             ...this.state,
-            showListPanel : !showListPanel ,
+            showListPanel : true ,
             showTask: false
         })
     }
@@ -210,7 +207,7 @@ class Tareas extends Component {
                             <div className="row">
                                 <ListPanel openModal = { this.openModal } options = { options } onChange = { this.onChange } form = { form }
                                     mostrarTarea = { () => { this.mostrarTarea() } } showListPanel = { showListPanel } tareas = { tareas }/>
-                                <Task showTask={showTask}/>
+                                <Task showTask={showTask}  mostrarListPanel = { () => { this.mostrarListPanel() } }/>
                             </div>
                         </div>
                     </div>
