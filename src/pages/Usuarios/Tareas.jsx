@@ -37,7 +37,8 @@ class Tareas extends Component {
             limit: 10,
             numTotal: 0,
         },
-        tareas: []
+        tareas: [],
+        tarea: ''
     }
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
@@ -52,13 +53,6 @@ class Tareas extends Component {
         this.getOptionsAxios()
         const { pagination } = this.state
         this.getTasks(pagination)
-    }
-    mostrarTarea() {
-        this.setState({
-            ...this.state,
-            showTask: true,
-            showListPanel : false
-        })
     }
     mostrarListPanel() {
         this.setState({
@@ -80,6 +74,39 @@ class Tareas extends Component {
         pagination.page = pagination.page-1;
         this.setState({...this.state, pagination})
         this.getTasks(pagination)
+    }
+
+    completarTareaAxios = async(tarea) => {
+        const { access_token } = this.props.authUser
+        waitAlert()
+        await axios.get(`${URL_DEV}v3/usuarios/tareas/${tarea.id}/completar`, { headers: setSingleHeader(access_token)}).then(
+            (response) => {
+                Swal.close()
+                this.setState({ ...this.state, showTask: false, showListPanel: true, tarea: '' })
+                doneAlert('Tarea completada con éxito')
+                const { pagination } = this.state
+                this.getTasks(pagination)
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    mostrarTarea = async(tarea) => {
+        const { access_token } = this.props.authUser
+        waitAlert()
+        await axios.get(`${URL_DEV}v3/usuarios/tareas/${tarea.id}`, { headers: setSingleHeader(access_token)}).then(
+            (response) => {
+                Swal.close()
+                const { tarea } = response.data
+                this.setState({ ...this.state, showTask: true, showListPanel: false, tarea: tarea })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+        
     }
 
     onSubmit = async(e) =>  {
@@ -127,7 +154,9 @@ class Tareas extends Component {
         let tipo = tarea.prioritario === 0 ? 'si' : 'no'
         await axios.put(`${URL_DEV}v3/usuarios/tareas/${tarea.id}/importancia`, {prioritario: tipo}, { headers: setSingleHeader(access_token)}).then(
             (response) => {
+                const { tarea } = response.data
                 Swal.close()
+                this.setState({...this.state, tarea: tarea})
                 const { pagination } = this.state
                 this.getTasks(pagination)
             }, (error) => { printResponseErrorAlert(error) }
@@ -236,7 +265,7 @@ class Tareas extends Component {
         });
     }
     render() {
-        const { modal_tarea, form, options, showListPanel, showTask, tareas, pagination } = this.state
+        const { modal_tarea, form, options, showListPanel, showTask, tareas, pagination, tarea } = this.state
         const { user } = this.props.authUser
         return (
             <Layout active='usuarios' {...this.props}>
@@ -246,10 +275,11 @@ class Tareas extends Component {
                             <Tags />
                             <div className="row">
                                 <ListPanel openModal = { this.openModal } options = { options } onChange = { this.onChange } form = { form }
-                                    mostrarTarea = { () => { this.mostrarTarea() } } showListPanel = { showListPanel } tareas = { tareas } 
+                                    mostrarTarea = { this.mostrarTarea } showListPanel = { showListPanel } tareas = { tareas } 
                                     user = { user } updateFav = { this.updateFavAxios } pagination = { pagination } prev = { this.prevPage }
                                     next = { this.nextPage } />
-                                <Task showTask={showTask}  mostrarListPanel = { () => { this.mostrarListPanel() } }/>
+                                <Task showTask={showTask} tarea = { tarea } mostrarListPanel = { () => { this.mostrarListPanel() } }
+                                    completarTarea = { this.completarTareaAxios } updateFav = { this.updateFavAxios } />
                             </div>
                         </div>
                     </div>

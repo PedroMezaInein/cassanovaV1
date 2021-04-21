@@ -30,12 +30,12 @@ class ItemTaskList extends Component {
                     tareas.map((tarea, key) => {
                         return(
                             <tr key = { key } >
-                                <td onClick={() => { mostrarTarea() }}>
+                                <td className = 'text-hover' onClick={() => { mostrarTarea(tarea) }}>
                                     <div className="symbol symbol-30 mr-3 symbol-light">
                                     <span className="symbol-label font-size-lg">CJ</span>
                                     </div>
                                 </td>
-                                <td className="white-space-nowrap" onClick={() => { mostrarTarea() }}>
+                                <td className="white-space-nowrap text-hover" onClick={() => { mostrarTarea(tarea) }}>
                                     <div>
                                         <span className="text-dark-75 font-weight-bolder text-hover-primary mb-1 font-size-lg cursor-pointer">
                                             {tarea.titulo}
