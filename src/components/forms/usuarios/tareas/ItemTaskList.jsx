@@ -4,17 +4,8 @@ import { printDate } from '../../../../functions/printers'
 class ItemTaskList extends Component {
 
     isImportant = (tarea) => {
-        const { user } = this.props
-        let flag = ''
-        if(tarea)
-            if(tarea.responsables)
-                flag = tarea.responsables.find( (elemento) => {
-                    return elemento.id === user.id
-                })
-        if(flag)
-            if(flag.pivot)
-                if(flag.pivot.prioritario)
-                    return 'text-warning'
+        if(tarea.prioritario)
+            return 'text-warning'
         return 'text-muted'    
     }
 
