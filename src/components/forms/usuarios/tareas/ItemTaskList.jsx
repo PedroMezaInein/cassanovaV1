@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 class ItemTaskList extends Component {
 
     render() {
-        const { mostrarTarea } = this.props
+        const { mostrarTarea, tareas } = this.props
         return (
             <div>
                 <div className="row mx-0 col-md-12 px-0">

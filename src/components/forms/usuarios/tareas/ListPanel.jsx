@@ -3,7 +3,7 @@ import { ItemTaskList } from '../../../../components/forms'
 import Form from 'react-bootstrap/Form'
 class ListPanel extends Component {
     render() {
-        const { openModal, onChange, form, options, mostrarTarea, showListPanel } = this.props
+        const { openModal, onChange, form, options, mostrarTarea, showListPanel, tareas } = this.props
         return (
             <div className={showListPanel ? 'col-xl-12 gutter-b' : 'col-xl-6'}>
                 <div className="card card-custom card-stretch">
@@ -26,7 +26,7 @@ class ListPanel extends Component {
                     <div className="card-body pt-2">
                         <div className="table-responsive">
                             <div className="list list-hover min-w-500px">
-                                <ItemTaskList mostrarTarea={mostrarTarea}/>
+                                <ItemTaskList tareas = { tareas } mostrarTarea={mostrarTarea}/>
                             </div>
                         </div>
                     </div>
