@@ -5,6 +5,25 @@ import { AudioApp } from '../singles'
 
 class Notificacion extends Component {
 
+    state = {
+        audio: ''
+    }
+
+    componentDidMount(){
+        let { audio } = this.state
+        audio = new Audio(toAbsoluteUrl('/sounds/alert2.mp3'));
+        audio.load();
+        audio.loop = true;
+        audio.play();
+        this.setState({...this.state, audio: audio})
+    }
+
+    componentWillUnmount(){
+        let { audio } = this.state
+        audio.pause();
+        this.setState({...this.state, audio: ''})
+    }
+
     setIcon = tipo => {
         /* return toAbsoluteUrl('/images/png/icon.png'); */
         switch(tipo){
@@ -33,7 +52,7 @@ class Notificacion extends Component {
         const { data } = this.props
         return (
             <div className="row mx-0 align-items-center">
-                <AudioApp />
+                {/* <AudioApp /> */}
                 <div className="col-2 d-flex justify-content-center align-items-center">
                     <span className="svg-icon svg-icon-lg svg-icon-success mx-2">
                         <SVG className = 'w-100' src = { this.setIcon(data.tipo) } />

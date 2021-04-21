@@ -80,13 +80,7 @@ class ListPanel extends Component {
                                         <span className="text-muted font-weight-bold mr-2">{this.getPagination()} de {pagination.numTotal}</span>
                                     </div>
                                     { this.printPrevButton() }
-                                    {/* <span className="btn btn-default btn-icon btn-sm mr-2">
-                                        <i className="ki ki-bold-arrow-back icon-sm"></i>
-                                    </span> */}
                                     { this.printNextButton() }
-                                    {/* <span className="btn btn-default btn-icon btn-sm disabled" onClick = {(e) => { console.log(e)}}>
-                                        <i className="ki ki-bold-arrow-next icon-sm"></i>
-                                    </span> */}
                                 </div>
                             </div>
                     }

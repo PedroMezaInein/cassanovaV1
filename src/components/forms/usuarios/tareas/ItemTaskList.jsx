@@ -88,7 +88,7 @@ class ItemTaskList extends Component {
                                 <td onClick={() => { mostrarTarea() }}>
                                     {this.responsablesSymbol(tarea.responsables)}
                                 </td>
-                                <td className="white-space-nowrap" onClick={() => { mostrarTarea() }}>
+                                <td className="white-space-nowrap text-hover" onClick={() => { mostrarTarea(tarea) }}>
                                     <div>
                                         <span className="text-dark-75 font-weight-bolder text-hover-primary mb-1 font-size-lg cursor-pointer">
                                             {tarea.titulo}
