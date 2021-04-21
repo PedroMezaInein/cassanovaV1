@@ -124,7 +124,7 @@ class Tareas extends Component {
     }
 
     updateFavAxios = async(tarea) => {
-        const { access_token, user } = this.props.authUser
+        const { access_token } = this.props.authUser
         waitAlert()
         let tipo = tarea.prioritario === 0 ? 'si' : 'no'
         await axios.put(`${URL_DEV}v3/usuarios/tareas/${tarea.id}/importancia`, {prioritario: tipo}, { headers: setSingleHeader(access_token)}).then(

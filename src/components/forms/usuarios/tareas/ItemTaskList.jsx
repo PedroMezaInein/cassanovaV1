@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { printDate } from '../../../../functions/printers'
-
+import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 class ItemTaskList extends Component {
 
     isImportant = (tarea) => {
@@ -22,6 +22,61 @@ class ItemTaskList extends Component {
         return false
     }
 
+    responsablesSymbol = (responsables) => {
+        if(responsables.length > 3){
+            let obtenerTresR = responsables.slice(0, 3);
+            let obtenerRestantes = responsables.slice(3, responsables.length);
+            return(
+                <div className="symbol-group symbol-hover justify-content-center">
+                    {
+                        obtenerTresR.map((responsable, key) => {
+                            return (
+                                <OverlayTrigger key={key} overlay={<Tooltip>{responsable.name}</Tooltip>}>
+                                    <div className="symbol symbol-25 symbol-circle border-1">
+                                        <img alt='user-avatar' src={responsable.avatar ? responsable.avatar : "/default.jpg"} />
+                                    </div>
+                                </OverlayTrigger>
+                            )
+                        })
+                    }
+                    <OverlayTrigger overlay={
+                        <Tooltip>
+                            {
+                                obtenerRestantes.map((responsable, key) => {
+                                    return (
+                                        <div className="text-left" key={key}>
+                                            • {responsable.name}
+                                        </div>
+                                    )
+                                })
+                            }
+                        </Tooltip>
+                    }>
+                        <div className="symbol symbol-25 symbol-circle border-1 symbol-light-primary">
+                            <span className="symbol-label font-weight-bolder">{obtenerRestantes.length}+</span>
+                        </div>
+                    </OverlayTrigger>
+                </div>
+            )
+        }else{
+            return(
+                <div className="symbol-group symbol-hover justify-content-center">
+                    {
+                        responsables.map((responsable, key) => {
+                            return (
+                                <OverlayTrigger key={key} overlay={<Tooltip>{responsable.name}</Tooltip>}>
+                                    <div className="symbol symbol-25 symbol-circle border-1">
+                                        <img alt='user-avatar' src={responsable.avatar ? responsable.avatar : "/default.jpg"} />
+                                    </div>
+                                </OverlayTrigger>
+                            )
+                        }) 
+                    }
+                </div>
+            )
+        }
+    }
+    
     render() {
         const { mostrarTarea, tareas, updateFav } = this.props
         return (
@@ -29,11 +84,9 @@ class ItemTaskList extends Component {
                 {
                     tareas.map((tarea, key) => {
                         return(
-                            <tr key = { key } >
+                            <tr key = { key } style={{borderBottom:'1px solid #ebedf3'}}>
                                 <td onClick={() => { mostrarTarea() }}>
-                                    <div className="symbol symbol-30 mr-3 symbol-light">
-                                    <span className="symbol-label font-size-lg">CJ</span>
-                                    </div>
+                                    {this.responsablesSymbol(tarea.responsables)}
                                 </td>
                                 <td className="white-space-nowrap" onClick={() => { mostrarTarea() }}>
                                     <div>
