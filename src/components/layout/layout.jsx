@@ -52,12 +52,14 @@ class Layout extends Component {
         textoArray.forEach((element) => { if(element){ texto = texto + ' / ' + element } })
         this.setState({ ...this.state, title: texto })
         this.getUserChecador()
-        const pusher = new Echo( PUSHER_OBJECT );
         const { user } = this.props.authUser
-        pusher.channel('Notificacion.User.'+user.id).listen('NuevaNotificacion', (e) => {
-            this.getNotificacionesAxios()
-        })
-        /* this.getNotificacionesAxios() */
+        if(process.env.NODE_ENV === 'production'){
+            const pusher = new Echo( PUSHER_OBJECT );
+            pusher.channel('Notificacion.User.'+user.id).listen('NuevaNotificacion', (e) => {
+                this.getNotificacionesAxios()
+            })
+        }
+        this.getNotificacionesAxios()
     }
 
     logoutUser = () => { this.logoutUserAxios(); }

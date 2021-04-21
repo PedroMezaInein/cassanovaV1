@@ -94,6 +94,13 @@ import buscarLead from './leads/BuscarLead'
 import formCalendarioTareas from './usuarios/FormCalendarioTareas'
 import comentarioForm from './ComentarioForm'
 import timelineComments from './TimelineComments'
+import tags from './usuarios/tareas/Tags'
+import listPanel from './usuarios/tareas/ListPanel'
+import itemTaskList from './usuarios/tareas/ItemTaskList'
+import task from './usuarios/tareas/Task'
+import writeComment from './usuarios/tareas/WriteComment'
+import commentsPanel from './usuarios/tareas/CommentsPanel'
+import addTaskForm from './usuarios/tareas/AddTaskForm'
 
 export const RegisterUserForm = registerUserForm
 export const EmpresaForm = empresaForm
@@ -191,3 +198,10 @@ export const BuscarLead = buscarLead
 export const FormCalendarioTareas = formCalendarioTareas
 export const ComentarioForm = comentarioForm
 export const TimelineComments = timelineComments
+export const Tags = tags
+export const ListPanel = listPanel
+export const ItemTaskList = itemTaskList
+export const Task = task
+export const WriteComment = writeComment
+export const CommentsPanel = commentsPanel
+export const AddTaskForm = addTaskForm
