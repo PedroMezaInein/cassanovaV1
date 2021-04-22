@@ -22,7 +22,14 @@ class Tareas extends Component {
             tipoTarget: {taget: '', value: ''},
             filtrarTarea: 'own',
             color: '',
-            mostrarColor: false
+            mostrarColor: false,
+            adjuntos: {
+                adjunto_comentario: {
+                    value: '',
+                    placeholder: 'Adjunto',
+                    files: []
+                },
+            }
         },
         options: {
             responsables: [],
@@ -153,7 +160,7 @@ class Tareas extends Component {
     }
 
     updateFavAxios = async(tarea) => {
-        const { access_token, user } = this.props.authUser
+        const { access_token } = this.props.authUser
         waitAlert()
         let tipo = tarea.prioritario === 0 ? 'si' : 'no'
         await axios.put(`${URL_DEV}v3/usuarios/tareas/${tarea.id}/importancia`, {prioritario: tipo}, { headers: setSingleHeader(access_token)}).then(
@@ -274,6 +281,23 @@ class Tareas extends Component {
         });
     }
 
+    clearFiles = (name, key) => {
+        const { form } = this.state
+        let aux = []
+        for (let counter = 0; counter < form.adjuntos[name].files.length; counter++) {
+            if (counter !== key) {
+                aux.push(form.adjuntos[name].files[counter])
+            }
+        }
+        if (aux.length < 1) {
+            form.adjuntos[name].value = ''
+        }
+        form.adjuntos[name].files = aux
+        this.setState({
+            ...this.state,
+            form
+        })
+    }
     render() {
         const { modal_tarea, form, options, showListPanel, showTask, tareas, pagination, tarea } = this.state
         const { user } = this.props.authUser
@@ -290,7 +314,7 @@ class Tareas extends Component {
                                     next = { this.nextPage } />
                                 <Task showTask={showTask} tarea = { tarea } mostrarListPanel = { () => { this.mostrarListPanel() } }
                                     completarTarea = { this.completarTareaAxios } updateFav = { this.updateFavAxios } form = { form }
-                                    onChange = { this.onChange } />
+                                    onChange = { this.onChange } clearFiles={this.clearFiles}/>
                             </div>
                         </div>
                     </div>

@@ -5,28 +5,37 @@ import { printDate } from '../../../../functions/printers'
 class Task extends Component {
 
     render() {
-        const {showTask, mostrarListPanel, tarea, completarTarea, updateFav, form, onChange } = this.props
+        const {showTask, mostrarListPanel, tarea, completarTarea, updateFav, form, onChange, clearFiles } = this.props
         if(tarea)
             return (
                 <div className={showTask ? 'col-xl-12 gutter-b' : 'd-none'}>
                     <div className="card card-custom card-stretch">
                         <div className="card-header align-items-center flex-wrap justify-content-between border-0 py-6 h-auto">
-                            <div className="d-flex flex-column mr-2 py-2">
-                                <span className="text-dark text-hover-primary font-weight-bold font-size-h4 mr-3">
-                                    {tarea.titulo}
-                                </span>
-                                <div className="d-flex align-items-center py-1">
-                                    <span className="d-flex align-items-center text-muted text-hover-info mr-2 font-weight-bold">
-                                        <span className="fa fa-genderless text-info icon-md mr-2"></span>EN PROCESO</span>
-                                    <span className="d-flex align-items-center text-muted text-hover-danger font-weight-bold">
-                                        <span className="fa fa-genderless text-danger icon-md mr-2"></span>URGENTE</span>
+                            <div className="mr-2 py-2 row">
+                                <div className="col-md-auto align-self-center pr-0">
+                                    <a className="btn btn-light btn-hover-secondary font-weight-bold h-100 p-3" onClick={() => { mostrarListPanel() }}>
+                                        <i className="fas fa-arrow-left icon-md p-0"></i>
+                                    </a>
+                                </div>
+                                <div className="col">
+                                    <div className="d-flex flex-column mr-2 py-2">
+                                        <span className="text-dark font-weight-bold font-size-h4 mr-3">
+                                            {tarea.titulo}
+                                        </span>
+                                        <div className="d-flex align-items-center py-1">
+                                            <span className="d-flex align-items-center text-muted text-hover-info mr-2 font-weight-bold">
+                                                <span className="fa fa-genderless text-info icon-md mr-2"></span>EN PROCESO</span>
+                                            <span className="d-flex align-items-center text-muted text-hover-danger font-weight-bold">
+                                                <span className="fa fa-genderless text-danger icon-md mr-2"></span>URGENTE</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <div className="d-flex align-items-center justify-content-end text-right my-2">
                                 <span className="btn btn-default btn-icon btn-sm mr-2">
                                         <i className="las la-edit icon-xl"></i>
                                 </span>
-                                <span className="btn btn-light-danger btn-sm text-uppercase font-weight-bolder mr-2" onClick={() => { mostrarListPanel() }}>
+                                <span className="btn btn-light-danger btn-sm text-uppercase font-weight-bolder mr-2">
                                     { printDate(tarea.fecha_limite) }
                                 </span>
                                 <span className="btn btn-light-success btn-sm text-uppercase font-weight-bolder text-hover" onClick={() => { completarTarea(tarea) }}>
@@ -40,8 +49,10 @@ class Task extends Component {
                                     <div className="d-flex align-items-start card-spacer-x py-4">
                                         <div className="d-flex flex-column flex-grow-1 flex-wrap">
                                             <div className="d-flex">
-                                                <span className="font-size-lg font-weight-bold text-dark-75 mr-2">Responsable: </span>
-                                                <div className="font-size-lg font-weight-bold text-dark-50 mr-2">
+                                                <span className="font-size-lg font-weight-bold text-dark-75 mr-3 align-self-center">
+                                                    {tarea.responsables.length > 1 ? 'Responsables:':'Responsable:'}
+                                                </span>
+                                                <div className="font-size-lg font-weight-bold text-dark-50 mr-3 text-justify">
                                                     {
                                                         tarea.responsables.map((responsable, index) => {
                                                             return(
@@ -77,7 +88,7 @@ class Task extends Component {
                                 <CommentsPanel/>
                             </div>
                         </div>
-                        <WriteComment form={form} onChange={onChange}/>
+                        <WriteComment form={form} onChange={onChange} clearFiles={clearFiles}/>
                     </div>
                 </div>
             )
