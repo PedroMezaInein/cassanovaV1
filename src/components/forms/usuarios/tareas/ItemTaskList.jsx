@@ -45,8 +45,8 @@ class ItemTaskList extends Component {
                                 obtenerRestantes.map((responsable, key) => {
                                     return (
                                         <div className="d-flex align-items-center mb-1" key={key}>
-                                            <div class="symbol-list d-flex flex-wrap">
-                                                <div class="symbol symbol-20 symbol-circle mr-3" style={{ width: '' }}>
+                                            <div className="symbol-list d-flex flex-wrap">
+                                                <div className="symbol symbol-20 symbol-circle mr-3" style={{ width: '' }}>
                                                     <img alt='user-avatar' src={responsable.avatar ? responsable.avatar : "/default.jpg"} />
                                                 </div>
                                             </div>
