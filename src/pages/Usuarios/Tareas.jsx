@@ -254,7 +254,8 @@ class Tareas extends Component {
                     options.tags.push({
                         name: element.titulo,
                         value: element.id.toString(),
-                        label: element.titulo
+                        label: element.titulo,
+                        color:element.color
                     })
                 })
                 proyectos.forEach((element) => { mentions.proyectos.push({ id: element.id, display: this.setProyectoName(element.nombre), name: element.nombre }) })
@@ -280,7 +281,8 @@ class Tareas extends Component {
                     options.tags.push({
                         name: element.titulo,
                         value: element.id.toString(),
-                        label: element.titulo
+                        label: element.titulo,
+                        color:element.color
                     })
                 })
                 form.nuevo_tag = ''
@@ -337,7 +339,6 @@ class Tareas extends Component {
         let { etiquetas, pagination } = this.state
         let aux = []
         etiquetas.forEach((element) => {
-            console.log(element, etiqueta)
             if(element.id !== etiqueta.id)
                 aux.push(element)
         })
@@ -510,7 +511,7 @@ class Tareas extends Component {
                 <div className="d-flex flex-row">
                     <div className="flex-row-fluid ">
                         <div className="d-flex flex-column flex-grow-1 ">
-                            <Tags etiquetas = { etiquetas } removeTag = { this.removeTag }/>
+                            <Tags etiquetas = { etiquetas } removeTag = { this.removeTag } options = { options }/>
                             <div className="row">
                                 <ListPanel openModal = { this.openModal } options = { options } onChange = { this.onChange } form = { form }
                                     mostrarTarea = { this.mostrarTarea } showListPanel = { showListPanel } tareas = { tareas } 
@@ -518,7 +519,7 @@ class Tareas extends Component {
                                     next = { this.nextPage } addLabel = { this.addLabel } />
                                 <Task showTask={showTask} tarea = { tarea } mostrarListPanel = { () => { this.mostrarListPanel() } }
                                     completarTarea = { this.completarTareaAxios } updateFav = { this.updateFavAxios } form = { form }
-                                    onChange = { this.onChange } clearFiles={this.clearFiles} mentions = { mentions }
+                                    onChange = { this.onChange } clearFiles={this.clearFiles} mentions = { mentions } user = { user }
                                     openModalEdit = { this.openModalEdit} onSubmit = { this.sendComentario } />
                             </div>
                         </div>

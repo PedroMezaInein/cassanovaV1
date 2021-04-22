@@ -109,15 +109,17 @@ class ItemTaskList extends Component {
                                 <td>
                                     <div className="text-right white-space-nowrap">
                                         {
-                                            tarea.etiquetas.map((etiqueta) => {
-                                                return(
-                                                    <span key = { etiqueta.id} style = { { backgroundColor: etiqueta.color, color: 'white'}}
-                                                        className="label font-weight-bold label-inline ml-2 text-hover"
-                                                        onClick = { (e) => { addLabel(etiqueta) } } >
-                                                        {etiqueta.titulo}
-                                                    </span>
-                                                )
-                                            })
+                                            tarea.etiquetas?
+                                                tarea.etiquetas.map((etiqueta) => {
+                                                    return(
+                                                        <span key = { etiqueta.id} style = { { backgroundColor: etiqueta.color, color: 'white'}}
+                                                            className="label font-weight-bold label-inline ml-2 text-hover"
+                                                            onClick = { (e) => { addLabel(etiqueta) } } >
+                                                            {etiqueta.titulo}
+                                                        </span>
+                                                    )
+                                                })
+                                            :<></>
                                         }
                                         
                                         <span className="mx-3">
