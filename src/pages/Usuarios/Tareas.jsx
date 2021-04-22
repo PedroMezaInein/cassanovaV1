@@ -175,15 +175,11 @@ class Tareas extends Component {
         const { access_token } = this.props.authUser
         const { tarea, form} = this.state
         waitAlert()
-        await axios.put(`${URL_DEV}v3/usuarios/tareas${tarea.id}`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.put(`${URL_DEV}v3/usuarios/tareas/${tarea.id}`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                this.setState({
-                    ...this.state,
-                    form: this.clearForm(),
-                    modal_tarea: false
-                })
+                const { tarea } = response.data
+                this.setState({ ...this.state, form: this.clearForm(), modal_tarea: false, tarea: tarea })
                 doneAlert('Fue editado con éxito');
-                this.getLeadsWeb()
             },
             (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {

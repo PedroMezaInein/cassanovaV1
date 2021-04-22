@@ -27,7 +27,8 @@ class Task extends Component {
                                                 tarea.etiquetas.map((etiqueta) => {
                                                     return(
                                                         <span key = { etiqueta.id } className="d-flex align-items-center mr-2 font-weight-bold cursor-pointer">
-                                                            <span className="fa fa-genderless icon-md mr-2" style={{ color: etiqueta.color }}/>
+                                                            <span className="fas fa-times text-hover icon-md mr-2" style={{ color: etiqueta.color }} onClick = { (e) => { console.log('ETIQUETA', etiqueta) } } />
+                                                            {/* <span className="fa fa-genderless icon-md mr-2" style={{ color: etiqueta.color }}/> */}
                                                             <span onMouseLeave={e => (e.target.style.color = "#B5B5C3")} onMouseOver={e => (e.target.style.color = etiqueta.color)} style={{ color: "#B5B5C3" }}>{etiqueta.titulo}</span>
                                                         </span>
                                                     )
@@ -42,7 +43,7 @@ class Task extends Component {
                                     tarea.responsables.map((responsable, index) => {
                                         if(responsable.name === user.name){
                                             return (
-                                                <span className="btn btn-default btn-icon btn-sm mr-2" onClick={(e) => { openModalEdit(tarea) }}>
+                                                <span key = {user.id} className="btn btn-default btn-icon btn-sm mr-2" onClick={(e) => { openModalEdit(tarea) }}>
                                                         <i className="las la-edit icon-xl"></i>
                                                 </span>
                                             )
