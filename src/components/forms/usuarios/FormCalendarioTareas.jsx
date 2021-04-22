@@ -1,7 +1,6 @@
 import React, { Component } from 'react'
 import ComentarioFormTarea from "../../forms/ComentarioFormTarea"
 import TimelineComments from '../../forms/TimelineComments'
-import { MentionsInput, Mention } from 'react-mentions'
 
 class FormCalendarioTareas extends Component {
     state = {
