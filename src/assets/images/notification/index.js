@@ -7,5 +7,6 @@ import Ticket from './ticket.svg'
 import Vacaciones from './vacaciones.svg'
 import Solicitud from './solicitud-vacaciones.svg'
 import Cancel from './cancelar.svg'
+import Money from './money.svg'
 
-export{ Construir, Tarea, Lead, Cuestionario, Portapapeles, Ticket, Vacaciones, Solicitud, Cancel }
+export{ Construir, Tarea, Lead, Cuestionario, Portapapeles, Ticket, Vacaciones, Solicitud, Cancel, Money }
