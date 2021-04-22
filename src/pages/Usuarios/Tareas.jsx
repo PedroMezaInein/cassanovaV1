@@ -3,9 +3,9 @@ import Layout from '../../components/layout/layout'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import moment from 'moment'
-import { URL_DEV } from '../../constants'
+import { URL_DEV, COLORS } from '../../constants'
 import { connect } from 'react-redux'
-import { Tags, ListPanel, Task, AddTaskForm, NewTag} from '../../components/forms'
+import { Tags, ListPanel, Task, AddTaskForm, TagColorForm} from '../../components/forms'
 import { Modal } from '../../components/singles'
 import { doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../functions/alert'
 import { setFormHeader, setSingleHeader } from '../../functions/routers'
@@ -152,7 +152,6 @@ class Tareas extends Component {
     }
 
     addTask = async(e) =>  {
-        e.preventDefault();
         const { access_token } = this.props.authUser
         const { form } = this.state
         waitAlert()
@@ -378,6 +377,7 @@ class Tareas extends Component {
                     form[element] = { target: '', value: ''}
                     break;
                 case 'responsables':
+                case 'tags':
                     form[element] = [];
                     break;
                 case 'fecha_entrega':
@@ -517,7 +517,6 @@ class Tareas extends Component {
         })
     }
     tagShow = tag => {
-        console.log(tag)
         if (tag === 'Nueva etiqueta') {
             this.openModalAddTag()
         }
@@ -549,9 +548,14 @@ class Tareas extends Component {
                         handleChangeCreate = { this.handleChangeCreate } handleCreateOption = { this.handleCreateOption } sendTag = { this.sendTagAxios } />
                 </Modal>
                 <Modal title={title} show={modal_addTag} handleClose={this.handleCloseModalAddTag}>
-                    <NewTag 
-                        form = { form } onChange = { this.onChange } formeditado = { formeditado } sendTag = { this.sendTag } 
-                        closeCard = { this.closeCard }
+                    <TagColorForm
+                        form = { form }
+                        onChange ={ this.onChange }
+                        formeditado = { formeditado }
+                        sendTag = { this.sendTagAxios }
+                        colors={ COLORS }
+                        customclass='bg-gray-100'
+                        btnCloseCard = {false}
                     />
                 </Modal>
             </Layout>
