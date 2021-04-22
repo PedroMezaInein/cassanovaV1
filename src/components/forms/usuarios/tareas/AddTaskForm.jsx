@@ -61,16 +61,33 @@ class AddTaskForm extends Component {
                                     onChange = { handleChangeCreate } onCreateOption = { handleCreateOption }
                                     elementoactual = { form.tipoTarget } options = { options.tipos }/>
                             </div>
-                            {
-                                form.mostrarColor ?
-                                    <div className="form-group row form-group-marginless">
-                                        <div className="col-md-12">
-                                            <CircleColor circlesize = { 23 } width = "auto" onChange = { this.handleChangeColor }
-                                                placeholder = "SELECCIONA EL COLOR DEL TAG" colors = { COLORS } classlabel="font-weight-bold text-dark-60" classname="d-flex justify-content-center" value = { this.state.color }/>
+                            <div className="col-md-9 card card-custom bg-light gutter-b mt-10 mx-auto shadow">
+                                <div className="card-header border-0">
+                                    <h3 className="card-title font-weight-bold text-dark">
+                                        <span className="d-block text-dark font-weight-bolder">NUEVO TAG</span>
+                                    </h3>
+                                </div>
+                                <div className="card-body pt-2">
+                                    <form className="form" id="kt_form_1">
+                                        <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 }
+                                            withicon = { 0 } requirevalidation = { 0 } withformgroup = { 1 }
+                                            formeditado = { formeditado } placeholder = 'NOMBRE DEL TAG'
+                                            value = { form.nuevo_tag } name = 'nuevo_tag'
+                                            onChange = { (e) => { e.preventDefault(); onChange(e, false) } }
+                                            iconclass = "fas fa-tasks" messageinc = "Incorrecto. Ingresa el título de la tarea." customclass='bg-white'
+                                        />
+                                        <div className="form-group row form-group-marginless">
+                                            <div className="col-md-12">
+                                                <CircleColor circlesize = { 20 } width = "auto" onChange = { this.handleChangeColor }
+                                                    placeholder = "SELECCIONA EL COLOR DEL TAG" colors = { COLORS } classlabel="font-weight-bold text-dark-60" classname="d-flex justify-content-center" value = { this.state.color }/>
+                                            </div>
                                         </div>
-                                    </div>
-                                : ""
-                            }
+                                        <div className="mt-5 text-center">
+                                            <Button icon = '' className="btn btn-primary" onClick = { '' } text="AGREGAR" />
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

@@ -29,7 +29,8 @@ class Tareas extends Component {
                     placeholder: 'Adjunto',
                     files: []
                 },
-            }
+            },
+            nuevo_tag:''
         },
         options: {
             responsables: [],
