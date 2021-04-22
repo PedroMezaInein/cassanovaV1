@@ -44,17 +44,16 @@ class Tags extends Component {
                                             <Dropdown.Item className="p-0" key={key}>
                                                 <span className="navi-link w-100">
                                                     <span className="navi-text">
-                                                        <span className="label label-xl label-inline rounded-0 w-100 font-weight-bolder"
+                                                        <span className="label label-xl label-inline rounded-0 w-100 font-weight-bold"
                                                             style={{
-                                                                color: tag.color,
-                                                                backgroundColor: tag.color + '47',
+                                                                color: `${tag.name ==='Nueva etiqueta' ? '#80808f' : 'white' }`,
+                                                                backgroundColor: tag.color ,
                                                             }}>
                                                             { tag.name }
                                                         </span>
                                                     </span>
                                                 </span>
                                             </Dropdown.Item>
-                                            <Dropdown.Divider className="m-0" style={{ borderTop: `1px solid ${tag.color + '47'}`}} />
                                         </div>
                                     )
                                 })
