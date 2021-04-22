@@ -270,6 +270,15 @@ class Tareas extends Component {
                 case 'fecha_entrega':
                     form[element] = null
                     break;
+                case 'adjuntos':
+                    form[element] = {
+                        adjunto_comentario: {
+                            value: '',
+                            placeholder: 'Adjunto',
+                            files: []
+                        }
+                    }
+                    break;
                 default:
                     form[element] = '';
                     break;
