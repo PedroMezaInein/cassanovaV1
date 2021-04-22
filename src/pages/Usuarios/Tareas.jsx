@@ -51,6 +51,7 @@ class Tareas extends Component {
         },
         tareas: [],
         tarea: '',
+        etiquetas: [],
         title: 'AGREGAR NUEVA TAREA',
         formeditado: 1,
     }
@@ -135,7 +136,6 @@ class Tareas extends Component {
             this.addTask()
     }
 
-
     addTask = async(e) =>  {
         e.preventDefault();
         const { access_token } = this.props.authUser
@@ -179,9 +179,14 @@ class Tareas extends Component {
     }
     getTasks = async(pagination) => {
         const { access_token } = this.props.authUser
-        const { form } = this.state
+        const { form, etiquetas } = this.state
         waitAlert()
-        await axios.get(`${URL_DEV}v3/usuarios/tareas?page=${pagination.page}&limit=${pagination.limit}&type=${form.filtrarTarea}`, { headers: setSingleHeader(access_token)}).then(
+        let aux = ''
+        console.log(etiquetas, 'etiquetas get tasks')
+        etiquetas.map((element, index) => {
+            aux = aux + '&etiquetas[]='+element.id
+        })
+        await axios.get(`${URL_DEV}v3/usuarios/tareas?page=${pagination.page}&limit=${pagination.limit}${aux}&type=${form.filtrarTarea}`, { headers: setSingleHeader(access_token)}).then(
             (response) => {
                 Swal.close()
                 const { tareas, num } = response.data
@@ -273,6 +278,39 @@ class Tareas extends Component {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
+    }
+
+    addLabel = async(etiqueta) => {
+        const { etiquetas, pagination } = this.state
+        let flag = true
+        etiquetas.forEach((elemento) => {
+            if(elemento.id === etiqueta.id)
+                flag = false
+        })
+        if(flag){
+            etiquetas.push(etiqueta)
+            this.setState({...this.state, etiquetas})
+            this.getTasks(pagination)
+        }
+    }
+
+    removeTag = async(etiqueta) => {
+        let { etiquetas, pagination } = this.state
+        let aux = []
+        etiquetas.forEach((element) => {
+            console.log(element, etiqueta)
+            if(element.id !== etiqueta.id)
+                aux.push(element)
+        })
+        etiquetas = aux
+        this.setState({...this.state, etiquetas})
+        waitAlert()
+        setTimeout(
+            () => {
+                this.getTasks(pagination)        
+            }, 100
+        )
+        
     }
 
     openModal = () => {
@@ -427,19 +465,19 @@ class Tareas extends Component {
         })
     }
     render() {
-        const { modal_tarea, form, options, showListPanel, showTask, tareas, pagination, tarea, title } = this.state
+        const { modal_tarea, form, options, showListPanel, showTask, tareas, pagination, tarea, title, etiquetas } = this.state
         const { user } = this.props.authUser
         return (
             <Layout active='usuarios' {...this.props}>
                 <div className="d-flex flex-row">
                     <div className="flex-row-fluid ">
                         <div className="d-flex flex-column flex-grow-1 ">
-                            <Tags options = { options }/>
+                            <Tags etiquetas = { etiquetas } removeTag = { this.removeTag } options = { options }/>
                             <div className="row">
                                 <ListPanel openModal = { this.openModal } options = { options } onChange = { this.onChange } form = { form }
                                     mostrarTarea = { this.mostrarTarea } showListPanel = { showListPanel } tareas = { tareas } 
                                     user = { user } updateFav = { this.updateFavAxios } pagination = { pagination } prev = { this.prevPage }
-                                    next = { this.nextPage } />
+                                    next = { this.nextPage } addLabel = { this.addLabel } />
                                 <Task showTask={showTask} tarea = { tarea } mostrarListPanel = { () => { this.mostrarListPanel() } }
                                     completarTarea = { this.completarTareaAxios } updateFav = { this.updateFavAxios } form = { form }
                                     onChange = { this.onChange } clearFiles={this.clearFiles} 

@@ -4,11 +4,24 @@ import { Dropdown } from 'react-bootstrap'
 class Tags extends Component {
 
     render() {
-        const { options } = this.props
+        const { etiquetas, removeTag, options } = this.props
         return (
             <div className="card card-custom gutter-b">
                 <div className="card-body d-flex align-items-center justify-content-between  py-3">
                     <h3 className="font-weight-bold mb-0">TAGS</h3>
+                    <div>
+                        {
+                            etiquetas.map((etiqueta) => {
+                                return(
+                                    <span key = { etiqueta.id} style = { { backgroundColor: etiqueta.color, color: 'white'}}
+                                        className="label font-weight-bold label-inline ml-2 text-hover" 
+                                        onClick = { (e) => { e.preventDefault(); removeTag(etiqueta);} } >
+                                        {etiqueta.titulo}
+                                    </span>
+                                )
+                            })
+                        }
+                    </div>
                     <Dropdown className="text-center">
                         <Dropdown.Toggle
                             style={
