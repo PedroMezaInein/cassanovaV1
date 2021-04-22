@@ -1,13 +1,11 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
 import { CalendarDay } from '../../../form-components'
-import { SelectCreateGray, TagSelectSearchGray, InputGray, Button, CircleColor} from '../../../form-components'
-import { COLORS } from '../../../../constants'
-import { NewTag } from '../..'
+import { TagSelectSearchGray, InputGray, Button} from '../../../form-components'
+import { NewTag } from '../../../../components/forms'
 class AddTaskForm extends Component {
 
     state = {
-        color: '',
         newTag: false
     }
 
@@ -48,7 +46,7 @@ class AddTaskForm extends Component {
         return (
             <Form {...props}>
                 <div className="row mx-0">
-                    <div className="row form-group-marginless col-md-12 pt-4 mx-0">
+                    <div className="row form-group-marginless col-md-12 pt-4 mx-0 px-0">
                         <div className="col-lg-5 col-12 text-center align-self-center">
                             <div className="d-flex justify-content-center" style={{ height: '1px' }}>
                                 <label className="text-center font-weight-bolder text-dark-60">Fecha de entrega</label>
@@ -89,7 +87,7 @@ class AddTaskForm extends Component {
                 <div className="card-footer px-0 pt-4 pb-0">
                     <div className="row row-paddingless mx-0">
                         <div className="col-lg-12 text-right">
-                            <Button icon = '' className="btn btn-primary" onClick = { onSubmit } text="ENVIAR" />
+                            <Button icon = '' className="btn btn-primary mr-3" onClick = { onSubmit } text="ENVIAR" />
                         </div>
                     </div>
                 </div>
