@@ -23,10 +23,16 @@ class Task extends Component {
                                             {tarea.titulo}
                                         </span>
                                         <div className="d-flex align-items-center py-1">
-                                            <span className="d-flex align-items-center text-muted text-hover-info mr-2 font-weight-bold">
-                                                <span className="fa fa-genderless text-info icon-md mr-2"></span>EN PROCESO</span>
-                                            <span className="d-flex align-items-center text-muted text-hover-danger font-weight-bold">
-                                                <span className="fa fa-genderless text-danger icon-md mr-2"></span>URGENTE</span>
+                                            {
+                                                tarea.etiquetas.map((etiqueta) => {
+                                                    return(
+                                                        <span key = { etiqueta.id } className="d-flex align-items-center text-muted text-hover-info mr-2 font-weight-bold">
+                                                            <span className="fa fa-genderless icon-md mr-2" style = {{ color: etiqueta.color }}/>
+                                                            {etiqueta.titulo}
+                                                        </span>
+                                                    )
+                                                })
+                                            }
                                         </div>
                                     </div>
                                 </div>
@@ -56,7 +62,7 @@ class Task extends Component {
                                                     {
                                                         tarea.responsables.map((responsable, index) => {
                                                             return(
-                                                                <span className ='mr-2'>
+                                                                <span key = { index } className ='mr-2'>
                                                                     { responsable.name }
                                                                     { index + 1 < tarea.responsables.length && ','}
                                                                 </span>

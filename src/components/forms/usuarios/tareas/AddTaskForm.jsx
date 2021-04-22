@@ -3,6 +3,7 @@ import Form from 'react-bootstrap/Form'
 import { CalendarDay } from '../../../form-components'
 import { SelectCreateGray, TagSelectSearchGray, InputGray, Button, CircleColor} from '../../../form-components'
 import { COLORS } from '../../../../constants'
+import { NewTag } from '../..'
 class AddTaskForm extends Component {
 
     state = {
@@ -17,24 +18,32 @@ class AddTaskForm extends Component {
 
     updateTag = valor => {
         const { onChange } = this.props
-        const { value } = valor[0]
-        if(value === 'nueva_etiqueta')
-            this.setState({...this.state, newTag: true })
+        let flag = true
+        if(valor)
+            if(valor.length)
+                if(valor[valor.length - 1].value === 'nueva_etiqueta')
+                    flag = false
+        if(flag)
+            onChange({target: { value: valor, name: 'tags'}}, true)
         else
-            onChange({target: { value: value, name: 'tags'}}, true)
+            this.setState({...this.state, newTag: true })
     }
 
-    handleChangeColor = (color) => {
+    sendTag = e => {
+        const { sendTag } = this.props
+        this.setState({...this.state, newTag: false})
+        sendTag(e)
+    }
+
+    closeCard = () => {
         const { onChange } = this.props
-        onChange({ target: { value: color.hex, name: 'color' } })
-        this.setState({
-            ...this.state,
-            color:color
-        });
+        onChange({target: { value: '', name: 'color'}}, true)
+        onChange({target: { value: '', name: 'nuevo_tag'}}, true)
+        this.setState({...this.state, newTag: false})
     }
 
     render() {
-        const { form, tarea, onChange, formeditado, options, handleCreateOption, handleChangeCreate, onSubmit, ...props } = this.props
+        const { form, tarea, onChange, formeditado, options, handleCreateOption, handleChangeCreate, onSubmit, sendTag, ...props } = this.props
         const { newTag } = this.state
         return (
             <Form {...props}>
@@ -47,60 +56,31 @@ class AddTaskForm extends Component {
                             <CalendarDay date = { form.fecha_entrega } onChange = { (e) => { onChange(e, true) } } name='fecha_entrega' />
                         </div>
                         <div className="col-lg-7 col-12 align-self-center">
-                            <div className="col-md-12 px-0 mb-3">
-                                <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 }
-                                    withicon = { 1 } requirevalidation = { 0 } withformgroup = { 0 }
-                                    formeditado = { formeditado } placeholder = 'TÍTULO DE LA TAREA'
-                                    value = { form.titulo } name = 'titulo'
-                                    // onBlur = { (e) => { e.preventDefault(); onChange(e, true) } }
-                                    onChange = { (e) => { e.preventDefault(); onChange(e, false) } }
-                                    iconclass = "fas fa-tasks" messageinc = "Incorrecto. Ingresa el título de la tarea." />
-                            </div>
-                            <div className="col-md-12 px-0 mb-3">
-                                <TagSelectSearchGray placeholder = 'Selecciona los responsables' options = { options.responsables } 
-                                    iconclass = 'las la-user-friends icon-xl' defaultvalue = { form.responsables } onChange = { this.updateResponsable } />
-                            </div>
-                            <div className="col-md-12 px-0 mb-3">
-                                <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 0 }
-                                    requirevalidation = { 0 } withformgroup = { 0 } formeditado = { formeditado }
-                                    placeholder = 'DESCRIPCIÓN' value = { form.descripcion } name = 'descripcion'
-                                    as = "textarea" rows = "7" messageinc = "Incorrecto. Ingresa una descripción."
-                                    // onBlur = { (e) => { e.preventDefault(); onChange(e, true) } }
-                                    onChange = {(e) => { e.preventDefault(); onChange(e, false) } } />
-                            </div>
-                            <div className="col-md-12 px-0 mb-3">
-                                {/* <TagSelectSearchGray placeholder = "SELECCIONA EL TAG" iconclass = "flaticon2-tag"
-                                    requirevalidation = { 0 } messageinc = "Incorrecto. Selecciona/agrega el tag."
-                                    onChange = { handleChangeCreate } onCreateOption = { handleCreateOption }
-                                    elementoactual = { form.tipoTarget } options = { options.tipos }/> */}
-                                <TagSelectSearchGray placeholder = 'Selecciona el tag' options = { options.tags } 
-                                    iconclass = 'flaticon2-tag icon-xl' defaultvalue = { form.tags } onChange = { this.updateTag } />
-                            </div>
-                            <div className="col-md-9 card card-custom bg-light gutter-b mt-10 mx-auto shadow">
-                                <div className="card-header border-0">
-                                    <h3 className="card-title font-weight-bold text-dark">
-                                        <span className="d-block text-dark font-weight-bolder">NUEVO TAG</span>
-                                    </h3>
+                            <div className="row mx-0 justify-content-center">
+                                <div className="col-md-12 px-0 mb-3">
+                                    <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 1 } 
+                                        requirevalidation = { 0 } withformgroup = { 0 } formeditado = { formeditado } 
+                                        placeholder = 'TÍTULO DE LA TAREA' value = { form.titulo } name = 'titulo'
+                                        onChange = { (e) => { e.preventDefault(); onChange(e, false) } } iconclass = "fas fa-tasks" 
+                                        messageinc = "Incorrecto. Ingresa el título de la tarea." />
                                 </div>
-                                <div className="card-body pt-2">
-                                    <form className="form" id="kt_form_1">
-                                        <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 }
-                                            withicon = { 0 } requirevalidation = { 0 } withformgroup = { 1 }
-                                            formeditado = { formeditado } placeholder = 'NOMBRE DEL TAG'
-                                            value = { form.nuevo_tag } name = 'nuevo_tag'
-                                            onChange = { (e) => { e.preventDefault(); onChange(e, false) } }
-                                            iconclass = "fas fa-tasks" messageinc = "Incorrecto. Ingresa el título de la tarea." customclass='bg-white'
-                                        />
-                                        <div className="form-group row form-group-marginless">
-                                            <div className="col-md-12">
-                                                <CircleColor circlesize = { 20 } width = "auto" onChange = { this.handleChangeColor }
-                                                    placeholder = "SELECCIONA EL COLOR DEL TAG" colors = { COLORS } classlabel="font-weight-bold text-dark-60" classname="d-flex justify-content-center" value = { this.state.color }/>
-                                            </div>
-                                        </div>
-                                        <div className="mt-5 text-center">
-                                            <Button icon = '' className="btn btn-primary" onClick = { '' } text="AGREGAR" />
-                                        </div>
-                                    </form>
+                                <div className="col-md-12 px-0 mb-3">
+                                    <TagSelectSearchGray placeholder = 'Selecciona los responsables' options = { options.responsables } 
+                                        iconclass = 'las la-user-friends icon-xl' defaultvalue = { form.responsables } onChange = { this.updateResponsable } />
+                                </div>
+                                <div className="col-md-12 px-0 mb-3">
+                                    <InputGray withtaglabel = { 1 } withtextlabel = { 1 } withplaceholder = { 1 } withicon = { 0 } requirevalidation = { 0 } 
+                                        withformgroup = { 0 } formeditado = { formeditado } placeholder = 'DESCRIPCIÓN' value = { form.descripcion } 
+                                        name = 'descripcion' as = "textarea" rows = "7" messageinc = "Incorrecto. Ingresa una descripción."
+                                        onChange = {(e) => { e.preventDefault(); onChange(e, false) } } />
+                                </div>
+                                <div className="col-md-12 px-0 mb-3">
+                                    <TagSelectSearchGray placeholder = 'Selecciona el tag' options = { options.tags } 
+                                        iconclass = 'flaticon2-tag icon-xl' defaultvalue = { form.tags } onChange = { this.updateTag } />
+                                </div>
+                                <div className="col-md-9">
+                                    { newTag && <NewTag form = { form } onChange = { onChange } formeditado = { formeditado } sendTag = { this.sendTag } 
+                                        closeCard = { this.closeCard } /> }
                                 </div>
                             </div>
                         </div>
