@@ -198,3 +198,71 @@ tr.selected{
         }
     }
 }
+#table-tareas{
+    @include down-screen($xxxs) {
+        td#responsables{
+            min-width: 90px;
+        }
+        td#descripcion{
+            min-width: 350px;
+        }
+    }
+    @include screen($xxs) {
+        td#responsables{
+            min-width: 95px;
+        }
+        td#descripcion{
+            min-width: 405px;
+        }
+    }
+    @include screen($xs) {
+        td#responsables{
+            min-width: 85px;
+        }
+        td#descripcion{
+            min-width: 370px;
+        }
+    }
+    @include screen($sm) {
+        td#responsables{
+            min-width: 90px;
+        }
+        td#descripcion{
+            min-width: 470px;
+        }
+    }
+    // @include screen($md) {
+    //     td#responsables{
+    //         min-width: 90px;
+    //     }
+    //     td#descripcion{
+    //         min-width: 470px;
+    //     }
+    // }
+    // @include screen($lg) {
+    //     td#responsables{
+    //         min-width: 90px;
+    //     }
+    //     td#descripcion{
+    //         min-width: 470px;
+    //     }
+    // }
+    // @include screen($xl) {
+    //     td#responsables{
+    //         min-width: 90px;
+    //     }
+    //     td#descripcion{
+    //         min-width: 470px;
+    //     }
+    // }
+    tr:last-child{
+        td{
+            border-bottom: none;
+        }
+    }
+    tr:first-child{
+        td{
+            border-top: none;
+        }
+    }
+}

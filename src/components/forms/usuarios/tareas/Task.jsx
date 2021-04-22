@@ -2,10 +2,11 @@ import React, { Component } from 'react'
 import { WriteComment, CommentsPanel } from '../../../../components/forms'
 import { printDate } from '../../../../functions/printers'
 
+
 class Task extends Component {
 
     render() {
-        const {showTask, mostrarListPanel, tarea, completarTarea, updateFav, form, onChange, clearFiles } = this.props
+        const {showTask, mostrarListPanel, tarea, completarTarea, updateFav, form, onChange, clearFiles, openModalEdit } = this.props
         if(tarea)
             return (
                 <div className={showTask ? 'col-xl-12 gutter-b' : 'd-none'}>
@@ -26,9 +27,9 @@ class Task extends Component {
                                             {
                                                 tarea.etiquetas.map((etiqueta) => {
                                                     return(
-                                                        <span className="d-flex align-items-center mr-2 font-weight-bold text-hover text-muted" key = { etiqueta.id } >
-                                                            <span className="fa fa-genderless icon-md mr-2" style = {{ color: etiqueta.color }}/>
-                                                            {etiqueta.titulo}
+                                                        <span key = { etiqueta.id } className="d-flex align-items-center mr-2 font-weight-bold cursor-pointer">
+                                                            <span className="fa fa-genderless icon-md mr-2" style={{ color: etiqueta.color }}/>
+                                                            <span onMouseLeave={e => (e.target.style.color = "#B5B5C3")} onMouseOver={e => (e.target.style.color = etiqueta.color)} style={{ color: "#B5B5C3" }}>{etiqueta.titulo}</span>
                                                         </span>
                                                     )
                                                 })
@@ -38,7 +39,7 @@ class Task extends Component {
                                 </div>
                             </div>
                             <div className="d-flex align-items-center justify-content-end text-right my-2">
-                                <span className="btn btn-default btn-icon btn-sm mr-2">
+                                <span className="btn btn-default btn-icon btn-sm mr-2" onClick={(e) => { openModalEdit(tarea) }}>
                                         <i className="las la-edit icon-xl"></i>
                                 </span>
                                 <span className="btn btn-light-danger btn-sm text-uppercase font-weight-bolder mr-2">

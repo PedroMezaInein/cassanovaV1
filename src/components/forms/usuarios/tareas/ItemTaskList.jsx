@@ -45,8 +45,15 @@ class ItemTaskList extends Component {
                             {
                                 obtenerRestantes.map((responsable, key) => {
                                     return (
-                                        <div className="text-left" key={key}>
-                                            • {responsable.name}
+                                        <div className="d-flex align-items-center mb-1" key={key}>
+                                            <div className="symbol-list d-flex flex-wrap">
+                                                <div className="symbol symbol-20 symbol-circle mr-3" style={{ width: '' }}>
+                                                    <img alt='user-avatar' src={responsable.avatar ? responsable.avatar : "/default.jpg"} />
+                                                </div>
+                                            </div>
+                                            <div className="d-flex flex-column flex-grow-1">
+                                                <div className="text-dark-75 mb-1 font-size-sm font-weight-bold text-left">{responsable.name.split(" ", 1)}</div>
+                                            </div>
                                         </div>
                                     )
                                 })
@@ -84,20 +91,23 @@ class ItemTaskList extends Component {
             <>
                 {
                     tareas.map((tarea, key) => {
-                        return(
-                            <tr key = { key } style={{borderBottom:'1px solid #ebedf3'}}>
-                                <td>
+                        return (
+                            <tr key={key}>
+                                <td id="responsables" >
                                     {this.responsablesSymbol(tarea.responsables)}
                                 </td>
-                                <td className="white-space-nowrap text-hover" onClick={() => { mostrarTarea(tarea) }}>
+                                <td id="descripcion" className="text-hover" onClick={() => { mostrarTarea(tarea) }}>
                                     <div>
-                                        <span className="text-dark-75 font-weight-bolder mb-1 font-size-lg cursor-pointer">
+                                        <div className="text-dark-75 font-weight-bolder mb-2 font-size-lg cursor-pointer">
                                             {tarea.titulo}
-                                        </span>
+                                        </div>
+                                        <div className="text-justify font-weight-light">
+                                            {tarea.descripcion}
+                                        </div>
                                     </div>
                                 </td>
-                                <td className="white-space-nowrap">
-                                    <div className="text-right">
+                                <td>
+                                    <div className="text-right white-space-nowrap">
                                         {
                                             tarea.etiquetas.map((etiqueta) => {
                                                 return(
@@ -114,12 +124,12 @@ class ItemTaskList extends Component {
                                             <div className="btn btn-icon btn-xs btn-hover-text-warning active">
                                                 <i className="flaticon-add-label-button text-muted"></i>
                                             </div>
-                                            <div onClick = { (e) => {e.preventDefault(); updateFav(tarea)} } className={`btn btn-icon btn-xs text-hover-warning`}>
+                                            <div onClick={(e) => { e.preventDefault(); updateFav(tarea) }} className={`btn btn-icon btn-xs text-hover-warning`}>
                                                 <i className={`flaticon-star ${this.isImportant(tarea)}`}></i>
                                             </div>
                                         </span>
                                         <span className="font-weight-bold text-muted">
-                                            { printDate(tarea.fecha_limite) }
+                                            {printDate(tarea.fecha_limite)}
                                         </span>
                                     </div>
                                 </td>

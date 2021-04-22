@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import Layout from '../../components/layout/layout'
 import axios from 'axios'
 import Swal from 'sweetalert2'
+import moment from 'moment'
 import { URL_DEV } from '../../constants'
 import { connect } from 'react-redux'
 import { Tags, ListPanel, Task, AddTaskForm} from '../../components/forms'
@@ -50,7 +51,9 @@ class Tareas extends Component {
         },
         tareas: [],
         tarea: '',
-        etiquetas: []
+        etiquetas: [],
+        title: 'AGREGAR NUEVA TAREA',
+        formeditado: 1,
     }
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
@@ -123,7 +126,17 @@ class Tareas extends Component {
         
     }
 
-    onSubmit = async(e) =>  {
+    onSubmit = e => {
+        e.preventDefault()
+        const { title } = this.state
+        waitAlert()
+        if (title === 'EDITAR NUEVA TAREA')
+            this.editTask()
+        else
+            this.addTask()
+    }
+
+    addTask = async(e) =>  {
         e.preventDefault();
         const { access_token } = this.props.authUser
         const { form } = this.state
@@ -144,7 +157,26 @@ class Tareas extends Component {
             console.log(error, 'error')
         })
     }
-
+    editTask = async(e) =>  {
+        const { access_token } = this.props.authUser
+        const { tarea, form} = this.state
+        waitAlert()
+        await axios.put(`${URL_DEV}v3/usuarios/tareas${tarea.id}`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+            (response) => {
+                this.setState({
+                    ...this.state,
+                    form: this.clearForm(),
+                    modal_tarea: false
+                })
+                doneAlert('Fue editado con éxito');
+                this.getLeadsWeb()
+            },
+            (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     getTasks = async(pagination) => {
         const { access_token } = this.props.authUser
         const { form, etiquetas } = this.state
@@ -284,6 +316,7 @@ class Tareas extends Component {
             ...this.state,
             modal_tarea: true,
             form: this.clearForm(),
+            title: 'AGREGAR NUEVA TAREA'
         })
     }
     handleCloseModal = () => {
@@ -386,8 +419,51 @@ class Tareas extends Component {
             form
         })
     }
+    openModalEdit = tarea => {
+        const { form } = this.state
+        form.titulo = tarea.titulo
+        let auxResponsables = []
+        let auxrTag = []
+        if (tarea.responsables) {
+            tarea.responsables.forEach(responsable => {
+                auxResponsables.push({
+                    value: responsable.id.toString(),
+                    name: responsable.name,
+                    label: responsable.name
+                })
+            });
+            form.responsables = auxResponsables
+        }
+        form.descripcion = tarea.descripcion
+        if (tarea.etiquetas) {
+            tarea.etiquetas.forEach(tag => {
+                auxrTag.push({
+                    value: tag.id.toString(),
+                    name: tag.titulo,
+                    label: tag.titulo
+                })
+            });
+            form.tags = auxrTag
+        }
+        form.fecha_entrega = new Date(moment(tarea.fecha_limite))
+        this.setState({
+            ...this.state,
+            tarea: tarea,
+            form,
+            formeditado: 1,
+            modal_tarea: true,
+            title: 'EDITAR NUEVA TAREA'
+        })
+    }
+    handleCloseModalEdit = () => {
+        this.setState({
+            ...this.state,
+            modal_tarea: false,
+            lead: ''
+        })
+    }
     render() {
-        const { modal_tarea, form, options, showListPanel, showTask, tareas, pagination, tarea, etiquetas } = this.state
+        const { modal_tarea, form, options, showListPanel, showTask, tareas, pagination, tarea, title, etiquetas } = this.state
         const { user } = this.props.authUser
         return (
             <Layout active='usuarios' {...this.props}>
@@ -402,12 +478,13 @@ class Tareas extends Component {
                                     next = { this.nextPage } addLabel = { this.addLabel } />
                                 <Task showTask={showTask} tarea = { tarea } mostrarListPanel = { () => { this.mostrarListPanel() } }
                                     completarTarea = { this.completarTareaAxios } updateFav = { this.updateFavAxios } form = { form }
-                                    onChange = { this.onChange } clearFiles={this.clearFiles}/>
+                                    onChange = { this.onChange } clearFiles={this.clearFiles} 
+                                    openModalEdit = { this.openModalEdit}/>
                             </div>
                         </div>
                     </div>
                 </div>
-                <Modal size="xl" title='Agregar nueva tarea' show={modal_tarea} handleClose={this.handleCloseModal}>
+                <Modal size="xl" title={title} show={modal_tarea} handleClose={this.handleCloseModal}>
                     <AddTaskForm onSubmit = { this.onSubmit } form = { form } options = { options } onChange = { this.onChange }
                         handleChangeCreate = { this.handleChangeCreate } handleCreateOption = { this.handleCreateOption } sendTag = { this.sendTagAxios } />
                 </Modal>

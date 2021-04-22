@@ -65,7 +65,7 @@ class ListPanel extends Component {
                     </div>                   
                     <div className="card-body pt-2">
                         <div className="table-responsive">
-                            <table className="table table-head-custom table-head-bg table-borderless table-vertical-center table-hover">
+                            <table className="table table-head-custom table-head-bg table-vertical-center table-hover" id="table-tareas">
                                 <tbody>
                                     <ItemTaskList addLabel = { addLabel } user = { user } tareas = { tareas } mostrarTarea={mostrarTarea} updateFav = { updateFav } />
                                 </tbody>
