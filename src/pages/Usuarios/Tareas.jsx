@@ -17,6 +17,7 @@ class Tareas extends Component {
             descripcion: '',
             fecha_entrega: null,
             responsables: [],
+            tags: [],
             comentario: '',
             tipo: '',
             tipoTarget: {taget: '', value: ''},
@@ -29,11 +30,12 @@ class Tareas extends Component {
                     placeholder: 'Adjunto',
                     files: []
                 },
-            }
+            },
+            nuevo_tag:''
         },
         options: {
             responsables: [],
-            tipos: [],
+            tags: [],
             filtrarTareas: [
                 { text: "Tareas personales", value: "own" },
                 { text: "Tareas generales", value: "all" },
@@ -180,12 +182,13 @@ class Tareas extends Component {
     getOptionsAxios = async() => {
         const { access_token } = this.props.authUser
         waitAlert()
-        await axios.get(`${URL_DEV}v2/usuarios/tareas/tareas/options`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.options(`${URL_DEV}v3/usuarios/tareas`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 Swal.close()
-                const { usuarios } = response.data
+                const { usuarios, etiquetas } = response.data
                 const { options } = this.state
                 options.responsables = []
+                options.tags = [ { label: ' + Nueva etiqueta', value: 'nueva_etiqueta', name: 'Nueva etiqueta'} ]
                 usuarios.forEach( ( element ) => {
                     options.responsables.push({
                         name: element.name,
@@ -193,6 +196,13 @@ class Tareas extends Component {
                         label: element.name
                     })
                 });
+                etiquetas.forEach( (element) => {
+                    options.tags.push({
+                        name: element.titulo,
+                        value: element.id.toString(),
+                        label: element.titulo
+                    })
+                })
                 this.setState({...this.state, options})
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -200,6 +210,36 @@ class Tareas extends Component {
             console.log(error, 'error')
         })
     }
+
+    sendTagAxios = async(e) => {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        waitAlert()
+        await axios.post(`${URL_DEV}v3/usuarios/tareas/etiquetas`, form, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                Swal.close()
+                const { etiquetas, etiqueta } = response.data
+                const { options, form } = this.state
+                options.tags = [ { label: ' + Nueva etiqueta', value: 'nueva_etiqueta', name: 'Nueva etiqueta'} ]
+                etiquetas.forEach( (element) => {
+                    options.tags.push({
+                        name: element.titulo,
+                        value: element.id.toString(),
+                        label: element.titulo
+                    })
+                })
+                form.nuevo_tag = ''
+                form.color = ''
+                if(etiqueta)
+                    form.tags.push({value: etiqueta.id.toString(), name: etiqueta.titulo, label: etiqueta.titulo})
+                this.setState({...this.state, options, form})
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     openModal = () => {
         this.setState({
             ...this.state,
@@ -321,7 +361,7 @@ class Tareas extends Component {
                 </div>
                 <Modal size="xl" title='Agregar nueva tarea' show={modal_tarea} handleClose={this.handleCloseModal}>
                     <AddTaskForm onSubmit = { this.onSubmit } form = { form } options = { options } onChange = { this.onChange }
-                        handleChangeCreate = { this.handleChangeCreate } handleCreateOption = { this.handleCreateOption } />
+                        handleChangeCreate = { this.handleChangeCreate } handleCreateOption = { this.handleCreateOption } sendTag = { this.sendTagAxios } />
                 </Modal>
             </Layout>
         )
