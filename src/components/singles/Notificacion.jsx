@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../functions/routers"
 import { AudioApp } from '../singles'
-import { Construir, Tarea, Lead, Cuestionario, Portapapeles, Ticket, Vacaciones, Solicitud, Cancel } from '../../assets/images/notification'
+import { Construir, Tarea, Lead, Cuestionario, Portapapeles, Ticket, Vacaciones, Solicitud, Cancel, Money } from '../../assets/images/notification'
 class Notificacion extends Component {
 
     state = {
@@ -43,6 +43,8 @@ class Notificacion extends Component {
                 return Cancel // toAbsoluteUrl('/images/svg/notificaciones/cancelar.svg');
             case 'proyecto':
                 return Construir // toAbsoluteUrl('/images/svg/notificaciones/construir.svg');
+            case 'money':
+                return Money
             default:
                 return Portapapeles // toAbsoluteUrl('/images/svg/portapapeles.svg');
         }
