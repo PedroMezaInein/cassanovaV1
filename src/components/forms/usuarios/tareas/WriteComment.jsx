@@ -37,7 +37,7 @@ class WriteComment extends Component {
                                         <span className="btn btn-primary font-weight-bold px-6">Enviar</span>
                                     </div>
                                     <span>
-                                        <label for="file-upload" class="btn btn-icon btn-sm btn-clean mr-2 dz-clickable mb-0">
+                                        <label htmlFor="file-upload" className="btn btn-icon btn-sm btn-clean mr-2 dz-clickable mb-0">
                                             <i className="flaticon2-clip-symbol"></i>
                                         </label>
                                         <input 
