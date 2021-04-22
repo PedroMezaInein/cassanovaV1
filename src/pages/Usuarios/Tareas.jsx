@@ -8,7 +8,7 @@ import { connect } from 'react-redux'
 import { Tags, ListPanel, Task, AddTaskForm} from '../../components/forms'
 import { Modal } from '../../components/singles'
 import { doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../functions/alert'
-import { setSingleHeader } from '../../functions/routers'
+import { setFormHeader, setSingleHeader } from '../../functions/routers'
 class Tareas extends Component {
 
     state = {
@@ -54,6 +54,10 @@ class Tareas extends Component {
         etiquetas: [],
         title: 'AGREGAR NUEVA TAREA',
         formeditado: 1,
+        mentions: {
+            users: [],
+            proyectos: []
+        }
     }
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
@@ -91,6 +95,16 @@ class Tareas extends Component {
         pagination.page = pagination.page-1;
         this.setState({...this.state, pagination})
         this.getTasks(pagination)
+    }
+
+    setProyectoName = nombre => {
+        let arreglo = nombre.split(' ')
+        let texto = '#'
+        arreglo.forEach( (elemento) => {
+            if(elemento !== '' && elemento !== '-')
+                texto = texto + elemento.charAt(0).toUpperCase() + elemento.slice(1).toLowerCase()
+        })
+        return texto
     }
 
     completarTareaAxios = async(tarea) => {
@@ -182,7 +196,6 @@ class Tareas extends Component {
         const { form, etiquetas } = this.state
         waitAlert()
         let aux = ''
-        console.log(etiquetas, 'etiquetas get tasks')
         etiquetas.map((element, index) => {
             aux = aux + '&etiquetas[]='+element.id
         })
@@ -223,9 +236,11 @@ class Tareas extends Component {
         await axios.options(`${URL_DEV}v3/usuarios/tareas`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 Swal.close()
-                const { usuarios, etiquetas } = response.data
-                const { options } = this.state
+                const { usuarios, etiquetas, proyectos } = response.data
+                const { options, mentions } = this.state
                 options.responsables = []
+                mentions.users = []
+                mentions.proyectos = []
                 options.tags = [ { label: ' + Nueva etiqueta', value: 'nueva_etiqueta', name: 'Nueva etiqueta'} ]
                 usuarios.forEach( ( element ) => {
                     options.responsables.push({
@@ -233,6 +248,7 @@ class Tareas extends Component {
                         value: element.id.toString(),
                         label: element.name
                     })
+                    mentions.users.push({ id: element.id, display: element.name })
                 });
                 etiquetas.forEach( (element) => {
                     options.tags.push({
@@ -241,7 +257,8 @@ class Tareas extends Component {
                         label: element.titulo
                     })
                 })
-                this.setState({...this.state, options})
+                proyectos.forEach((element) => { mentions.proyectos.push({ id: element.id, display: this.setProyectoName(element.nombre), name: element.nombre }) })
+                this.setState({...this.state, options, mentions})
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -278,6 +295,30 @@ class Tareas extends Component {
         })
     }
 
+    sendComentario = async() => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { form, tarea } = this.state
+        const data = new FormData();
+        data.append(`comentario`, form.comentario)
+        if(form.adjuntos.adjunto_comentario.value)
+            form.adjuntos.adjunto_comentario.files.forEach((file) => {
+                data.append(`files[]`, file.file)
+            })
+        
+        await axios.post(`${URL_DEV}v3/usuarios/tareas/${tarea.id}/comentario`, data, { headers: setFormHeader(access_token) }).then(
+            (response) => {
+                const { tarea } = response.data
+                this.setState({...this.state, tarea: tarea, form: this.clearForm()})
+                doneAlert('Comentario agregao con éxito')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+        
+    }
+
     addLabel = async(etiqueta) => {
         const { etiquetas, pagination } = this.state
         let flag = true
@@ -308,7 +349,6 @@ class Tareas extends Component {
                 this.getTasks(pagination)        
             }, 100
         )
-        
     }
 
     openModal = () => {
@@ -463,7 +503,7 @@ class Tareas extends Component {
         })
     }
     render() {
-        const { modal_tarea, form, options, showListPanel, showTask, tareas, pagination, tarea, title, etiquetas } = this.state
+        const { modal_tarea, form, options, showListPanel, showTask, tareas, pagination, tarea, title, etiquetas, mentions } = this.state
         const { user } = this.props.authUser
         return (
             <Layout active='usuarios' {...this.props}>
@@ -478,8 +518,8 @@ class Tareas extends Component {
                                     next = { this.nextPage } addLabel = { this.addLabel } />
                                 <Task showTask={showTask} tarea = { tarea } mostrarListPanel = { () => { this.mostrarListPanel() } }
                                     completarTarea = { this.completarTareaAxios } updateFav = { this.updateFavAxios } form = { form }
-                                    onChange = { this.onChange } clearFiles={this.clearFiles} 
-                                    openModalEdit = { this.openModalEdit}/>
+                                    onChange = { this.onChange } clearFiles={this.clearFiles} mentions = { mentions }
+                                    openModalEdit = { this.openModalEdit} onSubmit = { this.sendComentario } />
                             </div>
                         </div>
                     </div>

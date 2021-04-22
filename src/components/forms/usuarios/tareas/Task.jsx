@@ -2,11 +2,10 @@ import React, { Component } from 'react'
 import { WriteComment, CommentsPanel } from '../../../../components/forms'
 import { printDate } from '../../../../functions/printers'
 
-
 class Task extends Component {
 
     render() {
-        const {showTask, mostrarListPanel, tarea, completarTarea, updateFav, form, onChange, clearFiles, openModalEdit } = this.props
+        const {showTask, mostrarListPanel, tarea, completarTarea, updateFav, form, onChange, clearFiles, openModalEdit, mentions, onSubmit } = this.props
         if(tarea)
             return (
                 <div className={showTask ? 'col-xl-12 gutter-b' : 'd-none'}>
@@ -92,10 +91,10 @@ class Task extends Component {
                                     </div>
                                 </div>
                                 <div className="separator separator-dashed separator-border-3"></div>
-                                <CommentsPanel/>
+                                <CommentsPanel tarea = { tarea }  proyectos = { mentions.proyectos } />
                             </div>
                         </div>
-                        <WriteComment form={form} onChange={onChange} clearFiles={clearFiles}/>
+                        <WriteComment form={form} onChange={onChange} clearFiles={clearFiles} mentions = { mentions } onSubmit = { onSubmit } />
                     </div>
                 </div>
             )
