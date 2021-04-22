@@ -4,7 +4,7 @@ import { Dropdown } from 'react-bootstrap'
 class Tags extends Component {
 
     render() {
-        const { etiquetas, removeTag, options } = this.props
+        const { etiquetas, removeTag, options, tagShow } = this.props
         return (
             <div className="card card-custom gutter-b">
                 <div className="card-body d-flex align-items-center justify-content-between  py-3">
@@ -41,7 +41,7 @@ class Tags extends Component {
                                 options.tags.map((tag, key) => {
                                     return (
                                         <div key={key}>
-                                            <Dropdown.Item className="p-0" key={key}>
+                                            <Dropdown.Item className="p-0" key={key} onClick={() => { tagShow(tag.name) }}>
                                                 <span className="navi-link w-100">
                                                     <span className="navi-text">
                                                         <span className="label label-xl label-inline rounded-0 w-100 font-weight-bold"
