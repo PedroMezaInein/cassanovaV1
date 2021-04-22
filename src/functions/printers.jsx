@@ -1,5 +1,6 @@
 import moment from 'moment'
 import React from 'react'
+import { replaceAll } from './functions'
 
 export function printDates(fecha1, fecha2){
     let fechaInicio = ''
@@ -111,4 +112,95 @@ export const printDate = (date) => {
     let fecha = moment(date)
     let meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
     return fecha.format('D') + ' ' + meses[parseInt(fecha.format('M'))] + ' ' + fecha.format('YYYY');
+}
+
+export const indexSubcadena = (cadena, prefixA, prefixB) => {
+    let indiceA = cadena.indexOf(prefixA)
+    let indiceB = cadena.indexOf(prefixB)
+    if(indiceA === indiceB === -1)
+        return -1
+    if(indiceA === -1)
+        return indiceB
+    if(indiceB === -1)
+        return indiceA
+    if(indiceA < indiceB)
+        return indiceA
+    return indiceB
+    
+}
+
+export const setLink = (texto,proyectos) => {
+    let value = proyectos.find( (elemento) => {
+        return elemento.display.trim() === texto.trim()
+    })
+    let liga = '/proyectos/proyectos'
+    if(value)
+        liga = `${liga}?id=${value.id}&name=${value.name}`
+    return liga
+}
+
+export const printComentario = (texto, proyectos) => {
+    let indice = indexSubcadena(texto, '___', '***')
+    let arrayAux = [];
+    if(indice === -1)        
+        return(
+            <span>
+                {texto}
+            </span>
+        )
+    let subcadena = texto
+    let final = 0
+    let inicio = indice + 3
+    let flag = ''
+    let prefix = ''
+    while(indice !== -1){
+        inicio = indice + 3
+        switch(indexSubcadena(subcadena, '___', '***')){
+            case subcadena.indexOf('___'):
+                flag = 'black';
+                break
+            case subcadena.indexOf('***'):
+                flag = 'info';
+                break
+            case -1:
+                flag = 'none'
+                break
+        }
+        if(flag !== 'none'){
+            prefix = flag === 'black' ? '___' : '***'
+            arrayAux.push({
+                texto: replaceAll(subcadena.substring(final, inicio), prefix, ''),
+                tipo: 'normal'
+            })
+            final = subcadena.indexOf(prefix, inicio)
+            arrayAux.push({
+                texto: subcadena.substring(inicio, final),
+                tipo: flag
+            })
+            subcadena = subcadena.substring(final+3)
+            indice = indexSubcadena(subcadena, '___', '***')
+            final = 0
+        }
+    }
+    if(subcadena)
+        arrayAux.push({
+            texto: subcadena,
+            tipo: 'normal'
+        })
+    return arrayAux.map((elemento, index) => {
+        if(elemento.tipo === 'info'){
+            return(
+                <span className = 'font-weight-bolder text-info' key = { index }>
+                    <a href = {setLink(elemento.texto, proyectos)} className = 'font-weight-bolder text-info' target = '_blank'>
+                        {elemento.texto}
+                    </a>
+                </span>
+            )
+        }
+        return (
+            <span key = { index } className = {` ${elemento.tipo ==='black' ? 'font-weight-bolder text-success' : ''}`}>
+                { elemento.texto }
+            </span>
+        )
+    })
 }

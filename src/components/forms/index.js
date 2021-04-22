@@ -101,6 +101,7 @@ import task from './usuarios/tareas/Task'
 import writeComment from './usuarios/tareas/WriteComment'
 import commentsPanel from './usuarios/tareas/CommentsPanel'
 import addTaskForm from './usuarios/tareas/AddTaskForm'
+import TagColorForm from './usuarios/tareas/TagColorForm'
 import NewTag from './usuarios/tareas/NewTag'
 
 export const RegisterUserForm = registerUserForm
@@ -207,3 +208,4 @@ export const WriteComment = writeComment
 export const CommentsPanel = commentsPanel
 export const AddTaskForm = addTaskForm
 export { NewTag }
+export { TagColorForm }

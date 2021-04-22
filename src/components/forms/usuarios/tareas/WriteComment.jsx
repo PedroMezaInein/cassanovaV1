@@ -1,11 +1,17 @@
 import React, { Component } from 'react'
-import { InputGray } from '../../../form-components'
 import { onChangeAdjunto } from '../../../../functions/onChanges'
+import { MentionsInput, Mention } from 'react-mentions'
+import classNames from '../../../../styles/mention.scss'
 class WriteComment extends Component {
 
+    handleChange = e => {
+        const { onChange } = this.props
+        const { value } = e.target
+        onChange({target:{value: value, name: 'comentario'}})
+    }
+
     render() {
-        const { form, onChange, clearFiles } = this.props
-        console.log(form)
+        const { form, onChange, clearFiles, mentions, onSubmit } = this.props
         return (
             <div className="card-spacer-x pb-10 pt-5">
                 <div className="card card-custom shadow-sm">
@@ -13,27 +19,28 @@ class WriteComment extends Component {
                         <form>
                             <div className="d-block">
                                 <div className="border-0 ql-container ql-snow" style={{ height: 'auto' }}>
-                                    <div className="ql-editor ql-blank px-8">
-                                        <InputGray
-                                            withtaglabel={0}
-                                            withtextlabel={0}
-                                            withplaceholder={1}
-                                            withicon={0}
-                                            withformgroup={0}
-                                            placeholder="COMENTARIO"
-                                            name="comentario"
-                                            value={form.comentario}
-                                            onChange={onChange}
-                                            rows={3}
-                                            as='textarea'
-                                            customclass='text-area-white'
-                                        />
+                                    <div className="ql-blank px-8 py-5">
+                                        <MentionsInput  value = { form.comentario }  onChange={this.handleChange}  placeholder = 'COMENTARIO'
+                                            className="mentions-white"  rows = '3' spellCheck = { false }>
+                                            <Mention trigger = "@" data = { mentions.users }  className={classNames.mentions__mention} 
+                                                renderSuggestion = { ( suggestion, search, highlightedDisplay, index, focused ) => (
+                                                    <div className={`user ${focused ? 'focused' : ''}`}>
+                                                        {highlightedDisplay}
+                                                    </div> ) } />
+                                            <Mention markup = "@[__display__](#:__id__)" trigger = "#" data = { mentions.proyectos } /* className={classNames.mentions__mention}  */
+                                                style = {{ color: 'red'}}
+                                                renderSuggestion = { ( suggestion, search, highlightedDisplay, index, focused ) => (
+                                                    <div className={`user ${focused ? 'focused' : ''}`}>
+                                                        {highlightedDisplay}
+                                                    </div>
+                                                ) } />
+                                        </MentionsInput>
                                     </div>
                                 </div>
                             </div>
                             <div className="d-flex align-items-center justify-content-between py-5 pl-8 pr-5 border-top">
                                 <div className="d-flex align-items-center mr-3">
-                                    <div className="btn-group mr-4">
+                                    <div className="btn-group mr-4" onClick = { onSubmit } >
                                         <span className="btn btn-primary font-weight-bold px-6">Enviar</span>
                                     </div>
                                     <span>
