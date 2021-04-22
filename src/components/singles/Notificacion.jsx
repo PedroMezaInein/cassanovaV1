@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../functions/routers"
 import { AudioApp } from '../singles'
-
+import { Construir, Tarea, Lead, Cuestionario, Portapapeles, Ticket, Vacaciones, Solicitud, Cancel } from '../../assets/images/notification'
 class Notificacion extends Component {
 
     state = {
@@ -28,23 +28,23 @@ class Notificacion extends Component {
         /* return toAbsoluteUrl('/images/png/icon.png'); */
         switch(tipo){
             case 'lead':
-                return toAbsoluteUrl('/images/svg/notificaciones/lead.svg');
+                return Lead // toAbsoluteUrl('/images/svg/notificaciones/lead.svg');
             case 'tarea':
-                return toAbsoluteUrl('/images/svg/notificaciones/tarea.svg');
+                return Tarea /* toAbsoluteUrl('/images/svg/notificaciones/tarea.svg'); */
             case 'ticket':
-                return toAbsoluteUrl('/images/svg/notificaciones/ticket.svg');
+                return Ticket // toAbsoluteUrl('/images/svg/notificaciones/ticket.svg');
             case 'vacaciones':
-                return toAbsoluteUrl('/images/svg/notificaciones/vacaciones.svg');
+                return Vacaciones // toAbsoluteUrl('/images/svg/notificaciones/vacaciones.svg');
             case 'solicitud vacaciones':
-                return toAbsoluteUrl('/images/svg/notificaciones/solicitud-vacaciones.svg');
+                return Solicitud //toAbsoluteUrl('/images/svg/notificaciones/solicitud-vacaciones.svg');
             case 'cuestionario':
-                return toAbsoluteUrl('/images/svg/notificaciones/qa.svg');
+                return Cuestionario //toAbsoluteUrl('/images/svg/notificaciones/qa.svg');
             case 'cancel':
-                return toAbsoluteUrl('/images/svg/notificaciones/cancelar.svg');
+                return Cancel // toAbsoluteUrl('/images/svg/notificaciones/cancelar.svg');
             case 'proyecto':
-                return toAbsoluteUrl('/images/svg/notificaciones/construir.svg');
+                return Construir // toAbsoluteUrl('/images/svg/notificaciones/construir.svg');
             default:
-                return toAbsoluteUrl('/images/svg/portapapeles.svg');
+                return Portapapeles // toAbsoluteUrl('/images/svg/portapapeles.svg');
         }
     }
 
