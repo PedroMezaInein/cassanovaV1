@@ -182,7 +182,6 @@ class Tareas extends Component {
         const { form, etiquetas } = this.state
         waitAlert()
         let aux = ''
-        console.log(etiquetas, 'etiquetas get tasks')
         etiquetas.map((element, index) => {
             aux = aux + '&etiquetas[]='+element.id
         })
@@ -298,7 +297,6 @@ class Tareas extends Component {
         let { etiquetas, pagination } = this.state
         let aux = []
         etiquetas.forEach((element) => {
-            console.log(element, etiqueta)
             if(element.id !== etiqueta.id)
                 aux.push(element)
         })
