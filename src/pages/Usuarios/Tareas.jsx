@@ -5,7 +5,7 @@ import Swal from 'sweetalert2'
 import moment from 'moment'
 import { URL_DEV } from '../../constants'
 import { connect } from 'react-redux'
-import { Tags, ListPanel, Task, AddTaskForm} from '../../components/forms'
+import { Tags, ListPanel, Task, AddTaskForm, NewTag} from '../../components/forms'
 import { Modal } from '../../components/singles'
 import { doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../functions/alert'
 import { setSingleHeader } from '../../functions/routers'
@@ -13,6 +13,7 @@ class Tareas extends Component {
 
     state = {
         modal_tarea: false,
+        modal_addTag: false,
         form: {
             titulo: '',
             descripcion: '',
@@ -169,7 +170,6 @@ class Tareas extends Component {
                     modal_tarea: false
                 })
                 doneAlert('Fue editado con éxito');
-                this.getLeadsWeb()
             },
             (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -459,18 +459,37 @@ class Tareas extends Component {
         this.setState({
             ...this.state,
             modal_tarea: false,
-            lead: ''
         })
     }
+    openModalAddTag = () => {
+        this.setState({
+            ...this.state,
+            modal_addTag: true,
+            form: this.clearForm(),
+            title: 'AGREGAR NUEVO TAG'
+        })
+    }
+    handleCloseModalAddTag = () => {
+        this.setState({
+            ...this.state,
+            modal_addTag: false,
+        })
+    }
+    tagShow = tag => {
+        console.log(tag)
+        if (tag === 'Nueva etiqueta') {
+            this.openModalAddTag()
+        }
+    }
     render() {
-        const { modal_tarea, form, options, showListPanel, showTask, tareas, pagination, tarea, title, etiquetas } = this.state
+        const { modal_tarea, form, options, showListPanel, showTask, tareas, pagination, tarea, title, etiquetas, modal_addTag, formeditado } = this.state
         const { user } = this.props.authUser
         return (
             <Layout active='usuarios' {...this.props}>
                 <div className="d-flex flex-row">
                     <div className="flex-row-fluid ">
                         <div className="d-flex flex-column flex-grow-1 ">
-                            <Tags etiquetas = { etiquetas } removeTag = { this.removeTag } options = { options }/>
+                            <Tags etiquetas = { etiquetas } removeTag = { this.removeTag } options = { options } tagShow={this.tagShow}/>
                             <div className="row">
                                 <ListPanel openModal = { this.openModal } options = { options } onChange = { this.onChange } form = { form }
                                     mostrarTarea = { this.mostrarTarea } showListPanel = { showListPanel } tareas = { tareas } 
@@ -487,6 +506,12 @@ class Tareas extends Component {
                 <Modal size="xl" title={title} show={modal_tarea} handleClose={this.handleCloseModal}>
                     <AddTaskForm onSubmit = { this.onSubmit } form = { form } options = { options } onChange = { this.onChange }
                         handleChangeCreate = { this.handleChangeCreate } handleCreateOption = { this.handleCreateOption } sendTag = { this.sendTagAxios } />
+                </Modal>
+                <Modal title={title} show={modal_addTag} handleClose={this.handleCloseModalAddTag}>
+                    <NewTag 
+                        form = { form } onChange = { this.onChange } formeditado = { formeditado } sendTag = { this.sendTag } 
+                        closeCard = { this.closeCard }
+                    />
                 </Modal>
             </Layout>
         )
