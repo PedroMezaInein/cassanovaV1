@@ -26,7 +26,6 @@ class Task extends Component {
                                         <div className="d-flex align-items-center py-1">
                                             {
                                                 tarea.etiquetas.map((etiqueta) => {
-                                                    console.log(etiqueta)
                                                     return(
                                                         <span key = { etiqueta.id } className="d-flex align-items-center mr-2 font-weight-bold cursor-pointer">
                                                             <span className="fa fa-genderless icon-md mr-2" style={{ color: etiqueta.color }}/>
