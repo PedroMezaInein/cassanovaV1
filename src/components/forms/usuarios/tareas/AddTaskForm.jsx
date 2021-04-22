@@ -4,12 +4,24 @@ import { CalendarDay } from '../../../form-components'
 import { SelectCreateGray, TagSelectSearchGray, InputGray, Button, CircleColor} from '../../../form-components'
 import { COLORS } from '../../../../constants'
 class AddTaskForm extends Component {
+
     state = {
-        color: ''
+        color: '',
+        newTag: false
     }
+
     updateResponsable = value => {
         const { onChange } = this.props
         onChange({target: { value: value, name: 'responsables'}}, true)
+    }
+
+    updateTag = valor => {
+        const { onChange } = this.props
+        const { value } = valor[0]
+        if(value === 'nueva_etiqueta')
+            this.setState({...this.state, newTag: true })
+        else
+            onChange({target: { value: value, name: 'tags'}}, true)
     }
 
     handleChangeColor = (color) => {
@@ -23,6 +35,7 @@ class AddTaskForm extends Component {
 
     render() {
         const { form, tarea, onChange, formeditado, options, handleCreateOption, handleChangeCreate, onSubmit, ...props } = this.props
+        const { newTag } = this.state
         return (
             <Form {...props}>
                 <div className="row mx-0">
@@ -56,10 +69,12 @@ class AddTaskForm extends Component {
                                     onChange = {(e) => { e.preventDefault(); onChange(e, false) } } />
                             </div>
                             <div className="col-md-12 px-0 mb-3">
-                                <SelectCreateGray placeholder = "SELECCIONA EL TAG" iconclass = "flaticon2-tag"
-                                    requirevalidation = { 0 } messageinc = "Incorrecto. Selecciona/agrega el rol."
+                                {/* <TagSelectSearchGray placeholder = "SELECCIONA EL TAG" iconclass = "flaticon2-tag"
+                                    requirevalidation = { 0 } messageinc = "Incorrecto. Selecciona/agrega el tag."
                                     onChange = { handleChangeCreate } onCreateOption = { handleCreateOption }
-                                    elementoactual = { form.tipoTarget } options = { options.tipos }/>
+                                    elementoactual = { form.tipoTarget } options = { options.tipos }/> */}
+                                <TagSelectSearchGray placeholder = 'Selecciona el tag' options = { options.tags } 
+                                    iconclass = 'flaticon2-tag icon-xl' defaultvalue = { form.tags } onChange = { this.updateTag } />
                             </div>
                             {
                                 form.mostrarColor ?

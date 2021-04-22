@@ -17,6 +17,7 @@ class Tareas extends Component {
             descripcion: '',
             fecha_entrega: null,
             responsables: [],
+            tags: [],
             comentario: '',
             tipo: '',
             tipoTarget: {taget: '', value: ''},
@@ -33,7 +34,7 @@ class Tareas extends Component {
         },
         options: {
             responsables: [],
-            tipos: [],
+            tags: [],
             filtrarTareas: [
                 { text: "Tareas personales", value: "own" },
                 { text: "Tareas generales", value: "all" },
@@ -180,12 +181,13 @@ class Tareas extends Component {
     getOptionsAxios = async() => {
         const { access_token } = this.props.authUser
         waitAlert()
-        await axios.get(`${URL_DEV}v2/usuarios/tareas/tareas/options`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.options(`${URL_DEV}v3/usuarios/tareas`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 Swal.close()
-                const { usuarios } = response.data
+                const { usuarios, etiquetas } = response.data
                 const { options } = this.state
                 options.responsables = []
+                options.tags = [ { label: 'Nueva etiqueta', value: 'nueva_etiqueta', name: 'Nueva etiqueta'} ]
                 usuarios.forEach( ( element ) => {
                     options.responsables.push({
                         name: element.name,
@@ -193,6 +195,13 @@ class Tareas extends Component {
                         label: element.name
                     })
                 });
+                etiquetas.forEach( (element) => {
+                    options.tags.push({
+                        name: element.titulo,
+                        value: element.id.toString(),
+                        label: element.titulo
+                    })
+                })
                 this.setState({...this.state, options})
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
