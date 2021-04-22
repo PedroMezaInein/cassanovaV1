@@ -233,7 +233,8 @@ class Tareas extends Component {
                     options.tags.push({
                         name: element.titulo,
                         value: element.id.toString(),
-                        label: element.titulo
+                        label: element.titulo,
+                        color:element.color
                     })
                 })
                 this.setState({...this.state, options})
@@ -258,7 +259,8 @@ class Tareas extends Component {
                     options.tags.push({
                         name: element.titulo,
                         value: element.id.toString(),
-                        label: element.titulo
+                        label: element.titulo,
+                        color:element.color
                     })
                 })
                 form.nuevo_tag = ''
@@ -432,7 +434,7 @@ class Tareas extends Component {
                 <div className="d-flex flex-row">
                     <div className="flex-row-fluid ">
                         <div className="d-flex flex-column flex-grow-1 ">
-                            <Tags />
+                            <Tags options = { options }/>
                             <div className="row">
                                 <ListPanel openModal = { this.openModal } options = { options } onChange = { this.onChange } form = { form }
                                     mostrarTarea = { this.mostrarTarea } showListPanel = { showListPanel } tareas = { tareas } 
