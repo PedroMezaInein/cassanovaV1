@@ -26,7 +26,7 @@ class Task extends Component {
                                             {
                                                 tarea.etiquetas.map((etiqueta) => {
                                                     return(
-                                                        <span key = { etiqueta.id } className="d-flex align-items-center text-muted text-hover-info mr-2 font-weight-bold">
+                                                        <span className="d-flex align-items-center mr-2 font-weight-bold text-hover text-muted" key = { etiqueta.id } >
                                                             <span className="fa fa-genderless icon-md mr-2" style = {{ color: etiqueta.color }}/>
                                                             {etiqueta.titulo}
                                                         </span>

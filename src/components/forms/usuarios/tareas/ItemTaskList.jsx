@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { printDate } from '../../../../functions/printers'
 import { OverlayTrigger, Tooltip } from 'react-bootstrap'
+
 class ItemTaskList extends Component {
 
     isImportant = (tarea) => {
@@ -78,7 +79,7 @@ class ItemTaskList extends Component {
     }
     
     render() {
-        const { mostrarTarea, tareas, updateFav } = this.props
+        const { mostrarTarea, tareas, updateFav, addLabel } = this.props
         return (
             <>
                 {
@@ -97,7 +98,18 @@ class ItemTaskList extends Component {
                                 </td>
                                 <td className="white-space-nowrap">
                                     <div className="text-right">
-                                        <span className="label label-light-danger font-weight-bold label-inline">URGENTE</span>
+                                        {
+                                            tarea.etiquetas.map((etiqueta) => {
+                                                return(
+                                                    <span key = { etiqueta.id} style = { { backgroundColor: etiqueta.color, color: 'white'}}
+                                                        className="label font-weight-bold label-inline ml-2 text-hover"
+                                                        onClick = { (e) => { addLabel(etiqueta) } } >
+                                                        {etiqueta.titulo}
+                                                    </span>
+                                                )
+                                            })
+                                        }
+                                        
                                         <span className="mx-3">
                                             <div className="btn btn-icon btn-xs btn-hover-text-warning active">
                                                 <i className="flaticon-add-label-button text-muted"></i>
