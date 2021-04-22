@@ -2095,3 +2095,7 @@ span.font-weight-bolder.text-hover-error:hover{
         color: #9d9da5!important;
     }
 }
+
+input[type="file"]#file-upload {
+    display: none!important;
+}
