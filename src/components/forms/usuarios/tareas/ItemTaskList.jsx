@@ -1,41 +1,121 @@
 import React, { Component } from 'react'
-
+import { printDate } from '../../../../functions/printers'
+import { OverlayTrigger, Tooltip } from 'react-bootstrap'
 class ItemTaskList extends Component {
 
-    render() {
-        const { mostrarTarea } = this.props
-        return (
-            <div>
-                <div className="row mx-0 col-md-12 px-0">
-                    <div className="col align-self-center px-1">
-                        <div className="d-flex align-items-center">
-                            <div className="symbol symbol-30 mr-3 symbol-light">
-                                <span className="symbol-label font-size-lg">CJ</span>
-                            </div>
-                            <div>
-                                <span className="text-dark-75 font-weight-bolder text-hover-primary mb-1 font-size-lg cursor-pointer" onClick={() => { mostrarTarea() }} >
-                                    PROPUESTA DE DISEÑO MÓDULO DE MERCADOTECNIA
-                                </span>
-                            </div>
+    isImportant = (tarea) => {
+        if(tarea.prioritario)
+            return 'text-warning'
+        return 'text-muted'    
+    }
+
+    isOwner = (tarea) => {
+        const { user } = this.props
+        let flag = ''
+        if(tarea)
+            if(tarea.responsables)
+                flag = tarea.responsables.find( (elemento) => {
+                    return elemento.id === user.id
+                })
+        if(flag)
+            return true
+        return false
+    }
+
+    responsablesSymbol = (responsables) => {
+        if(responsables.length > 3){
+            let obtenerTresR = responsables.slice(0, 3);
+            let obtenerRestantes = responsables.slice(3, responsables.length);
+            return(
+                <div className="symbol-group symbol-hover justify-content-center">
+                    {
+                        obtenerTresR.map((responsable, key) => {
+                            return (
+                                <OverlayTrigger key={key} overlay={<Tooltip>{responsable.name}</Tooltip>}>
+                                    <div className="symbol symbol-25 symbol-circle border-1">
+                                        <img alt='user-avatar' src={responsable.avatar ? responsable.avatar : "/default.jpg"} />
+                                    </div>
+                                </OverlayTrigger>
+                            )
+                        })
+                    }
+                    <OverlayTrigger overlay={
+                        <Tooltip>
+                            {
+                                obtenerRestantes.map((responsable, key) => {
+                                    return (
+                                        <div className="text-left" key={key}>
+                                            • {responsable.name}
+                                        </div>
+                                    )
+                                })
+                            }
+                        </Tooltip>
+                    }>
+                        <div className="symbol symbol-25 symbol-circle border-1 symbol-light-primary">
+                            <span className="symbol-label font-weight-bolder">{obtenerRestantes.length}+</span>
                         </div>
-                    </div>
-                    <div className="col-md-auto px-1 align-self-center">
-                        <div className="d-flex align-items-center justify-content-end flex-wrap">
-                            <span className="label label-light-danger font-weight-bold label-inline">URGENTE</span>
-                            <span className="mx-3">
-                                <div className="btn btn-icon btn-xs text-hover-warning">
-                                    <i className="flaticon-star text-muted"></i>
-                                </div>
-                                <div className="btn btn-icon btn-xs btn-hover-text-warning active">
-                                    <i className="flaticon-add-label-button text-muted"></i>
-                                </div>
-                            </span>
-                            <div className="font-weight-bold text-muted">15 ABRIL</div>
-                        </div>
-                    </div>
+                    </OverlayTrigger>
                 </div>
-                <div className="separator separator-solid my-4"></div>
-            </div>
+            )
+        }else{
+            return(
+                <div className="symbol-group symbol-hover justify-content-center">
+                    {
+                        responsables.map((responsable, key) => {
+                            return (
+                                <OverlayTrigger key={key} overlay={<Tooltip>{responsable.name}</Tooltip>}>
+                                    <div className="symbol symbol-25 symbol-circle border-1">
+                                        <img alt='user-avatar' src={responsable.avatar ? responsable.avatar : "/default.jpg"} />
+                                    </div>
+                                </OverlayTrigger>
+                            )
+                        }) 
+                    }
+                </div>
+            )
+        }
+    }
+    
+    render() {
+        const { mostrarTarea, tareas, updateFav } = this.props
+        return (
+            <>
+                {
+                    tareas.map((tarea, key) => {
+                        return(
+                            <tr key = { key } style={{borderBottom:'1px solid #ebedf3'}}>
+                                <td>
+                                    {this.responsablesSymbol(tarea.responsables)}
+                                </td>
+                                <td className="white-space-nowrap text-hover" onClick={() => { mostrarTarea(tarea) }}>
+                                    <div>
+                                        <span className="text-dark-75 font-weight-bolder mb-1 font-size-lg cursor-pointer">
+                                            {tarea.titulo}
+                                        </span>
+                                    </div>
+                                </td>
+                                <td className="white-space-nowrap">
+                                    <div className="text-right">
+                                        <span className="label label-light-danger font-weight-bold label-inline">URGENTE</span>
+                                        <span className="mx-3">
+                                            <div className="btn btn-icon btn-xs btn-hover-text-warning active">
+                                                <i className="flaticon-add-label-button text-muted"></i>
+                                            </div>
+                                            <div onClick = { (e) => {e.preventDefault(); updateFav(tarea)} } className={`btn btn-icon btn-xs text-hover-warning`}>
+                                                <i className={`flaticon-star ${this.isImportant(tarea)}`}></i>
+                                            </div>
+                                        </span>
+                                        <span className="font-weight-bold text-muted">
+                                            { printDate(tarea.fecha_limite) }
+                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                        )
+                    })
+                }
+            </>
         )
     }
 }

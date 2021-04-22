@@ -106,3 +106,9 @@ export function printSwalHeader(tipo){
             return ''
     }
 }
+
+export const printDate = (date) => {
+    let fecha = moment(date)
+    let meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
+    return fecha.format('D') + ' ' + meses[parseInt(fecha.format('M'))] + ' ' + fecha.format('YYYY');
+}

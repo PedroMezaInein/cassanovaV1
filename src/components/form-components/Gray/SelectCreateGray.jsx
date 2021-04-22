@@ -80,7 +80,7 @@ class SelectCreateGray extends Component {
         }
         return (
             <div>
-                <label className="col-form-label">{placeholder}</label>
+                <label className="col-form-label font-weight-bold text-dark-60">{placeholder}</label>
                 <div className="input-icon">
                     <span className="input-icon input-icon-right">
                         <i className={iconclass + " m-0 kt-font-boldest text-dark-50 zindex-2"} ></i>
