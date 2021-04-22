@@ -28,6 +28,16 @@ const setSingleHeader = (access_token) => {
 
 }
 
-export { setSingleHeader }
+const setFormHeader = (access_token) => {
+    return{
+        Authorization: `Bearer ${access_token}`,
+        'Access-Control-Allow-Origin' : '*',
+        'Access-Control-Allow-Methods' : 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
+        'Content-Type': 'multipart/form-data'
+    }
+
+}
+
+export { setSingleHeader, setFormHeader }
 
 export const toAbsoluteUrl = pathname => process.env.PUBLIC_URL + pathname;
