@@ -357,7 +357,33 @@ td.concepto {
         color: #2171c1;
     }
 }
-
+//Inicio: Dropdown para: TAREAS TAG
+button#dropdown-button-tag{
+    border: transparent;
+    background-color: transparent;
+    height: auto;
+    width: auto;
+    padding: 0px!important;
+    padding-bottom: 1px;
+    
+}
+// @media (max-width: 767px) {
+//     .table-responsive .dropdown-menu {
+//         position: static !important;
+//     }
+// }
+@media (min-width: 768px) {
+    .table-responsive {
+        overflow: inherit;
+    }
+}
+span#down-tag{
+    .dropdown-menu{
+        padding: 0px!important;
+        max-height:250px!important;
+        overflow:auto!important;
+    }
+}
 //Inicio: Dropdown para: CRM
 #dropdown-button-drop-left-crm {
     color: #B5B5C3;

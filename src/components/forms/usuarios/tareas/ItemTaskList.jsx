@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { printDate } from '../../../../functions/printers'
-import { OverlayTrigger, Tooltip } from 'react-bootstrap'
+import { OverlayTrigger, Tooltip, Dropdown, DropdownButton } from 'react-bootstrap'
 
 class ItemTaskList extends Component {
 
@@ -86,7 +86,7 @@ class ItemTaskList extends Component {
     }
     
     render() {
-        const { mostrarTarea, tareas, updateFav, addLabel } = this.props
+        const { mostrarTarea, tareas, updateFav, addLabel, options, tagShow } = this.props
         return (
             <>
                 {
@@ -123,9 +123,37 @@ class ItemTaskList extends Component {
                                         }
                                         
                                         <span className="mx-3">
-                                            <div className="btn btn-icon btn-xs btn-hover-text-warning active">
-                                                <i className="flaticon-add-label-button text-muted"></i>
-                                            </div>
+                                            <span id="down-tag">
+                                                <DropdownButton
+                                                    title={
+                                                        <i className="flaticon-add-label-button text-muted p-0 font-size-14px"></i>
+                                                    }
+                                                    id={`dropdown-button-tag`}
+                                                    className="d-inline-block"
+                                                    drop={'left'}>
+                                                    {
+                                                            options.tags.map((tag, key) => {
+                                                                return (
+                                                                    <div key={key}>
+                                                                        <Dropdown.Item className="p-0" key={key} onClick={() => { tagShow(tag.name) }}>
+                                                                            <span className="navi-link w-100">
+                                                                                <span className="navi-text">
+                                                                                    <span className="label label-xl label-inline rounded-0 w-100 font-weight-bold"
+                                                                                        style={{
+                                                                                            color: `${tag.name ==='Nueva etiqueta' ? '#80808f' : 'white' }`,
+                                                                                            backgroundColor: tag.color ,
+                                                                                        }}>
+                                                                                        { tag.name }
+                                                                                    </span>
+                                                                                </span>
+                                                                            </span>
+                                                                        </Dropdown.Item>
+                                                                    </div>
+                                                                )
+                                                            })
+                                                        }
+                                                </DropdownButton>
+                                            </span>
                                             <div onClick={(e) => { e.preventDefault(); updateFav(tarea) }} className={`btn btn-icon btn-xs text-hover-warning`}>
                                                 <i className={`flaticon-star ${this.isImportant(tarea)}`}></i>
                                             </div>
