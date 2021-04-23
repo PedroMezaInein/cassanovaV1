@@ -36,7 +36,7 @@ class Task extends Component {
                 <div className={showTask ? 'col-xl-12 gutter-b' : 'd-none'}>
                     <div className="card card-custom card-stretch">
                     <div class="card-header border-0 pt-5">
-                            <div class="d-flex align-items-center">
+                            <div className="d-flex align-items-center">
                                 <span>
                                     <span className="btn btn-light btn-hover-secondary font-weight-bold p-3" onClick={() => { mostrarListPanel() }}>
                                         <i className="fas fa-arrow-left icon-md p-0"></i>
@@ -85,7 +85,7 @@ class Task extends Component {
                                                                                 </Dropdown.Item>
                                                                             </div>
                                                                         )
-                                                                    return <></>
+                                                                    return ''
                                                                 })
                                                             }
                                                         </DropdownButton>
@@ -130,7 +130,7 @@ class Task extends Component {
                                                 </span>
                                             )
                                         }
-                                        return <></>
+                                        return ''
                                     })
                                 }
                                 <span className="btn btn-light-success btn-sm text-uppercase font-weight-bolder text-hover" onClick={() => { completarTarea(tarea) }}>

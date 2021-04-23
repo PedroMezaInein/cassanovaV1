@@ -162,7 +162,7 @@ class ItemTaskList extends Component {
                                                                         </Dropdown.Item>
                                                                     </div>
                                                                 )
-                                                                return <></>
+                                                                return ''
                                                             })
                                                         }
                                                 </DropdownButton>
