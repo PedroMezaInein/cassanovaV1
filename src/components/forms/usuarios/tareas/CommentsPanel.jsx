@@ -33,7 +33,7 @@ class CommentsPanel extends Component {
                                                 {
                                                     comentario.adjunto &&
                                                         <div className="d-flex flex-column font-size-sm font-weight-bold ">
-                                                            <a href = { comentario.adjunto.url } target = '_blank' className="d-flex align-items-center text-muted text-hover-primary py-1 justify-content-flex-end">
+                                                            <a rel="noreferrer" href = { comentario.adjunto.url } target = '_blank' className="d-flex align-items-center text-muted text-hover-primary py-1 justify-content-flex-end">
                                                                 <span className="flaticon2-clip-symbol text-primary icon-1x mr-2"></span>
                                                                 {comentario.adjunto.name}
                                                             </a>

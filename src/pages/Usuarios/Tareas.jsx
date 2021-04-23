@@ -194,7 +194,7 @@ class Tareas extends Component {
         const { form, etiquetas } = this.state
         waitAlert()
         let aux = ''
-        etiquetas.map((element, index) => {
+        etiquetas.forEach((element, index) => {
             aux = aux + '&etiquetas[]='+element.id
         })
         await axios.get(`${URL_DEV}v3/usuarios/tareas?page=${pagination.page}&limit=${pagination.limit}${aux}&type=${form.filtrarTarea}`, { headers: setSingleHeader(access_token)}).then(
