@@ -11,7 +11,7 @@ class WriteComment extends Component {
     }
 
     render() {
-        const { form, onChange, clearFiles, mentions, onSubmit } = this.props
+        const { form, clearFiles, mentions, onSubmit } = this.props
         return (
             <div className="card-spacer-x pb-10 pt-5">
                 <div className="card card-custom shadow-sm">

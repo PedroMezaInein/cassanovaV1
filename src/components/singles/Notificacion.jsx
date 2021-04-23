@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../functions/routers"
-import { AudioApp } from '../singles'
 import { Construir, Tarea, Lead, Cuestionario, Portapapeles, Ticket, Vacaciones, Solicitud, Cancel, Money } from '../../assets/images/notification'
 class Notificacion extends Component {
 

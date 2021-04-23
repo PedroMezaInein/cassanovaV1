@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { diffCommentDate, replaceAll } from '../../functions/functions'
 import SVG from "react-inlinesvg"
 import { toAbsoluteUrl } from "../../functions/routers"
-import { indexOf } from 'lodash-es'
 
 class TimelineComments extends Component {
 
@@ -58,6 +57,7 @@ class TimelineComments extends Component {
                 case -1:
                     flag = 'none'
                     break
+                default: break;
             }
             if(flag !== 'none'){
                 prefix = flag === 'black' ? '___' : '***'
@@ -84,7 +84,7 @@ class TimelineComments extends Component {
             if(elemento.tipo === 'info'){
                 return(
                     <span className = 'font-weight-bolder text-info' key = { index }>
-                        <a href = {this.setLink(elemento.texto)} className = 'font-weight-bolder text-info' target = '_blank'>
+                        <a rel="noreferrer" href = {this.setLink(elemento.texto)} className = 'font-weight-bolder text-info' target = '_blank'>
                             {elemento.texto}
                         </a>
                     </span>
