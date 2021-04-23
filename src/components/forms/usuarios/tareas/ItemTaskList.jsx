@@ -86,6 +86,8 @@ class ItemTaskList extends Component {
     }
 
     isActiveTag = (tag, tarea) => {
+        if(tag.value ==='nueva_etiqueta')
+            return false
         let flag = tarea.etiquetas.find((etiqueta) => {
             return etiqueta.id.toString() === tag.value
         })
