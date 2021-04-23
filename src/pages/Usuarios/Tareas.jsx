@@ -594,12 +594,12 @@ class Tareas extends Component {
                                 <ListPanel openModal = { this.openModal } options = { options } onChange = { this.onChange } form = { form }
                                     mostrarTarea = { this.mostrarTarea } showListPanel = { showListPanel } tareas = { tareas } 
                                     user = { user } updateFav = { this.updateFavAxios } pagination = { pagination } prev = { this.prevPage }
-                                    next = { this.nextPage } addLabel = { this.addLabel } filterByName = { (e) => { e.preventDefault(); this.getTasks(pagination)}} 
+                                    next = { this.nextPage } addLabel = { this.addLabel } filterByName = { (e) => { this.getTasks(pagination)}} 
                                     updateTagInTask={this.updateTagInTask}/>
                                 <Task showTask={showTask} tarea = { tarea } mostrarListPanel = { () => { this.mostrarListPanel() } }
                                     completarTarea = { this.completarTareaAxios } updateFav = { this.updateFavAxios } form = { form }
                                     onChange = { this.onChange } clearFiles={this.clearFiles} mentions = { mentions } user = { user }
-                                    openModalEdit = { this.openModalEdit} onSubmit = { this.sendComentario } options = { options } tagShow={this.tagShow}/>
+                                    openModalEdit = { this.openModalEdit} onSubmit = { this.sendComentario } options = { options } updateTagInTask={this.updateTagInTask}/>
                             </div>
                         </div>
                     </div>

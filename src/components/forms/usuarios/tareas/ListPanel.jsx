@@ -42,6 +42,12 @@ class ListPanel extends Component {
             )
     }
 
+    clearNameFilter = () => {
+        const { filterByName, onChange } = this.props
+        onChange({target: {name: 'filtrarTareaNombre', value: ''}})
+        filterByName({target: {name: 'filtrarTareaNombre', value: null}})
+    }
+
     render() {
         const { openModal, onChange, form, options, mostrarTarea, showListPanel, tareas, user, updateFav, pagination, addLabel, filterByName, updateTagInTask } = this.props
         return (
@@ -70,7 +76,7 @@ class ListPanel extends Component {
                                     name='filtrarTareaNombre'
                                 />
                                 <InputGroup.Prepend>
-                                    <InputGroup.Text className="border-0" onClick={(e) => { console.log('ELIMINAR') }}>
+                                    <InputGroup.Text className="border-0 text-hover" onClick={(e) => { e.preventDefault(); this.clearNameFilter() }}>
                                         <i className="flaticon2-delete icon-sm text-muted"></i>
                                     </InputGroup.Text>
                                 </InputGroup.Prepend>

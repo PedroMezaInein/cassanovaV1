@@ -18,8 +18,19 @@ class Task extends Component {
         return textColor
     }
 
+    isActiveTag = (tag, tarea) => {
+        if(tag.value ==='nueva_etiqueta')
+            return false
+        let flag = tarea.etiquetas.find((etiqueta) => {
+            return etiqueta.id.toString() === tag.value
+        })
+        if(flag)
+            return false
+        return true
+    }
+
     render() {
-        const {showTask, mostrarListPanel, tarea, completarTarea, updateFav, form, onChange, clearFiles, openModalEdit, user, mentions, onSubmit, options, tagShow } = this.props
+        const {showTask, mostrarListPanel, tarea, completarTarea, updateFav, form, onChange, clearFiles, openModalEdit, user, mentions, onSubmit, options, updateTagInTask } = this.props
         if(tarea)
             return (
                 <div className={showTask ? 'col-xl-12 gutter-b' : 'd-none'}>
@@ -55,10 +66,11 @@ class Task extends Component {
                                                             className="d-inline-block"
                                                             drop={'left'}>
                                                             {
-                                                                    options.tags.map((tag, key) => {
+                                                                options.tags.map((tag, key) => {
+                                                                    if(this.isActiveTag(tag, tarea))
                                                                         return (
                                                                             <div key={key}>
-                                                                                <Dropdown.Item className="p-0" key={key} onClick={() => { tagShow(tag.name) }}>
+                                                                                <Dropdown.Item className="p-0" key={key} onClick={() => { updateTagInTask(tag, tarea) }}>
                                                                                     <span className="navi-link w-100">
                                                                                         <span className="navi-text">
                                                                                             <span className="label label-xl label-inline rounded-0 w-100 font-weight-bold"
@@ -73,8 +85,9 @@ class Task extends Component {
                                                                                 </Dropdown.Item>
                                                                             </div>
                                                                         )
-                                                                    })
-                                                                }
+                                                                    return <></>
+                                                                })
+                                                            }
                                                         </DropdownButton>
                                                     </span>
                                                 </div>
