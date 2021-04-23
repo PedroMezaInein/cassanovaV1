@@ -578,7 +578,7 @@ class Tareas extends Component {
                                 <Task showTask={showTask} tarea = { tarea } mostrarListPanel = { () => { this.mostrarListPanel() } }
                                     completarTarea = { this.completarTareaAxios } updateFav = { this.updateFavAxios } form = { form }
                                     onChange = { this.onChange } clearFiles={this.clearFiles} mentions = { mentions } user = { user }
-                                    openModalEdit = { this.openModalEdit} onSubmit = { this.sendComentario } />
+                                    openModalEdit = { this.openModalEdit} onSubmit = { this.sendComentario } options = { options } tagShow={this.tagShow}/>
                             </div>
                         </div>
                     </div>
