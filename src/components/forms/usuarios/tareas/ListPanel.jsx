@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { ItemTaskList } from '../../../../components/forms'
-import Form from 'react-bootstrap/Form'
+import { Form, InputGroup, FormControl } from 'react-bootstrap'
 class ListPanel extends Component {
 
     getPagination = () => {
@@ -42,13 +42,19 @@ class ListPanel extends Component {
             )
     }
 
+    clearNameFilter = () => {
+        const { filterByName, onChange } = this.props
+        onChange({target: {name: 'filtrarTareaNombre', value: ''}})
+        filterByName({target: {name: 'filtrarTareaNombre', value: null}})
+    }
+
     render() {
-        const { openModal, onChange, form, options, mostrarTarea, showListPanel, tareas, user, updateFav, pagination, addLabel } = this.props
+        const { openModal, onChange, form, options, mostrarTarea, showListPanel, tareas, user, updateFav, pagination, addLabel, filterByName, updateTagInTask } = this.props
         return (
             <div className={showListPanel ? 'col-xl-12 gutter-b' : 'd-none'}>
                 <div className="card card-custom card-stretch">
                     <div className="card-header p-6 border-0">
-                        <div>
+                        <div className = 'd-flex'>
                             <Form.Control className="form-control text-uppercase form-control-solid"
                                 value={form.filtrarTarea} onChange={onChange} name='filtrarTarea' as="select">
                                 <option value={0}>Selecciona el filtrado</option>
@@ -60,14 +66,29 @@ class ListPanel extends Component {
                                     })
                                 }
                             </Form.Control>
+                            <InputGroup className="mb-3">
+                                <FormControl
+                                    className="form-control text-uppercase form-control-solid ml-2"
+                                    placeholder = 'NOMBRE DE LA TAREA'
+                                    value={form.filtrarTareaNombre}
+                                    onChange={onChange}
+                                    onBlur = { filterByName }
+                                    name='filtrarTareaNombre'
+                                />
+                                <InputGroup.Prepend>
+                                    <InputGroup.Text className="border-0 text-hover" onClick={(e) => { e.preventDefault(); this.clearNameFilter() }}>
+                                        <i className="flaticon2-delete icon-sm text-muted"></i>
+                                    </InputGroup.Text>
+                                </InputGroup.Prepend>
+                            </InputGroup>
                         </div>
                         <span className="btn btn-light-success btn-sm font-weight-bolder align-self-center" onClick={(e) => { openModal() }} >Nueva tarea</span>
                     </div>                   
                     <div className="card-body pt-2">
-                        <div className="table-responsive">
-                            <table className="table table-head-custom table-head-bg table-vertical-center table-hover" id="table-tareas">
+                        <div className="table-responsive" id="table-tareas">
+                            <table className="table table-head-custom table-head-bg table-vertical-center table-hover">
                                 <tbody>
-                                    <ItemTaskList addLabel = { addLabel } user = { user } tareas = { tareas } mostrarTarea={mostrarTarea} updateFav = { updateFav } />
+                                    <ItemTaskList addLabel = { addLabel } user = { user } tareas = { tareas } mostrarTarea={mostrarTarea} updateFav = { updateFav }  options = { options } updateTagInTask={updateTagInTask}/>
                                 </tbody>
                             </table>
                         </div>

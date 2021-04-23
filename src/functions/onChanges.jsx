@@ -1,5 +1,3 @@
-import React from 'react'
-
 export function onChangeAdjunto(e, form) {
     const { files, value, name } = e.target
     let aux = []

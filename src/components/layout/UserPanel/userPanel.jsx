@@ -8,14 +8,6 @@ import { toAbsoluteUrl } from "../../../functions/routers"
 import { setDateTableLG } from '../../../functions/setters'
 import { errorAlert, printResponseErrorAlert } from '../../../functions/alert'
 
-function closeButton(){  
-    if(document.getElementsByClassName("offcanvas")[0].classList.contains("offcanvas-on")){
-        document.getElementsByClassName("offcanvas")[0].classList.remove("offcanvas-on");
-	} else{
-        document.getElementsByClassName("offcanvas")[0].classList.add("offcanvas-on");
-    }
-}
-
 class UserPanel extends Component {
 
 	state ={
@@ -24,6 +16,18 @@ class UserPanel extends Component {
 		notificaciones: [],
 	}
 	componentDidMount(){ this.getNotificaciones() }
+    closeButton(){
+        if(document.getElementsByClassName("offcanvas")[0].classList.contains("offcanvas-on")){
+            document.getElementsByClassName("offcanvas")[0].classList.remove("offcanvas-on");
+        } else{
+            document.getElementsByClassName("offcanvas")[0].classList.add("offcanvas-on");
+        }
+        this.setState({
+            ...this.state,
+            showProfile: true,
+            showNotif: false
+        })
+    }
 	getNotificaciones = async() => {
         const { access_token } = this.props.authUser
         await axios.get(URL_DEV + 'notificaciones/all', { headers: { Authorization: `Bearer ${access_token}` } }).then(
@@ -100,7 +104,7 @@ class UserPanel extends Component {
 							<button className={`btn btn-xs btn-icon btn-light btn-hover-primary mr-2 ${showNotif ? '' : 'd-none'}`} onClick={() => { this.mostrarPerfil() }} >
 								<i className="flaticon2-left-arrow-1 icon-sm text-muted"></i>
 							</button>
-							<button className="btn btn-xs btn-icon btn-light btn-hover-danger" onClick = { () => { closeButton() } } >
+							<button className="btn btn-xs btn-icon btn-light btn-hover-danger" onClick = { () => { this.closeButton() } } >
 								<i className="flaticon2-delete icon-xs text-muted"></i>
 							</button>
 						</div>

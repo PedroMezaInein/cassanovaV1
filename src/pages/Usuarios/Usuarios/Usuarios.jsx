@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Layout from '../../../components/layout/layout'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import { URL_DEV, USUARIOS, CLIENTES, PUSHER_OBJECT } from '../../../constants'
+import { URL_DEV, USUARIOS, CLIENTES } from '../../../constants'
 import { Modal, ModalDelete } from '../../../components/singles'
 import { RegisterUserForm, PermisosForm } from '../../../components/forms'
 import Swal from 'sweetalert2'
@@ -16,7 +16,6 @@ import { Tabs, Tab } from 'react-bootstrap'
 import { UsuarioCard } from '../../../components/cards'
 import { Update } from '../../../components/Lottie'
 import { InputGray } from '../../../components/form-components'
-import Echo from 'laravel-echo';
 import { setSingleHeader } from '../../../functions/routers'
 const $ = require('jquery');
 

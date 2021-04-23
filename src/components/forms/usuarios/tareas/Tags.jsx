@@ -41,7 +41,7 @@ class Tags extends Component {
                                 options.tags.map((tag, key) => {
                                     return (
                                         <div key={key}>
-                                            <Dropdown.Item className="p-0" key={key} onClick={() => { tagShow(tag.name) }}>
+                                            <Dropdown.Item className="p-0" key={key} onClick={() => { tagShow(tag) }}>
                                                 <span className="navi-link w-100">
                                                     <span className="navi-text">
                                                         <span className="label label-xl label-inline rounded-0 w-100 font-weight-bold"

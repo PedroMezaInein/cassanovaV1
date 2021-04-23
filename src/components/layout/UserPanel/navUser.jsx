@@ -45,7 +45,7 @@ class NavUser extends Component{
 										</div>
 									</div>
 								</a>
-								<a onClick={mostrarNotificaciones}  className="navi-item mb-2">
+								<span onClick={mostrarNotificaciones}  className="navi-item mb-2">
 									<div className="navi-link btn btn-clean py-1">
 										<div className="symbol symbol-40 bg-light mr-3">
 											<div className="symbol-label">
@@ -57,7 +57,7 @@ class NavUser extends Component{
 											<div className="text-muted font-weight-light">Mis notificaciones</div>
 										</div>
 									</div>
-								</a>
+								</span>
 							</>
 						: ''
 					}

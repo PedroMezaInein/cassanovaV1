@@ -165,6 +165,7 @@ export const printComentario = (texto, proyectos) => {
             case -1:
                 flag = 'none'
                 break
+            default: break;
         }
         if(flag !== 'none'){
             prefix = flag === 'black' ? '___' : '***'
@@ -191,7 +192,7 @@ export const printComentario = (texto, proyectos) => {
         if(elemento.tipo === 'info'){
             return(
                 <span className = 'font-weight-bolder text-info' key = { index }>
-                    <a href = {setLink(elemento.texto, proyectos)} className = 'font-weight-bolder text-info' target = '_blank'>
+                    <a rel="noreferrer" href = {setLink(elemento.texto, proyectos)} className = 'font-weight-bolder text-info' target = '_blank'>
                         {elemento.texto}
                     </a>
                 </span>
