@@ -43,7 +43,7 @@ class ListPanel extends Component {
     }
 
     render() {
-        const { openModal, onChange, form, options, mostrarTarea, showListPanel, tareas, user, updateFav, pagination, addLabel, filterByName, tagShow } = this.props
+        const { openModal, onChange, form, options, mostrarTarea, showListPanel, tareas, user, updateFav, pagination, addLabel, filterByName, updateTagInTask } = this.props
         return (
             <div className={showListPanel ? 'col-xl-12 gutter-b' : 'd-none'}>
                 <div className="card card-custom card-stretch">
@@ -70,7 +70,7 @@ class ListPanel extends Component {
                         <div className="table-responsive" id="table-tareas">
                             <table className="table table-head-custom table-head-bg table-vertical-center table-hover">
                                 <tbody>
-                                    <ItemTaskList addLabel = { addLabel } user = { user } tareas = { tareas } mostrarTarea={mostrarTarea} updateFav = { updateFav }  options = { options } tagShow={tagShow}/>
+                                    <ItemTaskList addLabel = { addLabel } user = { user } tareas = { tareas } mostrarTarea={mostrarTarea} updateFav = { updateFav }  options = { options } updateTagInTask={updateTagInTask}/>
                                 </tbody>
                             </table>
                         </div>

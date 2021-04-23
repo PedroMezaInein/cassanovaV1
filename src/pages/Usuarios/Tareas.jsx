@@ -231,6 +231,8 @@ class Tareas extends Component {
                 Swal.close()
                 const { tareas, num } = response.data
                 pagination.numTotal = num
+                if(pagination.page >= parseInt(num/pagination.limit))
+                    pagination.page = parseInt(num/pagination.limit) - 1
                 this.setState({ ...this.state, tareas, pagination })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -347,7 +349,25 @@ class Tareas extends Component {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
-        
+    }
+
+    updateTagInTask = async(tag, tarea, type) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.put(`${URL_DEV}v3/usuarios/tareas/${tarea.id}/tags?type=${type}`, { tag: tag.value }, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                const { showTask } = this.state
+                const { tarea } = response.data
+                if(showTask){
+                    this.setState({...this.state, tarea: tarea})
+                }
+                Swal.close();
+                doneAlert('Comentario agregao con éxito')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
     }
 
     addLabel = async(etiqueta) => {
@@ -574,7 +594,8 @@ class Tareas extends Component {
                                 <ListPanel openModal = { this.openModal } options = { options } onChange = { this.onChange } form = { form }
                                     mostrarTarea = { this.mostrarTarea } showListPanel = { showListPanel } tareas = { tareas } 
                                     user = { user } updateFav = { this.updateFavAxios } pagination = { pagination } prev = { this.prevPage }
-                                    next = { this.nextPage } addLabel = { this.addLabel } filterByName = { (e) => { e.preventDefault(); this.getTasks(pagination)}} tagShow={this.tagShow}/>
+                                    next = { this.nextPage } addLabel = { this.addLabel } filterByName = { (e) => { e.preventDefault(); this.getTasks(pagination)}} 
+                                    updateTagInTask={this.updateTagInTask}/>
                                 <Task showTask={showTask} tarea = { tarea } mostrarListPanel = { () => { this.mostrarListPanel() } }
                                     completarTarea = { this.completarTareaAxios } updateFav = { this.updateFavAxios } form = { form }
                                     onChange = { this.onChange } clearFiles={this.clearFiles} mentions = { mentions } user = { user }
