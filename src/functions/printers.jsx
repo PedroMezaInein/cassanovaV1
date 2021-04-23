@@ -111,7 +111,7 @@ export function printSwalHeader(tipo){
 export const printDate = (date) => {
     let fecha = moment(date)
     let meses = ['ENERO', 'FEBRERO', 'MARZO', 'ABRIL', 'MAYO', 'JUNIO', 'JULIO', 'AGOSTO', 'SEPTIEMBRE', 'OCTUBRE', 'NOVIEMBRE', 'DICIEMBRE']
-    return fecha.format('D') + ' ' + meses[parseInt(fecha.format('M'))] + ' ' + fecha.format('YYYY');
+    return fecha.format('D') + ' ' + meses[parseInt(fecha.format('M') - 1)] + ' ' + fecha.format('YYYY');
 }
 
 export const indexSubcadena = (cadena, prefixA, prefixB) => {
