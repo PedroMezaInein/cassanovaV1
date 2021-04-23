@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { ItemTaskList } from '../../../../components/forms'
-import Form from 'react-bootstrap/Form'
+import { Form, InputGroup, FormControl } from 'react-bootstrap'
 class ListPanel extends Component {
 
     getPagination = () => {
@@ -60,9 +60,21 @@ class ListPanel extends Component {
                                     })
                                 }
                             </Form.Control>
-                            <Form.Control className="form-control text-uppercase form-control-solid ml-2" placeholder = 'Nombre'
-                                value={form.filtrarTareaNombre} onChange={onChange} onBlur = { filterByName } name='filtrarTareaNombre'>
-                            </Form.Control>
+                            <InputGroup className="mb-3">
+                                <FormControl
+                                    className="form-control text-uppercase form-control-solid ml-2"
+                                    placeholder = 'NOMBRE DE LA TAREA'
+                                    value={form.filtrarTareaNombre}
+                                    onChange={onChange}
+                                    onBlur = { filterByName }
+                                    name='filtrarTareaNombre'
+                                />
+                                <InputGroup.Prepend>
+                                    <InputGroup.Text className="border-0" onClick={(e) => { console.log('ELIMINAR') }}>
+                                        <i className="flaticon2-delete icon-sm text-muted"></i>
+                                    </InputGroup.Text>
+                                </InputGroup.Prepend>
+                            </InputGroup>
                         </div>
                         <span className="btn btn-light-success btn-sm font-weight-bolder align-self-center" onClick={(e) => { openModal() }} >Nueva tarea</span>
                     </div>                   
