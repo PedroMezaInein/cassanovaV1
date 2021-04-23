@@ -58,6 +58,8 @@ class Tareas extends Component {
         mentions: {
             users: [],
             proyectos: []
+        }, data: {
+            tags: []
         }
     }
     componentDidMount() {
@@ -233,7 +235,7 @@ class Tareas extends Component {
             (response) => {
                 Swal.close()
                 const { usuarios, etiquetas, proyectos } = response.data
-                const { options, mentions } = this.state
+                const { options, mentions, data } = this.state
                 options.responsables = []
                 mentions.users = []
                 mentions.proyectos = []
@@ -253,9 +255,10 @@ class Tareas extends Component {
                         label: element.titulo,
                         color:element.color
                     })
+                    data.tags.push(element)
                 })
                 proyectos.forEach((element) => { mentions.proyectos.push({ id: element.id, display: this.setProyectoName(element.nombre), name: element.nombre }) })
-                this.setState({...this.state, options, mentions})
+                this.setState({...this.state, options, mentions, data})
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -271,7 +274,7 @@ class Tareas extends Component {
             (response) => {
                 Swal.close()
                 const { etiquetas, etiqueta } = response.data
-                const { options, form } = this.state
+                const { options, form, data } = this.state
                 options.tags = [ { label: ' + Nueva etiqueta', value: 'nueva_etiqueta', name: 'Nueva etiqueta'} ]
                 etiquetas.forEach( (element) => {
                     options.tags.push({
@@ -280,12 +283,13 @@ class Tareas extends Component {
                         label: element.titulo,
                         color:element.color
                     })
+                    data.tags.push(element)
                 })
                 form.nuevo_tag = ''
                 form.color = ''
                 if(etiqueta)
                     form.tags.push({value: etiqueta.id.toString(), name: etiqueta.titulo, label: etiqueta.titulo})
-                this.setState({...this.state, options, form})
+                this.setState({...this.state, data, options, form})
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -318,6 +322,7 @@ class Tareas extends Component {
     }
 
     addLabel = async(etiqueta) => {
+        console.log(etiqueta, 'ETIQUETA')
         const { etiquetas, pagination } = this.state
         let flag = true
         etiquetas.forEach((elemento) => {
@@ -514,8 +519,15 @@ class Tareas extends Component {
         })
     }
     tagShow = tag => {
-        if (tag === 'Nueva etiqueta') {
+        const { name } = tag
+        const { etiquetas, data } = this.state
+        if (name === 'Nueva etiqueta') {
             this.openModalAddTag()
+        }else{
+            let etiqueta = data.tags.find( function(elemento){
+                return elemento.id.toString() === tag.value
+            })
+            this.addLabel(etiqueta)
         }
     }
     render() {
