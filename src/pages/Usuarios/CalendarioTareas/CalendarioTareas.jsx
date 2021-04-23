@@ -47,7 +47,7 @@ class Calendario extends Component {
             return pathname === url
         });
         this.getCalendarioTareasAxios('own')
-        if(process.env.NODE_ENV === 'production'){
+        if(process.env.NODE_ENV === 'production' || true){
             const pusher = new Echo( PUSHER_OBJECT );
             pusher.channel('responsable-tarea').listen('ResponsableTarea', (data) => {
                 /* const { tarea } = data */
@@ -122,7 +122,7 @@ class Calendario extends Component {
     async getCalendarioTareasAxios(tipo) {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(`${URL_DEV}v2/usuarios/calendario-tareas/${tipo}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(`${URL_DEV}v3/usuarios/calendario-tareas/${tipo}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 Swal.close()
                 const { tareas } = response.data
