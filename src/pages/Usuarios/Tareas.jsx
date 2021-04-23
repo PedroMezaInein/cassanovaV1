@@ -3,12 +3,13 @@ import Layout from '../../components/layout/layout'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import moment from 'moment'
-import { URL_DEV, COLORS } from '../../constants'
+import { URL_DEV, COLORS, PUSHER_OBJECT } from '../../constants'
 import { connect } from 'react-redux'
 import { Tags, ListPanel, Task, AddTaskForm, TagColorForm} from '../../components/forms'
 import { Modal } from '../../components/singles'
 import { doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../functions/alert'
 import { setFormHeader, setSingleHeader } from '../../functions/routers'
+import Echo from 'laravel-echo'
 class Tareas extends Component {
 
     state = {
@@ -24,6 +25,7 @@ class Tareas extends Component {
             tipo: '',
             tipoTarget: {taget: '', value: ''},
             filtrarTarea: 'own',
+            filtrarTareaNombre: '',
             color: '',
             mostrarColor: false,
             adjuntos: {
@@ -75,6 +77,33 @@ class Tareas extends Component {
         this.getOptionsAxios()
         const { pagination } = this.state
         this.getTasks(pagination)
+        if(process.env.NODE_ENV === 'production' || true){
+            const pusher = new Echo( PUSHER_OBJECT );
+            pusher.channel('responsable-tarea').listen('ResponsableTarea', (data) => {
+                const { form, pagination, tarea, tareas, showTask } = this.state
+                const { user } = this.props.authUser
+                if(form.filtrarTarea === 'own'){
+                    let found = tareas.find((elemento) => {
+                        return elemento.id === data.tarea
+                    })
+                    if(found){
+                        this.getTasks(pagination)    
+                    }else{
+                        found = data.responsables.find((elemento) => {
+                            return elemento === user.id
+                        })
+                        if(found){
+                            this.getTasks(pagination)    
+                        }
+                    }
+                }else{
+                    this.getTasks(pagination)
+                }
+                if(tarea.id === data.tarea && showTask){
+                    this.mostrarTarea({id: data.tarea})
+                }
+            })
+        }
     }
 
     mostrarListPanel() {
@@ -197,7 +226,7 @@ class Tareas extends Component {
         etiquetas.forEach((element, index) => {
             aux = aux + '&etiquetas[]='+element.id
         })
-        await axios.get(`${URL_DEV}v3/usuarios/tareas?page=${pagination.page}&limit=${pagination.limit}${aux}&type=${form.filtrarTarea}`, { headers: setSingleHeader(access_token)}).then(
+        await axios.get(`${URL_DEV}v3/usuarios/tareas?nombre=${form.filtrarTareaNombre}&page=${pagination.page}&limit=${pagination.limit}${aux}&type=${form.filtrarTarea}`, { headers: setSingleHeader(access_token)}).then(
             (response) => {
                 Swal.close()
                 const { tareas, num } = response.data
@@ -393,6 +422,9 @@ class Tareas extends Component {
                         }
                     }
                     break;
+                case 'filtrarTarea':
+                    form[element] = form[element]
+                    break;
                 default:
                     form[element] = '';
                     break;
@@ -530,7 +562,7 @@ class Tareas extends Component {
         }
     }
     render() {
-        const { modal_tarea, form, options, showListPanel, showTask, tareas, pagination, tarea, title, etiquetas, modal_addTag, formeditado, mentions} = this.state
+        const { modal_tarea, form, options, showListPanel, showTask, tareas, pagination, tarea, title, etiquetas, modal_addTag, formeditado, mentions } = this.state
         const { user } = this.props.authUser
         return (
             <Layout active='usuarios' {...this.props}>
@@ -542,7 +574,7 @@ class Tareas extends Component {
                                 <ListPanel openModal = { this.openModal } options = { options } onChange = { this.onChange } form = { form }
                                     mostrarTarea = { this.mostrarTarea } showListPanel = { showListPanel } tareas = { tareas } 
                                     user = { user } updateFav = { this.updateFavAxios } pagination = { pagination } prev = { this.prevPage }
-                                    next = { this.nextPage } addLabel = { this.addLabel } />
+                                    next = { this.nextPage } addLabel = { this.addLabel } filterByName = { (e) => { e.preventDefault(); this.getTasks(pagination)}} />
                                 <Task showTask={showTask} tarea = { tarea } mostrarListPanel = { () => { this.mostrarListPanel() } }
                                     completarTarea = { this.completarTareaAxios } updateFav = { this.updateFavAxios } form = { form }
                                     onChange = { this.onChange } clearFiles={this.clearFiles} mentions = { mentions } user = { user }
