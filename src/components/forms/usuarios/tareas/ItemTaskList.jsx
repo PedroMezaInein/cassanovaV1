@@ -84,9 +84,18 @@ class ItemTaskList extends Component {
             )
         }
     }
+
+    isActiveTag = (tag, tarea) => {
+        let flag = tarea.etiquetas.find((etiqueta) => {
+            return etiqueta.id.toString() === tag.value
+        })
+        if(flag)
+            return false
+        return true
+    }
     
     render() {
-        const { mostrarTarea, tareas, updateFav, addLabel, options, tagShow } = this.props
+        const { mostrarTarea, tareas, updateFav, addLabel, options, updateTagInTask } = this.props
         return (
             <>
                 {
@@ -133,9 +142,10 @@ class ItemTaskList extends Component {
                                                     drop={'left'}>
                                                     {
                                                             options.tags.map((tag, key) => {
+                                                                if(this.isActiveTag(tag, tarea))
                                                                 return (
                                                                     <div key={key}>
-                                                                        <Dropdown.Item className="p-0" key={key} onClick={() => { tagShow(tag.name) }}>
+                                                                        <Dropdown.Item className="p-0" key={key} onClick={() => { updateTagInTask(tag, tarea, 'add') }}>
                                                                             <span className="navi-link w-100">
                                                                                 <span className="navi-text">
                                                                                     <span className="label label-xl label-inline rounded-0 w-100 font-weight-bold"
@@ -150,6 +160,7 @@ class ItemTaskList extends Component {
                                                                         </Dropdown.Item>
                                                                     </div>
                                                                 )
+                                                                return <></>
                                                             })
                                                         }
                                                 </DropdownButton>
