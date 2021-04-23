@@ -147,8 +147,6 @@ class Tareas extends Component {
                 Swal.close()
                 this.setState({ ...this.state, showTask: false, showListPanel: true, tarea: '' })
                 doneAlert('Tarea completada con éxito')
-                const { pagination } = this.state
-                /* this.getTasks(pagination) */
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -188,14 +186,12 @@ class Tareas extends Component {
         waitAlert()
         await axios.post(`${URL_DEV}v3/usuarios/tareas`, form, { headers: setSingleHeader(access_token)}).then(
             (response) => {
-                const { pagination } = this.state
                 this.setState({
                     ...this.state,
                     modal_tarea: false,
                     form: this.clearForm(),
                 })
                 doneAlert('Tarea generada con éxito')
-                /* this.getTasks(pagination) */
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -443,7 +439,6 @@ class Tareas extends Component {
                     }
                     break;
                 case 'filtrarTarea':
-                    form[element] = form[element]
                     break;
                 default:
                     form[element] = '';
