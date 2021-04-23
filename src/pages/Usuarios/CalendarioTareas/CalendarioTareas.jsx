@@ -36,7 +36,8 @@ class Calendario extends Component {
             },
             comentario: ''
         },
-        options:{ users: [] }
+        options:{ users: [] },
+        tareas: []
     };
 
     componentDidMount() {
@@ -50,11 +51,30 @@ class Calendario extends Component {
         if(process.env.NODE_ENV === 'production' || true){
             const pusher = new Echo( PUSHER_OBJECT );
             pusher.channel('responsable-tarea').listen('ResponsableTarea', (data) => {
+                const { tipo, tareas } = this.state
+                const { user } = this.props.authUser
+                if(tipo === 'own'){
+                    let found = tareas.find((elemento) => {
+                        return elemento.id === data.tarea
+                    })
+                    if(found){
+                        this.getCalendarioTareasAxios(tipo)
+                    }else{
+                        found = data.responsables.find((elemento) => {
+                            return elemento === user.id
+                        })
+                        if(found){
+                            this.getCalendarioTareasAxios(tipo)
+                        }
+                    }
+                }else{
+                    this.getCalendarioTareasAxios(tipo)
+                }
                 /* const { tarea } = data */
                 /* const { user } = this.props.authUser */
-                const { tipo } = this.state
+                /* const { tipo } = this.state */
                 /* let flag = false */
-                this.getCalendarioTareasAxios(tipo)
+                /* this.getCalendarioTareasAxios(tipo) */
                 /* if(tipo === 'own'){
                     if(tarea.responsables)
                         tarea.responsables.forEach((element) => {
@@ -128,7 +148,7 @@ class Calendario extends Component {
                 const { tareas } = response.data
                 let aux = []
                 tareas.forEach((tarea) => {  aux.push( { title: tarea.titulo, start: tarea.fecha_limite, end: tarea.fecha_limite, tarea: tarea } )  })
-                this.setState({ ...this.state, events: aux, tipo: tipo })
+                this.setState({ ...this.state, events: aux, tipo: tipo, tareas: tareas })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -237,13 +257,11 @@ class Calendario extends Component {
         const { access_token } = this.props.authUser
         const { form, tarea } = this.state
         const data = new FormData();
-        form.adjuntos.adjunto_comentario.files.map(( adjunto) => {
-            data.append(`files_name_adjunto[]`, adjunto.name)
-            data.append(`files_adjunto[]`, adjunto.file)
-            return ''
+        form.adjuntos.adjunto_comentario.files.forEach(( adjunto) => {
+            data.append(`files[]`, adjunto.file)
         })
         data.append(`comentario`, form.comentario)
-        await axios.post(`${URL_DEV}v2/usuarios/tareas/${tarea.id}/comentario`, data, { headers: {'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}v3/usuarios/tareas/${tarea.id}/comentario`, data, { headers: {'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert('Comentario agregado con éxito');
                 const { tarea } = response.data
