@@ -70,7 +70,7 @@ class Task extends Component {
                                                                     if(this.isActiveTag(tag, tarea))
                                                                         return (
                                                                             <div key={key}>
-                                                                                <Dropdown.Item className="p-0" key={key} onClick={() => { updateTagInTask(tag, tarea) }}>
+                                                                                <Dropdown.Item className="p-0" key={key} onClick={() => { updateTagInTask(tag, tarea, 'add') }}>
                                                                                     <span className="navi-link w-100">
                                                                                         <span className="navi-text">
                                                                                             <span className="label label-xl label-inline rounded-0 w-100 font-weight-bold"
@@ -100,7 +100,7 @@ class Task extends Component {
                                                                 <div className="d-table ml-1 cursor-pointer " id="tag-tagify" key={etiqueta.id} >
                                                                     <div className="tagify align-items-center border-0 d-inline-block">
                                                                         <div className="d-flex align-items-center tagify__tag tagify__tag__newtable px-3px border-radius-3px m-0 flex-row-reverse" style={{ backgroundColor: etiqueta.color, color: 'white!important' }}>
-                                                                            <div className="tagify__tag__removeBtn ml-0 px-0" style={{ color: 'white!important' }} onClick={(e) => { console.log('ETIQUETA', etiqueta) }}></div>
+                                                                            <div className="tagify__tag__removeBtn ml-0 px-0" style={{ color: 'white!important' }} onClick={() => { updateTagInTask({name: etiqueta.titulo, value: etiqueta.id.toString()}, tarea, 'remove') }}></div>
                                                                             <div className="p-2-5px">
                                                                                 <span className="tagify__tag-text white-space font-weight-bold letter-spacing-0-4 font-size-11px" style={{ backgroundColor: etiqueta.color, color: 'white' }}>
                                                                                     <div className="mt-2px">

@@ -148,7 +148,7 @@ class Tareas extends Component {
                 this.setState({ ...this.state, showTask: false, showListPanel: true, tarea: '' })
                 doneAlert('Tarea completada con éxito')
                 const { pagination } = this.state
-                this.getTasks(pagination)
+                /* this.getTasks(pagination) */
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -195,7 +195,7 @@ class Tareas extends Component {
                     form: this.clearForm(),
                 })
                 doneAlert('Tarea generada con éxito')
-                this.getTasks(pagination)
+                /* this.getTasks(pagination) */
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -250,8 +250,8 @@ class Tareas extends Component {
                 const { tarea } = response.data
                 Swal.close()
                 this.setState({...this.state, tarea: tarea})
-                const { pagination } = this.state
-                this.getTasks(pagination)
+                /* const { pagination } = this.state */
+                /* this.getTasks(pagination) */
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
