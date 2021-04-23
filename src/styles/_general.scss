@@ -2125,3 +2125,18 @@ span.font-weight-bolder.text-hover-error:hover{
 input[type="file"]#file-upload {
     display: none!important;
 }
+
+div#tag-tagify{
+    .tagify .tagify__tag .tagify__tag__removeBtn:after{
+        color: white !important;
+    }
+}
+.p-2-5px{
+    padding: 2.5px!important;
+}
+.mt-2px{
+    margin-top:1px!important;
+}
+.d-contents{
+    display: contents;
+}
