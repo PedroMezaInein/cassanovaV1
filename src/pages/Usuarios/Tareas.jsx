@@ -3,12 +3,13 @@ import Layout from '../../components/layout/layout'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import moment from 'moment'
-import { URL_DEV, COLORS } from '../../constants'
+import { URL_DEV, COLORS, PUSHER_OBJECT } from '../../constants'
 import { connect } from 'react-redux'
 import { Tags, ListPanel, Task, AddTaskForm, TagColorForm} from '../../components/forms'
 import { Modal } from '../../components/singles'
 import { doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../functions/alert'
 import { setFormHeader, setSingleHeader } from '../../functions/routers'
+import Echo from 'laravel-echo'
 class Tareas extends Component {
 
     state = {
@@ -24,6 +25,7 @@ class Tareas extends Component {
             tipo: '',
             tipoTarget: {taget: '', value: ''},
             filtrarTarea: 'own',
+            filtrarTareaNombre: '',
             color: '',
             mostrarColor: false,
             adjuntos: {
@@ -58,6 +60,8 @@ class Tareas extends Component {
         mentions: {
             users: [],
             proyectos: []
+        }, data: {
+            tags: []
         }
     }
     componentDidMount() {
@@ -73,6 +77,33 @@ class Tareas extends Component {
         this.getOptionsAxios()
         const { pagination } = this.state
         this.getTasks(pagination)
+        if(process.env.NODE_ENV === 'production' || true){
+            const pusher = new Echo( PUSHER_OBJECT );
+            pusher.channel('responsable-tarea').listen('ResponsableTarea', (data) => {
+                const { form, pagination, tarea, tareas, showTask } = this.state
+                const { user } = this.props.authUser
+                if(form.filtrarTarea === 'own'){
+                    let found = tareas.find((elemento) => {
+                        return elemento.id === data.tarea
+                    })
+                    if(found){
+                        this.getTasks(pagination)    
+                    }else{
+                        found = data.responsables.find((elemento) => {
+                            return elemento === user.id
+                        })
+                        if(found){
+                            this.getTasks(pagination)    
+                        }
+                    }
+                }else{
+                    this.getTasks(pagination)
+                }
+                if(tarea.id === data.tarea && showTask){
+                    this.mostrarTarea({id: data.tarea})
+                }
+            })
+        }
     }
 
     mostrarListPanel() {
@@ -192,10 +223,10 @@ class Tareas extends Component {
         const { form, etiquetas } = this.state
         waitAlert()
         let aux = ''
-        etiquetas.map((element, index) => {
+        etiquetas.forEach((element, index) => {
             aux = aux + '&etiquetas[]='+element.id
         })
-        await axios.get(`${URL_DEV}v3/usuarios/tareas?page=${pagination.page}&limit=${pagination.limit}${aux}&type=${form.filtrarTarea}`, { headers: setSingleHeader(access_token)}).then(
+        await axios.get(`${URL_DEV}v3/usuarios/tareas?nombre=${form.filtrarTareaNombre}&page=${pagination.page}&limit=${pagination.limit}${aux}&type=${form.filtrarTarea}`, { headers: setSingleHeader(access_token)}).then(
             (response) => {
                 Swal.close()
                 const { tareas, num } = response.data
@@ -233,7 +264,7 @@ class Tareas extends Component {
             (response) => {
                 Swal.close()
                 const { usuarios, etiquetas, proyectos } = response.data
-                const { options, mentions } = this.state
+                const { options, mentions, data } = this.state
                 options.responsables = []
                 mentions.users = []
                 mentions.proyectos = []
@@ -253,9 +284,10 @@ class Tareas extends Component {
                         label: element.titulo,
                         color:element.color
                     })
+                    data.tags.push(element)
                 })
                 proyectos.forEach((element) => { mentions.proyectos.push({ id: element.id, display: this.setProyectoName(element.nombre), name: element.nombre }) })
-                this.setState({...this.state, options, mentions})
+                this.setState({...this.state, options, mentions, data})
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -271,7 +303,7 @@ class Tareas extends Component {
             (response) => {
                 Swal.close()
                 const { etiquetas, etiqueta } = response.data
-                const { options, form } = this.state
+                const { options, form, data } = this.state
                 options.tags = [ { label: ' + Nueva etiqueta', value: 'nueva_etiqueta', name: 'Nueva etiqueta'} ]
                 etiquetas.forEach( (element) => {
                     options.tags.push({
@@ -280,12 +312,13 @@ class Tareas extends Component {
                         label: element.titulo,
                         color:element.color
                     })
+                    data.tags.push(element)
                 })
                 form.nuevo_tag = ''
                 form.color = ''
                 if(etiqueta)
                     form.tags.push({value: etiqueta.id.toString(), name: etiqueta.titulo, label: etiqueta.titulo})
-                this.setState({...this.state, options, form, modal_addTag: false})
+                this.setState({...this.state, data, options, form, modal_addTag: false})
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -388,6 +421,9 @@ class Tareas extends Component {
                             files: []
                         }
                     }
+                    break;
+                case 'filtrarTarea':
+                    form[element] = form[element]
                     break;
                 default:
                     form[element] = '';
@@ -514,12 +550,19 @@ class Tareas extends Component {
         })
     }
     tagShow = tag => {
-        if (tag === 'Nueva etiqueta') {
+        const { name } = tag
+        const { data } = this.state
+        if (name === 'Nueva etiqueta') {
             this.openModalAddTag()
+        }else{
+            let etiqueta = data.tags.find( function(elemento){
+                return elemento.id.toString() === tag.value
+            })
+            this.addLabel(etiqueta)
         }
     }
     render() {
-        const { modal_tarea, form, options, showListPanel, showTask, tareas, pagination, tarea, title, etiquetas, modal_addTag, formeditado, mentions} = this.state
+        const { modal_tarea, form, options, showListPanel, showTask, tareas, pagination, tarea, title, etiquetas, modal_addTag, formeditado, mentions } = this.state
         const { user } = this.props.authUser
         return (
             <Layout active='usuarios' {...this.props}>
@@ -531,7 +574,7 @@ class Tareas extends Component {
                                 <ListPanel openModal = { this.openModal } options = { options } onChange = { this.onChange } form = { form }
                                     mostrarTarea = { this.mostrarTarea } showListPanel = { showListPanel } tareas = { tareas } 
                                     user = { user } updateFav = { this.updateFavAxios } pagination = { pagination } prev = { this.prevPage }
-                                    next = { this.nextPage } addLabel = { this.addLabel } tagShow={this.tagShow}/>
+                                    next = { this.nextPage } addLabel = { this.addLabel } filterByName = { (e) => { e.preventDefault(); this.getTasks(pagination)}} tagShow={this.tagShow}/>
                                 <Task showTask={showTask} tarea = { tarea } mostrarListPanel = { () => { this.mostrarListPanel() } }
                                     completarTarea = { this.completarTareaAxios } updateFav = { this.updateFavAxios } form = { form }
                                     onChange = { this.onChange } clearFiles={this.clearFiles} mentions = { mentions } user = { user }

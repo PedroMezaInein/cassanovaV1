@@ -43,12 +43,12 @@ class ListPanel extends Component {
     }
 
     render() {
-        const { openModal, onChange, form, options, mostrarTarea, showListPanel, tareas, user, updateFav, pagination, addLabel, tagShow } = this.props
+        const { openModal, onChange, form, options, mostrarTarea, showListPanel, tareas, user, updateFav, pagination, addLabel, filterByName, tagShow } = this.props
         return (
             <div className={showListPanel ? 'col-xl-12 gutter-b' : 'd-none'}>
                 <div className="card card-custom card-stretch">
                     <div className="card-header p-6 border-0">
-                        <div>
+                        <div className = 'd-flex'>
                             <Form.Control className="form-control text-uppercase form-control-solid"
                                 value={form.filtrarTarea} onChange={onChange} name='filtrarTarea' as="select">
                                 <option value={0}>Selecciona el filtrado</option>
@@ -59,6 +59,9 @@ class ListPanel extends Component {
                                         )
                                     })
                                 }
+                            </Form.Control>
+                            <Form.Control className="form-control text-uppercase form-control-solid ml-2" placeholder = 'Nombre'
+                                value={form.filtrarTareaNombre} onChange={onChange} onBlur = { filterByName } name='filtrarTareaNombre'>
                             </Form.Control>
                         </div>
                         <span className="btn btn-light-success btn-sm font-weight-bolder align-self-center" onClick={(e) => { openModal() }} >Nueva tarea</span>

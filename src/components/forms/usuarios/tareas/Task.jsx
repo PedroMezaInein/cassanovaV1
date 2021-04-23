@@ -13,9 +13,9 @@ class Task extends Component {
                         <div className="card-header align-items-center flex-wrap justify-content-between border-0 py-6 h-auto">
                             <div className="mr-2 py-2 row">
                                 <div className="col-md-auto align-self-center pr-0">
-                                    <a className="btn btn-light btn-hover-secondary font-weight-bold h-100 p-3" onClick={() => { mostrarListPanel() }}>
+                                    <span className="btn btn-light btn-hover-secondary font-weight-bold h-100 p-3" onClick={() => { mostrarListPanel() }}>
                                         <i className="fas fa-arrow-left icon-md p-0"></i>
-                                    </a>
+                                    </span>
                                 </div>
                                 <div className="col">
                                     <div className="d-flex flex-column mr-2 py-2">
@@ -48,6 +48,7 @@ class Task extends Component {
                                                 </span>
                                             )
                                         }
+                                        return <></>
                                     })
                                 }
                                 <span className="btn btn-light-danger btn-sm text-uppercase font-weight-bolder mr-2">

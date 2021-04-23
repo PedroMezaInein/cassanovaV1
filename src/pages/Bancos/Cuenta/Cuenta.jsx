@@ -171,10 +171,8 @@ class Cuenta extends Component {
         })
     }
     setCuentas = cuentas => {
-        const { key } = this.state
-        let keyTab = key
         let aux = []
-        cuentas.map((cuenta, key) => {
+        cuentas.map((cuenta) => {
             aux.push({
                 actions: this.setActions(cuenta),
                 nombre: renderToString(setTextTableCenter(cuenta.nombre, '180px')),
