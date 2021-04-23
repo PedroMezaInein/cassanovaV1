@@ -322,7 +322,6 @@ class Tareas extends Component {
     }
 
     addLabel = async(etiqueta) => {
-        console.log(etiqueta, 'ETIQUETA')
         const { etiquetas, pagination } = this.state
         let flag = true
         etiquetas.forEach((elemento) => {
@@ -520,7 +519,7 @@ class Tareas extends Component {
     }
     tagShow = tag => {
         const { name } = tag
-        const { etiquetas, data } = this.state
+        const { data } = this.state
         if (name === 'Nueva etiqueta') {
             this.openModalAddTag()
         }else{
