@@ -29,7 +29,7 @@
             padding: 5px 8px;
             border-bottom: 1px solid rgba(0, 0, 0, 0.15);
             &__display{
-              text-transform: none;
+                text-transform: none;
             }
         }
     }   
@@ -44,15 +44,23 @@
     }
     &__input{
         border: 0;
-        resize: auto!important;
+        resize: vertical!important;
         padding: 0.65rem 0rem;
         outline: 0;
-        color: #80808F !important;
-        font-weight: 500;
+        color: #B5B5C3 !important;
+        font-weight: 600;
+        letter-spacing: 0.3px!important;
+        text-transform: uppercase;
+        text-align: justify!important;
+        position: relative!important;
+        &::-webkit-input-placeholder {
+            color: #B5B5C3!important;
+        }
     }
     &__highlighter{
         border: 0;
         padding: 0.65rem 0rem;
+        position: absolute!important;
     }
     &__suggestions{
         background: #fff;

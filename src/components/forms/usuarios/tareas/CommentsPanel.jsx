@@ -14,10 +14,10 @@ class CommentsPanel extends Component {
                             return(
                                 <div className="cursor-pointer toggle-off mt-6"  key = { comentario.id}>
                                     <div className="d-flex align-items-start card-spacer-x bg-comment">
-                                        <div className="symbol symbol-35 mr-3 align-self-center">
+                                        <div className="symbol symbol-35 mr-3 align-self-center symbol-circle">
                                             <span className="symbol-label" style={{ backgroundImage: `url(${comentario.user.avatar ? comentario.user.avatar : "/default.jpg"})` }}></span>
                                         </div>
-                                        <div className="d-flex flex-column flex-grow-1 flex-wrap mr-2">
+                                        <div className="d-flex flex-column flex-grow-1 flex-wrap px-2">
                                             <div className="d-flex">
                                                 <div className="font-weight-bolder text-primary mr-2">
                                                     { comentario.user.name }
