@@ -9,6 +9,7 @@ import Layout from '../../../components/layout/layout'
 import { ComprasForm as ComprasFormulario } from '../../../components/forms'
 import { SolicitudCompraCard } from '../../../components/cards'
 import { Card } from 'react-bootstrap'
+import { setFormHeader } from '../../../functions/routers'
 class ComprasForm extends Component {
     state = {
         title: 'Nueva compra',
@@ -446,9 +447,11 @@ class ComprasForm extends Component {
                         form.cuenta = compra.cuenta.id.toString()
                 }
                 if (compra.subarea) {
-                    form.area = compra.subarea.area.id.toString()
-                    options['subareas'] = setOptions(compra.subarea.area.subareas, 'nombre', 'id')
                     form.subarea = compra.subarea.id.toString()
+                }
+                if(compra.area){
+                    form.area = compra.area.id.toString()
+                    options['subareas'] = setOptions(compra.area.subareas, 'nombre', 'id')
                 }
                 form.tipoPago = compra.tipo_pago ? compra.tipo_pago.id : 0
                 form.tipoImpuesto = compra.tipo_impuesto ? compra.tipo_impuesto.id : 0
@@ -547,22 +550,14 @@ class ComprasForm extends Component {
             }
             return false
         })
-        await axios.post(URL_DEV + 'compras', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}compras`, data, { headers: setFormHeader(access_token) }).then(
             (response) => {
                 this.getOptionsAxios()
-                this.setState({
-                    ...this.state,
-                    form: this.clearForm(),
-                })
+                this.setState({ ...this.state, form: this.clearForm(), })
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El ingreso fue registrado con éxito.')
                 const { history } = this.props
-                history.push({
-                    pathname: '/proyectos/compras'
-                });
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                history.push({ pathname: '/proyectos/compras' });
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')

@@ -695,9 +695,9 @@ export function setArrayTable(arreglo, minwidth) {
     return (
         <div style={{minWidth:minwidth}}>
             {
-                arreglo.map((element) => {
+                arreglo.map((element, id) => {
                     return (
-                        <div className={`mb-2 ${minwidth?'':'center-td'}`}>
+                        <div key = { id } className={`mb-2 ${minwidth?'':'center-td'}`}>
                             {
                                 element.name ?
                                     <span className="mr-1 font-size-12px" >

@@ -452,7 +452,7 @@ class Ventas extends Component {
                     impuesto: setTextTableReactDom(venta.tipo_impuesto ? venta.tipo_impuesto.tipo : 'Sin definir', this.doubleClick, venta, 'tipoImpuesto', 'text-center'),
                     tipoPago: setTextTableReactDom(venta.tipo_pago.tipo, this.doubleClick, venta, 'tipoPago', 'text-center'),
                     descripcion: setTextTableReactDom(venta.descripcion !== null ? venta.descripcion :'', this.doubleClick, venta, 'descripcion', 'text-justify'),
-                    area: setTextTableReactDom(venta.subarea ? venta.subarea.area ? venta.subarea.area.nombre : '' : '', this.doubleClick, venta, 'area', 'text-center'),
+                    area: setTextTableReactDom(venta.area ? venta.area.nombre : '' , this.doubleClick, venta, 'area', 'text-center'),
                     subarea: setTextTableReactDom(venta.subarea ? venta.subarea.nombre : '', this.doubleClick, venta, 'subarea', 'text-center'),
                     estatusCompra: setTextTableReactDom(venta.estatus_compra ? venta.estatus_compra.estatus : '', this.doubleClick, venta, 'estatusCompra', 'text-center'),
                     total: renderToString(setMoneyTable(venta.total)),
@@ -474,12 +474,12 @@ class Ventas extends Component {
                     form[tipo] = data[tipo].id.toString()
                 break
             case 'area':
+                if(data.area){
+                    form.area = data.area.id.toString()
+                    options.subareas = setOptions(data.area.subareas, 'nombre', 'id')
+                }
                 if(data.subarea){
-                    if(data.subarea.area){
-                        form.area = data.subarea.area.id.toString()
-                        form.subarea = data.subarea.id.toString()
-                        options.subareas = setOptions(data.subarea.area.subareas, 'nombre', 'id')
-                    }
+                    form.subarea = data.subarea.id.toString()
                 }
                 break
             case 'fecha':
