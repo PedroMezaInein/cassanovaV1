@@ -587,8 +587,6 @@ class PresupuestoDiseñoForm extends Component {
                         form.partidasMobiliario = this.setOptionsCheckboxes(auxPartidasMobiliario, true)
                         form.partidasObra = this.setOptionsCheckboxes(auxPartidasObra, true)
 
-                        console.log('FORM', form)
-
                     }
                     return ''
                 })

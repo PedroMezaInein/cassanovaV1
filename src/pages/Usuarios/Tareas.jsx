@@ -7,7 +7,7 @@ import { URL_DEV, COLORS, PUSHER_OBJECT } from '../../constants'
 import { connect } from 'react-redux'
 import { Tags, ListPanel, Task, AddTaskForm, TagColorForm} from '../../components/forms'
 import { Modal } from '../../components/singles'
-import { doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../functions/alert'
+import { deleteAlert, doneAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../../functions/alert'
 import { setFormHeader, setSingleHeader } from '../../functions/routers'
 import Echo from 'laravel-echo'
 class Tareas extends Component {
@@ -82,26 +82,19 @@ class Tareas extends Component {
             pusher.channel('responsable-tarea').listen('ResponsableTarea', (data) => {
                 const { form, pagination, tarea, tareas, showTask } = this.state
                 const { user } = this.props.authUser
-                if(form.filtrarTarea === 'own'){
-                    let found = tareas.find((elemento) => {
-                        return elemento.id === data.tarea
-                    })
-                    if(found){
-                        this.getTasks(pagination)    
-                    }else{
-                        found = data.responsables.find((elemento) => {
-                            return elemento === user.id
-                        })
-                        if(found){
-                            this.getTasks(pagination)    
+                if(data.type ==='delete'){ this.getTasks(pagination) }
+                else{
+                    if(form.filtrarTarea === 'own'){
+                        let found = tareas.find((elemento) => { return elemento.id === data.tarea })
+                        if(found){ this.getTasks(pagination) 
+                        }else{
+                            found = data.responsables.find((elemento) => { return elemento === user.id })
+                            if(found){ this.getTasks(pagination) }
                         }
-                    }
-                }else{
-                    this.getTasks(pagination)
+                    }else{ this.getTasks(pagination) }
+                    if(tarea.id === data.tarea && showTask){ this.mostrarTarea({id: data.tarea}) }
                 }
-                if(tarea.id === data.tarea && showTask){
-                    this.mostrarTarea({id: data.tarea})
-                }
+                
             })
         }
     }
@@ -576,24 +569,21 @@ class Tareas extends Component {
             this.addLabel(etiqueta)
         }
     }
+
     deleteTask = async(tarea) => {
         waitAlert()
         const { access_token } = this.props.authUser
         await axios.delete(`${URL_DEV}v3/usuarios/tareas/${tarea.id}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
-                const { showTask } = this.state
-                const { tarea } = response.data
-                if(showTask){
-                    this.setState({...this.state, tarea: tarea})
-                }
-                Swal.close();
-                doneAlert('Comentario agregao con éxito')
+                doneAlert('Tarea eliminada con éxito.')
+                this.setState({...this.state, showTask: false, showListPanel: true, tarea: ''})
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
+
     render() {
         const { modal_tarea, form, options, showListPanel, showTask, tareas, pagination, tarea, title, etiquetas, modal_addTag, formeditado, mentions } = this.state
         const { user } = this.props.authUser
@@ -609,10 +599,15 @@ class Tareas extends Component {
                                     user = { user } updateFav = { this.updateFavAxios } pagination = { pagination } prev = { this.prevPage }
                                     next = { this.nextPage } addLabel = { this.addLabel } filterByName = { (e) => { this.getTasks(pagination)}} 
                                     updateTagInTask={this.updateTagInTask}/>
-                                <Task showTask={showTask} tarea = { tarea } mostrarListPanel = { () => { this.mostrarListPanel() } }
-                                    completarTarea = { this.completarTareaAxios } updateFav = { this.updateFavAxios } form = { form }
-                                    onChange = { this.onChange } clearFiles={this.clearFiles} mentions = { mentions } user = { user }
-                                    openModalEdit = { this.openModalEdit} onSubmit = { this.sendComentario } options = { options } updateTagInTask={this.updateTagInTask} deleteTask={this.deleteTask}/>
+                                {
+                                    tarea  && 
+                                        <Task showTask={showTask} tarea = { tarea } mostrarListPanel = { () => { this.mostrarListPanel() } } options = { options } 
+                                            completarTarea = { this.completarTareaAxios } updateFav = { this.updateFavAxios } form = { form } user = { user }
+                                            onChange = { this.onChange } clearFiles={this.clearFiles} mentions = { mentions } onSubmit = { this.sendComentario }
+                                            openModalEdit = { this.openModalEdit} updateTagInTask={this.updateTagInTask} 
+                                            deleteTask = { () => { deleteAlert( '¿ESTÁS SEGURO?', `Eliminarás la tarea ${tarea.titulo}`, 
+                                            (e) => { this.deleteTask(tarea)} ) } }/>
+                                }
                             </div>
                         </div>
                     </div>
