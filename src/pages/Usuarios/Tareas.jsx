@@ -576,6 +576,24 @@ class Tareas extends Component {
             this.addLabel(etiqueta)
         }
     }
+    deleteTask = async(tarea) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.delete(`${URL_DEV}v3/usuarios/tareas/${tarea.id}`, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                const { showTask } = this.state
+                const { tarea } = response.data
+                if(showTask){
+                    this.setState({...this.state, tarea: tarea})
+                }
+                Swal.close();
+                doneAlert('Comentario agregao con éxito')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     render() {
         const { modal_tarea, form, options, showListPanel, showTask, tareas, pagination, tarea, title, etiquetas, modal_addTag, formeditado, mentions } = this.state
         const { user } = this.props.authUser
@@ -594,7 +612,7 @@ class Tareas extends Component {
                                 <Task showTask={showTask} tarea = { tarea } mostrarListPanel = { () => { this.mostrarListPanel() } }
                                     completarTarea = { this.completarTareaAxios } updateFav = { this.updateFavAxios } form = { form }
                                     onChange = { this.onChange } clearFiles={this.clearFiles} mentions = { mentions } user = { user }
-                                    openModalEdit = { this.openModalEdit} onSubmit = { this.sendComentario } options = { options } updateTagInTask={this.updateTagInTask}/>
+                                    openModalEdit = { this.openModalEdit} onSubmit = { this.sendComentario } options = { options } updateTagInTask={this.updateTagInTask} deleteTask={this.deleteTask}/>
                             </div>
                         </div>
                     </div>

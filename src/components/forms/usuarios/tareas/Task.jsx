@@ -30,7 +30,7 @@ class Task extends Component {
     }
 
     render() {
-        const {showTask, mostrarListPanel, tarea, completarTarea, updateFav, form, onChange, clearFiles, openModalEdit, user, mentions, onSubmit, options, updateTagInTask } = this.props
+        const {showTask, mostrarListPanel, tarea, completarTarea, updateFav, form, onChange, clearFiles, openModalEdit, user, mentions, onSubmit, options, updateTagInTask, deleteTask } = this.props
         if(tarea)
             return (
                 <div className={showTask ? 'col-xl-12 gutter-b' : 'd-none'}>
@@ -121,12 +121,15 @@ class Task extends Component {
                                 </div>
                             </div>
                             <div class="card-toolbar">
+                                <span className="btn btn-default btn-icon btn-sm btn-hover-bg-danger mr-2 text-hover-white" onClick={(e) => { deleteTask(tarea) }}>
+                                    <i className="far fa-trash-alt"></i>
+                                </span>
                                 {
                                     tarea.responsables.map((responsable) => {
                                         if (responsable.name === user.name) {
                                             return (
-                                                <span key={user.id} className="btn btn-default btn-icon btn-sm mr-2" onClick={(e) => { openModalEdit(tarea) }}>
-                                                    <i className="las la-edit icon-xl"></i>
+                                                <span key={user.id} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-bg-success mr-2 text-hover-white" onClick={(e) => { openModalEdit(tarea) }}>
+                                                    <i className="flaticon2-pen text-hover-success"></i>
                                                 </span>
                                             )
                                         }
