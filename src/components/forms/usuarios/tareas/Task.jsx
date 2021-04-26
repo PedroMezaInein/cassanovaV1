@@ -35,7 +35,7 @@ class Task extends Component {
             return (
                 <div id="task" className={showTask ? 'col-xl-12 gutter-b' : 'd-none'}>
                     <div className="card card-custom card-stretch">
-                    <div class="card-header border-0 pt-5" id="card-header-task">
+                    <div className="card-header border-0 pt-5" id="card-header-task">
                             <div className="d-flex align-items-center" id="d-flex-task">
                                 <span id="showListReturn">
                                     <span id="btn-return" className="btn btn-light btn-hover-secondary font-weight-bold p-3" onClick={() => { mostrarListPanel() }}>
@@ -120,7 +120,7 @@ class Task extends Component {
                                     </span>
                                 </div>
                             </div>
-                            <div class="card-toolbar">
+                            <div className="card-toolbar">
                                 <span className="btn btn-default btn-icon btn-sm btn-hover-bg-danger mr-2 text-hover-white" onClick={(e) => { deleteTask(tarea) }}>
                                     <i className="far fa-trash-alt"></i>
                                 </span>
