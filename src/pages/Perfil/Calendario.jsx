@@ -392,7 +392,6 @@ class Calendario extends Component {
                         
                         if(vacacion.empleado)
                             if(vacacion.empleado.usuario){
-                                console.log(vacacion.empleado.usuario, user)
                                 if(vacacion.empleado.usuario.id === user.id){
                                     let dias = moment(vacacion.fecha_fin).diff(moment(vacacion.fecha_inicio), 'days') + 1
                                     for(let i = 0; i < dias; i++)
@@ -1029,7 +1028,7 @@ class Calendario extends Component {
                                     }
                                 </Nav> */}
                             </div>
-                            <div className="card-toolbar">
+                            <div className="card-toolbar" id="dropdown-calendario">
                                 {
                                     disponibles > 0 ?
                                         <DropdownButton
