@@ -344,17 +344,22 @@ td.concepto {
 }
 
 //Inicio: Dropdown para: CALENDARIO
-#dropdown-button-drop-left {
-    color: #3699FF;
-    background-color: #E1F0FF;
-    border-color: transparent;
-    height: calc(1.35em + 1.1rem + 2px);
-    width: calc(1.35em + 1.1rem + 2px);
-    justify-content: center;
-    display: inline-flex;
-
-    i {
-        color: #2171c1;
+div#dropdown-calendario{
+    #dropdown-button-drop-left {
+        color: #3699FF;
+        background-color: #E1F0FF;
+        border-color: transparent;
+        height: calc(1.35em + 1.1rem + 2px);
+        width: calc(1.35em + 1.1rem + 2px);
+        justify-content: center;
+        display: inline-flex;
+        i {
+            color: #2171c1;
+        }
+    }
+    a.dropdown-item{
+        color:#2171c1;
+        font-weight: 600;
     }
 }
 //Inicio: Dropdown para: TAREAS TAG

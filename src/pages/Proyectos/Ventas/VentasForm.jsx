@@ -388,9 +388,11 @@ class Ventas extends Component {
                         form.cuenta = venta.cuenta.id.toString()
                 }
                 if (venta.subarea) {
-                    form.area = venta.subarea.area.id.toString()
-                    options['subareas'] = setOptions(venta.subarea.area.subareas, 'nombre', 'id')
                     form.subarea = venta.subarea.id.toString()
+                }
+                if(venta.area){
+                    form.area = venta.area.id.toString()
+                    options['subareas'] = setOptions(venta.area.subareas, 'nombre', 'id')
                 }
                 form.tipoPago = venta.tipo_pago ? venta.tipo_pago.id : 0
                 form.tipoImpuesto = venta.tipo_impuesto ? venta.tipo_impuesto.id : 0
