@@ -11,15 +11,15 @@ class TimelineComments extends Component {
         return (
             <>
                 {
-                    comentariosObj &&
+                comentariosObj &&
                     <div className="col-md-12 mx-0 row d-flex justify-content-center">
-                        <div className={`col-md-${col} mt-8`}>
+                        <div className={`col-md-${col} mt-8 px-0`}>
                             {
                                 comentariosObj.comentarios.length > 0 &&
                                 comentariosObj.comentarios.map((comentario, key) => {
                                     return (
                                         <div key={key} className="form-group row form-group-marginless">
-                                            <div className="col-md-12">
+                                            <div className="col-md-12 px-0">
                                                 <div className="timeline timeline-3">
                                                     <div className="timeline-items">
                                                         <div className="timeline-item">
