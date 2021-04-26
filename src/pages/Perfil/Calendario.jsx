@@ -1029,7 +1029,7 @@ class Calendario extends Component {
                                     }
                                 </Nav> */}
                             </div>
-                            <div className="card-toolbar">
+                            <div className="card-toolbar" id="dropdown-calendario">
                                 {
                                     disponibles > 0 ?
                                         <DropdownButton

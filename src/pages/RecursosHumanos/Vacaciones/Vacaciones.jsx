@@ -723,7 +723,7 @@ class Vacaciones extends Component {
                         <div className="card-title">
                             <h3 className="card-label">Vacaciones</h3>
                         </div>
-                        <div className="card-toolbar">
+                        <div className="card-toolbar" id="dropdown-calendario">
                             <DropdownButton
                                 title={
                                     <i className="ki ki-bold-more-ver p-0"></i>
@@ -751,77 +751,72 @@ class Vacaciones extends Component {
                         />
                     </Card.Body>
                 </Card>
-                <Modal size="xl" title="Solicitudes de vacaciones" show={modal} handleClose={this.handleClose} >
-                    {
-                        espera.map((empleado, key) => {
-                            return (
-                                <div className="tab-content mt-4" key={key}>
-                                    <div className="table-responsive">
-                                        <table className="table table-head-custom table-head-bg table-borderless table-vertical-center">
-                                            <thead>
-                                                <tr className="text-left">
-                                                    <th style={{ minWidth: "160px" }} className="pl-7">
-                                                        <span className="text-dark-75">Empleado</span>
-                                                    </th>
-                                                    <th style={{ minWidth: "100px" }}>
-                                                        <span className="text-dark-75">Fecha de inicio</span>
-                                                    </th>
-                                                    <th style={{ minWidth: "100px" }}>
-                                                        <span className="text-dark-75">Fecha final</span>
-                                                    </th>
-                                                    <th style={{ minWidth: "100px" }}>
-                                                        <span className="text-dark-75">Estatus</span>
-                                                    </th>
-                                                </tr>
-                                            </thead>
-                                            {
-                                                empleado.vacaciones.map((vacacion, key) => {
-                                                    return (
-                                                        <tbody key={key}>
-                                                            <tr>
-                                                                <td className="pl-0 py-8">
-                                                                    <div className="d-flex align-items-center">
-                                                                        <div>
-                                                                            <div className="mb-1 font-size-lg">{empleado.nombre}</div>
-                                                                        </div>
-                                                                    </div>
-                                                                </td>
-                                                                <td>
-                                                                    <span className="font-size-lg">{setDateTableLG(vacacion.fecha_inicio)}</span>
-                                                                </td>
-                                                                <td>
-                                                                    <span className="font-size-lg">{setDateTableLG(vacacion.fecha_fin)}</span>
-                                                                </td>
-                                                                <td className="pr-0">
-                                                                    <span className="btn btn-icon btn-light-success btn-sm mr-2 ml-auto" onClick = { (e) =>  { 
-                                                                        e.preventDefault(); 
-                                                                        createAlert('¿ESTÁS SEGURO QUE DESEAS ACEPTAR LAS VACACIONES?', '', 
-                                                                        () => this.editVacacionesAxios(vacacion, 'Aceptadas'))
-                                                                    }}  
-                                                                    >
-                                                                        <i className="flaticon2-check-mark icon-sm"></i>
-                                                                    </span>
-                                                                
-                                                                    <span className="btn btn-icon  btn-light-danger btn-sm pulse pulse-danger"onClick = { (e) =>  { 
-                                                                        e.preventDefault(); 
-                                                                        createAlert('¿ESTÁS SEGURO QUE DESEAS RECHAZAR LAS VACACIONES?', '', 
-                                                                        () => this.editVacacionesAxios(vacacion, 'Rechazadas'))
-                                                                    }}
-                                                                    >
-                                                                        <i className="flaticon2-cross icon-sm"></i>
-                                                                    </span>
-                                                                </td>
-                                                            </tr>
-                                                        </tbody>
-                                                    )
-                                                })
-                                            }
-                                        </table>
-                                    </div>
-                                </div>
-                            )
-                        })
-                    }
+                <Modal size="lg" title="Solicitudes de vacaciones" show={modal} handleClose={this.handleClose} >
+                    <div className="table-responsive mt-6">
+                        <table className="table table-head-custom table-head-bg table-vertical-center">
+                            <thead>
+                                <tr className="text-left">
+                                    <th style={{ minWidth: "175px" }} className="pl-7">
+                                        <span className="text-dark-75 font-size-13px">Empleado</span>
+                                    </th>
+                                    <th style={{ minWidth: "100px" }} className="text-center">
+                                        <span className="text-dark-75 font-size-13px">Fecha de inicio</span>
+                                    </th>
+                                    <th className="text-center">
+                                        <span className="text-dark-75 font-size-13px">Fecha final</span>
+                                    </th>
+                                    <th className="text-center">
+                                        <span className="text-dark-75 font-size-13px">Estatus</span>
+                                    </th>
+                                </tr>
+                            </thead>
+                            {
+                                espera.map((empleado, key) => {
+                                    return (
+                                        empleado.vacaciones.map((vacacion, key) => {
+                                            return (
+                                                <tbody key={key}>
+                                                    <tr className="font-size-13px">
+                                                        <td className="py-8">
+                                                            <div className="d-flex align-items-center">
+                                                                <div>
+                                                                    <div className="mb-1">{empleado.nombre}</div>
+                                                                </div>
+                                                            </div>
+                                                        </td>
+                                                        <td className="text-center">
+                                                            <span>{setDateTableLG(vacacion.fecha_inicio)}</span>
+                                                        </td>
+                                                        <td className="text-center">
+                                                            <span>{setDateTableLG(vacacion.fecha_fin)}</span>
+                                                        </td>
+                                                        <td className="pr-0 text-center">
+                                                            <span className="btn btn-icon btn-light-success btn-sm mr-2 ml-auto" onClick={(e) => {
+                                                                e.preventDefault();
+                                                                createAlert('¿ESTÁS SEGURO QUE DESEAS ACEPTAR LAS VACACIONES?', '',
+                                                                    () => this.editVacacionesAxios(vacacion, 'Aceptadas'))
+                                                            }}
+                                                            >
+                                                                <i className="flaticon2-check-mark icon-sm"></i>
+                                                            </span>
+                                                            <span className="btn btn-icon  btn-light-danger btn-sm pulse pulse-danger" onClick={(e) => {
+                                                                e.preventDefault();
+                                                                createAlert('¿ESTÁS SEGURO QUE DESEAS RECHAZAR LAS VACACIONES?', '',
+                                                                    () => this.editVacacionesAxios(vacacion, 'Rechazadas'))
+                                                            }}
+                                                            >
+                                                                <i className="flaticon2-cross icon-sm"></i>
+                                                            </span>
+                                                        </td>
+                                                    </tr>
+                                                </tbody>
+                                            )
+                                        })
+                                    )
+                                })
+                            }
+                        </table>
+                    </div>
                 </Modal>
                 <Modal size={"lg"} title={title} show={modal_add_vacaciones} handleClose={this.handleCloseAddVacaciones}>
                     <AgregarVacacionesForm
