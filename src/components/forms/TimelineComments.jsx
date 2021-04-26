@@ -11,15 +11,15 @@ class TimelineComments extends Component {
         return (
             <>
                 {
-                    comentariosObj &&
+                comentariosObj &&
                     <div className="col-md-12 mx-0 row d-flex justify-content-center">
-                        <div className={`col-md-${col} mt-8`}>
+                        <div className={`col-md-${col} mt-8 px-0`}>
                             {
                                 comentariosObj.comentarios.length > 0 &&
                                 comentariosObj.comentarios.map((comentario, key) => {
                                     return (
                                         <div key={key} className="form-group row form-group-marginless">
-                                            <div className="col-md-12">
+                                            <div className="col-md-12 px-0">
                                                 <div className="timeline timeline-3">
                                                     <div className="timeline-items">
                                                         <div className="timeline-item">
@@ -31,7 +31,7 @@ class TimelineComments extends Component {
                                                                 <span className="text-muted ml-2 font-weight-bold">
                                                                     {diffCommentDate(comentario)}
                                                                 </span>
-                                                                <p className={`p-0 0 font-weight-light text-transform-none ${comentario.adjunto === null ? "text-justify mb-0" : "text-justify"}`}>
+                                                                <p className={`p-0 font-weight-light text-transform-none line-break-anywhere ${comentario.adjunto === null ? "text-justify mb-0" : "text-justify"}`}>
                                                                     { printComentario(comentario.comentario, proyectos) }
                                                                 </p>
                                                                 {
