@@ -8,7 +8,7 @@ import axios from 'axios'
 import Swal from 'sweetalert2'
 import { AreaCard } from '../../components/cards'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
-import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert, customInputAlert } from '../../functions/alert'
+import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert, customInputAlert, deleteAlert } from '../../functions/alert'
 import { setTagLabelReactDom, setTextTableReactDom} from '../../functions/setters'
 import { Tabs, Tab } from 'react-bootstrap'
 import { Update } from '../../components/Lottie'
@@ -292,10 +292,27 @@ class Areas extends Component {
     }
 
     openModalDelete = area => {
-        this.setState({
-            modalDelete: true,
-            area: area
-        })
+        deleteAlert(
+            `BORRARÁS EL ÁREA ${area.nombre}`,
+            this.setSubText(area),
+            () => this.deleteAreaAxios(area)
+        )
+    }
+
+    setSubText = area => {
+        const { key } = this.state
+        switch(key){
+            case 'compras':
+                if(area.compras_count)
+                    return `EL ÁREA TIENE ${area.compras_count} COMPRAS. ¿DESEAS CONTINUAR?`
+                break;
+            case 'ventas':
+                break;
+            case 'egresos':
+                break;
+            default: break;
+        }
+        return ''
     }
 
     openModalEdit = area => {
@@ -422,28 +439,16 @@ class Areas extends Component {
         })
     }
 
-    async deleteAreaAxios() {
+    async deleteAreaAxios(area) {
         const { access_token } = this.props.authUser
-        const { area } = this.state
+        /* const { area } = this.state */
         await axios.delete(URL_DEV + 'areas/' + area.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-
                 const { key } = this.state
                 this.controlledTab(key)
-                
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito el área.')
-                
-                this.setState({
-                    ...this.state,
-                    modalDelete: false,
-                    form: this.clearForm(),
-                    area: '',
-                })
-
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                this.setState({ ...this.state, modalDelete: false, form: this.clearForm(), area: '', })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
@@ -544,8 +549,8 @@ class Areas extends Component {
                         deleteSubarea = { this.deleteSubarea } title = { title } onSubmit = { this.onSubmit } formeditado = { formeditado } />
                 </Modal>
                 
-                <ModalDelete title = "¿Estás seguro que deseas eliminar el área?" show = { modalDelete } handleClose = { this.handleCloseDelete } 
-                    onClick = { (e) => { e.preventDefault(); waitAlert(); this.safeDelete(e)() }} />
+                {/* <ModalDelete title = "¿Estás seguro que deseas eliminar el área?" show = { modalDelete } handleClose = { this.handleCloseDelete } 
+                    onClick = { (e) => { e.preventDefault(); waitAlert(); this.safeDelete(e)() }} /> */}
 
                 <Modal title={key === 'egresos' ?'Egreso' : key === 'compras' ? 'Compra' : key === 'ventas' ? 'Venta/Ingreso' :''} show = { modalSee } handleClose = { this.handleCloseSee } >
                     <AreaCard area={area}/>
