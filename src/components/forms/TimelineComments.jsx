@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { diffCommentDate, replaceAll } from '../../functions/functions'
+import { diffCommentDate } from '../../functions/functions'
 import SVG from "react-inlinesvg"
 import { toAbsoluteUrl } from "../../functions/routers"
 import { printComentario } from '../../functions/printers'
