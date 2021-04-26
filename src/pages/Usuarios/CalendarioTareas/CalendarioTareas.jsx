@@ -309,6 +309,15 @@ class Calendario extends Component {
             form
         })
     }
+
+    hasIcon = () => {
+        const { tarea } = this.state
+        if(tarea)
+            if(tarea.prioritario)
+                return 'flaticon-star text-warning mx-2'
+        return null
+    }
+
     render() {
         const { events, tipo, title, modal, tarea, form, options } = this.state
         return (
@@ -337,7 +346,7 @@ class Calendario extends Component {
                             firstDay = { 1 } themeSystem = 'bootstrap' height = '1290.37px' />
                     </Card.Body>
                 </Card>
-                <Modal size="lg" title={title} show={modal.tareas} handleClose={this.handleCloseModalT}>
+                <Modal size="lg" title={title} show={modal.tareas} handleClose={this.handleCloseModalT} icon = { this.hasIcon() } >
                     <FormCalendarioTareas tarea = { tarea } addComentario = { this.addComentarioAxios } form = { form } proyectos = { options.proyectos }
                         onChange = { this.onChange } handleChange = { this.handleChangeComentario } users = { options.users } />
                 </Modal>
