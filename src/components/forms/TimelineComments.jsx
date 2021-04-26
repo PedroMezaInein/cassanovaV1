@@ -31,7 +31,7 @@ class TimelineComments extends Component {
                                                                 <span className="text-muted ml-2 font-weight-bold">
                                                                     {diffCommentDate(comentario)}
                                                                 </span>
-                                                                <p className={`p-0 0 font-weight-light text-transform-none ${comentario.adjunto === null ? "text-justify mb-0" : "text-justify"}`}>
+                                                                <p className={`p-0 font-weight-light text-transform-none line-break-anywhere ${comentario.adjunto === null ? "text-justify mb-0" : "text-justify"}`}>
                                                                     { printComentario(comentario.comentario, proyectos) }
                                                                 </p>
                                                                 {
