@@ -27,7 +27,7 @@ class CommentsPanel extends Component {
                                                 </div>
                                             </div>
                                             <div className="d-flex flex-column">
-                                                <div className="text-muted font-weight-bold toggle-on-item" data-inbox="toggle">
+                                                <div className="text-muted font-weight-bold line-break-anywhere text-justify">
                                                     { printComentario(comentario.comentario, proyectos) }
                                                 </div>
                                                 {
