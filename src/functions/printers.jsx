@@ -114,6 +114,13 @@ export const printDate = (date) => {
     return fecha.format('D') + ' ' + meses[parseInt(fecha.format('M') - 1)] + ' ' + fecha.format('YYYY');
 }
 
+export const printDateMes = (date) => {
+    console.log(date)
+    let fecha = moment(date)
+    let meses = ['ENE', 'FEB', 'MAR', 'ABR', 'MAY', 'JUN', 'JUL', 'AGO', 'SEP', 'OCT', 'NOV', 'DIC']
+    return fecha.format('DD') + ' ' + meses[parseInt(fecha.format('MM') - 1)] + ' ' + fecha.format('YYYY');
+}
+
 export const indexSubcadena = (cadena, prefixA, prefixB) => {
     let indiceA = cadena.indexOf(prefixA)
     let indiceB = cadena.indexOf(prefixB)

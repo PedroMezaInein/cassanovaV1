@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { printDate } from '../../../../functions/printers'
+import { printDateMes } from '../../../../functions/printers'
 import { OverlayTrigger, Tooltip, Dropdown, DropdownButton } from 'react-bootstrap'
 import moment from 'moment'
 class ItemTaskList extends Component {
@@ -184,7 +184,7 @@ class ItemTaskList extends Component {
                                             <i className={`flaticon-star ${this.isImportant(tarea)}`}></i>
                                         </div>
                                         <span className={`font-weight-bolder ml-2 ${this.tareaCaducada(tarea.fecha_limite)}`}>
-                                            {printDate(tarea.fecha_limite)}
+                                            {printDateMes(tarea.fecha_limite)}
                                         </span>
                                     </div>
                                 </div>

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { WriteComment, CommentsPanel } from '../../../../components/forms'
-import { printDate } from '../../../../functions/printers'
+import { printDateMes } from '../../../../functions/printers'
 import moment from 'moment'
 import { Dropdown, DropdownButton } from 'react-bootstrap'
 class Task extends Component {
@@ -48,7 +48,7 @@ class Task extends Component {
                                         <div className="row form-group-marginless w-100 mx-0 center-mobile">
                                             <div className="col-md-auto text-center px-0">
                                                 <span className={`font-weight-bolder font-size-lg ${this.colorDate()}`}>
-                                                    {printDate(tarea.fecha_limite)}
+                                                    {printDateMes(tarea.fecha_limite)}
                                                 </span>
                                             </div>
                                             <div className="col-md-auto">
