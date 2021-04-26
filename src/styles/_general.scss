@@ -2162,3 +2162,31 @@ div#tag-tagify{
         }
     }
 } */
+div#task{
+    @include down-screen($sm) {
+        div#card-header-task{
+            text-align:center;
+            justify-content: center;
+        }
+        div#d-flex-task{
+            place-content: stretch flex-end;
+            flex-flow: column-reverse nowrap;
+            margin-bottom: 5px;
+            line-height: 18px;
+        }
+        span#showListReturn{
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        span#btn-return{
+            position: fixed;
+        }
+        .center-mobile{
+            justify-content: center;
+        }
+        .margin-mobile{
+            margin: 0!important;
+        }
+    }
+}
