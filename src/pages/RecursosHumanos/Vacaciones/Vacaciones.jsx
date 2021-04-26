@@ -444,7 +444,7 @@ class Vacaciones extends Component {
     async addVacationAxiosAdmin() {
         const { access_token } = this.props.authUser
         const { form } = this.state
-        await axios.post(URL_DEV + 'vacaciones/admin', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(URL_DEV + 'v2/rh/vacaciones/admin', form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 doneAlert('Vacaciones aceptadas con éxito')
                 this.getVacaciones()

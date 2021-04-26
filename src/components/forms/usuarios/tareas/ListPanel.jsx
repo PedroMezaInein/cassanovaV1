@@ -84,14 +84,14 @@ class ListPanel extends Component {
                         </div>
                         <span className="btn btn-light-success btn-sm font-weight-bolder align-self-center" onClick={(e) => { openModal() }} >Nueva tarea</span>
                     </div>                   
-                    <div className="card-body pt-2">
-                        <div className="table-responsive" id="table-tareas">
+                    <div className="card-body pt-2" id="cardList">
+                        {/* <div className="table-responsive" id="table-tareas">
                             <table className="table table-head-custom table-head-bg table-vertical-center table-hover">
-                                <tbody>
+                                <tbody> */}
                                     <ItemTaskList addLabel = { addLabel } user = { user } tareas = { tareas } mostrarTarea={mostrarTarea} updateFav = { updateFav }  options = { options } updateTagInTask={updateTagInTask}/>
-                                </tbody>
+                                {/* </tbody>
                             </table>
-                        </div>
+                        </div> */}
                     </div>
                     {
                         pagination.limit < pagination.numTotal &&

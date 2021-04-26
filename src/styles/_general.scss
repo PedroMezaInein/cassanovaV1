@@ -2125,6 +2125,14 @@ span.font-weight-bolder.text-hover-error:hover{
 input[type="file"]#file-upload {
     display: none!important;
 }
+.tagify{
+    .tagify__tag{
+        div {
+            order: 1;
+            padding-right: 0rem;
+        }
+    } 
+} 
 
 div#tag-tagify{
     .tagify .tagify__tag .tagify__tag__removeBtn:after{
@@ -2139,4 +2147,46 @@ div#tag-tagify{
 }
 .d-contents{
     display: contents;
+}
+.line-break-anywhere{
+    line-break: anywhere;
+}
+.timeline-content{
+    min-height: 50px;   
+}
+/* .timeline-media{
+    img{
+        @include down-screen($md) {
+            max-width: 35px!important;
+            max-height: 35px!important;
+        }
+    }
+} */
+div#task{
+    @include down-screen($sm) {
+        div#card-header-task{
+            text-align:center;
+            justify-content: center;
+        }
+        div#d-flex-task{
+            place-content: stretch flex-end;
+            flex-flow: column-reverse nowrap;
+            margin-bottom: 5px;
+            line-height: 18px;
+        }
+        span#showListReturn{
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+        span#btn-return{
+            position: fixed;
+        }
+        .center-mobile{
+            justify-content: center;
+        }
+        .margin-mobile{
+            margin: 0!important;
+        }
+    }
 }

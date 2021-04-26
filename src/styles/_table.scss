@@ -200,69 +200,59 @@ tr.selected{
 }
 #table-tareas{
     @include down-screen($xxxs) {
-        td#responsables{
-            min-width: 90px;
-        }
-        td#descripcion{
-            min-width: 350px;
+        div#titulo, div#tags-date, div#tags{
+            text-align:center;
         }
     }
     @include screen($xxs) {
-        td#responsables{
-            min-width: 95px;
-        }
-        td#descripcion{
-            min-width: 405px;
+        div#titulo, div#tags-date, div#tags{
+            text-align:center;
         }
     }
     @include screen($xs) {
-        td#responsables{
-            min-width: 85px;
-        }
-        td#descripcion{
-            min-width: 370px;
+        div#titulo{
+            text-align:center;
         }
     }
     @include screen($sm) {
-        td#responsables{
-            min-width: 90px;
+        div#titulo, div#tags-date, div#tags{
+            text-align:justify;
         }
-        td#descripcion{
-            min-width: 470px;
+        div#tags-date{
+            text-align:right;
+        }
+        
+    }
+    @include screen($lg) {
+        .col-md-9 {
+            flex: 0 0 77%;
+            max-width: 77%;
+        }
+        .col-md-2 {
+            flex: 0 0 14.66667%;
+            max-width: 14.66667%;
         }
     }
-    // @include screen($md) {
-    //     td#responsables{
-    //         min-width: 90px;
-    //     }
-    //     td#descripcion{
-    //         min-width: 470px;
-    //     }
-    // }
-    // @include screen($lg) {
-    //     td#responsables{
-    //         min-width: 90px;
-    //     }
-    //     td#descripcion{
-    //         min-width: 470px;
-    //     }
-    // }
-    // @include screen($xl) {
-    //     td#responsables{
-    //         min-width: 90px;
-    //     }
-    //     td#descripcion{
-    //         min-width: 470px;
-    //     }
-    // }
-    tr:last-child{
-        td{
-            border-bottom: none;
+    @include screen($xxl) {
+        .col-md-9 {
+            flex: 0 0 82%;
+            max-width: 82%;
+        }
+        .col-md-2 {
+            flex: 0 0 9.66667%;
+            max-width: 9.66667%;
         }
     }
-    tr:first-child{
-        td{
-            border-top: none;
-        }
-    }
+}
+div#table-tareas:hover{
+    background-color: #f3f6f9f5;
+}
+div#cardList div:last-child{
+    border-bottom: none!important;
+}
+div#cardList div:last-child{
+    border-bottom: none!important;
+}
+.border-botton-2px{
+    border-bottom: 1px solid #ebedf3;
 }
