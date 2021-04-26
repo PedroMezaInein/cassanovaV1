@@ -82,8 +82,6 @@ class Tareas extends Component {
             pusher.channel('responsable-tarea').listen('ResponsableTarea', (data) => {
                 const { form, pagination, tarea, tareas, showTask } = this.state
                 const { user } = this.props.authUser
-                if(data.type === 'delete')
-                    console.log('DATA', data.type)
                 if(data.type ==='delete'){ this.getTasks(pagination) }
                 else{
                     if(form.filtrarTarea === 'own'){

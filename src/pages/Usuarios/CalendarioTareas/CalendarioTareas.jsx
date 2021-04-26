@@ -53,8 +53,6 @@ class Calendario extends Component {
             pusher.channel('responsable-tarea').listen('ResponsableTarea', (data) => {
                 const { tipo, tareas } = this.state
                 const { user } = this.props.authUser
-                if(data.type === 'delete')
-                    console.log('DATA', data.type)
                 if(data.type ==='delete'){ this.getCalendarioTareasAxios(tipo) }
                 else{
                     if(tipo === 'own'){
@@ -66,29 +64,8 @@ class Calendario extends Component {
                         }
                     }else{ this.getCalendarioTareasAxios(tipo) }
                 }
-                /* const { tarea } = data */
-                /* const { user } = this.props.authUser */
-                /* const { tipo } = this.state */
-                /* let flag = false */
-                /* this.getCalendarioTareasAxios(tipo) */
-                /* if(tipo === 'own'){
-                    if(tarea.responsables)
-                        tarea.responsables.forEach((element) => {
-                            if(element.id === user.id)
-                                flag = true
-                        })
-                    if(flag)
-                        this.getCalendarioTareasAxios(tipo)
-                }else{
-                    this.getCalendarioTareasAxios(tipo)
-                } */
-
             })
         }
-    }
-
-    updatePusher = data => {
-        console.log('DATA', data)
     }
 
     actualizarChecadorAxios = async(tipo) => {
