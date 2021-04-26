@@ -3,7 +3,6 @@ import React, { Component } from 'react'
 class Tag extends Component{
     render(){ 
         const { etiqueta, onClick, customPadding } = this.props
-        console.log(`customPadding ${customPadding}`)
         return(
             <div className="d-table cursor-pointer mt-1 " key = { etiqueta.id }>
                 <div className="tagify align-items-center border-0 d-inline-block">
