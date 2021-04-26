@@ -161,6 +161,25 @@ class NewTableServerRender extends Component {
         });
     }
     componentDidMount() {
+
+        $.event.special.touchstart = {
+            setup: function( _, ns, handle ){
+                if ( ns.includes("noPreventDefault") ) {
+                    this.addEventListener("touchstart", handle, { passive: false });
+                    } else {
+                        this.addEventListener("touchstart", handle, { passive: true });
+                    }
+                }
+            };
+        $.event.special.touchmove = {
+            setup: function( _, ns, handle ){
+                if ( ns.includes("noPreventDefault") ) {
+                    this.addEventListener("touchmove", handle, { passive: false });
+                } else {
+                    this.addEventListener("touchmove", handle, { passive: true });
+                }
+            }
+        };
         const { actions, mostrar_acciones, elementClass, accessToken, setter, urlRender, tipo_validacion, cardTable,
             cardTableHeader, cardBody, isTab, checkbox, isNav, idTable, columns: columnasHeader } = this.props
         global_variable["mostrar_acciones"] = mostrar_acciones;
