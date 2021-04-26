@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { printDate } from '../../../../functions/printers'
 import { OverlayTrigger, Tooltip, Dropdown, DropdownButton } from 'react-bootstrap'
-
+import moment from 'moment'
 class ItemTaskList extends Component {
 
     isImportant = (tarea) => {
@@ -95,7 +95,17 @@ class ItemTaskList extends Component {
             return false
         return true
     }
-    
+    tareaCaducada(fechaLiminte){
+        let textColor=''
+        var date = moment(fechaLiminte)
+        var now = moment();
+        if (now > date) {
+            textColor= 'text-danger'
+        }else{
+            textColor = 'text-muted'
+        }
+        return textColor
+    }
     render() {
         const { mostrarTarea, tareas, updateFav, addLabel, options, updateTagInTask } = this.props
         return (
@@ -121,7 +131,7 @@ class ItemTaskList extends Component {
                                                     tarea.etiquetas.map((etiqueta) => {
                                                         return (
                                                             <span key={etiqueta.id} style={{ backgroundColor: etiqueta.color, color: 'white', borderRadius:"0.3rem", padding:'5px' }}
-                                                                className="label font-weight-bold label-inline text-hover mr-1"
+                                                                className="label font-weight-bold label-inline text-hover mr-1 mb-1"
                                                                 onClick={(e) => { addLabel(etiqueta) }} >
                                                                 {etiqueta.titulo}
                                                             </span>
@@ -173,7 +183,7 @@ class ItemTaskList extends Component {
                                         <div onClick={(e) => { e.preventDefault(); updateFav(tarea) }} className={`btn btn-icon btn-xs text-hover-warning`}>
                                             <i className={`flaticon-star ${this.isImportant(tarea)}`}></i>
                                         </div>
-                                        <span className="font-weight-bold text-muted ml-2">
+                                        <span className={`font-weight-bolder ml-2 ${this.tareaCaducada(tarea.fecha_limite)}`}>
                                             {printDate(tarea.fecha_limite)}
                                         </span>
                                     </div>
