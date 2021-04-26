@@ -169,7 +169,7 @@ class Calendario extends Component {
     getTareas = async(tarea) => {
         const { access_token } = this.props.authUser
         waitAlert()
-        await axios.get(`${URL_DEV}v2/usuarios/tareas/${tarea.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.get(`${URL_DEV}v3/usuarios/calendario-tareas/options/${tarea.id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { tarea, usuarios, proyectos } = response.data
                 const { modal, options } = this.state
@@ -309,19 +309,28 @@ class Calendario extends Component {
             form
         })
     }
+
+    hasIcon = () => {
+        const { tarea } = this.state
+        if(tarea)
+            if(tarea.prioritario)
+                return 'flaticon-star text-warning mx-2'
+        return null
+    }
+
     render() {
         const { events, tipo, title, modal, tarea, form, options } = this.state
         return (
             <Layout active={'usuarios'} {...this.props}>
-                    <Card className="card-custom">
-                        <Card.Header>
-                            <div className="d-flex align-items-center">
-                                <div className="align-items-start flex-column">
-                                    <span className="font-weight-bolder text-dark font-size-h3">Calendario de tareas</span>
-                                </div>
+                <Card className="card-custom">
+                    <Card.Header>
+                        <div className="d-flex align-items-center">
+                            <div className="align-items-start flex-column">
+                                <span className="font-weight-bolder text-dark font-size-h3">Calendario de tareas</span>
                             </div>
-                        </Card.Header>
-                        <Card.Body>
+                        </div>
+                    </Card.Header>
+                    <Card.Body>
                         <div className="btn-toolbar btn-group justify-content-center mb-7">
                             <div className="btn-group btn-group-sm">
                                 <button type="button" className={`btn font-weight-bolder ${tipo === 'own' ? 'btn-success' : 'btn-light-success'}`} onClick={this.openCalendarMisTareas}>
@@ -332,12 +341,12 @@ class Calendario extends Component {
                                 </button>
                             </div>
                         </div>
-                            <FullCalendar locale = { esLocale } plugins = { [dayGridPlugin, interactionPlugin, bootstrapPlugin] }
-                                initialView = "dayGridMonth" weekends = { true } events = { events } eventContent = { this.renderEventContent }
-                                firstDay = { 1 } themeSystem = 'bootstrap' height = '1290.37px' />
-                        </Card.Body>
-                    </Card>
-                <Modal size="lg" title={title} show={modal.tareas} handleClose={this.handleCloseModalT}>
+                        <FullCalendar locale = { esLocale } plugins = { [dayGridPlugin, interactionPlugin, bootstrapPlugin] }
+                            initialView = "dayGridMonth" weekends = { true } events = { events } eventContent = { this.renderEventContent }
+                            firstDay = { 1 } themeSystem = 'bootstrap' height = '1290.37px' />
+                    </Card.Body>
+                </Card>
+                <Modal size="lg" title={title} show={modal.tareas} handleClose={this.handleCloseModalT} icon = { this.hasIcon() } >
                     <FormCalendarioTareas tarea = { tarea } addComentario = { this.addComentarioAxios } form = { form } proyectos = { options.proyectos }
                         onChange = { this.onChange } handleChange = { this.handleChangeComentario } users = { options.users } />
                 </Modal>

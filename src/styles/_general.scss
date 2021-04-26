@@ -2125,6 +2125,14 @@ span.font-weight-bolder.text-hover-error:hover{
 input[type="file"]#file-upload {
     display: none!important;
 }
+.tagify{
+    .tagify__tag{
+        div {
+            order: 1;
+            padding-right: 0rem;
+        }
+    } 
+} 
 
 div#tag-tagify{
     .tagify .tagify__tag .tagify__tag__removeBtn:after{
@@ -2143,3 +2151,14 @@ div#tag-tagify{
 .line-break-anywhere{
     line-break: anywhere;
 }
+.timeline-content{
+    min-height: 50px;   
+}
+/* .timeline-media{
+    img{
+        @include down-screen($md) {
+            max-width: 35px!important;
+            max-height: 35px!important;
+        }
+    }
+} */

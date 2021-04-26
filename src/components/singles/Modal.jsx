@@ -3,7 +3,6 @@ import Modal from 'react-bootstrap/Modal'
 
 class modal extends Component {
     
-
     componentDidUpdate(){
         var elementos = document.getElementsByClassName('modal');
         for(let cont = 0; cont < elementos.length; cont ++){
@@ -12,7 +11,7 @@ class modal extends Component {
     }
 
     render() {
-        const { show, handleClose, children, title, size } = this.props
+        const { show, handleClose, children, title, size, icon } = this.props
 
         return (
             <>
@@ -24,7 +23,11 @@ class modal extends Component {
                     centered
                 >
                     <Modal.Header>
-                        <h5 className="modal-title" id="exampleModalLabel">{title}</h5>
+                        <h5 className="modal-title" id="exampleModalLabel">
+                            
+                            {title}
+                            { icon && <i className={`${icon}`}></i> }
+                        </h5>
                         <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={handleClose}>
                             <i aria-hidden="true" className="ki ki-close"></i>
                         </button>
