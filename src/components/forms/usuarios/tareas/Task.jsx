@@ -120,7 +120,7 @@ class Task extends Component {
                                     </span>
                                 </div>
                             </div>
-                            <div class="card-toolbar">
+                            <div className="card-toolbar">
                                 {
                                     tarea.responsables.map((responsable) => {
                                         if (responsable.name === user.name) {
