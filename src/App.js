@@ -1,6 +1,5 @@
-import React, { Component } from 'react';
+import React, { Component, Suspense } from 'react';
 import { Route, Switch } from 'react-router-dom';
-import Loadable from 'react-loadable';
 import Loading from './pages/Loading';
 import NotFound from './pages/NotFound';
 import { connect } from 'react-redux';
@@ -9,183 +8,178 @@ import { URL_DEV } from './constants';
 import { logout, login } from './redux/reducers/auth_user'
 import { errorAlert } from './functions/alert';
 
-const Loader = x => Loadable({
-    loading: Loading,
-    loader: x
-})
+const Login = React.lazy(() => import('./pages/Login') )
 
-const Login = Loader(() => import('./pages/Login') )
+const Home = React.lazy(() => import('./pages/Home') )
 
-const Home = Loader(() => import('./pages/Home') )
+const Tareas = React.lazy(() => import('./pages/Usuarios/Tareas') )
+const Empresas = React.lazy(() => import('./pages/Usuarios/Empresas/Empresas') )
+const EmpresasForm = React.lazy(() => import('./pages/Usuarios/Empresas/EmpresasForm') )
 
-const Tareas = Loader(() => import('./pages/Usuarios/Tareas') )
-const Empresas = Loader(() => import('./pages/Usuarios/Empresas/Empresas') )
-const EmpresasForm = Loader(() => import('./pages/Usuarios/Empresas/EmpresasForm') )
+const Usuarios = React.lazy(() => import('./pages/Usuarios/Usuarios/Usuarios') )
+const UsuariosForm = React.lazy(() => import('./pages/Usuarios/Usuarios/UsuariosForm') )
 
-const Usuarios = Loader(() => import('./pages/Usuarios/Usuarios/Usuarios') )
-const UsuariosForm = Loader(() => import('./pages/Usuarios/Usuarios/UsuariosForm') )
+const Accesos = React.lazy(() => import('./pages/Usuarios/Accesos/Accesos') )
+const AccesosForm = React.lazy(() => import('./pages/Usuarios/Accesos/AccesosForm') )
 
-const Accesos = Loader(() => import('./pages/Usuarios/Accesos/Accesos') )
-const AccesosForm = Loader(() => import('./pages/Usuarios/Accesos/AccesosForm') )
+const CalendarioTareas = React.lazy(() => import('./pages/Usuarios/CalendarioTareas/CalendarioTareas') )
 
-const CalendarioTareas = Loader(() => import('./pages/Usuarios/CalendarioTareas/CalendarioTareas') )
+const Normas = React.lazy(() => import('./pages/Normas') )
 
-const Normas = Loader(() => import('./pages/Normas') )
+const Leads = React.lazy(() => import('./pages/Leads/Leads/Leads') )
+const LeadsForm = React.lazy(() => import('./pages/Leads/Leads/LeadsForm') )
 
-const Leads = Loader(() => import('./pages/Leads/Leads/Leads') )
-const LeadsForm = Loader(() => import('./pages/Leads/Leads/LeadsForm') )
+const Crm = React.lazy(() => import('./pages/Leads/CRM/Crm') )
+const LeadTelefono = React.lazy(() => import('./pages/Leads/CRM/Add/LeadTelefono') )
+const LeadInfo = React.lazy(() => import('./pages/Leads/CRM/Info/LeadInfo') )
+const LeadContratar = React.lazy(() => import('./pages/Leads/CRM/Contratar') )
+const LeadLlamadaSalida = React.lazy(() => import('./pages/Leads/CRM/Add/LeadLlamadaSalida') )
+const LeadLlamadaCierre = React.lazy(() => import('./pages/Leads/CRM/Cierre/LeadLlamadaCierre') )
 
-const Crm = Loader(() => import('./pages/Leads/CRM/Crm') )
-const LeadTelefono = Loader(() => import('./pages/Leads/CRM/Add/LeadTelefono') )
-const LeadInfo = Loader(() => import('./pages/Leads/CRM/Info/LeadInfo') )
-const LeadContratar = Loader(() => import('./pages/Leads/CRM/Contratar') )
-const LeadLlamadaSalida = Loader(() => import('./pages/Leads/CRM/Add/LeadLlamadaSalida') )
-const LeadLlamadaCierre = Loader(() => import('./pages/Leads/CRM/Cierre/LeadLlamadaCierre') )
+const Prospectos = React.lazy(() => import('./pages/Leads/Prospectos/Prospectos') )
+const ProspectosForm = React.lazy(() => import('./pages/Leads/Prospectos/ProspectosForm') )
 
-const Prospectos = Loader(() => import('./pages/Leads/Prospectos/Prospectos') )
-const ProspectosForm = Loader(() => import('./pages/Leads/Prospectos/ProspectosForm') )
+// const Clientes = React.lazy(() => import('./pages/Leads/Clientes') )
+const Clientes = React.lazy(() => import('./pages/Leads/Clientes/Clientes') )
+const ClientesForm = React.lazy(() => import('./pages/Leads/Clientes/ClientesForm') )
 
-// const Clientes = Loader(() => import('./pages/Leads/Clientes') )
-const Clientes = Loader(() => import('./pages/Leads/Clientes/Clientes') )
-const ClientesForm = Loader(() => import('./pages/Leads/Clientes/ClientesForm') )
+const MiProyecto = React.lazy(() => import('./pages/MiProyecto') )
 
-const MiProyecto = Loader(() => import('./pages/MiProyecto') )
+const Cuentas = React.lazy(() => import('./pages/Bancos/Cuenta/Cuenta') )
+const CuentasForm = React.lazy(() => import('./pages/Bancos/Cuenta/CuentaForm') )
+const CuentaDetails = React.lazy(() => import('./pages/Bancos/Cuenta/CuentaDetails') )
 
-const Cuentas = Loader(() => import('./pages/Bancos/Cuenta/Cuenta') )
-const CuentasForm = Loader(() => import('./pages/Bancos/Cuenta/CuentaForm') )
-const CuentaDetails = Loader(() => import('./pages/Bancos/Cuenta/CuentaDetails') )
+// const EstadosCuenta = React.lazy(() => import('./pages/Bancos/EstadosCuenta') )
+const EstadosCuenta = React.lazy(() => import('./pages/Bancos/EstadosCuenta/EstadosCuenta') )
+const EstadosCuentaForm = React.lazy(() => import('./pages/Bancos/EstadosCuenta/EstadosCuentaForm') )
 
-// const EstadosCuenta = Loader(() => import('./pages/Bancos/EstadosCuenta') )
-const EstadosCuenta = Loader(() => import('./pages/Bancos/EstadosCuenta/EstadosCuenta') )
-const EstadosCuentaForm = Loader(() => import('./pages/Bancos/EstadosCuenta/EstadosCuentaForm') )
+const Traspasos = React.lazy(() => import('./pages/Bancos/Traspasos/Traspasos') )
+const TraspasosForm = React.lazy(() => import('./pages/Bancos/Traspasos/TraspasosForm') )
 
-const Traspasos = Loader(() => import('./pages/Bancos/Traspasos/Traspasos') )
-const TraspasosForm = Loader(() => import('./pages/Bancos/Traspasos/TraspasosForm') )
+const Conceptos = React.lazy(() => import('./pages/Presupuesto/Conceptos/Conceptos') )
+const ConceptosForm = React.lazy(() => import('./pages/Presupuesto/Conceptos/ConceptosForm') )
 
-const Conceptos = Loader(() => import('./pages/Presupuesto/Conceptos/Conceptos') )
-const ConceptosForm = Loader(() => import('./pages/Presupuesto/Conceptos/ConceptosForm') )
+const Rendimiento = React.lazy(() => import('./pages/Presupuesto/Rendimiento/Rendimiento') )
+const RendimientoForm = React.lazy(() => import('./pages/Presupuesto/Rendimiento/RendimientoForm') )
+const Presupuesto = React.lazy(() => import('./pages/Presupuesto/Presupuesto') )
+const AddPresupuestoForm = React.lazy(() => import('./pages/Presupuesto/AddPresupuestoForm') )
+const ActualizarPresupuesto = React.lazy(() => import('./pages/Presupuesto/ActualizarPresupuesto') )
+const UltimoPresupuesto = React.lazy(() => import('./pages/Presupuesto/UltimoPresupuesto') )
+const PresupuestoDiseño = React.lazy(() => import('./pages/Presupuesto/PresupuestoDiseño/PresupuestoDiseño') )
+const PresupuestoDiseñoForm = React.lazy(() => import('./pages/Presupuesto/PresupuestoDiseño/PresupuestoDiseñoForm') )
 
-const Rendimiento = Loader(() => import('./pages/Presupuesto/Rendimiento/Rendimiento') )
-const RendimientoForm = Loader(() => import('./pages/Presupuesto/Rendimiento/RendimientoForm') )
-const Presupuesto = Loader(() => import('./pages/Presupuesto/Presupuesto') )
-const AddPresupuestoForm = Loader(() => import('./pages/Presupuesto/AddPresupuestoForm') )
-const ActualizarPresupuesto = Loader(() => import('./pages/Presupuesto/ActualizarPresupuesto') )
-const UltimoPresupuesto = Loader(() => import('./pages/Presupuesto/UltimoPresupuesto') )
-const PresupuestoDiseño = Loader(() => import('./pages/Presupuesto/PresupuestoDiseño/PresupuestoDiseño') )
-const PresupuestoDiseñoForm = Loader(() => import('./pages/Presupuesto/PresupuestoDiseño/PresupuestoDiseñoForm') )
+const Ingresos = React.lazy(() => import('./pages/Administracion/Ingresos/Ingresos') )
+const IngresosForm = React.lazy(() => import('./pages/Administracion/Ingresos/IngresosForm') )
 
-const Ingresos = Loader(() => import('./pages/Administracion/Ingresos/Ingresos') )
-const IngresosForm = Loader(() => import('./pages/Administracion/Ingresos/IngresosForm') )
+const Egresos = React.lazy(() => import('./pages/Administracion/Egresos/Egresos') )
+const EgresosForm = React.lazy(() => import('./pages/Administracion/Egresos/EgresosForm') )
 
-const Egresos = Loader(() => import('./pages/Administracion/Egresos/Egresos') )
-const EgresosForm = Loader(() => import('./pages/Administracion/Egresos/EgresosForm') )
+// const Contratos = React.lazy(() => import('./pages/Administracion/Contratos') )
+const Contratos = React.lazy(() => import('./pages/Administracion/Contratos/Contratos') )
+const ContratosForm = React.lazy(() => import('./pages/Administracion/Contratos/ContratosForm') )
 
-// const Contratos = Loader(() => import('./pages/Administracion/Contratos') )
-const Contratos = Loader(() => import('./pages/Administracion/Contratos/Contratos') )
-const ContratosForm = Loader(() => import('./pages/Administracion/Contratos/ContratosForm') )
+const Facturacion = React.lazy(() => import('./pages/Administracion/Facturacion') )
+const Flujos = React.lazy(() => import('./pages/Administracion/Flujos') )
 
-const Facturacion = Loader(() => import('./pages/Administracion/Facturacion') )
-const Flujos = Loader(() => import('./pages/Administracion/Flujos') )
+const Proveedores = React.lazy(() => import('./pages/Leads/Proveedor/Proveedor') )
+const ProveedoresForm = React.lazy(() => import('./pages/Leads/Proveedor/ProveedorForm') )
 
-const Proveedores = Loader(() => import('./pages/Leads/Proveedor/Proveedor') )
-const ProveedoresForm = Loader(() => import('./pages/Leads/Proveedor/ProveedorForm') )
+const Documentos = React.lazy(() => import('./pages/Administracion/Documentos/Documentos') )
+const DocumentosForm = React.lazy(() => import('./pages/Administracion/Documentos/DocumentosForm') )
 
-const Documentos = Loader(() => import('./pages/Administracion/Documentos/Documentos') )
-const DocumentosForm = Loader(() => import('./pages/Administracion/Documentos/DocumentosForm') )
+const Proyectos = React.lazy(() => import('./pages/Proyectos/Proyectos/Proyectos') )
+const ProyectosForm = React.lazy(() => import('./pages/Proyectos/Proyectos/ProyectosForm') )
 
-const Proyectos = Loader(() => import('./pages/Proyectos/Proyectos/Proyectos') )
-const ProyectosForm = Loader(() => import('./pages/Proyectos/Proyectos/ProyectosForm') )
+const Compras = React.lazy(() => import('./pages/Proyectos/Compras/Compras') )
+const ComprasForm = React.lazy(() => import('./pages/Proyectos/Compras/ComprasForm') )
 
-const Compras = Loader(() => import('./pages/Proyectos/Compras/Compras') )
-const ComprasForm = Loader(() => import('./pages/Proyectos/Compras/ComprasForm') )
+const Ventas = React.lazy(() => import('./pages/Proyectos/Ventas/Ventas') )
+const VentasForm = React.lazy(() => import('./pages/Proyectos/Ventas/VentasForm') )
 
-const Ventas = Loader(() => import('./pages/Proyectos/Ventas/Ventas') )
-const VentasForm = Loader(() => import('./pages/Proyectos/Ventas/VentasForm') )
+// const Ventas = React.lazy(() => import('./pages/Proyectos/Ventas') )
+// const Compras = React.lazy(() => import('./pages/Proyectos/Compras') )
+const Utilidad = React.lazy(() => import('./pages/Proyectos/Utilidad') )
 
-// const Ventas = Loader(() => import('./pages/Proyectos/Ventas') )
-// const Compras = Loader(() => import('./pages/Proyectos/Compras') )
-const Utilidad = Loader(() => import('./pages/Proyectos/Utilidad') )
+const SolicitudCompra = React.lazy(() => import('./pages/Proyectos/SolicitudCompra/SolicitudCompra') )
+const SolicitudCompraForm = React.lazy(() => import('./pages/Proyectos/SolicitudCompra/SolicitudCompraForm') )
 
-const SolicitudCompra = Loader(() => import('./pages/Proyectos/SolicitudCompra/SolicitudCompra') )
-const SolicitudCompraForm = Loader(() => import('./pages/Proyectos/SolicitudCompra/SolicitudCompraForm') )
+// const SolicitudVenta = React.lazy(() => import('./pages/Proyectos/SolicitudVenta') )
+const SolicitudVenta = React.lazy(() => import('./pages/Proyectos/SolicitudVenta/SolicitudVenta') )
+const SolicitudVentaForm = React.lazy(() => import('./pages/Proyectos/SolicitudVenta/SolicitudVentaForm') )
 
-// const SolicitudVenta = Loader(() => import('./pages/Proyectos/SolicitudVenta') )
-const SolicitudVenta = Loader(() => import('./pages/Proyectos/SolicitudVenta/SolicitudVenta') )
-const SolicitudVentaForm = Loader(() => import('./pages/Proyectos/SolicitudVenta/SolicitudVentaForm') )
+const Remision = React.lazy(() => import('./pages/Proyectos/Remision/Remision') )
+const RemisionForm = React.lazy(() => import('./pages/Proyectos/Remision/RemisionForm') )
 
-const Remision = Loader(() => import('./pages/Proyectos/Remision/Remision') )
-const RemisionForm = Loader(() => import('./pages/Proyectos/Remision/RemisionForm') )
+const Herramienta = React.lazy(() => import('./pages/Proyectos/Herramienta/Herramienta') )
+const HerramientaForm = React.lazy(() => import('./pages/Proyectos/Herramienta/HerramientaForm') )
 
-const Herramienta = Loader(() => import('./pages/Proyectos/Herramienta/Herramienta') )
-const HerramientaForm = Loader(() => import('./pages/Proyectos/Herramienta/HerramientaForm') )
+const CalendarioProyectos = React.lazy(() => import('./pages/Proyectos/Calendario/CalendarioProyectos') )
 
-const CalendarioProyectos = Loader(() => import('./pages/Proyectos/Calendario/CalendarioProyectos') )
+const Areas = React.lazy( () => import('./pages/Catalogos/Areas') )
+const Partidas = React.lazy( () => import('./pages/Catalogos/Partidas') )
+const Unidades = React.lazy( () => import('./pages/Catalogos/Unidades') )
+const TiposContratos = React.lazy( () => import('./pages/Catalogos/TiposContratos') )
+const Bancos = React.lazy( () => import('./pages/Catalogos/Bancos') )
+const PrecioDiseño = React.lazy( () => import('./pages/Catalogos/PrecioDiseño/PrecioDiseño') )
+const PrecioDiseñoForm = React.lazy( () => import('./pages/Catalogos/PrecioDiseño/PrecioDiseñoForm') )
+const PartidasDiseño = React.lazy( () => import('./pages/Catalogos/PartidasDiseño/PartidasDiseño') )
+const PartidasDiseñoForm = React.lazy( () => import('./pages/Catalogos/PartidasDiseño/PartidasDiseñoForm') )
+const AdjuntosEmpresa = React.lazy( () => import('./pages/Catalogos/AdjuntosEmpresa/AdjuntosEmpresa') )
+const AdjuntosEmpresaForm = React.lazy( () => import('./pages/Catalogos/AdjuntosEmpresa/AdjuntosEmpresaForm') )
+const Diseño = React.lazy( () => import('./pages/Catalogos/Diseño') )
+const OrigenesLeads = React.lazy( () => import('./pages/Catalogos/OrigenesLeads') )
+const RedesSociales = React.lazy( () => import('./pages/Catalogos/RedesSociales') )
+const RolesMercadotecnia = React.lazy( () => import('./pages/Catalogos/RolesMercadotecnia') )
+const Servicios = React.lazy( () => import('./pages/Catalogos/Servicios') )
 
-const Areas = Loader( () => import('./pages/Catalogos/Areas') )
-const Partidas = Loader( () => import('./pages/Catalogos/Partidas') )
-const Unidades = Loader( () => import('./pages/Catalogos/Unidades') )
-const TiposContratos = Loader( () => import('./pages/Catalogos/TiposContratos') )
-const Bancos = Loader( () => import('./pages/Catalogos/Bancos') )
-const PrecioDiseño = Loader( () => import('./pages/Catalogos/PrecioDiseño/PrecioDiseño') )
-const PrecioDiseñoForm = Loader( () => import('./pages/Catalogos/PrecioDiseño/PrecioDiseñoForm') )
-const PartidasDiseño = Loader( () => import('./pages/Catalogos/PartidasDiseño/PartidasDiseño') )
-const PartidasDiseñoForm = Loader( () => import('./pages/Catalogos/PartidasDiseño/PartidasDiseñoForm') )
-const AdjuntosEmpresa = Loader( () => import('./pages/Catalogos/AdjuntosEmpresa/AdjuntosEmpresa') )
-const AdjuntosEmpresaForm = Loader( () => import('./pages/Catalogos/AdjuntosEmpresa/AdjuntosEmpresaForm') )
-const Diseño = Loader( () => import('./pages/Catalogos/Diseño') )
-const OrigenesLeads = Loader( () => import('./pages/Catalogos/OrigenesLeads') )
-const RedesSociales = Loader( () => import('./pages/Catalogos/RedesSociales') )
-const RolesMercadotecnia = Loader( () => import('./pages/Catalogos/RolesMercadotecnia') )
-const Servicios = Loader( () => import('./pages/Catalogos/Servicios') )
+const Contabilidad = React.lazy( () => import('./pages/Reportes/Contabilidad') )
+const ReporteVentas = React.lazy( () => import('./pages/Reportes/ReporteVentas') )
+const FlujoProyectos = React.lazy( () => import('./pages/Reportes/FlujoProyectos') )
+const FlujoDepartamentos = React.lazy( () => import('./pages/Reportes/FlujoDepartamentos') )
+const EstadoResultados = React.lazy( () => import('./pages/Reportes/EstadoResultados') )
+const ReporteMercadotecnia = React.lazy( () => import('./pages/Reportes/Mercadotecnia/Mercadotecnia') )
 
-const Contabilidad = Loader( () => import('./pages/Reportes/Contabilidad') )
-const ReporteVentas = Loader( () => import('./pages/Reportes/ReporteVentas') )
-const FlujoProyectos = Loader( () => import('./pages/Reportes/FlujoProyectos') )
-const FlujoDepartamentos = Loader( () => import('./pages/Reportes/FlujoDepartamentos') )
-const EstadoResultados = Loader( () => import('./pages/Reportes/EstadoResultados') )
-const ReporteMercadotecnia = Loader( () => import('./pages/Reportes/Mercadotecnia/Mercadotecnia') )
+const AccountSettings = React.lazy(() => import('./pages/Perfil/AccountSettings') )
+const Calendario = React.lazy(() => import('./pages/Perfil/Calendario') )
+const Notificaciones = React.lazy(() => import('./pages/Perfil/Notificaciones') )
 
-const AccountSettings = Loader(() => import('./pages/Perfil/AccountSettings') )
-const Calendario = Loader(() => import('./pages/Perfil/Calendario') )
-const Notificaciones = Loader(() => import('./pages/Perfil/Notificaciones') )
+const NominaObra = React.lazy(() => import('./pages/RecursosHumanos/NominaObra/NominaObra') )
+const NominaObraForm = React.lazy(() => import('./pages/RecursosHumanos/NominaObra/NominaObraForm') )
+const NominaObraSingle = React.lazy(() => import('./pages/RecursosHumanos/NominaObraSingle') )
 
-const NominaObra = Loader(() => import('./pages/RecursosHumanos/NominaObra/NominaObra') )
-const NominaObraForm = Loader(() => import('./pages/RecursosHumanos/NominaObra/NominaObraForm') )
-const NominaObraSingle = Loader(() => import('./pages/RecursosHumanos/NominaObraSingle') )
+const NominaAdmin = React.lazy(() => import('./pages/RecursosHumanos/NominaAdmin/NominaAdmin') )
+const NominaAdminForm = React.lazy(() => import('./pages/RecursosHumanos/NominaAdmin/NominaAdminForm') )
+const NominaAdminSingle = React.lazy(() => import('./pages/RecursosHumanos/NominaAdmin/NominaAdminSingle') )
+const Checador = React.lazy(() => import('./pages/RecursosHumanos/Checador/Checador') )
 
-const NominaAdmin = Loader(() => import('./pages/RecursosHumanos/NominaAdmin/NominaAdmin') )
-const NominaAdminForm = Loader(() => import('./pages/RecursosHumanos/NominaAdmin/NominaAdminForm') )
-const NominaAdminSingle = Loader(() => import('./pages/RecursosHumanos/NominaAdmin/NominaAdminSingle') )
-const Checador = Loader(() => import('./pages/RecursosHumanos/Checador/Checador') )
+// const Empleados = React.lazy(() => import('./pages/RecursosHumanos/Empleados') )
+const Empleados = React.lazy(() => import('./pages/RecursosHumanos/Empleados/Empleados') )
+const EmpleadosForm = React.lazy(() => import('./pages/RecursosHumanos/Empleados/EmpleadosForm') )
 
-// const Empleados = Loader(() => import('./pages/RecursosHumanos/Empleados') )
-const Empleados = Loader( () => import('./pages/RecursosHumanos/Empleados/Empleados') )
-const EmpleadosForm = Loader( () => import('./pages/RecursosHumanos/Empleados/EmpleadosForm') )
+const Imss = React.lazy(() => import('./pages/RecursosHumanos/Imss/Imss') )
+const ImssForm = React.lazy(() => import('./pages/RecursosHumanos/Imss/ImssForm') )
 
-const Imss = Loader( () => import('./pages/RecursosHumanos/Imss/Imss') )
-const ImssForm = Loader( () => import('./pages/RecursosHumanos/Imss/ImssForm') )
+const Prestamos = React.lazy(() => import('./pages/RecursosHumanos/Prestamos/Prestamos') )
+const PrestamosForm = React.lazy(() => import('./pages/RecursosHumanos/Prestamos/PrestamosForm') )
 
-const Prestamos = Loader( () => import('./pages/RecursosHumanos/Prestamos/Prestamos') )
-const PrestamosForm = Loader( () => import('./pages/RecursosHumanos/Prestamos/PrestamosForm') )
+const Vacaciones = React.lazy(() => import('./pages/RecursosHumanos/Vacaciones/Vacaciones') )
 
-const Vacaciones = Loader(() => import('./pages/RecursosHumanos/Vacaciones/Vacaciones') )
+const Calidad = React.lazy(() => import('./pages/Calidad/Calidad') )
+const CalidadForm = React.lazy(() => import('./pages/Calidad/CalidadForm') )
 
-const Calidad = Loader(() => import('./pages/Calidad/Calidad') )
-const CalidadForm = Loader(() => import('./pages/Calidad/CalidadForm') )
+const MaterialEmpresa = React.lazy(() => import('./pages/Mercadotecnia/MaterialEmpresa/MaterialEmpresa') )
+const MaterialCliente = React.lazy(() => import('./pages/Mercadotecnia/MaterialCliente/MaterialCliente') )
+const ParrillasContenido = React.lazy(() => import('./pages/Mercadotecnia/ParrillasContenido/ParrillasContenido') )
+const PlanTrabajo = React.lazy(() => import('./pages/Mercadotecnia/PlanTrabajo/PlanTrabajo') )
 
-const MaterialEmpresa = Loader( () => import('./pages/Mercadotecnia/MaterialEmpresa/MaterialEmpresa') )
-const MaterialCliente = Loader( () => import('./pages/Mercadotecnia/MaterialCliente/MaterialCliente') )
-const ParrillasContenido = Loader( () => import('./pages/Mercadotecnia/ParrillasContenido/ParrillasContenido') )
-const PlanTrabajo = Loader( () => import('./pages/Mercadotecnia/PlanTrabajo/PlanTrabajo') )
+const MercaProveedores = React.lazy(() => import('./pages/Mercadotecnia/Proveedores/Proveedores') )
+const MercaProveedoresForm = React.lazy(() => import('./pages/Mercadotecnia/Proveedores/ProveedoresForm') )
 
-const MercaProveedores = Loader( () => import('./pages/Mercadotecnia/Proveedores/Proveedores') )
-const MercaProveedoresForm = Loader(() => import('./pages/Mercadotecnia/Proveedores/ProveedoresForm') )
+const SolicitudEgresos = React.lazy(() => import('./pages/Mercadotecnia/Solicitud-Pagos/SolicitudEgresos') )
+const SolicitudEgresosForm = React.lazy(() => import('./pages/Mercadotecnia/Solicitud-Pagos/SolicitudEgresosForm') )
 
-const SolicitudEgresos = Loader( () => import('./pages/Mercadotecnia/Solicitud-Pagos/SolicitudEgresos') )
-const SolicitudEgresosForm = Loader(() => import('./pages/Mercadotecnia/Solicitud-Pagos/SolicitudEgresosForm') )
-
-const Pagos = Loader( () => import('./pages/Mercadotecnia/Pagos/Pagos') )
-const PagosForm = Loader(() => import('./pages/Mercadotecnia/Pagos/PagosForm') )
+const Pagos = React.lazy(() => import('./pages/Mercadotecnia/Pagos/Pagos') )
+const PagosForm = React.lazy(() => import('./pages/Mercadotecnia/Pagos/PagosForm') )
 
 class App extends Component{
     async componentDidMount(){
@@ -264,7 +258,7 @@ class App extends Component{
         
         return(
             <div>
-
+                <Suspense fallback={<div><Loading /></div>}>
                 <Switch>
 
                     {/* ANCHOR Routes from login */}
@@ -486,7 +480,7 @@ class App extends Component{
                     <Route path = "*" component = { NotFound } />
                     
                 </Switch>
-
+                </Suspense>
             </div>
         )
     }
