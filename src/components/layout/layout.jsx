@@ -174,9 +174,11 @@ class Layout extends Component {
             (response) => { 
                 const { usuario } = response.data
                 if(tipo === 'entrada')
-                    doneAlert('Entrada checada con éxito')
+                    doneAlert('Checaste tu entrada.')
+                    //doneAlert('Entrada checada con éxito')
                 else
-                    doneAlert('Salida checada con éxito')
+                    doneAlert('Checaste tu salida.')
+                    //doneAlert('Salida checada con éxito')
                 this.setState({...this.state, checador: usuario.checadores})
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
