@@ -103,80 +103,82 @@ class ItemTaskList extends Component {
                 {
                     tareas.map((tarea, key) => {
                         return (
-                            <tr key={key}>
-                                <td id="responsables" >
-                                    {this.responsablesSymbol(tarea.responsables)}
-                                </td>
-                                <td id="descripcion" className="text-hover" onClick={() => { mostrarTarea(tarea) }}>
-                                    <div>
-                                        <div className="text-dark-75 font-weight-bolder mb-2 font-size-lg cursor-pointer">
+                            <div className="row mx-0 border-botton-2px py-3 table-hover" key={key} id="table-tareas" >
+                                <div className="col-md-1 align-self-center">
+                                    <div className="py-3">
+                                        {this.responsablesSymbol(tarea.responsables)}
+                                    </div>
+                                </div>
+                                <div className="col-md-9 align-self-center">
+                                    <div className="py-3">
+                                        <div id="titulo" className="text-dark-75 font-weight-bolder font-size-lg cursor-pointer text-hover-dark" onClick={() => { mostrarTarea(tarea) }}>
                                             {tarea.titulo}
                                         </div>
+                                        {
+                                            tarea.etiquetas &&
+                                            <div className="my-4" id="tags">
+                                                { 
+                                                    tarea.etiquetas.map((etiqueta) => {
+                                                        return (
+                                                            <span key={etiqueta.id} style={{ backgroundColor: etiqueta.color, color: 'white', borderRadius:"0.3rem", padding:'5px' }}
+                                                                className="label font-weight-bold label-inline text-hover mr-1"
+                                                                onClick={(e) => { addLabel(etiqueta) }} >
+                                                                {etiqueta.titulo}
+                                                            </span>
+                                                        )
+                                                    })
+                                                }
+                                            </div>
+                                        }
                                         <div className="text-justify font-weight-light">
                                             {tarea.descripcion}
                                         </div>
                                     </div>
-                                </td>
-                                <td>
-                                    <div className="text-right white-space-nowrap">
-                                        {
-                                            tarea.etiquetas?
-                                                tarea.etiquetas.map((etiqueta) => {
-                                                    return(
-                                                        <span key = { etiqueta.id} style = { { backgroundColor: etiqueta.color, color: 'white'}}
-                                                            className="label font-weight-bold label-inline ml-2 text-hover"
-                                                            onClick = { (e) => { addLabel(etiqueta) } } >
-                                                            {etiqueta.titulo}
-                                                        </span>
-                                                    )
-                                                })
-                                            :<></>
-                                        }
-                                        
-                                        <span className="mx-3">
-                                            <span id="down-tag">
-                                                <DropdownButton
-                                                    title={
-                                                        <i className="flaticon-add-label-button text-muted p-0 font-size-14px"></i>
-                                                    }
-                                                    id={`dropdown-button-tag`}
-                                                    className="d-inline-block"
-                                                    drop={'left'}>
-                                                    {
-                                                            options.tags.map((tag, key) => {
-                                                                if(this.isActiveTag(tag, tarea))
-                                                                return (
-                                                                    <div key={key}>
-                                                                        <Dropdown.Item className="p-0" key={key} onClick={() => { updateTagInTask(tag, tarea, 'add') }}>
-                                                                            <span className="navi-link w-100">
-                                                                                <span className="navi-text">
-                                                                                    <span className="label label-xl label-inline rounded-0 w-100 font-weight-bold"
-                                                                                        style={{
-                                                                                            color: `${tag.name ==='Nueva etiqueta' ? '#80808f' : 'white' }`,
-                                                                                            backgroundColor: tag.color ,
-                                                                                        }}>
-                                                                                        { tag.name }
-                                                                                    </span>
+                                </div>
+                                <div className="col-md-2 align-self-center">
+                                    <div className="py-3" id="tags-date">
+                                        <span id="down-tag">
+                                            <DropdownButton
+                                                title={
+                                                    <i className="flaticon-add-label-button text-muted p-0 font-size-14px"></i>
+                                                }
+                                                id={`dropdown-button-tag`}
+                                                className="d-inline-block"
+                                                drop={'left'}>
+                                                {
+                                                    options.tags.map((tag, key) => {
+                                                        if (this.isActiveTag(tag, tarea))
+                                                            return (
+                                                                <div key={key}>
+                                                                    <Dropdown.Item className="p-0" key={key} onClick={() => { updateTagInTask(tag, tarea, 'add') }}>
+                                                                        <span className="navi-link w-100">
+                                                                            <span className="navi-text">
+                                                                                <span className="label label-xl label-inline rounded-0 w-100 font-weight-bold"
+                                                                                    style={{
+                                                                                        color: `${tag.name === 'Nueva etiqueta' ? '#80808f' : 'white'}`,
+                                                                                        backgroundColor: tag.color,
+                                                                                    }}>
+                                                                                    {tag.name}
                                                                                 </span>
                                                                             </span>
-                                                                        </Dropdown.Item>
-                                                                    </div>
-                                                                )
-                                                                return ''
-                                                            })
-                                                        }
-                                                </DropdownButton>
-                                            </span>
-                                            <div onClick={(e) => { e.preventDefault(); updateFav(tarea) }} className={`btn btn-icon btn-xs text-hover-warning`}>
-                                                <i className={`flaticon-star ${this.isImportant(tarea)}`}></i>
-                                            </div>
+                                                                        </span>
+                                                                    </Dropdown.Item>
+                                                                </div>
+                                                            )
+                                                        return ''
+                                                    })
+                                                }
+                                            </DropdownButton>
                                         </span>
-                                        <span className="font-weight-bold text-muted">
+                                        <div onClick={(e) => { e.preventDefault(); updateFav(tarea) }} className={`btn btn-icon btn-xs text-hover-warning`}>
+                                            <i className={`flaticon-star ${this.isImportant(tarea)}`}></i>
+                                        </div>
+                                        <span className="font-weight-bold text-muted ml-2">
                                             {printDate(tarea.fecha_limite)}
                                         </span>
                                     </div>
-                                </td>
-                            </tr>
+                                </div>
+                            </div>
                         )
                     })
                 }
