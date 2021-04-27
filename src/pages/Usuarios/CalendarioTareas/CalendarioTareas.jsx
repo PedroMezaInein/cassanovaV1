@@ -51,10 +51,13 @@ class Calendario extends Component {
         if(process.env.NODE_ENV === 'production' || true){
             const pusher = new Echo( PUSHER_OBJECT );
             pusher.channel('responsable-tarea').listen('ResponsableTarea', (data) => {
-                const { tipo, tareas } = this.state
+                const { tipo, tareas, tarea } = this.state
                 const { user } = this.props.authUser
                 if(data.type ==='delete'){ this.getCalendarioTareasAxios(tipo) }
                 else{
+                    if(tarea)
+                        if(tarea.id === data.tarea)
+                            this.getTareas({id: data.tarea})
                     if(tipo === 'own'){
                         let found = tareas.find((elemento) => { return elemento.id === data.tarea })
                         if(found){ this.getCalendarioTareasAxios(tipo) }
@@ -163,10 +166,7 @@ class Calendario extends Component {
     handleCloseModalT = () => {
         const { modal } = this.state
         modal.tareas = false
-        this.setState({
-            ...this.state,
-            modal
-        })
+        this.setState({ ...this.state, modal, tarea: '' })
     }
 
     clearForm = () => {
