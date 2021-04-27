@@ -5,6 +5,9 @@ import { connect } from 'react-redux'
 import { URL_DEV, PROYECTOS_TICKETS } from '../../constants'
 import { setTextTable, setDateTable, setLabelTable, setTextTableCenter } from '../../functions/setters'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
+import { deleteAlert, doneAlert, printResponseErrorAlert, errorAlert } from '../../functions/alert'
+import { setSingleHeader } from '../../functions/routers'
+import axios from 'axios'
 const $ = require('jquery');
 class Calidad extends Component {
     state = {
@@ -29,6 +32,11 @@ class Calidad extends Component {
             formeditado: 1
         });
     }
+
+    openModalDelete = calidad => {
+        deleteAlert('Borrarrás el ticket de calidad', '¿Deseas continuar?', () => { this.deleteTicketAxios(calidad) })
+    }
+
     setCalidad = calidad => {
         let aux = []
         calidad.map((calidad) => {
@@ -58,13 +66,34 @@ class Calidad extends Component {
                 iconclass: 'flaticon2-magnifier-tool',
                 action: 'see',
                 tooltip: { id: 'see', text: 'Mostrar', type: 'success' },
-            }
+            },
+            {
+                text: 'Eliminar',
+                btnclass: 'danger',
+                iconclass: 'flaticon2-rubbish-bin',
+                action: 'delete',
+                tooltip: { id: 'delete', text: 'Eliminar', type: 'error' }
+            },
         )
         return aux
     }
     async getCalidadAxios() {
         $('#kt_datatable_calidad').DataTable().ajax.reload();
     }
+
+    deleteTicketAxios = async(ticket) => {
+        const { access_token } = this.props.authUser
+        await axios.delete(`${URL_DEV}calidad/${ticket.id}`, { headers: setSingleHeader(access_token)  }).then(
+            (response) => {
+                this.getCalidadAxios();
+                doneAlert('Ticket eliminado con éxito')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     render() {
         return (
             <Layout active={'calidad'}  {...this.props}>
@@ -77,6 +106,7 @@ class Calidad extends Component {
                     mostrar_acciones={true}
                     actions={{
                         'see': { function: this.changePageSee },
+                        'delete': { function: this.openModalDelete },
                     }}
                     idTable='kt_datatable_calidad'
                     cardTable='cardTable'
@@ -90,7 +120,6 @@ class Calidad extends Component {
         )
     }
 }
-
 
 const mapStateToProps = state => {
     return {
