@@ -31,7 +31,7 @@ class Tags extends Component {
                                     fontWeight: 600
                                 }
                             }>
-                            FILTRAR TAGS
+                            FILTRAR POR TAGS
                         </Dropdown.Toggle>
                         <Dropdown.Menu className="p-0" >
                             <Dropdown.Header>
