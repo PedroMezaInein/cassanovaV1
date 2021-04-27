@@ -13,6 +13,7 @@ class Calidad extends Component {
     state = {
         calidad: ''
     }
+    
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
