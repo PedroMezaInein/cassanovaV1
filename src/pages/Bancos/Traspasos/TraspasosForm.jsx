@@ -63,9 +63,9 @@ class TraspasosForm extends Component {
                         form.adjuntos.adjuntos.files = aux
                         if (traspaso) {
                             if (traspaso.origen)
-                                form.origen = traspaso.origen.numero
+                                form.origen = traspaso.origen.id.toString()
                             if (traspaso.destino)
-                                form.destino = traspaso.destino.numero
+                                form.destino = traspaso.destino.id.toString()
                         }
                         this.setState({
                             ...this.state,
@@ -141,7 +141,7 @@ class TraspasosForm extends Component {
                 Swal.close()
                 const { cuentas } = response.data
                 const { options, form } = this.state
-                options.cuentas = setOptions(cuentas, 'nombre', 'numero')
+                options.cuentas = setOptions(cuentas, 'nombre', 'id')
                 this.setState({
                     ...this.state,
                     options,
