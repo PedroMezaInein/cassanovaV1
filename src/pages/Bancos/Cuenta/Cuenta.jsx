@@ -720,7 +720,7 @@ class Cuenta extends Component {
                                     }
                                     accessToken={this.props.authUser.access_token}
                                     setter={this.setCuentas}
-                                    urlRender={URL_DEV + 'cuentas/cuentas'}
+                                    urlRender={`${URL_DEV}v2/bancos/cuentas/cuentas`}
                                     idTable='cuentas_bancos'
                                     cardTable='cardTable_bancos'
                                     cardTableHeader='cardTableHeader__bancos'
@@ -753,7 +753,7 @@ class Cuenta extends Component {
                                         }}
                                     accessToken={this.props.authUser.access_token}
                                     setter={this.setCuentas}
-                                    urlRender={URL_DEV + 'cuentas/cajas'}
+                                    urlRender={`${URL_DEV}v2/bancos/cuentas/cajas`}
                                     idTable='cuentas_cajas'
                                     cardTable='cardTable_caja'
                                     cardTableHeader='cardTableHeader_caja'
