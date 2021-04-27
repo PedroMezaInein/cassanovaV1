@@ -31,7 +31,7 @@ class Tags extends Component {
                                     fontWeight: 600
                                 }
                             }>
-                            AGREGAR TAGS
+                            FILTRAR TAGS
                         </Dropdown.Toggle>
                         <Dropdown.Menu className="p-0" >
                             <Dropdown.Header>
