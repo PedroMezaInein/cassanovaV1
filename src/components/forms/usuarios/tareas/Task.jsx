@@ -127,18 +127,22 @@ class Task extends Component {
                                 {
                                     tarea.responsables.map((responsable) => {
                                         if (responsable.name === user.name) {
-                                            return (
-                                                <span key={user.id} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-bg-success mr-2 text-hover-white" onClick={(e) => { openModalEdit(tarea) }}>
-                                                    <i className="flaticon2-pen text-hover-success"></i>
-                                                </span>
-                                            )
+                                            if(tarea.terminada === 0)
+                                                return (
+                                                    <span key={user.id} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-bg-success mr-2 text-hover-white" onClick={(e) => { openModalEdit(tarea) }}>
+                                                        <i className="flaticon2-pen text-hover-success"></i>
+                                                    </span>
+                                                )
                                         }
                                         return ''
                                     })
                                 }
-                                <span className="btn btn-light-success btn-sm text-uppercase font-weight-bolder text-hover" onClick={() => { completarTarea(tarea) }}>
-                                    COMPLETAR
-                                </span>
+                                {
+                                    tarea.terminada === 0 &&
+                                        <span className="btn btn-light-success btn-sm text-uppercase font-weight-bolder text-hover" onClick={() => { completarTarea(tarea) }}>
+                                            COMPLETAR
+                                        </span>
+                                }
                             </div>
                         </div>
                         <div className="card-body p-0">

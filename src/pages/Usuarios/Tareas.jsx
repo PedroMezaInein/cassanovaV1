@@ -43,6 +43,7 @@ class Tareas extends Component {
             filtrarTareas: [
                 { text: "Tareas personales", value: "own" },
                 { text: "Tareas generales", value: "all" },
+                { text: "Tareas terminadas", value: "done" },
             ],
         },
         showTask: false,
