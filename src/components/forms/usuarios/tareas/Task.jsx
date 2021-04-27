@@ -29,8 +29,24 @@ class Task extends Component {
         return true
     }
 
+    canEdit = tarea => {
+        const { user } = this.props
+        if(tarea.terminada === 0){
+            if(user.tipo.tipo === "Administrador")
+                return true
+            else{
+                let flag = tarea.responsables.find((responsable) => {
+                    return responsable.id === user.id
+                })
+                if(flag)
+                    return true
+            }
+        }
+        return false
+    }
+
     render() {
-        const {showTask, mostrarListPanel, tarea, completarTarea, updateFav, form, onChange, clearFiles, openModalEdit, user, mentions, onSubmit, options, updateTagInTask, deleteTask } = this.props
+        const {showTask, mostrarListPanel, tarea, completarTarea, updateFav, form, onChange, clearFiles, openModalEdit, mentions, onSubmit, options, updateTagInTask, deleteTask } = this.props
         if(tarea)
             return (
                 <div id="task" className={showTask ? 'col-xl-12 gutter-b' : 'd-none'}>
@@ -121,24 +137,20 @@ class Task extends Component {
                                 </div>
                             </div>
                             <div className="card-toolbar">
-                                <span className="btn btn-default btn-icon btn-sm btn-hover-bg-danger mr-2 text-hover-white" onClick={(e) => { deleteTask(tarea) }}>
-                                    <i className="far fa-trash-alt"></i>
-                                </span>
                                 {
-                                    tarea.responsables.map((responsable) => {
-                                        if (responsable.name === user.name) {
-                                            if(tarea.terminada === 0)
-                                                return (
-                                                    <span key={user.id} className="btn btn-default btn-icon btn-sm mr-2 btn-hover-bg-success mr-2 text-hover-white" onClick={(e) => { openModalEdit(tarea) }}>
-                                                        <i className="flaticon2-pen text-hover-success"></i>
-                                                    </span>
-                                                )
-                                        }
-                                        return ''
-                                    })
+                                    this.canEdit(tarea) &&
+                                        <span className="btn btn-default btn-icon btn-sm btn-hover-bg-danger mr-2 text-hover-white" onClick={(e) => { deleteTask(tarea) }}>
+                                            <i className="far fa-trash-alt"></i>
+                                        </span>
                                 }
                                 {
-                                    tarea.terminada === 0 &&
+                                    this.canEdit(tarea) &&
+                                        <span className="btn btn-default btn-icon btn-sm mr-2 btn-hover-bg-success mr-2 text-hover-white" onClick={(e) => { openModalEdit(tarea) }}>
+                                            <i className="flaticon2-pen text-hover-success"></i>
+                                        </span>
+                                }
+                                {
+                                    this.canEdit(tarea) &&
                                         <span className="btn btn-light-success btn-sm text-uppercase font-weight-bolder text-hover" onClick={() => { completarTarea(tarea) }}>
                                             COMPLETAR
                                         </span>
