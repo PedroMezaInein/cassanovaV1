@@ -3,7 +3,7 @@ import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
 import { AreasForm } from '../../components/forms'
 import { URL_DEV, AREAS_COLUMNS } from '../../constants'
-import { Modal, ModalDelete } from '../../components/singles'
+import { Modal } from '../../components/singles'
 import axios from 'axios'
 import Swal from 'sweetalert2'
 import { AreaCard } from '../../components/cards'
@@ -247,13 +247,13 @@ class Areas extends Component {
         })
     }
 
-    handleCloseDelete = () => {
+    /* handleCloseDelete = () => {
         const { modalDelete } = this.state
         this.setState({
             modalDelete: !modalDelete,
             area: ''
         })
-    }
+    } */
 
     openModal = () => {
         let { tipo } = this.state
@@ -307,6 +307,8 @@ class Areas extends Component {
                     return `EL ÁREA TIENE ${area.compras_count} COMPRAS. ¿DESEAS CONTINUAR?`
                 break;
             case 'ventas':
+                if(area.compras_count)
+                    return `EL ÁREA TIENE ${area.ventas_count} VENTAS. ¿DESEAS CONTINUAR?`
                 break;
             case 'egresos':
                 break;
@@ -370,9 +372,9 @@ class Areas extends Component {
             this.updateAreaAxios()
     }
 
-    safeDelete = e => () => {
+    /* safeDelete = e => () => {
         this.deleteAreaAxios()
-    }
+    } */
 
     deleteSubareaAxios = async(id) => {
         waitAlert()
@@ -487,7 +489,7 @@ class Areas extends Component {
     }
 
     render() {
-        const { form, modal, modalDelete, title, formeditado, key, modalSee, area} = this.state
+        const { form, modal, title, formeditado, key, modalSee, area} = this.state
         return (
             <Layout active = 'catalogos'  {...this.props}>
                 <Tabs id = "tabsAreas" defaultActiveKey = "compras" activeKey = { key } onSelect = { (value) => { this.controlledTab(value) } } >
