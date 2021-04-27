@@ -14,7 +14,7 @@ class ComentarioFormTarea extends Component {
     }
 
     render() {
-        const { addComentario, form, onChange, handleChange, color, users, proyectos } = this.props
+        const { addComentario, form, handleChange, color, users, proyectos } = this.props
         return (
             <div>
                 <Form id="form-comentario"
