@@ -48,7 +48,7 @@ class Calendario extends Component {
             return pathname === url
         });
         this.getCalendarioTareasAxios('own')
-        if(process.env.NODE_ENV === 'production' || true){
+        if(process.env.NODE_ENV === 'production'){
             const pusher = new Echo( PUSHER_OBJECT );
             pusher.channel('responsable-tarea').listen('ResponsableTarea', (data) => {
                 const { tipo, tareas, tarea } = this.state
