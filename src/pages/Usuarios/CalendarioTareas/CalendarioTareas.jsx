@@ -48,7 +48,7 @@ class Calendario extends Component {
             return pathname === url
         });
         this.getCalendarioTareasAxios('own')
-        if(process.env.NODE_ENV === 'production' || true){
+        if(process.env.NODE_ENV === 'production'){
             const pusher = new Echo( PUSHER_OBJECT );
             pusher.channel('responsable-tarea').listen('ResponsableTarea', (data) => {
                 const { tipo, tareas, tarea } = this.state
@@ -199,17 +199,7 @@ class Calendario extends Component {
                     <div className="row mx-0 row-paddingless">
                         <div className="col-md-auto mr-2 text-truncate">
                             {
-                                <div className="symbol-group symbol-hover justify-content-center">
-                                    {
-                                        tarea.responsables.map((responsable, key) => {
-                                            return(
-                                                <div className="symbol symbol-25 symbol-circle border-1" key={key}>
-                                                    <img alt = 'user-avatar' src={responsable.avatar ? responsable.avatar : "/default.jpg"}/>
-                                                </div>
-                                            )
-                                        })
-                                    }
-                                </div>
+                                this.responsablesSymbol(tarea.responsables)
                             }
                         </div>
                         <div className="col align-self-center text-truncate">
@@ -219,6 +209,67 @@ class Calendario extends Component {
                 </div>
             </OverlayTrigger>
         )
+    }
+    responsablesSymbol = (responsables) => {
+        if(responsables.length > 3){
+            let obtenerTresR = responsables.slice(0, 3);
+            let obtenerRestantes = responsables.slice(3, responsables.length);
+            return(
+                <div className="symbol-group symbol-hover justify-content-center">
+                    {
+                        obtenerTresR.map((responsable, key) => {
+                            return (
+                                <OverlayTrigger key={key} overlay={<Tooltip>{responsable.name}</Tooltip>}>
+                                    <div className="symbol symbol-25 symbol-circle border-0">
+                                        <img alt='user-avatar' src={responsable.avatar ? responsable.avatar : "/default.jpg"} />
+                                    </div>
+                                </OverlayTrigger>
+                            )
+                        })
+                    }
+                    <OverlayTrigger overlay={
+                        <Tooltip>
+                            {
+                                obtenerRestantes.map((responsable, key) => {
+                                    return (
+                                        <div className="d-flex align-items-center mb-1" key={key}>
+                                            <div className="symbol-list d-flex flex-wrap">
+                                                <div className="symbol symbol-20 symbol-circle mr-3" style={{ width: '' }}>
+                                                    <img alt='user-avatar' src={responsable.avatar ? responsable.avatar : "/default.jpg"} />
+                                                </div>
+                                            </div>
+                                            <div className="d-flex flex-column flex-grow-1">
+                                                <div className="text-dark-75 mb-1 font-size-sm font-weight-bold text-left">{responsable.name.split(" ", 1)}</div>
+                                            </div>
+                                        </div>
+                                    )
+                                })
+                            }
+                        </Tooltip>
+                    }>
+                        <div className="symbol symbol-25 symbol-circle border-0 symbol-light-primary">
+                            <span className="symbol-label font-weight-bolder">{obtenerRestantes.length}+</span>
+                        </div>
+                    </OverlayTrigger>
+                </div>
+            )
+        }else{
+            return(
+                <div className="symbol-group symbol-hover justify-content-center">
+                    {
+                        responsables.map((responsable, key) => {
+                            return (
+                                <OverlayTrigger key={key} overlay={<Tooltip>{responsable.name}</Tooltip>}>
+                                    <div className="symbol symbol-25 symbol-circle border-0">
+                                        <img alt='user-avatar' src={responsable.avatar ? responsable.avatar : "/default.jpg"} />
+                                    </div>
+                                </OverlayTrigger>
+                            )
+                        }) 
+                    }
+                </div>
+            )
+        }
     }
     
     openCalendarMisTareas = () => { this.getCalendarioTareasAxios('own') }

@@ -42,7 +42,7 @@ class Empleados extends Component {
         let { mes_number } = this.state
         mes_number=this.mesNumber(mes)
         this.getEmpleadosChecador(quincena, mes_number, año)
-        if(process.env.NODE_ENV === 'production' || true){
+        if(process.env.NODE_ENV === 'production'){
             const pusher = new Echo( PUSHER_OBJECT );
             pusher.channel('rrhh-checador').listen('UsuarioChecando', (data) => {
                 let { mes, quincena, mes_number, año} = this.state
