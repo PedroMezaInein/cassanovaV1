@@ -3,15 +3,21 @@ import { renderToString } from 'react-dom/server'
 import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
 import { URL_DEV, PROYECTOS_TICKETS } from '../../constants'
-import { setTextTable, setDateTable, setLabelTable, setTextTableCenter } from '../../functions/setters'
+import { setTextTable, setLabelTable, setTextTableCenter, setDateTableReactDom } from '../../functions/setters'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
-import { deleteAlert, doneAlert, printResponseErrorAlert, errorAlert } from '../../functions/alert'
+import { deleteAlert, doneAlert, printResponseErrorAlert, errorAlert, customInputAlert, waitAlert } from '../../functions/alert'
 import { setSingleHeader } from '../../functions/routers'
 import axios from 'axios'
+import { printSwalHeader } from '../../functions/printers'
+import { CalendarDaySwal } from '../../components/form-components'
+import { Update } from '../../components/Lottie'
+import moment from 'moment'
+import Swal from 'sweetalert2'
 const $ = require('jquery');
 class Calidad extends Component {
     state = {
-        calidad: ''
+        calidad: '',
+        form: { fecha: new Date() }
     }
     
     componentDidMount() {
@@ -37,6 +43,38 @@ class Calidad extends Component {
     openModalDelete = calidad => {
         deleteAlert('Borrarrás el ticket de calidad', '¿Deseas continuar?', () => { this.deleteTicketAxios(calidad) })
     }
+    
+    onChangeSwal = (value, tipo) => {
+        const { form } = this.state
+        form[tipo] = value
+        this.setState({...this.state, form})
+    }
+
+    doubleClick = (data, tipo) => {
+        const { form } = this.state
+        switch(tipo){
+            case 'fecha':
+                form.fecha = new Date(moment(data.created_at))
+                break;
+            default:
+                form[tipo] = data[tipo]
+                break;
+        }
+        this.setState({form})
+        customInputAlert(
+            <div>
+                <h2 className  = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) } </h2>
+                {
+                    tipo === 'fecha' &&
+                        <CalendarDaySwal value = { form.fecha } onChange = { (e) => {  this.onChangeSwal(e.target.value, 'fecha')} } 
+                            name = 'fecha' date = { form.fecha } withformgroup={0} />
+                }
+            </div>,
+            <Update />,
+            () => { this.patchTickets(data, tipo) },
+            () => { this.setState({...this.state,form: { fecha: new Date() }}); Swal.close(); },
+        )
+    }
 
     setCalidad = calidad => {
         let aux = []
@@ -48,7 +86,7 @@ class Calidad extends Component {
                     proyectos: renderToString(setTextTableCenter(calidad.proyecto ? calidad.proyecto.nombre : '', '190px')),
                     cliente: renderToString(setTextTableCenter(calidad.usuario ? calidad.usuario.name : '')),
                     tipo_trabajo: renderToString(setTextTableCenter(calidad.tipo_trabajo ? calidad.tipo_trabajo.tipo : '')),
-                    fecha: renderToString(setDateTable(calidad.created_at)),
+                    fecha: setDateTableReactDom(calidad.created_at, this.doubleClick, calidad, 'fecha', 'text-center'),
                     descripcion: renderToString(setTextTable(calidad.descripcion)),
                     motivo: renderToString(setTextTableCenter(calidad.motivo_cancelacion)),
                     id: calidad.id
@@ -88,6 +126,23 @@ class Calidad extends Component {
             (response) => {
                 this.getCalidadAxios();
                 doneAlert('Ticket eliminado con éxito')
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    patchTickets = async( data,tipo ) => {
+        const { access_token } = this.props.authUser
+        const { form } = this.state
+        let value = form[tipo]
+        waitAlert()
+        await axios.put(`${URL_DEV}v2/calidad/calidad/${tipo}/${data.id}`, 
+            { value: value }, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                this.getCalidadAxios()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'La empleado fue editado con éxito')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
