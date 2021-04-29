@@ -7,24 +7,32 @@
     }
     &__input{
         border: 0;
-        /* position: relative!important; */
-        resize: auto!important;
+        resize: vertical!important;
         padding: 0.65rem 1rem;
         outline: 0;
         color: #80808F !important;
         font-weight: 500;
+        letter-spacing: 0.3px!important;
+        text-align: justify!important;
+        position: relative!important;
     }
     &__highlighter{
         border: 0;
-        /* position: absolute!important; */
         padding: 0.65rem 1rem;
+        position: absolute!important;
     }
     &__suggestions{
         background: #fff;
         box-shadow: 0 .0625rem .125rem #464e5f;
         font-size: 1rem;
-        max-height: 150px;
         overflow: hidden;
+        z-index: 2!important;
+        overflow-y: scroll;
+        height: 200px;
+        font-family: 'Poppins';
+        line-height: 15px;
+        font-weight: 300;
+        color: #464E5F;
         &__item{
             padding: 5px 8px;
             border-bottom: 1px solid rgba(0, 0, 0, 0.15);
@@ -50,7 +58,6 @@
         color: #B5B5C3 !important;
         font-weight: 600;
         letter-spacing: 0.3px!important;
-        text-transform: uppercase;
         text-align: justify!important;
         position: relative!important;
         &::-webkit-input-placeholder {
@@ -66,8 +73,14 @@
         background: #fff;
         box-shadow: 0 .0625rem .125rem #464e5f;
         font-size: 1rem;
-        /* max-height: 150px; */
         overflow: hidden;
+        z-index: 2!important;
+        overflow-y: scroll;
+        height: 200px;
+        font-family: 'Poppins';
+        line-height: 15px;
+        font-weight: 300;
+        color: #464E5F;
         &__item{
             padding: 5px 8px;
             border-bottom: 1px solid rgba(0, 0, 0, 0.15);

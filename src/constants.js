@@ -2310,6 +2310,7 @@ export const PROYECTOS_TICKETS = [
     {
         Header: 'Fecha',
         accessor: 'fecha',
+        customRender: true
     },
     {
         Header: 'Descripción',
