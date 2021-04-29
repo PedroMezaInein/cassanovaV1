@@ -249,6 +249,23 @@ export function setTagLabelReactDom (data, arreglo, tipo, deleteElement){
         </div>
     )
 }
+
+export function setTagLabelAreaReactDom (data, arreglo, tipo, deleteElement){
+    return (
+        <div className="tr-hover w-max-content">
+            {
+                arreglo.map((element, index) => {
+                    return(
+                        <div key = { index } className="d-table mb-2">
+                            <SingleTagify element = { element } color = { index % 2 ? 'success' : 'primary' } 
+                                onClick = { (e) => {  deleteElement(data, element, tipo) } }/>
+                        </div>
+                    )
+                })
+            }
+        </div>
+    )
+}
 export function setTagLabelProyectoReactDom (proyecto, arreglo, tipo, deleteElement, nombre){
     return (
         <div className="">

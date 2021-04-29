@@ -58,7 +58,7 @@ class AreaForm extends Component {
                                         <div className=" image-upload d-flex px-3 align-items-center tagify__tag tagify__tag--success tagify--noAnim"  >
                                             <div title="Borrar archivo" className="tagify__tag__removeBtn" role="button"
                                                 aria-label="remove tag"
-                                                onClick={(e) => { questionAlert('¿ESTÁS SEGURO?', 'DESEAS ELIMINAR EL SUBÁREA', () => deleteSubarea(element)) }} 
+                                                onClick={(e) => { deleteSubarea(area, element, 'subareas') }} 
                                                 >
                                             </div>
                                             <div>

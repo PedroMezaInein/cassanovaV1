@@ -431,7 +431,7 @@ class Ingresos extends Component {
                     impuesto: setTextTableReactDom(ingreso.tipo_impuesto ? ingreso.tipo_impuesto.tipo : 'Sin definir', this.doubleClick, ingreso, 'tipoImpuesto', 'text-center'),
                     tipoPago: setTextTableReactDom(ingreso.tipo_pago.tipo, this.doubleClick, ingreso, 'tipoPago', 'text-center'),
                     descripcion: setTextTableReactDom(ingreso.descripcion !== null ? ingreso.descripcion :'', this.doubleClick, ingreso, 'descripcion', 'text-justify'),
-                    area: setTextTableReactDom(ingreso.subarea ? ingreso.subarea.area ? ingreso.subarea.area.nombre : '' : '', this.doubleClick, ingreso, 'area', 'text-center'),
+                    area: setTextTableReactDom(ingreso.area ? ingreso.area.nombre : '', this.doubleClick, ingreso, 'area', 'text-center'),
                     subarea: setTextTableReactDom(ingreso.subarea ? ingreso.subarea.nombre : '', this.doubleClick, ingreso, 'subarea', 'text-center'),
                     estatusCompra: setTextTableReactDom(ingreso.estatus_compra ? ingreso.estatus_compra.estatus : '', this.doubleClick, ingreso, 'estatusCompra', 'text-center'),
                     total: renderToString(setMoneyTable(ingreso.total)),
@@ -453,12 +453,12 @@ class Ingresos extends Component {
                     form[tipo] = data[tipo].id.toString()
                 break
             case 'area':
+                if(data.area){
+                    form.area = data.area.id.toString()
+                    options.subareas = setOptions(data.area.subareas, 'nombre', 'id')
+                }
                 if(data.subarea){
-                    if(data.subarea.area){
-                        form.area = data.subarea.area.id.toString()
-                        form.subarea = data.subarea.id.toString()
-                        options.subareas = setOptions(data.subarea.area.subareas, 'nombre', 'id')
-                    }
+                    form.subarea = data.subarea.id.toString()
                 }
                 break
             case 'fecha':
