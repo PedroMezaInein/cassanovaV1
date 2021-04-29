@@ -8,6 +8,7 @@ import { errorAlert, waitAlert, createAlert, doneAlert, errorAlertRedirectOnDiss
 import Layout from '../../../components/layout/layout'
 import { EgresosForm as EgresosFormulario } from '../../../components/forms'
 import { Card } from 'react-bootstrap'
+import { setFormHeader } from '../../../functions/routers'
 class EgresosForm extends Component {
     
     state = {
@@ -388,9 +389,11 @@ class EgresosForm extends Component {
                     form.cuenta = egreso.cuenta.id.toString()
                 }
                 if (egreso.subarea) {
-                    form.area = egreso.subarea.area.id.toString()
-                    options['subareas'] = setOptions(egreso.subarea.area.subareas, 'nombre', 'id')
                     form.subarea = egreso.subarea.id.toString()
+                }
+                if(egreso.area){
+                    form.area = egreso.area.id.toString()
+                    options['subareas'] = setOptions(egreso.area.subareas, 'nombre', 'id')
                 }
                 form.tipoPago = egreso.tipo_pago ? egreso.tipo_pago.id : 0
                 form.tipoImpuesto = egreso.tipo_impuesto ? egreso.tipo_impuesto.id : 0
@@ -481,7 +484,7 @@ class EgresosForm extends Component {
         if(solicitud !== ''){
             data.append(`solicitud`, solicitud.id)
         }
-        await axios.post(`${URL_DEV}v2/administracion/egresos`, data, { headers: { 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}v2/administracion/egresos`, data, { headers: setFormHeader(access_token) }).then(
             (response) => {
                 this.setState({
                     ...this.state,
@@ -530,7 +533,7 @@ class EgresosForm extends Component {
             data.append('adjuntos[]', element)
             return false
         })
-        await axios.post(URL_DEV + 'egresos/update/' + egreso.id, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(URL_DEV + 'egresos/update/' + egreso.id, data, { headers: setFormHeader(access_token) }).then(
             (response) => {
                 this.setState({
                     ...this.state,
