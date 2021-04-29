@@ -431,7 +431,7 @@ class Ingresos extends Component {
                     impuesto: setTextTableReactDom(ingreso.tipo_impuesto ? ingreso.tipo_impuesto.tipo : 'Sin definir', this.doubleClick, ingreso, 'tipoImpuesto', 'text-center'),
                     tipoPago: setTextTableReactDom(ingreso.tipo_pago.tipo, this.doubleClick, ingreso, 'tipoPago', 'text-center'),
                     descripcion: setTextTableReactDom(ingreso.descripcion !== null ? ingreso.descripcion :'', this.doubleClick, ingreso, 'descripcion', 'text-justify'),
-                    area: setTextTableReactDom(ingreso.subarea ? ingreso.subarea.area ? ingreso.subarea.area.nombre : '' : '', this.doubleClick, ingreso, 'area', 'text-center'),
+                    area: setTextTableReactDom(ingreso.area ? ingreso.area.nombre : '', this.doubleClick, ingreso, 'area', 'text-center'),
                     subarea: setTextTableReactDom(ingreso.subarea ? ingreso.subarea.nombre : '', this.doubleClick, ingreso, 'subarea', 'text-center'),
                     estatusCompra: setTextTableReactDom(ingreso.estatus_compra ? ingreso.estatus_compra.estatus : '', this.doubleClick, ingreso, 'estatusCompra', 'text-center'),
                     total: renderToString(setMoneyTable(ingreso.total)),
@@ -447,18 +447,42 @@ class Ingresos extends Component {
     }
     doubleClick = (data, tipo) => {
         const { form, options } = this.state
+        let busqueda = undefined
+        let flag = false
         switch(tipo){
             case 'subarea':
-                if(data[tipo])
-                    form[tipo] = data[tipo].id.toString()
+                options.subareas = []
+                flag = false
+                if(data.area){
+                    busqueda = options.areas.find( (elemento) => { return elemento.value === data.area.id.toString() })
+                    if(busqueda){
+                        options.subareas = setOptions(busqueda.subareas, 'nombre', 'id')
+                        if(data.subarea){
+                            busqueda = options.subareas.find( (elemento) => { return elemento.value === data.subarea.id.toString() })
+                            if(busqueda){ form.subarea = busqueda.value }
+                        }
+                    }
+                }else{ 
+                    flag = true 
+                    if(data.area){
+                        form.area = data.area.id.toString()
+                        options.subareas = setOptions(data.area.subareas, 'nombre', 'id')
+                    }
+                    if(data.subarea){
+                        busqueda = options.subareas.find( (elemento) => { return elemento.value === data.subarea.id.toString() } )
+                        if(busqueda) form.subarea = data.subarea.id.toString()
+                    }
+                }
                 break
             case 'area':
+                options.subareas = []
+                if(data.area){
+                    form.area = data.area.id.toString()
+                    options.subareas = setOptions(data.area.subareas, 'nombre', 'id')
+                }
                 if(data.subarea){
-                    if(data.subarea.area){
-                        form.area = data.subarea.area.id.toString()
-                        form.subarea = data.subarea.id.toString()
-                        options.subareas = setOptions(data.subarea.area.subareas, 'nombre', 'id')
-                    }
+                    busqueda = options.subareas.find( (elemento) => { return elemento.value === data.subarea.id.toString() } )
+                    if(busqueda) form.subarea = data.subarea.id.toString()
                 }
                 break
             case 'fecha':
@@ -519,11 +543,16 @@ class Ingresos extends Component {
                     :<></>
                 }
                 {
-                    (tipo === 'subarea')  &&
-                        <SelectSearchGray options = { this.setOptions(data, tipo) }
-                        onChange = { (value) => { this.onChangeSwal(value, tipo)} } name = { tipo }
-                        value = { form[tipo] } customdiv="mb-2 mt-7" requirevalidation={1} 
-                        placeholder={this.setSwalPlaceholder(tipo)}/>
+                    tipo === 'subarea'  ?
+                        flag ? 
+                            <DoubleSelectSearchGray options = { options } form = { form } onChange = { this.onChangeSwal } 
+                                one = { { placeholder: 'SELECCIONA EL ÁREA', name: 'area', opciones: 'areas'} } 
+                                two = { { placeholder: 'SELECCIONA EL SUBÁREA', name: 'subarea', opciones: 'subareas'} }/>
+                        :
+                            <SelectSearchGray options = { options.subareas } placeholder = 'Selecciona el subárea' value = { form.subarea } 
+                                onChange = { (value) => { this.onChangeSwal(value, tipo) } } withtaglabel = { 1 } 
+                                name = { tipo } customdiv = "mb-3"/>
+                    : ''
                 }
                 {
                     tipo === 'area' &&
@@ -533,7 +562,7 @@ class Ingresos extends Component {
                 }
             </div>,
             <Update />,
-            () => { this.patchIngresos(data, tipo) },
+            () => { this.patchIngresos(data, tipo, flag) },
             () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
         )
     }
@@ -554,20 +583,29 @@ class Ingresos extends Component {
         form[tipo] = value
         this.setState({...this.state, form})
     }
-    patchIngresos = async( data,tipo ) => {
+    patchIngresos = async( data,tipo, flag ) => {
         const { access_token } = this.props.authUser
         const { form } = this.state
         let value = ''
+        let newType = tipo
         switch(tipo){
             case 'area':
                 value = { area: form.area, subarea: form.subarea }
+                break
+            case 'subarea':
+                if(flag === true){
+                    value = { area: form.area, subarea: form.subarea }
+                    newType = 'area'
+                }else{
+                    value = form[tipo]
+                }
                 break
             default:
                 value = form[tipo]
                 break
         }
         waitAlert()
-        await axios.put(`${URL_DEV}v2/administracion/ingresos/${tipo}/${data.id}`, 
+        await axios.put(`${URL_DEV}v2/administracion/ingresos/${newType}/${data.id}`, 
             { value: value }, 
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {

@@ -455,19 +455,46 @@ class Compras extends Component {
 
     doubleClick = (data, tipo) => {
         const { form, options } = this.state
+        let busqueda = undefined
+        let flag = false
         switch(tipo){
             case 'proyecto':
-            case 'subarea':
                 if(data[tipo])
                     form[tipo] = data[tipo].id.toString()
                 break
+            case 'subarea':
+                options.subareas = []
+                flag = false
+                if(data.area){
+                    busqueda = options.areas.find( (elemento) => { return elemento.value === data.area.id.toString() })
+                    if(busqueda){
+                        options.subareas = setOptions(busqueda.subareas, 'nombre', 'id')
+                        if(data.subarea){
+                            busqueda = options.subareas.find( (elemento) => { return elemento.value === data.subarea.id.toString() })
+                            if(busqueda){ form.subarea = busqueda.value }
+                        }
+                    }
+                }else{ 
+                    flag = true 
+                    if(data.area){
+                        form.area = data.area.id.toString()
+                        options.subareas = setOptions(data.area.subareas, 'nombre', 'id')
+                    }
+                    if(data.subarea){
+                        busqueda = options.subareas.find( (elemento) => { return elemento.value === data.subarea.id.toString() } )
+                        if(busqueda) form.subarea = data.subarea.id.toString()
+                    }
+                }
+                break
             case 'area':
+                options.subareas = []
                 if(data.area){
                     form.area = data.area.id.toString()
                     options.subareas = setOptions(data.area.subareas, 'nombre', 'id')
                 }
                 if(data.subarea){
-                    form.subarea = data.subarea.id.toString()
+                    busqueda = options.subareas.find( (elemento) => { return elemento.value === data.subarea.id.toString() } )
+                    if(busqueda) form.subarea = data.subarea.id.toString()
                 }
                 break
             case 'fecha':
@@ -527,10 +554,22 @@ class Compras extends Component {
                         <CalendarDaySwal value = { form[tipo] } onChange = { (e) => {  this.onChangeSwal(e.target.value, tipo)} } name = { tipo } date = { form[tipo] } withformgroup={0} />
                 }
                 {
-                    (tipo === 'proyecto') || (tipo === 'subarea') ?
+                    tipo === 'proyecto' ?
                         <SelectSearchGray options = { this.setOptions(data, tipo) } value = { form[tipo] } customdiv = "mb-2 mt-7" requirevalidation = { 1 } 
                             onChange = { (value) => { this.onChangeSwal(value, tipo)} } name = { tipo } placeholder={this.setSwalPlaceholder(tipo)}/>
                     : <></>
+                }
+                {
+                    tipo === 'subarea'  ?
+                        flag ? 
+                            <DoubleSelectSearchGray options = { options } form = { form } onChange = { this.onChangeSwal } 
+                                one = { { placeholder: 'SELECCIONA EL ÁREA', name: 'area', opciones: 'areas'} } 
+                                two = { { placeholder: 'SELECCIONA EL SUBÁREA', name: 'subarea', opciones: 'subareas'} }/>
+                        :
+                            <SelectSearchGray options = { options.subareas } placeholder = 'Selecciona el subárea' value = { form.subarea } 
+                                onChange = { (value) => { this.onChangeSwal(value, tipo) } } withtaglabel = { 1 } 
+                                name = { tipo } customdiv = "mb-3"/>
+                    : ''
                 }
                 {
                     tipo === 'area' &&
@@ -540,7 +579,7 @@ class Compras extends Component {
                 }
             </div>,
             <Update />,
-            () => { this.patchCompras(data, tipo) },
+            () => { this.patchCompras(data, tipo, flag) },
             () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
         )
     }
@@ -1023,20 +1062,27 @@ class Compras extends Component {
         })
     }
     
-    patchCompras = async( data,tipo ) => {
+    patchCompras = async( data,tipo,flag ) => {
         const { access_token } = this.props.authUser
         const { form } = this.state
         let value = ''
+        let newType = tipo
         switch(tipo){
             case 'area':
                 value = { area: form.area, subarea: form.subarea }
+                break
+            case 'subarea':
+                if(flag === true){
+                    value = { area: form.area, subarea: form.subarea }
+                    newType = 'area'
+                }else{ value = form[tipo] }
                 break
             default:
                 value = form[tipo]
                 break
         }
         waitAlert()
-        await axios.put(`${URL_DEV}v2/proyectos/compras/${tipo}/${data.id}`, 
+        await axios.put(`${URL_DEV}v2/proyectos/compras/${newType}/${data.id}`, 
             { value: value }, 
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
