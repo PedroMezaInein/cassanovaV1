@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
 import { validateAlert } from '../../../functions/alert'
-import { Input, Calendar, SelectSearch, Button } from '../../form-components'
+import { Input, Calendar, Button } from '../../form-components'
 import { DATE } from '../../../constants'
 import ItemSlider from '../../singles/ItemSlider'
 import { openWizard1_for2_wizard, openWizard2_for2_wizard } from '../../../functions/wizard'
