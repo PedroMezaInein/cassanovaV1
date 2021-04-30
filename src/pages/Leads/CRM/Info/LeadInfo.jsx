@@ -16,7 +16,7 @@ import { Modal } from '../../../../components/singles'
 import Pagination from "react-js-pagination"
 import Scrollbar from 'perfect-scrollbar-react';
 import 'perfect-scrollbar-react/dist/style.min.css';
-const $ = require('jquery');
+import $ from "jquery";
 class LeadInfo extends Component {
     state = {
         tipo: '',

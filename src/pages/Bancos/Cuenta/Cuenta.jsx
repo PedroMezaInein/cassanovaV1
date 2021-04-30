@@ -17,7 +17,7 @@ import Swal from 'sweetalert2'
 import { printSwalHeader } from '../../../functions/printers'
 import { Update } from '../../../components/Lottie'
 import { InputGray, CalendarDaySwal, SelectSearchGray, InputNumberGray } from '../../../components/form-components'
-const $ = require('jquery');
+import $ from "jquery";
 class Cuenta extends Component {
     state = {
         key: 'bancos',

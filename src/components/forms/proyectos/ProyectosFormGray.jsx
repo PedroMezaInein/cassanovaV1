@@ -1,12 +1,10 @@
 import React, { Component } from 'react'
 import { Form, Row, Col } from 'react-bootstrap'
 import { Button, RangeCalendar, TagInputGray, TagSelectSearchGray, InputPhoneGray, InputGray, InputNumberGray, SelectSearchGray } from '../../form-components'
-// import { faPlus } from '@fortawesome/free-solid-svg-icons'
 import { TEL } from '../../../constants'
 import { openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
 import { validateAlert } from '../../../functions/alert'
-// import ItemSlider from '../../singles/ItemSlider'
-const $ = require('jquery');
+import $ from "jquery";
 class ProyectosForm extends Component {
     addCorreo = () => {
         const { onChange, form } = this.props

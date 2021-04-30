@@ -13,7 +13,7 @@ import { TraspasoCard } from '../../../components/cards'
 import { Update } from '../../../components/Lottie'
 import { printSwalHeader } from '../../../functions/printers'
 import { CalendarDaySwal, InputGray } from '../../../components/form-components'
-const $ = require('jquery');
+import $ from "jquery";
 class Traspasos extends Component {
     state = {
         modal: { delete: false, see: false },

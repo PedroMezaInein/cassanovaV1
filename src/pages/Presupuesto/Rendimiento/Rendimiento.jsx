@@ -13,7 +13,7 @@ import { RendimientoCard } from '../../../components/cards'
 import { Update } from '../../../components/Lottie'
 import Swal from 'sweetalert2'
 import { InputGray, InputNumberGray, SelectSearchGray } from '../../../components/form-components'
-const $ = require('jquery');
+import $ from "jquery";
 class Rendimientos extends Component {
     state = {
         modalDelete: false,

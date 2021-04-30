@@ -4,7 +4,7 @@ import { Input, Button, TagSelectSearch, InputPhone } from '../../form-component
 import { validateAlert } from '../../../functions/alert'
 import { EMAIL, TEL } from '../../../constants'
 import InputPassword from '../../form-components/InputPassword'
-const $ = require('jquery');
+import $ from "jquery";
 
 class AccesosForm extends Component {
 

@@ -10,7 +10,7 @@ import { Modal, ModalDelete } from '../../../components/singles'
 import { MercadotecniaForm } from '../../../components/forms'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import Swal from 'sweetalert2'
-const $ = require('jquery');
+import $ from "jquery";
 class Mercadotecnia extends Component {
 
     state = {

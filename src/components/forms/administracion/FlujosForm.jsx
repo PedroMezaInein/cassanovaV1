@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
 import { Button, RangeCalendar, TagSelectSearch } from '../../form-components'
-const $ = require('jquery');
+import $ from "jquery";
 class FlujosForm extends Component {
     nuevoUpdateCuenta = seleccionados =>{
         const { form,deleteOption } = this.props

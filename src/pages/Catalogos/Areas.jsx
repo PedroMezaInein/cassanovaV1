@@ -16,7 +16,7 @@ import { InputGray, DoubleSelectSearchGray, SelectSearchGray } from '../../compo
 import { printSwalHeader } from '../../functions/printers'
 import Echo from 'laravel-echo';
 import { setSingleHeader } from '../../functions/routers'
-const $ = require('jquery');
+import $ from "jquery";
 
 class Areas extends Component {
 

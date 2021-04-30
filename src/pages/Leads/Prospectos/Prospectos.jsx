@@ -16,7 +16,7 @@ import { ProspectoCard } from '../../../components/cards'
 import { Tab, Tabs } from 'react-bootstrap'
 import SVG from "react-inlinesvg"
 import { toAbsoluteUrl } from "../../../functions/routers"
-const $ = require('jquery');
+import $ from "jquery";
 class Leads extends Component {
     state = {
         modal: {

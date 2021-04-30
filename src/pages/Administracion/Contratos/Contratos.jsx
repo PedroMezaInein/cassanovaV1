@@ -19,8 +19,8 @@ import withReactContent from 'sweetalert2-react-content'
 import { Update } from '../../../components/Lottie'
 import { printSwalHeader } from '../../../functions/printers'
 import { onChangeAdjunto } from '../../../functions/onChanges'
+import $ from "jquery";
 const MySwal = withReactContent(Swal)
-const $ = require('jquery');
 class Contratos extends Component {
     state = {
         contratos: {

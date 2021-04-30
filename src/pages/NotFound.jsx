@@ -3,7 +3,7 @@ import * as animationData from '../assets/animate/error-404-page.json'
 import Lottie from 'react-lottie';
 import { Link } from 'react-router-dom';
 import { connect } from 'react-redux'
-const $ = require('jquery');
+import $ from "jquery";
 class NotFound extends Component {
 
     getLink = () => {

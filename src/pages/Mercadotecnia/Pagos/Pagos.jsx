@@ -15,7 +15,7 @@ import { Form } from 'react-bootstrap'
 import { Button, FileInput } from '../../../components/form-components'
 import Select from '../../../components/form-components/Select'
 import { FacturaTable } from '../../../components/tables'
-const $ = require('jquery');
+import $ from "jquery";
 class Pagos extends Component {
     state = {
         modalDelete: false,

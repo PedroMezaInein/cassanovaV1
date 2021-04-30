@@ -11,9 +11,7 @@ import { save, deleteForm } from '../../../redux/reducers/formulario'
 import { setTextTable } from '../../../functions/setters'
 import { renderToString } from 'react-dom/server'
 import { Tabs, Tab } from 'react-bootstrap' 
-
-const $ = require('jquery');
-
+import $ from "jquery";
 class PartidasDiseño extends Component {
 
     state = {
@@ -207,7 +205,6 @@ class PartidasDiseño extends Component {
             form
         })
     }
-
 
     render(){
         const { modal, key} = this.state

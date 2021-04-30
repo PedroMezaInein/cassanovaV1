@@ -14,9 +14,7 @@ import { DoubleSelectSearchGray, InputGray, InputNumberGray, SelectSearchGray } 
 import { Update } from '../../../components/Lottie'
 import Swal from 'sweetalert2'
 import { printSwalHeader } from '../../../functions/printers'
-
-const $ = require('jquery');
-
+import $ from "jquery";
 class Conceptos extends Component {
 
     state = {
