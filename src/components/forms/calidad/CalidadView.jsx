@@ -94,7 +94,7 @@ class CalidadView extends Component {
                                                                             if(estatus.name === 'Rechazado' || estatus.name === 'Aceptado' || estatus.name === 'Terminado' || 
                                                                                 estatus.name === 'En proceso' || estatus.name === 'Respuesta pendiente' || estatus.name === 'En revisión' || estatus.name === 'En espera')
                                                                             return (
-                                                                                <>
+                                                                                <div key = { key }>
                                                                                     <Dropdown.Item className="p-0" key={key} onClick={() => { changeEstatus(estatus.name) }} >
                                                                                         <span className="navi-link w-100">
                                                                                             <span className="navi-text">
@@ -111,7 +111,7 @@ class CalidadView extends Component {
                                                                                         </span>
                                                                                     </Dropdown.Item>
                                                                                     <Dropdown.Divider className="m-0" style={{ borderTop: '1px solid #fff' }} />
-                                                                                </>
+                                                                                </div>
                                                                             )
                                                                             else return ''
                                                                         })
