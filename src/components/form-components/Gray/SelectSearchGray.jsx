@@ -46,10 +46,11 @@ class SelectSearchGray extends Component {
                 {
                     options.length > 0 ?
                         <>
-                            { withtaglabel &&
-                                <label className = { `col-form-label font-weight-bold text-dark-60  ${customlabel}` } >
-                                    { withtextlabel && placeholder }
-                                </label>
+                            {   withtaglabel ?
+                                    <label className = { `col-form-label font-weight-bold text-dark-60  ${customlabel}` } >
+                                        { withtextlabel && placeholder }
+                                    </label>
+                                : ''
                             }
                             <SelectSearch renderValue={this.renderFontValue} search {...this.props} />
                         </>
