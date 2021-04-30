@@ -12,7 +12,7 @@ import Swal from 'sweetalert2'
 import { Update } from '../../components/Lottie'
 import { printSwalHeader } from '../../functions/printers'
 import { InputGray, CircleColor } from '../../components/form-components'
-const $ = require('jquery');
+import $ from "jquery";
 class RolesMercadotecnia extends Component {
     state = {
         form: {

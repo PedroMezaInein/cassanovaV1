@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
 import { validateAlert } from '../../../functions/alert'
 import { SelectSearch, Input, InputNumber, Select, Button, SelectSearchTrue, TagSelectSearch } from '../../form-components'
-const $ = require('jquery');
+import $ from "jquery";
 export default class CuentaForm extends Component {
 
     nuevoUpdateEmpresa = seleccionados =>{

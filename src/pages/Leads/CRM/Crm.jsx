@@ -29,7 +29,7 @@ import FileItem from '../../../components/singles/FileItem'
 import Scrollbar from 'perfect-scrollbar-react';
 import 'perfect-scrollbar-react/dist/style.min.css';
 import InformacionProyecto from '../../../components/cards/Proyectos/InformacionProyecto'
-const $ = require('jquery');
+import $ from "jquery";
 class Crm extends Component {
 
     state = {

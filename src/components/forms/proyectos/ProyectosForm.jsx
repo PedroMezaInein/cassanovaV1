@@ -5,7 +5,7 @@ import { TEL } from '../../../constants'
 import { openWizard1, openWizard2, openWizard3 } from '../../../functions/wizard'
 import { validateAlert } from '../../../functions/alert'
 import ItemSlider from '../../singles/ItemSlider'
-const $ = require('jquery');
+import $ from "jquery";
 class ProyectosForm extends Component {
 
     addCorreo = () => {

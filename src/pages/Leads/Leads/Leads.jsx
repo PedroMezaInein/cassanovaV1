@@ -13,8 +13,7 @@ import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert, createAlertS
 import { setTextTable, setContactoTable, setListTable, setDateTable, setLabelTable, setTextTableCenter } from '../../../functions/setters'
 import { LeadCard } from '../../../components/cards';
 import { Form } from 'react-bootstrap';
-
-const $ = require('jquery');
+import $ from "jquery";
 
 class Leads extends Component {
 

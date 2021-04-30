@@ -11,9 +11,7 @@ import { errorAlert, waitAlert, printResponseErrorAlert, deleteAlert, doneAlert}
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { renderToString } from 'react-dom/server'
 import TableForModals from '../../../components/tables/TableForModals'
-
-const $ = require('jquery');
-
+import $ from "jquery";
 class NominaAdmin extends Component {
     state = {  
         formeditado:0,

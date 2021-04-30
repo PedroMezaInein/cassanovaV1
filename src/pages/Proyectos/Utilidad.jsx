@@ -5,8 +5,7 @@ import { URL_DEV, UTILIDADES_COLUMNS} from '../../constants'
 import { setMoneyTable, setPercentTable, setTextTableCenter} from '../../functions/setters'
 import Layout from '../../components/layout/layout'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
-const $ = require('jquery');
-
+import $ from "jquery";
 class Utilidad extends Component {
     componentDidMount() { 
         const { authUser: { user: { permisos } } } = this.props

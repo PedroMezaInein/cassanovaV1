@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import Select from 'react-select';
-const $ = require('jquery');
+import $ from "jquery";
 class TagSelectSearchGray extends Component {
     componentDidMount() {
         $('.css-2b097c-container').attr('id','css-2b097c-container-gray')

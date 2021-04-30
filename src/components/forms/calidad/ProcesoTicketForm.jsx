@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { Form } from 'react-bootstrap'
 import { validateAlert } from '../../../functions/alert'
-import { Input, Calendar, SelectSearch, Button } from '../../form-components'
+import { Input, Calendar, Button } from '../../form-components'
 import { DATE } from '../../../constants'
 import ItemSlider from '../../singles/ItemSlider'
 import { openWizard1_for2_wizard, openWizard2_for2_wizard } from '../../../functions/wizard'
@@ -67,7 +67,7 @@ class ProcesoTicketForm extends Component {
                                         />
                                     </div>
                                     <div className="col-md-4">
-                                        <SelectSearch
+                                        {/* <SelectSearch
                                             options={options.empleados}
                                             placeholder="TÉCNICO QUE ASISTE"
                                             name="empleado"
@@ -77,7 +77,10 @@ class ProcesoTicketForm extends Component {
                                             formeditado={formeditado}
                                             disabled={estatus === 'Terminado' ? true : false}
                                             messageinc="Incorrecto. Selecciona el técnico que asiste"
-                                        />
+                                        /> */}
+                                        <Input placeholder = "TÉCNICO QUE ASISTE" name = "empleado" value = { form.empleado }
+                                            onChange = { onChange } iconclass = "fas fa-layer-group" requirevalidation = { 0 }
+                                            formeditado = { formeditado } disabled = { estatus === 'Terminado' ? true : false } />
                                     </div>
                                     <div className="col-md-4">
                                         <Input
@@ -156,15 +159,10 @@ class ProcesoTicketForm extends Component {
                                             {
                                                 estatus !== 'Terminado' ?
                                                     <div className="">
-                                                        <Button icon='' className="btn btn-primary font-weight-bold text-uppercase mr-2"
-                                                                onClick={
-                                                                    (e) => {
-                                                                        e.preventDefault();
-                                                                        validateAlert(onSubmit, e, 'for2-wizard-2-content')
-                                                                    }
-                                                                }
-                                                                text="GUARDAR" />
-                                                        <Button icon='' className="btn btn-success font-weight-bold text-uppercase" onClick={(e) => { e.preventDefault(); generateEmail(true) }} text="TERMINAR" />
+                                                        <Button icon='' className="btn btn-primary font-weight-bold text-uppercase mr-2" text="GUARDAR" 
+                                                            onClick={ (e) => { e.preventDefault(); validateAlert(onSubmit, e, 'for2-wizard-2-content') } }/>
+                                                        <Button icon='' className="btn btn-success font-weight-bold text-uppercase" text="TERMINAR" 
+                                                            onClick={(e) => { e.preventDefault(); generateEmail(true) }} />
                                                     </div>
                                                 : ''
                                             }

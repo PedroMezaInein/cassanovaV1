@@ -13,8 +13,7 @@ import { EstadoCuentaCard } from '../../../components/cards'
 import { Update } from '../../../components/Lottie'
 import { printSwalHeader } from '../../../functions/printers'
 import { CalendarDaySwal } from '../../../components/form-components'
-
-const $ = require('jquery');
+import $ from "jquery";
 class EstadosCuenta extends Component {
     state = {
         modal: { delete: false, see: false },

@@ -9,9 +9,7 @@ import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert } from '../..
 import { setTextTable, setMoneyTable} from '../../../functions/setters'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { PreciosDisenoCard } from '../../../components/cards'
-
-const $ = require('jquery');
-
+import $ from "jquery";
 class PrecioDiseño extends Component {
 
     state = {
@@ -33,7 +31,6 @@ class PrecioDiseño extends Component {
         if (!areas)
             history.push('/')
     }
-
 
     // Change page
     changePageEdit = (precio) => {
@@ -200,7 +197,6 @@ class PrecioDiseño extends Component {
         )
     }
 }
-
 
 const mapStateToProps = state => {
     return {

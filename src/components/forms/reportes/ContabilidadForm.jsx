@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form' 
 import { Button, RangeCalendar, OptionsCheckbox, TagSelectSearch} from '../../form-components' 
 import { validateAlert } from '../../../functions/alert'
-const $ = require('jquery');
+import $ from "jquery";
 class ContabilidadForm extends Component {
 
     // handleChangeDateInicio = date => {

@@ -6,7 +6,8 @@ import { Card, Dropdown, DropdownButton, OverlayTrigger  } from 'react-bootstrap
 import { renderToString } from 'react-dom/server';
 import Tooltip from 'react-bootstrap/Tooltip'
 import ReactDOM from 'react-dom'
-const $ = require('jquery');
+import $ from "jquery";
+
 const global_variable = {}
 $.DataTable = require('datatables.net');
 require("datatables.net-responsive-bs4");
@@ -57,7 +58,7 @@ class TableButton extends Component{
                                     let funcion = actions[element.action].function
                                     return(
                                         <Dropdown.Item key = { key } className = {`text-hover-${element.btnclass} dropdown-${element.btnclass}`}
-                                            onClick = { (e) => { e.preventDefault(); funcion(valor)}} key = {key}>
+                                            onClick = { (e) => { e.preventDefault(); funcion(valor)}} >
                                             <span className="navi-icon">
                                                 <i className = {`fas ${element.iconclass} mr-2`} />
                                                 <span className="navi-text">

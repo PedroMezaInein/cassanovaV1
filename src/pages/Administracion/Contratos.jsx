@@ -16,7 +16,7 @@ import NewTableServerRender from '../../components/tables/NewTableServerRender'
 import { ContratoCard } from '../../components/cards'
 import Swal from 'sweetalert2'
 import { onChangeAdjunto } from '../../functions/onChanges'
-const $ = require('jquery');
+import $ from "jquery";
 class Contratos extends Component {
     state = {
         contratos: {

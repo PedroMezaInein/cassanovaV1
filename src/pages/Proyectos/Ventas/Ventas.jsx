@@ -18,7 +18,7 @@ import { VentasCard } from '../../../components/cards'
 import { Tab, Tabs } from 'react-bootstrap';
 import { printSwalHeader } from '../../../functions/printers'
 import { Update } from '../../../components/Lottie'
-const $ = require('jquery');
+import $ from "jquery";
 class Ventas extends Component {
     state = {
         active: 'facturas',

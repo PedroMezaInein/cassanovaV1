@@ -11,8 +11,7 @@ import { AdjuntosForm} from '../../../components/forms'
 import { setOptions, setDateTable, setMoneyTable, setTextTable, setAdjuntosList, setTextTableCenter} from '../../../functions/setters'
 import { errorAlert, waitAlert, printResponseErrorAlert, deleteAlert, doneAlert} from '../../../functions/alert'
 import TableForModals from '../../../components/tables/TableForModals'
-
-const $ = require('jquery');
+import $ from "jquery";
 
 class NominaObra extends Component {
     state = {  

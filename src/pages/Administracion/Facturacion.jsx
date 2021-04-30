@@ -13,7 +13,7 @@ import NewTableServerRender from '../../components/tables/NewTableServerRender'
 import { FacturacionCard } from '../../components/cards'
 import NumberFormat from 'react-number-format'
 import Swal from 'sweetalert2'
-const $ = require('jquery');
+import $ from "jquery";
 class Facturacion extends Component {
 
     state = {
