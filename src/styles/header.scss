@@ -3468,9 +3468,36 @@
     }
 }
 
+.card-notify2{
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    align-items: center !important;
+    display: flex;
+    flex-wrap: wrap;
+    // padding: 15px 5px 15px 5px;
+    background: #fff;
+    border-radius: 4px;
+    box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.5);
+    border-radius: 25px;
+    position: relative;
+    .tipo-user{
+        padding: 1rem;
+        text-align: right;
+        color: green;
+        font-weight: bold;
+        font-size: 12px;
+    }
+    .title-notify{
+        font-size: 18px;
+        margin: 0;
+        padding: 0 1rem;
+        font-weight: 600;
+        text-align: left;
+    }
+}
 
 
-.card {
+.card1 {
     background: #fff;
     border-radius: 4px;
     box-shadow: 0px 14px 80px rgba(34, 35, 58, 0.5);
@@ -3481,12 +3508,12 @@
     position: relative;
 }
 
-.card h2 {
+.card1 h2 {
     margin: 0;
     padding: 0 1rem;
 }
 
-.card .title {
+.card1 .title1 {
     padding: 1rem;
     text-align: right;
     color: green;
@@ -3494,12 +3521,12 @@
     font-size: 12px;
 }
 
-.card .desc {
+.card1 .desc1 {
     padding: 0.5rem 1rem;
     font-size: 12px;
 }
 
-.card .actions {
+.card1 .actions1 {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     align-items: center;
@@ -3512,7 +3539,7 @@
 //   margin: 0 auto;
 // }
 
-.img-avatar {
+.img-avatar1 {
     width: 80px;
     height: 80px;
     position: absolute;
@@ -3523,12 +3550,12 @@
     left: 85px;
 }
 
-.card-text {
+.card-text1 {
     display: grid;
     grid-template-columns: 1fr 2fr;
 }
 
-.title-total {
+.title-total1 {
     padding: 2.5em 1.5em 1.5em 1.5em;
 }
 
@@ -3536,16 +3563,16 @@ path {
     fill: white;
 }
 
-.img-portada {
+.img-portada1 {
     width: 100%;
 }
 
-.portada {
+.portada1 {
     width: 100%;
     height: 100%;
     border-top-left-radius: 20px;
     border-bottom-left-radius: 20px;
-    background-image: url("https://m.media-amazon.com/images/S/aplus-media/vc/cab6b08a-dd8f-4534-b845-e33489e91240._CR75,0,300,300_PT0_SX300__.jpg");
+    background-color: #c9ddaf;
     background-position: bottom center;
     background-size: cover;
 }
