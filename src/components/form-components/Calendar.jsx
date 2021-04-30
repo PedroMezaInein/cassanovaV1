@@ -5,7 +5,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import es from "date-fns/locale/es";
 import Form from 'react-bootstrap/Form'
 
-
 registerLocale("es", es);
 
 class Calendar extends Component{
@@ -36,7 +35,7 @@ class Calendar extends Component{
 
     render(){
         const { placeholder, onChangeCalendar, name, value, messageinc, iconclass, ...props } = this.props
-        const { minDate, endDate, selectsEnd, startDate, selectsStart, ...props2} = this.props
+        const { minDate, endDate, selectsEnd, startDate, selectsStart, onChangeCalendar: onChangeCalendarProps, ...props2} = this.props
         const { calendarValido } = this.state
         return(
             <div>  

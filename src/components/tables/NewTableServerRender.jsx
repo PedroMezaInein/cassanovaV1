@@ -56,8 +56,8 @@ class TableButton extends Component{
                                 if(actions[element.action]){
                                     let funcion = actions[element.action].function
                                     return(
-                                        <Dropdown.Item className = {`text-hover-${element.btnclass} dropdown-${element.btnclass}`}
-                                            onClick = { (e) => { e.preventDefault(); funcion(valor)}} key = {key}>
+                                        <Dropdown.Item key = { key } className = {`text-hover-${element.btnclass} dropdown-${element.btnclass}`}
+                                            onClick = { (e) => { e.preventDefault(); funcion(valor)}} >
                                             <span className="navi-icon">
                                                 <i className = {`fas ${element.iconclass} mr-2`} />
                                                 <span className="navi-text">
@@ -82,11 +82,11 @@ class TableButton extends Component{
             return(
                 <div className="w-100 d-flex justify-content-center">
                     {
-                        cellData.map((element) => {
+                        cellData.map((element, key) => {
                             if(actions[element.action]){
                                 let funcion = actions[element.action].function
                                 return(
-                                    <button className = {`btn btn-icon btn-actions-table btn-xs ml-2 btn-text-${element.btnclass} btn-hover-${element.btnclass}`} 
+                                    <button key = { key } className = {`btn btn-icon btn-actions-table btn-xs ml-2 btn-text-${element.btnclass} btn-hover-${element.btnclass}`} 
                                         onClick = { (e) => {e.preventDefault(); funcion(valor)}} >
                                         <i className={`fas ${element.iconclass}`} />
                                     </button>
