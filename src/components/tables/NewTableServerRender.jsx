@@ -57,7 +57,7 @@ class TableButton extends Component{
                                     let funcion = actions[element.action].function
                                     return(
                                         <Dropdown.Item key = { key } className = {`text-hover-${element.btnclass} dropdown-${element.btnclass}`}
-                                            onClick = { (e) => { e.preventDefault(); funcion(valor)}} key = {key}>
+                                            onClick = { (e) => { e.preventDefault(); funcion(valor)}} >
                                             <span className="navi-icon">
                                                 <i className = {`fas ${element.iconclass} mr-2`} />
                                                 <span className="navi-text">
