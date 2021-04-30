@@ -31,13 +31,7 @@ class CalidadView extends Component {
                             <div className="mr-4" id="symbol_calidad">
                                 <div className="symbol symbol-50 symbol-lg-120 symbol-light-primary">
                                     <span className="font-size-h6 symbol-label font-weight-boldest ">
-                                        {
-                                            data ?
-                                                data.proyecto ?
-                                                    this.getIniciales(data.proyecto.nombre)
-                                                    : ''
-                                                : ''
-                                        }
+                                        { data ? data.proyecto ? this.getIniciales(data.proyecto.nombre) : '' : '' }
                                     </span>
                                 </div>
                             </div>
@@ -45,24 +39,12 @@ class CalidadView extends Component {
                                 <div className="d-flex align-items-start justify-content-between flex-wrap mt-2">
                                     <div className="mr-3">
                                         <div className="d-flex align-items-center text-dark font-size-h5 font-weight-bold mr-3">
-                                            {
-                                                data ?
-                                                    data.proyecto ?
-                                                        data.proyecto.nombre
-                                                        : ''
-                                                    : ''
-                                            }
+                                            { data ? data.proyecto ? data.proyecto.nombre : '' : '' }
                                         </div>
                                         <div className="d-flex flex-wrap mt-2">
                                             <div className="text-muted font-weight-bold my-2">
                                                 <i className="far fa-user-circle icon-md mr-2"></i>
-                                                {
-                                                    data ?
-                                                        data.usuario ?
-                                                            data.usuario.name
-                                                            : ''
-                                                        : ''
-                                                }
+                                                { data ? data.usuario ? data.usuario.name : '' : '' }
                                             </div>
                                         </div>
                                     </div>
@@ -72,7 +54,7 @@ class CalidadView extends Component {
                                                 data.estatus_ticket ?
                                                         <Dropdown>
                                                             <Dropdown.Toggle
-                                                                style={
+                                                                style = {
                                                                     {
                                                                         backgroundColor: data.estatus_ticket.fondo, 
                                                                         color: data.estatus_ticket.letra,
@@ -99,13 +81,8 @@ class CalidadView extends Component {
                                                                                         <span className="navi-link w-100">
                                                                                             <span className="navi-text">
                                                                                                 <span className="label label-xl label-inline rounded-0 w-100 font-weight-bolder" 
-                                                                                                    style = {{ 
-                                                                                                        color: estatus.letra, 
-                                                                                                        backgroundColor: estatus.fondo 
-                                                                                                    }}>
-                                                                                                    {
-                                                                                                        estatus.name
-                                                                                                    }
+                                                                                                    style = {{ color: estatus.letra, backgroundColor: estatus.fondo  }}>
+                                                                                                    { estatus.name }
                                                                                                 </span>
                                                                                             </span>
                                                                                         </span>
@@ -127,11 +104,7 @@ class CalidadView extends Component {
 
                                 <div className="d-flex align-items-start flex-wrap justify-content-between">
                                     <div className="font-weight-bold text-dark-50 py-lg-2 col-md-10 text-justify pl-0">
-                                        {
-                                            data ?
-                                                data.descripcion
-                                                : ''
-                                        }
+                                        { data ? data.descripcion : '' }
                                     </div>
                                     {
                                         data ?
@@ -187,13 +160,7 @@ class CalidadView extends Component {
                                     </div>
                                     <div>
                                         <div className="font-size-h6 text-dark-75 font-weight-bolder">
-                                            {
-                                                data ?
-                                                    data.partida ?
-                                                        data.partida.nombre
-                                                        : ''
-                                                    : ''
-                                            }
+                                            { data ? data.partida ? data.partida.nombre : '' : '' }
                                         </div>
                                         <div className="font-size-sm text-muted font-weight-bold mt-1">PARTIDA</div>
                                     </div>
@@ -210,13 +177,7 @@ class CalidadView extends Component {
                                     </div>
                                     <div>
                                         <div className="font-size-h6 text-dark-75 font-weight-bolder">
-                                            {
-                                                data ?
-                                                    data.tipo_trabajo ?
-                                                        data.tipo_trabajo.tipo
-                                                        : ''
-                                                    : ''
-                                            }
+                                            { data ? data.tipo_trabajo ? data.tipo_trabajo.tipo : '' : '' }
                                         </div>
                                         <div className="font-size-sm text-muted font-weight-bold mt-1">TIPO DE TRABAJO</div>
                                     </div>
@@ -227,7 +188,7 @@ class CalidadView extends Component {
                                     <div className="symbol symbol-35 symbol-light-primary mr-4 flex-shrink-0">
                                         <div className="symbol-label">
                                             <span className="svg-icon svg-icon-lg svg-icon-primary">
-                                                <SVG src={toAbsoluteUrl('/images/svg/Box1.svg')} />
+                                                <SVG src = { toAbsoluteUrl('/images/svg/Box1.svg') } />
                                             </span>
                                         </div>
                                     </div>
@@ -239,8 +200,8 @@ class CalidadView extends Component {
                                                         <Moment format="DD/MM/YYYY">
                                                             {data.created_at}
                                                         </Moment>
-                                                        : ''
                                                     : ''
+                                                : ''
                                             }
                                         </div>
                                         <div className="font-size-sm text-muted font-weight-bold mt-1">FECHA</div>
@@ -278,45 +239,36 @@ class CalidadView extends Component {
                                                                     <Nav.Item>
                                                                         <Nav.Link eventKey={data.fotos.length === 0 ? "first" : "second"}>PRESUPUESTO</Nav.Link>
                                                                     </Nav.Item>
-
                                                             }
                                                         </Nav>
                                                     </div>
                                                 </Card.Header>
                                                 <Card.Body>
-
                                                     <Tab.Content>
                                                         <Tab.Pane eventKey={data.fotos.length === 0 ? "second" : "first"}>
                                                             {
                                                                 data.fotos.length ?
-                                                                    <>
-                                                                        {/* <div className={data.estatus_ticket.estatus !== 'En espera' && data.estatus_ticket.estatus !== 'Rechazado' 
-                                                                    ? 'col-md-6' : 'col-md-12'}> */}
-                                                                        <ItemSlider items={data.fotos} item={'fotos'} />
-                                                                        {/* </div> */}
-                                                                    </>
-                                                                    : ''
+                                                                    <ItemSlider items={data.fotos} item={'fotos'} />
+                                                                : ''
                                                             }
                                                         </Tab.Pane>
                                                         {
                                                             data.estatus_ticket.estatus === 'Rechazado' ?
-                                                                '' :
+                                                                '' 
+                                                            :
                                                                 <Tab.Pane eventKey={data.fotos.length === 0 ? "first" : "second"}>
-                                                                    {/* <div className = { data.fotos.length ? 'col-md-6' : 'col-md-12'}> */}
                                                                     <ItemSlider multiple={false} items={form.adjuntos.presupuesto.files}
                                                                         item='presupuesto' handleChange={handleChange} />
-                                                                    {/* </div> */}
                                                                 </Tab.Pane>
-
                                                         }
                                                     </Tab.Content>
                                                 </Card.Body>
                                             </Tab.Container>
                                         </Card>
                                     </div>
-                                    : ''
                                 : ''
                             : ''
+                        : ''
                     }
                     {
                         data ?
@@ -330,25 +282,20 @@ class CalidadView extends Component {
                                                 </div>
                                             </div>
                                             <div className="card-body pt-0">
-
-                                                <>
-                                                    <ProcesoTicketForm form={form} options={options} onChange={onChange} formeditado={1}
-                                                        handleChange={handleChange} onSubmit={onSubmit} generateEmail={generateEmail} estatus={data.estatus_ticket.estatus}
-                                                        deleteFile={deleteFile} />
-                                                </>
-
+                                                <ProcesoTicketForm form = { form } options = { options } onChange = { onChange } formeditado = { 1 }
+                                                    handleChange = { handleChange } onSubmit = { onSubmit } generateEmail = { generateEmail } 
+                                                    estatus = { data.estatus_ticket.estatus } deleteFile = { deleteFile } />
                                             </div>
                                         </div>
                                     </div>
-                                    : ''
                                 : ''
                             : ''
+                        : ''
                     }
                 </div>
             </>
         )
     }
-
 }
 
 export default CalidadView

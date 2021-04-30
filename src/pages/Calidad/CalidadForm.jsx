@@ -7,6 +7,7 @@ import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert, questionAler
 import Layout from '../../components/layout/layout'
 import { CalidadView } from '../../components/forms'
 import { Form } from 'react-bootstrap'
+import { setFormHeader } from '../../functions/routers'
 class CalidadForm extends Component {
     state = {
         ticket: '',
@@ -110,8 +111,9 @@ class CalidadForm extends Component {
         })
         form.adjuntos.reporte_problema_solucionado.files = aux
         form.fechaProgramada = new Date(ticket.created_at)
-        if (ticket.tecnico)
-            form.empleado = ticket.tecnico.id.toString()
+        /* if (ticket.tecnico)
+            form.empleado = ticket.tecnico.id.toString() */
+        form.empleado = ticket.tecnico_asiste
         form.descripcion = ticket.descripcion_solucion
         form.recibe = ticket.recibe
         return form
@@ -199,13 +201,14 @@ class CalidadForm extends Component {
             console.log(error, 'error')
         })
     }
+
     async saveProcesoTicketAxios(email) {
         waitAlert()
         const { access_token } = this.props.authUser
         const { ticket, form } = this.state
         const data = new FormData();
         let aux = Object.keys(form)
-        aux.map((element) => {
+        aux.forEach((element) => {
             switch (element) {
                 case 'fechaProgramada':
                     data.append(element, (new Date(form[element])).toDateString())
@@ -216,10 +219,9 @@ class CalidadForm extends Component {
                     data.append(element, form[element]);
                     break
             }
-            return false
         })
         aux = Object.keys(form.adjuntos)
-        aux.map((element) => {
+        aux.forEach((element) => {
             if (form.adjuntos[element].value !== '' && element !== 'presupuesto') {
                 for (var i = 0; i < form.adjuntos[element].files.length; i++) {
                     data.append(`files_name_${element}[]`, form.adjuntos[element].files[i].name)
@@ -227,29 +229,22 @@ class CalidadForm extends Component {
                 }
                 data.append('adjuntos[]', element)
             }
-            return false
         })
         if (email !== '')
             data.append('email', email)
-        await axios.post(URL_DEV + 'calidad/proceso/' + ticket.id, data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}calidad/proceso/${ticket.id}`, data, { headers: setFormHeader(access_token) }).then(
             (response) => {
                 const { ticket } = response.data
                 window.history.replaceState(ticket, 'calidad')
-                this.setState({
-                    ...this.state,
-                    ticket: ticket,
-                    form: this.setForm(ticket)
-                })
+                this.setState({ ...this.state, ticket: ticket, form: this.setForm(ticket) })
                 doneAlert('Presupuesto adjuntado con éxito.')
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
+    
     async sendPresupuestoTicketAxios(files, item) {
         this.onChangeAdjunto({ target: { name: item, value: files, files: files } })
         waitAlert()
