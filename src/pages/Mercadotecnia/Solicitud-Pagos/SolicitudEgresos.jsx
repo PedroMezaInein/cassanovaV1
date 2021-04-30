@@ -16,7 +16,7 @@ import { Form } from 'react-bootstrap'
 import { CalendarDaySwal, SelectSearchGray, InputGray, InputNumberGray } from '../../../components/form-components'
 import moment from 'moment'
 import { replaceMoney } from '../../../functions/functions'
-const $ = require('jquery');
+import $ from "jquery";
 class SolicitudEgresos extends Component {
 
     state = {

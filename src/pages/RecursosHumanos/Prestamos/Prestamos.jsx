@@ -18,7 +18,7 @@ import { toAbsoluteUrl } from "../../../functions/routers"
 import { PrestamosCard } from '../../../components/cards'
 import { Update } from '../../../components/Lottie'
 import { printSwalHeader } from '../../../functions/printers'
-const $ = require('jquery');
+import $ from "jquery";
 class Prestamos extends Component {
     state = {
         modalDelete: false,

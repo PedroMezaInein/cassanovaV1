@@ -14,8 +14,7 @@ import { PartidaCard } from '../../components/cards'
 import { Update } from '../../components/Lottie'
 import { InputGray } from '../../components/form-components'
 import { printSwalHeader } from '../../functions/printers'
-
-const $ = require('jquery');
+import $ from "jquery";
 class Partidas extends Component {
 
     state = {

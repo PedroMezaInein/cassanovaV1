@@ -10,7 +10,7 @@ import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert } from '../..
 import { renderToString } from 'react-dom/server'
 import { ModalDelete, Modal } from '../../components/singles'
 import TableForModals from '../../components/tables/TableForModals'
-const $ = require('jquery');
+import $ from "jquery";
 class Presupuesto extends Component {
     state = {
         formeditado: 0,

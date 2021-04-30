@@ -9,9 +9,7 @@ import { setOptions, setSelectOptions } from '../../../functions/setters'
 import { printResponseErrorAlert, errorAlert, waitAlert, doneAlert } from '../../../functions/alert'
 import { save, deleteForm } from '../../../redux/reducers/formulario'
 import { Card } from 'react-bootstrap'
-
-const $ = require('jquery');
-
+import $ from "jquery";
 class UsuariosForm extends Component {
 
     state = {

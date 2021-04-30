@@ -14,7 +14,7 @@ import { RemisionCard } from '../../../components/cards'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { Update } from '../../../components/Lottie'
 import { printSwalHeader } from '../../../functions/printers'
-const $ = require('jquery');
+import $ from "jquery";
 class Remisiones extends Component {
     state = {
         modalDelete: false,

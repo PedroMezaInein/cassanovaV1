@@ -9,7 +9,7 @@ import TagSelectSearch from '../../form-components/TagSelectSearch'
 import { transformarOptions } from '../../../functions/setters'
 import ComentarioForm from '../../forms/ComentarioForm'
 import TimelineComments from '../../forms/TimelineComments'
-const $ = require('jquery');
+import $ from "jquery";
 
 class ParrillaContenidoForm extends Component {
 

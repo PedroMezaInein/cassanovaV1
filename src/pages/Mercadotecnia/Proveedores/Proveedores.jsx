@@ -12,9 +12,7 @@ import { ProveedorCard } from '../../../components/cards'
 import { printSwalHeader } from '../../../functions/printers'
 import { Update } from '../../../components/Lottie'
 import { InputGray, SelectSearchGray } from '../../../components/form-components'
-
-const $ = require('jquery');
-
+import $ from "jquery";
 class Proveedores extends Component{
 
     state = {

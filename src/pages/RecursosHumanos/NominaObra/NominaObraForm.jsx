@@ -7,7 +7,7 @@ import { URL_DEV } from '../../../constants'
 import { setOptions } from '../../../functions/setters'
 import { errorAlert, waitAlert, printResponseErrorAlert, doneAlert } from '../../../functions/alert'
 import { NominaObraForm as NominaObraFormulario } from '../../../components/forms'
-const $ = require('jquery');
+import $ from "jquery";
 class NominaObraForm extends Component {
     state = {
         formeditado: 0,

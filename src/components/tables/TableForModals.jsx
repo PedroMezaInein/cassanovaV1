@@ -3,8 +3,8 @@ import React, { Component } from 'react';
 import '../../styles/custom_datatable.css'
 import '../../styles/metronic/_datables.scss';
 import { isMobile } from "react-device-detect"
+import $ from "jquery";
 
-const $ = require('jquery');
 $.DataTable = require('datatables.net');
 require("datatables.net-responsive-bs4");
 require("datatables.net-select");

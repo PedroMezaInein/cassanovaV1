@@ -17,8 +17,7 @@ import {AdjuntosForm, FacturaExtranjera} from '../../../components/forms'
 import Select from '../../../components/form-components/Select'
 import { Update } from '../../../components/Lottie'
 import { printSwalHeader } from '../../../functions/printers'
-const $ = require('jquery');
-
+import $ from "jquery";
 class Compras extends Component {
     state = {
         // modal: false,

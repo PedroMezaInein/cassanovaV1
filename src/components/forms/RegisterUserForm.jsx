@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import Form from 'react-bootstrap/Form'
 import { Input, Button, Select, SelectSearchTrue, RadioGroup, TagSelectSearch } from '../form-components'
 import { EMAIL } from '../../constants'
-const $ = require('jquery');
+import $ from "jquery";
 class RegisterUserForm extends Component {
     nuevoUpdateDepartamento = seleccionados =>{
         const { form,deleteOption } = this.props

@@ -1,5 +1,6 @@
 ## `PLATAFORMA ADMINISTRATIVA`
 
+[![Netlify Status](https://api.netlify.com/api/v1/badges/c94fe1d6-0bfb-4cc1-a0cc-bf3451e776f6/deploy-status)](https://app.netlify.com/sites/admin-proyectos/deploys)
 
 Aplicación desarrollada para la administración de proyectos para las diferentes empresas.
 

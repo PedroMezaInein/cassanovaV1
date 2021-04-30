@@ -17,7 +17,7 @@ import { UsuarioCard } from '../../../components/cards'
 import { Update } from '../../../components/Lottie'
 import { InputGray } from '../../../components/form-components'
 import { setSingleHeader } from '../../../functions/routers'
-const $ = require('jquery');
+import $ from "jquery";
 
 class Usuarios extends Component {
 
