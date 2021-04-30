@@ -22,8 +22,8 @@ import { InputGray, RangeCalendarSwal, SelectSearchGray, InputPhoneGray } from '
 import { printSwalHeader } from '../../../functions/printers'
 import { Update } from '../../../components/Lottie'
 import { setOptions } from '../../../functions/setters'
+import $ from "jquery";
 const MySwal = withReactContent(Swal)
-const $ = require('jquery');
 class Proyectos extends Component {
     state = {
         proyectos: [],

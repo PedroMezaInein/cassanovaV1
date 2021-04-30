@@ -198,16 +198,18 @@ class Layout extends Component {
         })
     }
 
+    hasUser = () => {
+        const { authUser } = this.props
+        if(authUser)
+            if(authUser.user)
+                return true
+        return false
+    }
+
     render() {
         const { children, authUser } = this.props
-        const { menu, json, checador, title } = this.state
-        let tipo_usuario = authUser ? 
-                            authUser.user ? 
-                                authUser.user.tipo ? 
-                                    authUser.user.tipo.tipo
-                                : ''
-                            : ''
-                        : '';
+        const { checador, title } = this.state
+        let tipo_usuario = this.hasUser() ? authUser.user.tipo ? authUser.user.tipo.tipo : '' : ''
 
         return (
             <div>
@@ -235,29 +237,16 @@ class Layout extends Component {
                                                 <span className="text-muted font-weight-bold font-size-base d-none d-md-inline mr-1">Hola,</span>
                                                 <br />
                                                 <span className="text-dark-50 font-weight-bolder font-size-base d-none d-md-inline mr-2">
-                                                    {
-                                                        this.props ?
-                                                            this.props.authUser ?
-                                                                this.props.authUser.user ? 
-                                                                    this.props.authUser.user.name
-                                                                : ''
-                                                            : ''
-                                                        : ''
-                                                    }
+                                                    { this.hasUser() ?  this.props.authUser.user.name : '' }
                                                 </span>
                                                 <span className="symbol symbol-45">
                                                     {
-                                                        this.props ?
-                                                            this.props.authUser ?
-                                                                this.props.authUser.user ?
-                                                                    this.props.authUser.user.avatar ? 
-                                                                        <img className="symbol-label p-1 font-size-h5 font-weight-bold bg-transparent" src = { this.props.authUser.user.avatar } alt ="profile" />
-                                                                    : 
-                                                                        <span className="symbol-label font-size-h5 font-weight-bold">
-                                                                            { this.props.authUser.user.name ? this.props.authUser.user.name.charAt(0) : '' }
-                                                                        </span>
-                                                                : ''
-                                                            : ''
+                                                        this.hasUser() ? this.props.authUser.user.avatar ?
+                                                            <img className="symbol-label p-1 font-size-h5 font-weight-bold bg-transparent" src = { this.props.authUser.user.avatar } alt ="profile" />
+                                                        :
+                                                            <span className="symbol-label font-size-h5 font-weight-bold">
+                                                                { this.props.authUser.user.name ? this.props.authUser.user.name.charAt(0) : '' }
+                                                            </span>
                                                         : ''
                                                     }
                                                 </span>
@@ -286,15 +275,11 @@ class Layout extends Component {
                     </div>
                 </div>
                 {
-                    this.props ?
-                        this.props.authUser ?
-                            this.props.authUser.user ?
-                                <UserPanel user = { this.props.authUser.user } avatar = { this.props.authUser.user.avatar } 
-                                    clickResponsiveMenu={this.clickResponsiveMenu} clickLogout={this.logoutUser} 
-                                    cerrarSesiones = { this.cerrarSesionesAxios } checador = { checador } 
-                                    actualizarChecador = { this.actualizarChecadorAxios } {...this.props} />
-                            : ''
-                        : ''
+                    this.hasUser() ?
+                        <UserPanel user = { this.props.authUser.user } avatar = { this.props.authUser.user.avatar } 
+                            clickResponsiveMenu={this.clickResponsiveMenu} clickLogout={this.logoutUser} 
+                            cerrarSesiones = { this.cerrarSesionesAxios } checador = { checador } 
+                            actualizarChecador = { this.actualizarChecadorAxios } {...this.props} />
                     : ''
                 }
             </div>
@@ -303,15 +288,7 @@ class Layout extends Component {
 
 }
 
-const mapStateToProps = state => {
-    return {
-        authUser: state.authUser
-    }
-}
-
-const mapDispatchToProps = dispatch => ({
-    logout: () => dispatch(logout()),
-    login: payload => dispatch(login(payload))
-})
+const mapStateToProps = state => { return { authUser: state.authUser } }
+const mapDispatchToProps = dispatch => ({ logout: () => dispatch(logout()), login: payload => dispatch(login(payload)) })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Layout);

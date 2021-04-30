@@ -17,7 +17,7 @@ import { EgresosCard } from '../../../components/cards'
 import Swal from 'sweetalert2'
 import { printSwalHeader } from '../../../functions/printers'
 import { Update } from '../../../components/Lottie'
-const $ = require('jquery');
+import $ from "jquery";
 class egresos extends Component {
     state = {
         egresos: [],

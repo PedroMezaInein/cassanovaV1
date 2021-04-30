@@ -9,7 +9,7 @@ import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert } from '../..
 import { setTextTable, setArrayTable } from '../../../functions/setters'
 import NewTableServerRender from '../../../components/tables/NewTableServerRender'
 import { AdjuntoFormCard } from '../../../components/cards'
-const $ = require('jquery');
+import $ from "jquery";
 class AdjuntosEmpresa extends Component {
     state = {
         modal: {
@@ -177,7 +177,6 @@ class AdjuntosEmpresa extends Component {
         )
     }
 }
-
 
 const mapStateToProps = state => {
     return {

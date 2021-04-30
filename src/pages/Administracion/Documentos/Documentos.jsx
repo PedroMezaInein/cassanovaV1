@@ -13,7 +13,7 @@ import { Button, CalendarDaySwal, SelectSearchGray, InputGray } from '../../../c
 import { DocumentosCard } from '../../../components/cards'
 import { Update } from '../../../components/Lottie'
 import { printSwalHeader } from '../../../functions/printers'
-const $ = require('jquery');
+import $ from "jquery";
 class Documentos extends Component {
     state = {
         modalDelete: false,

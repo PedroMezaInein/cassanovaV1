@@ -16,7 +16,7 @@ import { Update } from '../../../components/Lottie'
 import { printSwalHeader } from '../../../functions/printers'
 import { Form } from 'react-bootstrap'
 import { replaceMoney } from '../../../functions/functions'
-const $ = require('jquery');
+import $ from "jquery";
 class SolicitudVenta extends Component {
     state = {
         modal: false,

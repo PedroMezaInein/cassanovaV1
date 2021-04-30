@@ -13,7 +13,7 @@ import { errorAlert, waitAlert, printResponseErrorAlert, deleteAlert, doneAlert 
 import { Tabs, Tab } from 'react-bootstrap' 
 import TableForModals from '../../components/tables/TableForModals'
 import { EmpleadosCard } from '../../components/cards'
-const $ = require('jquery');
+import $ from "jquery";
 
 class Empleados extends Component {
     state = {  

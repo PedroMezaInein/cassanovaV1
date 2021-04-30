@@ -8,7 +8,7 @@ import { deleteAlert, errorAlert, printResponseErrorAlert, waitAlert } from '../
 import axios from 'axios'
 import { URL_DEV } from '../../../constants'
 import Swal from 'sweetalert2';
-const $ = require('jquery');
+import $ from "jquery";
 class Accesos extends Component {
 
     state = {

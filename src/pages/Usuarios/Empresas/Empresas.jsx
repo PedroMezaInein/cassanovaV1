@@ -18,8 +18,8 @@ import { printSwalHeader } from '../../../functions/printers'
 import { InputGray } from '../../../components/form-components'
 /* import Pusher from 'pusher-js'; */
 import Echo from 'laravel-echo';
+import $ from "jquery";
 const MySwal = withReactContent(Swal)
-const $ = require('jquery');
 class Empresas extends Component {
     state = {
         modalDelete: false,

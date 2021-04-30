@@ -3,7 +3,7 @@ import { Form, Row, Col } from 'react-bootstrap'
 import { validateAlert } from '../../../functions/alert';
 import { Button, Input, MultipleRangeCalendar, TagSelectSearch, CircleColor, SelectCreate, SelectSearch } from '../../form-components';
 import { COLORS } from '../../../constants'
-const $ = require('jquery');
+import $ from "jquery";
 class PlanTrabajoForm extends Component{
     state = {
         color: ''

@@ -17,7 +17,7 @@ import { HerramientaCard } from '../../../components/cards'
 import { Update } from '../../../components/Lottie'
 import Swal from 'sweetalert2'
 import { SelectSearchGray } from '../../../components/form-components'
-const $ = require('jquery');
+import $ from "jquery";
 class Herramienta extends Component {
     state = {
         modalDelete: false,

@@ -6,7 +6,8 @@ import { Card, Dropdown, DropdownButton, OverlayTrigger  } from 'react-bootstrap
 import { renderToString } from 'react-dom/server';
 import Tooltip from 'react-bootstrap/Tooltip'
 import ReactDOM from 'react-dom'
-const $ = require('jquery');
+import $ from "jquery";
+
 const global_variable = {}
 $.DataTable = require('datatables.net');
 require("datatables.net-responsive-bs4");

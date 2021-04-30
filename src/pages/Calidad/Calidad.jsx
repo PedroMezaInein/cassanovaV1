@@ -13,7 +13,7 @@ import { CalendarDaySwal } from '../../components/form-components'
 import { Update } from '../../components/Lottie'
 import moment from 'moment'
 import Swal from 'sweetalert2'
-const $ = require('jquery');
+import $ from "jquery";
 class Calidad extends Component {
     state = {
         calidad: '',

@@ -2,8 +2,7 @@ import React, { Component } from 'react';
 import '../../styles/custom_datatable.css'
 import '../../styles/metronic/_datables.scss';
 import { Card } from 'react-bootstrap'
-
-const $ = require('jquery');
+import $ from "jquery";
 $.DataTable = require('datatables.net');
 require("datatables.net-responsive-bs4");
 require("datatables.net-select");
@@ -14,7 +13,6 @@ require("datatables.net-select");
 require("datatables.net-fixedheader");
 const global_variable = {}
 class NewTable extends Component {
-
 
     reloadTableData(props) {
         const { data, actions, elements } = props
