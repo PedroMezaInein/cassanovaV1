@@ -180,7 +180,7 @@ const SolicitudEgresosForm = React.lazy(() => import('./pages/Mercadotecnia/Soli
 
 const Pagos = React.lazy(() => import('./pages/Mercadotecnia/Pagos/Pagos') )
 const PagosForm = React.lazy(() => import('./pages/Mercadotecnia/Pagos/PagosForm') )
-
+const NotificacionesCorreos = React.lazy(() => import('./pages/Plataforma/NotificacionesCorreos') )
 class App extends Component{
     async componentDidMount(){
         const { history } = this.props
@@ -474,6 +474,10 @@ class App extends Component{
                     <Route path = "/mi-perfil" exact component ={ AccountSettings } />
                     <Route path = "/mi-calendario" exact component ={ Calendario } />
                     <Route path = "/mis-notificaciones" exact component ={ Notificaciones } />
+
+
+                    {/* ANCHOR Routes for plataforma */}
+                    <Route path = "/plataforma/notificaciones" exact component ={ NotificacionesCorreos } />
 
                     {/* ANCHOR NOT FOUND ROUTE */}
 
