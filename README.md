@@ -31,3 +31,5 @@ Solamente es necesario hacer un push del material a subir a la rama _production_
 
 * Omar Abaroa _omar@inein.mx_
 * Carina Jiménez _carina@inein.mx_
+
+[![Netlify Status](https://api.netlify.com/api/v1/badges/c94fe1d6-0bfb-4cc1-a0cc-bf3451e776f6/deploy-status)](https://app.netlify.com/sites/admin-proyectos/deploys)
