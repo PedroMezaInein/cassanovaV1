@@ -5,8 +5,11 @@ import { Nav, Tab, OverlayTrigger, Tooltip, Row, Accordion, Card,  } from 'react
 import { TagSelectSearchGray } from '../../components/form-components'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../functions/routers"
+import $ from 'jquery'
+
 class NotificacionesCorreos extends Component {
     state={
+        keyActive:'',
         showInput: false,
         activeButton: false,
         form: {
@@ -15,48 +18,7 @@ class NotificacionesCorreos extends Component {
         options: {
             responsables: []
         },
-        opciones_adjuntos: [
-            {
-                nombre: 'PORTAFOLIO',
-                slug: 'portafolio',
-                icono: 'fas fa-briefcase',
-                isActive: false,
-            },
-            {
-                nombre: 'COMO TRABAJAMOS (FASE 1 Y 2)',
-                icono: 'flaticon2-file',
-                slug: 'como_trabajamos',
-                isActive: false,
-            },
-            {
-                nombre: 'SERVICIOS GENERALES',
-                icono: 'flaticon2-settings',
-                slug: 'servicios_generales',
-                isActive: false,
-            },
-            {
-                nombre: 'SERVICIOS POR CATEGORIA',
-                icono: 'fas fa-tag',
-                isActive: false,
-            },
-            {
-                nombre: 'BROKERS',
-                slug: 'brokers',
-                icono: 'fas fa-user-tie',
-                isActive: false,
-            },
-            {
-                nombre: 'VIDEOS',
-                slug: 'videos',
-                icono: 'fas fa-video',
-                isActive: false,
-            },
-            {
-                nombre: 'CASOS DE ÉXITO',
-                icono: 'fas fa-folder-open',
-                isActive: false,
-            }
-        ],
+        activeSubMenu: true
     }
 
     componentDidMount() {
@@ -85,84 +47,186 @@ class NotificacionesCorreos extends Component {
             activeButton: !activeButton
         })
     }
+    activeList = (e, tipo) => {
+        let { keyActive, activeSubMenu } = this.state
+        let id = e.currentTarget.id
+        if(id === tipo){
+            keyActive = tipo
+            activeSubMenu = true
+        }
+        this.setState({
+            ...this.state,
+            keyActive,
+            activeSubMenu
+        })
+    }
+    
     updateResponsable = value => {
         const { onChange } = this.props
         onChange({target: { value: value, name: 'responsables'}}, true)
     }
+    closeList = () => {
+        let { activeSubMenu } = this.state
+        activeSubMenu = false
+        this.setState({
+            ...this.state,
+            activeSubMenu
+        })
+    }
     render() {
-        const { options, form, showInput, activeButton, opciones_adjuntos } = this.state
-        console.log(activeButton)
+        const { options, form, showInput, activeButton, activeSubMenu, keyActive } = this.state
         return (
             <Layout active='plataforma' {...this.props}>
-                <Tab.Container defaultActiveKey="0" className="p-5">
                     <Row>
                         <div className="col-sm-3">
-                            <div className="card-custom card-stretch gutter-b card border-radius-24px">
-                                <div className="card-body px-3">
-                                    <div className="px-3 text-center">
-                                        <span className="font-size-h4 font-weight-bolder">
-                                            Modulos
-                                        </span>
-                                    </div>
-                                    <div>
-                                        <Accordion id = "accordion-material" className = "accordion-light accordion-svg-toggle">
-                                            {
-                                                opciones_adjuntos.map((element, key) => {
-                                                    return (
-                                                        <Card className="w-auto border-0 mb-2" key={key}>
-                                                            <Card.Header>
-                                                                <div className = { (element.isActive) ? 'card-title text-primary collapsed rounded-0 ' : 'card-title text-dark-50 rounded-0' }>
-                                                                    <div className="card-label">
-                                                                        <i className={(element.isActive) ? element.icono + ' text-primary mr-3' : element.icono + ' text-dark-50 mr-3'}>
-                                                                        </i>{element.nombre}
-                                                                    </div>
-                                                                    <span className="svg-icon">
-                                                                        <SVG src={toAbsoluteUrl('/images/svg/Angle-double-right.svg')} />
-                                                                    </span>
-                                                                </div>
-                                                            </Card.Header>
-                                                            {
-                                                                element.subMenu ?
-                                                                    <div className = { element.isActive  ? 'collapse-now' : 'collapse' }>
-                                                                        <Card.Body>
-                                                                            <Nav className="navi">
-                                                                                {/* {
-                                                                                    empresa ?
-                                                                                        empresa.tipos.map( (tipo, key) => {
-                                                                                            return (
-                                                                                                <Nav.Item className='navi-item' key = { key } 
-                                                                                                    onClick = { (e) => { e.preventDefault(); this.openSubmenu(tipo) }}>
-                                                                                                    <Nav.Link className = "navi-link p-2" eventKey = { tipo.id }>
-                                                                                                        <span className = 
-                                                                                                            { submenuactive === tipo.id ? "navi-icon text-primary" : "navi-icon"}>
-                                                                                                            <span className="navi-bullet">
-                                                                                                                <i className="bullet bullet-dot"></i>
-                                                                                                            </span>
-                                                                                                        </span>
-                                                                                                        <div className = 
-                                                                                                            { submenuactive === tipo.id ? "navi-text text-primary" : "navi-text"}>
-                                                                                                            <span className="d-block font-weight-bolder" >{tipo.tipo}</span>
-                                                                                                        </div>
-                                                                                                    </Nav.Link>
-                                                                                                </Nav.Item>
-                                                                                            )
-                                                                                        })
-                                                                                    : ''
-                                                                                } */}
-                                                                            </Nav>
-                                                                        </Card.Body>
-                                                                    </div>
-                                                                : ''
-                                                            }
-                                                        </Card>
-                                                    )
-                                                })
-                                            }
-                                        </Accordion>
-                                    </div>
+                        <div className="card card-custom gutter-b border-radius-24px bg-aside-notify p-4">
+                            <div className="card-header d-flex align-self-center align-content-center border-0">
+                                <div className="text-center">
+                                    <span className="font-size-h4 font-weight-bold text-white">
+                                        Modulos
+                                    </span>
                                 </div>
                             </div>
+                            <div className="card-body p-0 position-relative">
+                            <nav className="sidenav">
+                                <ul className="main-buttons">
+                                    <li className={`${keyActive === "recursoshumanos" ? 'active-list' :''}`}>
+                                        <div className="row mx-0" id="recursoshumanos" onClick={(e) => { this.activeList(e, 'recursoshumanos') }}>
+                                            <div className="w-20 text-center text-hover-primary">
+                                                <span className="svg-icon svg-icon-xl svg-icon-gray-500 mr-1">
+                                                    <SVG src={toAbsoluteUrl('/images/svg/recursoshumanos.svg')} />
+                                                </span>
+                                            </div>
+                                            <div className="w-80 align-self-center pl-2">
+                                                Recursos humanos
+                                            </div>
+                                        </div>
+                                        <ul className={`hidden ${!activeSubMenu && keyActive === "recursoshumanos"? 'd-none':''}`} >
+                                            <li className="py-9px px-3" onClick = { this.closeList }  >
+                                                <span>
+                                                    <i className="flaticon2-left-arrow-1 icon-sm text-muted mr-2"></i>
+                                                    Regresar
+                                                </span>
+                                            </li>
+                                            <li>Préstamos</li>
+                                            <li>Vacaciones</li>
+                                        </ul>
+                                    </li>
+                                    <li className={`${keyActive === "proyectos" ? 'active-list' :''}`}>
+                                        <div className="row mx-0" id="proyectos" onClick={(e) => { this.activeList(e, 'proyectos') }}>
+                                            <div className="w-20 text-center text-hover-primary">
+                                                <span className="svg-icon svg-icon-xl svg-icon-gray-500 mr-1">
+                                                    <SVG src={toAbsoluteUrl('/images/svg/proyectos.svg')} />
+                                                </span>
+                                            </div>
+                                            <div className="w-80 align-self-center pl-2">
+                                                Proyectos
+                                            </div>
+                                        </div>
+                                        <ul className={`hidden ${!activeSubMenu && keyActive === "proyectos" ? 'd-none':''}`}>
+                                            <li className="py-9px px-3" onClick = { this.closeList }  >
+                                                <span>
+                                                    <i className="flaticon2-left-arrow-1 icon-sm text-muted mr-2"></i>
+                                                    Regresar
+                                                </span>
+                                            </li>
+                                            <li>Solicitud de compra</li>
+                                            <li>Proyectos</li>
+                                            <li>Remisión</li>
+                                            <li>Solicitud de venta</li>
+                                        </ul>
+                                    </li>
+                                    <li className={`${keyActive === "administracion" ? 'active-list' :''}`}>
+                                        <div className="row mx-0" id="administracion"  onClick={(e) => { this.activeList(e, 'administracion') }}>
+                                            <div className="w-20 text-center text-hover-primary">
+                                                <span className="svg-icon svg-icon-xl svg-icon-gray-500 mr-1">
+                                                    <SVG src={toAbsoluteUrl('/images/svg/administracion.svg')} />
+                                                </span>
+                                            </div>
+                                            <div className="w-80 align-self-center pl-2">
+                                                Administración
+                                            </div>
+                                        </div>
+                                        <ul className={`hidden ${!activeSubMenu  && keyActive === "administracion"? 'd-none':'e'}`} onClick = { () => { this.closeList() } } >
+                                            <li className="py-9px px-3" onClick = { this.closeList }  >
+                                                <span>
+                                                    <i className="flaticon2-left-arrow-1 icon-sm text-muted mr-2"></i>
+                                                    Regresar
+                                                </span>
+                                            </li>
+                                            <li>Egreso</li>
+                                            <li>Facturas</li>
+                                        </ul>
+                                    </li>
+                                    <li className={`${keyActive === "usuarios" ? 'active-list' :''}`}>
+                                        <div className="row mx-0" id="usuarios"  onClick={(e) => { this.activeList(e, 'usuarios') }}>
+                                            <div className="w-20 text-center text-hover-primary">
+                                                <span className="svg-icon svg-icon-xl svg-icon-gray-500 mr-1">
+                                                    <SVG src={toAbsoluteUrl('/images/svg/usuarios.svg')} />
+                                                </span>
+                                            </div>
+                                            <div className="w-80 align-self-center pl-2">
+                                                Usuario
+                                            </div>
+                                        </div>
+                                        <ul className={`hidden ${!activeSubMenu  && keyActive === "usuarios"? 'd-none':'e'}`} onClick = { () => { this.closeList() } } >
+                                            <li className="py-9px px-3" onClick = { this.closeList }  >
+                                                <span>
+                                                    <i className="flaticon2-left-arrow-1 icon-sm text-muted mr-2"></i>
+                                                    Regresar
+                                                </span>
+                                            </li>
+                                            <li>Tareas</li>
+                                            <li>Usuario</li>
+                                        </ul>
+                                    </li>
+                                    <li className={`${keyActive === "calidad" ? 'active-list' :''}`}>
+                                        <div className="row mx-0" id="calidad"  onClick={(e) => { this.activeList(e, 'calidad') }}>
+                                            <div className="w-20 text-center text-hover-primary">
+                                                <span className="svg-icon svg-icon-xl svg-icon-gray-500 mr-1">
+                                                    <SVG src={toAbsoluteUrl('/images/svg/calidad.svg')} />
+                                                </span>
+                                            </div>
+                                            <div className="w-80 align-self-center pl-2">
+                                                Calidad
+                                            </div>
+                                        </div>
+                                        <ul className={`hidden ${!activeSubMenu  && keyActive === "calidad"? 'd-none':'e'}`} onClick = { () => { this.closeList() } } >
+                                            <li className="py-9px px-3" onClick = { this.closeList }  >
+                                                <span>
+                                                    <i className="flaticon2-left-arrow-1 icon-sm text-muted mr-2"></i>
+                                                    Regresar
+                                                </span>
+                                            </li>
+                                            <li>Calidad</li>
+                                        </ul>
+                                    </li>
+                                    <li className={`${keyActive === "leads" ? 'active-list' :''}`}>
+                                        <div className="row mx-0" id="leads"  onClick={(e) => { this.activeList(e, 'leads') }}>
+                                            <div className="w-20 text-center text-hover-primary">
+                                                <span className="svg-icon svg-icon-xl svg-icon-gray-500 mr-1">
+                                                    <SVG src={toAbsoluteUrl('/images/svg/leads.svg')} />
+                                                </span>
+                                            </div>
+                                            <div className="w-80 align-self-center pl-2">
+                                                Leads
+                                            </div>
+                                        </div>
+                                        <ul className={`hidden ${!activeSubMenu  && keyActive === "leads"? 'd-none':'e'}`} onClick = { () => { this.closeList() } } >
+                                            <li className="py-9px px-3" onClick = { this.closeList }  >
+                                                <span>
+                                                    <i className="flaticon2-left-arrow-1 icon-sm text-muted mr-2"></i>
+                                                    Regresar
+                                                </span>
+                                            </li>
+                                            <li>Leads</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </nav>
+                            </div>
                         </div>
+                    </div>
                         <div className="col-sm-9">
                             <div className="card-custom card-stretch gutter-b card">
                                 <div className="card-body">
@@ -204,7 +268,6 @@ class NotificacionesCorreos extends Component {
                             </div>
                         </div>
                     </Row>
-                </Tab.Container>
                 {/* <Tab.Container defaultActiveKey="1" className="container d-flex flex-column">
                     <Nav className="header-tabs nav flex-column-auto" role="tablist">
                         <Nav.Item>
