@@ -6,17 +6,25 @@ import { TagSelectSearchGray } from '../../components/form-components'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../functions/routers"
 import $ from 'jquery'
-import Dropdown, {
-    DropdownToggle,
-    DropdownMenu,
-    DropdownMenuWrapper,
+import {
+    Menu,
     MenuItem,
-    DropdownButton
-} from '@trendmicro/react-dropdown';
+    MenuButton,
+    SubMenu
+} from '@szhsin/react-menu';
+import '@szhsin/react-menu/dist/index.css';
+// import Dropdown, {
+//     DropdownToggle,
+//     DropdownMenu,
+//     DropdownMenuWrapper,
+//     MenuItem,
+//     DropdownButton
+// } from '@trendmicro/react-dropdown';
 
 // Be sure to include styles at some point, probably during your bootstraping
-import '@trendmicro/react-buttons/dist/react-buttons.css';
-import '@trendmicro/react-dropdown/dist/react-dropdown.css';
+// import '@trendmicro/react-buttons/dist/react-buttons.css';
+// import '@trendmicro/react-dropdown/dist/react-dropdown.css';
+
 
 class NotificacionesCorreos extends Component {
     state={
@@ -86,6 +94,7 @@ class NotificacionesCorreos extends Component {
     }
     render() {
         const { options, form, showInput, activeButton, activeSubMenu, keyActive } = this.state
+        
         return (
             <Layout active='plataforma' {...this.props}>
                     <Row>
@@ -242,7 +251,19 @@ class NotificacionesCorreos extends Component {
                         
                             <div className="card-custom card-stretch gutter-b card">
                                 <div className="p-5">
-                                    <Dropdown>
+                                <Menu menuButton={<MenuButton>Abrir menú</MenuButton>}>
+                                    <MenuItem>Opción 1</MenuItem>
+                                    <SubMenu label="Opción 2">
+                                        <MenuItem>Opción 2.1</MenuItem>
+                                        <MenuItem>Opción 2.2</MenuItem>
+                                        <SubMenu label="Opción 2.3">
+                                            <MenuItem>Opción 2.3.1</MenuItem>
+                                            <MenuItem>Opción 2.3.2</MenuItem>
+                                        </SubMenu>
+                                    </SubMenu>
+                                    <MenuItem>Opción 3</MenuItem>
+                                </Menu>
+                                    {/* <Dropdown>
                                         <Dropdown.Toggle title="Módulo" />
                                         <Dropdown.Menu>
                                             <MenuItem>
@@ -271,7 +292,8 @@ class NotificacionesCorreos extends Component {
                                                 </MenuItem>
                                             </MenuItem>
                                         </Dropdown.Menu>
-                                    </Dropdown>
+                                    </Dropdown> */}
+
                                 </div>
                                 <div className="card-body">
                                     <div className="p-12">
