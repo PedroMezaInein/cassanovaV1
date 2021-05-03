@@ -124,10 +124,11 @@ class UserPanel extends Component {
 					</div>
 					<div className={`offcanvas-content pr-3 mr-n3 ${showNotif ? '' : 'd-none'}`}>
 						<div className="mt-3">
+                            
 								{
 								notificaciones.map((notificacion, key) => {
 									return(
-										<div className="d-flex align-items-center mb-5" key={key}>
+										<div className="d-flex align-items-start mb-5" key={key}>
 											<div className="symbol symbol-50 symbol-light mr-4">
 												<span className="symbol-label bg-gray-200">
 													<span className="svg-icon svg-icon-lg svg-icon-success mx-2">
