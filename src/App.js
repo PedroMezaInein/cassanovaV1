@@ -450,8 +450,8 @@ class App extends Component{
 
                     {/* ANCHOR Routes for calidad */}
 
-                    <Route path = "/calidad/calidad" exact component ={ Calidad } />
-                    <Route path = "/calidad/calidad/:action" exact component = { CalidadForm } />
+                    <Route path = "/calidad/tickets" exact component ={ Calidad } />
+                    <Route path = "/calidad/tickets/:action" exact component = { CalidadForm } />
 
                     {/* ANCHOR Routes for mercadotécnia */}
                     
