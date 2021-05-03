@@ -6,6 +6,17 @@ import { TagSelectSearchGray } from '../../components/form-components'
 import SVG from "react-inlinesvg";
 import { toAbsoluteUrl } from "../../functions/routers"
 import $ from 'jquery'
+import Dropdown, {
+    DropdownToggle,
+    DropdownMenu,
+    DropdownMenuWrapper,
+    MenuItem,
+    DropdownButton
+} from '@trendmicro/react-dropdown';
+
+// Be sure to include styles at some point, probably during your bootstraping
+import '@trendmicro/react-buttons/dist/react-buttons.css';
+import '@trendmicro/react-dropdown/dist/react-dropdown.css';
 
 class NotificacionesCorreos extends Component {
     state={
@@ -78,7 +89,7 @@ class NotificacionesCorreos extends Component {
         return (
             <Layout active='plataforma' {...this.props}>
                     <Row>
-                        <div className="col-sm-3">
+                        {/* <div className="col-sm-3">
                         <div className="card card-custom gutter-b border-radius-24px bg-aside-notify p-4">
                             <div className="card-header d-flex align-self-center align-content-center border-0">
                                 <div className="text-center">
@@ -226,9 +237,42 @@ class NotificacionesCorreos extends Component {
                             </nav>
                             </div>
                         </div>
-                    </div>
-                        <div className="col-sm-9">
+                    </div> */}
+                        <div className="col-md-12">
+                        
                             <div className="card-custom card-stretch gutter-b card">
+                                <div className="p-5">
+                                    <Dropdown>
+                                        <Dropdown.Toggle title="Módulo" />
+                                        <Dropdown.Menu>
+                                            <MenuItem>
+                                            Módulo 1
+                                            </MenuItem>
+                                            <MenuItem>
+                                            Módulo 2
+                                            </MenuItem>
+                                            <MenuItem>
+                                            Módulo 3
+                                            </MenuItem>
+                                            <MenuItem divider />
+                                            <MenuItem>
+                                            Módulo 4
+                                                <MenuItem>
+                                                    submódulo 1
+                                                </MenuItem>
+                                                <MenuItem>
+                                                    submódulo 2
+                                                </MenuItem>
+                                                <MenuItem>
+                                                    submódulo 3
+                                                    <MenuItem>
+                                                        Otro subsubmodulo
+                                                    </MenuItem>
+                                                </MenuItem>
+                                            </MenuItem>
+                                        </Dropdown.Menu>
+                                    </Dropdown>
+                                </div>
                                 <div className="card-body">
                                     <div className="p-12">
                                         <div className="row mx-0">
