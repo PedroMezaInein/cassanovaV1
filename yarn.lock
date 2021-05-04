@@ -1120,7 +1120,7 @@
 
 "@babel/runtime@7.4.5":
   version "7.4.5"
-  resolved "https://registry.npmjs.org/@babel/runtime/-/runtime-7.4.5.tgz"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.4.5.tgz#582bb531f5f9dc67d2fcb682979894f75e253f12"
   integrity sha512-TuI4qpWZP6lGOGIuGWtp9sPluqYICmbk8T/1vpSysqJxRPkudh/ofFWyqdcMsDf2s7KvDL4/YHgKyvcS3g9CJQ==
   dependencies:
     regenerator-runtime "^0.13.2"
@@ -1133,9 +1133,9 @@
     regenerator-runtime "^0.13.4"
 
 "@babel/runtime@^7.3.4":
-  version "7.13.17"
-  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.13.17.tgz#8966d1fc9593bf848602f0662d6b4d0069e3a7ec"
-  integrity sha512-NCdgJEelPTSh+FEFylhnP1ylq848l1z9t9N0j1Lfbcw0+KXGjsTvUmkxy+voLLXB5SOKMbLLx4jxYliGrYQseA==
+  version "7.14.0"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.14.0.tgz#46794bc20b612c5f75e62dd071e24dfd95f1cbe6"
+  integrity sha512-JELkvo/DlpNdJ7dlyw/eY7E0suy5i5GQH+Vlxaq1nsNJ+H7f4Vtv3jMeCEgRhZZQFXTjldYfQgv2qmM6M1v5wA==
   dependencies:
     regenerator-runtime "^0.13.4"
 
@@ -2120,6 +2120,11 @@
     "@svgr/plugin-svgo" "^5.5.0"
     loader-utils "^2.0.0"
 
+"@szhsin/react-menu@^1.10.0":
+  version "1.10.0"
+  resolved "https://registry.yarnpkg.com/@szhsin/react-menu/-/react-menu-1.10.0.tgz#e4a9bfdd77164870d6daf9cafe8e1d1c84e61f0b"
+  integrity sha512-N8+OcI8JfYp5oKurbxwYkDS7o+/fPuW5bi1syVVIhaQdPJaQ+P09o3tTxmlWHTdmDzKxfw0zNhRHF7Bz5j9m0Q==
+
 "@tanem/svg-injector@8.0.35":
   version "8.0.35"
   resolved "https://registry.npmjs.org/@tanem/svg-injector/-/svg-injector-8.0.35.tgz"
@@ -2183,7 +2188,7 @@
   resolved "https://registry.npmjs.org/@testing-library/user-event/-/user-event-7.2.1.tgz"
   integrity sha512-oZ0Ib5I4Z2pUEcoo95cT1cr6slco9WY7yiPpG+RGNkj8YcYgJnM7pXmYmorNOReh8MIGcKSqXyeGjxnr8YiZbA==
 
-"@trendmicro/react-buttons@^1.3.0", "@trendmicro/react-buttons@^1.3.1":
+"@trendmicro/react-buttons@^1.3.0":
   version "1.3.1"
   resolved "https://registry.yarnpkg.com/@trendmicro/react-buttons/-/react-buttons-1.3.1.tgz#921f3924025dc68678fcbe1a19fa65b667bdb670"
   integrity sha512-9zvt/fdkqCb9kxUdZnvTZKmbmykM2wDQ3VEJFtztGcKAkm4Wkq4oZOQLJXKfUQ1vX3w+YDJob18LkNOzaHI1UQ==
@@ -4417,7 +4422,7 @@ classnames@2.2.5:
   resolved "https://registry.yarnpkg.com/classnames/-/classnames-2.2.5.tgz#fb3801d453467649ef3603c7d61a02bd129bde6d"
   integrity sha1-+zgB1FNGdknvNgPH1hoCvRKb3m0=
 
-classnames@2.2.6, classnames@>=2.0.0, classnames@^2.2.5, classnames@^2.2.6:
+classnames@2.2.6, classnames@^2.2.5, classnames@^2.2.6:
   version "2.2.6"
   resolved "https://registry.npmjs.org/classnames/-/classnames-2.2.6.tgz"
   integrity sha512-JR/iSQOSt+LQIWwrwEzJ9uk0xfN3mTVYMwt1Ir5mUcSN6pU+V4zQFFaJsclJbPuAUQH+yfWef6tm7l1quW3C8Q==
@@ -5771,11 +5776,6 @@ dom-helpers@^5.0.1, dom-helpers@^5.1.2, dom-helpers@^5.2.0:
   dependencies:
     "@babel/runtime" "^7.8.7"
     csstype "^3.0.2"
-
-dom-lib@^0.2.3:
-  version "0.2.6"
-  resolved "https://registry.npmjs.org/dom-lib/-/dom-lib-0.2.6.tgz"
-  integrity sha1-3Pn+z4S82ijCrho5fXH51Ejyt4w=
 
 dom-serializer@0:
   version "0.2.2"
@@ -9408,7 +9408,7 @@ language-tags@^1.0.5:
 
 laravel-echo@^1.10.0:
   version "1.10.0"
-  resolved "https://registry.npmjs.org/laravel-echo/-/laravel-echo-1.10.0.tgz"
+  resolved "https://registry.yarnpkg.com/laravel-echo/-/laravel-echo-1.10.0.tgz#b7a3615baf563fadfe242589ad1e302acc931dad"
   integrity sha512-qshJkrzl34on1VYd8KqZhLxUdWJFPTL6cGSZ4lVQ4OZMN7FvI9Pt24PrOFL169I8IEDHjHX16jaIAIwCkdnDNA==
 
 last-call-webpack-plugin@^3.0.0:
@@ -9607,7 +9607,7 @@ lodash.uniq@^4.5.0:
   resolved "https://registry.npmjs.org/lodash.uniq/-/lodash.uniq-4.5.0.tgz"
   integrity sha1-0CJTc662Uq3BvILklFM5qEJ1R3M=
 
-"lodash@>=3.5 <5", lodash@^4.0.0, lodash@^4.0.1, lodash@^4.11.1, lodash@^4.17.11, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.20, lodash@^4.17.21, lodash@^4.17.4, lodash@^4.17.5, lodash@~4.17.10:
+"lodash@>=3.5 <5", lodash@^4.0.0, lodash@^4.0.1, lodash@^4.17.11, lodash@^4.17.14, lodash@^4.17.15, lodash@^4.17.19, lodash@^4.17.20, lodash@^4.17.21, lodash@^4.17.4, lodash@^4.17.5, lodash@~4.17.10:
   version "4.17.21"
   resolved "https://registry.npmjs.org/lodash/-/lodash-4.17.21.tgz"
   integrity sha512-v2kDEe57lecTulaDIuNTPy3Ry4gLGJ6Z1O3vE1krgXZNrsQ+LFTGHVxVjcXPs17LhbZVGedAJv8XZ1tvj5FvSg==
@@ -12427,7 +12427,7 @@ react-fast-compare@^2.0.1:
 
 react-fast-compare@^3.1.1:
   version "3.2.0"
-  resolved "https://registry.npmjs.org/react-fast-compare/-/react-fast-compare-3.2.0.tgz"
+  resolved "https://registry.yarnpkg.com/react-fast-compare/-/react-fast-compare-3.2.0.tgz#641a9da81b6a6320f270e89724fb45a0b39e43bb"
   integrity sha512-rtGImPZ0YyLrscKI9xTpV8psd6I8VAtjKCzQDlzyDvqJA8XOW78TXYQwNRNd8g8JZnDu8q9Fu/1v4HPAVwVdHA==
 
 react-fit@^1.0.3:
@@ -12450,7 +12450,7 @@ react-from-dom@^0.3.0:
 
 react-helmet@^6.1.0:
   version "6.1.0"
-  resolved "https://registry.npmjs.org/react-helmet/-/react-helmet-6.1.0.tgz"
+  resolved "https://registry.yarnpkg.com/react-helmet/-/react-helmet-6.1.0.tgz#a750d5165cb13cf213e44747502652e794468726"
   integrity sha512-4uMzEY9nlDlgxr61NL3XbKRy1hEkXmKNXhjbAIOVw5vcFrsdYbH2FEwcNyWvWinl103nXgzYNlns9ca+8kFiWw==
   dependencies:
     object-assign "^4.1.1"
@@ -12573,7 +12573,7 @@ react-lottie@^1.2.3:
 
 react-mentions@^4.1.1:
   version "4.1.1"
-  resolved "https://registry.npmjs.org/react-mentions/-/react-mentions-4.1.1.tgz"
+  resolved "https://registry.yarnpkg.com/react-mentions/-/react-mentions-4.1.1.tgz#9f74928f7a33d587151e95dc7ef303f2002790de"
   integrity sha512-+BK8dQzXPZUBFYfbv1hwbve9lp0lGYHOUyb1hk9s13mzvmVD9S+l9oszo1CaumVjYdb9olJ4NMJW2jBRGck9Rw==
   dependencies:
     "@babel/runtime" "7.4.5"
@@ -12697,7 +12697,7 @@ react-refresh@^0.8.3:
 
 react-responsive-masonry@^2.1.2:
   version "2.1.2"
-  resolved "https://registry.npmjs.org/react-responsive-masonry/-/react-responsive-masonry-2.1.2.tgz"
+  resolved "https://registry.yarnpkg.com/react-responsive-masonry/-/react-responsive-masonry-2.1.2.tgz#fdf0e71c1601bde73a32a5ae68b6c1b85250f87d"
   integrity sha512-Vd5XWx077VGL+Pnv4dxVA4rBl4Y5Y6snLqm29QFqHnEE8GNJtqUW96F6SgIcgWJoxfJC52Ifi5Oixz1PdeEpOA==
 
 react-router-dom@^5.1.2, react-router-dom@^5.2.0:
@@ -12831,7 +12831,7 @@ react-select@^3.2.0:
 
 react-side-effect@^2.1.0:
   version "2.1.1"
-  resolved "https://registry.npmjs.org/react-side-effect/-/react-side-effect-2.1.1.tgz"
+  resolved "https://registry.yarnpkg.com/react-side-effect/-/react-side-effect-2.1.1.tgz#66c5701c3e7560ab4822a4ee2742dee215d72eb3"
   integrity sha512-2FoTQzRNTncBVtnzxFOk2mCpcfxQpenBMbk5kSVBg5UcPqV9fRbgY2zhb7GTWWOlpFmAxhClBDlIq8Rsubz1yQ==
 
 react-style-normalizer@^1.2.8:
@@ -13667,26 +13667,6 @@ rollup@^1.31.1:
     "@types/estree" "*"
     "@types/node" "*"
     acorn "^7.1.0"
-
-rsuite-utils@^0.1.0:
-  version "0.1.6"
-  resolved "https://registry.npmjs.org/rsuite-utils/-/rsuite-utils-0.1.6.tgz"
-  integrity sha512-o7rfRu8DAwMMjhekDaltv02Gr/sN7wD5FxCPNeAiaZlDEyfKHokbvz3BwqlcDHXUAAoBCfpHnIBWdtskUk+V3g==
-  dependencies:
-    classnames ">=2.0.0"
-    dom-lib "^0.2.3"
-    prop-types "^15.5.10"
-
-rsuite@^2.1.3:
-  version "2.1.3"
-  resolved "https://registry.npmjs.org/rsuite/-/rsuite-2.1.3.tgz"
-  integrity sha512-yT5YwggPLUyPj1iLEwmlc9vgaA8NkJ36BVPhHYPJP5kQwauG3/xp7SAwvYcr2Bvn2Tqd2C0qPVeR6L0GaRIAmA==
-  dependencies:
-    classnames ">=2.0.0"
-    dom-lib "^0.2.3"
-    lodash "^4.11.1"
-    prop-types "^15.5.10"
-    rsuite-utils "^0.1.0"
 
 rsvp@^4.8.4:
   version "4.8.5"
@@ -14756,7 +14736,7 @@ stylis@^4.0.6:
 
 substyle@^9.1.0:
   version "9.3.0"
-  resolved "https://registry.npmjs.org/substyle/-/substyle-9.3.0.tgz"
+  resolved "https://registry.yarnpkg.com/substyle/-/substyle-9.3.0.tgz#569af81723f74cd895b08b6b1e6bc06727f2a2bd"
   integrity sha512-OK6A6EpqOfRvlwOnrgwFKIi8UDJwCQ2UB5cIJGMEFvl3zUUA83XDbRUJizECj66CdeZ9pGjkmwRxyc/9wBGQMA==
   dependencies:
     "@babel/runtime" "^7.3.4"
