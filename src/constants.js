@@ -2286,6 +2286,14 @@ export const TICKETS_ESTATUS = [
     }
 ]
 
+export const CARTAS_GARANTIAS_TICKETS = [
+    { Header: 'Opciones', accessor: 'actions' },
+    { Header: 'Fecha', accessor: 'fecha', customRender: true },
+    { Header: 'Proyecto', accessor: 'proyecto', customRender: true },
+    { Header: 'Área', accessor: 'area', customRender: true },
+    { Header: 'Subárea', accessor: 'subarea', customRender: true },
+]
+
 export const PROYECTOS_TICKETS = [
     {
         Header: 'Opciones',

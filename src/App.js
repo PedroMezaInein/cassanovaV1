@@ -167,6 +167,8 @@ const Vacaciones = React.lazy(() => import('./pages/RecursosHumanos/Vacaciones/V
 const Calidad = React.lazy(() => import('./pages/Calidad/Calidad') )
 const CalidadForm = React.lazy(() => import('./pages/Calidad/CalidadForm') )
 
+const CartasGarantia = React.lazy(() => import('./pages/Calidad/CartasGarantia/CartasGarantia') )
+
 const MaterialEmpresa = React.lazy(() => import('./pages/Mercadotecnia/MaterialEmpresa/MaterialEmpresa') )
 const MaterialCliente = React.lazy(() => import('./pages/Mercadotecnia/MaterialCliente/MaterialCliente') )
 const ParrillasContenido = React.lazy(() => import('./pages/Mercadotecnia/ParrillasContenido/ParrillasContenido') )
@@ -450,8 +452,10 @@ class App extends Component{
 
                     {/* ANCHOR Routes for calidad */}
 
-                    <Route path = "/calidad/calidad" exact component ={ Calidad } />
-                    <Route path = "/calidad/calidad/:action" exact component = { CalidadForm } />
+                    <Route path = "/calidad/tickets" exact component ={ Calidad } />
+                    <Route path = "/calidad/tickets/:action" exact component = { CalidadForm } />
+
+                    <Route path = "/calidad/cartas-garantia" exact component = { CartasGarantia } />
 
                     {/* ANCHOR Routes for mercadotécnia */}
                     
@@ -474,7 +478,6 @@ class App extends Component{
                     <Route path = "/mi-perfil" exact component ={ AccountSettings } />
                     <Route path = "/mi-calendario" exact component ={ Calendario } />
                     <Route path = "/mis-notificaciones" exact component ={ Notificaciones } />
-
 
                     {/* ANCHOR Routes for plataforma */}
                     <Route path = "/plataforma/notificaciones" exact component ={ NotificacionesCorreos } />

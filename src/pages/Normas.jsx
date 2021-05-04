@@ -56,6 +56,156 @@ class Normas extends Component {
     render() {
         return (
             <Layout {...this.props}>
+                
+                        {/* <div className="col-sm-3">
+                        <div className="card card-custom gutter-b border-radius-24px bg-aside-notify p-4">
+                            <div className="card-header d-flex align-self-center align-content-center border-0">
+                                <div className="text-center">
+                                    <span className="font-size-h4 font-weight-bold text-white">
+                                        Modulos
+                                    </span>
+                                </div>
+                            </div>
+                            <div className="card-body p-0 position-relative">
+                            <nav className="sidenav">
+                                <ul className="main-buttons">
+                                    <li className={`${keyActive === "recursoshumanos" ? 'active-list' :''}`}>
+                                        <div className="row mx-0" id="recursoshumanos" onClick={(e) => { this.activeList(e, 'recursoshumanos') }}>
+                                            <div className="w-20 text-center text-hover-primary">
+                                                <span className="svg-icon svg-icon-xl svg-icon-gray-500 mr-1">
+                                                    <SVG src={toAbsoluteUrl('/images/svg/recursoshumanos.svg')} />
+                                                </span>
+                                            </div>
+                                            <div className="w-80 align-self-center pl-2">
+                                                Recursos humanos
+                                            </div>
+                                        </div>
+                                        <ul className={`hidden ${!activeSubMenu && keyActive === "recursoshumanos"? 'd-none':''}`} >
+                                            <li className="py-9px px-3" onClick = { this.closeList }  >
+                                                <span>
+                                                    <i className="flaticon2-left-arrow-1 icon-sm text-muted mr-2"></i>
+                                                    Regresar
+                                                </span>
+                                            </li>
+                                            <li>Préstamos</li>
+                                            <li>Vacaciones</li>
+                                        </ul>
+                                    </li>
+                                    <li className={`${keyActive === "proyectos" ? 'active-list' :''}`}>
+                                        <div className="row mx-0" id="proyectos" onClick={(e) => { this.activeList(e, 'proyectos') }}>
+                                            <div className="w-20 text-center text-hover-primary">
+                                                <span className="svg-icon svg-icon-xl svg-icon-gray-500 mr-1">
+                                                    <SVG src={toAbsoluteUrl('/images/svg/proyectos.svg')} />
+                                                </span>
+                                            </div>
+                                            <div className="w-80 align-self-center pl-2">
+                                                Proyectos
+                                            </div>
+                                        </div>
+                                        <ul className={`hidden ${!activeSubMenu && keyActive === "proyectos" ? 'd-none':''}`}>
+                                            <li className="py-9px px-3" onClick = { this.closeList }  >
+                                                <span>
+                                                    <i className="flaticon2-left-arrow-1 icon-sm text-muted mr-2"></i>
+                                                    Regresar
+                                                </span>
+                                            </li>
+                                            <li>Solicitud de compra</li>
+                                            <li>Proyectos</li>
+                                            <li>Remisión</li>
+                                            <li>Solicitud de venta</li>
+                                        </ul>
+                                    </li>
+                                    <li className={`${keyActive === "administracion" ? 'active-list' :''}`}>
+                                        <div className="row mx-0" id="administracion"  onClick={(e) => { this.activeList(e, 'administracion') }}>
+                                            <div className="w-20 text-center text-hover-primary">
+                                                <span className="svg-icon svg-icon-xl svg-icon-gray-500 mr-1">
+                                                    <SVG src={toAbsoluteUrl('/images/svg/administracion.svg')} />
+                                                </span>
+                                            </div>
+                                            <div className="w-80 align-self-center pl-2">
+                                                Administración
+                                            </div>
+                                        </div>
+                                        <ul className={`hidden ${!activeSubMenu  && keyActive === "administracion"? 'd-none':'e'}`} onClick = { () => { this.closeList() } } >
+                                            <li className="py-9px px-3" onClick = { this.closeList }  >
+                                                <span>
+                                                    <i className="flaticon2-left-arrow-1 icon-sm text-muted mr-2"></i>
+                                                    Regresar
+                                                </span>
+                                            </li>
+                                            <li>Egreso</li>
+                                            <li>Facturas</li>
+                                        </ul>
+                                    </li>
+                                    <li className={`${keyActive === "usuarios" ? 'active-list' :''}`}>
+                                        <div className="row mx-0" id="usuarios"  onClick={(e) => { this.activeList(e, 'usuarios') }}>
+                                            <div className="w-20 text-center text-hover-primary">
+                                                <span className="svg-icon svg-icon-xl svg-icon-gray-500 mr-1">
+                                                    <SVG src={toAbsoluteUrl('/images/svg/usuarios.svg')} />
+                                                </span>
+                                            </div>
+                                            <div className="w-80 align-self-center pl-2">
+                                                Usuario
+                                            </div>
+                                        </div>
+                                        <ul className={`hidden ${!activeSubMenu  && keyActive === "usuarios"? 'd-none':'e'}`} onClick = { () => { this.closeList() } } >
+                                            <li className="py-9px px-3" onClick = { this.closeList }  >
+                                                <span>
+                                                    <i className="flaticon2-left-arrow-1 icon-sm text-muted mr-2"></i>
+                                                    Regresar
+                                                </span>
+                                            </li>
+                                            <li>Tareas</li>
+                                            <li>Usuario</li>
+                                        </ul>
+                                    </li>
+                                    <li className={`${keyActive === "calidad" ? 'active-list' :''}`}>
+                                        <div className="row mx-0" id="calidad"  onClick={(e) => { this.activeList(e, 'calidad') }}>
+                                            <div className="w-20 text-center text-hover-primary">
+                                                <span className="svg-icon svg-icon-xl svg-icon-gray-500 mr-1">
+                                                    <SVG src={toAbsoluteUrl('/images/svg/calidad.svg')} />
+                                                </span>
+                                            </div>
+                                            <div className="w-80 align-self-center pl-2">
+                                                Calidad
+                                            </div>
+                                        </div>
+                                        <ul className={`hidden ${!activeSubMenu  && keyActive === "calidad"? 'd-none':'e'}`} onClick = { () => { this.closeList() } } >
+                                            <li className="py-9px px-3" onClick = { this.closeList }  >
+                                                <span>
+                                                    <i className="flaticon2-left-arrow-1 icon-sm text-muted mr-2"></i>
+                                                    Regresar
+                                                </span>
+                                            </li>
+                                            <li>Calidad</li>
+                                        </ul>
+                                    </li>
+                                    <li className={`${keyActive === "leads" ? 'active-list' :''}`}>
+                                        <div className="row mx-0" id="leads"  onClick={(e) => { this.activeList(e, 'leads') }}>
+                                            <div className="w-20 text-center text-hover-primary">
+                                                <span className="svg-icon svg-icon-xl svg-icon-gray-500 mr-1">
+                                                    <SVG src={toAbsoluteUrl('/images/svg/leads.svg')} />
+                                                </span>
+                                            </div>
+                                            <div className="w-80 align-self-center pl-2">
+                                                Leads
+                                            </div>
+                                        </div>
+                                        <ul className={`hidden ${!activeSubMenu  && keyActive === "leads"? 'd-none':'e'}`} onClick = { () => { this.closeList() } } >
+                                            <li className="py-9px px-3" onClick = { this.closeList }  >
+                                                <span>
+                                                    <i className="flaticon2-left-arrow-1 icon-sm text-muted mr-2"></i>
+                                                    Regresar
+                                                </span>
+                                            </li>
+                                            <li>Leads</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </nav>
+                            </div>
+                        </div>
+                    </div> */}
                 <div className="d-flex flex-row">
                     <div className="flex-row-fluid ">
                         <div className="d-flex flex-column flex-grow-1 ">
