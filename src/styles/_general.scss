@@ -2221,13 +2221,17 @@ div#task{
     font-size: 5px!important;
 }
 
+
+
+
+
 .switch-notify{
     .switch.switch-sm input:empty ~ span:before, .switch.switch-sm input:empty ~ span:after{
         border-radius: 5px!important;
     }
     .switch.switch-sm input:empty ~ span:after{
-        height: 20px!important;
-        width: 22px!important;
+        height: 16px!important;
+        width: 21px!important;
         top: 1px!important;
     }
     label{
@@ -2235,7 +2239,7 @@ div#task{
     }
     .switch.switch-sm input:empty ~ span{
         margin: 0px!important;
-        height: 22px!important;
+        height: 18px!important;
         width: 38px!important;
     }
     .switch.switch-outline.switch-info input:checked ~ span:after{
