@@ -104,8 +104,22 @@ class NotificacionesCorreos extends Component {
         })
     }
 
+    changeEnable = async(notificacion) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.patch(`${URL_DEV}v1/plataforma/notificaciones`, {type: 'enable', value: notificacion.id}, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                const { notificaciones } = response.data
+                Swal.close()
+                this.setState({...this.state, notificaciones: notificaciones})
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     onClickSubmenu = ( texto, submodulo, modulo ) => {
-        console.log(submodulo, modulo)
         const { list } = this.state
         list.tipo = texto
         list.modulo = modulo.name
@@ -233,63 +247,70 @@ class NotificacionesCorreos extends Component {
                             </div>
                             <div className="card-body">
                                 <div className="row mx-0">
-                                    <div className="col-md-4">
-                                        <div className="row mx-0 card-notify-2">
-                                            <span className="svg-icon svg-icon-3x">
-                                                <button className={`img-avatar ${!activeButton ? 'disable-bg' : ''}`} onClick={() => { this.activeButton() }} >
-                                                    <SVG src={toAbsoluteUrl('/images/svg/email-notification.svg')} />
-                                                </button>
-                                            </span>
-                                            <div className="col-3 px-0 w-100 row mx-0 card-color">
-                                                <div className={`bg-notify ${!activeButton ? 'disable-bg' : ''}`}></div>
-                                            </div>
-                                            <div className="col bg-success-2">
-                                                <div className="padding-col-text py-3">
-                                                        <div className="switch-notify d-flex justify-content-end">
-                                                            <span class="switch switch-outline switch-icon switch-info switch-sm ">
-                                                                <label>
-                                                                    <input type="checkbox" checked = {true} name="select"/>
-                                                                    <span></span>
-                                                                </label>
-                                                            </span>
+                                    {
+                                        notificaciones.map((element) => {
+                                            return(
+                                                <div key = { element.id } className="col-md-4">
+                                                    <div className="row mx-0 card-notify-2">
+                                                        <span className="svg-icon svg-icon-3x">
+                                                            <button className={`img-avatar ${!activeButton ? 'disable-bg' : ''}`} onClick={() => { this.activeButton() }} >
+                                                                <SVG src={toAbsoluteUrl('/images/svg/email-notification.svg')} />
+                                                            </button>            
+                                                        </span>
+                                                        <div className="col-3 px-0 w-100 row mx-0 card-color">
+                                                            <div className={`bg-notify ${!activeButton ? 'disable-bg' : ''}`}></div>
                                                         </div>
-                                                    <div className={`tipo-user ${!activeButton ? 'disable-bg' : ''}`}>
-                                                        Usuario
-                                                    </div>
-                                                    <div className="title-notify">
-                                                        Recordatorio de préstamo
-                                                    </div>
-                                                    <div className="actions row mx-0">
-                                                        <div className="col px-2 mt-2">
-                                                            <OverlayTrigger overlay={<Tooltip>CARINA JIMÉNEZ</Tooltip>}>
-                                                                <span className="label-notify">CJ</span>
-                                                            </OverlayTrigger>
-                                                        </div>
-                                                        <div className="col px-2 mt-2">
-                                                            <OverlayTrigger overlay={<Tooltip>CARINA JIMÉNEZ</Tooltip>}>
-                                                                <span className="label-notify">CJ</span>
-                                                            </OverlayTrigger>
-                                                        </div>
-                                                        <div className="col px-2 mt-2">
-                                                            <OverlayTrigger overlay={<Tooltip>CARINA JIMÉNEZ</Tooltip>}>
-                                                                <span className="label-notify">CJ</span>
-                                                            </OverlayTrigger>
-                                                        </div>
-                                                        <div className="col px-2 mt-2">
-                                                            <OverlayTrigger overlay={<Tooltip>CARINA JIMÉNEZ</Tooltip>}>
-                                                                <span className="label-notify">CJ</span>
-                                                            </OverlayTrigger>
-                                                        </div>
-                                                        <div className="col px-2 mt-2">
-                                                            <OverlayTrigger overlay={<Tooltip>CARINA JIMÉNEZ</Tooltip>}>
-                                                                <span className="label-notify">CJ</span>
-                                                            </OverlayTrigger>
+                                                        <div className="col bg-success-2">
+                                                            <div className="padding-col-text py-3">
+                                                                    <div className="switch-notify d-flex justify-content-end">
+                                                                        <span className="switch switch-outline switch-icon switch-info switch-sm ">
+                                                                            <label>
+                                                                                <input type="checkbox" checked = { element.enable === 1 ? true : false } name="select" 
+                                                                                    onChange = { (e) => { this.changeEnable(element)}} />
+                                                                                <span></span>
+                                                                            </label>
+                                                                        </span>
+                                                                    </div>
+                                                                <div className={`tipo-user ${!activeButton ? 'disable-bg' : ''}`}>
+                                                                    Usuario
+                                                                </div>
+                                                                <div className="title-notify">
+                                                                    Recordatorio de préstamo
+                                                                </div>
+                                                                <div className="actions row mx-0">
+                                                                    <div className="col px-2 mt-2">
+                                                                        <OverlayTrigger overlay={<Tooltip>CARINA JIMÉNEZ</Tooltip>}>
+                                                                            <span className="label-notify">CJ</span>
+                                                                        </OverlayTrigger>
+                                                                    </div>
+                                                                    <div className="col px-2 mt-2">
+                                                                        <OverlayTrigger overlay={<Tooltip>CARINA JIMÉNEZ</Tooltip>}>
+                                                                            <span className="label-notify">CJ</span>
+                                                                        </OverlayTrigger>
+                                                                    </div>
+                                                                    <div className="col px-2 mt-2">
+                                                                        <OverlayTrigger overlay={<Tooltip>CARINA JIMÉNEZ</Tooltip>}>
+                                                                            <span className="label-notify">CJ</span>
+                                                                        </OverlayTrigger>
+                                                                    </div>
+                                                                    <div className="col px-2 mt-2">
+                                                                        <OverlayTrigger overlay={<Tooltip>CARINA JIMÉNEZ</Tooltip>}>
+                                                                            <span className="label-notify">CJ</span>
+                                                                        </OverlayTrigger>
+                                                                    </div>
+                                                                    <div className="col px-2 mt-2">
+                                                                        <OverlayTrigger overlay={<Tooltip>CARINA JIMÉNEZ</Tooltip>}>
+                                                                            <span className="label-notify">CJ</span>
+                                                                        </OverlayTrigger>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                    </div>
+                                            )
+                                        })
+                                    }
                                 </div>
                             </div>
                         </Card>
