@@ -2220,3 +2220,33 @@ div#task{
 .font-size-9px{
     font-size: 9px!important;
 }
+
+.switch-notify{
+    .switch.switch-sm input:empty ~ span:before, .switch.switch-sm input:empty ~ span:after{
+        border-radius: 5px!important;
+    }
+    .switch.switch-sm input:empty ~ span:after{
+        height: 20px!important;
+        width: 22px!important;
+        top: 1px!important;
+    }
+    label{
+        margin-bottom: 0px!important;
+    }
+    .switch.switch-sm input:empty ~ span{
+        margin: 0px!important;
+        height: 22px!important;
+        width: 38px!important;
+    }
+    .switch.switch-outline.switch-info input:checked ~ span:after{
+        color: #ffffff;
+        background-color: #F77817;
+    }
+    .switch.switch-outline.switch-info input:checked ~ span:before{
+        border: 1.8px solid #F77817;
+        background-color: transparent;
+    }
+    .switch.switch-sm input:checked ~ span:after{
+        margin-left: 17px;
+    }
+}
