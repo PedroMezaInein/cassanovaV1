@@ -98,7 +98,7 @@ class NotificacionesCorreos extends Component {
                                     </span>
                                 </h3>
                                 <div className="card-toolbar">
-                                    <Menu className="navi my-menu"
+                                    <Menu direction='bottom' className="navi my-menu"
                                     menuButton={
                                         <MenuButton className="btn btn-bg-light btn-icon-primary btn-hover-primary font-weight-bolder text-primary btn-sm">
                                             <span className="svg-icon svg-icon-2 svg-icon-primary">
@@ -111,63 +111,72 @@ class NotificacionesCorreos extends Component {
                                     }
                                 >
                                     <MenuHeader><div className="text-muted font-size-sm font-weight-bold p-1">Selecciona un módulo</div></MenuHeader>
-                                    <SubMenu 
-                                        label={
-                                            <div className="d-flex align-items-center">
-                                                <span className="svg-icon svg-icon-lg ml-2 mr-3">
-                                                    <SVG src={toAbsoluteUrl('/images/svg/recursoshumanos.svg')} />
-                                                </span>
+                                        <SubMenu direction='left'
+                                            label={
+                                                <div className="d-flex align-items-center">
+                                                    <span className="svg-icon svg-icon-lg ml-2 mr-3">
+                                                        <SVG src={toAbsoluteUrl('/images/svg/recursoshumanos.svg')} />
+                                                    </span>
                                                     Recursos Humanos
                                                 </div>
-                                        }>
-                                        <MenuItem styles={{ margin: '0.1rem 0.6rem', paddingRight: '3.25px' }}>
-                                            <div className="text-hover-primary px-2">
-                                                <i className="fas fa-minus mr-2 font-size-9px"></i>
-                                                <span className="menu-text">Préstamos</span>
-                                            </div>
-                                        </MenuItem>
-                                        <MenuItem styles={{ margin: '0.1rem 0.6rem', paddingRight: '3.25px' }}>
-                                            <div className="text-hover-primary px-2">
-                                                <i className="fas fa-minus mr-2 font-size-9px"></i>
-                                                <span className="menu-text">Vacaciones</span>
-                                            </div>
-                                        </MenuItem>
-                                    </SubMenu>
-
-                                    <SubMenu 
-                                        label={
-                                            <div className="d-flex align-items-center">
-                                                <span className="svg-icon svg-icon-lg ml-2 mr-3">
-                                                    <SVG src={toAbsoluteUrl('/images/svg/proyectos.svg')} />
-                                                </span>
-                                                Proyectos
-                                            </div>
-                                        }>
-                                        <MenuItem styles={{ margin: '0.1rem 0.6rem', paddingRight: '3.25px' }}>
-                                            <div className="text-hover-primary px-2">
-                                                <i className="fas fa-minus mr-2 font-size-9px"></i>
-                                                <span className="menu-text">Solicitud de compra</span>
-                                            </div>
-                                        </MenuItem>
-                                        <MenuItem styles={{ margin: '0.1rem 0.6rem', paddingRight: '3.25px' }}>
-                                            <div className="text-hover-primary px-2">
-                                                <i className="fas fa-minus mr-2 font-size-9px"></i>
-                                                <span className="menu-text">Proyectos</span>
-                                            </div>
-                                        </MenuItem>
-                                        <MenuItem styles={{ margin: '0.1rem 0.6rem', paddingRight: '3.25px' }}>
-                                            <div className="text-hover-primary px-2">
-                                                <i className="fas fa-minus mr-2 font-size-9px"></i>
-                                                <span className="menu-text">Remisión</span>
-                                            </div>
-                                        </MenuItem>
-                                        <MenuItem styles={{ margin: '0.1rem 0.6rem', paddingRight: '3.25px' }}>
-                                            <div className="text-hover-primary px-2">
-                                                <i className="fas fa-minus mr-2 font-size-9px"></i>
-                                                <span className="menu-text">Solicitud de venta</span>
-                                            </div>
-                                        </MenuItem>
-                                    </SubMenu>
+                                            }>
+                                            <SubMenu direction='left'
+                                                label={
+                                                    <div className="d-flex align-items-center">
+                                                        <span className="svg-icon svg-icon-lg ml-2 mr-3">
+                                                            <SVG src={toAbsoluteUrl('/images/svg/recursoshumanos.svg')} />
+                                                        </span>
+                                                                Préstamos
+                                                            </div>
+                                                }>
+                                                <MenuItem styles={{ margin: '0.1rem 0.6rem', paddingRight: '3.25px' }}>
+                                                    <div className="text-hover-primary px-2 d-flex align-items-center">
+                                                        <i className="fas fa-circle mr-2 font-size-5px"></i>
+                                                        <span className="menu-text">Notificaciones</span>
+                                                    </div>
+                                                </MenuItem>
+                                                <MenuItem styles={{ margin: '0.1rem 0.6rem', paddingRight: '3.25px' }}>
+                                                    <div className="text-hover-primary px-2 d-flex align-items-center">
+                                                        <i className="fas fa-circle mr-2 font-size-5px"></i>
+                                                        <span className="menu-text">Correos</span>
+                                                    </div>
+                                                </MenuItem>
+                                                <MenuItem styles={{ margin: '0.1rem 0.6rem', paddingRight: '3.25px' }}>
+                                                    <div className="text-hover-primary px-2 d-flex align-items-center">
+                                                        <i className="fas fa-circle mr-2 font-size-5px"></i>
+                                                        <span className="menu-text">Todos</span>
+                                                    </div>
+                                                </MenuItem>
+                                            </SubMenu>
+                                            <SubMenu direction='left'
+                                                label={
+                                                    <div className="d-flex align-items-center">
+                                                        <span className="svg-icon svg-icon-lg ml-2 mr-3">
+                                                            <SVG src={toAbsoluteUrl('/images/svg/recursoshumanos.svg')} />
+                                                        </span>
+                                                                Vacaciones
+                                                            </div>
+                                                }>
+                                                <MenuItem styles={{ margin: '0.1rem 0.6rem', paddingRight: '3.25px' }}>
+                                                    <div className="text-hover-primary px-2 d-flex align-items-center">
+                                                        <i className="fas fa-circle mr-2 font-size-5px"></i>
+                                                        <span className="menu-text">Notificaciones</span>
+                                                    </div>
+                                                </MenuItem>
+                                                <MenuItem styles={{ margin: '0.1rem 0.6rem', paddingRight: '3.25px' }}>
+                                                    <div className="text-hover-primary px-2 d-flex align-items-center">
+                                                        <i className="fas fa-circle mr-2 font-size-5px"></i>
+                                                        <span className="menu-text">Correos</span>
+                                                    </div>
+                                                </MenuItem>
+                                                <MenuItem styles={{ margin: '0.1rem 0.6rem', paddingRight: '3.25px' }}>
+                                                    <div className="text-hover-primary px-2 d-flex align-items-center">
+                                                        <i className="fas fa-circle mr-2 font-size-5px"></i>
+                                                        <span className="menu-text">Todos</span>
+                                                    </div>
+                                                </MenuItem>
+                                            </SubMenu>
+                                        </SubMenu>
                                 </Menu>
                                 </div>
                             </div>
@@ -188,15 +197,26 @@ class NotificacionesCorreos extends Component {
                                                 <div className="text-notify">
                                                     <div className={`tipo-user ${!activeButton ? 'disable-bg' : ''}`}>
                                                         Usuario
-                                                        </div>
+                                                    </div>
                                                     <div className="title-notify">
                                                         Recordatorio de préstamo
-                                                        </div>
+                                                    </div>
                                                     <div className="actions">
                                                         <div className="col pl-2 pr-0 mt-2">
                                                             <OverlayTrigger overlay={<Tooltip>CARINA JIMÉNEZ</Tooltip>}>
                                                                 <span className="label-notify">CJ</span>
                                                             </OverlayTrigger>
+                                                        </div>
+                                                        
+                                                    </div>
+                                                    <div className="row col-md-12 mx-0 d-flex justify-content-end pr-0 pt-5">
+                                                        <div className="switch-notify">
+                                                            <span class="switch switch-outline switch-icon switch-info switch-sm ">
+                                                                <label>
+                                                                    <input type="checkbox"  name="select"/>
+                                                                    <span></span>
+                                                                </label>
+                                                            </span>
                                                         </div>
                                                     </div>
                                                 </div>
