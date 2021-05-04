@@ -349,13 +349,8 @@ class CartasGarantia extends Component{
     openModal = () => { this.setState({ ...this.state,modal:true, title: 'Nuevo registro', form: this.clearForm(), carta: '' }) }
     handleClose = () => { this.setState({ ...this.state, modal: false, form: this.clearForm(), carta: '' }) }
 
-    openModalDelete = value => {
-        deleteAlert('¿DESEAS ELIMINAR LA CARTA?', '', () => this.deleteCarta(value))
-    }
-
-    deleteFile = element => {
-        deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', '', () => this.deleteAdjunto(element.id))
-    }
+    openModalDelete = value => { deleteAlert('¿DESEAS ELIMINAR LA CARTA?', '', () => this.deleteCarta(value)) }
+    deleteFile = element => { deleteAlert('¿DESEAS ELIMINAR EL ARCHIVO?', '', () => this.deleteAdjunto(element.id)) }
 
     doubleClick = (data, tipo) => {
         const { form, options, key } = this.state
