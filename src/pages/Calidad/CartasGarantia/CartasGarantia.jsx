@@ -506,7 +506,17 @@ class CartasGarantia extends Component{
                             cardBody = 'cardBody_clientes' isTab = { true }/>
                     </Tab>
                     <Tab eventKey = 'proveedores' title = 'Proveedores'>
-
+                        <NewTableServerRender columns = { CARTAS_GARANTIAS_TICKETS } title = 'Cartas de garantías de proveedores'
+                            subtitle = 'Listado de cartas de garantías de proveedores' mostrar_boton = { true } abrir_modal = { true }
+                            onClick = { this.openModal } mostrar_acciones = { true } accessToken = { this.props.authUser.access_token }
+                            actions = {
+                                {
+                                    'edit': { function: this.openModalEdit },
+                                    'delete': { function: this.openModalDelete },
+                                }
+                            } setter = { this.setCartas } urlRender = { `${URL_DEV}v1/calidad/cartas_garantia?type=proveedores` }
+                            idTable = 'proveedores_table' cardTable = 'cardTable_proveedores' cardTableHeader = 'carTableHader_proveedores'
+                            cardBody = 'cardBody_proveedores' isTab = { true }/>
                     </Tab>
                 </Tabs>
                 <Modal title = { title } show = { modal } handleClose = { this.handleClose } size = 'xl' >
