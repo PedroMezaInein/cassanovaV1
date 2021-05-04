@@ -98,7 +98,7 @@ class NotificacionesCorreos extends Component {
                                     </span>
                                 </h3>
                                 <div className="card-toolbar">
-                                    <Menu className="navi my-menu"
+                                    <Menu direction='bottom' className="navi my-menu"
                                     menuButton={
                                         <MenuButton className="btn btn-bg-light btn-icon-primary btn-hover-primary font-weight-bolder text-primary btn-sm">
                                             <span className="svg-icon svg-icon-2 svg-icon-primary">
@@ -111,7 +111,7 @@ class NotificacionesCorreos extends Component {
                                     }
                                 >
                                     <MenuHeader><div className="text-muted font-size-sm font-weight-bold p-1">Selecciona un módulo</div></MenuHeader>
-                                        <SubMenu
+                                        <SubMenu direction='left'
                                             label={
                                                 <div className="d-flex align-items-center">
                                                     <span className="svg-icon svg-icon-lg ml-2 mr-3">
@@ -120,7 +120,7 @@ class NotificacionesCorreos extends Component {
                                                     Recursos Humanos
                                                 </div>
                                             }>
-                                            <SubMenu
+                                            <SubMenu direction='left'
                                                 label={
                                                     <div className="d-flex align-items-center">
                                                         <span className="svg-icon svg-icon-lg ml-2 mr-3">
@@ -148,7 +148,7 @@ class NotificacionesCorreos extends Component {
                                                     </div>
                                                 </MenuItem>
                                             </SubMenu>
-                                            <SubMenu
+                                            <SubMenu direction='left'
                                                 label={
                                                     <div className="d-flex align-items-center">
                                                         <span className="svg-icon svg-icon-lg ml-2 mr-3">
