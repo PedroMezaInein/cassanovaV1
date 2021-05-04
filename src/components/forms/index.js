@@ -53,6 +53,7 @@ import diseñoForm from './catalogos/DiseñoForm'
 import obraForm from './catalogos/ObraForm'
 import calidadView from './calidad/CalidadView' 
 import procesoTicketForm from './calidad/ProcesoTicketForm'
+import CartasCalidadForm from './calidad/CartasCalidadForm'
 import agregarVacacionesForm from './recursoshumanos/AgregarVacacionesForm'
 import flujosReportesVentas from './reportes/FlujosReportesVentas'
 import flujosReportes from './reportes/FlujosReportes'
@@ -207,5 +208,4 @@ export const Task = task
 export const WriteComment = writeComment
 export const CommentsPanel = commentsPanel
 export const AddTaskForm = addTaskForm
-export { NewTag }
-export { TagColorForm }
+export { NewTag, TagColorForm, CartasCalidadForm }
