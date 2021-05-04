@@ -20,6 +20,7 @@ import { Tab, Tabs } from 'react-bootstrap'
 import { printSwalHeader } from '../../../functions/printers'
 import { Update } from '../../../components/Lottie'
 import $ from "jquery";
+import { setSingleHeader } from '../../../functions/routers'
 class Ingresos extends Component {
     state = {
         active: 'facturas',
@@ -1099,9 +1100,19 @@ class Ingresos extends Component {
     }
 
     async exportIngresosAxios() {
+        let headers = []
+        let documento = ''
+        INGRESOS_COLUMNS.map((columna, key) => {
+            if (columna !== 'actions' && columna !== 'adjuntos') {
+                documento = document.getElementById(columna.accessor+'-ingresostable')
+                if (documento)
+                    if (documento.value) { headers.push({ name: columna.accessor, value: documento.value }) }
+            }
+            return false
+        })
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'exportar/ingresos', { responseType: 'blob', headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}v2/exportar/administracion/ingresos`, { columns: headers }, { responseType: 'blob', headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const url = window.URL.createObjectURL(new Blob([response.data]));
                 const link = document.createElement('a');
