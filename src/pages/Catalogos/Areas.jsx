@@ -72,39 +72,16 @@ class Areas extends Component {
             if (aux !== true) {
                 form.subareas.push(form.subarea)
                 form.subarea = ''
-                this.setState({
-                    ...this.state,
-                    form
-                })
+                this.setState({ ...this.state, form })
             }
         }
-    }
-
-    deleteSubarea = value => {
-        if(value.id){
-            this.deleteSubareaAxios(value.id)
-        }else{
-            const { form } = this.state
-            let aux = []
-            form.subareas.find(function (element, index) {
-                if (element.toString() !== value.toString())
-                    aux.push(element)
-                return false
-            });
-            form.subareas = aux
-            this.setState({ ...this.state, form })
-        }
-        
     }
 
     onChange = e => {
         const { name, value } = e.target
         const { form } = this.state
         form[name] = value
-        this.setState({
-            ...this.state,
-            form
-        })
+        this.setState({ ...this.state, form })
     }
 
     editSubarea = (value, subarea) => {
@@ -117,10 +94,7 @@ class Areas extends Component {
             }
         });
         if(bandera)
-            form.subareasEditable.push({
-                id: subarea.id,
-                nombre: value
-            })
+            form.subareasEditable.push({ id: subarea.id, nombre: value })
         this.setState({...this.state,form})
     }
 
@@ -193,6 +167,11 @@ class Areas extends Component {
         )
     }
 
+    controlledTab = async(value) => {
+        $(`#kt_datatable_${value}`).DataTable().ajax.reload();
+        this.setState({ ...this.state, key: value })
+    }
+
     deleteElementAxios = async(data, element, tipo) => {
         const { access_token } = this.props.authUser
         const { form } = this.state
@@ -200,8 +179,11 @@ class Areas extends Component {
         await axios.delete(`${URL_DEV}v2/catalogos/areas/${data.id}/subarea/${element.id}?sub=${form.subarea}`, 
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                const { form } = this.state
                 const { area } = response.data
-                this.setState({...this.state, area: area})
+                form.area = ''
+                form.subarea = ''
+                this.setState({...this.state, area: area, form})
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El rendimiento fue editado con éxito.')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -219,7 +201,11 @@ class Areas extends Component {
             { value: value }, 
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
+                const { form } = this.state
+                form.subarea = ''
+                form.area = ''
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El rendimiento fue editado con éxito.')
+                this.setState({...this.state, form})
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -233,11 +219,12 @@ class Areas extends Component {
         const { area } = this.state
         await axios.delete(`${URL_DEV}v2/catalogos/areas/${area.id}/subarea/${id}`, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                const { key } = this.state
+                const { key, form } = this.state
+                form.subarea = ''
                 const { area } = response.data
                 this.controlledTab(key)
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Subarea eliminado con éxito.')
-                this.setState({ ...this.state,  area: area })
+                this.setState({ ...this.state,  area: area, form })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -308,9 +295,11 @@ class Areas extends Component {
                             break;
                         case 'ventas':
                             if(busqueda.ventas_count)
-                                conteo = conteo + busqueda.ventas_count
+                                conteo = busqueda.ventas_count
+                            break;
+                        case 'ingresos':
                             if(busqueda.ingresos_count)
-                                conteo = conteo + busqueda.ingresos_count
+                                conteo = busqueda.ingresos_count
                             break;
                         case 'egresos':
                             if(busqueda.egresos_count)
@@ -327,11 +316,10 @@ class Areas extends Component {
                         })
                         form.subarea = ''
                         this.setState({...this.state, options, form})
-                        console.log('ELEMENTO', element)
                         customInputAlert(
                             <div>
                                 <h2 className = 'swal2-title mb-4 mt-2'> ELIMINARÁS LA SUBÁREA "{element.nombre}"</h2>
-                                <p className = ''> Y TIENE {conteo} {this.setTypeInText()} ASIGNADAS </p>
+                                <p className = ''> Y TIENE {conteo} {key} ASIGNADAS </p>
                                 <p className = 'pt-5 mb-0'> SELECCIONA LA SUBÁREA QUE SUSTITUIRÁ </p>
                                 <div className="px-5">
                                     <SelectSearchGray options = { options.subareas } placeholder = 'Selecciona el subárea' value = { form.subarea } 
@@ -352,12 +340,7 @@ class Areas extends Component {
         })
     }
 
-    clearArea = () => {
-        this.setState({
-            ...this.state,
-            form: this.clearForm()
-        })
-    }
+    clearArea = () => { this.setState({ ...this.state, form: this.clearForm() }) }
 
     openModalDelete = async (area) => {
         const { access_token } = this.props.authUser
@@ -370,9 +353,11 @@ class Areas extends Component {
                 break;
             case 'ventas':
                 if(area.ventas_count)
-                    conteo = conteo + area.ventas_count
+                    conteo = area.ventas_count
+                break;
+            case 'ingresos':
                 if(area.ingresos_count)
-                    conteo = conteo + area.ingresos_count
+                    conteo = area.ingresos_count
                 break;
             case 'egresos':
                 if(area.egresos_count)
@@ -399,7 +384,7 @@ class Areas extends Component {
                     customInputAlert(
                         <div>
                             <h2 className = 'swal2-title mb-4 mt-2'> ELIMINARÁS EL ÁREA {area.nombre} </h2>
-                            <p className = ''> Y TIENE {conteo} {this.setTypeInText()} ASIGNADAS </p>
+                            <p className = ''> Y TIENE {conteo} {key} ASIGNADAS </p>
                             <div className="px-5">
                                 <DoubleSelectSearchGray options = { options } form = { form } onChange = { this.onChangeSwal } 
                                     one = { { placeholder: 'SELECCIONA EL ÁREA A REASIGNAR', name: 'area', opciones: 'areas'} } 
@@ -416,20 +401,6 @@ class Areas extends Component {
                 errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
                 console.log(error, 'error')
             })
-        }
-    }
-
-    async getComprasAxios() { $('#kt_datatable_compras').DataTable().ajax.reload(); }
-    async getVentasAxios() { $('#kt_datatable_ventas').DataTable().ajax.reload(); }
-    async getEgresosAxios() { $('#kt_datatable_egresos').DataTable().ajax.reload(); }
-
-    setTypeInText = () => {
-        const { key } = this.state
-        switch(key){
-            case 'ventas':  
-                return 'ventas e ingresos';
-            default:
-                return key;
         }
     }
 
@@ -463,34 +434,6 @@ class Areas extends Component {
         return form;
     }
 
-    handleClose = () => {
-        const { modal } = this.state
-        this.setState({
-            modal: !modal,
-            title: 'Nueva área',
-            form: this.clearForm(),
-            area: ''
-        })
-    }
-
-    openModal = () => {
-        let { tipo } = this.state
-        tipo = 'compras'
-        this.setState({ modal: true, title: 'Nueva área', form: this.clearForm(), tipo, formeditado:0 })
-    }
-
-    openModalVentas = () => {
-        let { tipo } = this.state
-        tipo = 'ventas'
-        this.setState({ modal: true, title: 'Nueva área', form: this.clearForm(), tipo, formeditado:0 })
-    }
-
-    openModalEgresos = () => {
-        let { tipo } = this.state
-        tipo = 'egresos'
-        this.setState({ modal: true, title: 'Nueva área', form: this.clearForm(), tipo, formeditado:0 })
-    }
-
     setSubText = area => {
         const { key } = this.state
         switch(key){
@@ -499,10 +442,10 @@ class Areas extends Component {
                     return `EL ÁREA TIENE ${area.compras_count} COMPRAS. ¿DESEAS CONTINUAR?`
                 break;
             case 'ventas':
-                if(area.ventas_count && area.ingresos_count)
-                    return `EL ÁREA TIENE ${area.ventas_count} VENTAS Y ${area.ingresos_count} INGRESOS. ¿DESEAS CONTINUAR?`
                 if(area.ventas_count)
                     return `EL ÁREA TIENE ${area.ventas_count} VENTAS. ¿DESEAS CONTINUAR?`
+                break;
+            case 'ingresos':
                 if(area.ingresos_count)
                     return `EL ÁREA TIENE ${area.ingresos_count} INGRESOS. ¿DESEAS CONTINUAR?`
                 break;
@@ -515,51 +458,22 @@ class Areas extends Component {
         return ''
     }
 
+    handleClose = () => { this.setState({ modal: false, title: 'Nueva área', form: this.clearForm(), area: '' }) }
+
+    openModal = ( type ) => { this.setState({ modal: true, title: 'Nueva área', form: this.clearForm(), tipo: type, formeditado:0 }) }
+
     openModalEdit = area => {
-        const { form } = this.state
-        let { tipo } = this.state
-        tipo = 'compras'
+        const { form, key } = this.state
         form.nombre = area.nombre
         form.subareas = []
         form.subareasEditable = []
-        this.setState({ ...this.state, modal: true, title: 'Editar área', area: area, form, tipo, formeditado:1 })
+        form.subarea = ''
+        this.setState({ ...this.state, modal: true, title: `Editar área`, area: area, form, tipo: key, formeditado:1 })
     }
 
-    openModalEditVentas = area => {
-        const { form } = this.state
-        let { tipo } = this.state
-        tipo = 'ventas'
-        form.nombre = area.nombre
-        form.subareas = []
-        form.subareasEditable = []
-        this.setState({ ...this.state, modal: true, title: 'Editar área', area: area, form, tipo, formeditado:1 })
-    }
+    openModalSee = area => { this.setState({ ...this.state, modalSee: true, area: area }) }
 
-    openModalEditEgresos = area => {
-        const { form } = this.state
-        let { tipo } = this.state
-        tipo = 'egresos'
-        form.nombre = area.nombre
-        form.subareas = []
-        form.subareasEditable = []
-        this.setState({ ...this.state, modal: true, title: 'Editar área', area: area, form, tipo, formeditado:1 })
-    }
-
-    openModalSee = area => {
-        this.setState({
-            ...this.state,
-            modalSee: true,
-            area: area
-        })
-    }
-
-    handleCloseSee = () => {
-        this.setState({
-            ...this.state,
-            modalSee: false,
-            area: ''
-        })
-    }
+    handleCloseSee = () => { this.setState({ ...this.state, modalSee: false, area: '' }) }
 
     onSubmit = e => {
         e.preventDefault();
@@ -571,85 +485,27 @@ class Areas extends Component {
             this.updateAreaAxios()
     }
 
-    /* safeDelete = e => () => {
-        this.deleteAreaAxios()
-    } */
-
-    controlledTab = value => {
-        switch(value){
-            case 'compras':
-                this.getComprasAxios();
-                break;
-            case 'ventas':
-                this.getVentasAxios();
-                break;
-            case 'egresos':
-                this.getEgresosAxios();
-                break;
-            default: break;
-        }
-        this.setState({
-            ...this.state,
-            key: value
-        })
-    }
-
     render() {
         const { form, modal, title, formeditado, key, modalSee, area} = this.state
+        const { access_token } = this.props.authUser
+        const tabs = [ 'compras', 'ventas', 'egresos', 'ingresos']
         return (
             <Layout active = 'catalogos'  {...this.props}>
+
                 <Tabs id = "tabsAreas" defaultActiveKey = "compras" activeKey = { key } onSelect = { (value) => { this.controlledTab(value) } } >
-                    <Tab eventKey="compras" title="Compras" >
-                        {
-                            key === 'compras' ?
-                                <NewTableServerRender columns = { AREAS_COLUMNS } title = 'Áreas' subtitle = 'Listado de áreas' mostrar_boton = { true }
-                                    abrir_modal = { true } mostrar_acciones = { true } onClick = { this.openModal } setter =  {this.setAreas }
-                                    actions = {
-                                        {
-                                            'edit': { function: this.openModalEdit },
-                                            'delete': { function: this.openModalDelete },
-                                            'see': { function: this.openModalSee },
-                                        }
-                                    }
-                                    accessToken = { this.props.authUser.access_token } urlRender = { URL_DEV + 'areas/compras'} idTable = 'kt_datatable_compras'
-                                    cardTable = 'cardTable_compras' cardTableHeader = 'cardTableHeader_compras' cardBody = 'cardBody_compras' isTab = { true } />
-                            : ''
-                        }
-                    </Tab>
-                    <Tab eventKey="ventas" title="Ventas e ingresos">
-                        {
-                            key === 'ventas' ?
-                                <NewTableServerRender columns = { AREAS_COLUMNS } title = 'Áreas'  subtitle = 'Listado de áreas' mostrar_boton = { true }
-                                    abrir_modal = { true } mostrar_acciones = { true } onClick = { this.openModalVentas } setter =  { this.setAreas }
-                                    actions = {
-                                        {
-                                            'edit': { function: this.openModalEditVentas },
-                                            'delete': { function: this.openModalDelete },
-                                            'see': { function: this.openModalSee },
-                                        }
-                                    }
-                                    accessToken = { this.props.authUser.access_token } urlRender = { `${URL_DEV}areas/ventas` } idTable = 'kt_datatable_ventas'
-                                    cardTable = 'cardTable_ventas' cardTableHeader = 'cardTableHeader_ventas' cardBody = 'cardBody_ventas' isTab = { true } />
-                            : ''
-                        }
-                    </Tab>
-                    <Tab eventKey="egresos" title="Egresos">
-                        {
-                            key === 'egresos' ?
-                                <NewTableServerRender columns = { AREAS_COLUMNS } title = 'Áreas'  subtitle = 'Listado de áreas' mostrar_boton = { true }
-                                    abrir_modal = { true } mostrar_acciones = { true } onClick = { this.openModalEgresos } 
-                                    actions = { {
-                                            'edit': { function: this.openModalEditEgresos },
-                                            'delete': { function: this.openModalDelete },
-                                            'see': { function: this.openModalSee },
-                                        }
-                                    }
-                                    accessToken = { this.props.authUser.access_token } setter =  {this.setAreas } urlRender = { `${URL_DEV}areas/egresos`}
-                                    idTable = 'kt_datatable_egresos' cardTable = 'cardTable_egresos' cardTableHeader = 'cardTableHeader_egresos'
-                                    cardBody = 'cardBody_egresos' isTab = {true} />
-                            : ''
-                        }
-                    </Tab>
+                    {
+                        tabs.map((elemento) => {
+                            return(
+                                <Tab eventKey = { elemento } title = { elemento }>
+                                    <NewTableServerRender columns = { AREAS_COLUMNS } title = 'ÁREAS' subtitle = 'Listado de áreas' mostrar_boton = { true } 
+                                        abrir_modal = { true } mostrar_acciones = { true } onClick = { (e) => { this.openModal(key) } } setter = { this.setAreas } 
+                                        accessToken = { access_token } urlRender = { `${URL_DEV}areas/${elemento}` } idTable = {`kt_datatable_${elemento}`} 
+                                        cardTable = {`card_table_${elemento}`} cardTableHeader = {`card_table_header_${elemento}`} cardBody = {`card_body_${elemento}`} isTab = { true }
+                                        actions = { { 'edit': { function: this.openModalEdit }, 'delete': { function: this.openModalDelete }, 'see': { function: this.openModalSee } } }/>
+                                </Tab>
+                            )
+                        })
+                    }
                 </Tabs>
 
                 <Modal size="xl" title={title} show={modal} handleClose={this.handleClose}>

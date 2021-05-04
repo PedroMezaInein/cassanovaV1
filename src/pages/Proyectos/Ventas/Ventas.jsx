@@ -19,6 +19,7 @@ import { Tab, Tabs } from 'react-bootstrap';
 import { printSwalHeader } from '../../../functions/printers'
 import { Update } from '../../../components/Lottie'
 import $ from "jquery";
+import { setSingleHeader } from '../../../functions/routers'
 class Ventas extends Component {
     state = {
         active: 'facturas',
@@ -1083,9 +1084,19 @@ class Ventas extends Component {
     }
 
     async exportVentasAxios() {
+        let headers = []
+        let documento = ''
+        VENTAS_COLUMNS.map((columna, key) => {
+            if (columna !== 'actions' && columna !== 'adjuntos') {
+                documento = document.getElementById(columna.accessor+'-kt_datatable2_ventas')
+                if (documento)
+                    if (documento.value) { headers.push({ name: columna.accessor, value: documento.value }) }
+            }
+            return false
+        })
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.get(URL_DEV + 'exportar/ventas', { responseType: 'blob', headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}v2/exportar/proyectos/ventas`, { columns: headers }, { responseType: 'blob', headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const url = window.URL.createObjectURL(new Blob([response.data]));
                 const link = document.createElement('a');
