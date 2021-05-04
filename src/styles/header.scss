@@ -3527,10 +3527,12 @@
 
     // Disable
     .bg-notify.disable-bg{
-        background: #80808F;
+        // background: #80808F;
+        background-image: linear-gradient( 169deg, #a9a9bb 0%, #eef0f8 100%);
     }
     button.img-avatar.disable-bg{
-        background-image: linear-gradient( 169deg, #bab9b9  0%, #80808f  100%);
+        // background-image: linear-gradient( 169deg, #bab9b9  0%, #80808f  100%);
+        background-image: linear-gradient( 169deg , #eef0f8 0%, #b0b0c1 100%);
     }
     .tipo-user.disable-bg{
         color: #80808F;
