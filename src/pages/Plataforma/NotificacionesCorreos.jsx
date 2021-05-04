@@ -188,15 +188,26 @@ class NotificacionesCorreos extends Component {
                                                 <div className="text-notify">
                                                     <div className={`tipo-user ${!activeButton ? 'disable-bg' : ''}`}>
                                                         Usuario
-                                                        </div>
+                                                    </div>
                                                     <div className="title-notify">
                                                         Recordatorio de préstamo
-                                                        </div>
+                                                    </div>
                                                     <div className="actions">
                                                         <div className="col pl-2 pr-0 mt-2">
                                                             <OverlayTrigger overlay={<Tooltip>CARINA JIMÉNEZ</Tooltip>}>
                                                                 <span className="label-notify">CJ</span>
                                                             </OverlayTrigger>
+                                                        </div>
+                                                        
+                                                    </div>
+                                                    <div className="row col-md-12 mx-0 d-flex justify-content-end pr-0 pt-5">
+                                                        <div className="switch-notify">
+                                                            <span class="switch switch-outline switch-icon switch-info switch-sm ">
+                                                                <label>
+                                                                    <input type="checkbox"  name="select"/>
+                                                                    <span></span>
+                                                                </label>
+                                                            </span>
                                                         </div>
                                                     </div>
                                                 </div>
