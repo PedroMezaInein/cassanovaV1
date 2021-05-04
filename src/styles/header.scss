@@ -3448,6 +3448,10 @@
     border-image: linear-gradient(left, #F4B081  0%, #EF798D  100%) 1 stretch;
 } */
 .card-notify{
+    &.bg-notify:hover{
+        width: 20%;
+        transition: width 0.3s;
+    }
     .row-notify{
         margin-left: 0 !important;
         margin-right: 0 !important;
@@ -3456,6 +3460,7 @@
         box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
         border-radius: 10px;
         position: relative;
+        
     }
     .bg-notify{
         background: #F77817;
@@ -3638,4 +3643,176 @@ $width-compressed: 20%;
 
 .bg-aside-notify{
     background-color: $color-dark;
+}
+
+
+
+
+
+.card-notify-2{
+    height: auto;
+    box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+    // border-radius: 10px;
+    &:hover{
+        width: 100%!important;
+        .card-color{
+            .bg-notify{
+                width: 100%!important;
+            }
+        }
+    }
+    // .card-color{
+    //     border-right: 1px solid #ECECEC;
+    // }
+    .bg-notify{
+        width: 40%;
+        transition: width 2s;
+        background: #F77817;
+        border-top-left-radius: 10px;
+        border-bottom-left-radius: 10px;
+    }
+    // .bg-success-2{
+    //     border-top-right-radius: 10px;
+    //     border-bottom-right-radius: 10px;
+    // }
+    .tipo-user{
+        text-align: center;
+        color: #F77817;
+        font-weight: 600;
+        font-size: 12px;
+    }
+    .title-notify{
+        font-size: 13px;
+        font-weight: 600;
+        text-align: center;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+    .actions { 
+            text-align: center;
+            .label-notify{
+                margin: 0;
+                font-weight: 600;
+                height: 20px;
+                font-size: 0.8rem;
+                color: #80808f;
+                background-color: #f3f6f9;
+                padding: 0.15rem 0.75rem;
+                border-radius: 0.42rem;
+                cursor: pointer;
+                transition: .5s;
+                &:hover{
+                    transform: rotate(22deg);
+                }
+            }
+    }
+    .img-avatar {
+        background-image: linear-gradient( -60deg, #f77817 0%, #f79c56 100%);
+        z-index: 1;
+        top: 50%;
+        transform: translate(0, -50%);
+        position: absolute;
+        border-radius: 50%;
+        @include down-screen($xxxs) {
+            width: 50px;
+            height: 50px;
+            border: 4px solid white;
+            left: 31px;
+            display: none;
+        }
+        @include screen($xxs) {
+            width: 55px;
+            height: 55px;
+            border: 4px solid white;
+            left: 40px;
+        }
+        @include screen('540px') {
+            width: 65px;
+            height: 65px;
+            border: 4px solid white;
+            left: 81px;
+        }
+        @include screen($xs) {
+            width: 75px;
+            height: 75px;
+            border: 4px solid white;
+            left: 84px;
+        }
+        @include screen($sm) {
+            width: 53px;
+            height: 53px;
+            border: 4px solid white;
+            left: 33px;
+        }
+        @include screen($md) {
+            width: 55px;
+            height: 55px;
+            border: 4px solid white;
+            left: 44px;
+        }
+        @include screen($md) {
+            width: 65px;
+            height: 65px;
+            border: 4px solid white;
+            left: 62px;
+        }
+        @include screen($xl) {
+            width: 70px;
+            height: 70px;
+            border: 4px solid white;
+            left: 70px;
+        }
+        @include screen($xxl) {
+            width: 75px;
+            height: 75px;
+            border: 4px solid white;
+            left: 110px;
+        }
+    }
+    .padding-col-text{
+        padding-left: 3rem;
+        @include down-screen($xxxs) {
+            padding-left: 0px;
+        }
+        @include screen($xxs) {
+            padding-left: 1rem;
+        }
+        @include screen('540px') {
+            padding-left: 2rem;
+        }
+        @include screen($xs) {
+            padding-left: 2.5rem;
+        }
+        @include screen($sm) {
+            padding-left: 10px;
+        }
+        @include screen($md) {
+            padding-left: 1.5rem;
+        }
+        @include screen($xl) {
+            padding-left: 2rem;
+        }
+        @include screen($xxl) {
+            padding-left: 3rem;
+        }
+    }
+
+    path {
+        fill: white;
+    }
+
+    // Disable
+    .bg-notify.disable-bg{
+        background: #80808F;
+        // background-image: linear-gradient( 169deg, #a9a9bb 0%, #eef0f8 100%);
+    }
+    button.img-avatar.disable-bg{
+        background-image: linear-gradient( 169deg, #bab9b9  0%, #80808f  100%);
+        // background-image: linear-gradient( 169deg , #eef0f8 0%, #b0b0c1 100%);
+    }
+    .tipo-user.disable-bg{
+        color: #80808F;
+    }
 }
