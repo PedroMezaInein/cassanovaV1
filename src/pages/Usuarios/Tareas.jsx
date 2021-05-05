@@ -78,7 +78,7 @@ class Tareas extends Component {
         this.getOptionsAxios()
         const { pagination } = this.state
         this.getTasks(pagination)
-        if(process.env.NODE_ENV === 'production'){
+        if(process.env.NODE_ENV === 'production' || true ){
             const pusher = new Echo( PUSHER_OBJECT );
             pusher.channel('responsable-tarea').listen('ResponsableTarea', (data) => {
                 const { form, pagination, tarea, tareas, showTask } = this.state
