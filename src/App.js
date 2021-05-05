@@ -183,6 +183,9 @@ const SolicitudEgresosForm = React.lazy(() => import('./pages/Mercadotecnia/Soli
 const Pagos = React.lazy(() => import('./pages/Mercadotecnia/Pagos/Pagos') )
 const PagosForm = React.lazy(() => import('./pages/Mercadotecnia/Pagos/PagosForm') )
 const NotificacionesCorreos = React.lazy(() => import('./pages/Plataforma/NotificacionesCorreos') )
+
+
+const Etiquetas = React.lazy( () => import('./pages/Catalogos/Etiquetas') )
 class App extends Component{
     async componentDidMount(){
         const { history } = this.props
@@ -417,6 +420,8 @@ class App extends Component{
                     <Route path = "/catalogos/tabulador" exact component ={ Diseño } />
                     <Route path = "/catalogos/origenes-leads" exact component = { OrigenesLeads } />
                     <Route path = "/catalogos/redes-sociales" exact component = { RedesSociales } />
+                    
+                    <Route path = "/catalogos/tareas-etiquetas" exact component ={ Etiquetas } />
 
                     {/* ANCHOR Routes for reportes */}
 
