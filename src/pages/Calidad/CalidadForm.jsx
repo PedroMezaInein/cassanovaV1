@@ -65,10 +65,10 @@ class CalidadForm extends Component {
                         window.history.replaceState(null, '')
                     }
                     else
-                        history.push('/calidad/calidad')
+                        history.push('/calidad/tickets')
                 }
                 else
-                    history.push('/calidad/calidad')
+                    history.push('/calidad/tickets')
                 break;
             default:
                 break;

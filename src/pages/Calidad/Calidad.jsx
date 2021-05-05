@@ -34,7 +34,7 @@ class Calidad extends Component {
     changePageSee = calidad => {
         const { history } = this.props
         history.push({
-            pathname: '/calidad/calidad/see',
+            pathname: '/calidad/tickets/see',
             state: { calidad: calidad },
             formeditado: 1
         });

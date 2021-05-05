@@ -3548,8 +3548,6 @@
     border-radius: 24px;
 }
 
-
-
 // @import "compass/css3";
 
 $color-dark: #0E988E;
@@ -3645,16 +3643,22 @@ $width-compressed: 20%;
     background-color: $color-dark;
 }
 
-
-
-
-
 .card-notify-2{
     height: auto;
     box-shadow: rgba(0, 0, 0, 0.15) 1.95px 1.95px 2.6px;
     border-top-left-radius: 10px;
     border-bottom-left-radius: 10px;
     // border-radius: 10px;
+
+    @include down-screen($md) {
+        width: 100%!important;
+        .card-color{
+            .bg-notify{
+                width: 100%!important;
+            }
+        }
+    }
+
     &:hover{
         width: 100%!important;
         .card-color{
