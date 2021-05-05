@@ -254,7 +254,7 @@ class NotificacionesCorreos extends Component {
                                                 <div key = { element.id } className="col-md-4">
                                                     <div className="row mx-0 card-notify-2">
                                                         <span className="svg-icon svg-icon-3x">
-                                                            <button className={`img-avatar ${!element.enable ? 'disable-bg' : ''}`} onClick={() => { this.activeButton() }} >
+                                                            <button className={`img-avatar ${!element.enable ? 'disable-bg' : ''}`} onClick={(e) => { this.changeEnable(element)}} >
                                                                 <SVG src={toAbsoluteUrl('/images/svg/email-notification.svg')} />
                                                             </button>            
                                                         </span>
@@ -272,11 +272,11 @@ class NotificacionesCorreos extends Component {
                                                                             </label>
                                                                         </span>
                                                                     </div>
-                                                                <div className={`tipo-user ${!activeButton ? 'disable-bg' : ''}`}>
+                                                                <div className={`tipo-user ${!element.enable ? 'disable-bg' : ''}`}>
                                                                     Usuario
                                                                 </div>
                                                                 <div className="title-notify">
-                                                                    Recordatorio de préstamo
+                                                                    { element.titulo }
                                                                 </div>
                                                                 <div className="actions row mx-0">
                                                                     <div className="col px-2 mt-2">
