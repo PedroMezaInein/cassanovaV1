@@ -287,29 +287,34 @@ class NotificacionesCorreos extends Component {
                                                                     </div>
                                                                     <div className="actions row mx-0">
                                                                         <div className="col px-2 mt-2">
-                                                                            <OverlayTrigger overlay={<Tooltip>CARINA JIMÉNEZ</Tooltip>}>
-                                                                                <span className="label-notify">CJ</span>
-                                                                            </OverlayTrigger>
+                                                                        <OverlayTrigger overlay={<Tooltip>CARINA JIMÉNEZ</Tooltip>}>
+                                                                            <div className="d-table mb-1 cursor-pointer" id="responsable-notify">
+                                                                                <div className="tagify align-items-center border-0 d-inline-block">
+                                                                                    <div className="d-flex align-items-center tagify__tag tagify__tag__newtable px-3px border-radius-3px m-0 flex-row-reverse bg-gray-200">
+                                                                                        <div className="tagify__tag__removeBtn ml-0 px-0"></div>
+                                                                                        <div className="p-2-5px">
+                                                                                            <span className="tagify__tag-text white-space font-weight-bold letter-spacing-0-4 font-size-11px bg-gray-200 text-dark-50">
+                                                                                                <div className="mt-2px">
+                                                                                                    CJ
+                                                                                                </div>
+                                                                                            </span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </OverlayTrigger>
                                                                         </div>
                                                                         <div className="col px-2 mt-2">
-                                                                            <OverlayTrigger overlay={<Tooltip>CARINA JIMÉNEZ</Tooltip>}>
-                                                                                <span className="label-notify">CJ</span>
+                                                                            <OverlayTrigger overlay={<Tooltip>AGREGAR DESTINATARIO</Tooltip>}>
+                                                                                <span className="label-notify bg-gray-200 px-4" onClick={() => { this.mostrarInput() }}>
+                                                                                    <i className="fas fa-user-plus icon-sm text-color-8080"></i>
+                                                                                </span>
                                                                             </OverlayTrigger>
                                                                         </div>
-                                                                        <div className="col px-2 mt-2">
-                                                                            <OverlayTrigger overlay={<Tooltip>CARINA JIMÉNEZ</Tooltip>}>
-                                                                                <span className="label-notify">CJ</span>
-                                                                            </OverlayTrigger>
-                                                                        </div>
-                                                                        <div className="col px-2 mt-2">
-                                                                            <OverlayTrigger overlay={<Tooltip>CARINA JIMÉNEZ</Tooltip>}>
-                                                                                <span className="label-notify">CJ</span>
-                                                                            </OverlayTrigger>
-                                                                        </div>
-                                                                        <div className="col px-2 mt-2">
-                                                                            <OverlayTrigger overlay={<Tooltip>CARINA JIMÉNEZ</Tooltip>}>
-                                                                                <span className="label-notify">CJ</span>
-                                                                            </OverlayTrigger>
+                                                                        <div className={showInput ? 'col-md-12 mt-5 px-0 ' : 'd-none'}>
+                                                                            <TagSelectSearchGray placeholder = 'Agregar destinatario ' options = { options.responsables } 
+                                                                                iconclass = 'las la-user-friends icon-xl' defaultvalue = { form.responsables } onChange = { this.updateResponsable }
+                                                                            />
                                                                         </div>
                                                                     </div>
                                                                 </div>
