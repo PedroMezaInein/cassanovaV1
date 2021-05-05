@@ -84,6 +84,7 @@ class Tareas extends Component {
                 const { form, pagination, tarea, tareas, showTask } = this.state
                 const { user } = this.props.authUser
                 if(data.type ==='delete'){ this.getTasks(pagination) }
+                if(data.type ==='terminar'){ this.getTasks(pagination) }
                 else{
                     if(form.filtrarTarea === 'own'){
                         let found = tareas.find((elemento) => { return elemento.id === data.tarea })
