@@ -11,6 +11,7 @@ import { printResponseErrorAlert, waitAlert, errorAlert } from '../../functions/
 import axios from 'axios'
 import { URL_DEV } from '../../constants'
 import Swal from 'sweetalert2'
+import { Panel } from '../../components/Lottie'
 // import '@szhsin/react-menu/dist/index.css';
 
 class NotificacionesCorreos extends Component {
@@ -200,16 +201,21 @@ class NotificacionesCorreos extends Component {
                             <div className="card-header border-0">
                                 <h3 className="card-title align-items-start flex-column align-self-center mt-3">
                                     <span className="card-label font-weight-bolder text-dark">{list.tipo}</span>
-                                    <span className="text-muted mt-3">
-                                        <ul className="breadcrumb breadcrumb-transparent breadcrumb-dot font-weight-bold p-0 font-size-lg">
-											<li className="breadcrumb-item">
-												<div className="text-muted">{list.modulo}</div>
-											</li>
-											<li className="breadcrumb-item">
-												<div className="text-primary font-weight-bolder">{list.submodulo}</div>
-											</li>
-										</ul>
-                                    </span>
+                                    {
+                                        list.modulo !== '' && list.submodulo !== '' ?
+                                            <span className="text-muted mt-3">
+                                                <ul className="breadcrumb breadcrumb-transparent breadcrumb-dot font-weight-bold p-0 font-size-lg">
+                                                    <li className="breadcrumb-item">
+                                                        <div className="text-muted">{list.modulo}</div>
+                                                    </li>
+                                                    <li className="breadcrumb-item">
+                                                        <div className="text-primary font-weight-bolder">{list.submodulo}</div>
+                                                    </li>
+                                                </ul>
+                                            </span>
+                                        : <></>
+                                    }
+                                    
                                 </h3>
                                 <div className="card-toolbar">
                                     <Menu direction='bottom' className="navi my-menu"
@@ -247,70 +253,75 @@ class NotificacionesCorreos extends Component {
                                 </div>
                             </div>
                             <div className="card-body">
-                                <div className="row mx-0">
+                                <div className="row mx-0 justify-content-center">
                                     {
-                                        notificaciones.map((element) => {
-                                            return(
-                                                <div key = { element.id } className="col-md-4">
-                                                    <div className="row mx-0 card-notify-2">
-                                                        <span className="svg-icon svg-icon-3x">
-                                                            <button className={`img-avatar ${!element.enable ? 'disable-bg' : ''}`} onClick={(e) => { this.changeEnable(element)}} >
-                                                                <SVG src={toAbsoluteUrl('/images/svg/email-notification.svg')} />
-                                                            </button>            
-                                                        </span>
-                                                        <div className="col-3 px-0 w-100 row mx-0 card-color">
-                                                            <div className={`bg-notify ${!element.enable ? 'disable-bg' : ''}`}></div>
-                                                        </div>
-                                                        <div className="col bg-success-2">
-                                                            <div className="padding-col-text py-3">
-                                                                    <div className="switch-notify d-flex justify-content-end">
-                                                                        <span className="switch switch-outline switch-icon switch-info switch-sm ">
-                                                                            <label>
-                                                                                <input type="checkbox" checked = { element.enable === 1 ? true : false } name="select" 
-                                                                                    onChange = { (e) => { this.changeEnable(element)}} />
-                                                                                <span></span>
-                                                                            </label>
-                                                                        </span>
+                                        notificaciones.length ?
+                                            notificaciones.map((element) => {
+                                                return(
+                                                    <div key = { element.id } className="col-md-4">
+                                                        <div className="row mx-0 card-notify-2">
+                                                            <span className="svg-icon svg-icon-3x">
+                                                                <button className={`img-avatar ${!element.enable ? 'disable-bg' : ''}`} onClick={(e) => { this.changeEnable(element)}} >
+                                                                    <SVG src={toAbsoluteUrl('/images/svg/email-notification.svg')} />
+                                                                </button>            
+                                                            </span>
+                                                            <div className="col-3 px-0 w-100 row mx-0 card-color">
+                                                                <div className={`bg-notify ${!element.enable ? 'disable-bg' : ''}`}></div>
+                                                            </div>
+                                                            <div className="col bg-success-2">
+                                                                <div className="padding-col-text py-3">
+                                                                        <div className="switch-notify d-flex justify-content-end">
+                                                                            <span className="switch switch-outline switch-icon switch-info switch-sm ">
+                                                                                <label>
+                                                                                    <input type="checkbox" checked = { element.enable === 1 ? true : false } name="select" 
+                                                                                        onChange = { (e) => { this.changeEnable(element)}} />
+                                                                                    <span></span>
+                                                                                </label>
+                                                                            </span>
+                                                                        </div>
+                                                                    <div className={`tipo-user ${!element.enable ? 'disable-bg' : ''}`}>
+                                                                        { element.usuario_externo ?  'Cliente' : 'Usuario' }
                                                                     </div>
-                                                                <div className={`tipo-user ${!element.enable ? 'disable-bg' : ''}`}>
-                                                                    Usuario
-                                                                </div>
-                                                                <div className="title-notify">
-                                                                    { element.titulo }
-                                                                </div>
-                                                                <div className="actions row mx-0">
-                                                                    <div className="col px-2 mt-2">
-                                                                        <OverlayTrigger overlay={<Tooltip>CARINA JIMÉNEZ</Tooltip>}>
-                                                                            <span className="label-notify">CJ</span>
-                                                                        </OverlayTrigger>
+                                                                    <div className="title-notify">
+                                                                        { element.titulo }
                                                                     </div>
-                                                                    <div className="col px-2 mt-2">
-                                                                        <OverlayTrigger overlay={<Tooltip>CARINA JIMÉNEZ</Tooltip>}>
-                                                                            <span className="label-notify">CJ</span>
-                                                                        </OverlayTrigger>
-                                                                    </div>
-                                                                    <div className="col px-2 mt-2">
-                                                                        <OverlayTrigger overlay={<Tooltip>CARINA JIMÉNEZ</Tooltip>}>
-                                                                            <span className="label-notify">CJ</span>
-                                                                        </OverlayTrigger>
-                                                                    </div>
-                                                                    <div className="col px-2 mt-2">
-                                                                        <OverlayTrigger overlay={<Tooltip>CARINA JIMÉNEZ</Tooltip>}>
-                                                                            <span className="label-notify">CJ</span>
-                                                                        </OverlayTrigger>
-                                                                    </div>
-                                                                    <div className="col px-2 mt-2">
-                                                                        <OverlayTrigger overlay={<Tooltip>CARINA JIMÉNEZ</Tooltip>}>
-                                                                            <span className="label-notify">CJ</span>
-                                                                        </OverlayTrigger>
+                                                                    <div className="actions row mx-0">
+                                                                        <div className="col px-2 mt-2">
+                                                                            <OverlayTrigger overlay={<Tooltip>CARINA JIMÉNEZ</Tooltip>}>
+                                                                                <span className="label-notify">CJ</span>
+                                                                            </OverlayTrigger>
+                                                                        </div>
+                                                                        <div className="col px-2 mt-2">
+                                                                            <OverlayTrigger overlay={<Tooltip>CARINA JIMÉNEZ</Tooltip>}>
+                                                                                <span className="label-notify">CJ</span>
+                                                                            </OverlayTrigger>
+                                                                        </div>
+                                                                        <div className="col px-2 mt-2">
+                                                                            <OverlayTrigger overlay={<Tooltip>CARINA JIMÉNEZ</Tooltip>}>
+                                                                                <span className="label-notify">CJ</span>
+                                                                            </OverlayTrigger>
+                                                                        </div>
+                                                                        <div className="col px-2 mt-2">
+                                                                            <OverlayTrigger overlay={<Tooltip>CARINA JIMÉNEZ</Tooltip>}>
+                                                                                <span className="label-notify">CJ</span>
+                                                                            </OverlayTrigger>
+                                                                        </div>
+                                                                        <div className="col px-2 mt-2">
+                                                                            <OverlayTrigger overlay={<Tooltip>CARINA JIMÉNEZ</Tooltip>}>
+                                                                                <span className="label-notify">CJ</span>
+                                                                            </OverlayTrigger>
+                                                                        </div>
                                                                     </div>
                                                                 </div>
                                                             </div>
                                                         </div>
                                                     </div>
-                                                </div>
-                                            )
-                                        })
+                                                )
+                                            })
+                                        : 
+                                            <div className = 'col-md-6'>
+                                                <Panel />
+                                            </div>
                                     }
                                 </div>
                             </div>
