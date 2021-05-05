@@ -69,6 +69,7 @@ class Tareas extends Component {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
         const { history } = this.props
+        const { pagination } = this.state
         const tareas = permisos.find(function (element, index) {
             const { modulo: { url } } = element
             return pathname === url
@@ -76,15 +77,13 @@ class Tareas extends Component {
         if (!tareas)
             history.push('/')
         this.getOptionsAxios()
-        const { pagination } = this.state
         this.getTasks(pagination)
         if(process.env.NODE_ENV === 'production' || true ){
             const pusher = new Echo( PUSHER_OBJECT );
             pusher.channel('responsable-tarea').listen('ResponsableTarea', (data) => {
                 const { form, pagination, tarea, tareas, showTask } = this.state
                 const { user } = this.props.authUser
-                if(data.type ==='delete'){ this.getTasks(pagination) }
-                if(data.type ==='terminar'){ this.getTasks(pagination) }
+                if(data.type ==='delete' || data.type === 'terminar' || data.type === 'reactivar'){ this.getTasks(pagination) }
                 else{
                     if(form.filtrarTarea === 'own'){
                         let found = tareas.find((elemento) => { return elemento.id === data.tarea })
@@ -151,22 +150,6 @@ class Tareas extends Component {
         })
     }
 
-    reactivarTaskAxiosAxios = async(tarea) => {
-        const { access_token } = this.props.authUser
-        waitAlert()
-        await axios.get(`${URL_DEV}v3/usuarios/tareas/${tarea.id}/completar`, { headers: setSingleHeader(access_token)}).then(
-            (response) => {
-                Swal.close()
-                this.setState({ ...this.state, showTask: false, showListPanel: true, tarea: '' })
-                doneAlert('Tarea reactivada con éxito')
-                // const { pagination } = this.state
-                // this.getTasks(pagination)
-            }, (error) => { printResponseErrorAlert(error) }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
     mostrarTarea = async(tarea) => {
         const { access_token } = this.props.authUser
         waitAlert()
@@ -630,7 +613,7 @@ class Tareas extends Component {
                                             onChange = { this.onChange } clearFiles={this.clearFiles} mentions = { mentions } onSubmit = { this.sendComentario }
                                             openModalEdit = { this.openModalEdit} updateTagInTask={this.updateTagInTask} 
                                             deleteTask = { () => { deleteAlert( '¿ESTÁS SEGURO?', `Eliminarás la tarea ${tarea.titulo}`, 
-                                            (e) => { this.deleteTask(tarea)} ) } } reactivarTask = { this.reactivarTaskAxios }/>
+                                            (e) => { this.deleteTask(tarea)} ) } } reactivarTask = { this.completarTareaAxios }/>
                                 }
                             </div>
                         </div>
