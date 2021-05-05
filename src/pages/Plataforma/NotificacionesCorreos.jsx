@@ -107,11 +107,12 @@ class NotificacionesCorreos extends Component {
     changeEnable = async(notificacion) => {
         waitAlert()
         const { access_token } = this.props.authUser
-        await axios.patch(`${URL_DEV}v1/plataforma/notificaciones`, {type: 'enable', value: notificacion.id}, { headers: setSingleHeader(access_token) }).then(
+        await axios.put(`${URL_DEV}v1/plataforma/notificaciones`, {type: 'enable', id: notificacion.id}, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { notificaciones } = response.data
+                const { list } = this.state
                 Swal.close()
-                this.setState({...this.state, notificaciones: notificaciones})
+                this.setState({...this.state, notificaciones: this.getNotificacionesByType(notificaciones, list.tipo)})
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -253,12 +254,12 @@ class NotificacionesCorreos extends Component {
                                                 <div key = { element.id } className="col-md-4">
                                                     <div className="row mx-0 card-notify-2">
                                                         <span className="svg-icon svg-icon-3x">
-                                                            <button className={`img-avatar ${!activeButton ? 'disable-bg' : ''}`} onClick={() => { this.activeButton() }} >
+                                                            <button className={`img-avatar ${!element.enable ? 'disable-bg' : ''}`} onClick={(e) => { this.changeEnable(element)}} >
                                                                 <SVG src={toAbsoluteUrl('/images/svg/email-notification.svg')} />
                                                             </button>            
                                                         </span>
                                                         <div className="col-3 px-0 w-100 row mx-0 card-color">
-                                                            <div className={`bg-notify ${!activeButton ? 'disable-bg' : ''}`}></div>
+                                                            <div className={`bg-notify ${!element.enable ? 'disable-bg' : ''}`}></div>
                                                         </div>
                                                         <div className="col bg-success-2">
                                                             <div className="padding-col-text py-3">
@@ -271,11 +272,11 @@ class NotificacionesCorreos extends Component {
                                                                             </label>
                                                                         </span>
                                                                     </div>
-                                                                <div className={`tipo-user ${!activeButton ? 'disable-bg' : ''}`}>
+                                                                <div className={`tipo-user ${!element.enable ? 'disable-bg' : ''}`}>
                                                                     Usuario
                                                                 </div>
                                                                 <div className="title-notify">
-                                                                    Recordatorio de préstamo
+                                                                    { element.titulo }
                                                                 </div>
                                                                 <div className="actions row mx-0">
                                                                     <div className="col px-2 mt-2">
