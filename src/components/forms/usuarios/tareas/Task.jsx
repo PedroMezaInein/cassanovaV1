@@ -45,9 +45,26 @@ class Task extends Component {
         return false
     }
 
+    canReactivar = tarea => {
+        const { user } = this.props
+        if(tarea.terminada === 1){
+            if(user.tipo.tipo === "Administrador")
+                return true
+            else{
+                let flag = tarea.responsables.find((responsable) => {
+                    return responsable.id === user.id
+                })
+                if(flag)
+                    return true
+            }
+        }
+        return false
+    }
+
     render() {
-        const {showTask, mostrarListPanel, tarea, completarTarea, updateFav, form, onChange, clearFiles, openModalEdit, mentions, onSubmit, options, updateTagInTask, deleteTask } = this.props
+        const {showTask, mostrarListPanel, tarea, completarTarea, updateFav, form, onChange, clearFiles, openModalEdit, mentions, onSubmit, options, updateTagInTask, deleteTask, reactivarTask } = this.props
         if(tarea)
+        console.log(tarea)
             return (
                 <div id="task" className={showTask ? 'col-xl-12 gutter-b' : 'd-none'}>
                     <div className="card card-custom card-stretch">
@@ -137,6 +154,12 @@ class Task extends Component {
                                 </div>
                             </div>
                             <div className="card-toolbar">
+                                {
+                                    this.canReactivar(tarea) &&
+                                        <span class="btn btn-hover-icon-success font-weight-bolder btn-hover-bg-light text-hover-success btn-outline-secondary text-primary" onClick={(e) => { reactivarTask(tarea) }}>
+                                            <i class="fas fa-undo-alt text-primary font-size-12px"></i> Reactivar
+                                        </span>
+                                }
                                 {
                                     this.canEdit(tarea) &&
                                         <span className="btn btn-default btn-icon btn-sm btn-hover-bg-danger mr-2 text-hover-white" onClick={(e) => { deleteTask(tarea) }}>
