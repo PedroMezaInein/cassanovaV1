@@ -151,6 +151,22 @@ class Tareas extends Component {
         })
     }
 
+    reactivarTaskAxiosAxios = async(tarea) => {
+        const { access_token } = this.props.authUser
+        waitAlert()
+        await axios.get(`${URL_DEV}v3/usuarios/tareas/${tarea.id}/completar`, { headers: setSingleHeader(access_token)}).then(
+            (response) => {
+                Swal.close()
+                this.setState({ ...this.state, showTask: false, showListPanel: true, tarea: '' })
+                doneAlert('Tarea reactivada con éxito')
+                // const { pagination } = this.state
+                // this.getTasks(pagination)
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     mostrarTarea = async(tarea) => {
         const { access_token } = this.props.authUser
         waitAlert()
@@ -614,7 +630,7 @@ class Tareas extends Component {
                                             onChange = { this.onChange } clearFiles={this.clearFiles} mentions = { mentions } onSubmit = { this.sendComentario }
                                             openModalEdit = { this.openModalEdit} updateTagInTask={this.updateTagInTask} 
                                             deleteTask = { () => { deleteAlert( '¿ESTÁS SEGURO?', `Eliminarás la tarea ${tarea.titulo}`, 
-                                            (e) => { this.deleteTask(tarea)} ) } }/>
+                                            (e) => { this.deleteTask(tarea)} ) } } reactivarTask = { this.reactivarTaskAxios }/>
                                 }
                             </div>
                         </div>
