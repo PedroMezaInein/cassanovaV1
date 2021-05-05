@@ -78,12 +78,13 @@ class Tareas extends Component {
         this.getOptionsAxios()
         const { pagination } = this.state
         this.getTasks(pagination)
-        if(process.env.NODE_ENV === 'production'){
+        if(process.env.NODE_ENV === 'production' || true ){
             const pusher = new Echo( PUSHER_OBJECT );
             pusher.channel('responsable-tarea').listen('ResponsableTarea', (data) => {
                 const { form, pagination, tarea, tareas, showTask } = this.state
                 const { user } = this.props.authUser
                 if(data.type ==='delete'){ this.getTasks(pagination) }
+                if(data.type ==='terminar'){ this.getTasks(pagination) }
                 else{
                     if(form.filtrarTarea === 'own'){
                         let found = tareas.find((elemento) => { return elemento.id === data.tarea })
@@ -141,6 +142,8 @@ class Tareas extends Component {
                 Swal.close()
                 this.setState({ ...this.state, showTask: false, showListPanel: true, tarea: '' })
                 doneAlert('Tarea completada con éxito')
+                const { pagination } = this.state
+                this.getTasks(pagination)
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -148,6 +151,22 @@ class Tareas extends Component {
         })
     }
 
+    reactivarTaskAxiosAxios = async(tarea) => {
+        const { access_token } = this.props.authUser
+        waitAlert()
+        await axios.get(`${URL_DEV}v3/usuarios/tareas/${tarea.id}/completar`, { headers: setSingleHeader(access_token)}).then(
+            (response) => {
+                Swal.close()
+                this.setState({ ...this.state, showTask: false, showListPanel: true, tarea: '' })
+                doneAlert('Tarea reactivada con éxito')
+                // const { pagination } = this.state
+                // this.getTasks(pagination)
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
     mostrarTarea = async(tarea) => {
         const { access_token } = this.props.authUser
         waitAlert()
@@ -186,6 +205,8 @@ class Tareas extends Component {
                     form: this.clearForm(),
                 })
                 doneAlert('Tarea generada con éxito')
+                const { pagination } = this.state
+                this.getTasks(pagination)
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -201,6 +222,8 @@ class Tareas extends Component {
                 const { tarea } = response.data
                 this.setState({ ...this.state, form: this.clearForm(), modal_tarea: false, tarea: tarea })
                 doneAlert('Fue editado con éxito');
+                const { pagination } = this.state
+                this.getTasks(pagination)
             },
             (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -240,8 +263,8 @@ class Tareas extends Component {
                 const { tarea } = response.data
                 Swal.close()
                 this.setState({...this.state, tarea: tarea})
-                /* const { pagination } = this.state */
-                /* this.getTasks(pagination) */
+                const { pagination } = this.state
+                this.getTasks(pagination)
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -607,7 +630,7 @@ class Tareas extends Component {
                                             onChange = { this.onChange } clearFiles={this.clearFiles} mentions = { mentions } onSubmit = { this.sendComentario }
                                             openModalEdit = { this.openModalEdit} updateTagInTask={this.updateTagInTask} 
                                             deleteTask = { () => { deleteAlert( '¿ESTÁS SEGURO?', `Eliminarás la tarea ${tarea.titulo}`, 
-                                            (e) => { this.deleteTask(tarea)} ) } }/>
+                                            (e) => { this.deleteTask(tarea)} ) } } reactivarTask = { this.reactivarTaskAxios }/>
                                 }
                             </div>
                         </div>

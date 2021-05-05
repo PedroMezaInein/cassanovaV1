@@ -3719,6 +3719,8 @@ $width-compressed: 20%;
         transform: translate(0, -50%);
         position: absolute;
         border-radius: 50%;
+        padding-left: 2px;
+        padding-right: 2px;
         @include down-screen($xxxs) {
             width: 50px;
             height: 50px;
@@ -3803,7 +3805,7 @@ $width-compressed: 20%;
         }
     }
 
-    path {
+    path, rect {
         fill: white;
     }
 
