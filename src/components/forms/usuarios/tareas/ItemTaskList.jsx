@@ -147,6 +147,9 @@ class ItemTaskList extends Component {
                                 </div>
                                 <div className="col-md-2 align-self-center">
                                     <div className="py-3" id="tags-date">
+                                        <div className="font-weight-bolder font-size-xs text-muted">
+                                            {printDateMes(tarea.created_at)}
+                                        </div>
                                         <span id="down-tag">
                                             <DropdownButton
                                                 title={
