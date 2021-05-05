@@ -314,39 +314,14 @@ class Mercadotecnia extends Component {
         const { form, modal, title, formeditado, options} = this.state
         return (
             <Layout active={'reportes'}  {...this.props}>
-                <NewTableServerRender 
-                    columns = { REPORTE_MERCA_COLUMNS } 
-                    title = 'Reporte de mercadotecnia' 
-                    subtitle ='Listado de reporte de mercadotecnia'
-                    mostrar_boton = { true }
-                    abrir_modal = { true }
-                    mostrar_acciones = { true }
-                    onClick = { this.openModal }
-                    actions = {
-                        {
-                            'edit': { function: this.openModalEdit },
-                            'delete': { function: this.openModalDelete }
-                        }
-                    }
-                    idTable = 'kt_datatable_reporte_merca'
-                    cardTable='cardTable'
-                    cardTableHeader='cardTableHeader'
-                    cardBody='cardBody'
-                    accessToken = { this.props.authUser.access_token }
-                    setter =  {this.setReportes }
-                    // urlRender = { URL_DEV + 'partidas'}
-                    urlRender = { URL_DEV + 'reportes/reporte-mercadotecnia' }
-                />
-
+                <NewTableServerRender columns = { REPORTE_MERCA_COLUMNS } title = 'Reporte de mercadotecnia' subtitle ='Listado de reporte de mercadotecnia'
+                    mostrar_boton = { true } abrir_modal = { true } mostrar_acciones = { true } onClick = { this.openModal }
+                    actions = { { 'edit': { function: this.openModalEdit }, 'delete': { function: this.openModalDelete } } }
+                    idTable = 'kt_datatable_reporte_merca' cardTable='cardTable' cardTableHeader='cardTableHeader' cardBody='cardBody'
+                    accessToken = { this.props.authUser.access_token } setter =  {this.setReportes } urlRender = { `${URL_DEV}v2/reportes/mercadotecnia` } />
                 <Modal size="xl" show={modal.form} title = {title} handleClose={this.handleClose}>
-                    <MercadotecniaForm
-                        form = { form } 
-                        onChange = { this.onChange }
-                        onSubmit = { this.onSubmit } 
-                        formeditado={formeditado}
-                        options={options}
-                        handleChange={this.handleChange}
-                    />
+                    <MercadotecniaForm form = { form }  onChange = { this.onChange } onSubmit = { this.onSubmit }  formeditado={formeditado}
+                        options={options} handleChange={this.handleChange} />
                 </Modal>
                 <ModalDelete title = "¿Estás seguro que deseas eliminar el reporte?" show = { modal.delete } 
                     handleClose = { this.handleCloseDelete } onClick={(e) => { e.preventDefault(); waitAlert(); this.deleteReporteAxios() }} >
