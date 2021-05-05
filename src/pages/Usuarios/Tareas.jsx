@@ -142,6 +142,8 @@ class Tareas extends Component {
                 Swal.close()
                 this.setState({ ...this.state, showTask: false, showListPanel: true, tarea: '' })
                 doneAlert('Tarea completada con éxito')
+                const { pagination } = this.state
+                this.getTasks(pagination)
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
