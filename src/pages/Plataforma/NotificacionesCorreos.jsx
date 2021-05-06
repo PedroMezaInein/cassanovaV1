@@ -115,6 +115,7 @@ class NotificacionesCorreos extends Component {
         await axios.put(`${URL_DEV}v1/plataforma/notificaciones`, {type: 'enable', id: notificacion.id}, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 Swal.close()
+                this.getPanelNotificaciones()
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -129,6 +130,7 @@ class NotificacionesCorreos extends Component {
             { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 Swal.close()
+                this.getPanelNotificaciones()
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -145,6 +147,7 @@ class NotificacionesCorreos extends Component {
                 const { showInput } = this.state
                 Swal.close();
                 this.setState({...this.state, showInput: !showInput, notificacion: ''})
+                this.getPanelNotificaciones()
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
