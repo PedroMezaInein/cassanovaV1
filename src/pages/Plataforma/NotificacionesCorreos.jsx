@@ -11,16 +11,19 @@ import axios from 'axios'
 import { URL_DEV } from '../../constants'
 import Swal from 'sweetalert2'
 import { Panel } from '../../components/Lottie'
+import { setOptions, transformarOptions } from '../../functions/setters'
 
 class NotificacionesCorreos extends Component {
-    state={
+
+    state = {
         keyActive:'',
         showInput: false,
         form: { responsables: [], },
-        options: { responsables: [] },
+        options: { responsables: [], usuarios: [] },
         activeSubMenu: true,
         modulos: [],
         notificaciones: [],
+        notificacion: '',
         list:{ tipo: '', modulo: '', submodulo: '' }
     }
 
@@ -35,16 +38,35 @@ class NotificacionesCorreos extends Component {
         if (!tareas)
             history.push('/')
         this.getPanelNotificaciones()
+        this.getOptions()
     }
 
-    mostrarInput() {
+    mostrarInput(element) {
         const { showInput } = this.state
-        this.setState({ ...this.state, showInput: !showInput })
+        console.log('ELEMENT', element)
+        this.setState({ ...this.state, showInput: !showInput, notificacion: element })
     }
     
     updateResponsable = value => {
-        const { onChange } = this.props
-        onChange({target: { value: value, name: 'responsables'}}, true)
+        /* this.onChange( { target: { value: value, name: 'responsables'} }, true ) */
+        console.log(value, 'VALUE')
+    }
+
+    getOptions = async() => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.options(`${URL_DEV}v1/plataforma/notificaciones`, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                const { options } = this.state
+                const { usuarios } = response.data
+                options.responsables = setOptions(usuarios, 'name', 'id')
+                options.usuarios = setOptions(usuarios, 'name', 'id')
+                this.setState({...this.state, options})
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
     }
 
     getPanelNotificaciones = async() => {
@@ -199,7 +221,7 @@ class NotificacionesCorreos extends Component {
                                                                 <SubMenu key = { submodulo.id } direction = 'left' label = { this.setSubmenuLabel(submodulo, modulo.icon) }>
                                                                     { this.hasActive(submodulo, 'correos') && this.setMenuItem('correos', submodulo, modulo) }
                                                                     { this.hasActive(submodulo, 'notificaciones') && this.setMenuItem('notificaciones', submodulo, modulo) }
-                                                                    { this.setMenuItem('todas', submodulo, modulo) }
+                                                                    { this.hasActive(submodulo, 'notificaciones') && this.hasActive(submodulo, 'correos') && this.setMenuItem('todas', submodulo, modulo) }
                                                                 </SubMenu>
                                                             )
                                                         })
@@ -265,14 +287,14 @@ class NotificacionesCorreos extends Component {
                                                                         </div>
                                                                         <div className="col px-2 mt-2">
                                                                             <OverlayTrigger overlay={<Tooltip>AGREGAR DESTINATARIO</Tooltip>}>
-                                                                                <span className="label-notify bg-gray-200 px-4" onClick={() => { this.mostrarInput() }}>
+                                                                                <span className="label-notify bg-gray-200 px-4" onClick={() => { this.mostrarInput(element) }}>
                                                                                     <i className="fas fa-user-plus icon-sm text-color-8080"></i>
                                                                                 </span>
                                                                             </OverlayTrigger>
                                                                         </div>
                                                                         <div className={showInput ? 'col-md-12 mt-5 px-0 ' : 'd-none'}>
-                                                                            <TagSelectSearchGray placeholder = 'Agregar destinatario ' options = { options.responsables } 
-                                                                                iconclass = 'las la-user-friends icon-xl' defaultvalue = { form.responsables } onChange = { this.updateResponsable }
+                                                                            <TagSelectSearchGray placeholder = 'Agregar usuarios ' options = { options.responsables } 
+                                                                                iconclass = 'las la-user-friends icon-xl' defaultvalue = { [] } onChange = { this.updateResponsable }
                                                                             />
                                                                         </div>
                                                                     </div>
