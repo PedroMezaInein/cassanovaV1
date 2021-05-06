@@ -24,8 +24,8 @@ export default class ModalDelete extends Component {
                             children
                         }
                         <div className="d-flex justify-content-center mt-3">
-                            <Button icon='' onClick={handleClose} text="Cancelar" className={"btn btn-light-primary font-weight-bolder mr-3"} />
-                            <Button icon='' onClick={onClick} text="Continuar" className={"btn btn-danger font-weight-bold mr-2"} />
+                            <Button icon='' onClick={handleClose} text="CANCELAR" className={"btn btn-light-primary font-weight-bolder mr-3"} />
+                            <Button icon='' onClick={onClick} text="CONTINUAR" className={"btn btn-danger font-weight-bold"} />
                         </div>
                     </Modal.Body>
                 </Modal>
