@@ -1,19 +1,16 @@
 import React, { Component } from 'react'
 import Layout from '../../components/layout/layout'
 import { connect } from 'react-redux'
-import { Nav, Tab, OverlayTrigger, Tooltip, Row, Accordion, Card, Col  } from 'react-bootstrap'
+import { OverlayTrigger, Tooltip, Row, Card, Col  } from 'react-bootstrap'
 import { TagSelectSearchGray } from '../../components/form-components'
 import SVG from "react-inlinesvg";
 import { setSingleHeader, toAbsoluteUrl } from "../../functions/routers"
-import $ from 'jquery'
 import { Menu, MenuItem, MenuButton, SubMenu, MenuHeader } from '@szhsin/react-menu';
 import { printResponseErrorAlert, waitAlert, errorAlert } from '../../functions/alert'
 import axios from 'axios'
 import { URL_DEV } from '../../constants'
 import Swal from 'sweetalert2'
 import { Panel } from '../../components/Lottie'
-// import '@szhsin/react-menu/dist/index.css';
-
 class NotificacionesCorreos extends Component {
     state={
         keyActive:'',
