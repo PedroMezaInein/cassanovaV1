@@ -240,7 +240,7 @@ class NotificacionesCorreos extends Component {
                                                 return(
                                                     <div key = { element.id } className="col-md-4">
                                                         <div className="row mx-0 card-notify-2">
-                                                            <span className="svg-icon svg-icon-3x">
+                                                            <span className="svg-icon svg-icon-sm-3x">
                                                                 { this.showIcon(element) }          
                                                             </span>
                                                             <div className="col-3 px-0 w-100 row mx-0 card-color">
