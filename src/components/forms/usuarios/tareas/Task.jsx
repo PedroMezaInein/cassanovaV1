@@ -64,7 +64,6 @@ class Task extends Component {
     render() {
         const {showTask, mostrarListPanel, tarea, completarTarea, updateFav, form, onChange, clearFiles, openModalEdit, mentions, onSubmit, options, updateTagInTask, deleteTask, reactivarTask } = this.props
         if(tarea)
-        console.log(tarea)
             return (
                 <div id="task" className={showTask ? 'col-xl-12 gutter-b' : 'd-none'}>
                     <div className="card card-custom card-stretch">
@@ -218,7 +217,6 @@ class Task extends Component {
                     </div>
                 </div>
             )
-        return (<></>)
     }
 }
 

@@ -1,46 +1,47 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import axios from 'axios'
-import { URL_DEV, ROLES_COLUMNS, COLORS } from '../../constants'
+import { URL_DEV, ETIQUETAS_COLUMNS, COLORS } from '../../constants'
 import { setTextTableReactDom, setColorTableReactDom } from '../../functions/setters'
 import { waitAlert, errorAlert, printResponseErrorAlert, doneAlert, customInputAlert } from '../../functions/alert'
 import Layout from '../../components/layout/layout'
 import { Modal, ModalDelete } from '../../components/singles'
-import { RolesMercadotecniaForm } from '../../components/forms'
+import { EtiquetasForm } from '../../components/forms'
 import NewTableServerRender from '../../components/tables/NewTableServerRender'
 import Swal from 'sweetalert2'
 import { Update } from '../../components/Lottie'
 import { printSwalHeader } from '../../functions/printers'
 import { InputGray, CircleColor } from '../../components/form-components'
 import $ from "jquery";
-class RolesMercadotecnia extends Component {
+import { setSingleHeader } from '../../functions/routers'
+class Etiquetas extends Component {
     state = {
         form: {
-            rol: '',
+            etiqueta: '',
             color: ''
         },
         data: {
-            roles: []
+            etiquetas: []
         },
         formeditado: 0,
-        roles: [],
+        etiquetas: [],
         modal: {
             form: false,
             delete: false,
         },
-        title: 'Nuevo rol',
-        rol: '',
+        title: 'Nueva etiqueta',
+        etiqueta: '',
         color: ''
     }
     componentDidMount() {
         const { authUser: { user: { permisos } } } = this.props
         const { history: { location: { pathname } } } = this.props
         const { history } = this.props
-        const roles = permisos.find(function (element, index) {
+        const etiquetas = permisos.find(function (element, index) {
             const { modulo: { url } } = element
             return pathname === url
         });
-        if (!roles)
+        if (!etiquetas)
             history.push('/')
     }
     onChange = e => {
@@ -52,14 +53,14 @@ class RolesMercadotecnia extends Component {
             form
         })
     }
-    setRoles = roles => {
+    setEtiquetas = etiquetas => {
         let aux = []
-        roles.map((rol) => {
+        etiquetas.map((etiqueta) => {
             aux.push({
-                actions: this.setActions(rol),
-                rol: setTextTableReactDom(rol.nombre, this.doubleClick, rol, 'nombre', 'text-center'),
-                color: setColorTableReactDom(rol.color, this.doubleClick, rol, 'color', 'text-center'),
-                id: rol.id
+                actions: this.setActions(etiqueta),
+                etiqueta: setTextTableReactDom(etiqueta.titulo, this.doubleClick, etiqueta, 'titulo', 'text-center'),
+                color: setColorTableReactDom(etiqueta.color, this.doubleClick, etiqueta, 'color', 'text-center'),
+                id: etiqueta.id
             })
             return false
         })
@@ -67,7 +68,11 @@ class RolesMercadotecnia extends Component {
     }
     doubleClick = (data, tipo) => {
         const { form } = this.state
+        let { color } = this.state
         switch(tipo){
+            case 'color':
+                color = data.color
+                break
             default:
                 form[tipo] = data[tipo]
                 break
@@ -75,9 +80,9 @@ class RolesMercadotecnia extends Component {
         this.setState({form})
         customInputAlert(
             <div>
-                <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) + ' DEL ROL'} </h2>
+                <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) + ' DE LA ETIQUETA'} </h2>
                 {
-                    tipo === 'nombre' &&
+                    tipo === 'titulo' &&
                         <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
                             requirevalidation = { 0 }  value = { form[tipo] } name = { tipo }
                             onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true }
@@ -86,11 +91,11 @@ class RolesMercadotecnia extends Component {
                 {
                     tipo === 'color' &&
                         <CircleColor circlesize = { 23 } width = "auto" onChange = { this.handleChangeColor }
-                        colors = { COLORS } classlabel="d-none" value = { data.color } classdiv='ml-2' swal = { true }/>
+                        colors = { COLORS } classlabel="d-none" value = { color }  classdiv='ml-2' swal = { true }/>
                 }
             </div>,
             <Update />,
-            () => { this.patchRedesSociales(data, tipo) },
+            () => { this.patchEtiquetas(data, tipo) },
             () => { this.setState({...this.state,form: this.clearForm()}); Swal.close(); },
         )
     }
@@ -103,17 +108,17 @@ class RolesMercadotecnia extends Component {
         form[tipo] = value
         this.setState({...this.state, form})
     }
-    patchRedesSociales = async( data,tipo ) => {
+    patchEtiquetas = async( data,tipo ) => {
         const { access_token } = this.props.authUser
         const { form } = this.state
         let value = form[tipo]
         waitAlert()
-        await axios.put(`${URL_DEV}v2/catalogos/redes-sociales/${tipo}/${data.id}`, 
+        await axios.put(`${URL_DEV}v2/catalogos/etiquetas/${tipo}/${data.id}`, 
             { value: value }, 
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                this.getRedSocialAxios()
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito la unidad.')
+                this.getEtiquetasAxios()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito la etiqueta.')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -158,9 +163,9 @@ class RolesMercadotecnia extends Component {
         modal.form = false
         this.setState({
             modal,
-            title: 'Nuevo rol',
+            title: 'Nueva etiqueta',
             form: this.clearForm(),
-            rol: ''
+            etiqueta: ''
         })
     }
     handleCloseDelete = () => {
@@ -168,7 +173,7 @@ class RolesMercadotecnia extends Component {
         modal.delete = false
         this.setState({
             modal,
-            rol: ''
+            etiqueta: ''
         })
     }
     openModal = () => {
@@ -176,28 +181,28 @@ class RolesMercadotecnia extends Component {
         modal.form = true
         this.setState({
             modal,
-            title: 'Nuevo rol',
+            title: 'Nueva etiqueta',
             form: this.clearForm(),
             formeditado: 0,
         })
     }
-    openModalDelete = rol => {
+    openModalDelete = etiqueta => {
         const { modal } = this.state
         modal.delete = true
         this.setState({
             modal,
-            rol: rol
+            etiqueta: etiqueta
         })
     }
-    openModalEdit = rol => {
+    openModalEdit = etiqueta => {
         const { form, modal } = this.state
         modal.form = true
-        form.rol = rol.nombre
-        form.color = rol.color
+        form.etiqueta = etiqueta.titulo
+        form.color = etiqueta.color
         this.setState({
             modal,
-            title: 'Editar rol',
-            rol: rol,
+            title: 'Editar etiqueta',
+            etiqueta: etiqueta,
             form,
             formeditado: 1
         })
@@ -205,23 +210,24 @@ class RolesMercadotecnia extends Component {
     onSubmit = e => {
         e.preventDefault()
         const { title } = this.state
-        if (title === 'Nuevo rol')
-            this.addRolAxios()
-        if (title === 'Editar rol')
-            this.updateRolAxios()
+        if (title === 'Nueva etiqueta')
+            this.addEtiquetaAxios()
+        if (title === 'Editar etiqueta')
+            this.updateEtiquetaAxios()
     }
     safeDelete = e => () => {
-        this.deleteRolAxios()
+        this.deleteEtiquetaAxios()
     }
-    async addRolAxios() {
+    async addEtiquetaAxios() {
         const { access_token } = this.props.authUser
-        const { form } = this.state
-        await axios.post(`${URL_DEV}roles-mercadotecnia`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        const { form } = this.state        
+        let nuevoForm = { nuevo_tag: form.etiqueta, color: form.color}
+        await axios.post(`${URL_DEV}v3/usuarios/tareas/etiquetas`, nuevoForm, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { modal } = this.state
                 modal.form = false
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Creaste con éxito un nuevo rol.')
-                this.getRolesAxios()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Creaste con éxito una nueva etiqueta.')
+                this.getEtiquetasAxios()
                 this.setState({ ...this.state, modal, form: this.clearForm() })
             },
             (error) => {
@@ -232,68 +238,58 @@ class RolesMercadotecnia extends Component {
             console.log(error, 'error')
         })
     }
-    async updateRolAxios() {
+    async updateEtiquetaAxios() {
         const { access_token } = this.props.authUser
-        const { form, rol, modal } = this.state
-        await axios.put(URL_DEV + 'roles-mercadotecnia/' + rol.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        const { form, etiqueta, modal } = this.state
+        await axios.put(`${URL_DEV}v2/catalogos/etiquetas/${etiqueta.id}`, form, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 modal.form = false
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito el rol.')
-                this.setState({
-                    ...this.state,
-                    modal,
-                    form: this.clearForm(),
-                    rol: ''
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito la etiqueta.')
+                this.getEtiquetasAxios()
+                this.setState({ ...this.state, modal, form: this.clearForm(), etiqueta: '' })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
-    async deleteRolAxios() {
+    async deleteEtiquetaAxios() {
         const { access_token } = this.props.authUser
-        const { rol } = this.state
-        await axios.delete(URL_DEV + 'roles-mercadotecnia/' + rol.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        const { etiqueta } = this.state
+        await axios.delete(`${URL_DEV}v2/catalogos/etiquetas/${etiqueta.id}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { modal } = this.state
-                this.getRolesAxios()
-                doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito el rol.')
+                this.getEtiquetasAxios()
+                doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito la etiqueta.')
                 modal.delete = false
-                this.setState({ ...this.state, modal, rol: '', })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                this.setState({ ...this.state, modal, etiqueta: '', })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
         })
     }
-
-    async getRolesAxios() { $('#kt_datatable_roles').DataTable().ajax.reload(); }
+    
+    async getEtiquetasAxios() { $('#kt_datatable_etiqueta').DataTable().ajax.reload(); }
     
     render() {
-        const { form, modal, title, formeditado, rol } = this.state
+        const { form, modal, title, formeditado, etiqueta } = this.state
         return (
             <Layout active={'catalogos'}  {...this.props}>
-                <NewTableServerRender columns = { ROLES_COLUMNS } title = 'ROLES MERCADOTECNIA' subtitle = 'Listado de roles'
+                <NewTableServerRender columns = { ETIQUETAS_COLUMNS } title = 'ETIQUETA' subtitle = 'Listado de etiquetas'
                     mostrar_boton = { true } abrir_modal = { true } mostrar_acciones = { true } onClick = { this.openModal }
                     actions = { {
                         'edit': { function: this.openModalEdit },
                         'delete': { function: this.openModalDelete }
-                    } } idTable = 'kt_datatable_roles' accessToken = { this.props.authUser.access_token }
-                    setter = { this.setRoles } urlRender = { `${URL_DEV}roles-mercadotecnia` }
+                    } } idTable = 'kt_datatable_etiqueta' accessToken = { this.props.authUser.access_token }
+                    setter = { this.setEtiquetas } urlRender = { `${URL_DEV}v2/catalogos/etiquetas` }
                     cardTable = 'cardTable' cardTableHeader = 'cardTableHeader' cardBody = 'cardBody' />
                 <Modal size="lg" show={modal.form} title={title} handleClose={this.handleClose}>
-                    <RolesMercadotecniaForm form = { form } onChange = { this.onChange }
-                        onSubmit = { this.onSubmit } formeditado = { formeditado } color = { rol.color } />
+                    <EtiquetasForm form = { form } onChange = { this.onChange }
+                        onSubmit = { this.onSubmit } formeditado = { formeditado } color = { etiqueta.color } />
                 </Modal>
-                <ModalDelete title = "¿Estás seguro que deseas eliminar el rol?" show = { modal.delete } handleClose = { this.handleCloseDelete }
-                    onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteRolAxios() } } />
+                <ModalDelete title = "¿Estás seguro que deseas eliminar la etiqueta?" show = { modal.delete } handleClose = { this.handleCloseDelete }
+                    onClick = { (e) => { e.preventDefault(); waitAlert(); this.deleteEtiquetaAxios() } } />
             </Layout>
         )
     }
@@ -302,4 +298,4 @@ class RolesMercadotecnia extends Component {
 const mapStateToProps = state => { return { authUser: state.authUser } }
 const mapDispatchToProps = dispatch => ({ })
 
-export default connect(mapStateToProps, mapDispatchToProps)(RolesMercadotecnia);
+export default connect(mapStateToProps, mapDispatchToProps)(Etiquetas);

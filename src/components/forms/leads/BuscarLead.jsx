@@ -14,7 +14,7 @@ class BuscarLead extends Component {
     onChangePage = (pageNumber) => { this.setState({ ...this.state, active: pageNumber }) }
 
     render() {
-        const { form, onChange, onSubmit, leads } = this.props
+        const { form, onChange, onSubmit, leads, changePageDetails } = this.props
         const { active, itemsPerPage } = this.state
         return (
             <>
@@ -74,7 +74,7 @@ class BuscarLead extends Component {
                                                                 </span>
                                                             </div>
                                                             <div>
-                                                                <span className="text-dark-75 font-weight-bolder text-hover-ping font-size-6">{lead.nombre}</span>
+                                                                <span className="text-dark-75 font-weight-bolder text-hover-primary font-size-6 cursor-pointer " onClick={(e) => { changePageDetails(lead) }}>{lead.nombre}</span>
                                                                 <span className="text-muted font-weight-bold d-block font-size-sm mt-1">
                                                                     <span className="text-dark-75 font-weight-bolder">
                                                                         Ingreso: 

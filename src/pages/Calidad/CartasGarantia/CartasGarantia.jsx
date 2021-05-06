@@ -121,7 +121,7 @@ class CartasGarantia extends Component{
 
     updateCartaAxios = async() => {
         const { access_token } = this.props.authUser
-        const { form, key, carta } = this.state
+        const { form, carta } = this.state
         const data = new FormData();
         let aux = Object.keys(form)
         aux.forEach((element) => {
