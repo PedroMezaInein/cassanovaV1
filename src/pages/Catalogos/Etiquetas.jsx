@@ -108,11 +108,11 @@ class Etiquetas extends Component {
         const { form } = this.state
         let value = form[tipo]
         waitAlert()
-        await axios.put(`${URL_DEV}v2/catalogos/redes-sociales/${tipo}/${data.id}`, 
+        await axios.put(`${URL_DEV}v2/catalogos/etiquetas/${tipo}/${data.id}`, 
             { value: value }, 
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                this.getRedSocialAxios()
+                this.getEtiquetasAxios()
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito la etiqueta.')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
