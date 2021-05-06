@@ -95,7 +95,8 @@ class RolesMercadotecnia extends Component {
         )
     }
     handleChangeColor = (color) => {
-        this.setState({...this.state,color:color.hex});
+        this.onChange({ target: { value: color.hex, name: 'color' } })
+        this.setState({...this.state,color:color});
     }
     onChangeSwal = (value, tipo) => {
         const { form } = this.state
