@@ -68,7 +68,11 @@ class Etiquetas extends Component {
     }
     doubleClick = (data, tipo) => {
         const { form } = this.state
+        let { color } = this.state
         switch(tipo){
+            case 'color':
+                color = data.color
+                break
             default:
                 form[tipo] = data[tipo]
                 break
@@ -87,7 +91,7 @@ class Etiquetas extends Component {
                 {
                     tipo === 'color' &&
                         <CircleColor circlesize = { 23 } width = "auto" onChange = { this.handleChangeColor }
-                        colors = { COLORS } classlabel="d-none" value = { data.color } classdiv='ml-2' swal = { true }/>
+                        colors = { COLORS } classlabel="d-none" value = { color }  classdiv='ml-2' swal = { true }/>
                 }
             </div>,
             <Update />,
@@ -96,7 +100,8 @@ class Etiquetas extends Component {
         )
     }
     handleChangeColor = (color) => {
-        this.setState({...this.state,color:color.hex});
+        this.onChange({ target: { value: color.hex, name: 'color' } })
+        this.setState({...this.state,color:color});
     }
     onChangeSwal = (value, tipo) => {
         const { form } = this.state
