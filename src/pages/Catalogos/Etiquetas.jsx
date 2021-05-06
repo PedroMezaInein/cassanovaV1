@@ -57,7 +57,7 @@ class Etiquetas extends Component {
         etiquetas.map((etiqueta) => {
             aux.push({
                 actions: this.setActions(etiqueta),
-                etiqueta: setTextTableReactDom(etiqueta.nombre, this.doubleClick, etiqueta, 'nombre', 'text-center'),
+                etiqueta: setTextTableReactDom(etiqueta.titulo, this.doubleClick, etiqueta, 'nombre', 'text-center'),
                 color: setColorTableReactDom(etiqueta.color, this.doubleClick, etiqueta, 'color', 'text-center'),
                 id: etiqueta.id
             })
@@ -191,7 +191,7 @@ class Etiquetas extends Component {
     openModalEdit = etiqueta => {
         const { form, modal } = this.state
         modal.form = true
-        form.etiqueta = etiqueta.nombre
+        form.etiqueta = etiqueta.titulo
         form.color = etiqueta.color
         this.setState({
             modal,
