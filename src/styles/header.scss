@@ -3763,19 +3763,19 @@ $width-compressed: 20%;
             width: 65px;
             height: 65px;
             border: 4px solid white;
-            left: 62px;
+            left: 24px;
         }
         @include screen($xl) {
             width: 70px;
             height: 70px;
             border: 4px solid white;
-            left: 70px;
+            left: 26px;
         }
         @include screen($xxl) {
             width: 75px;
             height: 75px;
             border: 4px solid white;
-            left: 110px;
+            left: 55px;
         }
         path, rect {
             fill: white;
