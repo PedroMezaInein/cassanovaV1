@@ -285,7 +285,7 @@ class Etiquetas extends Component {
                         'edit': { function: this.openModalEdit },
                         'delete': { function: this.openModalDelete }
                     } } idTable = 'kt_datatable_etiqueta' accessToken = { this.props.authUser.access_token }
-                    setter = { this.setEtiquetas } urlRender = { `${URL_DEV}tareas-etiquetas` }
+                    setter = { this.setEtiquetas } urlRender = { `${URL_DEV}v2/catalogos/etiquetas` }
                     cardTable = 'cardTable' cardTableHeader = 'cardTableHeader' cardBody = 'cardBody' />
                 <Modal size="lg" show={modal.form} title={title} handleClose={this.handleClose}>
                     <EtiquetasForm form = { form } onChange = { this.onChange }
