@@ -6,12 +6,13 @@ import { TagSelectSearchGray } from '../../components/form-components'
 import SVG from "react-inlinesvg";
 import { setSingleHeader, toAbsoluteUrl } from "../../functions/routers"
 import { Menu, MenuItem, MenuButton, SubMenu, MenuHeader } from '@szhsin/react-menu';
-import { printResponseErrorAlert, waitAlert, errorAlert } from '../../functions/alert'
+import { printResponseErrorAlert, waitAlert, errorAlert, deleteAlert } from '../../functions/alert'
 import axios from 'axios'
-import { URL_DEV } from '../../constants'
+import { URL_DEV, PUSHER_OBJECT } from '../../constants'
 import Swal from 'sweetalert2'
 import { Panel } from '../../components/Lottie'
-import { setOptions, transformarOptions } from '../../functions/setters'
+import { setOptions } from '../../functions/setters'
+import Echo from 'laravel-echo';
 
 class NotificacionesCorreos extends Component {
 
@@ -37,6 +38,12 @@ class NotificacionesCorreos extends Component {
         });
         if (!tareas)
             history.push('/')
+        if(process.env.NODE_ENV === 'production' || true){
+            const pusher = new Echo( PUSHER_OBJECT );
+            pusher.channel('Plataforma.Notificaciones').listen('Plataforma\\Notificaciones', (e) => {
+                this.getPanelNotificaciones()
+            })
+        }
         this.getPanelNotificaciones()
         this.getOptions()
     }
@@ -52,11 +59,6 @@ class NotificacionesCorreos extends Component {
                 options.responsables.push({ name: elemento.name, label: elemento.name, value: elemento.value })
         })
         this.setState({ ...this.state, showInput: !showInput, notificacion: notif, options })
-    }
-    
-    updateResponsable = value => {
-        /* this.onChange( { target: { value: value, name: 'responsables'} }, true ) */
-        console.log(value, 'VALUE')
     }
 
     getOptions = async() => {
@@ -82,8 +84,24 @@ class NotificacionesCorreos extends Component {
         await axios.get(`${URL_DEV}v1/plataforma/notificaciones`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { modulos } = response.data
+                let { notificaciones, notificacion, list } = this.state
+                if(list.tipo !== '' && list.modulo !== '' && list.submodulo !== ''){
+                    let actualModulo = modulos.find((elemento) => {
+                        return elemento.name === list.modulo
+                    })
+                    let actualSubmodulo = actualModulo.modulos.find((elemento) => {
+                        return elemento.name === list.submodulo
+                    })
+                    let actualNotificacion = actualSubmodulo.notificaciones.find((elemento) => {
+                        return elemento.id === notificacion.id
+                    })
+                    if(actualNotificacion)
+                        notificacion = actualNotificacion
+                    if(actualSubmodulo)
+                        notificaciones = this.getNotificacionesByType(actualSubmodulo.notificaciones, list.tipo)
+                }
                 Swal.close()
-                this.setState({...this.state, modulos: modulos})
+                this.setState({...this.state, modulos: modulos, notificaciones, notificacion})
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -96,10 +114,37 @@ class NotificacionesCorreos extends Component {
         const { access_token } = this.props.authUser
         await axios.put(`${URL_DEV}v1/plataforma/notificaciones`, {type: 'enable', id: notificacion.id}, { headers: setSingleHeader(access_token) }).then(
             (response) => {
-                const { notificaciones } = response.data
-                const { list } = this.state
                 Swal.close()
-                this.setState({...this.state, notificaciones: this.getNotificacionesByType(notificaciones, list.tipo)})
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
+    deleteDestinatario = async(notificacion, destinatario) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        await axios.delete(`${URL_DEV}v1/plataforma/notificaciones/${notificacion.id}/destinatario/${destinatario.id}`, 
+            { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                Swal.close()
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+    
+    updateResponsable = async(value) => {
+        waitAlert()
+        const { access_token } = this.props.authUser
+        const { notificacion } = this.state
+        await axios.put(`${URL_DEV}v1/plataforma/notificaciones/${notificacion.id}`, { value: value[0].value }, { headers: setSingleHeader(access_token) }).then(
+            (response) => {
+                const { showInput } = this.state
+                Swal.close();
+                this.setState({...this.state, showInput: !showInput, notificacion: ''})
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -193,7 +238,7 @@ class NotificacionesCorreos extends Component {
         }
         return texto
     }
-    
+
     showIcon = (element) => {
         let icon = ''
         if(element.tipo==='correo'){
@@ -249,9 +294,7 @@ class NotificacionesCorreos extends Component {
                                                 <span className="svg-icon svg-icon-2 svg-icon-primary">
                                                     <SVG src={toAbsoluteUrl('/images/svg/Menu.svg')} />
                                                 </span>
-                                                <span className="pt-2">
-                                                    MÓDULOS
-                                                </span>
+                                                <span className="pt-2"> MÓDULOS </span>
                                             </MenuButton>
                                         } >
                                     <MenuHeader><div className="text-muted font-size-sm font-weight-bold p-1">Selecciona un módulo</div></MenuHeader>
@@ -305,9 +348,7 @@ class NotificacionesCorreos extends Component {
                                                                     <div className={`tipo-user ${!element.enable ? 'disable-bg' : ''}`}>
                                                                         { element.usuario_externo ?  'Cliente' : 'Usuario' }
                                                                     </div>
-                                                                    <div className="title-notify">
-                                                                        { element.titulo }
-                                                                    </div>
+                                                                    <div className="title-notify"> { element.titulo } </div>
                                                                     <div className="actions row mx-0">
                                                                         {
                                                                             element.destinatarios.map((destinatario) => {
@@ -317,7 +358,14 @@ class NotificacionesCorreos extends Component {
                                                                                             <div className="d-table mb-1 cursor-pointer" >
                                                                                                 <div className="tagify align-items-center border-0 d-inline-block">
                                                                                                     <div className="d-flex align-items-center tagify__tag tagify__tag__newtable px-3px border-radius-3px m-0 flex-row-reverse bg-gray-200">
-                                                                                                        <div className="tagify__tag__removeBtn ml-0 px-0"></div>
+                                                                                                        <div className="tagify__tag__removeBtn ml-0 px-0" 
+                                                                                                            onClick = { 
+                                                                                                                (e) => {
+                                                                                                                    deleteAlert(`${destinatario.name} NO RECIBIRÁ ${element.tipo === 'coreo' ? 'EL CORREO' : 'LA NOTIFICACIÓN'}`, '',
+                                                                                                                        () => this.deleteDestinatario(element, destinatario)
+                                                                                                                    ) 
+                                                                                                                }
+                                                                                                            } />
                                                                                                         <div className="p-2-5px">
                                                                                                             <span className="tagify__tag-text white-space font-weight-bold letter-spacing-0-4 font-size-11px bg-gray-200 text-dark-50">
                                                                                                                 <div className="mt-2px">
@@ -342,8 +390,8 @@ class NotificacionesCorreos extends Component {
                                                                         </div>
                                                                         <div className={showInput ? 'col-md-12 mt-5 px-0 ' : 'd-none'}>
                                                                             <TagSelectSearchGray placeholder = 'Agregar usuarios ' options = { options.responsables } 
-                                                                                iconclass = 'las la-user-friends icon-xl' defaultvalue = { [] } onChange = { this.updateResponsable }
-                                                                            />
+                                                                                iconclass = 'las la-user-friends icon-xl' defaultvalue = { form.responsables } 
+                                                                                onChange = { this.updateResponsable }/>
                                                                         </div>
                                                                     </div>
                                                                 </div>
@@ -352,10 +400,7 @@ class NotificacionesCorreos extends Component {
                                                     </div>
                                                 )
                                             })
-                                        : 
-                                            <div className = 'col-md-6'>
-                                                <Panel />
-                                            </div>
+                                        : <div className = 'col-md-6'> <Panel /> </div>
                                     }
                                 </div>
                             </div>
