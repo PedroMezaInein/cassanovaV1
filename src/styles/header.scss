@@ -3721,42 +3721,43 @@ $width-compressed: 20%;
         border-radius: 50%;
         padding-left: 2px;
         padding-right: 2px;
-        @include down-screen($xxxs) {
-            width: 50px;
-            height: 50px;
-            border: 4px solid white;
-            left: 31px;
+        // @include down-screen($xxxs) {
+        //     width: 50px;
+        //     height: 50px;
+        //     border: 4px solid white;
+        //     left: 31px;
+        //     display: none;
+        // }
+        // @include screen($xxs) {
+        //     width: 55px;
+        //     height: 55px;
+        //     border: 4px solid white;
+        //     left: 40px;
+        // }
+        // @include screen('540px') {
+        //     width: 65px;
+        //     height: 65px;
+        //     border: 4px solid white;
+        //     left: 81px;
+        // }
+        // @include screen($xs) {
+        //     width: 75px;
+        //     height: 75px;
+        //     border: 4px solid white;
+        //     left: 84px;
+        // }
+        // @include screen($sm) {
+        //     width: 53px;
+        //     height: 53px;
+        //     border: 4px solid white;
+        //     left: 33px;
+        // }
+        @include down-screen($md) {
             display: none;
-        }
-        @include screen($xxs) {
-            width: 55px;
-            height: 55px;
-            border: 4px solid white;
-            left: 40px;
-        }
-        @include screen('540px') {
-            width: 65px;
-            height: 65px;
-            border: 4px solid white;
-            left: 81px;
-        }
-        @include screen($xs) {
-            width: 75px;
-            height: 75px;
-            border: 4px solid white;
-            left: 84px;
-        }
-        @include screen($sm) {
-            width: 53px;
-            height: 53px;
-            border: 4px solid white;
-            left: 33px;
-        }
-        @include screen($md) {
-            width: 55px;
-            height: 55px;
-            border: 4px solid white;
-            left: 44px;
+            // width: 55px;
+            // height: 55px;
+            // border: 4px solid white;
+            // left: 44px;
         }
         @include screen($md) {
             width: 65px;
@@ -3775,6 +3776,9 @@ $width-compressed: 20%;
             height: 75px;
             border: 4px solid white;
             left: 110px;
+        }
+        path, rect {
+            fill: white;
         }
     }
     .padding-col-text{
@@ -3805,9 +3809,7 @@ $width-compressed: 20%;
         }
     }
 
-    path, rect {
-        fill: white;
-    }
+    
 
     // Disable
     .bg-notify.disable-bg{

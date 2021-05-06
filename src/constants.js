@@ -982,7 +982,22 @@ export const ROLES_COLUMNS = [
         customRender: true
     }
 ]
-
+export const ETIQUETAS_COLUMNS = [
+    {
+        Header: 'OPCIONES',
+        accessor: 'actions',
+    },
+    {
+        Header: 'Etiqueta',
+        accessor: 'etiqueta',
+        customRender: true
+    },
+    {
+        Header: 'Color',
+        accessor: 'color',
+        customRender: true
+    }
+]
 export const ORIGENES_COLUMNS = [
     {
         Header: 'Opciones',
