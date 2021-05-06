@@ -41,10 +41,17 @@ class NotificacionesCorreos extends Component {
         this.getOptions()
     }
 
-    mostrarInput(element) {
-        const { showInput } = this.state
-        console.log('ELEMENT', element)
-        this.setState({ ...this.state, showInput: !showInput, notificacion: element })
+    mostrarInput(notif) {
+        const { showInput, options } = this.state
+        options.responsables = []
+        options.usuarios.forEach((elemento, index) => {
+            let flag = notif.destinatarios.find((auxiliar) => {
+                return auxiliar.id.toString() === elemento.value
+            })
+            if(flag === undefined)
+                options.responsables.push({ name: elemento.name, label: elemento.name, value: elemento.value })
+        })
+        this.setState({ ...this.state, showInput: !showInput, notificacion: notif, options })
     }
     
     updateResponsable = value => {
@@ -101,11 +108,12 @@ class NotificacionesCorreos extends Component {
     }
 
     onClickSubmenu = ( texto, submodulo, modulo ) => {
-        const { list } = this.state
+        const { list, options } = this.state
+        options.destinatarios = []
         list.tipo = texto
         list.modulo = modulo.name
         list.submodulo = submodulo.name
-        this.setState({...this.state, list, notificaciones: this.getNotificacionesByType(submodulo.notificaciones, texto)})
+        this.setState({...this.state, list, notificaciones: this.getNotificacionesByType(submodulo.notificaciones, texto), notificacion: '', options, showInput: false})
     }
 
     setSubmenuLabel = (modulo, icon) => {
@@ -170,6 +178,20 @@ class NotificacionesCorreos extends Component {
             }
         })
         return aux
+    }
+
+    setInitials = name => {
+        let arreglo = name.split(' ')
+        let texto = ''
+        if(arreglo.length){
+            arreglo.forEach((elemento) => {
+                texto = texto + elemento.trim().charAt(0)
+            })
+        }else{
+            if(name.length)
+                return name.trim().charAt(0);
+        }
+        return texto
     }
 
     render() {
@@ -267,24 +289,30 @@ class NotificacionesCorreos extends Component {
                                                                         { element.titulo }
                                                                     </div>
                                                                     <div className="actions row mx-0">
-                                                                        <div className="col px-2 mt-2">
-                                                                        <OverlayTrigger overlay={<Tooltip>CARINA JIMÉNEZ</Tooltip>}>
-                                                                            <div className="d-table mb-1 cursor-pointer" id="responsable-notify">
-                                                                                <div className="tagify align-items-center border-0 d-inline-block">
-                                                                                    <div className="d-flex align-items-center tagify__tag tagify__tag__newtable px-3px border-radius-3px m-0 flex-row-reverse bg-gray-200">
-                                                                                        <div className="tagify__tag__removeBtn ml-0 px-0"></div>
-                                                                                        <div className="p-2-5px">
-                                                                                            <span className="tagify__tag-text white-space font-weight-bold letter-spacing-0-4 font-size-11px bg-gray-200 text-dark-50">
-                                                                                                <div className="mt-2px">
-                                                                                                    CJ
+                                                                        {
+                                                                            element.destinatarios.map((destinatario) => {
+                                                                                return(
+                                                                                    <div className="col px-2 mt-2" key = {destinatario.id}>
+                                                                                        <OverlayTrigger overlay={<Tooltip>{destinatario.name}</Tooltip>}>
+                                                                                            <div className="d-table mb-1 cursor-pointer" >
+                                                                                                <div className="tagify align-items-center border-0 d-inline-block">
+                                                                                                    <div className="d-flex align-items-center tagify__tag tagify__tag__newtable px-3px border-radius-3px m-0 flex-row-reverse bg-gray-200">
+                                                                                                        <div className="tagify__tag__removeBtn ml-0 px-0"></div>
+                                                                                                        <div className="p-2-5px">
+                                                                                                            <span className="tagify__tag-text white-space font-weight-bold letter-spacing-0-4 font-size-11px bg-gray-200 text-dark-50">
+                                                                                                                <div className="mt-2px">
+                                                                                                                    {this.setInitials(destinatario.name)}
+                                                                                                                </div>
+                                                                                                            </span>
+                                                                                                        </div>
+                                                                                                    </div>
                                                                                                 </div>
-                                                                                            </span>
-                                                                                        </div>
+                                                                                            </div>
+                                                                                        </OverlayTrigger>
                                                                                     </div>
-                                                                                </div>
-                                                                            </div>
-                                                                        </OverlayTrigger>
-                                                                        </div>
+                                                                                )
+                                                                            })
+                                                                        }
                                                                         <div className="col px-2 mt-2">
                                                                             <OverlayTrigger overlay={<Tooltip>AGREGAR DESTINATARIO</Tooltip>}>
                                                                                 <span className="label-notify bg-gray-200 px-4" onClick={() => { this.mostrarInput(element) }}>
