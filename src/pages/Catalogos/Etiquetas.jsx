@@ -58,7 +58,7 @@ class Etiquetas extends Component {
         etiquetas.map((etiqueta) => {
             aux.push({
                 actions: this.setActions(etiqueta),
-                etiqueta: setTextTableReactDom(etiqueta.nombre, this.doubleClick, etiqueta, 'nombre', 'text-center'),
+                etiqueta: setTextTableReactDom(etiqueta.titulo, this.doubleClick, etiqueta, 'titulo', 'text-center'),
                 color: setColorTableReactDom(etiqueta.color, this.doubleClick, etiqueta, 'color', 'text-center'),
                 id: etiqueta.id
             })
@@ -78,7 +78,7 @@ class Etiquetas extends Component {
             <div>
                 <h2 className = 'swal2-title mb-4 mt-2'> { printSwalHeader(tipo) + ' DE LA ETIQUETA'} </h2>
                 {
-                    tipo === 'nombre' &&
+                    tipo === 'titulo' &&
                         <InputGray  withtaglabel = { 0 } withtextlabel = { 0 } withplaceholder = { 0 } withicon = { 0 }
                             requirevalidation = { 0 }  value = { form[tipo] } name = { tipo }
                             onChange = { (e) => { this.onChangeSwal(e.target.value, tipo)} } swal = { true }
