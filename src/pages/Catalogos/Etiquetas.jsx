@@ -108,11 +108,11 @@ class Etiquetas extends Component {
         const { form } = this.state
         let value = form[tipo]
         waitAlert()
-        await axios.put(`${URL_DEV}v2/catalogos/redes-sociales/${tipo}/${data.id}`, 
+        await axios.put(`${URL_DEV}v2/catalogos/etiquetas/${tipo}/${data.id}`, 
             { value: value }, 
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
-                this.getRedSocialAxios()
+                this.getEtiquetasAxios()
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito la etiqueta.')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -250,17 +250,14 @@ class Etiquetas extends Component {
     async deleteEtiquetaAxios() {
         const { access_token } = this.props.authUser
         const { etiqueta } = this.state
-        await axios.delete(URL_DEV + 'tareas-etiquetas/' + etiqueta.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.delete(`${URL_DEV}v2/catalogos/etiquetas/${etiqueta.id}`, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { modal } = this.state
                 this.getEtiquetasAxios()
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Eliminaste con éxito la etiqueta.')
                 modal.delete = false
                 this.setState({ ...this.state, modal, etiqueta: '', })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
