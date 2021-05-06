@@ -13,6 +13,7 @@ import { Update } from '../../components/Lottie'
 import { printSwalHeader } from '../../functions/printers'
 import { InputGray, CircleColor } from '../../components/form-components'
 import $ from "jquery";
+import { setSingleHeader } from '../../functions/routers'
 class Etiquetas extends Component {
     state = {
         form: {
@@ -57,7 +58,7 @@ class Etiquetas extends Component {
         etiquetas.map((etiqueta) => {
             aux.push({
                 actions: this.setActions(etiqueta),
-                etiqueta: setTextTableReactDom(etiqueta.titulo, this.doubleClick, etiqueta, 'nombre', 'text-center'),
+                etiqueta: setTextTableReactDom(etiqueta.nombre, this.doubleClick, etiqueta, 'nombre', 'text-center'),
                 color: setColorTableReactDom(etiqueta.color, this.doubleClick, etiqueta, 'color', 'text-center'),
                 id: etiqueta.id
             })
@@ -191,7 +192,7 @@ class Etiquetas extends Component {
     openModalEdit = etiqueta => {
         const { form, modal } = this.state
         modal.form = true
-        form.etiqueta = etiqueta.titulo
+        form.etiqueta = etiqueta.nombre
         form.color = etiqueta.color
         this.setState({
             modal,
@@ -234,20 +235,12 @@ class Etiquetas extends Component {
     async updateEtiquetaAxios() {
         const { access_token } = this.props.authUser
         const { form, etiqueta, modal } = this.state
-        await axios.put(URL_DEV + 'tareas-etiquetas/' + etiqueta.id, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.put(`${URL_DEV}v2/catalogos/etiquetas/${etiqueta.id}`, form, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 modal.form = false
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito la etiqueta.')
-                this.setState({
-                    ...this.state,
-                    modal,
-                    form: this.clearForm(),
-                    etiqueta: ''
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
+                this.setState({ ...this.state, modal, form: this.clearForm(), etiqueta: '' })
+            }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
             console.log(error, 'error')
