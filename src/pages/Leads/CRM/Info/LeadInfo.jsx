@@ -454,11 +454,15 @@ class LeadInfo extends Component {
         let { tipo } = this.state
         const { access_token } = this.props.authUser
         if (tipo === '')
-            tipo = lead.estatus.estatus
+            if(lead.estatus === undefined){
+                tipo = lead.prospecto.estatus_prospecto.estatus
+            }else{
+                tipo = lead.estatus.estatus
+            }
         let api = ''
-        if (lead.estatus.estatus === 'En proceso'){
+        if (tipo === 'En proceso'){
             api = 'crm/table/lead-en-contacto/';
-        }else if(lead.estatus.estatus === 'En negociación'){
+        }else if(tipo === 'En negociación'){
             api = 'crm/table/lead-en-negociacion/';
         }else{
             api = 'crm/table/lead-detenido/';
