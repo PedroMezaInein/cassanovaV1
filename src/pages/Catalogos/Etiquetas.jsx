@@ -192,7 +192,7 @@ class Etiquetas extends Component {
     openModalEdit = etiqueta => {
         const { form, modal } = this.state
         modal.form = true
-        form.etiqueta = etiqueta.nombre
+        form.etiqueta = etiqueta.titulo
         form.color = etiqueta.color
         this.setState({
             modal,
@@ -239,6 +239,7 @@ class Etiquetas extends Component {
             (response) => {
                 modal.form = false
                 doneAlert(response.data.message !== undefined ? response.data.message : 'Editaste con éxito la etiqueta.')
+                this.getEtiquetasAxios()
                 this.setState({ ...this.state, modal, form: this.clearForm(), etiqueta: '' })
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
