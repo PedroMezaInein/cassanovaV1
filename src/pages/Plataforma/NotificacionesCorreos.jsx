@@ -15,21 +15,12 @@ class NotificacionesCorreos extends Component {
     state={
         keyActive:'',
         showInput: false,
-        activeButton: false,
-        form: {
-            responsables: [],
-        },
-        options: {
-            responsables: []
-        },
+        form: { responsables: [], },
+        options: { responsables: [] },
         activeSubMenu: true,
         modulos: [],
         notificaciones: [],
-        list:{
-            tipo: '',
-            modulo: '',
-            submodulo: ''
-        }
+        list:{ tipo: '', modulo: '', submodulo: '' }
     }
 
     componentDidMount() {
@@ -47,44 +38,12 @@ class NotificacionesCorreos extends Component {
 
     mostrarInput() {
         const { showInput } = this.state
-        this.setState({
-            ...this.state,
-            showInput: !showInput
-        })
-    }
-
-    activeButton() {
-        const { activeButton } = this.state
-        this.setState({
-            ...this.state,
-            activeButton: !activeButton
-        })
-    }
-    activeList = (e, tipo) => {
-        let { keyActive, activeSubMenu } = this.state
-        let id = e.currentTarget.id
-        if(id === tipo){
-            keyActive = tipo
-            activeSubMenu = true
-        }
-        this.setState({
-            ...this.state,
-            keyActive,
-            activeSubMenu
-        })
+        this.setState({ ...this.state, showInput: !showInput })
     }
     
     updateResponsable = value => {
         const { onChange } = this.props
         onChange({target: { value: value, name: 'responsables'}}, true)
-    }
-    closeList = () => {
-        let { activeSubMenu } = this.state
-        activeSubMenu = false
-        this.setState({
-            ...this.state,
-            activeSubMenu
-        })
     }
 
     getPanelNotificaciones = async() => {
@@ -162,6 +121,7 @@ class NotificacionesCorreos extends Component {
                     return elemento.tipo === 'notificacion'
                 })
                 break;
+            default: break;
         }
         if(flag)
             return true
@@ -183,13 +143,14 @@ class NotificacionesCorreos extends Component {
                     if(elemento.tipo === 'notificacion')
                         aux.push(elemento)
                     break;
+                default: break;
             }
         })
         return aux
     }
 
     render() {
-        const { options, form, showInput, activeButton, activeSubMenu, keyActive, modulos, list, notificaciones } = this.state
+        const { options, form, showInput, modulos, list, notificaciones } = this.state
         return (
             <Layout active='plataforma' {...this.props}>
                 <Row className="mx-0">
