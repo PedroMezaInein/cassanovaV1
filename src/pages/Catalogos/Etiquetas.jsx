@@ -221,7 +221,7 @@ class Etiquetas extends Component {
     async addEtiquetaAxios() {
         const { access_token } = this.props.authUser
         const { form } = this.state
-        await axios.post(`${URL_DEV}tareas-etiquetas`, form, { headers: { Authorization: `Bearer ${access_token}` } }).then(
+        await axios.post(`${URL_DEV}v3/usuarios/tareas/etiquetas`, form, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { modal } = this.state
                 modal.form = false
