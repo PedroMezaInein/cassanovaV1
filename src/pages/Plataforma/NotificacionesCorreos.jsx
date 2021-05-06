@@ -193,6 +193,28 @@ class NotificacionesCorreos extends Component {
         }
         return texto
     }
+    
+    showIcon = (element) => {
+        let icon = ''
+        if(element.tipo==='correo'){
+            if(element.enable){
+                icon = '/images/svg/send-mail.svg'
+            }else{
+                icon = '/images/svg/hidden-email.svg'
+            }
+        }else{
+            if(element.enable){
+                icon = '/images/svg/send-notification.svg'
+            }else{
+                icon = '/images/svg/hidden-notification.svg'
+            }
+        }
+        return(
+            <button className={`img-avatar ${!element.enable ? 'disable-bg' : ''}`} onClick={(e) => { this.changeEnable(element)}} >
+                <SVG src={toAbsoluteUrl(icon)} />
+            </button>  
+        )
+    }
 
     render() {
         const { options, form, showInput, modulos, list, notificaciones } = this.state
@@ -263,10 +285,8 @@ class NotificacionesCorreos extends Component {
                                                 return(
                                                     <div key = { element.id } className="col-md-4">
                                                         <div className="row mx-0 card-notify-2">
-                                                            <span className="svg-icon svg-icon-3x">
-                                                                <button className={`img-avatar ${!element.enable ? 'disable-bg' : ''}`} onClick={(e) => { this.changeEnable(element)}} >
-                                                                    <SVG src={toAbsoluteUrl('/images/svg/email-notification.svg')} />
-                                                                </button>            
+                                                            <span className="svg-icon svg-icon-sm-3x">
+                                                                { this.showIcon(element) }          
                                                             </span>
                                                             <div className="col-3 px-0 w-100 row mx-0 card-color">
                                                                 <div className={`bg-notify ${!element.enable ? 'disable-bg' : ''}`}></div>
