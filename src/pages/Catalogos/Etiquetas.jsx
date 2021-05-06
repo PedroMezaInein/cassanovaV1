@@ -220,8 +220,9 @@ class Etiquetas extends Component {
     }
     async addEtiquetaAxios() {
         const { access_token } = this.props.authUser
-        const { form } = this.state
-        await axios.post(`${URL_DEV}v3/usuarios/tareas/etiquetas`, form, { headers: setSingleHeader(access_token) }).then(
+        const { form } = this.state        
+        let nuevoForm = { nuevo_tag: form.etiqueta, color: form.color}
+        await axios.post(`${URL_DEV}v3/usuarios/tareas/etiquetas`, nuevoForm, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 const { modal } = this.state
                 modal.form = false
@@ -268,7 +269,7 @@ class Etiquetas extends Component {
             console.log(error, 'error')
         })
     }
-
+    
     async getEtiquetasAxios() { $('#kt_datatable_etiqueta').DataTable().ajax.reload(); }
     
     render() {
