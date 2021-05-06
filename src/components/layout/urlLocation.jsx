@@ -109,6 +109,13 @@ class UrlLocation extends Component {
         })
     }
     
+    changePageDetailsContacto = (lead) => {
+        const { history } = this.props
+        history.push({
+            pathname: '/leads/crm/info/info',
+            state: { lead: lead, tipo: lead.prospecto.estatus_prospecto.estatus }
+        });
+    }
     render() {
         const { paths, url, modal, form, modal_buscar, leads } = this.state
         const { authUser: { modulos }, active, user: usuario, printChecador, isCliente } = this.props
@@ -161,7 +168,7 @@ class UrlLocation extends Component {
                     </Form>
                 </Modal>
                 <Modal show = { modal_buscar } size ="lg" title = 'Buscar lead' handleClose = { this.handleCloseBuscar } >
-                    <BuscarLead form = { form } onSubmit = { this.onSubmitSearch } onChange = { this.onChangeBuscar } leads = { leads } />
+                    <BuscarLead form = { form } onSubmit = { this.onSubmitSearch } onChange = { this.onChangeBuscar } leads = { leads } changePageDetails={this.changePageDetailsContacto}/>
                 </Modal>
                 {
                     paths.length > 0 ?
@@ -215,7 +222,7 @@ class UrlLocation extends Component {
                                                     tooltip={{ text: 'TELÉFONO' }}
                                                 /> */}
                                                 <span onClick = { (e) => { e.preventDefault(); this.openModalBuscar() }} 
-                                                    className="btn text-dark-50 btn-icon-primary btn-hover-icon-success font-weight-bolder btn-hover-bg-light mr-2">
+                                                    className="btn text-dark-50 btn-icon-primary btn-hover-icon-success font-weight-bolder btn-hover-bg-light mx-2">
                                                     <i className="fas fa-search text-cyan"></i> Buscar Lead
                                                 </span>
                                                 <span onClick = { (e) => { e.preventDefault(); this.openModal() }} 
