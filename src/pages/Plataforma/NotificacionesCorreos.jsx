@@ -339,7 +339,7 @@ class NotificacionesCorreos extends Component {
                                 </div>
                             </div>
                             <div className="card-body">
-                                <div className="row mx-0 justify-content-center">
+                                <div className="row mx-0 justify-content-start">
                                     {
                                         notificaciones.length ?
                                             notificaciones.map((element) => {
@@ -428,7 +428,11 @@ class NotificacionesCorreos extends Component {
                                                     </div>
                                                 )
                                             })
-                                        : <div className = 'col-md-6'> <Panel /> </div>
+                                        : <div className = 'col-md-12 px-0'>
+                                            <div className="col-md-6 mx-auto">
+                                                <Panel /> 
+                                            </div>
+                                        </div>
                                     }
                                 </div>
                             </div>

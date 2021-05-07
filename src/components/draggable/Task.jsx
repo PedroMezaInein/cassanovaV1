@@ -47,7 +47,7 @@ class Task extends Component{
                             <div> 
                             </div>
                             
-                            <div className="py-2 px-3 d-flex align-items-left kanban-item" data-class="white" onClick = { (e) => { e.preventDefault(); clickTask(tarea)} }>
+                            <div className="py-2 px-3 d-flex align-items-left kanban-item" onClick = { (e) => { e.preventDefault(); clickTask(tarea)} }>
                                 <div className="d-flex flex-column align-items-start">
                                     <span className="text-dark-50 font-weight-bold mb-1">{tarea.titulo}</span>
                                     {

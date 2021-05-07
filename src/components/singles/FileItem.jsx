@@ -68,7 +68,7 @@ class FileItem extends Component {
                         <div className="col-auto svg-icon svg-icon-3x mr-3">
                             {this.getIcon()}
                         </div>
-                        <div className="col text-dark-75 font-weight-bolder text-hover-primary font-size-lg text-truncate align-self-center">{item.name}</div>
+                        <div className="col text-dark-75 font-weight-bolder text-hover-primary font-size-lg align-self-center">{item.name}</div>
                     </div>
                 </a>
             </td>
