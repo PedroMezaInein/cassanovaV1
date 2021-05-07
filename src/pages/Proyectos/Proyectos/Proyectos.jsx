@@ -1980,8 +1980,60 @@ class Proyectos extends Component {
                                                                     {
                                                                         proyecto ?
                                                                             proyecto[adjunto.id] ?
+                                                                            <>
+                                                                                <div className="d-flex align-items-center justify-content-center">
+                                                                                    <span>
+                                                                                        <label htmlFor="file-upload" className="btn btn-sm btn-clean dz-clickable mb-0">
+                                                                                            <i className="flaticon2-clip-symbol"></i> Adjuntar archivo
+                                                                                        </label>
+                                                                                        <input 
+                                                                                            id="file-upload" 
+                                                                                            type="file"
+                                                                                            // onChange={ (e) => { this.setState({...this.state,form: onChangeAdjunto(e, form) });}}
+                                                                                            placeholder={form.adjuntos.adjunto_comentario.placeholder}
+                                                                                            value={form.adjuntos.adjunto_comentario.value}
+                                                                                            name='adjunto_comentario'
+                                                                                            accept="image/*, application/pdf"
+                                                                                        />
+                                                                                    </span>
+                                                                                    <div>
+                                                                                        {
+                                                                                            form.adjuntos.adjunto_comentario.files.map((file, key) => {
+                                                                                                return (
+                                                                                                    <div className="dropzone dropzone-multi" key={key}>
+                                                                                                        <div className="dropzone-items">
+                                                                                                            <div className="dropzone-item dz-image-preview" >
+                                                                                                                <div className="dropzone-file">
+                                                                                                                    {
+                                                                                                                        file.url ?
+                                                                                                                            <a rel="noopener noreferrer"  href={file.url} target="_blank" className="text-dark-50 font-size-md font-weight-bold">
+                                                                                                                                <span>{file.name}</span>
+                                                                                                                            </a>
+                                                                                                                        :''
+                                                                                                                    }
+                                                                                                                    
+                                                                                                                </div>
+                                                                                                                <div className="dropzone-progress">
+                                                                                                                    <div className="progress bg-gray-300" style={{height:'15px'}}>
+                                                                                                                        <div className="progress-bar progress-bar-striped progress-bar-animated " style={{width:'30%'}} >30%</div>
+                                                                                                                    </div>
+                                                                                                                </div>
+                                                                                                                <div className="dropzone-toolbar">
+                                                                                                                    <span className="dropzone-delete" /*onClick = {(e) => { e.preventDefault(); clearFiles('adjunto_comentario', key); }} */>
+                                                                                                                        <i className="flaticon2-cross"></i>
+                                                                                                                    </span>
+                                                                                                                </div>
+                                                                                                            </div>
+                                                                                                        </div>
+                                                                                                    </div>
+                                                                                                )
+                                                                                            })
+                                                                                        }
+                                                                                    </div>
+                                                                                </div>
                                                                                 <ItemSlider items={proyecto[adjunto.id]} handleChange={this.handleChange}
                                                                                     item={adjunto.id} deleteFile={this.deleteFile} />
+                                                                            </>
                                                                                 : ''
                                                                             : ''
                                                                     }
