@@ -27,6 +27,15 @@ const setSingleHeader = (access_token) => {
     }
 }
 
+const setSingleHeaderJson = (access_token) => {
+    return{
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${access_token}`,
+        'Access-Control-Allow-Origin' : '*',
+        'Access-Control-Allow-Methods' : 'GET,PUT,POST,DELETE,PATCH,OPTIONS',
+    }
+}
+
 const setFormHeader = (access_token) => {
     return{
         Authorization: `Bearer ${access_token}`,
@@ -37,6 +46,6 @@ const setFormHeader = (access_token) => {
 
 }
 
-export { setSingleHeader, setFormHeader }
+export { setSingleHeader, setFormHeader, setSingleHeaderJson }
 
 export const toAbsoluteUrl = pathname => process.env.PUBLIC_URL + pathname;

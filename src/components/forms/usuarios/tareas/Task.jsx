@@ -155,8 +155,8 @@ class Task extends Component {
                             <div className="card-toolbar">
                                 {
                                     this.canReactivar(tarea) &&
-                                        <span class="btn btn-hover-icon-success font-weight-bolder btn-hover-bg-light text-hover-success btn-outline-secondary text-primary" onClick={(e) => { reactivarTask(tarea) }}>
-                                            <i class="fas fa-undo-alt text-primary font-size-12px"></i> Reactivar
+                                        <span className="btn btn-hover-icon-success font-weight-bolder btn-hover-bg-light text-hover-success btn-outline-secondary text-primary" onClick={(e) => { reactivarTask(tarea) }}>
+                                            <i className="fas fa-undo-alt text-primary font-size-12px"></i> Reactivar
                                         </span>
                                 }
                                 {

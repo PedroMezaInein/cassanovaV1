@@ -17,11 +17,10 @@ import Echo from 'laravel-echo';
 class NotificacionesCorreos extends Component {
 
     state = {
-        keyActive:'',
+        keyActive:0,
         showInput: false,
         form: { responsables: [], },
         options: { responsables: [], usuarios: [] },
-        activeSubMenu: true,
         modulos: [],
         notificaciones: [],
         notificacion: '',
@@ -48,17 +47,33 @@ class NotificacionesCorreos extends Component {
         this.getOptions()
     }
 
-    mostrarInput(notif) {
-        const { showInput, options } = this.state
-        options.responsables = []
-        options.usuarios.forEach((elemento, index) => {
-            let flag = notif.destinatarios.find((auxiliar) => {
-                return auxiliar.id.toString() === elemento.value
+    mostrarInput = (notif, id) => {
+        let { keyActive, showInput } = this.state
+        const {options } = this.state
+        if(notif.id === id){
+            keyActive = id
+            showInput = true
+            options.responsables = []
+            options.usuarios.forEach((elemento, index) => {
+                let flag = notif.destinatarios.find((auxiliar) => {
+                    return auxiliar.id.toString() === elemento.value
+                })
+                if(flag === undefined)
+                    options.responsables.push({ name: elemento.name, label: elemento.name, value: elemento.value })
             })
-            if(flag === undefined)
-                options.responsables.push({ name: elemento.name, label: elemento.name, value: elemento.value })
+        }
+        this.setState({ ...this.state, keyActive, showInput, notificacion: notif, options })
+    }
+
+    closeInput = (notif, id) => {
+        let { showInput } = this.state
+        if(notif.id === id){
+            showInput = false
+        }
+        this.setState({
+            ...this.state,
+            showInput
         })
-        this.setState({ ...this.state, showInput: !showInput, notificacion: notif, options })
     }
 
     getOptions = async() => {
@@ -115,6 +130,7 @@ class NotificacionesCorreos extends Component {
         await axios.put(`${URL_DEV}v1/plataforma/notificaciones`, {type: 'enable', id: notificacion.id}, { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 Swal.close()
+                this.getPanelNotificaciones()
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -129,6 +145,7 @@ class NotificacionesCorreos extends Component {
             { headers: setSingleHeader(access_token) }).then(
             (response) => {
                 Swal.close()
+                this.getPanelNotificaciones()
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -145,6 +162,7 @@ class NotificacionesCorreos extends Component {
                 const { showInput } = this.state
                 Swal.close();
                 this.setState({...this.state, showInput: !showInput, notificacion: ''})
+                this.getPanelNotificaciones()
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
             errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
@@ -262,13 +280,13 @@ class NotificacionesCorreos extends Component {
     }
 
     render() {
-        const { options, form, showInput, modulos, list, notificaciones } = this.state
+        const { options, form, keyActive, modulos, list, notificaciones, showInput } = this.state
         return (
             <Layout active='plataforma' {...this.props}>
                 <Row className="mx-0">
                     <Col md="12">
                         <Card className="card-custom card-stretch gutter-b">
-                            <div className="card-header border-0">
+                            <div className="card-header border-0 mt-5">
                                 <h3 className="card-title align-items-start flex-column align-self-center mt-3">
                                     <span className="card-label font-weight-bolder text-dark">{list.tipo}</span>
                                     {
@@ -321,17 +339,17 @@ class NotificacionesCorreos extends Component {
                                 </div>
                             </div>
                             <div className="card-body">
-                                <div className="row mx-0 justify-content-center">
+                                <div className="row mx-0 justify-content-start">
                                     {
                                         notificaciones.length ?
                                             notificaciones.map((element) => {
                                                 return(
                                                     <div key = { element.id } className="col-md-4">
-                                                        <div className="row mx-0 card-notify-2">
-                                                            <span className="svg-icon svg-icon-sm-3x">
+                                                        <div className="row mx-0 card-notify-2 gutter-b">
+                                                            <span className="svg-icon svg-icon-sm-3x position-relative">
                                                                 { this.showIcon(element) }          
                                                             </span>
-                                                            <div className="col-3 px-0 w-100 row mx-0 card-color">
+                                                            <div className="col-2 px-0 w-100 row mx-0 card-color">
                                                                 <div className={`bg-notify ${!element.enable ? 'disable-bg' : ''}`}></div>
                                                             </div>
                                                             <div className="col bg-success-2">
@@ -382,13 +400,23 @@ class NotificacionesCorreos extends Component {
                                                                             })
                                                                         }
                                                                         <div className="col px-2 mt-2">
-                                                                            <OverlayTrigger overlay={<Tooltip>AGREGAR DESTINATARIO</Tooltip>}>
-                                                                                <span className="label-notify bg-gray-200 px-4" onClick={() => { this.mostrarInput(element) }}>
-                                                                                    <i className="fas fa-user-plus icon-sm text-color-8080"></i>
-                                                                                </span>
-                                                                            </OverlayTrigger>
+                                                                            {
+                                                                                
+                                                                                keyActive === element.id && showInput?
+                                                                                        <OverlayTrigger overlay={<Tooltip>OCULTAR MODAL DESTINATARIO</Tooltip>}>
+                                                                                            <span className="label-notify bg-gray-200 px-4"  onClick = {(e) => { this.closeInput(element, element.id) }} >
+                                                                                                <i className="fas fa-user-times icon-sm text-color-8080"></i>
+                                                                                            </span>
+                                                                                        </OverlayTrigger>
+                                                                                    :
+                                                                                        <OverlayTrigger overlay={<Tooltip>AGREGAR DESTINATARIO</Tooltip>}>
+                                                                                            <span className="label-notify bg-gray-200 px-4" onClick={(e) => { this.mostrarInput(element, element.id) }} >
+                                                                                                <i className="fas fa-user-plus icon-sm text-color-8080"></i>
+                                                                                            </span>
+                                                                                        </OverlayTrigger>
+                                                                            }
                                                                         </div>
-                                                                        <div className={showInput ? 'col-md-12 mt-5 px-0 ' : 'd-none'}>
+                                                                        <div className={`${keyActive === element.id && showInput? 'col-md-12 mt-5 px-0' :'d-none'}`} >
                                                                             <TagSelectSearchGray placeholder = 'Agregar usuarios ' options = { options.responsables } 
                                                                                 iconclass = 'las la-user-friends icon-xl' defaultvalue = { form.responsables } 
                                                                                 onChange = { this.updateResponsable }/>
@@ -400,7 +428,11 @@ class NotificacionesCorreos extends Component {
                                                     </div>
                                                 )
                                             })
-                                        : <div className = 'col-md-6'> <Panel /> </div>
+                                        : <div className = 'col-md-12 px-0'>
+                                            <div className="col-md-6 mx-auto">
+                                                <Panel /> 
+                                            </div>
+                                        </div>
                                     }
                                 </div>
                             </div>
