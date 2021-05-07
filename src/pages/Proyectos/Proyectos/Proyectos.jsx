@@ -23,7 +23,10 @@ import { printSwalHeader } from '../../../functions/printers'
 import { Update } from '../../../components/Lottie'
 import { setOptions } from '../../../functions/setters'
 import $ from "jquery";
+import { v4 as uuidv4 } from "uuid";
+import { setFormHeader, setSingleHeaderJson } from '../../../functions/routers'
 const MySwal = withReactContent(Swal)
+const chunkSize = 1048576 * 5;
 class Proyectos extends Component {
     state = {
         proyectos: [],
@@ -40,6 +43,18 @@ class Proyectos extends Component {
         adjuntos: [],
         primeravista: true,
         defaultactivekey: "",
+        chunked: {
+            showProgress: false,
+            progress: 0,
+            counter: 1,
+            begin: 0,
+            end: chunkSize,
+            filesize: 0,
+            totalCount: 1,
+            fileID: '',
+            file: '',
+            type: ''
+        },
         showadjuntos: [
             {
                 placeholder: 'Fotografías levantamiento',
@@ -458,11 +473,8 @@ class Proyectos extends Component {
             colonias: [],
             tipos:[]
         },
-        myBucket: '',
         tipo: ''
     }
-
-    myBucket = ''
 
     seleccionaradj(adjuntos) {
         const { proyecto } = this.state;
@@ -874,7 +886,7 @@ class Proyectos extends Component {
         this.onChangeAdjunto({ target: { name: item, value: files, files: files } })
     }
     
-    handleChange = (files, item) => {
+    /* handleChange = (files, item) => {
         this.onChangeAdjuntoGrupo({ target: { name: item, value: files, files: files } })
         MySwal.fire({
             title: '¿CONFIRMAS EL ENVIÓ DE ADJUNTOS?',
@@ -892,7 +904,137 @@ class Proyectos extends Component {
                 this.addProyectoAdjuntoAxios(item)
             }
         })
+    } */
+
+/* -------------------------------------------------------------------------- */
+/*                            ANCHOR INICIA CHUNKS                            */
+/* -------------------------------------------------------------------------- */
+
+    handleChange = ( files, item ) => {
+        let totalCount = 0
+        let fileID = ''
+        if(files.length){
+            files.forEach((file) => {
+                this.resetChunks(file)
+                totalCount = file.size % chunkSize === 0 ? file.size / chunkSize : Math.floor(file.size / chunkSize) + 1
+                fileID = uuidv4()
+                /* console.log(totalCount, 'TOTAL COUNT')
+                console.log(fileID, 'FILE ID') */
+                this.fileUpload(totalCount, fileID, file, item)
+            })
+        }
+        
     }
+
+    fileUpload = (totalCount, fileID, file, item) => {
+        waitAlert()
+        const { chunked } = this.state
+        chunked.totalCount = totalCount
+        chunked.fileID = fileID
+        chunked.file = file
+        chunked.tipo = item
+        this.setState({chunked})
+        if(chunked.counter < totalCount){
+            let chunk = file.slice(chunked.begin, chunked.end)
+            this.uploadChunk(chunk)
+        }
+    }
+
+    uploadChunk = async(chunk) => {
+        try{
+            const { proyecto, chunked } = this.state
+            const { access_token } = this.props.authUser
+            /* let formulario = new FormData()
+            formulario.append('chunk', chunk) */
+            const response = await axios.post(
+                `${URL_DEV}v2/proyectos/proyectos/adjuntos/${proyecto.id}/chunk`,
+                chunk,
+                {
+                    params: { counter: chunked.counter, id: chunked.fileID, fileName: chunked.file.name },
+                    headers: setSingleHeaderJson(access_token)
+                }
+            )
+            const { status, data } = response
+            if(status === 200){
+                chunked.begin = chunked.end
+                chunked.end = chunked.end + chunkSize
+                if(chunked.counter === chunked.totalCount){
+                    console.log("Process is complete, counter", chunked.counter);
+                    this.setState({chunked})
+                    await this.uploadCompleted();
+                }else{
+                    chunked.porcentaje = ( chunked.counter / chunked.totalCount ) * 100;
+                    chunked.counter =  chunked.counter + 1;
+                    this.setState({chunked})
+                    let chunk = chunked.file.slice(chunked.begin, chunked.end)
+                    this.uploadChunk(chunk)
+                    
+                }
+                console.log(chunked, 'chunked')
+            }else{
+                console.log("Error Occurred:", data.errorMessage);
+            }
+        } catch (error) {
+            console.log("error", error);
+        }
+    }
+
+    resetChunks = (file) => {
+        const { chunked } = this.state
+        chunked.showProgress = false
+        chunked.progress = 0
+        chunked.counter = 1
+        chunked.begin = 0
+        chunked.end = chunkSize
+        chunked.filesize = file ? file.size : 0
+        chunked.totalCount = 1
+        chunked.fileID = ''
+        chunked.file = ''
+        chunked.tipo = ''
+        this.setState({chunked})
+    }
+
+    uploadCompleted = async() => {
+        const { access_token } = this.props.authUser
+        const { chunked, proyecto } = this.state
+        waitAlert()
+        await axios.post(
+            `${URL_DEV}v2/proyectos/proyectos/adjuntos/${proyecto.id}/complete`, {},
+            { 
+                params: { tipo: chunked.tipo, total: chunked.totalCount, id: chunked.fileID, fileName: chunked.file.name }, 
+                headers: setSingleHeaderJson(access_token)
+            }).then(
+                (response) => {
+                    const { proyecto } = response.data
+                    const { key } = this.state
+                    switch(key){
+                        case 'all':
+                            this.getProyectoAxios();
+                            break;
+                        case 'fase1':
+                            this.getProyectoFase1Axios();
+                            break;
+                        case 'fase2':
+                            this.getProyectoFase2Axios();
+                            break;
+                        case 'fase3':
+                            this.getProyectoFase3Axios();
+                        break;
+                        default: break;
+                    }
+                    doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue registrado con éxito.')
+                    this.setState({
+                        ...this.state,
+                        proyecto: proyecto,
+                        adjuntos: this.setAdjuntosSlider(proyecto),
+                    })
+            }, (error) => { printResponseErrorAlert(error) }
+        ).catch((error) => {
+            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
+            console.log(error, 'error')
+        })
+    }
+
     handleChangeComentario = (files, item) => {
         const { form } = this.state
         let aux = []
@@ -1582,7 +1724,6 @@ class Proyectos extends Component {
         })
     }
     async addProyectoAdjuntoAxios(name) {
-
         const { access_token } = this.props.authUser
         const { form, proyecto } = this.state
         const data = new FormData();
@@ -1602,22 +1743,6 @@ class Proyectos extends Component {
             data.append(`files_${form.adjuntos_grupo[grupo].adjuntos[adjunto].id}[]`, file.file)
             return false
         })
-        
-        /*
-        form.adjuntos_grupo[grupo].adjuntos[adjunto].files.map((file)=>{
-            const params = {
-                ACL: 'public-read',
-                Key: file.file.name,
-                ContentType: file.file.type,
-                Body: file.file,
-                CrossOrigin: '*'
-            }
-            myBucket.putObject(params)
-                .on('httpUploadProgress', (evt) => {})
-                .send((err)=>{
-                    if(err)
-                })
-        }) */
         await axios.post(URL_DEV + 'proyectos/' + proyecto.id + '/adjuntos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}`}, 
                 maxContentLength: 100000000,
                 maxBodyLength: 1000000000
@@ -1981,7 +2106,7 @@ class Proyectos extends Component {
                                                                         proyecto ?
                                                                             proyecto[adjunto.id] ?
                                                                                 <ItemSlider items={proyecto[adjunto.id]} handleChange={this.handleChange}
-                                                                                    item={adjunto.id} deleteFile={this.deleteFile} />
+                                                                                    item={adjunto.id} deleteFile={this.deleteFile}  />
                                                                                 : ''
                                                                             : ''
                                                                     }
