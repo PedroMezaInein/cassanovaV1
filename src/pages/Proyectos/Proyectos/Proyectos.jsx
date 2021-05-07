@@ -2063,17 +2063,17 @@ class Proyectos extends Component {
                                     </Nav>
                                 </div>
                             </Card.Header>
-                            <Card.Body>
+                            <Card.Body className="pb-0">
                                 <Tab.Container id="left-tabs-example" activeKey={subActiveKey ? subActiveKey : defaultactivekey} defaultActiveKey={defaultactivekey}
                                     onSelect={(select) => { this.updateActiveTabContainer(select) }}>
                                     <Row>
-                                        <Col md={4} className="navi navi-accent navi-hover navi-bold border-nav">
+                                        <Col md={4} className="navi navi-accent navi-hover navi-bold border-nav p-4">
                                             <Nav variant="pills" className="flex-column navi navi-hover navi-active">
                                                 {
                                                     showadjuntos.map((adjunto, key) => {
                                                         return (
-                                                            <Nav.Item className="navi-item" key={key}>
-                                                                <Nav.Link className="navi-link" eventKey={adjunto.id}>
+                                                            <Nav.Item className="navi-item mx-0 text-truncate" key={key}>
+                                                                <Nav.Link className="navi-link px-3 py-2" eventKey={adjunto.id}>
                                                                     <span className="navi-text">{adjunto.placeholder}</span>
                                                                 </Nav.Link>
                                                             </Nav.Item>
@@ -2082,7 +2082,7 @@ class Proyectos extends Component {
                                                 }
                                             </Nav>
                                         </Col>
-                                        <Col md={8} className="align-self-center">
+                                        <Col md={8} className="align-self-center gutter-t gutter-b">
                                             <Tab.Content>
                                                 {
                                                     showadjuntos.map((adjunto, key) => {

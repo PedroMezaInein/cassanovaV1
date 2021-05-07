@@ -2229,7 +2229,7 @@ class Crm extends Component {
                             <div className = "d-flex justify-content-between mt-4">
                                 {
                                     setEmpresaLogo(lead) !== '' ?
-                                        <img alt='' src={setEmpresaLogo(lead)} class="img-empresa"/>
+                                        <img alt='' src={setEmpresaLogo(lead)} className="img-empresa"/>
                                         : ''
                                 }
                                 {
