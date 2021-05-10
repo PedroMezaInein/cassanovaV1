@@ -137,16 +137,20 @@ class LeadNoContratado extends Component {
                                                 </td>
                                                 <td className="font-size-lg text-left font-weight-bolder">
                                                     <span>Ingreso: </span><span className="text-muted font-weight-bold font-size-sm">{setDateTableLG(lead.created_at)}</span><br />
-                                                    <span>Último contacto: </span><span className="text-muted font-weight-bold font-size-sm">
-                                                        {
-                                                            lead.prospecto ?
-                                                                lead.prospecto.contactos ?
-                                                                    lead.prospecto.contactos.length > 0 ?
-                                                                        setDateTableLG(lead.prospecto.contactos[0].created_at)
-                                                                        : ''
-                                                                    : ''
+                                                    {
+                                                        lead.prospecto ?
+                                                            lead.prospecto.contactos ?
+                                                                lead.prospecto.contactos.length > 0 ?
+                                                                    <>
+                                                                        <span>Último contacto: </span>
+                                                                        <span className="text-muted font-weight-bold font-size-sm">{setDateTableLG(lead.prospecto.contactos[0].created_at)}</span><br />
+                                                                    </>
                                                                 : ''
-                                                        }
+                                                            : ''
+                                                        : ''
+                                                    }
+                                                    <span>{lead.rechazado? 'Rechazo':'Cancelado'}: </span><span className="text-muted font-weight-bold font-size-sm">
+                                                        { setDateTableLG(lead.updated_at) }
                                                     </span>
                                                 </td>
                                                 <td>
