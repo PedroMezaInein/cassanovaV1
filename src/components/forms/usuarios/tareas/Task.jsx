@@ -155,8 +155,8 @@ class Task extends Component {
                             <div className="card-toolbar">
                                 {
                                     this.canReactivar(tarea) &&
-                                        <span className="btn btn-hover-icon-success font-weight-bolder btn-hover-bg-light text-hover-success btn-outline-secondary text-primary" onClick={(e) => { reactivarTask(tarea) }}>
-                                            <i className="fas fa-undo-alt text-primary font-size-12px"></i> Reactivar
+                                        <span className="btn btn-default btn-sm btn-hover-bg-primary mr-2 text-hover-white text-dark-50 mr-2 font-weight-bolder" onClick={(e) => { reactivarTask(tarea) }}>
+                                            <i className="fas fa-undo-alt text-hover-primary text-dark-50 font-size-14px"></i> Reactivar
                                         </span>
                                 }
                                 {
@@ -166,7 +166,7 @@ class Task extends Component {
                                         </span>
                                 }
                                 {
-                                    this.canEdit(tarea) &&
+                                    // this.canEdit(tarea) &&
                                         <span className="btn btn-default btn-icon btn-sm mr-2 btn-hover-bg-success mr-2 text-hover-white" onClick={(e) => { openModalEdit(tarea) }}>
                                             <i className="flaticon2-pen text-hover-success"></i>
                                         </span>
