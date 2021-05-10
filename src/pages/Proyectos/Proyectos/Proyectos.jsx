@@ -877,6 +877,7 @@ class Proyectos extends Component {
             }
         }).then((result) => {
             if (result.value) {
+                waitAlert()
                 this.deleteAdjuntoAxios(element.id)
             }
         })
@@ -885,26 +886,6 @@ class Proyectos extends Component {
     handleChangeAvance = (files, item) => {
         this.onChangeAdjunto({ target: { name: item, value: files, files: files } })
     }
-    
-    /* handleChange = (files, item) => {
-        this.onChangeAdjuntoGrupo({ target: { name: item, value: files, files: files } })
-        MySwal.fire({
-            title: '¿CONFIRMAS EL ENVIÓ DE ADJUNTOS?',
-            icon: "question",
-            showCancelButton: true,
-            confirmButtonText: "ACEPTAR",
-            cancelButtonText: "CANCELAR",
-            reverseButtons: true,
-            customClass: {
-                content: 'd-none',
-            }
-        }).then((result) => {
-            if (result.value) {
-                waitAlert()
-                this.addProyectoAdjuntoAxios(item)
-            }
-        })
-    } */
 
 /* -------------------------------------------------------------------------- */
 /*                            ANCHOR INICIA CHUNKS                            */
@@ -1007,21 +988,7 @@ class Proyectos extends Component {
                 (response) => {
                     const { proyecto } = response.data
                     const { key } = this.state
-                    switch(key){
-                        case 'all':
-                            this.getProyectoAxios();
-                            break;
-                        case 'fase1':
-                            this.getProyectoFase1Axios();
-                            break;
-                        case 'fase2':
-                            this.getProyectoFase2Axios();
-                            break;
-                        case 'fase3':
-                            this.getProyectoFase3Axios();
-                        break;
-                        default: break;
-                    }
+                    this.getProyectoAxios(key)
                     doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue registrado con éxito.')
                     this.setState({
                         ...this.state,
@@ -1104,21 +1071,7 @@ class Proyectos extends Component {
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { key } = this.state
-                switch(key){
-                    case 'all':
-                        this.getProyectoAxios();
-                        break;
-                    case 'fase1':
-                        this.getProyectoFase1Axios();
-                        break;
-                    case 'fase2':
-                        this.getProyectoFase2Axios();
-                        break;
-                    case 'fase3':
-                        this.getProyectoFase3Axios();
-                        break;
-                    default: break;
-                }
+                this.getProyectoAxios(key)
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El rendimiento fue editado con éxito.')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -1209,21 +1162,7 @@ class Proyectos extends Component {
                 Swal.close()
                 doneAlert('Estado actualizado con éxito')
                 const { key } = this.state
-                switch(key){
-                    case 'all':
-                        this.getProyectoAxios();
-                        break;
-                    case 'fase1':
-                        this.getProyectoFase1Axios();
-                        break;
-                    case 'fase2':
-                        this.getProyectoFase2Axios();
-                        break;
-                    case 'fase3':
-                        this.getProyectoFase3Axios();
-                        break;
-                    default: break;
-                }
+                this.getProyectoAxios(key)
             },
             (error) => {
                 printResponseErrorAlert(error)
@@ -1284,21 +1223,7 @@ class Proyectos extends Component {
             { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { key } = this.state
-                switch(key){
-                    case 'all':
-                        this.getProyectoAxios();
-                        break;
-                    case 'fase1':
-                        this.getProyectoFase1Axios();
-                        break;
-                    case 'fase2':
-                        this.getProyectoFase2Axios();
-                        break;
-                    case 'fase3':
-                        this.getProyectoFase3Axios();
-                        break;
-                    default: break;
-                }
+                this.getProyectoAxios(key)
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue editado con éxito.')
             }, (error) => { printResponseErrorAlert(error) }
         ).catch((error) => {
@@ -1519,21 +1444,7 @@ class Proyectos extends Component {
         await axios.delete(URL_DEV + 'proyectos/' + proyecto.id, { headers: { Authorization: `Bearer ${access_token}` } }).then(
             (response) => {
                 const { key } = this.state
-                switch(key){
-                    case 'all':
-                        this.getProyectoAxios();
-                        break;
-                    case 'fase1':
-                        this.getProyectoFase1Axios();
-                        break;
-                    case 'fase2':
-                        this.getProyectoFase2Axios();
-                        break;
-                    case 'fase3':
-                        this.getProyectoFase3Axios();
-                        break;
-                    default: break;
-                }
+                this.getProyectoAxios(key)
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue eliminado con éxito.')
                 this.setState({
                     ...this.state,
@@ -1556,21 +1467,7 @@ class Proyectos extends Component {
             (response) => {
                 const { proyecto } = response.data
                 const { key } = this.state
-                switch(key){
-                    case 'all':
-                        this.getProyectoAxios();
-                        break;
-                    case 'fase1':
-                        this.getProyectoFase1Axios();
-                        break;
-                    case 'fase2':
-                        this.getProyectoFase2Axios();
-                        break;
-                    case 'fase3':
-                        this.getProyectoFase3Axios();
-                        break;
-                    default: break;
-                }
+                this.getProyectoAxios(key)
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue registrado con éxito.')
                 this.setState({
                     ...this.state,
@@ -1626,21 +1523,7 @@ class Proyectos extends Component {
             (response) => {
                 const { avance, proyecto } = response.data
                 const { key } = this.state
-                switch(key){
-                    case 'all':
-                        this.getProyectoAxios();
-                        break;
-                    case 'fase1':
-                        this.getProyectoFase1Axios();
-                        break;
-                    case 'fase2':
-                        this.getProyectoFase2Axios();
-                        break;
-                    case 'fase3':
-                        this.getProyectoFase3Axios();
-                        break;
-                    default: break;
-                }
+                this.getProyectoAxios(key)
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue registrado con éxito.')
                 var win = window.open(avance.pdf, '_blank');
                 win.focus();
@@ -1691,21 +1574,7 @@ class Proyectos extends Component {
             (response) => {
                 const { avance, proyecto } = response.data
                 const { key } = this.state
-                switch(key){
-                    case 'all':
-                        this.getProyectoAxios();
-                        break;
-                    case 'fase1':
-                        this.getProyectoFase1Axios();
-                        break;
-                    case 'fase2':
-                        this.getProyectoFase2Axios();
-                        break;
-                    case 'fase3':
-                        this.getProyectoFase3Axios();
-                        break;
-                    default: break;
-                }
+                this.getProyectoAxios(key)
                 doneAlert(response.data.message !== undefined ? response.data.message : 'El avance fue adjuntado con éxito.')
                 var win = window.open(avance.pdf, '_blank');
                 win.focus();
@@ -1723,63 +1592,7 @@ class Proyectos extends Component {
             console.log(error, 'error')
         })
     }
-    async addProyectoAdjuntoAxios(name) {
-        const { access_token } = this.props.authUser
-        const { form, proyecto } = this.state
-        const data = new FormData();
-        data.append('tipo', name)
-        let grupo = 0
-        let adjunto = 0
-        for (let i = 0; i < form.adjuntos_grupo.length; i++) {
-            for (let j = 0; j < form.adjuntos_grupo[i].adjuntos.length; j++) {
-                if (form.adjuntos_grupo[i].adjuntos[j].id === name) {
-                    grupo = i;
-                    adjunto = j;
-                }
-            }
-        }
-        form.adjuntos_grupo[grupo].adjuntos[adjunto].files.map((file) => {
-            data.append(`files_name_${form.adjuntos_grupo[grupo].adjuntos[adjunto].id}[]`, file.name)
-            data.append(`files_${form.adjuntos_grupo[grupo].adjuntos[adjunto].id}[]`, file.file)
-            return false
-        })
-        await axios.post(URL_DEV + 'proyectos/' + proyecto.id + '/adjuntos', data, { headers: { Accept: '*/*', 'Content-Type': 'multipart/form-data', Authorization: `Bearer ${access_token}`}, 
-                maxContentLength: 100000000,
-                maxBodyLength: 1000000000
-            } ).then(
-            (response) => {
-                const { proyecto } = response.data
-                const { key } = this.state
-                switch(key){
-                    case 'all':
-                        this.getProyectoAxios();
-                        break;
-                    case 'fase1':
-                        this.getProyectoFase1Axios();
-                        break;
-                    case 'fase2':
-                        this.getProyectoFase2Axios();
-                        break;
-                    case 'fase3':
-                        this.getProyectoFase3Axios();
-                    break;
-                    default: break;
-                }
-                doneAlert(response.data.message !== undefined ? response.data.message : 'El proyecto fue registrado con éxito.')
-                this.setState({
-                    ...this.state,
-                    proyecto: proyecto,
-                    adjuntos: this.setAdjuntosSlider(proyecto),
-                })
-            },
-            (error) => {
-                printResponseErrorAlert(error)
-            }
-        ).catch((error) => {
-            errorAlert('Ocurrió un error desconocido catch, intenta de nuevo.')
-            console.log(error, 'error')
-        })
-    }
+    
     sendMail = avance => {
         waitAlert();
         this.sendMailAvanceAxios(avance);
@@ -1800,36 +1613,15 @@ class Proyectos extends Component {
         })
     }
 
-    async getProyectoAxios() {
-        $('#proyecto').DataTable().ajax.reload();
-    }
-
-    async getProyectoFase1Axios() {
-        $('#proyecto_fase1').DataTable().ajax.reload();
-    }
-    async getProyectoFase2Axios() {
-        $('#proyecto_fase2').DataTable().ajax.reload();
-    }
-    async getProyectoFase3Axios() {
-        $('#proyecto_fase3').DataTable().ajax.reload();
-    }
-
-    controlledTab = value => {
+    async getProyectoAxios(value) {
+        let cadena = '#proyecto'
         switch(value){
-            case 'all':
-                this.getProyectoAxios();
+            case 'all': break;
+            default: 
+                cadena = `${cadena}_${value}`
                 break;
-            case 'fase1':
-                this.getProyectoFase1Axios();
-                break;
-            case 'fase2':
-                this.getProyectoFase2Axios();
-                break;
-            case 'fase3':
-                this.getProyectoFase3Axios();
-                break;
-            default: break;
         }
+        $(cadena).DataTable().ajax.reload();
         this.setState({
             ...this.state,
             key: value
