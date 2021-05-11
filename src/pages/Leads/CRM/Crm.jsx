@@ -1805,9 +1805,12 @@ class Crm extends Component {
                                     </div>
                                 </div>
                                 { contacto.comentario }
+                                <span className="blockquote-footer font-weight-lighter ml-2 d-inline">
+                                    {contacto.user.name}
+                                </span>
                                 {
                                     contacto.adjunto ?
-                                        <div className="d-flex justify-content-end">
+                                        <div className="d-flex justify-content-end mt-1">
                                             <a href={contacto.adjunto.url} target='_blank' rel="noopener noreferrer" className="text-muted text-hover-primary font-weight-bold">
                                                 <span className="svg-icon svg-icon-md svg-icon-gray-500 mr-1">
                                                     <SVG src={toAbsoluteUrl('/images/svg/Attachment1.svg')} />
