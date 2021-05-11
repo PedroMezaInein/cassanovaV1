@@ -26,7 +26,7 @@ import $ from "jquery";
 import { v4 as uuidv4 } from "uuid";
 import { setSingleHeaderJson } from '../../../functions/routers'
 const MySwal = withReactContent(Swal)
-const chunkSize = 1048576 * 5;
+const chunkSize = 1048576 * 3;
 class Proyectos extends Component {
     state = {
         proyectos: [],
