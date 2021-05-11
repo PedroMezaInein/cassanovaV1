@@ -1764,8 +1764,8 @@ class Proyectos extends Component {
                                                                             <>
                                                                                 <div className="d-flex align-items-center justify-content-center mt-2">
                                                                                     <span className = 'my-2'>
-                                                                                        <label htmlFor="file-upload" className="btn btn-sm btn-clean dz-clickable mb-0">
-                                                                                            <i className="flaticon2-clip-symbol"></i> Adjuntar archivo
+                                                                                        <label htmlFor="file-upload" className="btn btn-default btn-hover-icon-success font-weight-bolder btn-hover-bg-light text-hover-success text-dark-50">
+                                                                                            <i className="flaticon2-clip-symbol text-primary"></i> Adjuntar archivo
                                                                                         </label>
                                                                                         <input id="file-upload" type="file" placeholder={form.adjuntos.adjunto_comentario.placeholder}
                                                                                             onChange={ (e) => { e.preventDefault(); this.handleChange(e.target.files, adjunto.id) }}
